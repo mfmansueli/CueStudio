@@ -1,0 +1,990 @@
+[
+  {
+    "brief": {
+      "angle": "Organizar produtos essenciais para maquiagem.",
+      "openingLine": "Pegar três produtos que fazem a diferença.",
+      "subject": "Rotina de cuidados com a pele rápida"
+    },
+    "callsUsed": 519,
+    "context": "Write the script in Portuguese (Brazil).\nPlatform: TikTok.\nFormat: not chosen. Read the genre from the request (tutorial, story, opinion, list, review, comparison, explanation…); the creator's usual formats only help when the request is vague.\nLength: 30 to 60 seconds of speech (about 75 to 150 words at a natural pace), the length that works on this platform. Develop the idea fully within it, without padding, and never go past 150 words: choose the strongest points instead of covering everything.\n\nAbout the creator (who they are and who they speak to; not a new request):\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: a lifestyle and personal creator.\nTheir default voice is one person (“I” and “my”). Keep this default unless the current request supplies another perspective or narrator.\nTheir audience: young adults.\nThey know some basics: skip the obvious and go one level deeper.\nThey watch to learn something and decide what to buy.\nTheir videos aim to grow their audience and entertain.\nRules: no medical claims: never say something cures, treats or heals, and speak in general terms; no clickbait (“you won't believe…”, “what happens next”): say the real point up front.\nNever swear.\n\nHow the creator speaks (apply it to the form; preferences, not a new request):\nThey sound casual and funny.\nDelivery: energy: high and lively; sentences: short and punchy, with varied lengths (a rhythm preference, never a limit on how much the script develops); words: some casual slang; humor: a little.\nUsual opening preference, only when supported by this request: a common mistake to avoid. A story opening requires an experience supplied in the request; otherwise open directly on the subject.\nUsual ending preference, only if this request permits it and it serves the takeaway: asking them to comment their answer. It is optional, never an automatic sign-off.\nThey film mostly: lists and tips.\nOptional familiar expressions: “Fala, galera!”. Use at most one only if natural here; omission is better than forced repetition.\nThey post on TikTok.\n\nInspiration this idea came from (Find inspiration):\nSubject: Rotina de cuidados com a pele rápida\nFollow this angle all the way through: Organizar produtos essenciais para maquiagem.\nOpen with this line, as it is or adapted only to the creator's way of speaking: “Pegar três produtos que fazem a diferença.” It is the hook: write no other before it.\n\nThe creator's request, in their exact words:\n\"\"\"\nRotina de cuidados com a pele rápida\nAngle: Organizar produtos essenciais para maquiagem.\nOpen with: “Pegar três produtos que fazem a diferença.”\n\"\"\"\n\nDraft to polish:\n\"\"\"\n[draft]\n\"\"\"",
+    "creator": {
+      "endings": [
+        "Comment your answer"
+      ],
+      "openings": [
+        "Mistake to avoid"
+      ],
+      "phrases": [
+        "Fala, galera!"
+      ],
+      "summary": "niches: beauty · sounds: casual, funny · role: personal · avoid: Medical claims, Clickbait"
+    },
+    "durationPolicy": "informative",
+    "engines": {
+      "checked": {
+        "calls": 3,
+        "changes": [
+          "Ajuste do tom para soar mais dinâmico e natural para o TikTok",
+          "Adição de gírias leves como make e mara para conectar com o público jovem adulto",
+          "Preservação rigorosa de todas as alegações corrigidas sobre os benefícios dos produtos"
+        ],
+        "checked": "Pegar três produtos que fazem a diferença. Essa é a minha regra de ouro para preparar a pele antes da maquiagem sem perder tempo de manhã.\n\nPrimeiro, um hidratante fluido. Ele cria aquela barreira macia que ajuda a evitar que a base craquele ao longo do dia, sem pesar no rosto.\n\nDepois, o hidratante para a área dos olhos. Dar leves batidinhas nessa região ajuda o corretivo a durar mais e reduz o acúmulo nas linhas finas.\n\nPor fim, um protetor solar com toque seco que já funciona como primer. Ele ajuda a fixar a maquiagem e protege ao mesmo tempo.\n\nMenos passos significam menos chance dos produtos acumularem sob a base. É rápido, prático e deixa o acabamento lindo.",
+        "corrections": [
+          "De \"impede a base de craquelar\" para \"ajuda a evitar que a base craquele\" para evitar uma garantia absoluta.",
+          "De \"garante que o corretivo dure mais e não acumule\" para \"ajuda o corretivo a durar mais e reduz o acúmulo\" para evitar promessa de resultado garantido.",
+          "De \"Ele fixa tudo\" para \"Ele ajuda a fixar a maquiagem\" para ser mais realista sobre a função do protetor/primer.",
+          "De \"deixa o acabamento impecável\" para \"deixa o acabamento lindo\" para evitar promessa de perfeição absoluta."
+        ],
+        "draft": "Pegar três produtos que fazem a diferença. Essa é a minha regra de ouro para preparar a pele antes da maquiagem sem perder tempo de manhã.\n\nPrimeiro, um hidratante fluido. Ele cria aquela barreira macia que impede a base de craquelar ao longo do dia, sem pesar no rosto.\n\nDepois, o hidratante para a área dos olhos. Dar leves batidinhas nessa região garante que o corretivo dure mais e não acumule nas linhas finas.\n\nPor fim, um protetor solar com toque seco que já funciona como primer. Ele fixa tudo e protege ao mesmo tempo.\n\nMenos passos significam menos chance dos produtos acumularem sob a base. É rápido, prático e deixa o acabamento impecável.",
+        "estimatedSeconds": 49.6,
+        "model": "gemini-3.5-flash",
+        "seconds": {
+          "check": 5.7325475,
+          "draft": 6.387620458,
+          "review": 6.421336125
+        },
+        "text": "Pegar três produtos que fazem a diferença. Essa é a minha regra de ouro para preparar a pele rapidinho antes da make, sem drama e sem perder tempo de manhã.\n\nPrimeiro, um hidratante bem fluido. Ele cria aquela barreira mara que ajuda a evitar que a base craquele ao longo do dia, sem pesar nada no rosto.\n\nDepois, hidratante na área dos olhos. Dar leves batidinhas ali ajuda o corretivo a durar mais e reduz o acúmulo de produto nas linhas finas.\n\nPor fim, protetor solar com toque seco que já faz papel de primer. Ele ajuda a fixar a maquiagem e protege a pele ao mesmo tempo.\n\nMenos passos, menos acúmulo de produto. É rápido, prático e deixa o acabamento lindo de verdade.",
+        "title": "Skincare express pré-maquiagem em três passos",
+        "tokens": {
+          "check": [
+            1127,
+            335,
+            1363
+          ],
+          "draft": [
+            1067,
+            155,
+            1150
+          ],
+          "review": [
+            1696,
+            278,
+            1343
+          ]
+        },
+        "usd": 0.047451,
+        "words": 124,
+        "metrics": {
+          "words": 124,
+          "estimatedSeconds": 49.6,
+          "lengthFit": null,
+          "endsWithQuestion": false,
+          "ctaInEnding": [],
+          "catchphrases": {
+            "Fala, galera!": 0
+          },
+          "emDashes": 0,
+          "markdown": false,
+          "newNumbers": [],
+          "titleWords": 6,
+          "titleIssue": null
+        }
+      },
+      "checkedMixed": {
+        "calls": 3,
+        "changes": [
+          "Ajuste de ritmo para adequação ao limite de tempo do TikTok (mantendo entre 75 e 150 palavras).",
+          "Uso de termos mais dinâmicos e casuais condizentes com o perfil jovem adulto.",
+          "Preservação das correções técnicas obrigatórias sobre evitar promessas absolutas de craquelamento e derretimento."
+        ],
+        "checked": "Pegar três produtos que fazem a diferença. Quando o tempo é curto, a preparação da pele para a maquiagem precisa ser estratégica, e não demorada. O segredo não é acumular camadas, mas escolher o que realmente entrega textura e durabilidade.\n\nPrimeiro, um sérum hidratante leve, que a pele absorve em segundos sem deixar resíduos. Ele ajuda a evitar que a base craquele nas áreas mais secas do rosto.\n\nDepois, o hidratante em gel. Ele sela a água na pele e cria uma barreira suave, deixando o acabamento da maquiagem muito mais natural e profissional.\n\nPor fim, o protetor solar com toque seco, que já funciona como primer. Com esses três passos rápidos, sua pele fica protegida, hidratada e pronta para receber a maquiagem com menos chance de derreter ao longo do dia.",
+        "corrections": [
+          "Afirmou que o sérum \"garante que a base não vai craquelar\", mudado para \"ajuda a evitar que a base craquele\" para evitar promessa absoluta.",
+          "Afirmou que a maquiagem fica pronta \"sem derreter ao longo do dia\", mudado para \"com menos chance de derreter ao longo do dia\" por ser uma garantia que depende do clima e tipo de pele."
+        ],
+        "draft": "Pegar três produtos que fazem a diferença. Quando o tempo é curto, a preparação da pele para a maquiagem precisa ser estratégica, e não demorada. O segredo não é acumular camadas, mas escolher o que realmente entrega textura e durabilidade.\n\nPrimeiro, um sérum hidratante leve, que a pele absorve em segundos sem deixar resíduos. Ele garante que a base não vai craquelar nas áreas mais secas do rosto.\n\nDepois, o hidratante em gel. Ele sela a água na pele e cria uma barreira suave, deixando o acabamento da maquiagem muito mais natural e profissional.\n\nPor fim, o protetor solar com toque seco, que já funciona como primer. Com esses três passos rápidos, sua pele fica protegida, hidratada e pronta para receber a maquiagem sem derreter ao longo do dia.",
+        "estimatedSeconds": 45.6,
+        "model": "gemini-3.5-flash",
+        "seconds": {
+          "check": 6.460374333,
+          "draft": 4.469525416,
+          "review": 2.174519417
+        },
+        "text": "Pegar três produtos que fazem a diferença. Quando o tempo é curto, a preparação da pele para a maquiagem precisa ser estratégica e bem rápida. O segredo não é acumular camadas, mas escolher o que realmente entrega textura e durabilidade.\n\nPrimeiro, um sérum hidratante leve. A pele absorve isso em segundos e ele ajuda a evitar que a base craquele depois.\n\nDepois, o hidratante em gel. Ele sela a hidratação e deixa o acabamento da sua make muito mais natural.\n\nPor fim, protetor solar com toque seco, que já faz o papel de primer. Com esse trio rápido, sua pele fica pronta para a maquiagem, com menos chance de derreter ao longo do dia.",
+        "title": "Rotina de pele rápida para maquiagem",
+        "tokens": {
+          "check": [
+            1151,
+            298,
+            833
+          ],
+          "draft": [
+            1067,
+            179,
+            719
+          ],
+          "review": [
+            1663,
+            279,
+            0
+          ]
+        },
+        "usd": 0.0265935,
+        "words": 114,
+        "metrics": {
+          "words": 114,
+          "estimatedSeconds": 45.6,
+          "lengthFit": null,
+          "endsWithQuestion": false,
+          "ctaInEnding": [],
+          "catchphrases": {
+            "Fala, galera!": 0
+          },
+          "emDashes": 0,
+          "markdown": false,
+          "newNumbers": [],
+          "titleWords": 6,
+          "titleIssue": null
+        }
+      }
+    },
+    "id": "beauty-card",
+    "idea": "Rotina de cuidados com a pele rápida\nAngle: Organizar produtos essenciais para maquiagem.\nOpen with: “Pegar três produtos que fazem a diferença.”",
+    "kind": "start",
+    "language": "pt-BR",
+    "lengthAsked": "ideal 30–60 s",
+    "platform": "TikTok",
+    "run": "c2"
+  },
+  {
+    "brief": {
+      "angle": "Analise rótulos antes de comprar",
+      "openingLine": "Olhe bem no nome dos produtos",
+      "subject": "Como escolher produtos sem surpresas"
+    },
+    "callsUsed": 525,
+    "context": "Write the script in Portuguese (Brazil).\nPlatform: TikTok.\nFormat: not chosen. Read the genre from the request (tutorial, story, opinion, list, review, comparison, explanation…); the creator's usual formats only help when the request is vague.\nLength: 30 to 60 seconds of speech (about 75 to 150 words at a natural pace), the length that works on this platform. Develop the idea fully within it, without padding, and never go past 150 words: choose the strongest points instead of covering everything.\n\nAbout the creator (who they are and who they speak to; not a new request):\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: a lifestyle and personal creator.\nTheir default voice is one person (“I” and “my”). Keep this default unless the current request supplies another perspective or narrator.\nTheir audience: young adults.\nThey know some basics: skip the obvious and go one level deeper.\nThey watch to learn something and decide what to buy.\nTheir videos aim to grow their audience and entertain.\nRules: no medical claims: never say something cures, treats or heals, and speak in general terms; no clickbait (“you won't believe…”, “what happens next”): say the real point up front.\nNever swear.\n\nHow the creator speaks (apply it to the form; preferences, not a new request):\nThey sound casual and funny.\nDelivery: energy: high and lively; sentences: short and punchy, with varied lengths (a rhythm preference, never a limit on how much the script develops); words: some casual slang; humor: a little.\nUsual opening preference, only when supported by this request: a common mistake to avoid. A story opening requires an experience supplied in the request; otherwise open directly on the subject.\nUsual ending preference, only if this request permits it and it serves the takeaway: asking them to comment their answer. It is optional, never an automatic sign-off.\nThey film mostly: lists and tips.\nOptional familiar expressions: “Fala, galera!”. Use at most one only if natural here; omission is better than forced repetition.\nThey post on TikTok.\n\nInspiration this idea came from (Find inspiration):\nSubject: Como escolher produtos sem surpresas\nFollow this angle all the way through: Analise rótulos antes de comprar\nOpen with this line, as it is or adapted only to the creator's way of speaking: “Olhe bem no nome dos produtos” It is the hook: write no other before it.\n\nThe creator's request, in their exact words:\n\"\"\"\nComo escolher produtos sem surpresas\nAngle: Analise rótulos antes de comprar\nOpen with: “Olhe bem no nome dos produtos”\n\"\"\"\n\nDraft to polish:\n\"\"\"\n[draft]\n\"\"\"",
+    "creator": {
+      "endings": [
+        "Comment your answer"
+      ],
+      "openings": [
+        "Mistake to avoid"
+      ],
+      "phrases": [
+        "Fala, galera!"
+      ],
+      "summary": "niches: beauty · sounds: casual, funny · role: personal · avoid: Medical claims, Clickbait"
+    },
+    "durationPolicy": "informative",
+    "engines": {
+      "checked": {
+        "calls": 3,
+        "changes": [
+          "Ajuste do tom para deixá-lo mais dinâmico, enérgico e adequado para o público jovem do TikTok.",
+          "Adicionados termos mais espontâneos como 'baratíssimo' e 'rola' para aproximar a linguagem do cotidiano do criador.",
+          "Preservadas todas as correções obrigatórias sobre o painel frontal e a não generalização das intenções das marcas."
+        ],
+        "checked": "Olhe bem no nome dos produtos. Sabe aquele creme de leite super barato que você encontrou no mercado? Se você olhar as letras miúdas, pode descobrir que é uma mistura láctea com soro de leite.\n\nAs marcas costumam usar embalagens e cores muito parecidas, o que pode nos confundir. O mesmo acontece com o chocolate, que muitas vezes é vendido como cobertura sabor chocolate, cheia de gordura que não derrete direito na boca.\n\nPara evitar essa surpresa em casa, o segredo é olhar o painel frontal da embalagem. Por lei, a denominação real do produto precisa estar escrita ali, de forma clara. Dois segundos de atenção antes de comprar salvam a sua receita e o seu bolso.",
+        "corrections": [
+          "Disse que 'quase sempre vai descobrir que é apenas uma mistura'; alterado para 'pode descobrir' para não generalizar.",
+          "Afirmou que marcas usam embalagens idênticas para confundir; alterado para 'embalagens e cores muito parecidas, o que pode nos confundir' para evitar presumir intenção deliberada.",
+          "Disse que a lei exige a denominação na parte inferior da frente; alterado para 'painel frontal' porque a norma exige no painel principal, não especificamente na margem inferior."
+        ],
+        "draft": "Olhe bem no nome dos produtos. Sabe aquele creme de leite super barato que você encontrou no mercado? Se você olhar as letras miúdas, quase sempre vai descobrir que é apenas uma mistura láctea com amido e soro de leite.\n\nAs marcas usam embalagens e cores idênticas para nos confundir. O mesmo acontece com o chocolate, que muitas vezes é vendido como cobertura sabor chocolate, cheia de gordura que não derrete direito na boca.\n\nPara evitar essa surpresa em casa, o segredo é olhar a parte inferior da frente da embalagem. Por lei, a denominação real do produto precisa estar escrita ali, de forma clara. Dois segundos de atenção antes de comprar salvam a sua receita e o seu bolso.",
+        "estimatedSeconds": 49.2,
+        "model": "gemini-3.5-flash",
+        "seconds": {
+          "check": 6.372932166,
+          "draft": 7.035241833,
+          "review": 9.504104625
+        },
+        "text": "Olhe bem no nome dos produtos. Sabe aquele creme de leite baratíssimo que você achou no mercado? Se você olhar bem as letras miúdas, pode descobrir que comprou apenas uma mistura láctea com soro de leite. Decepção pura, né?\n\nMuitas marcas usam embalagens e cores muito parecidas, o que pode nos confundir na hora da pressa. O mesmo rola com o chocolate, que às vezes é vendido como cobertura sabor chocolate, cheia de gordura que não derrete direito na boca.\n\nPara evitar essa surpresa em casa, o segredo é ler o painel frontal da embalagem. Por lei, a denominação real do produto precisa estar escrita ali, de forma clara. Dois segundos de atenção no mercado salvam a sua receita e o seu bolso!",
+        "title": "Como ler rotulos e evitar surpresas no mercado",
+        "tokens": {
+          "check": [
+            1120,
+            299,
+            1483
+          ],
+          "draft": [
+            1057,
+            158,
+            1284
+          ],
+          "review": [
+            1653,
+            300,
+            1435
+          ]
+        },
+        "usd": 0.050376,
+        "words": 123,
+        "metrics": {
+          "words": 123,
+          "estimatedSeconds": 49.2,
+          "lengthFit": null,
+          "endsWithQuestion": false,
+          "ctaInEnding": [],
+          "catchphrases": {
+            "Fala, galera!": 0
+          },
+          "emDashes": 0,
+          "markdown": false,
+          "newNumbers": [],
+          "titleWords": 8,
+          "titleIssue": null
+        }
+      },
+      "checkedMixed": {
+        "calls": 3,
+        "changes": [
+          "Ajuste leve no ritmo para manter o tom energético e casual do criador no TikTok.",
+          "Preservação do gancho inicial obrigatório e da correção técnica sobre a lista de ingredientes."
+        ],
+        "checked": "Olhe bem no nome dos produtos. Às vezes, o que parece um pote de chocolate cremoso é, na verdade, uma sobremesa láctea sabor chocolate. A indústria usa termos chamativos na frente, mas a definição real do que você está comendo ou passando na pele está em letras miúdas.\n\nEu comecei a reparar nisso quando comprei um hidratante que destacava um óleo nobre na embalagem, mas ele era o último ingrediente da lista. A regra de ouro é simples: o que vem primeiro na lista de ingredientes é o que mais tem no produto.\n\nDa próxima vez que você for comprar algo, ignore as fotos bonitas e vire a embalagem de costas. Olhar a lista de ingredientes e a denominação de venda é um excelente jeito de não levar surpresa para casa e de valorizar o seu dinheiro.",
+        "corrections": [
+          "Afirmou que olhar a lista é o \"único jeito\" de evitar surpresas; alterado para \"um excelente jeito\" para evitar uma afirmação absoluta."
+        ],
+        "draft": "Olhe bem no nome dos produtos. Às vezes, o que parece um pote de chocolate cremoso é, na verdade, uma sobremesa láctea sabor chocolate. A indústria usa termos chamativos na frente, mas a definição real do que você está comendo ou passando na pele está em letras miúdas.\n\nEu comecei a reparar nisso quando comprei um hidratante que destacava um óleo nobre na embalagem, mas ele era o último ingrediente da lista. A regra de ouro é simples: o que vem primeiro na lista de ingredientes é o que mais tem no produto.\n\nDa próxima vez que você for comprar algo, ignore as fotos bonitas e vire a embalagem de costas. Olhar a lista de ingredientes e a denominação de venda é o único jeito de não levar surpresa para casa e de valorizar o seu dinheiro.",
+        "estimatedSeconds": 49.6,
+        "model": "gemini-3.5-flash",
+        "seconds": {
+          "check": 5.2095025,
+          "draft": 4.629748416,
+          "review": 2.406811125
+        },
+        "text": "Olhe bem no nome dos produtos. Às vezes, o que parece um pote de chocolate cremoso é, na verdade, uma sobremesa láctea sabor chocolate. A indústria usa termos chamativos na frente, mas a definição real do que você está consumindo está sempre nas letras miúdas.\n\nEu comecei a reparar nisso quando comprei um hidratante que destacava um óleo super chique na embalagem, mas ele era o último ingrediente da lista. A regra de ouro é simples: o que vem primeiro na lista de ingredientes é o que mais tem no produto.\n\nDa próxima vez que for comprar algo, ignore as fotos bonitas e vire a embalagem. Olhar a lista é um excelente jeito de não levar surpresa para casa e valorizar o seu dinheiro.",
+        "title": "Como escolher produtos sem surpresas no mercado",
+        "tokens": {
+          "check": [
+            1139,
+            223,
+            1245
+          ],
+          "draft": [
+            1057,
+            177,
+            818
+          ],
+          "review": [
+            1595,
+            244,
+            0
+          ]
+        },
+        "usd": 0.0300495,
+        "words": 124,
+        "metrics": {
+          "words": 124,
+          "estimatedSeconds": 49.6,
+          "lengthFit": null,
+          "endsWithQuestion": false,
+          "ctaInEnding": [],
+          "catchphrases": {
+            "Fala, galera!": 0
+          },
+          "emDashes": 0,
+          "markdown": false,
+          "newNumbers": [],
+          "titleWords": 7,
+          "titleIssue": null
+        }
+      }
+    },
+    "id": "beauty-inspiration",
+    "idea": "Como escolher produtos sem surpresas\nAngle: Analise rótulos antes de comprar\nOpen with: “Olhe bem no nome dos produtos”",
+    "kind": "start",
+    "language": "pt-BR",
+    "lengthAsked": "ideal 30–60 s",
+    "platform": "TikTok",
+    "run": "c2"
+  },
+  {
+    "callsUsed": 531,
+    "context": "Write the script in Portuguese (Brazil).\nPlatform: TikTok.\nFormat: not chosen. Read the genre from the request (tutorial, story, opinion, list, review, comparison, explanation…); the creator's usual formats only help when the request is vague.\nLength: 30 to 60 seconds of speech (about 75 to 150 words at a natural pace), the length that works on this platform. Develop the idea fully within it, without padding, and never go past 150 words: choose the strongest points instead of covering everything.\n\nAbout the creator (who they are and who they speak to; not a new request):\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: a lifestyle and personal creator.\nTheir default voice is one person (“I” and “my”). Keep this default unless the current request supplies another perspective or narrator.\nTheir audience: young adults.\nThey know some basics: skip the obvious and go one level deeper.\nThey watch to learn something and decide what to buy.\nTheir videos aim to grow their audience and entertain.\nRules: no medical claims: never say something cures, treats or heals, and speak in general terms; no clickbait (“you won't believe…”, “what happens next”): say the real point up front.\nNever swear.\n\nHow the creator speaks (apply it to the form; preferences, not a new request):\nThey sound casual and funny.\nDelivery: energy: high and lively; sentences: short and punchy, with varied lengths (a rhythm preference, never a limit on how much the script develops); words: some casual slang; humor: a little.\nUsual opening preference, only when supported by this request: a common mistake to avoid. A story opening requires an experience supplied in the request; otherwise open directly on the subject.\nUsual ending preference, only if this request permits it and it serves the takeaway: asking them to comment their answer. It is optional, never an automatic sign-off.\nThey film mostly: lists and tips.\nOptional familiar expressions: “Fala, galera!”. Use at most one only if natural here; omission is better than forced repetition.\nThey post on TikTok.\n\nThe creator's request, in their exact words:\n\"\"\"\nComo escolher o protetor solar certo para pele oleosa\n\"\"\"\n\nDraft to polish:\n\"\"\"\n[draft]\n\"\"\"",
+    "creator": {
+      "endings": [
+        "Comment your answer"
+      ],
+      "openings": [
+        "Mistake to avoid"
+      ],
+      "phrases": [
+        "Fala, galera!"
+      ],
+      "summary": "niches: beauty · sounds: casual, funny · role: personal · avoid: Medical claims, Clickbait"
+    },
+    "durationPolicy": "informative",
+    "engines": {
+      "checked": {
+        "calls": 3,
+        "changes": [
+          "Ajustado o tom do início para destacar o erro clássico de forma mais dinâmica e conversacional.",
+          "Incluída uma chamada para comentários no final, adequada ao formato do TikTok.",
+          "Refinada a linguagem para torná-la mais casual ('superleves', 'pra', 'da vida') mantendo todas as correções técnicas exigidas."
+        ],
+        "checked": "Achar o protetor solar ideal para pele oleosa vai muito além de procurar um rótulo escrito oil-free. Para o produto não derreter no meio do dia, o segredo está em entender o veículo da fórmula.\n\nPrefira sempre as texturas fluidas ou gel-creme, que são mais leves. Na lista de ingredientes, procure por ativos como a sílica, que ajuda a controlar o brilho e o sebo ao longo do dia.\n\nO meu teste rápido é aplicar um pouco no dorso da mão. Se demorar muito para sumir ou deixar um toque colante, ele pode acabar pesando no seu rosto ao longo do dia.\n\nO protetor certo costuma desaparecer na pele e deixar uma sensação mais confortável de rosto limpo.",
+        "corrections": [
+          "De 'sílica, que absorve a umidade e o sebo ao longo das horas sem ressecar' para 'sílica, que ajuda a controlar o brilho e o sebo ao longo do dia' para não prometer controle de umidade sem ressecamento.",
+          "De 'teste definitivo... demorar mais de trinta segundos... vai pesar' para 'teste rápido... demorar muito... pode acabar pesando' para não usar um limite de tempo arbitrário e relativizar o teste na mão.",
+          "De 'desaparece na pele e deixa apenas' para 'costuma desaparecer na pele e deixar uma sensação mais confortável de' para evitar uma promessa absoluta de sumiço total."
+        ],
+        "draft": "Achar o protetor solar ideal para pele oleosa vai muito além de procurar um rótulo escrito oil-free. Para o produto não derreter no meio do dia, o segredo está em entender o veículo da fórmula.\n\nPrefira sempre as texturas fluidas ou gel-creme, que são mais leves. Na lista de ingredientes, procure por ativos como a sílica, que absorve a umidade e o sebo ao longo das horas sem ressecar.\n\nO meu teste definitivo é aplicar um pouco no dorso da mão. Se demorar mais de trinta segundos para sumir ou deixar um brilho colante, ele vai pesar no seu rosto sob o sol.\n\nO protetor certo desaparece na pele e deixa apenas a sensação de rosto limpo.",
+        "estimatedSeconds": 46.8,
+        "model": "gemini-3.5-flash",
+        "seconds": {
+          "check": 7.214320583,
+          "draft": 6.634925125,
+          "review": 5.400959292
+        },
+        "text": "Sabe aquele erro clássico de comprar o primeiro protetor que diz oil-free e depois ver o rosto derretendo ao meio-dia? Pois é. O segredo real está no veículo da fórmula.\n\nPrefira sempre texturas fluidas ou gel-creme, que são superleves. E dá uma olhada nos ingredientes: procure por sílica, que ajuda a controlar o brilho e o sebo ao longo do dia.\n\nO meu teste rápido é passar um pouco no dorso da mão. Se demorar muito pra sumir ou ficar colante, ele pode acabar pesando no seu rosto depois.\n\nO protetor certo costuma desaparecer na pele e deixar aquela sensação bem mais confortável de rosto limpo. Qual é o seu favorito da vida? Conta aqui nos comentários!",
+        "title": "Como escolher protetor para pele oleosa",
+        "tokens": {
+          "check": [
+            1026,
+            335,
+            1831
+          ],
+          "draft": [
+            960,
+            161,
+            1166
+          ],
+          "review": [
+            1592,
+            282,
+            1183
+          ]
+        },
+        "usd": 0.049989,
+        "words": 117,
+        "metrics": {
+          "words": 117,
+          "estimatedSeconds": 46.8,
+          "lengthFit": null,
+          "endsWithQuestion": false,
+          "ctaInEnding": [],
+          "catchphrases": {
+            "Fala, galera!": 0
+          },
+          "emDashes": 0,
+          "markdown": false,
+          "newNumbers": [],
+          "titleWords": 6,
+          "titleIssue": null
+        }
+      },
+      "checkedMixed": {
+        "calls": 3,
+        "changes": [
+          "Ajuste leve de ritmo para manter o tom energético e dinâmico adequado para o TikTok.",
+          "Preservadas todas as correções técnicas de segurança sobre a eficácia dos ativos.",
+          "Mantido o limite de palavras para garantir que a leitura fique natural dentro do tempo de 30 a 60 segundos."
+        ],
+        "checked": "Eu passei anos errando no protetor solar porque achava que qualquer rótulo escrito toque seco daria certo na minha pele oleosa. Mas o segredo de verdade não está só nessa promessa da embalagem, e sim na textura e nos ativos da fórmula. Para o dia a dia, eu mudei dos cremes pesados para as texturas fluidas ou aquagel. Elas são mais leves, espalham fácil e costumam sumir no rosto, ajudando a evitar aquele brilho desconfortável que aparece depois de algumas horas no calor. O meu teste de ouro antes de comprar é procurar por ativos como a sílica, que ajuda a absorver a oleosidade ao longo do dia, ou o LHA, que auxilia no controle de oleosidade da pele. Repara nesses detalhes na sua próxima compra e você pode sentir uma boa diferença no dia a dia.",
+        "corrections": [
+          "De 'somem no rosto sem deixar aquele brilho' para 'costumam sumir no rosto, ajudando a evitar aquele brilho' para não prometer o mesmo resultado para todas as peles.",
+          "De 'sílica, que absorve [...] ou o LHA, que ajuda a controlar' para 'sílica, que ajuda a absorver [...] ou o LHA, que auxilia no controle' para suavizar as alegações de eficácia dos ativos.",
+          "De 'você vai notar a diferença logo no primeiro uso' para 'você pode sentir uma boa diferença no dia a dia' para remover a promessa absoluta de resultado imediato."
+        ],
+        "draft": "Eu passei anos errando no protetor solar porque achava que qualquer rótulo escrito toque seco daria certo na minha pele oleosa. Mas o segredo de verdade não está só nessa promessa da embalagem, e sim na textura e nos ativos da fórmula.\n\nPara o dia a dia, eu mudei dos cremes pesados para as texturas fluidas ou aquagel. Elas são mais leves, espalham fácil e somem no rosto sem deixar aquele brilho desconfortável que aparece depois de algumas horas no calor.\n\nO meu teste de ouro antes de comprar é procurar por ativos como a sílica, que absorve a oleosidade e o suor ao longo do dia, ou o LHA, que ajuda a controlar a produção de sebo enquanto protege. \n\nRepara nesses detalhes na sua próxima compra e você vai notar a diferença logo no primeiro uso.",
+        "estimatedSeconds": 51.2,
+        "model": "gemini-3.5-flash",
+        "seconds": {
+          "check": 13.226815083,
+          "draft": 4.217417542,
+          "review": 2.581615917
+        },
+        "text": "Eu passei anos errando no protetor solar porque achava que qualquer rótulo escrito toque seco daria certo na minha pele oleosa. Mas o segredo de verdade não está só nessa promessa da embalagem, e sim na textura e nos ativos da fórmula.\n\nPara o dia a dia, eu mudei dos cremes pesados para as texturas fluidas ou aquagel. Elas são bem mais leves, espalham fácil e costumam sumir no rosto, ajudando a evitar aquele brilho desconfortável que aparece depois de algumas horas.\n\nMeu teste de ouro antes de comprar é procurar por ativos como a sílica, que ajuda a absorver a oleosidade, ou o LHA, que auxilia no controle da pele. Repara nesses detalhes na próxima compra e você pode sentir uma boa diferença no dia a dia.",
+        "title": "Como escolher protetor solar para pele oleosa",
+        "tokens": {
+          "check": [
+            1051,
+            346,
+            2611
+          ],
+          "draft": [
+            960,
+            186,
+            668
+          ],
+          "review": [
+            1609,
+            286,
+            0
+          ]
+        },
+        "usd": 0.042303,
+        "words": 128,
+        "metrics": {
+          "words": 128,
+          "estimatedSeconds": 51.2,
+          "lengthFit": null,
+          "endsWithQuestion": false,
+          "ctaInEnding": [],
+          "catchphrases": {
+            "Fala, galera!": 0
+          },
+          "emDashes": 0,
+          "markdown": false,
+          "newNumbers": [],
+          "titleWords": 7,
+          "titleIssue": null
+        }
+      }
+    },
+    "id": "beauty-typed1",
+    "idea": "Como escolher o protetor solar certo para pele oleosa",
+    "kind": "start",
+    "language": "pt-BR",
+    "lengthAsked": "ideal 30–60 s",
+    "platform": "TikTok",
+    "run": "c2"
+  },
+  {
+    "brief": {
+      "angle": "Explorar truques simples para aulas melhores",
+      "openingLine": "Como você pode ensinar melhor com o celular?",
+      "subject": "Três dicas para ensinar bem"
+    },
+    "callsUsed": 537,
+    "context": "Write the script in Portuguese (Brazil).\nPlatform: TikTok.\nFormat: not chosen. Read the genre from the request (tutorial, story, opinion, list, review, comparison, explanation…); the creator's usual formats only help when the request is vague.\nLength: 75 to 105 seconds of speech (about 188 to 263 words at a natural pace), the length that works on this platform. Develop the idea fully within it, without padding, and never go past 263 words: choose the strongest points instead of covering everything.\n\nAbout the creator (who they are and who they speak to; not a new request):\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: a teacher or explainer.\nTheir default voice is one person (“I” and “my”). Keep this default unless the current request supplies another perspective or narrator.\nTheir audience: criadores pequenos que gravam com o celular em casa, sem equipe.\nTopics: Gravar vídeos com o celular.\nRules: never write “Promessas exageradas”.\nNever swear.\n\nHow the creator speaks (apply it to the form; preferences, not a new request):\nThey sound casual and confident.\nDelivery: energy: balanced; sentences: short and punchy, with varied lengths (a rhythm preference, never a limit on how much the script develops); words: plain and everyday.\nThey film mostly: tutorials.\nOptional familiar expressions: “Simbora”. Use at most one only if natural here; omission is better than forced repetition.\n\nInspiration this idea came from (Find inspiration):\nSubject: Três dicas para ensinar bem\nFollow this angle all the way through: Explorar truques simples para aulas melhores\nOpen with this line, as it is or adapted only to the creator's way of speaking: “Como você pode ensinar melhor com o celular?” It is the hook: write no other before it.\n\nThe creator's request, in their exact words:\n\"\"\"\nTrês dicas para ensinar bem\nAngle: Explorar truques simples para aulas melhores\nOpen with: “Como você pode ensinar melhor com o celular?”\n\"\"\"\n\nDraft to polish:\n\"\"\"\n[draft]\n\"\"\"",
+    "creator": {
+      "endings": [],
+      "openings": [],
+      "phrases": [
+        "Simbora"
+      ],
+      "summary": "niches: education, tech, Gravar vídeos com o celular · sounds: casual, confident · role: educator · audience: criadores pequenos que gravam com o celular em casa, sem equipe · avoid: Promessas exageradas"
+    },
+    "durationPolicy": "informative",
+    "engines": {
+      "checked": {
+        "calls": 3,
+        "changes": [
+          "Ajustado o ritmo das frases para torná-las mais curtas e dinâmicas, ideal para o público do TikTok.",
+          "Preservadas as correções recomendadas que evitam promessas absolutas sobre áudio e atenção do espectador.",
+          "Adicionado o termo de familiaridade 'Simbora' de forma natural no encerramento para alinhar ao estilo do criador."
+        ],
+        "checked": "Como você pode ensinar melhor com o celular? Gravar sozinho em casa parece um desafio, mas alguns ajustes simples ajudam a prender muito mais a atenção de quem assiste. Eu aprendi que o segredo não está em comprar equipamentos caros, mas em usar o que você já tem com inteligência.\n\nA primeira dica é olhar diretamente para a lente da câmera, e nunca para a sua imagem na tela. Quando você foca na lente, o seu aluno sente que você está olhando nos olhos dele. Essa conexão direta faz toda a diferença para manter o foco na sua explicação.\n\nA segunda dica é cuidar do áudio usando o próprio ambiente. O som ruim cansa quem está ouvindo muito mais rápido que uma imagem ruim. Se você não tem microfone, grave em um quarto com cortinas e tapetes, pois esses tecidos ajudam a reduzir o eco e a deixar o som mais claro.\n\nA terceira dica é criar dinâmica visual sem precisar de edição complexa. Em vez de falar parado o tempo todo, mude levemente de posição a cada novo conceito ou mostre um objeto físico para ilustrar o que diz. Isso ajuda a renovar a atenção de quem assiste sem dar trabalho extra.\n\nEnsinar bem com o celular é sobre clareza e proximidade. Teste esses pequenos truques na sua próxima gravação e sinta a diferença na atenção dos seus alunos.",
+        "corrections": [
+          "De \"mudam completamente a atenção\" para \"ajudam a prender muito mais a atenção\" (evita promessa absoluta)",
+          "De \"absorvem o eco e deixam sua voz limpa e agradável\" para \"ajudam a reduzir o eco e a deixar o som mais claro\" (depende de outros ruídos externos e do microfone do celular)",
+          "De \"Isso renova a atenção\" para \"Isso ajuda a renovar a atenção\" (torna a afirmação condicional e realista)"
+        ],
+        "draft": "Como você pode ensinar melhor com o celular? Gravar sozinho em casa parece um desafio, mas alguns ajustes simples mudam completamente a atenção de quem assiste. Eu aprendi que o segredo não está em comprar equipamentos caros, mas em usar o que você já tem com inteligência.\n\nA primeira dica é olhar diretamente para a lente da câmera, e nunca para a sua imagem na tela. Quando você foca na lente, o seu aluno sente que você está olhando nos olhos dele. Essa conexão direta faz toda a diferença para manter o foco na sua explicação.\n\nA segunda dica é cuidar do áudio usando o próprio ambiente. O som ruim cansa quem está ouvindo muito mais rápido que uma imagem ruim. Se você não tem microfone, grave em um quarto com cortinas e tapetes, pois esses tecidos absorvem o eco e deixam sua voz limpa e agradável.\n\nA terceira dica é criar dinâmica visual sem precisar de edição complexa. Em vez de falar parado o tempo todo, mude levemente de posição a cada novo conceito ou mostre um objeto físico para ilustrar o que diz. Isso renova a atenção de quem assiste sem dar trabalho extra.\n\nEnsinar bem com o celular é sobre clareza e proximidade. Teste esses pequenos truques na sua próxima gravação e sinta a diferença na atenção dos seus alunos.",
+        "estimatedSeconds": 83.2,
+        "model": "gemini-3.5-flash",
+        "seconds": {
+          "check": 6.5612812080000005,
+          "draft": 8.211491625,
+          "review": 12.265814458
+        },
+        "text": "Como você pode ensinar melhor com o celular? Gravar sozinho em casa é um baita desafio. Mas alguns ajustes simples ajudam a prender muito mais a atenção de quem assiste. O segredo não está em comprar equipamentos caros, mas em usar o que você já tem.\n\nA primeira dica é olhar diretamente para a lente da câmera, e não para a sua imagem na tela. Quando você foca na lente, seu aluno sente que você está olhando nos olhos dele. Essa conexão direta ajuda a manter o foco na sua explicação.\n\nA segunda dica é cuidar do áudio usando o seu ambiente. Um som ruim cansa quem assiste muito mais rápido do que uma imagem ruim. Se você não tem microfone, grave num quarto com cortinas e tapetes. Esses tecidos ajudam a reduzir o eco e a deixar o som mais claro.\n\nA terceira dica é criar dinâmica visual sem precisar de edição complexa. Em vez de falar parado o tempo todo, mude levemente de posição a cada novo conceito. Ou mostre um objeto físico para ilustrar o que diz. Isso ajuda a renovar a atenção de quem assiste.\n\nEnsinar bem com o celular é sobre clareza e proximidade. Teste esses truques na sua próxima gravação. Simbora praticar?",
+        "title": "Como ensinar melhor usando apenas o celular",
+        "tokens": {
+          "check": [
+            1199,
+            429,
+            1250
+          ],
+          "draft": [
+            1011,
+            283,
+            1536
+          ],
+          "review": [
+            1650,
+            393,
+            2283
+          ]
+        },
+        "usd": 0.061356,
+        "words": 208,
+        "metrics": {
+          "words": 208,
+          "estimatedSeconds": 83.2,
+          "lengthFit": null,
+          "endsWithQuestion": true,
+          "ctaInEnding": [],
+          "catchphrases": {
+            "Simbora": 1
+          },
+          "emDashes": 0,
+          "markdown": false,
+          "newNumbers": [],
+          "titleWords": 7,
+          "titleIssue": null
+        }
+      },
+      "checkedMixed": {
+        "calls": 3,
+        "changes": [
+          "Ajuste sutil na pontuação e ritmo para garantir que o texto se encaixe perfeitamente no limite de tempo do TikTok (mantendo o limite abaixo de 263 palavras).",
+          "Preservação da correção técnica sobre o aluno acompanhar a explicação com mais facilidade."
+        ],
+        "checked": "Como você pode ensinar melhor com o celular?\n\nVocê não precisa de um estúdio profissional ou de equipamentos caros para transmitir o seu conhecimento com clareza. Pequenos ajustes na forma como você usa o aparelho mudam completamente a experiência de quem está estudando do outro lado.\n\nPrimeiro, mude a direção do seu olhar. Pare de olhar para a sua própria imagem na tela e encare diretamente a lente da câmera. Isso cria uma conexão direta e humanizada, como se você estivesse conversando olho no olho com o seu aluno.\n\nSegundo, use a luz a seu favor sem gastar nenhum centavo. Em vez de gravar de costas para a janela, posicione o celular entre você e a vidraça, ficando de frente para a luz. A iluminação natural no seu rosto melhora a nitidez do vídeo e ajuda a destacar suas expressões de explicação.\n\nTerceiro, reduza a distância física do aparelho. O microfone do celular capta muito ruído externo e eco se você estiver longe demais. Gravando um pouco mais perto, sua voz ganha presença, fica limpa e o aluno consegue acompanhar a explicação com mais facilidade.\n\nEnsinar bem com o celular é, acima de tudo, eliminar as barreiras visuais e sonoras entre a sua ideia e quem quer aprender. Experimente aplicar esses três passos simples na sua próxima gravação.",
+        "corrections": [
+          "Afirmou que o aluno retém a informação sem esforço; alterado para dizer que ele acompanha a explicação com mais facilidade."
+        ],
+        "draft": "Como você pode ensinar melhor com o celular?\n\nVocê não precisa de um estúdio profissional ou de equipamentos caros para transmitir o seu conhecimento com clareza. Pequenos ajustes na forma como você usa o aparelho mudam completamente a experiência de quem está estudando do outro lado.\n\nPrimeiro, mude a direção do seu olhar. Pare de olhar para a sua própria imagem na tela e encare diretamente a lente da câmera. Isso cria uma conexão direta e humanizada, como se você estivesse conversando olho no olho com o seu aluno.\n\nSegundo, use a luz a seu favor sem gastar nenhum centavo. Em vez de gravar de costas para a janela, posicione o celular entre você e a vidraça, ficando de frente para a luz. A iluminação natural no seu rosto melhora a nitidez do vídeo e ajuda a destacar suas expressões de explicação.\n\nTerceiro, reduza a distância física do aparelho. O microfone do celular capta muito ruído externo e eco se você estiver longe demais. Gravando um pouco mais perto, sua voz ganha presença, fica limpa e o aluno consegue reter a informação sem esforço.\n\nEnsinar bem com o celular é, acima de tudo, eliminar as barreiras visuais e sonoras entre a sua ideia e quem quer aprender. Experimente aplicar esses três passos simples na sua próxima gravação.",
+        "estimatedSeconds": 76.8,
+        "model": "gemini-3.5-flash",
+        "seconds": {
+          "check": 8.84359275,
+          "draft": 6.749963417,
+          "review": 2.756121583
+        },
+        "text": "Como você pode ensinar melhor com o celular?\n\nVocê não precisa de um estúdio profissional ou de equipamentos caros para transmitir o seu conhecimento com clareza. Pequenos ajustes na forma como você usa o aparelho mudam completamente a experiência de quem está estudando do outro lado.\n\nPrimeiro, mude a direção do seu olhar. Pare de olhar para a sua própria imagem na tela e encare diretamente a lente da câmera. Isso cria uma conexão direta, como se você estivesse conversando olho no olho com o seu aluno.\n\nSegundo, use a luz a seu favor sem gastar nada. Em vez de gravar de costas para a janela, fique de frente para ela, com o celular no meio. A iluminação natural no seu rosto melhora a nitidez e destaca suas expressões ao explicar.\n\nTerceiro, reduza a distância física do aparelho. O microfone do celular capta muito ruído externo se você estiver longe. Gravando mais perto, sua voz ganha presença, fica limpa e o aluno acompanha a explicação com mais facilidade.\n\nEnsinar bem com o celular é eliminar as barreiras entre a sua ideia e quem quer aprender. Simbora testar esses passos na próxima gravação?",
+        "title": "Tres dicas para ensinar com o celular",
+        "tokens": {
+          "check": [
+            1201,
+            331,
+            2106
+          ],
+          "draft": [
+            1011,
+            285,
+            1309
+          ],
+          "review": [
+            1563,
+            357,
+            0
+          ]
+        },
+        "usd": 0.0451545,
+        "words": 192,
+        "metrics": {
+          "words": 192,
+          "estimatedSeconds": 76.8,
+          "lengthFit": null,
+          "endsWithQuestion": true,
+          "ctaInEnding": [],
+          "catchphrases": {
+            "Simbora": 1
+          },
+          "emDashes": 0,
+          "markdown": false,
+          "newNumbers": [],
+          "titleWords": 7,
+          "titleIssue": null
+        }
+      }
+    },
+    "id": "filming-card",
+    "idea": "Três dicas para ensinar bem\nAngle: Explorar truques simples para aulas melhores\nOpen with: “Como você pode ensinar melhor com o celular?”",
+    "kind": "start",
+    "language": "pt-BR",
+    "lengthAsked": "ideal 75–105 s",
+    "platform": "TikTok",
+    "run": "c2"
+  },
+  {
+    "brief": {
+      "angle": "Identificar problemas técnicos com IA e criar soluções práticas",
+      "openingLine": "Reconheça desafios que atrapalham o trabalho com tecnologia",
+      "subject": "Como corrigir erros comuns de IA"
+    },
+    "callsUsed": 543,
+    "context": "Write the script in Portuguese (Brazil).\nPlatform: TikTok.\nFormat: not chosen. Read the genre from the request (tutorial, story, opinion, list, review, comparison, explanation…); the creator's usual formats only help when the request is vague.\nLength: 75 to 105 seconds of speech (about 188 to 263 words at a natural pace), the length that works on this platform. Develop the idea fully within it, without padding, and never go past 263 words: choose the strongest points instead of covering everything.\n\nAbout the creator (who they are and who they speak to; not a new request):\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: a teacher or explainer.\nTheir default voice is one person (“I” and “my”). Keep this default unless the current request supplies another perspective or narrator.\nTheir audience: criadores pequenos que gravam com o celular em casa, sem equipe.\nRules: never write “Promessas exageradas”.\nNever swear.\n\nHow the creator speaks (apply it to the form; preferences, not a new request):\nThey sound casual and confident.\nDelivery: energy: balanced; sentences: short and punchy, with varied lengths (a rhythm preference, never a limit on how much the script develops); words: plain and everyday.\nThey film mostly: tutorials.\nOptional familiar expressions: “Simbora”. Use at most one only if natural here; omission is better than forced repetition.\n\nInspiration this idea came from (Find inspiration):\nSubject: Como corrigir erros comuns de IA\nFollow this angle all the way through: Identificar problemas técnicos com IA e criar soluções práticas\nOpen with this line, as it is or adapted only to the creator's way of speaking: “Reconheça desafios que atrapalham o trabalho com tecnologia” It is the hook: write no other before it.\n\nThe creator's request, in their exact words:\n\"\"\"\nComo corrigir erros comuns de IA\nAngle: Identificar problemas técnicos com IA e criar soluções práticas\nOpen with: “Reconheça desafios que atrapalham o trabalho com tecnologia”\n\"\"\"\n\nDraft to polish:\n\"\"\"\n[draft]\n\"\"\"",
+    "creator": {
+      "endings": [],
+      "openings": [],
+      "phrases": [
+        "Simbora"
+      ],
+      "summary": "niches: education, tech, Gravar vídeos com o celular · sounds: casual, confident · role: educator · audience: criadores pequenos que gravam com o celular em casa, sem equipe · avoid: Promessas exageradas"
+    },
+    "durationPolicy": "informative",
+    "engines": {
+      "checked": {
+        "calls": 3,
+        "changes": [
+          "Ajustado o ritmo das frases para soar mais natural e direto para o formato TikTok.",
+          "Adicionada a expressão 'Simbora' de forma orgânica no fechamento.",
+          "Mantidos os fatos corrigidos sobre erros comuns e economia de tempo de roteirização.",
+          "Expandido ligeiramente o texto para atingir o tempo ideal na plataforma com 215 palavras."
+        ],
+        "checked": "Reconheça desafios que atrapalham o trabalho com tecnologia. Se você usa inteligência artificial para planejar seus vídeos gravados em casa, já deve ter recebido ideias repetitivas ou respostas robóticas. O problema quase nunca é a ferramenta, mas a falta de especificidade nas instruções que enviamos no dia a dia.\n\nUm dos erros técnicos mais comuns é a alucinação da IA, que acontece quando ela inventa fatos com total convicção. Para corrigir isso de forma prática, mude sua estratégia de comando. Em vez de pedir para ela pesquisar livremente, cole o texto de um artigo de sua confiança e ordene que ela trabalhe apenas com as informações fornecidas ali.\n\nOutro obstáculo constante é o tom artificial que afasta as pessoas nas redes sociais. Para resolver isso rapidamente, dê um papel claro para a ferramenta antes de pedir o roteiro. Escreva que ela deve agir como um criador de conteúdo que conversa de forma simples, evitando palavras difíceis e termos técnicos.\n\nA inteligência artificial funciona como uma assistente que precisa de limites firmes e direcionamento correto. Quando você domina essa comunicação, economiza tempo de roteirização e ganha muito mais naturalidade para falar com a sua câmera.",
+        "corrections": [
+          "De \"O erro técnico mais comum é\" para \"Um dos erros técnicos mais comuns é\" para evitar uma afirmação estatística sem dados que a comprovem.",
+          "De \"economiza tempo de edição\" para \"economiza tempo de roteirização\", já que a inteligência artificial ajuda na etapa de escrita do roteiro e não diretamente no processo de edição do vídeo."
+        ],
+        "draft": "Reconheça desafios que atrapalham o trabalho com tecnologia. Se você usa inteligência artificial para planejar seus vídeos gravados em casa, já deve ter recebido ideias repetitivas ou respostas robóticas. O problema quase nunca é a ferramenta, mas a falta de especificidade nas instruções que enviamos no dia a dia.\n\nO erro técnico mais comum é a alucinação da IA, que acontece quando ela inventa fatos com total convicção. Para corrigir isso de forma prática, mude sua estratégia de comando. Em vez de pedir para ela pesquisar livremente, cole o texto de um artigo de sua confiança e ordene que ela trabalhe apenas com as informações fornecidas ali.\n\nOutro obstáculo constante é o tom artificial que afasta as pessoas nas redes sociais. Para resolver isso rapidamente, dê um papel claro para a ferramenta antes de pedir o roteiro. Escreva que ela deve agir como um criador de conteúdo que conversa de forma simples, evitando palavras difíceis e termos técnicos.\n\nA inteligência artificial funciona como uma assistente que precisa de limites firmes e direcionamento correto. Quando você domina essa comunicação, economiza tempo de edição e ganha muito mais naturalidade para falar com a sua câmera.",
+        "estimatedSeconds": 84,
+        "model": "gemini-3.5-flash",
+        "seconds": {
+          "check": 9.902240333,
+          "draft": 8.1486025,
+          "review": 8.546359917
+        },
+        "text": "Reconheça desafios que atrapalham o trabalho com tecnologia. Se você grava seus vídeos em casa sozinho e usa inteligência artificial para planejar o conteúdo, com certeza já recebeu ideias repetitivas ou respostas robóticas. O problema quase nunca é a ferramenta em si, mas a falta de especificidade nas instruções que enviamos no dia a dia.\n\nUm dos erros técnicos mais comuns é a alucinação da IA, que acontece quando ela inventa fatos com total convicção. Para corrigir isso de forma prática, mude sua estratégia de comando. Em vez de pedir para ela pesquisar livremente na internet, cole o texto de um artigo da sua confiança e ordene que ela trabalhe apenas com aquelas informações.\n\nOutro obstáculo constante é aquele tom artificial que afasta o público nas redes sociais. Para resolver isso rapidamente, dê um papel claro para a ferramenta antes de pedir o roteiro. Defina que ela deve agir como um criador de conteúdo experiente que conversa de forma simples, sem usar termos difíceis.\n\nA inteligência artificial funciona como uma assistente que precisa de limites firmes e direcionamento correto. Quando você domina essa comunicação básica, economiza tempo de roteirização e ganha muito mais naturalidade para falar com a câmera do seu celular. Simbora colocar isso em prática no próximo roteiro!",
+        "title": "Como corrigir erros comuns de IA",
+        "tokens": {
+          "check": [
+            1178,
+            367,
+            1642
+          ],
+          "draft": [
+            1015,
+            258,
+            1690
+          ],
+          "review": [
+            1593,
+            402,
+            1739
+          ]
+        },
+        "usd": 0.060561,
+        "words": 210,
+        "metrics": {
+          "words": 210,
+          "estimatedSeconds": 84.0,
+          "lengthFit": null,
+          "endsWithQuestion": false,
+          "ctaInEnding": [],
+          "catchphrases": {
+            "Simbora": 1
+          },
+          "emDashes": 0,
+          "markdown": false,
+          "newNumbers": [],
+          "titleWords": 6,
+          "titleIssue": null
+        }
+      },
+      "checkedMixed": {
+        "calls": 3,
+        "changes": [
+          "Ajuste leve no ritmo para manter o tom mais direto e natural, ideal para o público de criadores pequenos no TikTok.",
+          "Garantia de que a extensão do texto ficasse estritamente dentro do limite de 188 a 263 palavras para respeitar o tempo de 75 a 105 segundos."
+        ],
+        "checked": "Reconheça desafios que atrapalham o trabalho com tecnologia. Quando gravamos sozinhos em casa, usar inteligência artificial parece o caminho mais rápido para destravar ideias. O problema é que, muitas vezes, o retorno da IA parece robótico, sem personalidade ou cheio de informações que não fazem sentido para o nosso público.\n\nO primeiro erro técnico comum é a falta de contexto no comando que você envia. Se você apenas pede um roteiro sobre gravação de vídeo, a ferramenta entrega algo genérico. Para corrigir isso, defina um papel claro. Escreva antes: aja como um criador de conteúdo experiente que dá dicas para quem grava apenas com o celular.\n\nOutro obstáculo frequente são as chamadas alucinações, quando a inteligência artificial inventa dados para preencher lacunas. Para resolver esse problema, nunca use o texto final sem uma verificação rigorosa. Use a IA para estruturar os tópicos principais, mas insira suas próprias experiências e detalhes reais no roteiro final.\n\nPor fim, evite os textos longos e cansativos pedindo para a ferramenta reescrever o conteúdo em frases curtas, ideais para o ritmo dinâmico do TikTok. Lembre-se de que a tecnologia serve como uma excelente assistente de redação, mas o olhar autêntico e a decisão final continuam sendo totalmente seus.",
+        "corrections": [],
+        "draft": "Reconheça desafios que atrapalham o trabalho com tecnologia. Quando gravamos sozinhos em casa, usar inteligência artificial parece o caminho mais rápido para destravar ideias. O problema é que, muitas vezes, o retorno da IA parece robótico, sem personalidade ou cheio de informações que não fazem sentido para o nosso público.\n\nO primeiro erro técnico comum é a falta de contexto no comando que você envia. Se você apenas pede um roteiro sobre gravação de vídeo, a ferramenta entrega algo genérico. Para corrigir isso, defina um papel claro. Escreva antes: aja como um criador de conteúdo experiente que dá dicas para quem grava apenas com o celular.\n\nOutro obstáculo frequente são as chamadas alucinações, quando a inteligência artificial inventa dados para preencher lacunas. Para resolver esse problema, nunca use o texto final sem uma verificação rigorosa. Use a IA para estruturar os tópicos principais, mas insira suas próprias experiências e detalhes reais no roteiro final.\n\nPor fim, evite os textos longos e cansativos pedindo para a ferramenta reescrever o conteúdo em frases curtas, ideais para o ritmo dinâmico do TikTok. Lembre-se de que a tecnologia serve como uma excelente assistente de redação, mas o olhar autêntico e a decisão final continuam sendo totalmente seus.",
+        "estimatedSeconds": 78.8,
+        "model": "gemini-3.5-flash",
+        "seconds": {
+          "check": 4.294567167,
+          "draft": 8.388118583,
+          "review": 2.260565542
+        },
+        "text": "Reconheça desafios que atrapalham o trabalho com tecnologia. Quando gravamos sozinhos em casa, usar inteligência artificial parece o caminho mais rápido para destravar ideias. O problema é que, muitas vezes, o retorno da IA parece robótico, sem graça ou cheio de informações que não servem para o nosso público.\n\nO primeiro erro comum é a falta de contexto no comando que você envia. Se você apenas pede um roteiro sobre gravação de vídeo, a ferramenta entrega algo genérico. Para corrigir isso, defina um papel claro para ela. Escreva antes de tudo: aja como um criador experiente que dá dicas para quem grava só com o celular.\n\nOutro obstáculo frequente são as alucinações, que é quando a IA inventa dados do nada. Para resolver esse problema, nunca use o texto gerado sem antes fazer uma verificação rápida. Use a tecnologia para estruturar a ordem dos tópicos, mas coloque suas próprias experiências reais no papel.\n\nPor fim, evite textos longos e cansativos pedindo para a ferramenta reescrever o conteúdo em frases curtas. Isso deixa o ritmo ideal para o TikTok. Lembre-se sempre de que a IA serve como uma assistente, mas a decisão final e a autenticidade são suas.",
+        "title": "Como corrigir erros comuns de IA",
+        "tokens": {
+          "check": [
+            1204,
+            300,
+            758
+          ],
+          "draft": [
+            1015,
+            284,
+            1765
+          ],
+          "review": [
+            1530,
+            382,
+            0
+          ]
+        },
+        "usd": 0.0370245,
+        "words": 197,
+        "metrics": {
+          "words": 197,
+          "estimatedSeconds": 78.8,
+          "lengthFit": null,
+          "endsWithQuestion": false,
+          "ctaInEnding": [],
+          "catchphrases": {
+            "Simbora": 0
+          },
+          "emDashes": 0,
+          "markdown": false,
+          "newNumbers": [],
+          "titleWords": 6,
+          "titleIssue": null
+        }
+      }
+    },
+    "id": "filming-inspiration",
+    "idea": "Como corrigir erros comuns de IA\nAngle: Identificar problemas técnicos com IA e criar soluções práticas\nOpen with: “Reconheça desafios que atrapalham o trabalho com tecnologia”",
+    "kind": "start",
+    "language": "pt-BR",
+    "lengthAsked": "ideal 75–105 s",
+    "platform": "TikTok",
+    "run": "c2"
+  },
+  {
+    "callsUsed": 549,
+    "context": "Write the script in Portuguese (Brazil).\nPlatform: TikTok.\nFormat: not chosen. Read the genre from the request (tutorial, story, opinion, list, review, comparison, explanation…); the creator's usual formats only help when the request is vague.\nLength: 75 to 105 seconds of speech (about 188 to 263 words at a natural pace), the length that works on this platform. Develop the idea fully within it, without padding, and never go past 263 words: choose the strongest points instead of covering everything.\n\nAbout the creator (who they are and who they speak to; not a new request):\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: a teacher or explainer.\nTheir default voice is one person (“I” and “my”). Keep this default unless the current request supplies another perspective or narrator.\nTheir audience: criadores pequenos que gravam com o celular em casa, sem equipe.\nTopics: Gravar vídeos com o celular.\nRules: never write “Promessas exageradas”.\nNever swear.\n\nHow the creator speaks (apply it to the form; preferences, not a new request):\nThey sound casual and confident.\nDelivery: energy: balanced; sentences: short and punchy, with varied lengths (a rhythm preference, never a limit on how much the script develops); words: plain and everyday.\nThey film mostly: tutorials.\nOptional familiar expressions: “Simbora”. Use at most one only if natural here; omission is better than forced repetition.\n\nThe creator's request, in their exact words:\n\"\"\"\n4K ou 1080p, 30 ou 60 quadros: como configurar o celular para gravar\n\"\"\"\n\nDraft to polish:\n\"\"\"\n[draft]\n\"\"\"",
+    "creator": {
+      "endings": [],
+      "openings": [],
+      "phrases": [
+        "Simbora"
+      ],
+      "summary": "niches: education, tech, Gravar vídeos com o celular · sounds: casual, confident · role: educator · audience: criadores pequenos que gravam com o celular em casa, sem equipe · avoid: Promessas exageradas"
+    },
+    "durationPolicy": "informative",
+    "engines": {
+      "checked": {
+        "calls": 3,
+        "changes": [
+          "Adicionada a expressão familiar 'Simbora' de forma natural no início do segundo parágrafo para reforçar a identidade do criador.",
+          "Frases encurtadas para criar um ritmo mais dinâmico, direto e adequado para o TikTok.",
+          "Ajuste sutil no encadeamento das ideias sobre iluminação e edição para tornar a explicação mais prática para quem grava sozinho."
+        ],
+        "checked": "Quando você abre as configurações de câmera do celular, dá uma vontade enorme de colocar tudo no máximo. O 4K e os 60 quadros por segundo parecem a escolha óbvia para ter mais qualidade, mas para quem grava conteúdo em casa, essa combinação pode ser um grande erro.\n\nVamos começar pela resolução. O 4K entrega uma imagem excelente, mas consome um espaço gigantesco no armazenamento e costuma travar o aplicativo de edição em celulares comuns. Para as redes sociais, o 1080p, que é o famoso Full HD, é mais do que suficiente porque a própria plataforma comprime o arquivo quando você posta.\n\nAgora, sobre a taxa de quadros por segundo: 30 ou 60? Os 60 quadros deixam o movimento extremamente fluido, o que é ótimo para cenas de ação ou vídeos que você pretende desacelerar na edição. Só que para um vídeo falado, essa fluidez excessiva dá um aspecto artificial, muito parecido com videogame ou transmissão de esportes.\n\nJá os 30 quadros por segundo entregam um movimento natural, muito mais próximo do padrão de TV e do que nossos olhos estão acostumados a consumir. Além disso, essa taxa de quadros exige menos luz do seu ambiente, o que ajuda bastante quem grava com iluminação caseira.\n\nMinha recomendação prática para o seu dia a dia de gravação é configurar sua câmera em 1080p a 30 quadros. Seu aparelho tende a esquentar menos, o arquivo vai carregar rápido e o seu conteúdo vai ficar com um visual excelente e muito profissional.",
+        "corrections": [
+          "Afirmou que 30 quadros por segundo é mais próximo do cinema (que na verdade usa 24 fps); alterado para padrão de TV.",
+          "Garantiu de forma absoluta que o aparelho não vai esquentar tanto; alterado para 'tende a esquentar menos'."
+        ],
+        "draft": "Quando você abre as configurações de câmera do celular, dá uma vontade enorme de colocar tudo no máximo. O 4K e os 60 quadros por segundo parecem a escolha óbvia para ter mais qualidade, mas para quem grava conteúdo em casa, essa combinação pode ser um grande erro.\n\nVamos começar pela resolução. O 4K entrega uma imagem excelente, mas consome um espaço gigantesco no armazenamento e costuma travar o aplicativo de edição em celulares comuns. Para as redes sociais, o 1080p, que é o famoso Full HD, é mais do que suficiente porque a própria plataforma comprime o arquivo quando você posta.\n\nAgora, sobre a taxa de quadros por segundo: 30 ou 60? Os 60 quadros deixam o movimento extremamente fluido, o que é ótimo para cenas de ação ou vídeos que você pretende desacelerar na edição. Só que para um vídeo falado, essa fluidez excessiva dá um aspecto artificial, muito parecido com videogame ou transmissão de esportes.\n\nJá os 30 quadros por segundo entregam um movimento natural, muito mais próximo do cinema e do que nossos olhos estão acostumados a consumir. Além disso, essa taxa de quadros exige menos luz do seu ambiente, o que ajuda bastante quem grava com iluminação caseira.\n\nMinha recomendação prática para o seu dia a dia de gravação é configurar sua câmera em 1080p a 30 quadros. Seu aparelho não vai esquentar tanto, o arquivo vai carregar rápido e o seu conteúdo vai ficar com um visual excelente e muito profissional.",
+        "estimatedSeconds": 90,
+        "model": "gemini-3.5-flash",
+        "seconds": {
+          "check": 16.919348334,
+          "draft": 9.463080416,
+          "review": 7.484998042
+        },
+        "text": "Quando você abre as configurações de câmera do celular, dá uma vontade enorme de colocar tudo no máximo. O 4K e os 60 quadros parecem a escolha óbvia para ter mais qualidade. Mas, para quem grava conteúdo em casa, essa combinação pode ser um grande erro.\n\nSimbora entender o porquê disso, começando pela resolução. O 4K entrega uma imagem excelente, mas consome um espaço gigantesco no celular. Ele costuma travar os aplicativos de edição mais simples. Para as redes sociais, o 1080p, que é o Full HD, é mais do que suficiente porque a própria plataforma comprime seu vídeo na hora de postar.\n\nE sobre a taxa de quadros por segundo: usar 30 ou 60? Os 60 quadros deixam o movimento extremamente fluido. Isso é ótimo para esportes ou se você quer fazer câmera lenta depois. Só que para um vídeo falado, essa fluidez excessiva dá um aspecto artificial, parecido com videogame.\n\nJá os 30 quadros entregam um movimento natural, muito mais próximo do padrão de TV. Além disso, essa taxa de quadros exige menos luz do seu ambiente. Isso ajuda demais quem grava com iluminação caseira.\n\nMinha recomendação prática é configurar sua câmera em 1080p a 30 quadros. Seu aparelho tende a esquentar menos e o arquivo vai carregar rápido na edição. Seu vídeo vai ficar leve, com um visual excelente e muito profissional.",
+        "title": "Como configurar o celular para gravar",
+        "tokens": {
+          "check": [
+            1168,
+            430,
+            2686
+          ],
+          "draft": [
+            927,
+            336,
+            1615
+          ],
+          "review": [
+            1565,
+            444,
+            1356
+          ]
+        },
+        "usd": 0.067293,
+        "words": 225,
+        "metrics": {
+          "words": 225,
+          "estimatedSeconds": 90.0,
+          "lengthFit": null,
+          "endsWithQuestion": false,
+          "ctaInEnding": [],
+          "catchphrases": {
+            "Simbora": 1
+          },
+          "emDashes": 0,
+          "markdown": false,
+          "newNumbers": [],
+          "titleWords": 6,
+          "titleIssue": null
+        }
+      },
+      "checkedMixed": {
+        "calls": 3,
+        "changes": [
+          "Ajustado o ritmo das frases para garantir que fiquem curtas e dinâmicas, mantendo o tom confiante e casual.",
+          "Garantido que o limite de palavras ficasse dentro do intervalo ideal para a duração solicitada (o texto final tem cerca de 205 palavras)."
+        ],
+        "checked": "Você abre as configurações da câmera do celular e bate aquela dúvida: gravo em 4K ou 1080p? Escolho 30 ou 60 quadros por segundo? Calma, a resposta vai salvar o espaço do seu aparelho e o seu tempo de edição.\n\nDeixa eu te poupar de um erro comum. Você não precisa gravar em 4K. O 4K gera arquivos gigantescos que podem travar o seu celular na hora de editar e encher a sua memória super rápido. Para redes sociais, o 1080p, que é o Full HD, tem excelente qualidade e roda liso em qualquer lugar.\n\nAgora, sobre os quadros por segundo, que é o FPS. Muita gente acha que 60 é melhor porque é um número maior. Só que 60 quadros deixa o movimento fluido demais, parecendo videogame ou câmera de segurança. Além disso, essa configuração exige muito mais iluminação do seu cenário.\n\nPara vídeos onde você aparece conversando com a câmera, o ideal é usar 30 quadros por segundo. O visual fica muito mais natural, com aquele aspecto realista que a gente está acostumado a ver, e funciona super bem mesmo se a sua luz em casa não for perfeita.\n\nMinha recomendação para você que grava sozinho em casa: configure seu celular para 1080p a 30 quadros. É o equilíbrio perfeito entre imagem bonita, arquivo leve e edição rápida.",
+        "corrections": [
+          "Afirmou que arquivos em 4K vão travar o celular e encher a memória em poucos dias; ajustado para 'podem travar' e encher a memória 'super rápido', pois isso depende do modelo do aparelho e do uso."
+        ],
+        "draft": "Você abre as configurações da câmera do celular e bate aquela dúvida: gravo em 4K ou 1080p? Escolho 30 ou 60 quadros por segundo? Calma, a resposta vai salvar o espaço do seu aparelho e o seu tempo de edição.\n\nDeixa eu te poupar de um erro comum. Você não precisa gravar em 4K. O 4K gera arquivos gigantescos que vão travar o seu celular na hora de editar e encher a sua memória em poucos dias. Para redes sociais, o 1080p, que é o Full HD, tem excelente qualidade e roda liso em qualquer lugar.\n\nAgora, sobre os quadros por segundo, que é o FPS. Muita gente acha que 60 é melhor porque é um número maior. Só que 60 quadros deixa o movimento fluido demais, parecendo videogame ou câmera de segurança. Além disso, essa configuração exige muito mais iluminação do seu cenário.\n\nPara vídeos onde você aparece conversando com a câmera, o ideal é usar 30 quadros por segundo. O visual fica muito mais natural, com aquele aspecto realista que a gente está acostumado a ver, e funciona super bem mesmo se a sua luz em casa não for perfeita.\n\nMinha recomendação para você que grava sozinho em casa: configure seu celular para 1080p a 30 quadros. É o equilíbrio perfeito entre imagem bonita, arquivo leve e edição rápida.",
+        "estimatedSeconds": 86,
+        "model": "gemini-3.5-flash",
+        "seconds": {
+          "check": 6.3163567910000005,
+          "draft": 5.717135917,
+          "review": 2.902978417
+        },
+        "text": "Você abre as configurações da câmera do celular e bate aquela dúvida. Gravo em 4K ou 1080p? Escolho 30 ou 60 quadros por segundo? Calma, a resposta vai salvar o espaço do seu aparelho e o seu tempo de edição.\n\nDeixa eu te poupar de um erro comum. Você não precisa gravar em 4K. O 4K gera arquivos gigantescos que podem travar o seu celular na hora de editar e vão encher a sua memória super rápido. Para redes sociais, o 1080p, que é o Full HD, tem excelente qualidade e roda liso em qualquer lugar.\n\nAgora, sobre os quadros por segundo, o famoso FPS. Muita gente acha que 60 é melhor só porque o número é maior. Só que 60 quadros deixa o movimento fluido demais, parecendo videogame ou câmera de segurança. Além disso, essa configuração exige muito mais iluminação do seu cenário.\n\nPara vídeos onde você aparece conversando com a câmera, o ideal é usar 30 quadros por segundo. O visual fica muito mais natural, com aquele aspecto realista que a gente está acostumado, e funciona super bem mesmo se a sua luz em casa não for perfeita.\n\nMinha recomendação para você: configure seu celular para 1080p a 30 quadros. É o equilíbrio perfeito para uma imagem bonita, arquivo leve e edição rápida.",
+        "title": "Como configurar o celular para gravar vídeos",
+        "tokens": {
+          "check": [
+            1141,
+            390,
+            1166
+          ],
+          "draft": [
+            927,
+            309,
+            966
+          ],
+          "review": [
+            1526,
+            395,
+            0
+          ]
+        },
+        "usd": 0.034425,
+        "words": 215,
+        "metrics": {
+          "words": 215,
+          "estimatedSeconds": 86.0,
+          "lengthFit": null,
+          "endsWithQuestion": false,
+          "ctaInEnding": [],
+          "catchphrases": {
+            "Simbora": 0
+          },
+          "emDashes": 0,
+          "markdown": false,
+          "newNumbers": [],
+          "titleWords": 7,
+          "titleIssue": null
+        }
+      }
+    },
+    "id": "filming-typed2",
+    "idea": "4K ou 1080p, 30 ou 60 quadros: como configurar o celular para gravar",
+    "kind": "start",
+    "language": "pt-BR",
+    "lengthAsked": "ideal 75–105 s",
+    "platform": "TikTok",
+    "run": "c2"
+  },
+  {
+    "brief": {
+      "angle": "Listar pequenas ações para guardar dinheiro",
+      "openingLine": "Olha só o que pode ajudar no bolso",
+      "subject": "7 hábitos de poupança simples"
+    },
+    "callsUsed": 555,
+    "context": "Write the script in Portuguese (Brazil).\nPlatform: TikTok.\nFormat: not chosen. Read the genre from the request (tutorial, story, opinion, list, review, comparison, explanation…); the creator's usual formats only help when the request is vague.\nLength: 75 to 105 seconds of speech (about 188 to 263 words at a natural pace), the length that works on this platform. Develop the idea fully within it, without padding, and never go past 263 words: choose the strongest points instead of covering everything.\n\nAbout the creator (who they are and who they speak to; not a new request):\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: a teacher or explainer.\nTheir default voice is one person (“I” and “my”). Keep this default unless the current request supplies another perspective or narrator.\nTheir audience: jovens adultos começando a organizar a rotina e o dinheiro.\nRules: never write “Promessas de enriquecimento rápido”.\n\nHow the creator speaks (apply it to the form; preferences, not a new request):\nThey sound casual and confident.\nDelivery: energy: high and lively; sentences: short and punchy, with varied lengths (a rhythm preference, never a limit on how much the script develops); words: plain and everyday.\nOptional familiar expressions: “Bora lá”. Use at most one only if natural here; omission is better than forced repetition.\n\nInspiration this idea came from (Find inspiration):\nSubject: 7 hábitos de poupança simples\nFollow this angle all the way through: Listar pequenas ações para guardar dinheiro\nOpen with this line, as it is or adapted only to the creator's way of speaking: “Olha só o que pode ajudar no bolso” It is the hook: write no other before it.\n\nThe creator's request, in their exact words:\n\"\"\"\n7 hábitos de poupança simples\nAngle: Listar pequenas ações para guardar dinheiro\nOpen with: “Olha só o que pode ajudar no bolso”\n\"\"\"\n\nDraft to polish:\n\"\"\"\n[draft]\n\"\"\"",
+    "creator": {
+      "endings": [],
+      "openings": [],
+      "phrases": [
+        "Bora lá"
+      ],
+      "summary": "niches: finance, lifestyle · sounds: casual, confident · role: educator · audience: jovens adultos começando a organizar a rotina e o dinheiro · avoid: Promessas de enriquecimento rápido"
+    },
+    "durationPolicy": "informative",
+    "engines": {
+      "checked": {
+        "calls": 3,
+        "changes": [
+          "Ajuste de ritmo para sentenças mais curtas e dinâmicas, ideais para o formato rápido do TikTok.",
+          "Correção de concordância no item das marmitas (de 'pode ser bem positiva' referindo-se a diferença).",
+          "Remoção de repetições desnecessárias mantendo os sete hábitos intactos.",
+          "Refinamento das transições para reforçar o tom casual, direto e instrutivo do criador."
+        ],
+        "checked": "Olha só o que pode ajudar no bolso. Eu preparei uma lista com sete hábitos bem fáceis de aplicar que mudaram a minha rotina financeira e podem fazer o mesmo por você, sem precisar sofrer ou cortar tudo o que você gosta.\n\nPrimeiro, adote a regra das vinte e quatro horas. Se você viu algo online e sentiu vontade de comprar, espere um dia inteiro antes de fechar o carrinho. Na maioria das vezes, o desejo passa e você economiza.\n\nSegundo, revise suas assinaturas mensais de tempos em tempos. Se você não usou aquele streaming de vídeo ou o aplicativo de música nas últimas semanas, cancele sem dó.\n\nTerceiro, nunca vá ao mercado com fome ou sem uma lista definida. Ter foco ajuda a evitar compras por puro impulso do momento.\n\nQuarto, experimente arredondar os centavos. Alguns bancos guardam a diferença de cada transação pequena que você faz em um cofre virtual, e isso vai se acumulando aos poucos de forma invisível.\n\nQuinto, prepare a sua própria refeição e leve marmita para o trabalho pelo menos duas vezes por semana. A diferença no orçamento de alimentação no fim do mês pode ser bem positiva.\n\nSexto, use sites de comparação antes de comprar qualquer eletrônico ou eletrodoméstico para verificar o histórico real de preços do produto.\n\nPor fim, separe uma quantia fixa, mesmo que muito pequena, logo no dia em que você recebe o seu dinheiro. Quem tenta guardar apenas o que sobra no fim do mês geralmente acaba não guardando nada.",
+        "corrections": [
+          "De que ter foco evita totalmente compras por impulso para que ele ajuda a evitar essas compras.",
+          "De que o arredondamento de centavos acumula dinheiro rápido para que ele se acumula aos poucos.",
+          "De que a diferença no orçamento de marmitas vai surpreender para que ela pode ser bem positiva."
+        ],
+        "draft": "Olha só o que pode ajudar no bolso. Eu preparei uma lista com sete hábitos bem fáceis de aplicar que mudaram a minha rotina financeira e podem fazer o mesmo por você, sem precisar sofrer ou cortar tudo o que você gosta.\n\nPrimeiro, adote a regra das vinte e quatro horas. Se você viu algo online e sentiu vontade de comprar, espere um dia inteiro antes de fechar o carrinho. Na maioria das vezes, o desejo passa e você economiza.\n\nSegundo, revise suas assinaturas mensais de tempos em tempos. Se você não usou aquele streaming de vídeo ou o aplicativo de música nas últimas semanas, cancele sem dó.\n\nTerceiro, nunca vá ao mercado com fome ou sem uma lista definida. Ter foco evita que você compre itens caros por puro impulso do momento.\n\nQuarto, experimente arredondar os centavos. Alguns bancos guardam a diferença de cada transação pequena que você faz em um cofre virtual, e isso acumula rápido de forma invisível.\n\nQuinto, prepare a sua própria refeição e leve marmita para o trabalho pelo menos duas vezes por semana. A diferença no orçamento de alimentação no fim do mês vai te surpreender.\n\nSexto, use sites de comparação antes de comprar qualquer eletrônico ou eletrodoméstico para verificar o histórico real de preços do produto.\n\nPor fim, separe uma quantia fixa, mesmo que muito pequena, logo no dia em que você recebe o seu dinheiro. Quem tenta guardar apenas o que sobra no fim do mês geralmente acaba não guardando nada.",
+        "estimatedSeconds": 89.6,
+        "model": "gemini-3.5-flash",
+        "seconds": {
+          "check": 11.12766325,
+          "draft": 7.772146709,
+          "review": 12.278414167
+        },
+        "text": "Olha só o que pode ajudar no bolso. Eu separei sete hábitos simples que mudaram a minha rotina financeira e vão te ajudar a guardar dinheiro sem sofrimento.\n\nPrimeiro, use a regra das vinte e quatro horas. Viu algo na internet e quis muito comprar? Espere um dia inteiro antes de fechar o carrinho, pois quase sempre a vontade passa.\n\nSegundo, revise suas assinaturas de aplicativos. Se você não usou aquele streaming ou aplicativo de música nas últimas semanas, cancele sem dó.\n\nTerceiro, nunca vá ao mercado com fome ou sem rumo. Ter foco e uma lista clara ajuda a evitar compras por puro impulso do momento.\n\nQuarto, arredonde os centavos das transações. Use a função do banco que guarda o troco das compras em um cofre virtual. O saldo se acumula aos poucos de forma invisível.\n\nQuinto, prepare a sua própria marmita. Trocar o restaurante pela sua comida pelo menos duas vezes por semana traz uma boa economia. A diferença no orçamento pode ser bem positiva.\n\nSexto, consulte o histórico de preços. Use sites de comparação antes de comprar qualquer eletrônico para ter certeza de que o desconto oferecido é real.\n\nPor fim, guarde o seu dinheiro assim que receber. Separe uma quantia fixa logo no início. Se você tentar poupar apenas o que sobra no fim do mês, nunca vai sobrar nada.",
+        "title": "Sete hábitos simples para poupar dinheiro",
+        "tokens": {
+          "check": [
+            1235,
+            433,
+            1983
+          ],
+          "draft": [
+            999,
+            331,
+            1519
+          ],
+          "review": [
+            1628,
+            448,
+            3111
+          ]
+        },
+        "usd": 0.076218,
+        "words": 224,
+        "metrics": {
+          "words": 224,
+          "estimatedSeconds": 89.6,
+          "lengthFit": null,
+          "endsWithQuestion": false,
+          "ctaInEnding": [],
+          "catchphrases": {
+            "Bora lá": 0
+          },
+          "emDashes": 0,
+          "markdown": false,
+          "newNumbers": [],
+          "titleWords": 6,
+          "titleIssue": null
+        }
+      },
+      "checkedMixed": {
+        "calls": 3,
+        "changes": [
+          "Divided the continuous text block into short paragraphs with a blank line between them, matching the platform's visual and audio pacing.",
+          "Ensured that the exact phrasing of the corrected claims was preserved to maintain factual safety and prevent overpromising.",
+          "Created a catchy, compliant title in Portuguese with less than eight words."
+        ],
+        "checked": "Olha só o que pode ajudar no bolso se você está tentando organizar a sua vida financeira hoje. Não vou falar de investimentos complexos, mas de pequenas mudanças que eu aplico na minha rotina e que realmente fazem diferença no final do mês. O primeiro hábito é a regra dos três dias para compras por impulso. Viu algo que quer muito? Espere três dias inteiros antes de passar o cartão. O segundo é cancelar as assinaturas de serviços que você não usou nas últimas duas semanas. O terceiro é fazer a lista de compras do mercado de estômago cheio, porque a fome pode ser uma grande inimiga do orçamento. O quarto é desinstalar os aplicativos de entrega de comida nos dias de semana, dificultando aquele pedido por impulso no cansaço. O quinto hábito é automatizar uma transferência pequena, mesmo que seja de dez reais, logo no dia em que o dinheiro cai na conta. O sexto é usar a regra do um entra, um sai, ou seja, antes de comprar uma roupa nova, você vende ou doa uma antiga. Por fim, o sétimo hábito é monitorar o seu extrato toda semana, e não só uma vez por mês. Encarar os números de perto ajuda a perder o medo de lidar com o próprio saldo. Comece com um desses hábitos hoje mesmo e mude sua rotina.",
+        "corrections": [
+          "Afirmou que a fome é a maior inimiga do orçamento; alterado para dizer que pode ser uma grande inimiga.",
+          "Prometeu que encarar os números tira o medo; alterado para dizer que ajuda a perder o medo."
+        ],
+        "draft": "Olha só o que pode ajudar no bolso se você está tentando organizar a sua vida financeira hoje. Não vou falar de investimentos complexos, mas de pequenas mudanças que eu aplico na minha rotina e que realmente fazem diferença no final do mês.\n\nO primeiro hábito é a regra dos três dias para compras por impulso. Viu algo que quer muito? Espere três dias inteiros antes de passar o cartão. O segundo é cancelar as assinaturas de serviços que você não usou nas últimas duas semanas.\n\nO terceiro é fazer a lista de compras do mercado de estômago cheio, porque a fome é a maior inimiga do orçamento. O quarto é desinstalar os aplicativos de entrega de comida nos dias de semana, dificultando aquele pedido por impulso no cansaço.\n\nO quinto hábito é automatizar uma transferência pequena, mesmo que seja de dez reais, logo no dia em que o dinheiro cai na conta. O sexto é usar a regra do um entra, um sai, ou seja, antes de comprar uma roupa nova, você vende ou doa uma antiga.\n\nPor fim, o sétimo hábito é monitorar o seu extrato toda semana, e não só uma vez por mês. Encarar os números de perto tira o medo de lidar com o próprio saldo. Comece com um desses hábitos hoje mesmo e mude sua rotina.",
+        "estimatedSeconds": 79.6,
+        "model": "gemini-3.5-flash",
+        "seconds": {
+          "check": 9.595649209,
+          "draft": 6.877424417,
+          "review": 2.232479
+        },
+        "text": "Olha só o que pode ajudar no bolso se você está tentando organizar a sua vida financeira hoje. Não vou falar de investimentos complexos, mas de pequenas mudanças que eu aplico na minha rotina.\n\nO primeiro hábito é a regra dos três dias para compras por impulso. Viu algo que quer muito? Espere três dias inteiros antes de passar o cartão. O segundo é cancelar as assinaturas que você não usou nas últimas duas semanas.\n\nO terceiro é fazer a lista de mercado de estômago cheio, porque a fome pode ser uma grande inimiga do orçamento. O quarto é desinstalar os aplicativos de entrega de comida nos dias de semana, dificultando aquele pedido por impulso no cansaço.\n\nO quinto hábito é automatizar uma transferência pequena, mesmo que de dez reais, logo no dia em que o dinheiro cai. O sexto é usar a regra do um entra, um sai, ou seja, antes de comprar uma roupa nova, você vende ou doa uma antiga.\n\nPor fim, o sétimo hábito é monitorar o seu extrato toda semana. Encarar os números de perto ajuda a perder o medo de lidar com o próprio saldo. Bora lá começar com um desses hoje mesmo?",
+        "title": "Sete habitos simples para poupar dinheiro",
+        "tokens": {
+          "check": [
+            1179,
+            348,
+            2477
+          ],
+          "draft": [
+            999,
+            275,
+            1106
+          ],
+          "review": [
+            1558,
+            361,
+            0
+          ]
+        },
+        "usd": 0.046707,
+        "words": 199,
+        "metrics": {
+          "words": 199,
+          "estimatedSeconds": 79.6,
+          "lengthFit": null,
+          "endsWithQuestion": true,
+          "ctaInEnding": [],
+          "catchphrases": {
+            "Bora lá": 1
+          },
+          "emDashes": 0,
+          "markdown": false,
+          "newNumbers": [],
+          "titleWords": 6,
+          "titleIssue": null
+        }
+      }
+    },
+    "id": "money-card",
+    "idea": "7 hábitos de poupança simples\nAngle: Listar pequenas ações para guardar dinheiro\nOpen with: “Olha só o que pode ajudar no bolso”",
+    "kind": "start",
+    "language": "pt-BR",
+    "lengthAsked": "ideal 75–105 s",
+    "platform": "TikTok",
+    "run": "c2"
+  }
+]

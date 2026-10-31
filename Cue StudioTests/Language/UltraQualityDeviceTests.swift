@@ -25,6 +25,9 @@ import UIKit
 /// `TEST_RUNNER_CUE_ULTRA_QUALITY_ENGINES=apple,checked` narrow it. Each idea costs 14 of the lab's calls (2 + 3, and 3 for each cheaper
 /// variant of the checked flow that thinks less, `checkedMedium`, `checkedLow` and `checkedMixed`: `UltraThinking`).
 ///
+/// `TEST_RUNNER_CUE_ULTRA_QUALITY_STARTS=1` writes new Portuguese ideas as a creator gets them instead (`writesAStart`: the card's idea and the
+/// next one by Apple Intelligence on the iPhone, and typed ones), for a comparison on ideas no prompt was tuned on.
+///
 /// `TEST_RUNNER_CUE_ULTRA_QUALITY_FIT=1` runs the other half instead, with no call to Google: the owner's choice (29/10/2026) is that Ultra writes
 /// freely and the creator fits it to the platform's time when they want, with the page's "Fit to time" (Apple Intelligence, on the iPhone). It
 /// fits the checked scripts of run q1 (`Fixtures/UltraScripts`) exactly as the script page does, for `tools/ultra/compare.py` to show what was
@@ -123,12 +126,89 @@ struct UltraQualityDeviceTests {
 
     private final class BundleToken {}
 
-    @Test(.timeLimit(.minutes(5)), .enabled(if: !fits), arguments: UltraQualityDeviceTests.cases)
+    @Test(.timeLimit(.minutes(5)), .enabled(if: !fits && !startsOnly), arguments: UltraQualityDeviceTests.cases)
     func writesTheIdea(_ item: Case) async throws {
         KeepScreenAwake.enable()
         #if canImport(UIKit)
         try #require(UIApplication.shared.applicationState == .active, "The iPhone must be unlocked with the screen on")
         #endif
+        try await write(item)
+    }
+
+    // MARK: - Starts
+
+    /// A new idea as a creator gets it: the Scripts card's idea and the next one (Find inspiration), both written by Apple Intelligence on the
+    /// iPhone from the creator's My Cue Voice, or one they type.
+    nonisolated enum StartSource: String, Sendable {
+        case card, inspiration, typed
+    }
+
+    nonisolated struct Start: Sendable, CustomTestStringConvertible {
+        let id: String
+        let creator: CreatorProfile
+        let source: StartSource
+        var typed = ""
+        var testDescription: String { id }
+    }
+
+    /// `TEST_RUNNER_CUE_ULTRA_QUALITY_STARTS=1` writes the starts instead of the fixed ideas (the owner's confirmation round of 31/10/2026: the
+    /// app's flow against `checkedMixed` on new Portuguese ideas).
+    nonisolated private static let startsOnly = ProcessInfo.processInfo.environment["CUE_ULTRA_QUALITY_STARTS"] != nil
+
+    /// Three Brazilian creators (beauty, with My Cue Voice in full; filming at home; money and habits), each with the card's idea, the next one
+    /// and typed ideas with claims to get right.
+    nonisolated static let starts: [Start] = {
+        let wanted = ProcessInfo.processInfo.environment["CUE_ULTRA_QUALITY_CASES"].map { Set($0.split(separator: ",").map(String.init)) }
+        let creators: [(name: String, profile: CreatorProfile, typed: [String])] = [
+            ("beauty", QualityProfiles.portuguese.profile(.full), ["Como escolher o protetor solar certo para pele oleosa"]),
+            ("filming", filming, [
+                "Como gravar com o celular na mão sem a imagem ficar tremida",
+                "4K ou 1080p, 30 ou 60 quadros: como configurar o celular para gravar",
+            ]),
+            ("money", money, ["Cartão de crédito: como usar sem cair nos juros do rotativo"]),
+        ]
+        var all: [Start] = []
+        for creator in creators {
+            all.append(Start(id: "\(creator.name)-card", creator: creator.profile, source: .card))
+            all.append(Start(id: "\(creator.name)-inspiration", creator: creator.profile, source: .inspiration))
+            for (index, idea) in creator.typed.enumerated() {
+                all.append(Start(id: "\(creator.name)-typed\(index + 1)", creator: creator.profile, source: .typed, typed: idea))
+            }
+        }
+        return all.filter { wanted?.contains($0.id) ?? true }
+    }()
+
+    @Test(.timeLimit(.minutes(5)), .enabled(if: startsOnly), arguments: UltraQualityDeviceTests.starts)
+    func writesAStart(_ start: Start) async throws {
+        KeepScreenAwake.enable()
+        #if canImport(UIKit)
+        try #require(UIApplication.shared.applicationState == .active, "The iPhone must be unlocked with the screen on")
+        #endif
+        let language = CueLanguage.portugueseBrazil
+        guard start.source != .typed else {
+            try await write(Case(id: start.id, kind: "start", language: language, creator: start.creator, idea: start.typed))
+            return
+        }
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let profile = CreatorProfileService(defaults: defaults.defaults)
+        profile.profile = start.creator
+        let writer = ScriptAIService()
+        guard writer.availability.onDevice else { try Test.cancel("Apple Intelligence isn't available on this device") }
+        let suggestions = IdeaSuggestionService(writer: writer, profile: profile, interfaceLanguage: { language }, defaults: defaults.defaults)
+        await suggestions.refill()
+        if start.source == .inspiration { suggestions.another() }
+        let idea = try #require(suggestions.current, "No idea on the card")
+        try await write(Case(
+            id: start.id, kind: "start", language: language, creator: start.creator, idea: FindInspirationViewModel.writingText(of: idea),
+            brief: idea.brief
+        ))
+    }
+
+    // MARK: - Writing one idea
+
+    /// Every engine asked for writes the idea, and the sample is kept as one attachment.
+    private func write(_ item: Case) async throws {
         let defaults = TestDefaults()
         defer { defaults.tearDown() }
         let request = Self.request(item)

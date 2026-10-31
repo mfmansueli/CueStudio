@@ -2949,7 +2949,12 @@ baixo achou 0,8 correção por roteiro contra 2,4. Dois juízes de IA às cegas 
 contra misto 9–6 e 9–6, notas praticamente iguais (precisão 3,7 a 3,9 de 5 nos três). **O dono, às cegas, nos 9 roteiros em português
 (`quality-c1-verdicts-owner.json`; 1 a 5 na página de avaliação, 6 a 9 no chat):** a de hoje em 3, a **mista em 3**, a baixa em 1 (onde a de
 hoje veio com os acentos estragados) e 2 empates (num deles, a de hoje foi a que menos agradou: "um pouco engessado"); a baixa "refinaria".
-A mista empata com a de hoje para o dono, a 33% menos e 40% mais rápida; o padrão continua `.model` até o dono decidir. Na mesma rodada, 19 chamadas voltaram recusadas pelo Google (429, sem
+Numa rodada de confirmação com 7 ideias novas (`quality-c2*.json`, `UltraQualityDeviceTests/writesAStart`, `TEST_RUNNER_CUE_ULTRA_QUALITY_STARTS=1`:
+a ideia do card e a do Find inspiration feitas pelo Apple Intelligence no iPhone a partir do My Cue Voice de três criadores, e ideias
+digitadas), só a de hoje contra a mista, o dono escolheu a de hoje em 4, a mista em 2 e empatou 1: a de hoje ganha nos assuntos técnicos
+("explicou os porquês"), a mista onde o tema é leve ("ficou muito natural"). Somadas as duas rodadas, hoje 7, mista 5: a mista perde um pouco
+para economizar 36% (US$ 0,038 contra 0,059), e **o padrão continua `.model`** (qualidade antes do custo). A mesma rodada mostrou que o card e o
+Find inspiration às vezes saem do nicho do criador (rótulos de comida para a criadora de beleza, erros de IA para o educador de gravação). Na mesma rodada, 19 chamadas voltaram recusadas pelo Google (429, sem
 capacidade no momento; repetidas, passaram) e o polimento devolveu duas vezes o português estragado (sem acentos, ou "D%a" no lugar de "Dá"),
 uma delas na versão de hoje.
 
