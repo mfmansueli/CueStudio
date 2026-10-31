@@ -35,9 +35,10 @@ nonisolated enum IdeaBriefReader {
             topic: slot.topic.niche == nil ? slot.topic.label : nil
         )
         idea.angle = slot.angle.rawValue
+        idea.tie = slot.tie
         idea.brief = IdeaBrief(
             subject: title, angle: angle, openingLine: opening, subtopic: subtopic(of: slot.topic, in: [title, angle, opening], language: language),
-            language: language, angleKind: slot.angle.rawValue, topicKey: IdeaTaste.topicKey(of: slot.topic)
+            language: language, angleKind: slot.angle.rawValue, topicKey: IdeaTaste.topicKey(of: slot.topic), topic: slot.topic.name
         ).fitted(to: Self.cardLimit)
         // The headline the card shows is the brief's, cut the same way.
         idea.title = idea.brief?.subject ?? title

@@ -9,4 +9,6 @@ import Foundation
 nonisolated struct IdeaSlot: Hashable, Sendable {
     var angle: IdeaAngle
     var topic: IdeaTopic
+    /// What it is tied to besides (an occasion, a video they posted, a comment), when it is (`IdeaSignals.tie`).
+    var tie: IdeaTie?
 }

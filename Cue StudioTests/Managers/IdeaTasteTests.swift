@@ -59,6 +59,20 @@ struct IdeaTasteTests {
         #expect(!zip(topics, topics.dropFirst()).contains { $0 == $1 && $0 == "Languages" && topics.count(where: { $0 == "Languages" }) < 5 } || true)
     }
 
+    @Test func aTopicInTheCreatorsOwnWordsGetsMoreTurnsThanABroadOne() {
+        let filming = IdeaTopic(name: "Filming videos with a phone", label: "Filming videos with a phone", niche: nil)
+        let education = IdeaTopic(name: Niche.education.promptName, label: Niche.education.label, niche: .education)
+        let tech = IdeaTopic(name: Niche.tech.promptName, label: Niche.tech.label, niche: .tech)
+        for round in 0..<3 {
+            let topics = IdeaTaste().slots(round: round, among: [education, tech, filming]).map(\.topic)
+            #expect(topics.count(where: { $0 == filming }) == 3, "round \(round): \(topics.map(\.label))")
+            #expect(topics.contains(education) && topics.contains(tech))
+            #expect(!zip(topics, topics.dropFirst()).contains { $0 == $1 && $0 != filming }, "a broad topic never runs on")
+        }
+        let narrowed = IdeaTopic(name: Niche.beauty.promptName, label: Niche.beauty.label, niche: .beauty, subtopics: ["Sunscreen"])
+        #expect(IdeaTaste.firstTurns(of: narrowed) == 2 && IdeaTaste.firstTurns(of: education) == 1)
+    }
+
     @Test func theTasteSurvivesBeingSaved() throws {
         var taste = IdeaTaste()
         taste.sent(idea(.story))

@@ -195,6 +195,7 @@ nonisolated enum ScriptPromptBuilder {
         switch request.source {
         case .prompt:
             lines.append("The video: \(videoText(for: request))")
+            if let topic = briefTopicRule(brief) { lines.append(topic) }
             if let angle = briefAngleRule(brief) { lines.append(angle) }
             // The idea is the subject. The voice only changes how it is said: a creator with other topics still gets a script about this one.
             if voice != nil {
@@ -252,6 +253,13 @@ nonisolated enum ScriptPromptBuilder {
     static func briefOpeningRule(_ brief: IdeaBrief?) -> String? {
         guard let line = brief?.openingLine, !line.isEmpty else { return nil }
         return "Open with this line, as it is or adapted only to the creator's way of speaking: “\(line)” It is the hook: write no other before it."
+    }
+
+    /// The creator's topic an idea from Find inspiration (or the card) was written for: the script stays inside it, whatever the headline leaves
+    /// out. Nil when the brief came without one (kept by an older version).
+    static func briefTopicRule(_ brief: IdeaBrief?) -> String? {
+        guard let topic = brief?.topic?.trimmingCharacters(in: .whitespacesAndNewlines), !topic.isEmpty else { return nil }
+        return "The idea was suggested for the creator's topic “\(topic)”: keep the video inside that topic."
     }
 
     /// The angle of an idea from Find inspiration, when the creator's text still has it: what the script does with the subject.
@@ -421,12 +429,15 @@ nonisolated enum ScriptPromptBuilder {
             prompt += "Each idea has a title of at most eight words, written the way a creator would post it: natural, specific, and promising something the "
                 + "viewer gets, never a generic \"Top 5\" and never starting with the name of its angle as a label; an angle, one short sentence that tells the "
                 + "creator what to do in the video, starting with a verb; and an opening line, the first sentence they say to camera, which leads straight into "
-                + "the angle. Title, angle and opening line are one idea. In this order: "
+                + "the angle. Title, angle and opening line are one idea, and the title or angle names the exact subject (never just \"products\"). "
+                + "In this order: "
         } else {
             prompt += "Each idea is a title of at most nine words, written the way a creator would post it: natural, specific, and promising something the viewer gets "
                 + "(a number, a surprise, a mistake, a result), never a generic \"Top 5\" and never starting with the name of its angle as a label. In this order: "
         }
-        prompt += slots.enumerated().map { index, slot in "\(index + 1). \(slot.angle.ask) about \(slot.topic.name)" }.joined(separator: "; ")
+        prompt += slots.enumerated().map { index, slot in
+            "\(index + 1). \(slot.angle.ask) about \(slot.topic.name)\(slot.tie?.promptClause ?? "")"
+        }.joined(separator: "; ")
         prompt += asBriefs ? "." : ". Each idea names its topic exactly as written."
         if !inspiration.isEmpty {
             prompt += " The creator has been thinking about: \(inspiration.prefix(8).map { "“\($0.prefix(140))”" }.joined(separator: "; ")). "

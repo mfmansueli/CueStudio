@@ -61,6 +61,8 @@ import Foundation
 /// - `-uiTestFastAnimations`: with the above, no animations (UIKit's sheets and pushes, SwiftUI's transactions), so a UI test
 ///   never waits for one to end; `CueApp.launch` passes it unless a test asks for real animations.
 /// - `-uiTestExportsLeft <0...3>`: the free exports that are left (3 without it): 1 is the last one, 0 asks "Your video is ready" on export.
+/// - `-uiTestOccasions <region>@<yyyy-mm-dd>`: the ideas' occasions are the ones of that region near that day (`IdeaCalendar`); without it, a UI
+///   test has none.
 /// - `-uiTestUniverse <sample|newYear|newAccount>`: what "Your universe" holds (the board's APP DATA panel; see `UniverseSeed`).
 /// - `-uiTestFakeShareSheet`: a stand-in with Complete and Cancel takes the place of the system share sheet.
 /// - `-uiTestLowPower`: the editor reads Low Power Mode as on (its notice shows; the Simulator can't turn the mode on).
@@ -194,6 +196,9 @@ struct LaunchOptions {
     var notificationInvites = true
     /// A tool's introduction after a session at the teleprompter; UI tests leave it out unless `-uiTestFeatureIntro`.
     var sessionIntros = true
+    /// UI tests: the region and the day the ideas' occasions are worked out for (`-uiTestOccasions BR@2026-05-01`); without it, no occasion.
+    var occasionsRegion: String?
+    var occasionsToday: Date?
 
     /// The arguments that stand a screen still at a second of its timeline (to take its pictures), and the milestone to open on.
     private static func readFrozenTimes(_ arguments: [String], into options: inout LaunchOptions) {
@@ -209,6 +214,11 @@ struct LaunchOptions {
         options.topicBirthFrozenAge = value("-uiTestTopicBirthAt").flatMap(Double.init)
         options.platformPickFrozenAge = value("-uiTestPlatformAt").flatMap(Double.init)
         options.onboardingStep = value("-uiTestOnboardingStep").flatMap { name in OnboardingStep.allCases.first { "\($0)" == name } }
+        if let occasions = value("-uiTestOccasions")?.split(separator: "@").map(String.init), occasions.count == 2 {
+            let parts = occasions[1].split(separator: "-").compactMap { Int($0) }
+            options.occasionsRegion = occasions[0]
+            options.occasionsToday = parts.count == 3 ? Calendar.current.date(from: DateComponents(year: parts[0], month: parts[1], day: parts[2])) : nil
+        }
     }
 
     #if DEBUG

@@ -383,7 +383,7 @@ nonisolated enum ThemeCatalog {
             var idea = ThemeIdea(title: entry.title, kind: entry.kind, length: entry.length, niche: niche)
             idea.brief = IdeaBrief(
                 subject: entry.title, angle: entry.angle, openingLine: entry.openingLine, language: interfaceLanguage,
-                angleKind: entry.angleKind.rawValue, topicKey: niche.rawValue
+                angleKind: entry.angleKind.rawValue, topicKey: niche.rawValue, topic: niche.promptName
             )
             return idea
         }
@@ -403,7 +403,7 @@ nonisolated enum ThemeCatalog {
             var idea = ThemeIdea(title: parts.title, kind: parts.kind, length: parts.length, niche: .lifestyle, topic: topic.label)
             idea.brief = IdeaBrief(
                 subject: parts.title, angle: parts.angle, openingLine: parts.openingLine, subtopic: subtopic, language: interfaceLanguage,
-                angleKind: parts.angleKind.rawValue, topicKey: topic.label
+                angleKind: parts.angleKind.rawValue, topicKey: topic.label, topic: topic.name
             )
             return idea
         }
@@ -464,7 +464,101 @@ nonisolated enum ThemeCatalog {
             angle: String(localized: "Explain one useful how-to in under a minute."),
             openingLine: String(localized: "Give me one minute and I’ll show you something useful about \(name)."), angleKind: .tutorial
         ) },
+        { name in Entry(
+            title: String(localized: "A surprising fact about \(name)"), kind: String(localized: "Explainer"), length: .minute1,
+            angle: String(localized: "Share one surprising fact and why it matters."),
+            openingLine: String(localized: "Here’s something about \(name) most people don’t know."), angleKind: .fact
+        ) },
+        { name in Entry(
+            title: String(localized: "\(name): before and after"), kind: String(localized: "Tutorial"), length: .minute1,
+            angle: String(localized: "Show what changes from before to after one simple change."),
+            openingLine: String(localized: "This is \(name) before and after one small change."), angleKind: .beforeAfter
+        ) },
+        { name in Entry(
+            title: String(localized: "\(name): two ways, compared"), kind: String(localized: "Opinion"), length: .minute1,
+            angle: String(localized: "Compare two common options and say who each one is for."),
+            openingLine: String(localized: "There are two common ways to approach \(name). Let’s compare them."), angleKind: .comparison
+        ) },
+        { name in Entry(
+            title: String(localized: "A 7-day \(name) challenge"), kind: String(localized: "Tutorial"), length: .minute1,
+            angle: String(localized: "Invite viewers to a simple challenge and explain each step."),
+            openingLine: String(localized: "Try this \(name) challenge with me for the next seven days."), angleKind: .challenge
+        ) },
+        { name in Entry(
+            title: String(localized: "A day of \(name), start to finish"), kind: String(localized: "Storytime"), length: .minute1,
+            angle: String(localized: "Walk through a real day and the small choices in it."),
+            openingLine: String(localized: "Come with me through a day of \(name), from morning to night."), angleKind: .dayInLife
+        ) },
+        { name in Entry(
+            title: String(localized: "One \(name) habit worth keeping"), kind: String(localized: "List"), length: .minute1,
+            angle: String(localized: "Share one tool or habit that makes a real difference, and how to start."),
+            openingLine: String(localized: "If I could keep only one \(name) habit, it would be this one."), angleKind: .tool
+        ) },
+        { name in Entry(
+            title: String(localized: "A question for you about \(name)"), kind: String(localized: "Opinion"), length: .minute1,
+            angle: String(localized: "Ask your audience one question and share your own answer first."),
+            openingLine: String(localized: "I want to hear from you on this one about \(name)."), angleKind: .question
+        ) },
+        { name in Entry(
+            title: String(localized: "Where \(name) is heading"), kind: String(localized: "Opinion"), length: .minute1,
+            angle: String(localized: "Share one prediction for the year ahead and the reason behind it."),
+            openingLine: String(localized: "Here’s where I think \(name) is heading next."), angleKind: .prediction
+        ) },
+        { name in Entry(
+            title: String(localized: "A short \(name) story"), kind: String(localized: "Storytime"), length: .minute1,
+            angle: String(localized: "Tell a short story with one lesson at the end."),
+            openingLine: String(localized: "Let me tell you a quick story about \(name)."), angleKind: .story
+        ) },
     ] }
+
+    // MARK: - Tied to what is coming up and what they posted
+
+    /// Starters tied to the creator's signals (`IdeaSignals`): the nearest occasion where they live, and a follow-up of each of their two newest
+    /// shared videos, about `topic`. They come before the other starters; the card says what each is tied to. A comment they answered has no
+    /// starter: without the model, a new idea about it would only be the same answer again.
+    static func tied(to signals: IdeaSignals, topic: IdeaTopic?) -> [ThemeIdea] {
+        var ideas: [ThemeIdea] = []
+        if let occasion = signals.occasions.first {
+            let name = occasion.name
+            ideas.append(tiedIdea(Entry(
+                title: String(localized: "\(name): one idea for the date", comment: "A starter idea tied to an occasion coming up"),
+                kind: String(localized: "Tips"), length: .minute1,
+                angle: String(localized: "Tie one useful tip to this date: \(name).", comment: "A starter idea tied to an occasion coming up"),
+                openingLine: String(
+                    localized: "It’s almost time: \(name). Here’s one thing worth knowing.", comment: "A starter idea tied to an occasion coming up"
+                ),
+                angleKind: .tutorial
+            ), tie: .occasion(occasion), topic: topic))
+        }
+        for title in signals.posted.prefix(2) {
+            ideas.append(tiedIdea(Entry(
+                title: String(localized: "Part 2: \(title)", comment: "A starter idea that follows up a video the creator shared; the video's title"),
+                kind: String(localized: "Tutorial"), length: .minute1,
+                angle: String(
+                    localized: "Pick up where that video stopped: the next step or the question it left open.",
+                    comment: "A starter idea that follows up a video the creator shared"
+                ),
+                openingLine: String(
+                    localized: "This picks up right where my last video stopped.", comment: "A starter idea that follows up a video the creator shared"
+                ),
+                angleKind: .lesson
+            ), tie: .followUp(title), topic: topic))
+        }
+        return ideas
+    }
+
+    private static func tiedIdea(_ entry: Entry, tie: IdeaTie, topic: IdeaTopic?) -> ThemeIdea {
+        let niche = topic?.niche ?? .lifestyle
+        var idea = ThemeIdea(
+            title: entry.title, kind: entry.kind, length: entry.length, niche: niche, topic: topic.flatMap { $0.niche == nil ? $0.label : nil }
+        )
+        idea.tie = tie
+        idea.brief = IdeaBrief(
+            subject: entry.title, angle: entry.angle, openingLine: entry.openingLine, language: interfaceLanguage, angleKind: entry.angleKind.rawValue,
+            topicKey: topic.map(IdeaTaste.topicKey(of:)), topic: topic?.name
+        )
+        return idea
+    }
 
     /// The language the starters are read in (the app's own localization), as a minimal identifier.
     private static var interfaceLanguage: String? {
