@@ -10,10 +10,20 @@ import Testing
 struct ThemeCatalogTests {
     @Test func everyFirstFlightTopicHasSixStartersAndTheOldOnesKeepTheirThree() {
         for niche in Niche.offered {
-            #expect(ThemeCatalog.ideas(for: niche).count == 6, "\(niche)")
+            #expect(ThemeCatalog.written(for: niche).count == 6, "\(niche)")
         }
-        #expect(ThemeCatalog.ideas(for: .wellness).count == 3)
-        #expect(ThemeCatalog.ideas(for: .education).count == 3)
+        #expect(ThemeCatalog.written(for: .wellness).count == 3)
+        #expect(ThemeCatalog.written(for: .education).count == 3)
+    }
+
+    @Test func theLibrarysIdeasComeAfterTheWrittenOnesAndNoneRepeats() {
+        for niche in Niche.offered {
+            let written = ThemeCatalog.written(for: niche)
+            let all = ThemeCatalog.ideas(for: niche)
+            #expect(Array(all.prefix(written.count)) == written, "\(niche)")
+            #expect(Set(all.map(\.id)).count == all.count, "\(niche)")
+            #expect(all.count >= written.count + (IdeaLibrary.current == nil ? 0 : 30), "\(niche): \(all.count)")
+        }
     }
 
     @Test func everyStarterIsAWholeBriefThatFitsTheComposer() {

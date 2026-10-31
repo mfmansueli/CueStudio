@@ -20,10 +20,17 @@ nonisolated enum ThemeCatalog {
         var angleKind: IdeaAngle
     }
 
-    // swiftlint:disable function_body_length
-    /// The starters of a first-flight topic (six each; Wellness and Education, no longer offered, keep their three), then the library's about it
-    /// (`IdeaLibrary`).
+    /// The starters of a first-flight topic: the ones written here, then the library's about it in the same language (`IdeaLibrary`), none
+    /// repeating a title written here.
     static func ideas(for niche: Niche) -> [ThemeIdea] {
+        let written = written(for: niche)
+        let titles = Set(written.map(\.id))
+        return written + IdeaLibrary.ideas(for: niche).filter { !titles.contains($0.id) }
+    }
+
+    // swiftlint:disable function_body_length
+    /// The starters written here for a first-flight topic (six each; Wellness and Education, no longer offered, keep their three).
+    static func written(for niche: Niche) -> [ThemeIdea] {
         let entries: [Entry] = switch niche {
         case .lifestyle: [
             Entry(
@@ -380,7 +387,7 @@ nonisolated enum ThemeCatalog {
             ),
         ]
         }
-        let written = entries.map { entry in
+        return entries.map { entry in
             var idea = ThemeIdea(title: entry.title, kind: entry.kind, length: entry.length, niche: niche)
             idea.brief = IdeaBrief(
                 subject: entry.title, angle: entry.angle, openingLine: entry.openingLine, language: interfaceLanguage,
@@ -388,9 +395,6 @@ nonisolated enum ThemeCatalog {
             )
             return idea
         }
-        // Then the library's, in the same language (none repeats a title written here).
-        let titles = Set(written.map(\.id))
-        return written + IdeaLibrary.ideas(for: niche).filter { !titles.contains($0.id) }
     }
     // swiftlint:enable function_body_length
 

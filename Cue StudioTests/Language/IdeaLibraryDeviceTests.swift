@@ -61,18 +61,6 @@ struct IdeaLibraryDeviceTests {
         .filter { pairs?.contains(String($0.pair)) ?? true }
     }
 
-    private struct Reply: Decodable {
-        struct Idea: Decodable {
-            let topic: Int
-            let angle: String
-            let title: String
-            let pointOfView: String
-            let openingLine: String
-        }
-
-        let ideas: [Idea]
-    }
-
     private struct Line: Encodable {
         let language: String
         let topic: String
@@ -107,8 +95,8 @@ struct IdeaLibraryDeviceTests {
             - openingLine: the first sentence said on camera, at most 18 words, spoken and natural, without quotes, emojis or hashtags.
 
             Rules:
-            - Anyone in the topic could film it. Never claim anything about the creator's own life, results, income, body or numbers: for a \
-            story, a day in the life or a lesson, the opening line sets it up and the creator brings their own experience.
+            - Anyone in the topic could film it. An idea is a draft the creator adjusts: an imagined scene in the first person is welcome \
+            ("I used to…", "The day I…"), but never an invented number, study, statistic, credential or result presented as a fact.
             - Evergreen: no dates, years, seasons, holidays, trends, prices, currencies, brands, products by name, apps or celebrities.
             - Safe for every audience. Tips, never prescriptions: no medical, legal or financial promises, no diets or doses, no "guaranteed".
             - Every idea is a different subject from the others, not the same idea in other words; the titles vary in shape (not all \
@@ -140,7 +128,7 @@ struct IdeaLibraryDeviceTests {
             reply.promptTokens ?? 0, reply.outputTokens ?? 0, reply.thinkingTokens ?? 0, cost.dollars(), reply.finishedNormally ? "yes" : "no"
         ))
         let text = reply.text.trimmingCharacters(in: .whitespacesAndNewlines)
-        let parsed = try JSONDecoder().decode(Reply.self, from: Data(text.utf8))
+        let parsed = try JSONDecoder().decode(IdeaLibraryReply.self, from: Data(text.utf8))
         var counts: [String: Int] = [:]
         for idea in parsed.ideas {
             guard topics.indices.contains(idea.topic - 1) else { continue }
@@ -157,4 +145,17 @@ struct IdeaLibraryDeviceTests {
             #expect((counts[niche.rawValue] ?? 0) >= Self.perTopic * 3 / 4, "\(niche.rawValue): \(counts[niche.rawValue] ?? 0) ideas")
         }
     }
+}
+
+/// What a library call answers (`UltraStageRequest.Stage.ideas`).
+private nonisolated struct IdeaLibraryReply: Decodable {
+    let ideas: [IdeaLibraryReplyIdea]
+}
+
+private nonisolated struct IdeaLibraryReplyIdea: Decodable {
+    let topic: Int
+    let angle: String
+    let title: String
+    let pointOfView: String
+    let openingLine: String
 }
