@@ -200,6 +200,19 @@ final class FindInspirationUITests: XCTestCase {
         XCTAssertEqual(app.buttons["inspiration.writeNow"].label, "Write it yourself")
     }
 
+    /// Near a day people plan videos around, the first idea is tied to it, and the card says why ("Coming up: Mother’s Day").
+    func testAnIdeaTiedToADayComingUpSaysWhyOnTheCard() throws {
+        let app = CueApp.launch(
+            seeded: true, ai: .none, extraArguments: ["-uiTestTopics", "custom:Daily Routine", "-uiTestOccasions", "BR@2026-04-25"]
+        )
+        XCTAssertTrue(app.buttons["ideaCard.inspirationButton"].exists(within: 15))
+        app.buttons["ideaCard.inspirationButton"].tap()
+        let why = element(app, "inspiration.card.why")
+        XCTAssertTrue(why.exists(within: 5), "The tied idea doesn't say why")
+        XCTAssertTrue(why.label.contains("Mother"), why.label)
+        try shoot(app, "11-why-line")
+    }
+
     func testWhenTheIdeasDontComeTheSheetSaysSoAndOffersTryAgain() throws {
         let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestTopics", "custom:Daily Routine", "-uiTestIdeasFail"])
         XCTAssertTrue(app.buttons["ideaCard.inspirationButton"].exists(within: 15))

@@ -72,6 +72,28 @@ struct IdeaTiesTests {
         #expect(ThemeCatalog.tied(to: IdeaSignals(comments: ["A question"]), topic: beauty).isEmpty, "a comment alone has no starter")
     }
 
+    /// Without the model, the card opens on the day coming up where the creator lives, then a follow-up of their newest video.
+    @MainActor @Test func theCardsFirstStartersAreTiedToWhatIsComingUpAndWhatTheyPosted() {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let profile = CreatorProfileService(defaults: defaults.defaults)
+        profile.profile.niches = [.beauty]
+        let writer = FakeScriptWriter()
+        writer.availability = .unavailable
+        let april = Calendar.current.date(from: DateComponents(year: 2026, month: 4, day: 25)) ?? .now
+        let service = IdeaSuggestionService(
+            writer: writer, profile: profile, interfaceLanguage: { .english }, signals: { IdeaSignals(posted: ["Sunscreen under makeup"]) },
+            region: { "BR" }, now: { april }, defaults: defaults.defaults
+        )
+        if case .occasion(let occasion) = service.current?.tie {
+            #expect(occasion.kind == .mothersDay)
+        } else {
+            Issue.record("the first starter is the occasion coming up: \(String(describing: service.current?.title))")
+        }
+        service.another()
+        #expect(service.current?.tie == .followUp("Sunscreen under makeup"))
+    }
+
     @Test func aTypedTopicHasAStarterForEveryAngle() {
         let typed = IdeaTopic(name: "Handmade ceramics", label: "Handmade ceramics", niche: nil)
         let starters = ThemeCatalog.ideas(for: typed)

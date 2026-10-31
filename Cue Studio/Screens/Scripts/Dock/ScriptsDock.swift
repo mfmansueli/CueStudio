@@ -111,6 +111,13 @@ struct ScriptsDock: View {
     }
 
     /// The idea the dock suggests while its field is empty ("↻" brings the next).
+    /// The suggestion as VoiceOver says it: with what it came from (`IdeaTie.cardLine`), when it is tied to something.
+    private var spokenSuggestion: String? {
+        guard let suggestion else { return nil }
+        guard let why = suggestions.current?.tie?.cardLine else { return suggestion }
+        return suggestion + ", " + why
+    }
+
     private var suggestion: String? {
         guard hasAI, ideaDraft.isEmpty, !dictation.isActive else { return nil }
         return suggestions.current?.title
@@ -669,8 +676,9 @@ struct ScriptsDock: View {
         .tint(Palette.acc)
         .padding(.vertical, 6)
         .writingToolsBehavior(.limited)
-        // The suggestion is drawn behind the field and hidden from VoiceOver: the field says it, so that whoever listens knows what the arrow sends.
-        .accessibilityValue(Text(suggestion ?? ideaDraft.text))
+        // The suggestion is drawn behind the field and hidden from VoiceOver: the field says it, so that whoever listens knows what the arrow sends,
+        // and what it came from when it is tied to something of theirs (the field has no room to show it; Find inspiration's card does).
+        .accessibilityValue(Text(verbatim: spokenSuggestion ?? ideaDraft.text))
         .accessibilityHint(Text("Say or type an idea"))
         .accessibilityIdentifier("ideaCard.field")
     }

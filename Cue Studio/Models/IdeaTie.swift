@@ -23,10 +23,20 @@ nonisolated enum IdeaTie: Hashable, Codable, Sendable {
         case .occasion(let occasion):
             String(localized: "Coming up: \(occasion.name)", comment: "Under an idea tied to an occasion coming up where the creator lives")
         case .followUp(let title):
-            String(localized: "Follows up your video “\(title)”", comment: "Under an idea that follows up a video the creator shared; its title")
+            String(localized: "Follows up your video “\(Self.shortened(title))”", comment: "Under an idea that follows up a video the creator shared; its title")
         case .comment:
             String(localized: "From a comment you answered", comment: "Under an idea grown from an audience comment one of the creator's scripts answered")
         }
+    }
+
+    /// The most of a video's title the card shows.
+    static let cardTitleLimit = 48
+
+    private static func shortened(_ title: String) -> String {
+        guard title.count > cardTitleLimit else { return title }
+        let cut = title.prefix(cardTitleLimit)
+        let atWord = cut.lastIndex(of: " ").map { cut[..<$0] } ?? cut
+        return atWord.trimmingCharacters(in: .whitespacesAndNewlines) + "…"
     }
 
     /// How the slot asks for it, after "a quick how-to about beauty and skincare".

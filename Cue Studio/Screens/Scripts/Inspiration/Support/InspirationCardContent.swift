@@ -18,9 +18,20 @@ nonisolated struct InspirationCardContent: Hashable, Sendable {
     let openingLine: String?
     /// The idea is one of the creator's own notes from the Logbook.
     let isLogbookNote: Bool
+    /// What the idea came from, when it is tied to something of the creator's (`IdeaTie.cardLine`): "Coming up: Mother's Day".
+    let why: String?
+    /// The symbol drawn before `why`.
+    let whySymbol: String?
 
     init(idea: ThemeIdea, topics: [IdeaTopic], logbookLabel: String) {
         isLogbookNote = idea.logbookID != nil
+        why = idea.tie?.cardLine
+        whySymbol = switch idea.tie {
+        case .occasion: "calendar"
+        case .followUp: "arrow.turn.down.right"
+        case .comment: "text.bubble"
+        case nil: nil
+        }
         title = Self.trimmed(idea.title) ?? Self.trimmed(idea.brief?.subject) ?? ""
         angle = Self.trimmed(idea.brief?.angle)
         openingLine = Self.trimmed(idea.brief?.openingLine).map(Self.unquoted)
