@@ -2910,7 +2910,7 @@ depois de a instrução mandar manter as ressalvas, a primeira frase e quem fala
 Ainda escapa, às vezes, uma ressalva ("muchísimos años" → "siempre") ou um detalhe concreto que vira generalidade (`research_notes/Ultra AI/fit-q1*.json`). Deixar a versão curta sempre pronta custaria uma chamada em todo roteiro; sob demanda só custa quando é usada.
 
 
-**Limite do laboratório:** 300 chamadas neste iPhone (autorizadas pelo dono em 29/10/2026: 30, 80 e depois 300 para medir e melhorar a qualidade),
+**Limite do laboratório:** 1.000 chamadas neste iPhone (autorizadas pelo dono: 30, 80 e 300 em 29/10/2026 para medir e melhorar a qualidade; 1.000 em 31/10 para medir o custo em todos os idiomas e baratear sem perder qualidade, cerca de USD 23 no máximo),
 contadas antes de sair, falhas incluídas (`UltraCallBudget`, nos defaults padrão do app). É uma trava do experimento, **não** um sistema de créditos: o de produção tem de ser do servidor (compras verificadas,
 saldo e operações idempotentes lá; uma falha sem roteiro não debita). Plano em `reports/ULTRA_AI_NATIVE_2026-10-29.md`.
 
@@ -2923,16 +2923,22 @@ e por Fit terminados, *Start a new measurement* para medir uma mudança de promp
 do laboratório fecha o teclado ao rolar, para ele não esconder *Write with Ultra AI*). O Console
 recebe o custo de cada chamada e de cada pedido. O gasto do projeto inteiro (os dois iPhones e o laboratório web) é o que o Google contou:
 `node tools/ultra/spend.js` (só leitura, pelo login do Firebase CLI) lê as chamadas e os tokens no Cloud Monitoring, dia a dia, e o preço atual no
-catálogo, e avisa quando `UltraPrice` ficou para trás. Em 31/10/2026: 233 chamadas respondidas e 1 recusada (429), 278.984 tokens de entrada e
-548.231 de saída, **USD 5,35**, cerca de USD 0,023 por chamada.
+catálogo, e avisa quando `UltraPrice` ficou para trás. Em 31/10/2026, depois das medições abaixo: cerca de 520 chamadas respondidas e 2 recusadas
+(429), **cerca de USD 12,2**, USD 0,023 por chamada.
 
-**Custo medido no iPhone** (31/10/2026, `UltraCostDeviceTests`: a ideia do card de Scripts e a próxima do Find inspiration escritas pelo Apple
-Intelligence no aparelho, e uma ideia digitada; um criador sintético de finanças e hábitos, TikTok, Auto; o fluxo do app, rascunho, checagem e
-polimento): 9 roteiros, 27 chamadas, nenhum precisou do Fit (190 a 217 palavras, 76 a 87 s), **média USD 0,068 por roteiro** (de 0,050 a 0,088).
-Por origem: card 0,064, Find inspiration 0,068, digitada 0,073; por idioma: português 0,073, inglês 0,069, espanhol 0,063. O raciocínio é 79% do
-custo (54 mil de 95 mil tokens), a entrada 8% (cerca de 3.600 tokens por roteiro) e o texto devolvido 13%; o que varia de um roteiro para outro
-é quanto o modelo pensa, sobretudo na checagem (por etapa, em média: rascunho USD 0,017, checagem 0,027, com 960 a 4.560 tokens de raciocínio,
-polimento 0,024).
+**Custo medido no iPhone** (31/10/2026, `UltraCostDeviceTests`, o fluxo do app, rascunho, checagem e polimento; criador sintético de finanças e
+hábitos). **Nos 20 idiomas** (`threeStarts`, TikTok, Auto: a ideia do card de Scripts e a próxima do Find inspiration escritas pelo Apple Intelligence
+no aparelho, e a mesma ideia digitada traduzida): 60 roteiros, **média USD 0,075** (mediana 0,069, de 0,049 a 0,131), 39 s para escrever em média;
+card 0,076, Find inspiration 0,079, digitada 0,072. Por idioma (média de três): indonésio 0,058, inglês 0,059, híndi e chinês simplificado 0,061, espanhol 0,063,
+chinês tradicional 0,064, alemão 0,067, norueguês 0,068, japonês 0,070, italiano 0,070, sueco 0,071, tailandês 0,072, holandês 0,075,
+vietnamita 0,075, português 0,081, dinamarquês 0,086, turco 0,093, árabe 0,096, francês 0,096, **coreano 0,121** (11 mil tokens de raciocínio por
+roteiro, o dobro do inglês). **Por situação** (`situation`, em português, inglês e espanhol, média de três): YouTube Auto 0,111 (632 palavras),
+YouTube 3 min 0,080, LinkedIn 0,063, sem voz 0,059, Shorts 1 min 0,053, Reels 30 s 0,050, Stories 0,043, **duas etapas** (sem a checagem) 0,037;
+um Fit pedido pelo criador (YouTube para TikTok) 0,032. O raciocínio é 78% do custo, o texto devolvido 14% e a entrada 8% (cerca de 3.000 a 4.700
+tokens por roteiro): o que muda o preço é quanto o modelo pensa (a língua e o tamanho pedido), não o tamanho do prompt. A soma do app bateu com a do
+Google (248 chamadas; USD 6,01 contra 6,06: a diferença é um pedido indonésio que o app abandonou aos 120 s e o Google terminou e cobrou). Na mesma
+rodada, uma chamada voltou recusada (429, cota do modelo) e outra estourou o tempo; repetidas, passaram. Para o Pro (30 por mês), USD 2,25 por
+criador que usa tudo, em média; até 3,60 num idioma como o coreano.
 
 **Roteiros grátis e Cue Pro** (decisões do dono, 29/10 e 30/10/2026; **prévia em Debug**, sem cobrança): todo mundo tem **3 roteiros Ultra AI grátis**
 (`UsagePolicy.freeUltraScripts`; não há teste grátis do Pro); o Pro soma **30 por mês** (`proUltraScriptsPerMonth`); os grátis são gastos primeiro. Um roteiro só conta quando chega polido (falha ou Stop não
