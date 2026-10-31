@@ -349,7 +349,8 @@ struct ScriptPageViewModelTests {
         scenario.viewModel.page.selection = 0..<21
         await scenario.viewModel.rewriteSelection(.rewrite)
         #expect(scenario.viewModel.page.passage == nil && scenario.viewModel.page.text == "Hello there my friend")
-        #expect(scenario.toast.message == "Couldn’t draft it · Try again")
+        #expect(scenario.toast.message == "Couldn’t draft it")
+        #expect(scenario.toast.action?.title == "Try again", "Try again is the toast's button, not its words")
     }
 
     /// A reason the creator can act on is told as it is; "Try again" is only for what trying again can fix.
@@ -413,8 +414,8 @@ struct ScriptPageViewModelTests {
     }
 
     @Test func whichErrorsExplainThemselves() {
-        #expect(ScriptDetailViewModel.failureMessage(for: ScriptAIError.emptyResponse) == "Couldn’t draft it · Try again")
-        #expect(ScriptDetailViewModel.failureMessage(for: URLError(.timedOut)) == "Couldn’t draft it · Try again")
+        #expect(ScriptDetailViewModel.failureMessage(for: ScriptAIError.emptyResponse) == "Couldn’t draft it")
+        #expect(ScriptDetailViewModel.failureMessage(for: URLError(.timedOut)) == "Couldn’t draft it")
         for error in [ScriptAIError.unsupportedLanguage, .modelPreparing, .wrongLanguage, .tooLong] {
             #expect(ScriptDetailViewModel.failureMessage(for: error) == error.localizedDescription)
         }
@@ -485,7 +486,7 @@ struct ScriptPageViewModelTests {
         let strip = scenario.viewModel.strip
         #expect(strip?.state == .recorded)
         #expect(strip?.changedSinceTake == 2)
-        #expect(strip?.info == ["Changed since take 2"])
+        #expect(strip?.signal == "Changed since take 2")
     }
 
     @Test func recordingADraftSendsItToTheCameraAsReady() {

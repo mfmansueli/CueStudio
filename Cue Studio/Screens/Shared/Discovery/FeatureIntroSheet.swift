@@ -5,59 +5,27 @@
 
 import SwiftUI
 
-/// A tool introduced in the app: its name, one clear benefit, what it uses or needs, **Try it** and **Not now**, and a quiet "Don't suggest
-/// this" under them. "Try it" opens the tool on the creator's own script or take; nothing in it runs until they use it there.
+/// A tool introduced in the app, in the invitations' one form (`InviteSheet`): its name, one clear benefit, what it uses or needs, **Try it**
+/// and **Not now** (also the ✕: not before 30 days), and a quiet "Don't suggest this" under them (the tool is hidden until Settings ›
+/// Personalize › Hidden suggestions brings it back). "Try it" opens the tool on the creator's own script or take; nothing in it runs until
+/// they use it there.
 struct FeatureIntroSheet: View {
     let request: FeatureIntroRequest
     let onTry: () -> Void
     let onNotNow: () -> Void
     let onDecline: () -> Void
+    /// Closed with the ✕ or a swipe: counted as "Not now".
+    var onDismissed: () -> Void = {}
 
-    private var symbol: FeatureIntro.Symbol { FeatureCatalog.intro(for: request.feature)?.symbol ?? "sparkles" }
     private var note: String? { FeatureCatalog.intro(for: request.feature)?.note.text }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            HStack(alignment: .top, spacing: 14) {
-                symbolImage
-                    .foregroundStyle(Palette.aiText)
-                    .frame(width: 48, height: 48)
-                    .background(Palette.surface2, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-                    .accessibilityHidden(true)
-                SheetHeader(title: request.feature.name, subtitle: request.feature.benefit)
-            }
-            if let note {
-                Label(note, systemImage: "info.circle")
-                    .cueFont(.footnote)
-                    .foregroundStyle(Palette.ink2)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .accessibilityIdentifier("featureIntro.note")
-            }
-            VStack(spacing: 8) {
-                Button(action: onTry) { Text("Try it").frame(maxWidth: .infinity) }
-                    .buttonStyle(.cuePrimary(.large))
-                    .accessibilityIdentifier("featureIntro.try")
-                Button(action: onNotNow) { Text("Not now").frame(maxWidth: .infinity) }
-                    .buttonStyle(.cueSecondary(.large))
-                    .accessibilityIdentifier("featureIntro.notNow")
-                Button("Don’t suggest this", action: onDecline)
-                    .cueFont(.subheadline)
-                    .foregroundStyle(Palette.ink2)
-                    .frame(minHeight: Metrics.hitTarget)
-                    .accessibilityIdentifier("featureIntro.decline")
-            }
-        }
-        .padding(EdgeInsets(top: 4, leading: Metrics.gutter, bottom: 16, trailing: Metrics.gutter))
-        .fittedSheet()
-        .accessibilityElement(children: .contain)
-        .accessibilityIdentifier("featureIntro.sheet")
-    }
-
-    @ViewBuilder private var symbolImage: some View {
-        switch symbol {
-        case .system(let name): Image(systemName: name).cueFont(22, weight: .semibold)
-        case .cue(let icon): CueIconView(icon, size: 26)
-        }
+        InviteSheet(
+            title: request.feature.name, line: request.feature.benefit, uses: note, primaryTitle: String(localized: "Try it"),
+            onPrimary: onTry, onNotNow: onNotNow, link: (String(localized: "Don’t suggest this"), onDecline), onDismissed: onDismissed,
+            identifier: "featureIntro", primaryIdentifier: "featureIntro.try", notNowIdentifier: "featureIntro.notNow",
+            linkIdentifier: "featureIntro.decline"
+        )
     }
 }
 

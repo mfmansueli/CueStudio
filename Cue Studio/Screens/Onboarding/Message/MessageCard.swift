@@ -14,6 +14,8 @@ struct MessageCard: View {
     /// The second of the board (`MessageTimeline`) and the time since the chapter appeared (for what runs on its own).
     let board: Double
     let ambient: Double
+    /// The words' size: the chapter picks the largest that lets the page fit above its button (`MessageWordFit`).
+    var wordSize: CGFloat = MessageWordFit.sizes[0]
 
     private static let clip = MotionLibrary.clip("1.4_first-message")
 
@@ -167,20 +169,14 @@ struct MessageCard: View {
 
     // MARK: - The message
 
-    /// The script, as big as the screen lets it be: the board's 21 pt for a short one, smaller for the practice script's three sentences or a
-    /// longer language, so the card, the capsule and the button stay on one screen.
+    /// The script at the size the chapter picked (`MessageWordFit`): the board's 21 pt when the page fits with it, smaller for a longer
+    /// language or a shorter iPhone.
     @ViewBuilder
     private var messageBody: some View {
         if let script {
-            ViewThatFits(in: .vertical) {
-                ForEach(Self.wordSizes, id: \.self) { size in
-                    parts(of: script, size: size)
-                }
-            }
+            parts(of: script, size: wordSize)
         }
     }
-
-    private static let wordSizes: [CGFloat] = [21, 19, 17, 15, 13]
 
     private func parts(of script: OnboardingScript, size: CGFloat) -> some View {
         VStack(alignment: .leading, spacing: size * 0.6) {

@@ -52,7 +52,8 @@ extension ScriptDetailViewModel {
         profile.profile.voiceApproved = true
         profile.recordApproval(of: page.text)
         page.voicePreview = nil
-        toast.show(String(localized: "Saved · Cue learns from it"), kind: .cue)
+        // The creator's own choice that went well: ✓ (★ is for what Cue did), the same words as the voice preview's sheet.
+        toast.show(String(localized: "Saved · Cue learns from it"))
     }
 
     func openVoiceAdjust() {

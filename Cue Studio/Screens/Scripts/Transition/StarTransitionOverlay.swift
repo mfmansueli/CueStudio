@@ -24,7 +24,7 @@ import SwiftUI
 ///
 /// An Ultra AI script (owner's call, 29/10/2026) keeps the sequence in Cue's violet and gold: the star is a ✦ (`SparkShape`) in a violet glow,
 /// its streaks are violet, the specks are small ✦, the ignition's ring is gold; the orbit is one arc per Ultra AI pass (`UltraPassOrbit`), the
-/// phrase says which pass it is ("Checking the facts"), with a light tick as each ends, and at the finish the passes' nodes run into the star.
+/// phrase says which pass it is ("Reviewing the draft"), with a light tick as each ends, and at the finish the passes' nodes run into the star.
 /// Larger than Apple Intelligence's (the owner's call, 30/10/2026: a paid script waits in something more alive): a larger ✦ that pulses with
 /// each step of the words, inside a scene of its own (`UltraWaitScene`: a small turning galaxy, a moon for each pass done, shooting stars, comets in a
 /// long wait), with the ring of passes round it at a third of the screen's width and the words under the scene. Its finish is longer
@@ -247,10 +247,11 @@ struct StarTransitionOverlay: View {
 
     private static let progressHeight: CGFloat = 16
 
-    /// What Ultra AI is doing in pass `index` of `count`: the draft, the claims checked (three passes only), the polish in the creator's voice.
+    /// What Ultra AI is doing in pass `index` of `count`: the draft, its review (three passes only: one pass of the model over its claims, with
+    /// no search, so never "checking the facts"; decision 8), the polish in the creator's voice.
     private static func passPhrase(_ index: Int, of count: Int) -> String {
         if index == 0 { return String(localized: "Writing the draft") }
-        if index < count - 1 { return String(localized: "Checking the facts") }
+        if index < count - 1 { return String(localized: "Reviewing the draft") }
         return String(localized: "Polishing in your voice")
     }
 

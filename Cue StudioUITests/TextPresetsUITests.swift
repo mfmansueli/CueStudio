@@ -69,7 +69,9 @@ final class TextPresetsUITests: XCTestCase {
         XCTAssertFalse(app.buttons["edit.textEffect.remove"].exists)
         EditorApp.capture(app, "text-animated")
         app.buttons["edit.style.gold"].tap()
-        XCTAssertTrue(EditorApp.toastSays(app, "Gold metal"))
+        // On the one text the preview shows, the picked look says it (only VoiceOver hears "Gold metal on this text"): no toast.
+        XCTAssertTrue(app.buttons["edit.style.gold"].matches(NSPredicate(format: "selected == true"), within: 3))
+        XCTAssertFalse(EditorApp.toastSays(app, "Gold metal", timeout: 1))
         // The words and the place stay the creator's.
         XCTAssertEqual(field.value as? String, words)
         XCTAssertTrue(waitFor { hypot(self.middle(handle.frame).x - place.x, self.middle(handle.frame).y - place.y) < 3 }, "\(handle.frame)")

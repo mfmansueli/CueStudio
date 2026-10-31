@@ -43,11 +43,11 @@ struct CaptionPickTools: View {
         let count = viewModel.captions.captionPicks?.count ?? 0
         return VStack(alignment: .leading, spacing: 4) {
             if count == 0 {
-                PanelNote(text: String(localized: "Tap the lines to change together."))
+                PanelNote(text: String(localized: "Tap the lines to change together."), teaches: true)
                     .frame(minHeight: Metrics.hitTarget, alignment: .leading)
             } else {
                 if !viewModel.captions.canStyleCaptionLines {
-                    PanelNote(text: String(localized: "Pick a look in Style to style lines on their own."))
+                    PanelNote(text: String(localized: "Pick a look in Style to style lines on their own."), teaches: true)
                 }
                 // On one row when it fits; with large text, the style on one row and moving and deleting on the next.
                 ViewThatFits(in: .horizontal) {

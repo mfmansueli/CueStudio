@@ -254,7 +254,8 @@ extension QuickEditViewModel {
             panelTab = tab
         case .swapSplit:
             overlays.swapSplit()
-            sayUndoable(String(localized: "Places swapped"))
+            // The preview shows it: no toast (the player bar's Undo takes it back).
+            announce(String(localized: "Places swapped"))
         case .openMediaMotion: panel = .motion
         default: return false
         }

@@ -221,7 +221,7 @@ struct PickBestTakeView: View {
         var result = proposal.reasons.map { reason -> Chip in
             switch reason {
             case .fitsPlatform(let duration):
-                Chip(text: String(localized: "✓ Fits \(proposal.platformLabel) · \(DurationText.clock(duration))"), isGood: true)
+                Chip(text: String(localized: "Within \(proposal.platformLabel)’s target length · \(DurationText.clock(duration))"), isGood: true)
             case .readWholeScript: Chip(text: String(localized: "Read the whole script"), isGood: false)
             case .closestToScript: Chip(text: String(localized: "Closest to your script’s length"), isGood: false)
             }

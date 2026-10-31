@@ -52,7 +52,7 @@ struct MyCueVoicePage: View {
         .sheet(item: $editing) { VoiceEditorSheet(field: $0) }
         .sheet(isPresented: $showsPreview) { VoicePreviewSheet() }
         .sheet(isPresented: $asksUltra) {
-            UltraConsentSheet(payload: starter.ultraPreview()) {
+            UltraConsentSheet {
                 HapticPatterns.playUltraIgnite()
                 withAnimation(UltraMotion.fold) {
                     ultra.consent.grant()

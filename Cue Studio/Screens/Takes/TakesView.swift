@@ -61,7 +61,7 @@ struct TakesView: View {
             // The first voyage's next step, 10 pt above the tab bar; the My Cue Voice question waits while it has one.
             VStack(spacing: 10) {
                 VoyageFloatingTip(place: .takes, isQuiet: isQuiet && services.toast.message == nil)
-                VoiceQuestionTipHost(isQuiet: isQuiet && voyage.floatingStep == nil)
+                VoiceQuestionTipHost(place: .takes, isQuiet: isQuiet && voyage.floatingStep == nil)
             }
             .padding(.horizontal, 12)
             .padding(.bottom, 10)

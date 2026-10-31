@@ -23,7 +23,7 @@ struct CaptionEmphasisStrip: View {
                     }
                 }
                 if viewModel.captions.hasTooMuchEmphasis(cueID) {
-                    PanelNote(text: String(localized: "Emphasis reads best on one or two words a line."))
+                    PanelNote(text: String(localized: "Emphasis reads best on one or two words a line."), teaches: true)
                 }
             }
             .accessibilityElement(children: .contain)

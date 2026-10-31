@@ -25,7 +25,8 @@ struct EditorToastHost: ViewModifier {
                     // Work under way that ends keeps its pill (`ToastService.pill`): only a new toast comes in anew.
                     .id(toast.pill)
                     .transition(.toast(reduceMotion: reduceMotion))
-                    .onTapGesture { toast.dismiss() }
+                    // A plain toast goes with a tap; one with a button keeps its Undo until its time is up.
+                    .onTapGesture { if toast.action == nil { toast.dismiss() } }
                 }
             }
             .animation(reduceMotion ? .easeOut(duration: 0.15) : .easeOut(duration: 0.2), value: toast.message)

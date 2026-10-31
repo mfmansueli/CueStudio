@@ -94,9 +94,28 @@ final class ScriptLibraryService {
         persist()
     }
 
-    /// "Checked" on the fact-check banner. Not an edit, so the order stays the same.
+    /// "I checked" on the fact-check reminder: the creator reviewed the claims of the text as it is now, recorded with its version and the
+    /// date (`FactReview`). Not an edit, so the order stays the same.
     func markFactChecked(_ id: UUID) {
         guard let index = scripts.firstIndex(where: { $0.id == id }), scripts[index].factCheck else { return }
+        scripts[index].factCheck = false
+        scripts[index].factReview = FactReview(text: scripts[index].text, version: scripts[index].version, date: now())
+        persist()
+    }
+
+    /// An AI rewrite changed the words of a script whose claims were reviewed: what was reviewed is no longer what is there, so the
+    /// reminder comes back. A script that never needed checking stays as it was.
+    func flagForFactCheckAfterRewrite(_ id: UUID) {
+        guard let index = scripts.firstIndex(where: { $0.id == id }), let review = scripts[index].factReview, !scripts[index].factCheck,
+              !review.covers(scripts[index].text) else { return }
+        scripts[index].factCheck = true
+        persist()
+    }
+
+    /// An Undo put back the very words that were reviewed: the reminder goes again.
+    func clearFactCheckIfReviewed(_ id: UUID) {
+        guard let index = scripts.firstIndex(where: { $0.id == id }), scripts[index].factCheck,
+              scripts[index].factReview?.covers(scripts[index].text) == true else { return }
         scripts[index].factCheck = false
         persist()
     }
@@ -125,6 +144,7 @@ final class ScriptLibraryService {
         persist()
     }
 
+    /// Gone for good: what the creator deletes has only the toast's Undo (owner, 31/10/2026: no Recently deleted).
     func delete(_ ids: Set<UUID>) {
         guard !ids.isEmpty else { return }
         scripts.removeAll { ids.contains($0.id) }

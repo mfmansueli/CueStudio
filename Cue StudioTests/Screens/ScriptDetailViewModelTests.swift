@@ -118,7 +118,8 @@ struct ScriptDetailViewModelTests {
         scenario.viewModel.markFactChecked()
         #expect(!scenario.viewModel.needsFactCheck)
         #expect(scenario.library.script(id: script.id)?.updatedAt == TestData.now)
-        #expect(scenario.toast.message == "Marked as fact-checked")
+        #expect(scenario.toast.message == "Claims reviewed for this version")
+        #expect(scenario.library.script(id: script.id)?.factReview?.covers(script.text) == true, "The review of this version is recorded")
     }
 
     @Test func translationIsSavedAsACopy() async {

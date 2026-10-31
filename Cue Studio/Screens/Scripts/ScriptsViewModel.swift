@@ -118,6 +118,17 @@ final class ScriptsViewModel {
         if selection.remove(id) == nil { selection.insert(id) }
     }
 
+    /// Every script shown (the chip and the search say which) is picked.
+    var selectsAllShown: Bool {
+        let shown = visibleScripts
+        return !shown.isEmpty && shown.allSatisfy { selection.contains($0.id) }
+    }
+
+    /// Select all beside Delete: picks every script shown, or lets them all go once they are.
+    func toggleSelectAll() {
+        if selectsAllShown { selection.removeAll() } else { selection.formUnion(visibleScripts.map(\.id)) }
+    }
+
     /// The scripts among what is picked: folders and Duplicate are theirs (an idea has neither).
     var selectedScripts: Set<UUID> {
         Set(library.scripts.lazy.map(\.id).filter(selection.contains))

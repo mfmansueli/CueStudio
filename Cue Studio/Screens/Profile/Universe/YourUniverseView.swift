@@ -153,7 +153,9 @@ struct YourUniverseView: View {
         case .newYear:
             UniverseInfoCard(
                 eyebrow: String(localized: "FIRST STAR OF \(String(content.selectedYear)) · 0 / 1"), title: String(localized: "Share your first video"),
-                detail: String(localized: "It starts this year’s universe"), progress: 0, icon: .aurora, identifier: "universe.firstStar"
+                detail: String(localized: "It starts this year’s universe"), progress: 0,
+                // The year looks back; the icons are the life's milestones, so the picture is the next one still to win (never Aurora, already theirs).
+                icon: milestones.nextMilestone.flatMap(AppIconChoice.init(milestone:)), identifier: "universe.firstStar"
             )
         case .sealed:
             if let card = content.yearCard {
@@ -162,8 +164,9 @@ struct YourUniverseView: View {
         case .live:
             if let next = milestones.nextMilestone, let icon = AppIconChoice(milestone: next) {
                 UniverseInfoCard(
-                    eyebrow: String(localized: "NEXT MILESTONE · \(milestones.yearShares) / \(next)"),
-                    title: String(localized: "Share \(next - milestones.yearShares) more videos"),
+                    // Counted over the creator's life, like the icon it opens (`MilestoneService`).
+                    eyebrow: String(localized: "NEXT MILESTONE · \(milestones.shares) / \(next)"),
+                    title: String(localized: "Share \(next - milestones.shares) more videos"),
                     detail: String(localized: "Unlocks the \(icon.title) app icon"), progress: milestones.progress, icon: icon,
                     identifier: "universe.nextMilestone"
                 )

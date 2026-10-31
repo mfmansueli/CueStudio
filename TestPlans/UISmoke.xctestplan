@@ -37,7 +37,7 @@
         "FirstRunUITests/testRecordingWithoutAScript()",
         "FreePlanUITests/testSuggestBestPicksATake()",
         "ProfileUITests/testSignInWithAppleIsOfferedWhenSignedOut()",
-        "YourUniverseUITests/testTheLiveYearShowsItsCountPlanetsAndMilestone()",
+        "YourUniverseUITests/testTheLiveYearShowsItsCountAndPlanets()",
         "VoiceV29UITests/testTheProfileCardShowsTheMeterTheSentenceAndTheNextQuestion()",
         "VoiceTipUITests/testTheTipAsksOneQuestionAndOffersOneMore()",
         "ProfileUITests/testUpgradeOpensAndClosesThePaywall()",

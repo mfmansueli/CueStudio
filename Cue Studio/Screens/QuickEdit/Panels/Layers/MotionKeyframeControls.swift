@@ -61,7 +61,7 @@ struct MotionKeyframeControls: View {
         }
         PanelNote(text: viewModel.selectedMediaID == nil
             ? String(localized: "Add a keyframe, move the playhead, then drag the text in the video. Cue moves it between keyframes.")
-            : String(localized: "Add a keyframe, move the playhead, then drag the photo or video. Cue moves it between keyframes."))
+            : String(localized: "Add a keyframe, move the playhead, then drag the photo or video. Cue moves it between keyframes."), teaches: true)
     }
 
     /// Track: follows what's under the item at the playhead; while it runs, how far it is and Cancel.
@@ -89,7 +89,7 @@ struct MotionKeyframeControls: View {
                 label: String(localized: "Track what’s under it"), systemImage: "scope", identifier: "edit.track",
                 action: viewModel.overlays.trackSelectedItem
             )
-            PanelNote(text: String(localized: "Put it on what it should follow at the playhead, then tap Track. Cue makes keyframes you can adjust."))
+            PanelNote(text: String(localized: "Put it on what it should follow at the playhead, then tap Track. Cue makes keyframes you can adjust."), teaches: true)
         }
     }
 

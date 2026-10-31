@@ -5,7 +5,8 @@
 
 import Foundation
 
-/// Minimum-length rule a platform applies before a video earns money.
+/// Minimum-length rule a platform applies before a video can earn money. Cue only knows the length: its words name the length goal, never a
+/// promise of earnings (decision 8, 30/10/2026).
 nonisolated enum MonetizationGoal: String, Codable, Sendable {
     case creatorRewards
     case midRollAds
@@ -13,7 +14,7 @@ nonisolated enum MonetizationGoal: String, Codable, Sendable {
     /// Completes "12s to …".
     var targetLabel: String {
         switch self {
-        case .creatorRewards: String(localized: "monetize")
+        case .creatorRewards: String(localized: "the length goal")
         case .midRollAds: String(localized: "mid-roll ads")
         }
     }
@@ -21,7 +22,7 @@ nonisolated enum MonetizationGoal: String, Codable, Sendable {
     /// Label under the minimum marker of the length meter.
     var meterLabel: String {
         switch self {
-        case .creatorRewards: String(localized: "monetizes")
+        case .creatorRewards: String(localized: "Creator Rewards")
         case .midRollAds: String(localized: "mid-rolls")
         }
     }
@@ -30,7 +31,7 @@ nonisolated enum MonetizationGoal: String, Codable, Sendable {
     var stopWarning: String {
         switch self {
         case .creatorRewards:
-            String(localized: "TikTok pays Creator Rewards over one minute.")
+            String(localized: "Creator Rewards only counts videos over one minute, and TikTok has other rules too.")
         case .midRollAds:
             String(localized: "YouTube only allows mid-roll ads on videos 8 minutes or longer.")
         }

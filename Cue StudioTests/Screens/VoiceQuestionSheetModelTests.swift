@@ -144,4 +144,39 @@ struct VoiceQuestionSheetModelTests {
         #expect(rig.toast.message == "Cue Voice complete")
         #expect(!rig.scheduler.completionToastIsDue())
     }
+
+    // MARK: - Only a real "not now" is a dismissal (D2)
+
+    @Test func pastingAnExampleAndClosingIsAnAnswerNotADismissal() {
+        let rig = make()
+        defer { rig.defaults.tearDown() }
+        rig.scheduler.dismissed(.role)
+        let model = rig.model(.example)
+        // The examples' field writes straight to the profile (paste or import), never through the sheet's model.
+        _ = rig.profile.addExample("Morning light is the best editor. I shoot before seven and keep it simple.")
+        model.dismissedWithoutAnswer()
+        #expect(rig.scheduler.state.dismissCount["example"] == nil)
+        #expect(rig.scheduler.state.consecutiveDismissals == 0, "an answer ends the streak of dismissals")
+    }
+
+    @Test func somethingElseOpenedWithoutAddIsNeitherAnAnswerNorADismissal() {
+        let rig = make()
+        defer { rig.defaults.tearDown() }
+        let model = rig.model(.endings)
+        model.showsSomethingElse = true
+        model.dismissedWithoutAnswer()
+        #expect(rig.scheduler.state.dismissCount["endings"] == nil)
+        #expect(rig.scheduler.state.snoozedUntil["endings"] == nil)
+    }
+
+    @Test func anOptionPickedAndUnpickedIsNeitherAnAnswerNorADismissal() {
+        let rig = make()
+        defer { rig.defaults.tearDown() }
+        let model = rig.model(.endings)
+        let first = option(.endings, "Save this")
+        model.choose(first)
+        model.choose(first)
+        model.dismissedWithoutAnswer()
+        #expect(rig.scheduler.state.dismissCount["endings"] == nil)
+    }
 }

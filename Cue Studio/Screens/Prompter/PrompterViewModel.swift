@@ -3,6 +3,7 @@
 //  Cue Studio
 //
 
+import Accessibility
 import Foundation
 
 /// Everything that happens while the prompter is open: scrolling, the camera, recording and the
@@ -36,8 +37,8 @@ final class PrompterViewModel {
     var followsSpeech = false
     /// The language recognition listens in while `followsSpeech`.
     var listeningLanguage: CueLanguage?
-    /// Why the words can't be followed in this language here, shown to the creator (once as a
-    /// toast, and under the Studio controls). Never replaced by another language.
+    /// Why the practice can't follow the words in this language here (its line under the box says it
+    /// scrolls while the creator talks). A session reads Steady instead. Never replaced by another language.
     var speechUnavailable: SpeechUnavailableReason?
     /// What recognition waits for before it can follow the words: its model loading, or
     /// downloading. Nil once it listens, or when it can't.
@@ -71,9 +72,9 @@ final class PrompterViewModel {
     /// Where the practice run is (waiting, counting in, reading, done); moved only by `PrompterViewModel+Practice`.
     var practiceStage = PracticeStage.idle
     var practiceTask: Task<Void, Never>?
-    /// The practice set the scrolling mode itself (Voice Following, or Steady without the microphone): the creator didn't pick it, so it
-    /// isn't remembered for the next session. Picking a mode clears it.
-    var practiceChoseScrollMode = false
+    /// The session set the scrolling mode itself (the practice's Voice Following, or Steady because the voice can't be followed here): the
+    /// creator didn't pick it, so it isn't remembered for the next session. Picking a mode clears it.
+    var sessionChoseScrollMode = false
 
     // MARK: Selfie layout (see PrompterViewModel+Layout)
     /// What the Selfie screen measured on this device.
@@ -262,13 +263,14 @@ final class PrompterViewModel {
         attachWatch()
         guard reviewingTake == nil else { return }
         preparePractice()
+        prepareScrollMode()
         await enter(mode)
     }
 
     func disappear() async {
         hasLeft = true
         // What the creator adjusted here (the box, the line, the size, the speed…) is what the next session opens with.
-        if !isPractice { session.rememberReadingLayout(includingScrollMode: !practiceChoseScrollMode) }
+        if !isPractice { session.rememberReadingLayout(includingScrollMode: !sessionChoseScrollMode) }
         countdownTask?.cancel()
         autoStopTask?.cancel()
         practiceTask?.cancel()
@@ -337,7 +339,7 @@ final class PrompterViewModel {
 
     func setScrollMode(_ mode: ScrollMode) {
         bar.touch()
-        practiceChoseScrollMode = false
+        sessionChoseScrollMode = false
         guard session.prompter.scrollMode != mode else { return }
         session.prompter.scrollMode = mode
     }
@@ -589,11 +591,15 @@ final class PrompterViewModel {
         }
     }
 
+    /// The creator stopped the countdown (its ✕, the record button, the watch): the numbers go, and VoiceOver hears it, with no toast over the
+    /// camera (the number leaving already says it).
     func cancelCountdown() {
+        let wasCounting = countdown != nil
         countdownTask?.cancel()
         countdownTask = nil
         countdown = nil
         watch?.publishCurrent()
+        if wasCounting { AccessibilityNotification.Announcement(String(localized: "Countdown cancelled")).post() }
     }
 
     private func beginRecording() async {

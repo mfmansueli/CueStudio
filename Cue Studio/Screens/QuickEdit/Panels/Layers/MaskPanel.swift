@@ -25,7 +25,7 @@ struct MaskPanel: View {
                 if let mask = media.mask, let placement = overlays.maskPlacementAtPlayhead(of: media) {
                     settings(mask, placement: placement, media: media)
                 } else {
-                    PanelNote(text: String(localized: "Pick a shape: only the part of the photo or video inside it shows, with the video under it around it."))
+                    PanelNote(text: String(localized: "Pick a shape: only the part of the photo or video inside it shows, with the video under it around it."), teaches: true)
                 }
             }
         }
@@ -73,12 +73,12 @@ struct MaskPanel: View {
         PanelAdvancedButton(isOpen: viewModel.showsAdvanced, identifier: "edit.maskAdvanced") { viewModel.showsAdvanced.toggle() }
         if viewModel.showsAdvanced { precise(mask, placement: placement) }
         if overlays.maskFollowsKeyframes(media) {
-            PanelNote(text: String(localized: "It moves by keyframes: a change to the mask is kept on the keyframe at the playhead, so the mask can change over time."))
+            PanelNote(text: String(localized: "It moves by keyframes: a change to the mask is kept on the keyframe at the playhead, so the mask can change over time."), teaches: true)
                 .accessibilityIdentifier("edit.maskKeyframesNote")
         }
         PanelNote(text: overlays.maskDragTarget == .mask
             ? String(localized: "Drag the mask on the video to show another part; pinch to resize it, turn with two fingers.")
-            : String(localized: "Drag the picture under the mask to reframe it; pinch to bring it closer."))
+            : String(localized: "Drag the picture under the mask to reframe it; pinch to bring it closer."), teaches: true)
     }
 
     /// The turn and the size in steps.

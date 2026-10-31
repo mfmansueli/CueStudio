@@ -46,7 +46,7 @@ struct CaptionFormatTab: View {
                 options: LineAlignment.allCases.map { PanelOption($0, $0.label, systemImage: $0.systemImage) },
                 selection: settings.spec.alignment, height: 38, identifier: "edit.captionAlignment"
             ) { captions.setCaptionAlignment($0) }
-            PanelNote(text: String(localized: "You can also drag the caption in the video. Another style keeps all of this."))
+            PanelNote(text: String(localized: "You can also drag the caption in the video. Another style keeps all of this."), teaches: true)
         } else {
             legacyControls
         }

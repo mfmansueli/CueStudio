@@ -21,7 +21,7 @@ nonisolated enum VoyageStep: Int, Codable, CaseIterable, Identifiable, Sendable 
 
     var title: String {
         switch self {
-        case .write: String(localized: "Write your first script")
+        case .write: String(localized: "Prepare your first script")
         case .practice: String(localized: "Practice with the teleprompter")
         case .record: String(localized: "Record a take")
         case .pick: String(localized: "Pick your best take")
@@ -39,18 +39,6 @@ nonisolated enum VoyageStep: Int, Codable, CaseIterable, Identifiable, Sendable 
         case .pick: String(localized: "Mark the one you'll post with a star")
         case .polish: String(localized: "Captions and Clean Up · optional")
         case .share: String(localized: "Lights your first star")
-        }
-    }
-
-    /// The symbol in the tip's tile.
-    var symbol: String {
-        switch self {
-        case .write: "sparkles"
-        case .practice: "text.alignleft"
-        case .record: "record.circle"
-        case .pick: "star"
-        case .polish: "captions.bubble"
-        case .share: "paperplane"
         }
     }
 
@@ -75,7 +63,8 @@ nonisolated enum VoyageStep: Int, Codable, CaseIterable, Identifiable, Sendable 
             guard let duration else { return String(localized: "The text follows your voice. Nothing is recorded.") }
             return String(localized: "The text follows your voice. \(duration), nothing recorded.")
         case .record: return String(localized: "Redo it as often as you like. You pick the take that's posted.")
-        case .pick: return String(localized: "Star your favorite. The others stay in Takes.")
+        // Never "the others": the tip only comes when there is more than one take, and says the same in every case.
+        case .pick: return String(localized: "Mark the one you'll post with a star")
         case .polish: return String(localized: "Cue drafts captions from your voice. Fix any word.")
         case .share:
             guard let network else { return String(localized: "Cue opens the app with your video and caption. You post.") }

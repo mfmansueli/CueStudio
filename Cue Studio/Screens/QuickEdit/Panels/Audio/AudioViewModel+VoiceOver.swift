@@ -32,7 +32,7 @@ extension AudioViewModel {
         }
         guard await recorder.requestPermission() else {
             toast.show(
-                String(localized: "Mic is off for Cue"), kind: .problem,
+                PermissionNotice.microphone.title, kind: .problem,
                 action: ToastAction(title: String(localized: "Settings")) { [weak self] in self?.opensSettings() }
             )
             return

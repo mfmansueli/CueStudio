@@ -82,7 +82,7 @@ struct CoverPictureStep: View {
                 onEditingChanged: { editing in if editing { viewModel.beginGesture() } else { viewModel.endGesture() } }
             )
             HStack {
-                PanelNote(text: String(localized: "Drag the cover to move the picture, pinch to zoom."))
+                PanelNote(text: String(localized: "Drag the cover to move the picture, pinch to zoom."), teaches: true)
                 Spacer(minLength: 8)
                 Button(String(localized: "Reset")) { viewModel.resetFraming() }
                     .font(.system(.subheadline, weight: .semibold))

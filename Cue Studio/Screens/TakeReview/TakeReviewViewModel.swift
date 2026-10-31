@@ -52,8 +52,13 @@ final class TakeReviewViewModel {
     @ObservationIgnored var onExported: (UUID, Bool) -> Void = { _, _ in }
     /// "Share to".
     var showsShareSheet = false
-    /// Photos refused the save: the review shows a card with Open Settings instead of a toast.
+    /// Photos refused the save (Save, or the "Share to universe" queue's copy): the review and the queue show a card with Open Settings
+    /// instead of a toast.
     var photosDenied = false
+    /// The last export failed: the review keeps a card with why and **Try again** (`ExportFailure`) until it is closed or an export starts.
+    private(set) var exportFailure: ExportFailure?
+    /// Operations whose cover was saved to Photos with the video ("Video and cover saved" on Ready to travel).
+    private(set) var coversSaved: Set<UUID> = []
     /// Where "#ad" goes for a sponsored video (the system pasteboard; a test swaps it).
     @ObservationIgnored var copiesCaption: (String) -> Void = { UIPasteboard.general.string = $0 }
     var burnsInCaptions = false
@@ -278,15 +283,14 @@ final class TakeReviewViewModel {
         guard let take else { return nil }
         let rest = siblings.filter { $0.id != take.id }
         guard let removed = takes.remove(take.id) else { return nil }
-        // Gone at once, with 4 s to take it back; its video is deleted for good after that.
+        // Gone at once, with its Undo; its video is deleted for good only once the Undo is out of reach: when the toast leaves (its time,
+        // another toast in its place) or Cue goes to the background (`TakeLibraryService.purgeAwaiting`), never on a clock of its own.
         let library = takes
+        library.awaitPurge(removed)
         toast.show(String(localized: "\(take.label) deleted"), action: ToastAction(title: String(localized: "Undo")) {
             library.restore(removed)
         })
-        Task { @MainActor in
-            try? await Task.sleep(for: ToastService.actionDuration + .milliseconds(600))
-            library.purge(removed)
-        }
+        toast.onLeave(of: toast.pill) { library.purgeAwaiting(removed.take.id) }
         return rest.last
     }
 
@@ -326,26 +330,33 @@ final class TakeReviewViewModel {
         return [title, isSponsored ? Self.adCaption : nil].compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: " ")
     }
 
-    /// A refused Photos permission is a card with the way out; anything else is "Couldn't export · Try again" and the export
-    /// count stays where it was (04 · F6).
-    private func report(_ error: Error) {
+    /// A refused Photos permission is a card with the way out; anything else is the export's card, with why and **Try again**, which stays
+    /// (after a purchase too, when the paywall that was in front has gone): the export count stays where it was (04 · F6).
+    private func report(_ error: Error, action: ExportAction) {
         if !(error is PhotoLibraryError), let failure = EditorFailureReport.make(error, operation: "export", edit: take?.edit) {
             reportFailure(failure)
         }
-        switch error {
-        case PhotoLibraryError.notAuthorized:
+        if case PhotoLibraryError.notAuthorized = error {
             photosDenied = true
-        case ExportPreflightError.notEnoughSpace(let megabytes):
-            toast.show(String(localized: "Not enough space on this iPhone. Free about \(megabytes) MB and try again."), kind: .problem)
-        case BackgroundExportError.stoppedBySystem, VideoExportError.interrupted:
-            toast.show(String(localized: "iOS stopped the export · Try again"), kind: .problem)
-        case VideoExportError.tooWarm:
-            // Follow face or Stabilize needed an analysis the iPhone was too hot to finish; it goes on from there next time.
-            toast.show(VideoExportError.tooWarm.localizedDescription, kind: .problem)
-        default:
-            toast.show(String(localized: "Couldn't export · Try again"), kind: .problem)
+            return
         }
+        exportFailure = ExportFailure(error: error, action: action)
     }
+
+    /// **Try again** on the export's card: the same export, from the start.
+    func retryFailedExport() async {
+        guard let failure = exportFailure else { return }
+        exportFailure = nil
+        await export(failure.action)
+    }
+
+    /// ✕ on the export's card.
+    func dismissExportFailure() {
+        exportFailure = nil
+    }
+
+    /// The cover was saved to Photos with this video.
+    func savedCover(_ video: ExportedVideo) -> Bool { coversSaved.contains(video.operationID) }
 
     /// A sponsored script (8.1): the share sheet warns, and "#ad" travels in the caption.
     var isSponsored: Bool { library.script(id: take?.scriptID)?.type == .ad }
@@ -402,6 +413,7 @@ final class TakeReviewViewModel {
         runningAction = action
         phase = .preparing
         exportProgress = 0
+        exportFailure = nil
         dismissStoppedExport()
         // Marked while it runs: still marked when Cue opens again means it stopped with Cue.
         preferences.exportsInFlight.insert(take.id)
@@ -428,7 +440,7 @@ final class TakeReviewViewModel {
             if !delivered { phase = .idle }
         } catch {
             phase = .failed
-            report(error)
+            report(error, action: action)
         }
     }
 
@@ -482,7 +494,8 @@ final class TakeReviewViewModel {
                     _ = try? await saveCoverIfChosen()
                 } catch PhotoLibraryError.notAuthorized {
                     // The networks can take the file without Photos: the queue goes on, and the first network that gets it counts the export.
-                    toast.show(String(localized: "Photos is off · the video wasn't saved there"), kind: .problem)
+                    // The queue's step shows the Photos card (with Open Settings), as Save does.
+                    photosDenied = true
                 }
             }
             phase = .idle
@@ -494,9 +507,14 @@ final class TakeReviewViewModel {
             savesToPhotos += 1
             recordDelivery(.photoLibrary(assetID: assetID), operation: operation, take: take)
             let withCover = (try? await saveCoverIfChosen()) ?? false
+            if withCover { coversSaved.insert(operation.id) }
+            photosDenied = false
             showsShareSheet = false
-            announce(savedMessage(tier: tier(), withCover: withCover))
+            // No toast: "Ready to travel" says it all, its button turned into "✓ Saved to Photos", the free exports on its meter, and
+            // missing captions on the cover itself.
             celebration = .readyToTravel(exported(take, operation: operation))
+            let saved = withCover ? String(localized: "Video and cover saved to Photos") : String(localized: "Saved to Photos")
+            AccessibilityNotification.Announcement(saved).post()
         case .share(nil):
             presentActivity(for: operation, destination: nil)
         case .share(let destination?):
@@ -528,8 +546,9 @@ final class TakeReviewViewModel {
         if route == .saveOnly {
             // Nothing takes the video directly: it is in Photos, and the creator is told to post it from the app.
             showsShareSheet = false
-            announce(savedForPostingMessage(for: destination, tier: tier()))
+            // What the video holds is read before the message says it (the message forgets why captions are missing).
             celebration = .readyToTravel(exported(take, operation: operation))
+            announce(savedForPostingMessage(for: destination, tier: tier()))
             return
         }
         let video = SharedVideo(
@@ -552,16 +571,16 @@ final class TakeReviewViewModel {
         case .delivered(let evidence):
             recordDelivery(evidence, operation: operation, take: take)
             showsShareSheet = false
-            announce(sharedMessage(with: label))
             celebration = .sentOff(exported(take, operation: operation), [destination])
+            announce(sharedMessage(with: label))
         case .pending:
             showsShareSheet = false
         case .opened:
             showsShareSheet = false
             if route.needsPhotosCopy {
                 // Saved, and the app is open for the creator to pick it.
-                announce(readyMessage(for: destination, tier: tier()))
                 celebration = .readyToTravel(exported(take, operation: operation))
+                announce(readyMessage(for: destination, tier: tier()))
             } else {
                 // Instagram: the video left Cue (on the pasteboard, with the composer open), which counts. Whether it read it, or
                 // the creator posts it, Instagram doesn't say.
@@ -600,8 +619,8 @@ final class TakeReviewViewModel {
         case .completed(let type):
             showsShareSheet = false
             if let destination = share.destination, destination.matches(activityType: type) {
-                announce(sharedMessage(with: destination.platform.label))
                 celebration = .sentOff(exported(take, operation: operation), [destination])
+                announce(sharedMessage(with: destination.platform.label))
             } else {
                 announce(sharedMessage(with: nil))
             }
@@ -627,7 +646,8 @@ final class TakeReviewViewModel {
         return ExportedVideo(
             operationID: operation.id, take: take, url: ledger.fileURL(of: operation),
             formatLabel: "\(outputResolutionLabel(for: take).uppercased()) · \(take.outputAspect.label)",
-            hasCaptions: burnsInCaptions && captionNotice == nil, exportsLeft: quota.exportsLeft(for: currentTier), platform: take.platform
+            hasCaptions: burnsInCaptions && captionNotice == nil, missingCaptions: burnsInCaptions ? captionNotice : nil,
+            exportsLeft: quota.exportsLeft(for: currentTier), platform: take.platform
         )
     }
 
@@ -678,7 +698,8 @@ final class TakeReviewViewModel {
         return edit
     }
 
-    /// A finished export's message, with why captions are missing when they were asked for.
+    /// A finished export's message, with why captions are missing when they were asked for. Read after the celebration took what the
+    /// video holds (`exported`): before, "Ready to travel" said CAPTIONS ON for a video without them.
     private func announce(_ message: String) {
         toast.show(captionNotice.map { message + " · " + $0 } ?? message)
         captionNotice = nil
@@ -709,16 +730,6 @@ final class TakeReviewViewModel {
         let shared = label.map { String(localized: "Shared with \($0)") } ?? String(localized: "Shared")
         guard let left = quota.exportsLeft(for: tier()) else { return shared }
         return shared + " · " + String(localized: "\(left) of \(UsagePolicy.freeExports) free exports left")
-    }
-
-    private func savedMessage(tier: MembershipTier, withCover: Bool) -> String {
-        let saved = withCover ? String(localized: "Video and cover saved to Photos") : String(localized: "Saved to Photos")
-        if let left = quota.exportsLeft(for: tier) {
-            return withCover
-                ? saved + " · " + String(localized: "\(left) of \(UsagePolicy.freeExports) free exports left")
-                : String(localized: "Saved to Photos · \(left) of \(UsagePolicy.freeExports) free exports left")
-        }
-        return saved
     }
 
     /// Draws the take's cover and saves it to Photos. False when no cover was chosen.

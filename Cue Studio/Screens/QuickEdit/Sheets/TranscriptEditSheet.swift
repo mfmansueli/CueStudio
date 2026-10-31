@@ -97,7 +97,7 @@ struct TranscriptEditSheet: View {
                         label: String(localized: "Put back"), systemImage: "arrow.uturn.backward", identifier: "edit.transcript.restore"
                     ) { viewModel.clips.restoreSelectedWords() }
                 }
-                PanelNote(text: String(localized: "Cut removes the words from the video. Fix caption text only changes what the caption says."))
+                PanelNote(text: String(localized: "Cut removes the words from the video. Fix caption text only changes what the caption says."), teaches: true)
             }
             .padding(.bottom, 8)
         }

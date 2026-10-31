@@ -67,7 +67,8 @@ struct TakeReviewViewModelTests {
         #expect(scenario.exporter.exports == [ExportOptions(aspect: .portrait)])
         #expect(scenario.photos.savedURLs.count == 1)
         #expect(scenario.quota.exportsLeft(for: .free) == 2)
-        #expect(scenario.toast.message == "Saved to Photos · 2 of 3 free exports left")
+        // No toast: the button says it was saved, and the count is on the meter (`exportLabel`).
+        #expect(scenario.toast.message == nil)
         #expect(scenario.viewModel.exportLabel == FreeExportLabels.Label(text: "2 OF 3 FREE EXPORTS LEFT", tone: .quiet))
     }
 
@@ -115,7 +116,7 @@ struct TakeReviewViewModelTests {
         defer { scenario.defaults.tearDown() }
         await scenario.viewModel.save()
         #expect(scenario.exporter.exports.count == 1)
-        #expect(scenario.toast.message == "Saved to Photos")
+        #expect(scenario.toast.message == nil)
         #expect(scenario.viewModel.exportLabel == FreeExportLabels.Label(text: "PRO · UNLIMITED EXPORTS", tone: .quiet))
         #expect(scenario.quota.exportsUsed == 5)
     }
@@ -401,7 +402,9 @@ struct TakeReviewViewModelTests {
         var failures: [EditorFailureReport] = []
         scenario.viewModel.reportFailure = { failures.append($0) }
         await scenario.viewModel.save()
-        #expect(scenario.toast.message == "Couldn't export · Try again")
+        // The card stays in the place of the export, with Try again; no toast that would go away.
+        #expect(scenario.toast.message == nil)
+        #expect(scenario.viewModel.exportFailure?.line == "Nothing was counted, and your take is safe.")
         #expect(failures.map(\.operation) == ["export"])
         #expect(failures.first?.reason == "NSURLErrorDomain -1")
         #expect(scenario.quota.exportsLeft(for: .free) == 3)

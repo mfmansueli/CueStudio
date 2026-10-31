@@ -32,7 +32,7 @@ struct RewriteNoticeTests {
         let before = Self.words(40)
         let notice = Self.notice(.moreHuman, before: before, after: before)
         #expect(!notice.changesScript && notice.kind == .problem)
-        #expect(notice.message == "Couldn’t draft it · Try again")
+        #expect(notice.message == "Couldn’t draft it")
     }
 
     @Test func aScriptWithNothingWrongSaysSo() {
@@ -47,7 +47,7 @@ struct RewriteNoticeTests {
         let text = Self.words(words)
         let notice = Self.notice(.fitToTime, before: text, after: text, left: 1)
         #expect(!notice.changesScript && notice.kind == .done)
-        #expect(notice.message == "Already fits 1:00 to 1:30")
+        #expect(notice.message == "Already within the target length · 1:00 to 1:30")
     }
 
     @Test func fitToTimeSaysHowFarItGotWhenItDidNotArrive() {

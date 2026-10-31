@@ -122,7 +122,7 @@ struct TextToSpeechSheet: View {
                 .accessibilityIdentifier("tts.voice")
             }
             if speech.hasOnlyCompactVoices {
-                PanelNote(text: String(localized: "For a more natural voice, download an Enhanced or Premium one in Settings › Accessibility › Spoken Content › Voices."))
+                PanelNote(text: String(localized: "For a more natural voice, download an Enhanced or Premium one in Settings › Accessibility › Spoken Content › Voices."), teaches: true)
             }
         }
         .disabled(speech.phase == .making)

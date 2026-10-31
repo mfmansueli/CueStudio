@@ -357,17 +357,18 @@ struct PrompterViewModelVoiceTests {
         await scenario.viewModel.disappear()
     }
 
-    @Test func anUnavailableLanguageScrollsWhileTalkingAndSaysSo() async {
+    /// A language this iPhone can't recognize: the session reads Steady (nothing pretends to follow the voice) and the saved mode stays.
+    @Test func anUnavailableLanguageReadsSteadyForTheSession() async {
         let scenario = makeScenario { $0.unavailable = .unsupported(.thai) }
         defer { scenario.defaults.tearDown() }
         await scenario.viewModel.appear()
-        await Wait.until { scenario.viewModel.speechUnavailable != nil }
-        #expect(scenario.viewModel.voiceFollowStatus == .scrollsWhileTalking)
-        await learnTheRoom(scenario)
+        await Wait.until { scenario.viewModel.session.prompter.scrollMode == .steady }
+        #expect(scenario.viewModel.session.prompter.scrollMode == .steady)
         scenario.viewModel.play()
-        await run(scenario, for: 0.5, level: -20)
-        #expect(scenario.viewModel.engine.offset > 0)
+        await run(scenario, for: 0.5)
+        #expect(scenario.viewModel.engine.offset > 0, "Steady moves without a voice")
         await scenario.viewModel.disappear()
+        #expect(scenario.preferences.prompter.scrollMode == .voice)
     }
 
     // MARK: - Waiting for the voice
@@ -446,12 +447,13 @@ struct PrompterViewModelVoiceTests {
         await scenario.viewModel.disappear()
     }
 
-    /// Without word recognition the text moves while the creator talks, but a spike doesn't start it: only a voice does.
+    /// Without word recognition yet (its model still getting ready) the text moves while the creator talks, but a spike doesn't start
+    /// it: only a voice does.
     @Test func withoutWordsASpikeWaitsAndAVoiceStartsTheText() async {
-        let scenario = makeScenario { $0.unavailable = .unsupported(.thai) }
+        let scenario = makeScenario { $0.holdsStart = true }
         defer { scenario.defaults.tearDown() }
-        await scenario.viewModel.appear()
-        await Wait.until { scenario.viewModel.speechUnavailable != nil }
+        let opening = Task { await scenario.viewModel.appear() }
+        await Wait.until { scenario.speech.startCount == 1 }
         await learnTheRoom(scenario)
         scenario.viewModel.play()
         await run(scenario, for: 3)
@@ -462,6 +464,8 @@ struct PrompterViewModelVoiceTests {
         #expect(scenario.viewModel.engine.offset == 0)
         await run(scenario, for: 0.6, level: -20)
         #expect(scenario.viewModel.engine.offset > 0)
+        scenario.speech.finishPreparing()
+        await opening.value
         await scenario.viewModel.disappear()
     }
 

@@ -39,14 +39,19 @@ final class PrompterUITests: XCTestCase {
     }
 
     func testStudioSwitchesToVoiceFollowing() {
-        let app = CueApp.launch(seeded: true)
+        // Voice Following is the default; the simulator can't recognize speech, so the recognition is scripted: it listens and hears nothing.
+        let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestVoiceFollowing", "listening"])
         app.openStudio(titled: "Oat & Co. · sponsored read")
 
-        XCTAssertTrue(element(app, "prompter.speedSlider").exists(within: 5))
-        let speedLabel = element(app, "prompter.speedSlider").value as? String ?? "1×"
+        let mode = app.descendants(matching: .any)["prompter.scrollMode"].firstMatch
+        XCTAssertTrue(element(app, "prompter.voiceIndicator").exists(within: 5))
+        XCTAssertFalse(element(app, "prompter.speedSlider").exists)
         XCTAssertTrue(app.buttons["prompter.backButton"].exists)
         XCTAssertTrue(app.buttons["prompter.forwardButton"].exists)
-        app.descendants(matching: .any)["prompter.scrollMode"].firstMatch.buttons["Voice"].tap()
+        mode.buttons["Steady"].tap()
+        XCTAssertTrue(element(app, "prompter.speedSlider").exists(within: 5))
+        XCTAssertFalse(element(app, "prompter.voiceIndicator").exists)
+        mode.buttons["Voice"].tap()
         allowMicrophoneIfAsked()
         XCTAssertTrue(element(app, "prompter.voiceIndicator").exists(within: 5))
         XCTAssertFalse(element(app, "prompter.speedSlider").exists)
@@ -56,44 +61,56 @@ final class PrompterUITests: XCTestCase {
         // brings it back.
         XCTAssertTrue(play.matches(NSPredicate(format: "label == 'Pause'"), within: 10))
         bringStudioBarOut(app)
-        // The Simulator can't run speech recognition: there the text scrolls at the set speed while
-        // you talk, and says so, speed included. It never claims to follow the words.
         let status = element(app, "prompter.voiceStatus")
-        XCTAssertTrue(status.exists(within: 5))
-        let honest = NSPredicate(format: "label CONTAINS 'while you talk' AND label CONTAINS %@", speedLabel)
-        XCTAssertTrue(status.matches(honest, within: 10))
-        XCTAssertNotEqual(status.label, "Follows your words")
+        XCTAssertTrue(status.matches(NSPredicate(format: "label == 'Follows your words'"), within: 10))
         play.tap()
         app.buttons["prompter.closeButton"].tap()
         XCTAssertTrue(app.staticTexts["Oat & Co. · sponsored read"].exists(within: 5))
     }
 
     func testVoiceFollowingIsOneTapInTheToolbar() {
-        let app = CueApp.launch(seeded: true)
+        let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestVoiceFollowing", "listening"])
         let record = app.buttons["row.recordButton"].firstMatch
         XCTAssertTrue(record.exists(within: 15))
         record.tap()
 
-        let voice = app.descendants(matching: .any)["prompter.scrollMode"].firstMatch.buttons["Voice"]
+        // It opens in Voice Following, the default, waiting for the creator to play.
+        let mode = app.descendants(matching: .any)["prompter.scrollMode"].firstMatch
+        let voice = mode.buttons["Voice"]
         XCTAssertTrue(voice.exists(within: 5))
-        let speed = element(app, "prompter.speedSlider")
-        XCTAssertTrue(speed.exists)
-        // The natural pace: 1×.
-        XCTAssertEqual(speed.value as? String, "1×")
-        voice.tap()
         allowMicrophoneIfAsked()
         let indicator = element(app, "prompter.voiceIndicator")
         XCTAssertTrue(indicator.exists(within: 5))
         XCTAssertTrue(voice.isSelected)
+        XCTAssertTrue(indicator.matches(NSPredicate(format: "value == 'Paused'"), within: 10))
+        let speed = element(app, "prompter.speedSlider")
         XCTAssertFalse(speed.exists)
-        // Getting ready, then (the Simulator can't recognize speech) scrolling while you talk:
-        // never "Listening" to the words while paused, and never stuck getting ready.
-        let settled = NSPredicate(format: "value == 'Paused'")
-        XCTAssertTrue(indicator.matches(settled, within: 10))
 
-        app.descendants(matching: .any)["prompter.scrollMode"].firstMatch.buttons["Steady"].tap()
+        mode.buttons["Steady"].tap()
         XCTAssertFalse(element(app, "prompter.voiceIndicator").exists(within: 2))
-        XCTAssertTrue(speed.exists)
+        XCTAssertTrue(speed.exists(within: 5))
+        // The natural pace: 1×.
+        XCTAssertEqual(speed.value as? String, "1×")
+        voice.tap()
+        XCTAssertTrue(indicator.exists(within: 5))
+        XCTAssertFalse(speed.exists)
+        app.buttons["prompter.closeButton"].tap()
+        XCTAssertTrue(record.exists(within: 5))
+    }
+
+    func testWhereTheVoiceCantBeFollowedTheTextReadsSteadyAndSaysWhy() {
+        // This iPhone can't follow the words: the session reads Steady and its toast says why. It never claims to follow them.
+        let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestVoiceFollowing", "unavailable"])
+        let record = app.buttons["row.recordButton"].firstMatch
+        XCTAssertTrue(record.exists(within: 15))
+        record.tap()
+
+        // Said as the prompter opens, while the toast is up.
+        XCTAssertTrue(EditorApp.toastSays(app, "No speech recognition here", timeout: 10))
+        allowMicrophoneIfAsked()
+        XCTAssertTrue(element(app, "prompter.speedSlider").exists(within: 5))
+        XCTAssertFalse(element(app, "prompter.voiceIndicator").exists)
+        XCTAssertTrue(app.descendants(matching: .any)["prompter.scrollMode"].firstMatch.buttons["Steady"].isSelected)
         app.buttons["prompter.closeButton"].tap()
         XCTAssertTrue(record.exists(within: 5))
     }

@@ -25,15 +25,6 @@ nonisolated struct ScriptRowLine: Equatable, Sendable {
         self.values = values
     }
 
-    /// "4 cues", "1 cue", "No cues" (the script page's strip, `ScriptStrip`).
-    static func cues(_ count: Int) -> String {
-        switch count {
-        case 0: String(localized: "No cues")
-        case 1: String(localized: "1 cue")
-        default: String(localized: "\(count) cues")
-        }
-    }
-
     /// "2h ago", "yesterday", in the interface's language.
     static func ago(_ date: Date) -> String {
         var style = Date.RelativeFormatStyle(presentation: .named, unitsStyle: .narrow)

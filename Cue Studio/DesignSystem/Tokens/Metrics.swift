@@ -87,6 +87,8 @@ enum Metrics {
     static let editorNoticeRadius: CGFloat = 17
     /// A toast: round ends on one line (44 pt), the same corners on two.
     static let toastRadius: CGFloat = 22
+    /// A notice that stays in place (`NoticeCard`: a permission that is off, an export that failed).
+    static let noticeRadius: CGFloat = 20
     /// The corners of a record button's stop square.
     static let recordStopRadius: CGFloat = 7
 

@@ -44,9 +44,11 @@ extension AudioViewModel {
             keepsPitch: segment.keepsPitch, curve: segment.speedCurve,
             treatment: .init(edit: edit, takeURL: videoURL, recording: segment.sourceID)
         )
-        guard let sound = await extract(request) else { return }
+        // The ring turns until what came of it takes its place: the new track (`finishExtracting`) or why not.
+        let work = toast.showWorking(String(localized: "Extracting the sound…"))
+        guard let sound = await extract(request, work: work) else { return }
         // The sound took a moment: if the cuts changed meanwhile, the place it was for may be gone.
-        guard edit.timeline == timeline else { return discardExtracted(sound) }
+        guard edit.timeline == timeline else { return discardExtracted(sound, work: work) }
         var clip = extractedClip(sound, title: String(localized: "Sound · Clip \(index + 1)"), start: timeline.editedStart(ofSegmentAt: index))
         clip.extractedFrom = .clip
         clip.volume = min(max(segment.volume, MusicClip.volumeRange.lowerBound), MusicClip.volumeRange.upperBound)
@@ -56,7 +58,7 @@ extension AudioViewModel {
             snapshot.timeline.replaceSegment(muted)
             snapshot.music = (snapshot.music ?? []) + [clip]
         }
-        finishExtracting(clip, message: String(localized: "Sound on its own track · the clip is muted"))
+        finishExtracting(clip, message: String(localized: "Sound on its own track · the clip is muted"), work: work)
     }
 
     // MARK: - A video over the take
@@ -77,11 +79,12 @@ extension AudioViewModel {
         let request = SoundExtraction(
             videoURL: EditMediaFiles.url(for: media.fileName), span: TimeSpan(start: start, end: start + placed.span.duration)
         )
-        guard let sound = await extract(request) else { return }
+        let work = toast.showWorking(String(localized: "Extracting the sound…"))
+        guard let sound = await extract(request, work: work) else { return }
         // Moved, trimmed, slipped or swapped meanwhile (none of which changes the cuts): the sound would land off its picture.
         guard edit.timeline == timeline, let now = edit.editedMedia(in: timeline).first(where: { $0.media.id == id }),
               now.span == placed.span, now.media.startInFile == start, now.media.fileName == media.fileName,
-              let nowVolume = now.media.audioVolume, nowVolume > 0 else { return discardExtracted(sound) }
+              let nowVolume = now.media.audioVolume, nowVolume > 0 else { return discardExtracted(sound, work: work) }
         var clip = extractedClip(sound, title: String(localized: "Sound · Video"), start: placed.span.start)
         clip.extractedFrom = .media
         clip.volume = nowVolume
@@ -90,17 +93,16 @@ extension AudioViewModel {
             snapshot.media[index].audioVolume = nil
             snapshot.music = (snapshot.music ?? []) + [clip]
         }
-        finishExtracting(clip, message: String(localized: "Sound on its own track · the video is muted"))
+        finishExtracting(clip, message: String(localized: "Sound on its own track · the video is muted"), work: work)
     }
 
     // MARK: - Private
 
-    private func extract(_ request: SoundExtraction) async -> ExtractedSound? {
+    /// The sound, while `work`'s ring turns; why not takes the ring's place.
+    private func extract(_ request: SoundExtraction, work: UUID) async -> ExtractedSound? {
         isImportingMedia = true
         defer { isImportingMedia = false }
         player.pause()
-        // The ring turns until what came of it takes its place: the new track (`finishExtracting`) or why not.
-        let work = toast.showWorking(String(localized: "Extracting the sound…"))
         do {
             let sound = try await editing.extractSound(request)
             guard !isClosed else {
@@ -111,21 +113,21 @@ extension AudioViewModel {
             importedFiles.insert(sound.fileName)
             return sound
         } catch AudioTrackExtractor.ExtractError.noAudio {
-            toast.show(String(localized: "This clip has no sound"), kind: .problem)
+            toast.show(String(localized: "This clip has no sound"), kind: .problem, ending: work)
         } catch is CancellationError {
             // The editor closed meanwhile: nothing to say.
             toast.endWorking(work)
         } catch {
             noteFailure(error, "extractAudio")
-            toast.show(String(localized: "Can't extract this sound"), kind: .problem)
+            toast.show(String(localized: "Can't extract this sound"), kind: .problem, ending: work)
         }
         return nil
     }
 
-    private func discardExtracted(_ sound: ExtractedSound) {
+    private func discardExtracted(_ sound: ExtractedSound, work: UUID) {
         EditMediaFiles.remove([sound.fileName])
         importedFiles.remove(sound.fileName)
-        toast.show(String(localized: "The video changed meanwhile · Extract the sound again"), kind: .problem)
+        toast.show(String(localized: "The video changed meanwhile · Extract the sound again"), kind: .problem, ending: work)
     }
 
     /// The new clip on the music track: where the sound played, at its own level, with no fades and never ducking (it's the
@@ -142,9 +144,9 @@ extension AudioViewModel {
     }
 
     /// The new track is picked, so its tools (Volume, Delete) are at hand, with the playhead where it starts.
-    private func finishExtracting(_ clip: MusicClip, message: String) {
+    private func finishExtracting(_ clip: MusicClip, message: String, work: UUID) {
         selection = .music(clip.id)
         player.seek(to: clip.start)
-        toast.show(message, action: undoAction)
+        toast.show(message, action: undoAction, ending: work)
     }
 }

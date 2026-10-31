@@ -5,17 +5,16 @@
 
 import SwiftUI
 
-/// The invitation to try Ultra AI (`UltraInviteService`), where the AI writes: a line in the Scripts dock, a card in Find inspiration and on My Cue
-/// Voice. It says what Ultra AI is for and that the first scripts are free, with a button to try it (the permission sheet comes first) and × to
-/// close it, here and everywhere. Shown only while `UltraScriptService.showsInvite`. The first time it appears in a session it lights up
-/// (`UltraMotion`): the ✦ ignites with a glow, the lines rise out of the blur one after the other and a light runs once around the edge; × folds it
-/// away with a soft tap. Under Reduce Motion it only fades.
+/// The invitation to try Ultra AI (`UltraInviteService`), where the AI writes: a line in the Scripts dock and a card on My Cue Voice (in Find
+/// inspiration it is the sheet's own "Draft with Ultra AI · 3 free", so no card pushes the idea down). It says what Ultra AI is for and that
+/// the first scripts are free, with a button to try it (the permission sheet comes first) and × to close it, here and everywhere. Shown only
+/// while `UltraScriptService.showsInvite`. The first time it appears in a session it lights up (`UltraMotion`): the ✦ ignites with a glow, the
+/// lines rise out of the blur one after the other and a light runs once around the edge; × folds it away with a soft tap. Under Reduce Motion
+/// it only fades.
 struct UltraInviteCard: View {
     enum Placement {
         /// One line under the dock's field.
         case dock
-        /// Above Find inspiration's idea: drafts that idea.
-        case inspiration
         /// On My Cue Voice: the next idea goes to Ultra AI.
         case voice
     }
@@ -75,7 +74,7 @@ struct UltraInviteCard: View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
                 star(.subheadline)
-                Text(title)
+                Text("Your voice, with Ultra AI")
                     .cueFont(.subheadline, weight: .semibold)
                     .foregroundStyle(Palette.ink)
                     .fixedSize(horizontal: false, vertical: true)
@@ -86,12 +85,12 @@ struct UltraInviteCard: View {
                     .padding(.vertical, -12)
                     .modifier(Rise(lit: lit, step: 1, reduceMotion: reduceMotion))
             }
-            Text(detail)
+            Text("Ultra AI writes in this voice too, and develops each idea further. Your first \(free) scripts are free.")
                 .cueFont(.footnote)
                 .foregroundStyle(Palette.ink2)
                 .fixedSize(horizontal: false, vertical: true)
                 .modifier(Rise(lit: lit, step: 2, reduceMotion: reduceMotion))
-            tryButton(Text(action), size: .medium)
+            tryButton(Text("Try Ultra AI free"), size: .medium)
                 .modifier(Rise(lit: lit, step: 3, reduceMotion: reduceMotion))
         }
         .padding(EdgeInsets(top: 14, leading: 16, bottom: 14, trailing: 8))
@@ -165,20 +164,6 @@ struct UltraInviteCard: View {
         if !reduceMotion { arrival += 1 }
     }
 
-    private var title: LocalizedStringKey {
-        placement == .voice ? "Your voice, with Ultra AI" : "Draft this idea with Ultra AI"
-    }
-
-    private var detail: LocalizedStringKey {
-        placement == .voice
-            ? "Ultra AI writes in this voice too, and develops each idea further. Your first \(free) scripts are free."
-            : "A second writer that develops the idea further, in your voice. Your first \(free) scripts are free."
-    }
-
-    private var action: LocalizedStringKey {
-        placement == .voice ? "Try Ultra AI free" : "Draft it with Ultra AI"
-    }
-
     private func tryButton(_ label: Text, size: CueStudioButtonStyle.Size) -> some View {
         Button(action: onTry) { label }
             .buttonStyle(.cueAI(size, expands: false))
@@ -224,7 +209,6 @@ private struct Rise: ViewModifier {
 #Preview {
     VStack(spacing: 16) {
         UltraInviteCard(placement: .dock, onTry: {}, onClose: {})
-        UltraInviteCard(placement: .inspiration, onTry: {}, onClose: {})
         UltraInviteCard(placement: .voice, onTry: {}, onClose: {})
     }
     .padding()

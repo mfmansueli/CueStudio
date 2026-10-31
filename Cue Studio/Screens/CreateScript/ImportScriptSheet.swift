@@ -86,6 +86,8 @@ struct ImportScriptSheet: View {
         }
         .scrollDismissesKeyboard(.interactively)
         .cueSheetChrome()
+        // What the sheet says ("Copy your script first") shows in front of it, not under it.
+        .toastHost(inSheet: true)
         .presentationDetents([.large])
         .presentationDragIndicator(.visible)
         .fileImporter(isPresented: $showsFilePicker, allowedContentTypes: importer.supportedTypes) { result in

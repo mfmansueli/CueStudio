@@ -7,14 +7,16 @@ import Foundation
 import Testing
 @testable import Cue_Studio
 
-/// The first voyage's steps, read from what the creator has: nothing is locked, a step done out of order counts, and the first
-/// video shared completes the voyage.
+/// The first voyage's steps, read from what the creator has: nothing is locked, a step done out of order counts, a single take is
+/// picked by itself, only captions the creator turned on polish, and the first video shared completes the voyage.
 @Suite("VoyageProgress")
 struct VoyageProgressTests {
     private let marks = VoyageMarks(stage: .active)
 
-    private func take(best: Bool = false, edit: TakeEdit? = nil) -> Take {
-        var take = TestData.take(scriptID: UUID(), isBest: best)
+    private let scriptID = UUID()
+
+    private func take(best: Bool = false, edit: TakeEdit? = nil, number: Int = 1) -> Take {
+        var take = TestData.take(scriptID: scriptID, number: number, isBest: best)
         take.edit = edit
         return take
     }
@@ -36,19 +38,31 @@ struct VoyageProgressTests {
     }
 
     @Test func recordingCountsAsPracticeSoSkippingItNeverLeavesTheStepBehind() {
-        let progress = VoyageProgress(scripts: 1, takes: [take()], shares: 0, marks: marks)
+        let progress = VoyageProgress(scripts: 1, takes: [take(), take(number: 2)], shares: 0, marks: marks)
         #expect(progress.done.isSuperset(of: [.write, .practice, .record]))
         #expect(progress.current == .pick)
     }
 
-    @Test func aStarOrAnOpenedEditPicksTheBestTake() {
-        #expect(VoyageProgress(scripts: 1, takes: [take(best: true)], shares: 0, marks: marks).current == .polish)
-        #expect(VoyageProgress(scripts: 1, takes: [take(edit: TakeEdit(sourceDuration: 30, aspect: .portrait))], shares: 0, marks: marks).current == .polish)
+    @Test func aStepOnceDoneStaysDoneWhenASecondTakeComes() {
+        var noted = marks
+        noted.announced = [.write, .practice, .record, .pick]
+        let progress = VoyageProgress(scripts: 1, takes: [take(), take(number: 2)], shares: 0, marks: noted)
+        #expect(progress.done.contains(.pick), "the single take was picked by itself; a second one doesn't undo it")
+        #expect(progress.current == .polish)
+    }
+
+    @Test func aStarOrASingleTakePicksTheBestTakeButAnEditDoesNot() {
+        #expect(VoyageProgress(scripts: 1, takes: [take(best: true), take(number: 2)], shares: 0, marks: marks).current == .polish)
+        #expect(VoyageProgress(scripts: 1, takes: [take()], shares: 0, marks: marks).current == .polish, "nothing to choose between")
+        let edited = [take(edit: TakeEdit(sourceDuration: 30, aspect: .portrait)), take(number: 2)]
+        #expect(VoyageProgress(scripts: 1, takes: edited, shares: 0, marks: marks).current == .pick)
     }
 
     @Test func captionsACutPauseOrASkipPolishIt() {
         var captioned = TakeEdit(sourceDuration: 30, aspect: .portrait)
         captioned.captions = [CaptionCue(text: "Hello", start: 0, end: 1)]
+        #expect(VoyageProgress(scripts: 1, takes: [take(best: true, edit: captioned)], shares: 0, marks: marks).current == .polish, "kept by an export")
+        captioned.showsCaptions = true
         #expect(VoyageProgress(scripts: 1, takes: [take(best: true, edit: captioned)], shares: 0, marks: marks).current == .share)
 
         var cleaned = TakeEdit(sourceDuration: 30, aspect: .portrait)
@@ -73,7 +87,7 @@ struct VoyageProgressTests {
 
     @Test func aStepDoneOutOfOrderCountsAndTheCardNamesTheFirstAhead() {
         // A freestyle take with no script: writing counts (there is something to post), and picking is next.
-        let progress = VoyageProgress(scripts: 0, takes: [take()], shares: 0, marks: marks)
+        let progress = VoyageProgress(scripts: 0, takes: [take(), take(number: 2)], shares: 0, marks: marks)
         #expect(progress.done.contains(.write))
         #expect(progress.current == .pick)
     }

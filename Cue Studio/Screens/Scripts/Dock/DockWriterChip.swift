@@ -61,11 +61,6 @@ struct DockWriterChip: View {
                 onFrame($0)
             }
         }
-        .overlay { UltraChipRing(trigger: ultraRing) }
-        .overlay { light(appleLight, Palette.Scripts.dockGlow) }
-        .overlay { light(ultraLight, Palette.Scripts.ultraGlow) }
-        // The ✦'s sparks fly from where it sits, 14 pt into Ultra AI's look in the middle of the chip.
-        .overlay(alignment: .leading) { UltraChipSparks(trigger: ultraLight).offset(x: (width - ultraWidth) / 2 + 14 - 22) }
         .buttonStyle(.plain)
         .accessibilityLabel(Text("Writer, \(writer.wrappedValue == .ultra ? ultraItem : String(localized: "Apple Intelligence"))"))
         .accessibilityShowsLargeContentViewer {
@@ -73,6 +68,13 @@ struct DockWriterChip: View {
             Text(showsUltra ? String(localized: "Ultra AI") : String(localized: "Apple Intelligence"))
         }
         .accessibilityIdentifier("ideaCard.writerChip")
+        // The lights come after: decorative and past the chip's edge, they stay out of its frame for VoiceOver (whose ring would reach the
+        // lightbulb) and UI tests.
+        .overlay { UltraChipRing(trigger: ultraRing) }
+        .overlay { light(appleLight, Palette.Scripts.dockGlow) }
+        .overlay { light(ultraLight, Palette.Scripts.ultraGlow) }
+        // The ✦'s sparks fly from where it sits, 14 pt into Ultra AI's look in the middle of the chip.
+        .overlay(alignment: .leading) { UltraChipSparks(trigger: ultraLight).offset(x: (width - ultraWidth) / 2 + 14 - 22) }
     }
 
     /// A light once round the chip, the chip's own height.

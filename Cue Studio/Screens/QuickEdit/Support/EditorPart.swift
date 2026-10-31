@@ -76,6 +76,10 @@ extension EditorPart {
         session.sayUndoable(message)
     }
 
+    func announce(_ message: String) {
+        session.announce(message)
+    }
+
     func previewPart(_ range: ClosedRange<TimeInterval>, back: TimeInterval? = nil) {
         session.previewPart(range, back: back)
     }

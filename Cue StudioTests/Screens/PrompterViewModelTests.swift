@@ -26,7 +26,7 @@ struct PrompterViewModelTests {
 
     private func makeScenario(
         script: Script? = TestData.script(), mode: PrompterMode = .selfie,
-        monetization: Bool = true, prompter: PrompterSettings = PrompterSettings(), appLanguage: String? = nil
+        monetization: Bool = true, prompter: PrompterSettings = Self.steady, appLanguage: String? = nil
     ) -> Scenario {
         let defaults = TestDefaults()
         let library = ScriptLibraryService(repository: FakeScriptRepository(scripts: script.map { [$0] } ?? []))
@@ -57,6 +57,13 @@ struct PrompterViewModelTests {
             preferences: preferences, microphones: microphones, remote: remote, toast: toast, defaults: defaults,
             languages: languages
         )
+    }
+
+    /// Saved settings with Steady, which most of these tests read at (Voice Following, the default, waits for a voice).
+    private static var steady: PrompterSettings {
+        var settings = PrompterSettings()
+        settings.scrollMode = .steady
+        return settings
     }
 
     /// Voice follow on a two-paragraph script, laid out as two lines, 50 pt of spacing, two lines.
@@ -145,12 +152,13 @@ struct PrompterViewModelTests {
         #expect(scenario.preferences.camera.aspect == .portrait)
     }
 
+    /// The switch changes this session at once; the pick is saved when the session ends (`rememberReadingLayout`).
     @Test func scrollModeSwitchesFromTheToolbar() {
-        let scenario = makeScenario()
+        let scenario = makeScenario(prompter: PrompterSettings())
         defer { scenario.defaults.tearDown() }
-        scenario.viewModel.setScrollMode(.voice)
-        #expect(scenario.viewModel.session.prompter.scrollMode == .voice)
-        #expect(scenario.preferences.prompter.scrollMode == .steady)
+        scenario.viewModel.setScrollMode(.steady)
+        #expect(scenario.viewModel.session.prompter.scrollMode == .steady)
+        #expect(scenario.preferences.prompter.scrollMode == .voice)
     }
 
     @Test func recordStartsRightAwayWithoutCountdown() async {
@@ -424,27 +432,25 @@ struct PrompterViewModelTests {
 
     /// A language the device can't recognize is never swapped for another: the creator is told,
     /// once, and the text scrolls with the voice level.
+    /// A language this iPhone can't recognize is never swapped for another: the toast says so, and the session reads Steady. Picking
+    /// Voice again tries again, and says so again.
     @Test func anUnavailableLanguageIsExplainedNotReplaced() async {
         let scenario = makeScenario(script: TestData.script(text: TestData.words(100)), mode: .studio)
         defer { scenario.defaults.tearDown() }
         scenario.languages.voiceFollowingLanguage = .thai
         scenario.speech.unavailable = .unsupported(.thai)
-        scenario.viewModel.session.prompter.scrollMode = .voice
+        scenario.viewModel.setScrollMode(.voice)
         scenario.viewModel.scrollModeChanged()
-        await Wait.until { scenario.viewModel.speechUnavailable != nil }
+        await Wait.until { scenario.viewModel.session.prompter.scrollMode == .steady }
         #expect(scenario.speech.requests == [.language(.thai)])
-        #expect(scenario.viewModel.speechUnavailable == .unsupported(.thai))
         #expect(!scenario.viewModel.followsSpeech)
         #expect(scenario.toast.message == SpeechUnavailableReason.unsupported(.thai).message)
-        // Turning Voice Following off and on again doesn't repeat the toast.
         scenario.toast.dismiss()
-        scenario.viewModel.session.prompter.scrollMode = .steady
+        scenario.viewModel.setScrollMode(.voice)
         scenario.viewModel.scrollModeChanged()
-        #expect(scenario.viewModel.speechUnavailable == nil)
-        scenario.viewModel.session.prompter.scrollMode = .voice
-        scenario.viewModel.scrollModeChanged()
-        await Wait.until { scenario.viewModel.speechUnavailable != nil }
-        #expect(scenario.toast.message == nil)
+        await Wait.until { scenario.viewModel.session.prompter.scrollMode == .steady }
+        #expect(scenario.speech.requests == [.language(.thai), .language(.thai)])
+        #expect(scenario.toast.message == SpeechUnavailableReason.unsupported(.thai).message)
         await scenario.viewModel.disappear()
     }
 

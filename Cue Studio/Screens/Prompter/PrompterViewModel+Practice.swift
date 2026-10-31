@@ -8,13 +8,13 @@ import Foundation
 extension PrompterViewModel {
     /// The practice opens (1.6): it reads with Voice Following when the microphone can be used, so the creator's words move the text, and at
     /// a steady pace when it can't. The mode is for this session only: unless the creator picks one, the saved mode is what the next session
-    /// opens with (`practiceChoseScrollMode`). The script then says what this practice really does.
+    /// opens with (`sessionChoseScrollMode`). The script then says what this practice really does.
     func preparePractice() {
         guard isPractice else { return }
         let wanted: ScrollMode = microphone.isDenied() ? .steady : .voice
         if session.prompter.scrollMode != wanted {
             session.prompter.scrollMode = wanted
-            practiceChoseScrollMode = true
+            sessionChoseScrollMode = true
         }
         matchPracticeScript()
     }

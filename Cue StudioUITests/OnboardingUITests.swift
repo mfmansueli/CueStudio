@@ -125,6 +125,32 @@ final class OnboardingUITests: XCTestCase {
         shot(app, "4-script-practice")
     }
 
+    /// 1.4 is one screen on every iPhone but the SE (the owner's rule): the heading, the card, the capsule and "It's just practice" fit above
+    /// Try the teleprompter, without scrolling, in English and in German, the longest of Cue's languages. On a 15 Pro the words used to
+    /// stay at 21 pt and the page scrolled. Run it on the size to check with `CUE_SIMULATOR` (the default iPhone 17 checks it too).
+    func testTheFirstScriptFitsAboveItsButtonWithoutScrolling() {
+        for language in ["en", "de"] {
+            let app = launch(ai: false, extra: ["-uiTestOnboardingStep", "script", "-uiTestAppLanguage", language])
+            let page = element(app, "onboarding.scriptPage")
+            let note = element(app, "onboarding.scriptNote")
+            let use = app.buttons["onboarding.useScript"]
+            XCTAssertTrue(use.matches(NSPredicate(format: "isEnabled == true"), within: 10), language)
+            XCTAssertTrue(page.exists && note.exists, language)
+            // Nothing runs under the button or past the page's edges: the whole column is inside the page, which ends above the button.
+            XCTAssertLessThanOrEqual(note.frame.maxY, page.frame.maxY + 1, language)
+            XCTAssertLessThanOrEqual(page.frame.maxY, use.frame.minY + 1, language)
+            let title = app.staticTexts[language == "en" ? "Your first script. Ready to read." : "Dein erstes Skript. Bereit zum Lesen."]
+            XCTAssertTrue(title.exists, language)
+            XCTAssertGreaterThanOrEqual(title.frame.minY, page.frame.minY - 1, language)
+            // And it doesn't scroll: a swipe leaves the note where it was.
+            let before = note.frame.minY
+            page.swipeUp()
+            XCTAssertEqual(note.frame.minY, before, accuracy: 1, language)
+            shot(app, "4-script-fit-\(language)")
+            app.terminate()
+        }
+    }
+
     // MARK: - Voice Following in the practice
 
     /// From the permissions to the practice, with Voice Following's recognition scripted (the simulator can't recognize speech).
