@@ -187,7 +187,8 @@ struct AppServices {
             allowance: UltraAllowanceService(defaults: options.defaults) { [store] in
                 UltraAllowance.Membership(tier: store.tier)
             },
-            invite: UltraInviteService(defaults: options.defaults), makeClient: options.makeUltraClient
+            invite: UltraInviteService(defaults: options.defaults), spend: UltraSpendLedger(defaults: options.ultraBudgetDefaults),
+            makeClient: options.makeUltraClient
         )
         self.ultra = ultra
         starter = ScriptStarter(

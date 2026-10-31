@@ -9,7 +9,8 @@ import Testing
 
 /// Ultra AI's calls with a fake client: nothing goes out without permission or past the cap, a revoked permission or a Stop keeps the next call
 /// from leaving, only the polished script comes back (a failed check or polish is a failure, never the draft), and every call is counted. With
-/// the claim check (`UltraFlow.checked`) the polish works on the checked draft and keeps its corrections.
+/// the claim check (`UltraFlow.checked`) the polish works on the checked draft and keeps its corrections. What every request spent goes to the
+/// ledger, failed ones included, with the fit that follows a script by itself as part of the script.
 @MainActor
 @Suite("Ultra AI script service")
 struct UltraScriptServiceTests {
@@ -18,6 +19,7 @@ struct UltraScriptServiceTests {
         let client: FakeUltraModelClient
         let consent: UltraConsentService
         let budget: UltraCallBudget
+        let spend: UltraSpendLedger
         let defaults: TestDefaults
     }
 
@@ -27,8 +29,9 @@ struct UltraScriptServiceTests {
         if allowed { consent.grant() }
         let budget = UltraCallBudget(defaults: defaults.defaults, limit: limit)
         let client = FakeUltraModelClient()
-        let service = UltraScriptService(isAvailable: available, consent: consent, budget: budget) { client.made() }
-        return Scenario(service: service, client: client, consent: consent, budget: budget, defaults: defaults)
+        let spend = UltraSpendLedger(defaults: defaults.defaults)
+        let service = UltraScriptService(isAvailable: available, consent: consent, budget: budget, spend: spend) { client.made() }
+        return Scenario(service: service, client: client, consent: consent, budget: budget, spend: spend, defaults: defaults)
     }
 
     private var request: ScriptRequest {
@@ -310,6 +313,81 @@ struct UltraScriptServiceTests {
         scenario.client.fit = .failure(UltraClientError(failure: .unreachable))
         await #expect(throws: UltraError.fitFailed(.unreachable)) { try await scenario.service.fit(fitRequest(longScript)) }
         #expect(scenario.budget.used == 2)
+    }
+
+    // MARK: - Cost
+
+    /// Each stage's answer with Google's usage.
+    private func meter(_ client: FakeUltraModelClient) throws {
+        func metered(_ result: Result<UltraModelReply, any Error>, _ prompt: Int, _ output: Int, _ thinking: Int) throws
+            -> Result<UltraModelReply, any Error> {
+            var reply = try result.get()
+            reply.promptTokens = prompt
+            reply.outputTokens = output
+            reply.thinkingTokens = thinking
+            return .success(reply)
+        }
+        client.draft = try metered(client.draft, 1_000, 650, 1_600)
+        client.check = try metered(client.check, 1_400, 500, 2_500)
+        client.review = try metered(client.review, 1_465, 489, 2_053)
+        client.fit = try metered(client.fit, 1_300, 300, 2_000)
+    }
+
+    @Test func aScriptRecordsWhatItsThreeCallsSpent() async throws {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        try meter(scenario.client)
+        let run = try await scenario.service.run(request)
+        #expect(run.cost.calls == 3 && run.cost.meteredCalls == 3)
+        #expect(run.cost.inputTokens == 3_865 && run.cost.outputTokens == 1_639 && run.cost.thinkingTokens == 6_153)
+        #expect(scenario.spend.entries.map(\.kind) == [.script] && scenario.spend.entries[0].finished)
+        #expect(scenario.spend.entries[0].cost == run.cost && scenario.spend.total == run.cost)
+    }
+
+    /// A failed polish spent the draft and the check (and maybe part of itself): in the total, never as a finished script.
+    @Test func aFailedScriptRecordsWhatWentOut() async throws {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        try meter(scenario.client)
+        scenario.client.review = .failure(UltraClientError(failure: .provider))
+        _ = try? await scenario.service.generate(request, reporting: nil)
+        let entry = try #require(scenario.spend.entries.first)
+        #expect(entry.kind == .script && !entry.finished)
+        #expect(entry.cost.calls == 3 && entry.cost.meteredCalls == 2 && entry.cost.inputTokens == 2_400)
+        #expect(scenario.spend.summary(of: .script) == nil)
+    }
+
+    @Test func theFitThatFollowsAScriptByItselfIsPartOfIt() async throws {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        try meter(scenario.client)
+        let long = (1...30).map { "Light from window number \($0) shapes the face and the eyes." }.joined(separator: " ")
+        let reply = try JSONSerialization.data(withJSONObject: ["title": "Long", "script": long, "changes": [String]()])
+        scenario.client.review = .success(UltraModelReply(
+            text: try #require(String(bytes: reply, encoding: .utf8)), finishedNormally: true, promptTokens: 1_465, outputTokens: 489,
+            thinkingTokens: 2_053
+        ))
+        var automatic = request
+        automatic.durationPolicy = .informative
+        let run = try await scenario.service.run(automatic)
+        #expect(scenario.client.requests.map(\.stage) == [.draft, .check, .review, .fit])
+        #expect(run.cost.calls == 4 && run.cost.inputTokens == 5_165)
+        #expect(scenario.spend.entries.map(\.kind) == [.script] && scenario.spend.entries[0].cost == run.cost)
+    }
+
+    @Test func aFitTheCreatorAskedForIsItsOwnRecord() async throws {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        try meter(scenario.client)
+        _ = try await scenario.service.fit(fitRequest(longScript))
+        let entry = try #require(scenario.spend.entries.first)
+        #expect(entry.kind == .fit && entry.finished && entry.cost.calls == 1 && entry.cost.thinkingTokens == 2_000)
+        // In the range already, or not allowed: nothing went out, nothing is recorded.
+        let script = Array(repeating: "Light from the side shapes the face.", count: 25).joined(separator: " ")
+        _ = try await scenario.service.fit(fitRequest(script))
+        scenario.consent.revoke()
+        _ = try? await scenario.service.fit(fitRequest(longScript))
+        #expect(scenario.spend.entries.count == 1)
     }
 
     @Test func theFitIsReadStrictly() {

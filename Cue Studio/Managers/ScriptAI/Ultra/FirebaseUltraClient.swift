@@ -70,6 +70,7 @@ final class FirebaseUltraClient: UltraModelClient {
                 }
                 if let usage = chunk.usageMetadata {
                     reply.promptTokens = usage.promptTokenCount
+                    reply.cachedTokens = usage.cachedContentTokenCount
                     reply.outputTokens = usage.candidatesTokenCount
                     reply.thinkingTokens = usage.thoughtsTokenCount
                 }
