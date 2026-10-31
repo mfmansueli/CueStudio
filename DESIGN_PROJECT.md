@@ -417,7 +417,9 @@ só existe aberto, `showsSlider`), Mirror para rig, Aa abre o Display. Acima do 
 pelo medidor do microfone.
 
 **Voice Following é o padrão** (dono, 30/10/2026: é o que traz mais valor; `PrompterSettings.scrollMode`): toda sessão (Selfie, Studio, a que o Remote
-ou o Apple Watch acompanham, a que uma notificação abre) começa nele até o criador escolher **Steady**, escolha que fica guardada. Quando a voz não pode
+ou o Apple Watch acompanham, a que uma notificação abre) começa nele até o criador escolher **Steady**, escolha que fica guardada. Um Steady salvo por
+uma versão anterior a 31/10/2026 abre uma vez em Voice Following (dono, 31/10/2026): as preferências sem `scrollModeRevision` leem Voice e, ao serem
+gravadas de novo, levam a revisão de hoje, então um Steady escolhido depois disso fica. Quando a voz não pode
 ser seguida, a sessão lê **Steady só para ela** e a preferência não muda (`readSteadyForThisSession`, `sessionChoseScrollMode`): sem microfone (o cartão
 do microfone do gravador, e no Studio o mesmo cartão, dizem por quê e abrem os Ajustes) ou quando o reconhecimento não roda para o idioma do roteiro
 (o toast diz "Can't follow {idioma} · Scrolling", a cada vez que cai). Nada finge seguir a voz. A prática tem a regra dela (§35). Nos testes de UI o
@@ -649,7 +651,10 @@ antigos usam data, plataforma e tema da take. `UniverseContent` (puro, testado) 
 (saturação .75, brilho .92, nada se mexe, "◆ SEALED · DEC 31, {ano}", cartão "{ano} · YOUR YEAR"), **conta nova** (sem seletor, órbitas a 55%, "FIRST STAR ·
 0 / 1", "Record your first video") e **ano novo** ("FIRST STAR OF {ano}", a review fala do ano anterior). **Barra de navegação do sistema**
 (`YourUniverseView`): título grande "Your universe", o botão de voltar (voltar segue o dedo como em toda página empurrada) e o seletor de ano
-(`UniverseYearSelector`, a cápsula de vidro com os anos em mono) como item da barra (sem o fundo compartilhado da barra); sob o título, a linha mono amarela ("1 VIDEO SHARED IN 2026"). Deslize no mapa também troca o ano.
+(`UniverseYearSelector`: a cápsula de vidro de 32 pt com o ano escolhido em mono entre **‹ e ›**, setas de 44 pt de toque; a que não tem ano além fica
+apagada e desligada; o ano mais antigo fica para trás) como item da barra (sem o fundo compartilhado da barra); sob o título, a linha mono amarela
+("1 VIDEO SHARED IN 2026"). O mapa não tem gesto de arrastar (dono, 31/10/2026): só as setas trocam o ano, e o gesto de voltar de qualquer ponto da tela
+continua valendo sobre ele.
 **Planetas** (`PlanetSize`, `PlanetPainter`): `d = 14 + 24·ln(min(n,365))/ln(365)` pt, brilho a 52, anel a 156, lua a 365; crescem em 0,6 s
 `cubic-bezier(.3,1.4,.5,1)` na primeira abertura depois de um share (`MilestoneService.seenPlanetCounts`), `.soft` ao ganhar um detalhe.
 **Toques:** planeta → `PlanetPopover` ("n VIDEOS IN {ano}", "k more to unlock …" no ano vivo, **See in Takes ›**); ponto → revisão da take; tema na legenda e

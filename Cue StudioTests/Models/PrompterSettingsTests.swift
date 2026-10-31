@@ -128,6 +128,29 @@ struct PrompterSettingsTests {
         #expect(decoded == settings)
     }
 
+    // MARK: - Voice Following for everyone (31/10/2026)
+
+    @Test func aSteadySavedByAnOlderBuildOpensOnVoiceFollowing() throws {
+        let old = Data(#"{"size":40,"scrollMode":"steady"}"#.utf8)
+        let decoded = try JSONDecoder().decode(PrompterSettings.self, from: old)
+        #expect(decoded.scrollMode == .voice)
+        #expect(decoded.size == 40, "only the mode moves")
+    }
+
+    @Test func aSteadyPickedFromNowOnStays() throws {
+        var picked = PrompterSettings()
+        picked.scrollMode = .steady
+        let decoded = try JSONDecoder().decode(PrompterSettings.self, from: JSONEncoder().encode(picked))
+        #expect(decoded.scrollMode == .steady)
+    }
+
+    @Test func settingsMovedToVoiceFollowingAreWrittenWithTodaysRevision() throws {
+        let moved = try JSONDecoder().decode(PrompterSettings.self, from: Data(#"{"scrollMode":"steady"}"#.utf8))
+        let rewritten = try #require(String(data: JSONEncoder().encode(moved), encoding: .utf8))
+        #expect(rewritten.contains(#""scrollModeRevision":\#(PrompterSettings.voiceForEveryoneRevision)"#))
+        #expect(try JSONDecoder().decode(PrompterSettings.self, from: Data(rewritten.utf8)).scrollMode == .voice)
+    }
+
     /// "Hide controls while recording" is gone: settings saved while it existed still load, with
     /// everything else kept, and the old key is not written back.
     @Test func settingsSavedWithTheRemovedHideControlsKeyStillLoad() throws {

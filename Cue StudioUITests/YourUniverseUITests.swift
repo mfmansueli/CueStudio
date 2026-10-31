@@ -55,18 +55,36 @@ final class YourUniverseUITests: XCTestCase {
 
     func testThePreviousYearIsSealed() {
         let app = openUniverse("sample")
-        app.buttons["\(year - 1)"].tap()
+        app.buttons["universe.year.previous"].tap()
         XCTAssertEqual(element(app, "universe.headline").label, "41 VIDEOS SHARED IN \(year - 1) · SEALED")
         XCTAssertTrue(element(app, "universe.sealedBadge").exists(within: 3))
         XCTAssertTrue(element(app, "universe.yearCard").exists, "a sealed year has its own card instead of the milestone")
         XCTAssertFalse(element(app, "universe.nextMilestone").exists)
     }
 
-    func testTheYearCanBeChangedWithASwipeOnTheMap() {
+    /// ‹ year › in the bar: the arrows change the year, and the one with no year past it is off.
+    func testTheArrowsBesideTheYearChangeIt() {
         let app = openUniverse("sample")
-        let map = element(app, "universe.core")
-        map.swipeRight()
+        let previous = app.buttons["universe.year.previous"]
+        let next = app.buttons["universe.year.next"]
+        XCTAssertEqual(element(app, "universe.year").label, "\(year)")
+        XCTAssertFalse(next.isEnabled, "the live year is the newest")
+        previous.tap()
+        XCTAssertEqual(element(app, "universe.year").label, "\(year - 1)")
         XCTAssertEqual(element(app, "universe.headline").label, "41 VIDEOS SHARED IN \(year - 1) · SEALED")
+        XCTAssertFalse(previous.isEnabled, "the sample has two years")
+        next.tap()
+        XCTAssertEqual(element(app, "universe.headline").label, "23 VIDEOS SHARED IN \(year)")
+    }
+
+    /// The map has no swipe of its own: a swipe across it is iOS's back swipe, which goes back to Profile (the owner, 31/10/2026).
+    func testASwipeOnTheMapGoesBack() {
+        let app = openUniverse("sample")
+        // From the core in the middle of the map (far from the edge) to the right, the length of a thumb's swipe.
+        let core = element(app, "universe.core").coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+        core.press(forDuration: 0.05, thenDragTo: core.withOffset(CGVector(dx: 220, dy: 0)), withVelocity: .fast, thenHoldForDuration: 0)
+        XCTAssertTrue(element(app, "profile.universeLink").exists(within: 5))
+        XCTAssertFalse(element(app, "universe.screen").exists)
     }
 
     func testANewAccountHasNoSelectorAndRecordsFirst() {

@@ -125,6 +125,20 @@ struct PreferencesServiceTests {
         #expect(service.prompter == PrompterSettings())
     }
 
+    // MARK: - Voice Following for everyone (31/10/2026)
+
+    @Test func aSteadySavedByAnOlderBuildMovesToVoiceFollowingOnceAndAPickedSteadyStays() throws {
+        let store = TestDefaults()
+        defer { store.tearDown() }
+        store.defaults.set(Data(#"{"size":40,"scrollMode":"steady"}"#.utf8), forKey: DefaultsKey.prompterSettings)
+        let service = PreferencesService(defaults: store.defaults)
+        #expect(service.prompter.scrollMode == .voice)
+        #expect(service.prompter.size == 40)
+        // The creator picks Steady again: it is theirs now, and the next launch keeps it.
+        service.prompter.scrollMode = .steady
+        #expect(PreferencesService(defaults: store.defaults).prompter.scrollMode == .steady)
+    }
+
     // MARK: - The reading line saved before v30
 
     @Test func aLowReadingLineSavedBeforeV30IsClearedOnce() throws {
