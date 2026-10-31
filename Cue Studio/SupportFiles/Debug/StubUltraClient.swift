@@ -25,13 +25,16 @@ final class StubUltraClient: UltraModelClient {
     let reviewFails: Bool
     let delay: Duration
     let pace: Pace?
+    /// `-uiTestUltraLong`: the polish comes back past a vertical network's ideal (about 1:52), short of the line where Ultra fits it by itself.
+    let writesLong: Bool
     /// What was asked, in order: what the tests read back.
     private(set) var requests: [UltraStageRequest] = []
 
-    init(reviewFails: Bool = false, delay: Duration = .zero, pace: Pace? = nil) {
+    init(reviewFails: Bool = false, delay: Duration = .zero, pace: Pace? = nil, writesLong: Bool = false) {
         self.reviewFails = reviewFails
         self.delay = delay
         self.pace = pace
+        self.writesLong = writesLong
     }
 
     /// The words a paced call reports in steps: the draft as long as a vertical script (220 words), the others the draft's.
@@ -41,6 +44,10 @@ final class StubUltraClient: UltraModelClient {
     static let scriptText = "Ultra polished opening, with a reason and an example.\n\nUltra polished closing, with the consequence that follows."
     static let fittedText = "Ultra fitted script, with its reason and the consequence."
     static let title = "Ultra stub script"
+    /// 293 words: past TikTok's 1:45 at the natural pace, under the 300 that make Ultra fit it by itself (`UltraLength.overflowWords`). Each
+    /// paragraph is numbered: the same sentence twice is collapsed into one (`ScriptPromptBuilder.collapsingRepeatedSentences`).
+    static let longScriptText = ([scriptText] + (1...23).map { "Ultra long paragraph \($0), with one more reason and one more example." })
+        .joined(separator: "\n\n")
 
     func generate(_ request: UltraStageRequest, progress: @escaping @MainActor (Int) -> Void) async throws -> UltraModelReply {
         requests.append(request)
@@ -67,7 +74,8 @@ final class StubUltraClient: UltraModelClient {
             return UltraModelReply(text: String(bytes: data, encoding: .utf8) ?? "", finishedNormally: true)
         case .review:
             if reviewFails { throw UltraClientError(failure: .provider) }
-            let reply = ["title": Self.title, "script": Self.scriptText, "changes": ["Tightened the opening."]] as [String: Any]
+            let script = writesLong ? Self.longScriptText : Self.scriptText
+            let reply = ["title": Self.title, "script": script, "changes": ["Tightened the opening."]] as [String: Any]
             let data = try JSONSerialization.data(withJSONObject: reply)
             return UltraModelReply(text: String(bytes: data, encoding: .utf8) ?? "", finishedNormally: true)
         }

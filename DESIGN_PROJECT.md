@@ -869,7 +869,9 @@ sentir livre para escrever como quiser). **Sem dicas embaixo do texto** (gancho 
   rolagem horizontal sem indicador; a linha vai até a borda da tela, a primeira pílula começa na margem do texto e o que sai se apaga num degradê. O
   **AA** (tamanho do texto) fica fixo no fim, fora da rolagem: muda como a página é lida, não as palavras.
 - **Duração numa linha** (`ScriptLengthBar`): "113 WORDS · ~0:45" à esquerda, "IDEAL 1:15–1:45" à direita, trilho de 5 pt; amarelo abaixo do ideal,
-  verde dentro (com ✓, brilha uma vez e toque leve ao entrar), laranja acima ("CUT 6S", toque firme). Cresce numa mola; os toques são só do que o criador
+  verde dentro (com ✓, brilha uma vez e toque leve ao entrar), laranja acima ("CUT 6S", toque firme). Acima do ideal, uma linha sob o trilho avisa
+  (**⚠︎ Past the TikTok ideal**, `warnText`) com o botão que encaixa, quando a página pode (✦ **Fit to time**; num roteiro da Ultra AI, ✦ **Fit with Ultra
+  AI**, uma chamada ao Google; some enquanto a IA escreve ou outra ferramenta roda). Cresce numa mola; os toques são só do que o criador
   digita (não da IA). O título não tem contador embaixo.
   O tempo é sempre no **ritmo natural de fala** (150 palavras por minuto, o mesmo em que a IA escreve), não na velocidade de rolagem do
   teleprompter (decisão do dono, 20/10/2026: a 0,4× um roteiro de 1 min aparecia como 2:28 e "CUT 58S"). Vale também para a duração na lista,
@@ -2863,7 +2865,14 @@ linha** do que vai e para quem ("Your idea, your choices and your My Cue Voice p
 Settings.", `ink2`), **Try it free** enquanto há roteiros grátis (Find inspiration, que rascunha na hora: **Write it free with Ultra AI**; sem grátis:
 **Allow Ultra AI** / **Allow and write with Ultra AI**) e **Not now**. Rola só se não couber (tamanhos grandes de texto). O detalhe do envio fica em
 Settings › Privacy & AI data e no *What Cue sends* do My Cue Voice (`UltraPayloadView`). Settings › Privacy & AI
-data tem o interruptor **Ultra AI** (ligar abre a folha; desligar revoga e nada mais sai, nem a próxima chamada de um roteiro em andamento) e, em Debug,
+data tem o interruptor **Ultra AI** (ligar abre a folha; desligar revoga e nada mais sai, nem a próxima chamada de um roteiro em andamento), a página
+**What Ultra AI sends** (`UltraPrivacyView`, o detalhe que a App Review pede em 5.1.2(i) sem aumentar o consentimento: *Sent to Google* (a ideia como foi
+digitada ou as respostas do formato; idioma, rede, formato e duração; as preferências do My Cue Voice; a inspiração, os dados da marca de um patrocinado e
+as palavras pedidas; o rascunho entre as etapas; no Fit to time de um roteiro da Ultra AI, o roteiro com as edições), só quando a Ultra AI é escolhida,
+até 3 pedidos por roteiro e 1 por Fit to time, nada em segundo plano; *Never sent* (nome e @, exemplos de escrita, trechos importados, outros roteiros,
+vídeos, áudio e fotos); *What Google does with it* (roda o modelo e devolve o texto; pelos termos do Google Cloud não treina com isso, pode guardar até
+24 h para responder mais rápido e registrar pedidos para detectar abuso; o App Check confere que o pedido vem do Cue); **See the requests, word for word**
+(`UltraPayloadView` com a ideia do dock) e o link **Google Cloud’s data terms**; o rodapé diz como parar e que o Apple Intelligence não muda) e, em Debug,
 **Ultra AI · Lab**; o Apple Intelligence passa a dizer "Cue’s default writer. Ultra AI has its own switch." e a folha de privacidade deixa de dizer "nothing
 else" onde a Ultra AI existe.
 
@@ -2892,7 +2901,9 @@ entre eles), pedido nas três etapas e no Fit to time. *Fit to time* num roteiro
 **uma chamada da Ultra AI, quando o criador pede** (`UltraScriptService.fit`, `UltraFitRequest`, `UltraInstructions.fitter`): o roteiro da página com as
 edições dele, a rede, a faixa ideal dela em palavras e o jeito de falar; volta só o texto (JSON `{"script"}`), mantém as ressalvas que a checagem pôs, a
 primeira frase, quem fala e o fim, e corrige as contagens ("cinco passos") do que saiu. Um roteiro já na faixa não gasta chamada. Conta no limite do
-laboratório, não nos roteiros do criador. Por que não o do Apple: no iPhone (29/10/2026, 13 roteiros da Ultra de 300–480 palavras, TikTok 60–90 s), o
+laboratório, não nos roteiros do criador. Onde ela encaixa, a tela diz que é ela: a linha do Improve ("Ultra AI · …"), o subtítulo da folha (**Fit to
+time by Ultra AI · the rest on your iPhone**, no lugar de "Apple Intelligence · runs on your iPhone"; o rodapé de fatos diz "Ultra AI · Check facts
+before recording"), o botão do "A bit long for TikTok" (**Make it shorter with Ultra AI**) e o da barra de duração (**Fit with Ultra AI**). Por que não o do Apple: no iPhone (29/10/2026, 13 roteiros da Ultra de 300–480 palavras, TikTok 60–90 s), o
 *Fit to time* do Apple Intelligence deixou 10 fora da faixa (102–122 s) e cortou nas emendas ("cinco passos" com quatro, "Terceiro" sem "Segundo"; juiz: 0
 para gravar, 10 para refazer); o da Ultra AI pôs os 13 entre 72 e 89 s em 9–30 s (juiz: 8 para gravar como estão, 5 com ajustes pequenos, 0 para refazer; precisão 4,5 de 5,
 depois de a instrução mandar manter as ressalvas, a primeira frase e quem fala: a primeira versão tirava "pode" e "aumenta o risco" e ficava em 3,9).

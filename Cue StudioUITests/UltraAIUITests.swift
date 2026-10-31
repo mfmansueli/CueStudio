@@ -73,11 +73,69 @@ final class UltraAIUITests: XCTestCase {
         let improve = app.buttons["page.improveButton"]
         XCTAssertTrue(improve.exists(within: 5), "No Improve on a script Ultra AI wrote")
         improve.tap()
+        // The header doesn't say Apple Intelligence runs it all: Ultra AI fits this one.
+        XCTAssertTrue(app.staticTexts["Fit to time by Ultra AI · the rest on your iPhone"].exists(within: 5), "Improve's header doesn't say Ultra AI fits it")
+        XCTAssertFalse(app.staticTexts["Apple Intelligence · runs on your iPhone"].exists)
         let fit = app.buttons["improve.tool.fitToTime"]
         XCTAssertTrue(fit.exists(within: 5), "Improve has no Fit to time")
         XCTAssertTrue(fit.label.contains("Ultra AI"), "Fit to time doesn't say Ultra AI fits this script: \(fit.label)")
         fit.tap()
         XCTAssertTrue(editor.matches(NSPredicate(format: "value CONTAINS %@", "Ultra fitted script"), within: 15))
+        XCTAssertFalse(text(app, containing: "Gemini").exists, "The brand of the model is on screen")
+    }
+
+    /// A script Ultra AI wrote past the platform's ideal: the length bar says so under its track and offers "Fit with Ultra AI", which fits it;
+    /// Record's "A bit long" question says Ultra AI makes it shorter.
+    func testTheLengthBarSaysAnUltraScriptIsPastTheIdealAndFitsIt() {
+        let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestUltra", "-uiTestUltraAllowed", "-uiTestUltraLong"])
+        pickUltra(app)
+        let field = element(app, "ideaCard.field")
+        XCTAssertTrue(field.exists(within: 5))
+        field.tap()
+        field.typeText("Why I stopped buying bottled water")
+        app.buttons["ideaCard.submit"].tap()
+        let editor = element(app, "page.editor")
+        XCTAssertTrue(editor.exists(within: 20), "No page written by Ultra AI")
+        XCTAssertTrue(editor.matches(NSPredicate(format: "value CONTAINS %@", "Ultra long paragraph"), within: 15))
+        let past = element(app, "page.lengthBar.past")
+        XCTAssertTrue(past.exists(within: 5), "The length bar doesn't say the script is past the ideal")
+        XCTAssertTrue(past.label.contains("TikTok"), "The line doesn't name the platform: \(past.label)")
+        let fit = app.buttons["page.lengthBar.fit"]
+        XCTAssertTrue(fit.exists && fit.label.contains("Ultra AI"), "The bar's fit doesn't say Ultra AI: \(fit.label)")
+        // Record asks once about the length, and its shorter way names Ultra AI.
+        app.buttons["detail.recordButton"].tap()
+        let shorter = app.buttons["page.nudge.shorter"]
+        XCTAssertTrue(shorter.exists(within: 5), "No \"A bit long\" question")
+        XCTAssertTrue(shorter.label.contains("Ultra AI"), "The nudge's Make it shorter doesn't say Ultra AI: \(shorter.label)")
+        shorter.tap()
+        XCTAssertTrue(editor.matches(NSPredicate(format: "value CONTAINS %@", "Ultra fitted script"), within: 15))
+        XCTAssertTrue(past.isGone(within: 3), "The line stays once the script fits")
+        XCTAssertFalse(text(app, containing: "Gemini").exists, "The brand of the model is on screen")
+    }
+
+    /// Settings › Privacy & AI data › What Ultra AI sends: what goes to Google, what never does, what Google does with it, and the requests
+    /// word for word (App Review 5.1.2(i)); the consent stays one line.
+    func testPrivacyHasEverythingUltraAISends() {
+        let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestUltra", "-uiTestUltraAllowed"])
+        let settings = app.cueTabBar.buttons["Settings"]
+        XCTAssertTrue(settings.exists(within: 10))
+        settings.tap()
+        let privacy = element(app, "settings.privacy")
+        app.scroll(to: privacy)
+        privacy.tap()
+        let detail = element(app, "privacy.ultraDetail")
+        app.scroll(to: detail)
+        detail.tap()
+        XCTAssertTrue(element(app, "privacy.ultraDetail.screen").exists(within: 5))
+        XCTAssertTrue(text(app, containing: "With Fit to time, on a script Ultra AI wrote").exists, "Fit to time's script isn't listed as sent")
+        // Lower down the list, which only builds the rows on screen.
+        let training = text(app, containing: "doesn’t use it to train")
+        app.scroll(to: training)
+        XCTAssertTrue(training.exists, "What Google does with it is missing")
+        let requests = element(app, "privacy.ultraRequests")
+        app.scroll(to: requests)
+        requests.tap()
+        XCTAssertTrue(element(app, "ultra.payload.draft").exists(within: 5), "The requests aren't shown word for word")
         XCTAssertFalse(text(app, containing: "Gemini").exists, "The brand of the model is on screen")
     }
 
@@ -245,6 +303,59 @@ final class UltraAIUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["Ultra AI · 0 of 3 free left"].exists(within: 5))
         giveBack.tap()
         XCTAssertTrue(app.staticTexts["Ultra AI · 3 of 3 free left"].exists(within: 5))
+    }
+
+    /// The pictures of the length bar past the ideal with "Fit with Ultra AI", Improve's header, the "A bit long" question and What Ultra AI
+    /// sends, for `tools/contrast/audit.py` (`TEST_RUNNER_CUE_FIDELITY_DIR=<folder>`).
+    func testCaptureUltraFitAndPrivacyForTheContrastAudit() throws {
+        guard let path = ProcessInfo.processInfo.environment["CUE_FIDELITY_DIR"] else { throw XCTSkip("Set TEST_RUNNER_CUE_FIDELITY_DIR to capture") }
+        let folder = URL(fileURLWithPath: path, isDirectory: true)
+        try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+        func shot(_ app: XCUIApplication, _ name: String) throws {
+            sleep(1)
+            try app.screenshot().pngRepresentation.write(to: folder.appending(path: "\(name).png"))
+            try app.debugDescription.write(to: folder.appending(path: "\(name).txt"), atomically: true, encoding: .utf8)
+        }
+        var app = CueApp.launch(seeded: true, extraArguments: ["-uiTestUltra", "-uiTestUltraAllowed", "-uiTestUltraLong"])
+        pickUltra(app)
+        let field = element(app, "ideaCard.field")
+        XCTAssertTrue(field.exists(within: 5))
+        field.tap()
+        field.typeText("Why I stopped buying bottled water")
+        app.buttons["ideaCard.submit"].tap()
+        XCTAssertTrue(element(app, "page.lengthBar.past").exists(within: 25))
+        try shot(app, "ultra_fit_01_length-bar")
+        app.buttons["page.improveButton"].tap()
+        XCTAssertTrue(app.buttons["improve.tool.fitToTime"].exists(within: 5))
+        try shot(app, "ultra_fit_02_improve")
+        app.swipeDown(velocity: .fast)
+        XCTAssertTrue(app.buttons["detail.recordButton"].exists(within: 5))
+        app.buttons["detail.recordButton"].tap()
+        XCTAssertTrue(app.buttons["page.nudge.shorter"].exists(within: 5))
+        try shot(app, "ultra_fit_03_nudge")
+        app.terminate()
+        app = CueApp.launch(seeded: true, extraArguments: ["-uiTestUltra", "-uiTestUltraAllowed"])
+        let settings = app.cueTabBar.buttons["Settings"]
+        XCTAssertTrue(settings.exists(within: 10))
+        settings.tap()
+        let privacy = element(app, "settings.privacy")
+        app.scroll(to: privacy)
+        privacy.tap()
+        let detail = element(app, "privacy.ultraDetail")
+        app.scroll(to: detail)
+        try shot(app, "ultra_fit_04_privacy")
+        detail.tap()
+        XCTAssertTrue(element(app, "privacy.ultraDetail.screen").exists(within: 5))
+        try shot(app, "ultra_fit_05_sends-top")
+        let training = text(app, containing: "doesn’t use it to train")
+        app.scroll(to: training)
+        try shot(app, "ultra_fit_06_sends-middle")
+        let requests = element(app, "privacy.ultraRequests")
+        app.scroll(to: requests)
+        try shot(app, "ultra_fit_07_sends-bottom")
+        requests.tap()
+        XCTAssertTrue(element(app, "ultra.payload.draft").exists(within: 5))
+        try shot(app, "ultra_fit_08_requests")
     }
 
     /// Ultra AI's scene round the star, in pictures through a whole run (`TEST_RUNNER_CUE_FIDELITY_DIR=<folder>`): the stub paced as Gemini's

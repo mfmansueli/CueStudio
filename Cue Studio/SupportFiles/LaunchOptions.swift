@@ -15,7 +15,8 @@ import Foundation
 /// - `-uiTestUltra`: AI Scripts Ultra with a stub instead of Gemini (`StubUltraClient`); `-uiTestUltraReviewFails` makes its polish fail,
 ///   `-uiTestUltraSlow` holds each call for two seconds, `-uiTestUltraPaced` paces each call as Gemini's usually go (a think, then the words
 ///   in steps: about 24 s in all, the scene round the star filmed), `-uiTestUltraPacedLong` with a check of 26 s (its comet),
-///   `-uiTestUltraAllowed` starts with Google processing already allowed,
+///   `-uiTestUltraLong` polishes a script past a vertical network's ideal (the length bar's fit), `-uiTestUltraAllowed` starts with Google
+///   processing already allowed,
 ///   `-uiTestUltraScriptsLeft <0...3>` with that many free scripts left (3 without it), `-uiTestUltraInvite` with the AI used once before (the
 ///   invitation to try Ultra AI is due).
 /// - `-uiTestPCCGeneration`: real AI with PCC preferred, only in memory. `-uiTestInformativeDuration` removes the platform length target for A/B UI tests.
@@ -219,7 +220,8 @@ struct LaunchOptions {
         guard arguments.contains("-uiTestUltra") else { return }
         let stub = StubUltraClient(
             reviewFails: arguments.contains("-uiTestUltraReviewFails"), delay: arguments.contains("-uiTestUltraSlow") ? .seconds(2) : .zero,
-            pace: arguments.contains("-uiTestUltraPacedLong") ? .long : (arguments.contains("-uiTestUltraPaced") ? .usual : nil)
+            pace: arguments.contains("-uiTestUltraPacedLong") ? .long : (arguments.contains("-uiTestUltraPaced") ? .usual : nil),
+            writesLong: arguments.contains("-uiTestUltraLong")
         )
         options.ultraAvailable = true
         options.makeUltraClient = { stub }

@@ -59,8 +59,15 @@ struct PrivacyView: View {
         .sheet(isPresented: $asksUltra) { UltraConsentSheet { ultra.consent.grant() } }
     }
 
-    /// Ultra AI, where it is offered: its own permission (turning it on shows the disclosure first; off, nothing more is sent) and, in
-    /// Debug, the lab that compares lengths.
+    /// The lab that compares lengths is Debug's only.
+    #if DEBUG
+    private static let showsUltraLab = true
+    #else
+    private static let showsUltraLab = false
+    #endif
+
+    /// Ultra AI, where it is offered: its own permission (turning it on shows the disclosure first; off, nothing more is sent), everything it
+    /// sends (`UltraPrivacyView`) and, in Debug, the lab that compares lengths.
     private var ultraSection: some View {
         Section {
             SettingsListToggle(
@@ -70,12 +77,19 @@ struct PrivacyView: View {
                 })
             )
             .accessibilityIdentifier("privacy.ultra")
+            .cardRowBackground(position: .first)
+            NavigationLink { UltraPrivacyView() } label: {
+                Text("What Ultra AI sends").foregroundStyle(Palette.ink).frame(minHeight: Metrics.listRowContent)
+            }
+            .accessibilityIdentifier("privacy.ultraDetail")
+            .cardRowBackground(position: Self.showsUltraLab ? .middle : .last)
             #if DEBUG
-            NavigationLink { UltraLabView() } label: { Text(verbatim: "Ultra AI · Lab") }
+            NavigationLink { UltraLabView() } label: { Text(verbatim: "Ultra AI · Lab").foregroundStyle(Palette.ink) }
                 .accessibilityIdentifier("privacy.ultraLab")
+                .cardRowBackground(position: .last)
             #endif
         } footer: {
-            Text("When it’s on and you pick Ultra AI, your request and voice preferences go to Google, which runs its model, and the draft goes back for the polish. Writing examples, imported excerpts, scripts, videos and audio stay on this iPhone. Turning it off doesn’t change Apple Intelligence.")
+            Text("When it’s on and you pick Ultra AI, your idea, your choices and your My Cue Voice preferences go to Google, which writes the script. Off, nothing more is sent. Turning it off doesn’t change Apple Intelligence.")
                 .foregroundStyle(Palette.ink2)
         }
     }
