@@ -7,6 +7,7 @@ import SwiftUI
 
 /// "Your fonts": the families the creator imported, each written in itself with its styles, Remove (videos that use it keep
 /// it; Undo), and Import font. Only fonts the creator has the right to use; Cue keeps them on this iPhone, for Cue alone.
+/// Below them, once one came, the script libraries' families downloaded (`FontPackStore`), with what they take and Remove.
 struct BrandFontsList: View {
     let viewModel: QuickEditViewModel
 
@@ -46,29 +47,52 @@ struct BrandFontsList: View {
                 .accessibilityElement(children: .contain)
             }
             FontImportButton(viewModel: viewModel)
+            downloaded
             Text("Import only fonts you’re allowed to use in videos. They stay on this iPhone, for Cue alone.")
                 .font(.footnote)
                 .foregroundStyle(Palette.ink2)
                 .fixedSize(horizontal: false, vertical: true)
         }
     }
-}
 
-/// "Import font": Files, for TTF and OTF files (several at once: a family's styles); `onImported` gets the first family that
-/// came in, for the picker it sits under to pick it.
-struct FontImportButton: View {
-    let viewModel: QuickEditViewModel
-    var onImported: ((TextOverlayFont) -> Void)?
-
-    @State private var isPicking = false
-
-    var body: some View {
-        PanelButton(label: String(localized: "Import font"), systemImage: "square.and.arrow.down", identifier: "edit.importFont") {
-            isPicking = true
-        }
-        .fileImporter(isPresented: $isPicking, allowedContentTypes: BrandViewModel.fontTypes, allowsMultipleSelection: true) { result in
-            guard case .success(let urls) = result else { return }
-            Task { await viewModel.brand.importFonts(urls, then: onImported) }
+    /// The script libraries' families on this iPhone; nothing when none came.
+    @ViewBuilder
+    private var downloaded: some View {
+        let packs = brand.downloadedPacks
+        if !packs.isEmpty {
+            Text("Downloaded fonts")
+                .font(.system(.subheadline, weight: .semibold))
+                .foregroundStyle(Palette.ink)
+                .padding(.top, 8)
+            ForEach(packs, id: \.pack.id) { entry in
+                HStack(spacing: 8) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        let label = "\(entry.pack.script.sample) \(entry.pack.family)"
+                        Text(verbatim: label)
+                            .font(Font(TextFont.font(.pack(entry.pack.id), weight: entry.pack.weights.first ?? .regular, size: 17, text: label)))
+                            .foregroundStyle(Palette.ink)
+                            .lineLimit(1)
+                        Text(verbatim: "\(entry.pack.script.libraryTitle) · \(entry.bytes.formatted(.byteCount(style: .file)))")
+                            .font(.caption)
+                            .foregroundStyle(Palette.ink2)
+                            .lineLimit(2)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    Button {
+                        brand.removePack(entry.pack)
+                    } label: {
+                        Image(systemName: "minus.circle")
+                            .font(.editorGlyph(EditorGlyph.control, weight: .semibold))
+                            .foregroundStyle(Palette.ink2)
+                            .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(Text("Remove \(entry.pack.family)"))
+                    .accessibilityIdentifier("edit.brand.removeFontPack.\(entry.pack.id)")
+                }
+                .accessibilityElement(children: .contain)
+            }
         }
     }
 }

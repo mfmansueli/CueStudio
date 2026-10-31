@@ -3,29 +3,23 @@
 //  Cue Studio
 //
 
-import CoreText
 import UIKit
 
-/// UIKit's system cascades shape Arabic, Devanagari, CJK and Thai locally. A whole unsupported
-/// script uses the system weight to avoid mixing a Latin display cut with missing glyph boxes.
+/// A caption recipe's font for `text`: the family picked over it (`CaptionStyleSpec.face`) or the preset's own file, drawing
+/// every script through `ScriptFontCascade` (the face with the style's character in Japanese, Arabic, Thai…, at the style's
+/// weight), so each style keeps its personality in every language, the same in the preview and the export.
 nonisolated enum CaptionFont {
     static func font(spec: CaptionStyleSpec, size: CGFloat, text: String) -> UIFont {
         if let face = spec.face {
             return TextFont.font(face, weight: TextOverlayWeight.nearest(to: spec.fontWeight, in: face.weights), size: size, text: text)
         }
-        let fallback = UIFont.systemFont(ofSize: size, weight: systemWeight(spec.fallbackWeight))
-        guard let bundled = UIFont(name: spec.fontName, size: size) else { return fallback }
-        let variation: [NSNumber: NSNumber] = [0x77676874: NSNumber(value: spec.fontWeight)]
-        let descriptor = bundled.fontDescriptor.addingAttributes([
-            UIFontDescriptor.AttributeName(rawValue: kCTFontVariationAttribute as String): variation,
-        ])
-        let font = UIFont(descriptor: descriptor, size: size)
-        let characters = Array(text.unicodeScalars.filter { !CharacterSet.whitespacesAndNewlines.contains($0) }.map(String.init).joined().utf16)
-        var glyphs = [CGGlyph](repeating: 0, count: characters.count)
-        let covered = CTFontGetGlyphsForCharacters(font as CTFont, characters, &glyphs, characters.count)
-        return covered ? font : fallback
+        return TextFont.named(
+            spec.fontName, variation: spec.fontWeight, size: size, text: text, character: spec.typeCharacter, scriptWeight: spec.scriptWeight,
+            systemWeight: systemWeight(spec.fallbackWeight)
+        )
     }
 
+    /// The system font's weight a line the preset's file draws none of is set in (as Cue always set it).
     private static func systemWeight(_ weight: Double) -> UIFont.Weight {
         weight >= 800 ? .heavy : weight >= 700 ? .bold : .semibold
     }

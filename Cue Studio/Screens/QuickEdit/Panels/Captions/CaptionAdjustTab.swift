@@ -66,6 +66,10 @@ struct CaptionAdjustTab: View {
             identifier: "edit.captionFace", onSelect: captions.setCaptionFace
         )
         if let face = settings.face, let note = viewModel.brand.missingFontNote(face) { PanelNote(text: note) }
+        ScriptFontLibraries(
+            scripts: viewModel.brand.scriptLibraries(styling: viewModel.brand.captionWords), store: viewModel.brand.fontPacks,
+            selection: settings.face, weight: spec.shownWeight, identifier: "edit.captionFace", onSelect: { captions.setCaptionFace($0) }
+        )
         FontImportButton(viewModel: viewModel) { captions.setCaptionFace($0) }
         if spec.availableWeights.count > 1 {
             PanelSegmented(

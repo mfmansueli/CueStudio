@@ -10,7 +10,8 @@ import Foundation
 /// them. Letters a bundled font lacks (Arabic, Hindi, Thai, CJK; Vietnamese in some) fall back to the system's (`TextFont`).
 /// A family the creator imported (`CustomFontRegistry`) is saved as "custom:<family name>", so a video keeps naming it when
 /// the font is gone (it draws in SF Pro meanwhile, and in it again once the same family is imported); an earlier version
-/// of Cue reads it as SF Pro (`LenientChoice`).
+/// of Cue reads it as SF Pro (`LenientChoice`). A family of a script's library (`FontPack`, downloaded when a video needs it) is
+/// saved as "pack:<id>"; until its file is here it draws in the system's face of its script.
 nonisolated struct TextOverlayFont: LenientChoice, CaseIterable, Identifiable, Hashable, Sendable, CustomStringConvertible {
     /// Read in place of a value a newer version of Cue added (`LenientChoice`).
     static let fallback = TextOverlayFont.sfPro
@@ -19,7 +20,8 @@ nonisolated struct TextOverlayFont: LenientChoice, CaseIterable, Identifiable, H
     let rawValue: String
 
     init?(rawValue: String) {
-        guard Self.allCases.contains(where: { $0.rawValue == rawValue }) || Self.family(in: rawValue) != nil else { return nil }
+        guard Self.allCases.contains(where: { $0.rawValue == rawValue }) || Self.family(in: rawValue) != nil || Self.packID(in: rawValue) != nil
+        else { return nil }
         self.rawValue = rawValue
     }
 
@@ -79,6 +81,17 @@ nonisolated struct TextOverlayFont: LenientChoice, CaseIterable, Identifiable, H
     /// The imported family's name, nil for a bundled face.
     var customFamily: String? { Self.family(in: rawValue) }
 
+    /// A family of a script's library, by its id.
+    static func pack(_ id: String) -> TextOverlayFont {
+        TextOverlayFont(named: packPrefix + id)
+    }
+
+    /// The library family's id, nil for any other face.
+    var packID: String? { Self.packID(in: rawValue) }
+
+    /// The library family, when this version of Cue still lists it.
+    var pack: FontPack? { packID.flatMap(FontPackManifest.bundled.pack) }
+
     var isCustom: Bool { customFamily != nil }
 
     /// An imported family that isn't on this iPhone (removed for good, or never imported here): it draws in SF Pro.
@@ -92,6 +105,7 @@ nonisolated struct TextOverlayFont: LenientChoice, CaseIterable, Identifiable, H
         if let customFamily {
             return CustomFontRegistry.shared.weights(of: customFamily) ?? TextOverlayWeight.editorWeights
         }
+        if packID != nil { return pack?.weights ?? TextOverlayWeight.editorWeights }
         switch self {
         case .dmSerif, .instrumentSerif, .anton, .bangers: return [.regular]
         case .spaceMono: return [.bold]
@@ -106,12 +120,20 @@ nonisolated struct TextOverlayFont: LenientChoice, CaseIterable, Identifiable, H
 
     var label: String {
         if let customFamily { return customFamily }
+        if let packID { return pack?.family ?? packID }
         return Self.labels[rawValue] ?? rawValue
     }
 
     // MARK: - Private
 
     private static let customPrefix = "custom:"
+    private static let packPrefix = "pack:"
+
+    private static func packID(in raw: String) -> String? {
+        guard raw.hasPrefix(packPrefix) else { return nil }
+        let id = String(raw.dropFirst(packPrefix.count))
+        return id.isEmpty ? nil : id
+    }
 
     private static func family(in raw: String) -> String? {
         guard raw.hasPrefix(customPrefix) else { return nil }

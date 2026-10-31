@@ -32,6 +32,12 @@ struct CoverTitleStep: View {
                     font: { CueStudioFont.chip($0, size: $1) }, identifier: "cover.font",
                     onSelect: { face in viewModel.updateTitle { $0.font = CoverFont(face, weight: $0.font.weight) } }
                 )
+                if let store = viewModel.fontPacks {
+                    ScriptFontLibraries(
+                        scripts: viewModel.scriptLibraries, store: store, selection: style.font.face, weight: style.font.weight,
+                        identifier: "cover.font", onSelect: { face in viewModel.updateTitle { $0.font = CoverFont(face, weight: $0.font.weight) } }
+                    )
+                }
                 if style.font.face.weights.count > 1 {
                     PanelSegmented(
                         label: String(localized: "Weight"), options: style.font.face.weights.map { PanelOption($0, $0.label) },

@@ -47,7 +47,8 @@ struct QuickEditView: View {
             take: take, takes: services.takes, library: services.library,
             editing: services.editing, drafts: services.drafts, toast: services.toast,
             styles: TextStyleStore(defaults: services.defaults), mediaLibrary: services.mediaLibrary, brandKits: services.brandKits,
-            fonts: services.fonts,
+            fonts: services.fonts, fontPacks: services.fontPacks,
+            writingLanguages: { (languages.scriptLanguage, languages.interfaceLanguage) },
             editorPreferences: EditorPreferencesStore(defaults: services.defaults), prompterLook: services.preferences.prompter,
             motion: services.motion,
             speechLanguage: { languages.captionRequest(for: $0) },
@@ -88,6 +89,7 @@ struct QuickEditView: View {
             if let opening { viewModel.open(opening) }
         }
         .onChange(of: services.motion.completed) { viewModel.motionAnalysisDidChange() }
+        .onChange(of: services.fontPacks.generation) { viewModel.fontPacksChanged() }
         .sheet(item: $viewModel.sheet) { sheet in
             switch sheet {
             case .music: AddMusicSheet(viewModel: viewModel)

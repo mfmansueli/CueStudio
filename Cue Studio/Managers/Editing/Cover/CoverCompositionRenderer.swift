@@ -137,21 +137,21 @@ nonisolated enum CoverCompositionRenderer {
         context.fill(CGRect(x: x - size.width * 0.006, y: 0, width: size.width * 0.012, height: size.height))
         guard split.showsLabels else { return }
         let frames = labelFrames(split, size: size)
-        pill(split.beforeLabel, font: labelFont(size), fill: .white, box: frames[0], size: size, in: context)
-        pill(split.afterLabel, font: labelFont(size), fill: color(.yellow), box: frames[1], size: size, in: context)
+        pill(split.beforeLabel, font: labelFont(size, text: split.beforeLabel), fill: .white, box: frames[0], size: size, in: context)
+        pill(split.afterLabel, font: labelFont(size, text: split.afterLabel), fill: color(.yellow), box: frames[1], size: size, in: context)
     }
 
-    private static func labelFont(_ size: CGSize) -> UIFont {
-        CoverTextLayout.font(.anton, size: size.width * 0.062)
+    private static func labelFont(_ size: CGSize, text: String) -> UIFont {
+        CoverTextLayout.font(.anton, size: size.width * 0.062, text: text)
     }
 
     /// BEFORE's and AFTER's pills, each in the middle of its half (an empty label has none: a zero rectangle).
     static func labelFrames(_ split: CoverSplit, size: CGSize) -> [CGRect] {
         let x = (min(max(split.position, CoverSplit.positionRange.lowerBound), CoverSplit.positionRange.upperBound) * size.width).rounded()
-        let font = labelFont(size)
         let y = size.height * 0.34
         return [(split.beforeLabel, x / 2), (split.afterLabel, x + (size.width - x) / 2)].map { text, middle in
             guard !text.isEmpty else { return .zero }
+            let font = labelFont(size, text: text)
             let line = CTLineCreateWithAttributedString(NSAttributedString(string: text, attributes: [.font: font]))
             let width = CGFloat(CTLineGetTypographicBounds(line, nil, nil, nil))
             let height = font.ascender - font.descender

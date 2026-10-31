@@ -390,6 +390,7 @@ nonisolated enum CaptionCollectionRenderer {
         }.max() ?? 0
         let paragraph = NSMutableParagraphStyle()
         paragraph.lineBreakMode = .byWordWrapping
+        paragraph.lineBreakStrategy = .hangulWordPriority
         paragraph.lineSpacing = CGFloat(spec.lineSpacing) * unit
         attributes[.paragraphStyle] = paragraph
         let storage = NSTextStorage(string: display, attributes: attributes)
@@ -428,6 +429,7 @@ nonisolated enum CaptionCollectionRenderer {
         case .trailing: .right
         }
         paragraph.lineBreakMode = .byWordWrapping
+        paragraph.lineBreakStrategy = .hangulWordPriority
         paragraph.baseWritingDirection = ScriptDirection.isRightToLeft(language: nil, text: display) ? .rightToLeft : .leftToRight
         // Letters spaced out only where the writing allows it.
         let kern = spec.tracking > 0 && TextShaping.allowsLetterSpacing(in: display) ? CGFloat(spec.tracking) * unit : 0

@@ -78,6 +78,8 @@ struct AppServices {
     let brands: BrandStore
     /// The creator's imported font families, registered for Cue at launch.
     let fonts: CustomFontStore
+    /// The script libraries' downloaded files (`FontPackStore`).
+    let fontPacks: FontPackStore
     /// Photos, videos and logos kept to reuse in any video.
     let mediaLibrary: MediaLibraryStore
     let brandKits: BrandKitStore
@@ -193,7 +195,11 @@ struct AppServices {
         scriptRevealPause = options.scriptRevealPause
         textRecognizer = TextRecognitionManager()
         importer = DocumentImportService()
-        exporter = VideoExportService()
+        // The UI tests' in-memory runs never reach the network for fonts.
+        fontPacks = options.assetRoot.map { root in
+            FontPackStore(source: OfflineFontPackSource(), directory: root.appending(path: "FontPacks", directoryHint: .isDirectory))
+        } ?? FontPackStore()
+        exporter = VideoExportService(fontPacks: fontPacks)
         #if DEBUG
         reviewExporter = options.slowExports ? SlowVideoExporter(inner: exporter) : exporter
         #else
@@ -242,7 +248,7 @@ struct AppServices {
             library: library, takes: takes, drafts: options.draftStore, logbook: logbook, brands: brands,
             profile: profile, preferences: preferences, defaults: options.defaults, notifications: notifications, voyage: voyage,
             draftLearning: draftLearning, voiceQuestions: voiceQuestions, ledger: ledger, shareQueue: shareQueue, ideas: ideaSuggestions,
-            fonts: fonts, mediaLibrary: mediaLibrary, brandKits: brandKits
+            fonts: fonts, fontPacks: fontPacks, mediaLibrary: mediaLibrary, brandKits: brandKits
         )
         topicTagging = TopicTaggingService(library: library, profile: profile, personalization: personalization, writer: writer)
     }
@@ -253,6 +259,10 @@ struct AppServices {
         brands.load()
         // Before anything draws words: the imported fonts are registered for Cue.
         fonts.load()
+        // The script libraries' files kept from before (nothing downloads here), and which script Chinese characters are
+        // read in, from the creator's languages.
+        fontPacks.load()
+        FontPackRegistry.shared.hanReading = WritingScript.hanReading(for: [languages.scriptLanguage, languages.interfaceLanguage].compactMap(\.self))
         mediaLibrary.load()
         brandKits.load()
         #if DEBUG

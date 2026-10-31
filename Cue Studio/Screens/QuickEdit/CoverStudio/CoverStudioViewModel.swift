@@ -76,6 +76,11 @@ final class CoverStudioViewModel: Identifiable {
     @ObservationIgnored private let pictures: CoverPicturing
     @ObservationIgnored private let importer: EditMediaImporting
     @ObservationIgnored private let styles: TextStyleStoring
+    /// The script libraries the Title's picker offers (`scriptLibraries`).
+    let fontPacks: FontPackStore?
+    @ObservationIgnored private let writingLanguages: () -> (script: CueLanguage?, interface: CueLanguage?)
+    /// The creator's script language and the app's, now.
+    var writingLanguagesNow: (script: CueLanguage?, interface: CueLanguage?) { writingLanguages() }
     /// Files copied in while the studio was open (photos), for the editor to keep or clean up.
     @ObservationIgnored private(set) var importedFiles: Set<String> = []
 
@@ -103,8 +108,11 @@ final class CoverStudioViewModel: Identifiable {
     /// `cover`: the editor's cover (made before Cover Studio or in it), or nil to make a new one from `frame`.
     init(
         cover: VideoCover?, frame: CoverFrame, edit: TakeEdit, videoURL: URL, handle: String, suggestions: [String],
-        pictures: CoverPicturing, importer: EditMediaImporting, styles: TextStyleStoring
+        pictures: CoverPicturing, importer: EditMediaImporting, styles: TextStyleStoring, fontPacks: FontPackStore? = nil,
+        writingLanguages: @escaping () -> (script: CueLanguage?, interface: CueLanguage?) = { (nil, nil) }
     ) {
+        self.fontPacks = fontPacks
+        self.writingLanguages = writingLanguages
         self.edit = edit
         self.videoURL = videoURL
         self.handle = handle
@@ -247,6 +255,7 @@ final class CoverStudioViewModel: Identifiable {
     /// again (Vision is too slow for every frame): the last cut-out is used when nothing it depends on moved.
     func scheduleRender() {
         renderTask?.cancel()
+        requestTitleFonts()
         guard let main = mainPicture?.image else { return }
         renderGeneration += 1
         let generation = renderGeneration

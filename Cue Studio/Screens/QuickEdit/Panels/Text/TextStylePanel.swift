@@ -296,7 +296,8 @@ struct TextStylePanel: View {
         )
     }
 
-    /// Size and Turn first, one row each and always in sight; then the fonts, an imported one, and the weight.
+    /// Size and Turn first, one row each and always in sight; then the fonts, the script libraries the words call for, an imported
+    /// one, and the weight.
     @ViewBuilder
     private func font(_ text: TextOverlay) -> some View {
         sizeAndTurn()
@@ -306,6 +307,10 @@ struct TextStylePanel: View {
             onSelect: { viewModel.overlays.restyleText(.font($0)) }
         )
         if let note = viewModel.brand.missingFontNote(text.font) { PanelNote(text: note) }
+        ScriptFontLibraries(
+            scripts: viewModel.brand.scriptLibraries(styling: text.displayText), store: viewModel.brand.fontPacks, selection: text.font,
+            weight: text.weight, identifier: "edit.textFont", onSelect: { viewModel.overlays.restyleText(.font($0)) }
+        )
         FontImportButton(viewModel: viewModel) { viewModel.overlays.restyleText(.font($0)) }
         PanelSegmented(
             label: String(localized: "Weight"), options: text.font.weights.map { PanelOption($0, $0.label) },

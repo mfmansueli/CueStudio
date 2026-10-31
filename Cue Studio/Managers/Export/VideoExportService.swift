@@ -13,10 +13,16 @@ import UIKit
 final class VideoExportService: VideoExporting {
     /// Studio Voice's sounds, shared with the preview: what it already treated isn't treated again.
     private let sounds: RecordingSoundCache
+    /// The script libraries: an export lets the families its words need arrive first (`fontWait`).
+    private let fontPacks: FontPackStore?
 
-    init(sounds: RecordingSoundCache = .shared) {
+    init(sounds: RecordingSoundCache = .shared, fontPacks: FontPackStore? = nil) {
         self.sounds = sounds
+        self.fontPacks = fontPacks
     }
+
+    /// The longest an export waits for a script's face to download before it draws those words in the system's face.
+    static let fontWait = Duration.seconds(15)
 
     func export(videoAt source: URL, options: ExportOptions, progress: (@MainActor (Double) -> Void)?) async throws -> URL {
         if options.needsEditRenderer {
@@ -99,6 +105,15 @@ final class VideoExportService: VideoExporting {
         let duration = try await asset.load(.duration).seconds
         var edit = options.edit ?? TakeEdit(sourceDuration: duration, aspect: options.aspect)
         edit.aspect = options.aspect
+        // The faces its words need, if they aren't here yet: asked for and waited for, at most `fontWait`. From here to the
+        // end, a face that arrives waits for the export to finish, so the video never changes face halfway through.
+        if let fontPacks {
+            let needs = FontPackNeeds.needs(in: edit, han: FontPackRegistry.shared.hanReading)
+            fontPacks.request(needs)
+            await fontPacks.awaitDownloads(needs, timeout: Self.fontWait)
+        }
+        FontPackRegistry.shared.beginExport()
+        defer { if FontPackRegistry.shared.endExport() { fontPacks?.heldFacesArrived() } }
         // The preview's preparation (`EditRenderRequest`): a take never edited plays its own sound.
         let request = try await EditRenderRequest.prepare(
             source: source, edit: edit,

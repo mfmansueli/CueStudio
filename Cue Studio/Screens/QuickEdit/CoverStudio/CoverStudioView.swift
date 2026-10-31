@@ -45,6 +45,8 @@ struct CoverStudioView: View {
             .toolbarBackground(.hidden, for: .navigationBar)
         }
         .task { await viewModel.start() }
+        // A script's face that arrived draws the title again in it.
+        .onChange(of: viewModel.fontPacks?.generation) { viewModel.scheduleRender() }
         .task {
             for await _ in NotificationCenter.default.notifications(named: UIResponder.keyboardWillShowNotification) { isKeyboardUp = true }
         }

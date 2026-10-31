@@ -35,6 +35,7 @@ final class DataEraserService {
     @ObservationIgnored private let shareQueue: ShareQueueService?
     @ObservationIgnored private let ideas: IdeaSuggestionService?
     @ObservationIgnored private let fonts: CustomFontStore?
+    @ObservationIgnored private let fontPacks: FontPackStore?
     @ObservationIgnored private let mediaLibrary: MediaLibraryStore?
     @ObservationIgnored private let brandKits: BrandKitStore?
     /// The editor's media folder and the camera's leftover recordings, whole. Tests point it at folders of their own: these
@@ -46,7 +47,7 @@ final class DataEraserService {
         brands: BrandStore, profile: CreatorProfileService, preferences: PreferencesService, defaults: UserDefaults = .standard,
         notifications: NotificationService? = nil, voyage: FirstVoyageService? = nil, draftLearning: DraftLearningService? = nil,
         voiceQuestions: VoiceQuestionScheduler? = nil, ledger: ExportLedgerService? = nil, shareQueue: ShareQueueService? = nil,
-        ideas: IdeaSuggestionService? = nil, fonts: CustomFontStore? = nil, mediaLibrary: MediaLibraryStore? = nil,
+        ideas: IdeaSuggestionService? = nil, fonts: CustomFontStore? = nil, fontPacks: FontPackStore? = nil, mediaLibrary: MediaLibraryStore? = nil,
         brandKits: BrandKitStore? = nil,
         eraseLooseFiles: @escaping () -> Void = {
             EditMediaFiles.removeAll()
@@ -69,6 +70,7 @@ final class DataEraserService {
         self.shareQueue = shareQueue
         self.ideas = ideas
         self.fonts = fonts
+        self.fontPacks = fontPacks
         self.mediaLibrary = mediaLibrary
         self.brandKits = brandKits
         self.eraseLooseFiles = eraseLooseFiles
@@ -85,10 +87,11 @@ final class DataEraserService {
         takes.deleteEverything()
         drafts.discardAll()
         eraseLooseFiles()
-        // The media library, the brand kits and the imported fonts (unregistered first).
+        // The media library, the brand kits, the imported fonts and the downloaded ones (unregistered first).
         mediaLibrary?.eraseAll()
         brandKits?.eraseAll()
         fonts?.eraseAll()
+        fontPacks?.eraseAll()
         shareQueue?.discardAll()
         library.delete(Set(library.scripts.map(\.id)))
         library.deleteFoldersAndKeptCopies()

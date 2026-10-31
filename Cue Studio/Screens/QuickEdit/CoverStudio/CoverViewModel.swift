@@ -27,13 +27,21 @@ final class CoverViewModel: EditorPart {
     /// Copies a photo Cover Studio picks into the edit's media.
     let importer: EditMediaImporting
     let styles: TextStyleStoring
+    /// The script libraries the Title's picker offers, and the creator's languages that call for them.
+    let fontPacks: FontPackStore?
+    let writingLanguages: () -> (script: CueLanguage?, interface: CueLanguage?)
 
-    init(session: EditorSession, editing: TakeEditing, pictures: CoverPicturing, importer: EditMediaImporting, styles: TextStyleStoring) {
+    init(
+        session: EditorSession, editing: TakeEditing, pictures: CoverPicturing, importer: EditMediaImporting, styles: TextStyleStoring,
+        fontPacks: FontPackStore? = nil, writingLanguages: @escaping () -> (script: CueLanguage?, interface: CueLanguage?) = { (nil, nil) }
+    ) {
         self.session = session
         self.editing = editing
         self.pictures = pictures
         self.importer = importer
         self.styles = styles
+        self.fontPacks = fontPacks
+        self.writingLanguages = writingLanguages
     }
 
     /// The edit changed: the cover block is drawn again when what it shows changed.
@@ -52,7 +60,8 @@ final class CoverViewModel: EditorPart {
         panel = nil
         coverStudio = CoverStudioViewModel(
             cover: edit.cover, frame: edit.coverFrame(atEdited: player.currentTime), edit: edit, videoURL: session.videoURL,
-            handle: session.creatorHandle, suggestions: coverSuggestions, pictures: pictures, importer: importer, styles: styles
+            handle: session.creatorHandle, suggestions: coverSuggestions, pictures: pictures, importer: importer, styles: styles,
+            fontPacks: fontPacks, writingLanguages: writingLanguages
         )
     }
 
