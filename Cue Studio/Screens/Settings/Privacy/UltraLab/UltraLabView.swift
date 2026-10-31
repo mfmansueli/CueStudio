@@ -7,8 +7,9 @@
 import SwiftUI
 
 /// Settings › Privacy & AI data › Ultra AI · Lab (Debug only): writes one idea with Ultra AI under a length condition (free, about 90 s as a
-/// reference, 60–90 s required) and shows the draft, the polished script, the editor's changes, each call's time and tokens, and the lab's calls
-/// left. It uses the same service and permission as the Scripts screen: nothing goes out until Ultra AI is allowed.
+/// reference, 60–90 s required) and shows the draft, the polished script, the editor's changes, each call's time and tokens, what the script
+/// cost, and the lab's calls left. Above, what every Ultra script and fit from this iPhone cost (`UltraSpendLedger`). It uses the same service
+/// and permission as the Scripts screen: nothing goes out until Ultra AI is allowed.
 struct UltraLabView: View {
     @State private var model: UltraLabViewModel?
     @State private var asksPermission = false
@@ -47,6 +48,7 @@ struct UltraLabView: View {
                 Text(verbatim: "Two or three calls a script (the steps below). Failed calls count too.")
                     .foregroundStyle(Palette.ink2)
             }
+            if let spend = model.ultra.spend { cost(spend) }
             if let allowance = model.ultra.allowance {
                 Section {
                     LabeledContent {
@@ -126,6 +128,8 @@ struct UltraLabView: View {
             }
         }
         .cueGroupedList()
+        // The keyboard would cover "Write with Ultra AI": a scroll closes it.
+        .scrollDismissesKeyboard(.immediately)
         .sheet(isPresented: $asksPermission) {
             UltraConsentSheet { model.ultra.consent.grant() }
         }
@@ -177,9 +181,65 @@ struct UltraLabView: View {
             callRow("Draft", seconds: run.draftSeconds, reply: run.draftReply)
             if let seconds = run.checkSeconds, let reply = run.checkReply { callRow("Check", seconds: seconds, reply: reply) }
             callRow("Polish", seconds: run.reviewSeconds, reply: run.reviewReply)
+            LabeledContent {
+                // A call more than the steps is the fit that followed by itself.
+                let fitted = run.cost.calls > run.flow.calls ? ", fit included" : ""
+                Text(verbatim: "\(run.cost.calls) calls\(fitted) · \(Self.dollars(run.cost.dollars()))")
+                    .monoFont(size: 11)
+                    .foregroundStyle(Palette.ink)
+            } label: {
+                Text(verbatim: "Cost")
+            }
+            .accessibilityElement(children: .combine)
+            .accessibilityIdentifier("ultraLab.runCost")
         } header: {
             Text(verbatim: "Calls")
         }
+    }
+
+    /// What every Ultra script and fit from this iPhone cost, finished or not, and what a finished one costs on average and at most.
+    private func cost(_ spend: UltraSpendLedger) -> some View {
+        Section {
+            LabeledContent {
+                Text(verbatim: "\(Self.dollars(spend.total.dollars())) · \(spend.total.calls) calls")
+            } label: {
+                Text(verbatim: "Spent on this iPhone")
+            }
+            .accessibilityElement(children: .combine)
+            .accessibilityIdentifier("ultraLab.spend.total")
+            if let scripts = spend.summary(of: .script) {
+                summaryRow("Per script (\(scripts.count))", scripts).accessibilityIdentifier("ultraLab.spend.scripts")
+            }
+            if let fits = spend.summary(of: .fit) {
+                summaryRow("Per fit (\(fits.count))", fits).accessibilityIdentifier("ultraLab.spend.fits")
+            }
+            Button { spend.startOver() } label: { Text(verbatim: "Start a new measurement") }
+                .disabled(spend.total.calls == 0)
+                .accessibilityIdentifier("ultraLab.spend.startOver")
+        } header: {
+            Text(verbatim: "Cost")
+        } footer: {
+            Text(verbatim: "Google’s own token counts for every call, at Google’s price for Ultra AI’s model: USD \(Self.rate(UltraPrice.current.inputPerMillion)) per million tokens in, \(Self.rate(UltraPrice.current.outputPerMillion)) per million out (thinking included). Failed and stopped requests count in the total, not in the averages. The bill for every phone together: tools/ultra/spend.js.")
+                .foregroundStyle(Palette.ink2)
+        }
+    }
+
+    private func summaryRow(_ title: String, _ summary: UltraSpendSummary) -> some View {
+        LabeledContent {
+            Text(verbatim: "\(Self.dollars(summary.mean)) average · \(Self.dollars(summary.most)) most")
+        } label: {
+            Text(verbatim: title)
+        }
+        .accessibilityElement(children: .combine)
+    }
+
+    /// Dollars to a tenth of a cent: a script costs a few cents.
+    private static func dollars(_ amount: Double) -> String {
+        amount.formatted(.currency(code: "USD").precision(.fractionLength(3)))
+    }
+
+    private static func rate(_ amount: Double) -> String {
+        amount.formatted(.number.precision(.fractionLength(2)))
     }
 
     private func callRow(_ title: String, seconds: Double, reply: UltraModelReply) -> some View {

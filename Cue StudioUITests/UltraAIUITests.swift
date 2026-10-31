@@ -305,6 +305,52 @@ final class UltraAIUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["Ultra AI · 3 of 3 free left"].exists(within: 5))
     }
 
+    /// The lab says what a script cost (its three calls, in the usage each step reported) and adds it to what this iPhone spent. With
+    /// `TEST_RUNNER_CUE_FIDELITY_DIR=<folder>` it keeps the pictures for `tools/contrast/audit.py`.
+    func testTheLabSaysWhatAScriptCost() throws {
+        let folder = ProcessInfo.processInfo.environment["CUE_FIDELITY_DIR"].map { URL(fileURLWithPath: $0, isDirectory: true) }
+        func shot(_ app: XCUIApplication, _ name: String) throws {
+            guard let folder else { return }
+            try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+            sleep(1)
+            try app.screenshot().pngRepresentation.write(to: folder.appending(path: "\(name).png"))
+            try app.debugDescription.write(to: folder.appending(path: "\(name).txt"), atomically: true, encoding: .utf8)
+        }
+        let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestUltra", "-uiTestUltraAllowed"])
+        let settings = app.cueTabBar.buttons["Settings"]
+        XCTAssertTrue(settings.exists(within: 10))
+        settings.tap()
+        let privacy = element(app, "settings.privacy")
+        app.scroll(to: privacy)
+        privacy.tap()
+        let lab = element(app, "privacy.ultraLab")
+        app.scroll(to: lab)
+        lab.tap()
+        let total = element(app, "ultraLab.spend.total")
+        XCTAssertTrue(total.exists(within: 5))
+        XCTAssertTrue(total.label.contains("0 calls"), "Nothing was spent yet: \(total.label)")
+        try shot(app, "ultra_cost_01_lab")
+        let prompt = element(app, "ultraLab.prompt")
+        app.scroll(to: prompt)
+        prompt.tap()
+        prompt.typeText("Why I stopped buying bottled water")
+        // A drag above the keyboard closes it (the lab's list does on a scroll); the scroll's own drag starts where the keyboard is.
+        if app.keyboards.firstMatch.exists { app.swipeDown() }
+        let generate = app.buttons["ultraLab.generate"]
+        app.scroll(to: generate)
+        generate.tap()
+        // The result is lower down the list, which only builds the rows on screen.
+        let runCost = element(app, "ultraLab.runCost")
+        app.scroll(to: runCost)
+        XCTAssertFalse(element(app, "ultraLab.failure").exists, "The lab's script failed")
+        XCTAssertTrue(runCost.label.contains("3 calls"), "The script's cost: \(runCost.label)")
+        try shot(app, "ultra_cost_02_run")
+        for _ in 0..<12 where !total.isHittable { app.swipeDown() }
+        XCTAssertTrue(total.label.contains("3 calls"), "This iPhone's total: \(total.label)")
+        XCTAssertTrue(element(app, "ultraLab.spend.scripts").exists, "What a finished script costs is missing")
+        try shot(app, "ultra_cost_03_total")
+    }
+
     /// The pictures of the length bar past the ideal with "Fit with Ultra AI", Improve's header, the "A bit long" question and What Ultra AI
     /// sends, for `tools/contrast/audit.py` (`TEST_RUNNER_CUE_FIDELITY_DIR=<folder>`).
     func testCaptureUltraFitAndPrivacyForTheContrastAudit() throws {

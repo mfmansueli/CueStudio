@@ -2888,7 +2888,7 @@ os 15 contra o Apple Intelligence; o laboratório ainda escolhe *Draft · polish
 polimento que falha é uma falha ("Ultra AI couldn’t polish the draft", com **Try again** no toast quando a falha não é de rede), sem o rascunho no lugar. A duração Auto é informação (não corta nem enche); uma escolhida no cartão ou pedida no
 texto é intenção. O pedido do criador vai palavra por palavra e vence o costume do perfil (abertura, formato, CTA). Antes de cada chamada confere permissão,
 limite e cancelamento. O cliente do Firebase só é criado no primeiro roteiro permitido. Nada do pedido, da voz ou da resposta vai ao Analytics ou ao
-Crashlytics; o Console (`studio.cue` / `Ultra`) recebe só tipos, tempos e tokens.
+Crashlytics; o Console (`studio.cue` / `Ultra`) recebe só tipos, tempos, tokens e custo.
 
 **O roteiro salvo** guarda `Script.draftedBy = .ultra` e o aviso de fatos; o toast diz "Ultra AI draft ready · Check facts".
 
@@ -2913,6 +2913,26 @@ Ainda escapa, às vezes, uma ressalva ("muchísimos años" → "siempre") ou um 
 **Limite do laboratório:** 300 chamadas neste iPhone (autorizadas pelo dono em 29/10/2026: 30, 80 e depois 300 para medir e melhorar a qualidade),
 contadas antes de sair, falhas incluídas (`UltraCallBudget`, nos defaults padrão do app). É uma trava do experimento, **não** um sistema de créditos: o de produção tem de ser do servidor (compras verificadas,
 saldo e operações idempotentes lá; uma falha sem roteiro não debita). Plano em `reports/ULTRA_AI_NATIVE_2026-10-29.md`.
+
+**Custo de cada roteiro** (pedido do dono, 31/10/2026): cada chamada guarda o uso que o Google devolve (tokens de entrada, os do cache, de saída e de
+raciocínio, os mesmos números da conta) e `UltraCost` os converte pelo preço do catálogo do Cloud Billing para o `gemini-3.5-flash` global
+(`UltraPrice`: USD 1,50 por milhão de entrada, 0,15 do cache, 9,00 de saída, raciocínio cobrado como saída). Um roteiro soma as suas duas ou três
+chamadas e o Fit que vem sozinho depois; um Fit pedido pelo criador é registro à parte; um pedido que falha ou é parado registra o que saiu.
+`UltraSpendLedger` guarda tudo nos defaults padrão (como o limite), e o laboratório mostra **Cost**: o gasto deste iPhone, a média e o máximo por roteiro
+e por Fit terminados, *Start a new measurement* para medir uma mudança de prompt ou modelo, e o custo do roteiro do laboratório em **Calls** (a lista
+do laboratório fecha o teclado ao rolar, para ele não esconder *Write with Ultra AI*). O Console
+recebe o custo de cada chamada e de cada pedido. O gasto do projeto inteiro (os dois iPhones e o laboratório web) é o que o Google contou:
+`node tools/ultra/spend.js` (só leitura, pelo login do Firebase CLI) lê as chamadas e os tokens no Cloud Monitoring, dia a dia, e o preço atual no
+catálogo, e avisa quando `UltraPrice` ficou para trás. Em 31/10/2026: 233 chamadas respondidas e 1 recusada (429), 278.984 tokens de entrada e
+548.231 de saída, **USD 5,35**, cerca de USD 0,023 por chamada.
+
+**Custo medido no iPhone** (31/10/2026, `UltraCostDeviceTests`: a ideia do card de Scripts e a próxima do Find inspiration escritas pelo Apple
+Intelligence no aparelho, e uma ideia digitada; um criador sintético de finanças e hábitos, TikTok, Auto; o fluxo do app, rascunho, checagem e
+polimento): 9 roteiros, 27 chamadas, nenhum precisou do Fit (190 a 217 palavras, 76 a 87 s), **média USD 0,068 por roteiro** (de 0,050 a 0,088).
+Por origem: card 0,064, Find inspiration 0,068, digitada 0,073; por idioma: português 0,073, inglês 0,069, espanhol 0,063. O raciocínio é 79% do
+custo (54 mil de 95 mil tokens), a entrada 8% (cerca de 3.600 tokens por roteiro) e o texto devolvido 13%; o que varia de um roteiro para outro
+é quanto o modelo pensa, sobretudo na checagem (por etapa, em média: rascunho USD 0,017, checagem 0,027, com 960 a 4.560 tokens de raciocínio,
+polimento 0,024).
 
 **Roteiros grátis e Cue Pro** (decisões do dono, 29/10 e 30/10/2026; **prévia em Debug**, sem cobrança): todo mundo tem **3 roteiros Ultra AI grátis**
 (`UsagePolicy.freeUltraScripts`; não há teste grátis do Pro); o Pro soma **30 por mês** (`proUltraScriptsPerMonth`); os grátis são gastos primeiro. Um roteiro só conta quando chega polido (falha ou Stop não
