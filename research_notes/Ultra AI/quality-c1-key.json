@@ -1,0 +1,242 @@
+{
+  "P01": {
+    "comparison": "checked-vs-checkedLow",
+    "A": "checked",
+    "B": "checkedLow",
+    "id": "en-US-2",
+    "kind": "profile",
+    "language": "en-US"
+  },
+  "P02": {
+    "comparison": "checked-vs-checkedMixed",
+    "A": "checked",
+    "B": "checkedMixed",
+    "id": "t3-teleprompter",
+    "kind": "technical",
+    "language": "pt-BR"
+  },
+  "P03": {
+    "comparison": "checked-vs-checkedLow",
+    "A": "checkedLow",
+    "B": "checked",
+    "id": "t1-window-light",
+    "kind": "technical",
+    "language": "pt-BR"
+  },
+  "P04": {
+    "comparison": "checked-vs-checkedMixed",
+    "A": "checkedMixed",
+    "B": "checked",
+    "id": "t4-sound",
+    "kind": "technical",
+    "language": "pt-BR"
+  },
+  "P05": {
+    "comparison": "checked-vs-checkedMixed",
+    "A": "checked",
+    "B": "checkedMixed",
+    "id": "pt-BR-1",
+    "kind": "profile",
+    "language": "pt-BR"
+  },
+  "P06": {
+    "comparison": "checked-vs-checkedLow",
+    "A": "checkedLow",
+    "B": "checked",
+    "id": "es-ES-1",
+    "kind": "profile",
+    "language": "es-ES"
+  },
+  "P07": {
+    "comparison": "checked-vs-checkedLow",
+    "A": "checked",
+    "B": "checkedLow",
+    "id": "t4-sound",
+    "kind": "technical",
+    "language": "pt-BR"
+  },
+  "P08": {
+    "comparison": "checked-vs-checkedLow",
+    "A": "checkedLow",
+    "B": "checked",
+    "id": "es-ES-0",
+    "kind": "profile",
+    "language": "es-ES"
+  },
+  "P09": {
+    "comparison": "checked-vs-checkedMixed",
+    "A": "checked",
+    "B": "checkedMixed",
+    "id": "t2-camera-upgrade",
+    "kind": "technical",
+    "language": "pt-BR"
+  },
+  "P10": {
+    "comparison": "checked-vs-checkedMixed",
+    "A": "checked",
+    "B": "checkedMixed",
+    "id": "es-ES-0",
+    "kind": "profile",
+    "language": "es-ES"
+  },
+  "P11": {
+    "comparison": "checked-vs-checkedMixed",
+    "A": "checkedMixed",
+    "B": "checked",
+    "id": "t6-sleep-spending",
+    "kind": "technical",
+    "language": "pt-BR"
+  },
+  "P12": {
+    "comparison": "checked-vs-checkedMixed",
+    "A": "checkedMixed",
+    "B": "checked",
+    "id": "en-US-2",
+    "kind": "profile",
+    "language": "en-US"
+  },
+  "P13": {
+    "comparison": "checked-vs-checkedLow",
+    "A": "checkedLow",
+    "B": "checked",
+    "id": "t2-camera-upgrade",
+    "kind": "technical",
+    "language": "pt-BR"
+  },
+  "P14": {
+    "comparison": "checked-vs-checkedLow",
+    "A": "checkedLow",
+    "B": "checked",
+    "id": "t3-teleprompter",
+    "kind": "technical",
+    "language": "pt-BR"
+  },
+  "P15": {
+    "comparison": "checked-vs-checkedLow",
+    "A": "checkedLow",
+    "B": "checked",
+    "id": "es-ES-2",
+    "kind": "profile",
+    "language": "es-ES"
+  },
+  "P16": {
+    "comparison": "checked-vs-checkedLow",
+    "A": "checkedLow",
+    "B": "checked",
+    "id": "pt-BR-1",
+    "kind": "profile",
+    "language": "pt-BR"
+  },
+  "P17": {
+    "comparison": "checked-vs-checkedMixed",
+    "A": "checked",
+    "B": "checkedMixed",
+    "id": "en-US-1",
+    "kind": "profile",
+    "language": "en-US"
+  },
+  "P18": {
+    "comparison": "checked-vs-checkedMixed",
+    "A": "checkedMixed",
+    "B": "checked",
+    "id": "en-US-0",
+    "kind": "profile",
+    "language": "en-US"
+  },
+  "P19": {
+    "comparison": "checked-vs-checkedLow",
+    "A": "checkedLow",
+    "B": "checked",
+    "id": "en-US-0",
+    "kind": "profile",
+    "language": "en-US"
+  },
+  "P20": {
+    "comparison": "checked-vs-checkedMixed",
+    "A": "checked",
+    "B": "checkedMixed",
+    "id": "pt-BR-0",
+    "kind": "profile",
+    "language": "pt-BR"
+  },
+  "P21": {
+    "comparison": "checked-vs-checkedLow",
+    "A": "checkedLow",
+    "B": "checked",
+    "id": "pt-BR-0",
+    "kind": "profile",
+    "language": "pt-BR"
+  },
+  "P22": {
+    "comparison": "checked-vs-checkedMixed",
+    "A": "checked",
+    "B": "checkedMixed",
+    "id": "t5-emergency-fund",
+    "kind": "technical",
+    "language": "pt-BR"
+  },
+  "P23": {
+    "comparison": "checked-vs-checkedLow",
+    "A": "checked",
+    "B": "checkedLow",
+    "id": "pt-BR-2",
+    "kind": "profile",
+    "language": "pt-BR"
+  },
+  "P24": {
+    "comparison": "checked-vs-checkedLow",
+    "A": "checked",
+    "B": "checkedLow",
+    "id": "t6-sleep-spending",
+    "kind": "technical",
+    "language": "pt-BR"
+  },
+  "P25": {
+    "comparison": "checked-vs-checkedMixed",
+    "A": "checked",
+    "B": "checkedMixed",
+    "id": "es-ES-1",
+    "kind": "profile",
+    "language": "es-ES"
+  },
+  "P26": {
+    "comparison": "checked-vs-checkedLow",
+    "A": "checked",
+    "B": "checkedLow",
+    "id": "t5-emergency-fund",
+    "kind": "technical",
+    "language": "pt-BR"
+  },
+  "P27": {
+    "comparison": "checked-vs-checkedMixed",
+    "A": "checked",
+    "B": "checkedMixed",
+    "id": "t1-window-light",
+    "kind": "technical",
+    "language": "pt-BR"
+  },
+  "P28": {
+    "comparison": "checked-vs-checkedMixed",
+    "A": "checked",
+    "B": "checkedMixed",
+    "id": "es-ES-2",
+    "kind": "profile",
+    "language": "es-ES"
+  },
+  "P29": {
+    "comparison": "checked-vs-checkedLow",
+    "A": "checkedLow",
+    "B": "checked",
+    "id": "en-US-1",
+    "kind": "profile",
+    "language": "en-US"
+  },
+  "P30": {
+    "comparison": "checked-vs-checkedMixed",
+    "A": "checked",
+    "B": "checkedMixed",
+    "id": "pt-BR-2",
+    "kind": "profile",
+    "language": "pt-BR"
+  }
+}

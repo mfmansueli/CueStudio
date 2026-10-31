@@ -1,0 +1,1130 @@
+{
+  "run": "c1",
+  "verdicts": "quality-c1-verdicts-judge1",
+  "judged": 30,
+  "missing": [],
+  "unknown": [],
+  "comparisons": {
+    "apple-vs-checked": {
+      "all": {
+        "pairs": 0,
+        "tie": 0
+      },
+      "kind": {},
+      "language": {}
+    },
+    "polished-vs-checked": {
+      "all": {
+        "pairs": 0,
+        "tie": 0
+      },
+      "kind": {},
+      "language": {}
+    },
+    "checked-vs-checkedMedium": {
+      "all": {
+        "pairs": 0,
+        "tie": 0
+      },
+      "kind": {},
+      "language": {}
+    },
+    "checked-vs-checkedLow": {
+      "all": {
+        "pairs": 15,
+        "tie": 0,
+        "checked": 6,
+        "checkedLow": 9
+      },
+      "kind": {
+        "profile": {
+          "pairs": 9,
+          "tie": 0,
+          "checked": 3,
+          "checkedLow": 6
+        },
+        "technical": {
+          "pairs": 6,
+          "tie": 0,
+          "checked": 3,
+          "checkedLow": 3
+        }
+      },
+      "language": {
+        "en-US": {
+          "pairs": 3,
+          "tie": 0,
+          "checked": 1,
+          "checkedLow": 2
+        },
+        "pt-BR": {
+          "pairs": 9,
+          "tie": 0,
+          "checked": 3,
+          "checkedLow": 6
+        },
+        "es-ES": {
+          "pairs": 3,
+          "tie": 0,
+          "checked": 2,
+          "checkedLow": 1
+        }
+      }
+    },
+    "checked-vs-checkedMixed": {
+      "all": {
+        "pairs": 15,
+        "tie": 0,
+        "checked": 9,
+        "checkedMixed": 6
+      },
+      "kind": {
+        "technical": {
+          "pairs": 6,
+          "tie": 0,
+          "checked": 5,
+          "checkedMixed": 1
+        },
+        "profile": {
+          "pairs": 9,
+          "tie": 0,
+          "checked": 4,
+          "checkedMixed": 5
+        }
+      },
+      "language": {
+        "pt-BR": {
+          "pairs": 9,
+          "tie": 0,
+          "checked": 6,
+          "checkedMixed": 3
+        },
+        "es-ES": {
+          "pairs": 3,
+          "tie": 0,
+          "checkedMixed": 2,
+          "checked": 1
+        },
+        "en-US": {
+          "pairs": 3,
+          "tie": 0,
+          "checkedMixed": 1,
+          "checked": 2
+        }
+      }
+    }
+  },
+  "scores": {
+    "checked-vs-checkedLow": {
+      "checked": {
+        "development": {
+          "mean": 4.13,
+          "n": 15
+        },
+        "fidelity": {
+          "mean": 5.0,
+          "n": 15
+        },
+        "voice": {
+          "mean": 3.93,
+          "n": 15
+        },
+        "naturalness": {
+          "mean": 3.67,
+          "n": 15
+        },
+        "accuracy": {
+          "mean": 3.87,
+          "n": 15
+        },
+        "length": {
+          "mean": 5.0,
+          "n": 15
+        }
+      },
+      "checkedLow": {
+        "development": {
+          "mean": 3.8,
+          "n": 15
+        },
+        "fidelity": {
+          "mean": 4.6,
+          "n": 15
+        },
+        "voice": {
+          "mean": 4.07,
+          "n": 15
+        },
+        "naturalness": {
+          "mean": 3.73,
+          "n": 15
+        },
+        "accuracy": {
+          "mean": 3.73,
+          "n": 15
+        },
+        "length": {
+          "mean": 5.0,
+          "n": 15
+        }
+      }
+    },
+    "all": {
+      "checked": {
+        "development": {
+          "mean": 4.13,
+          "n": 30
+        },
+        "fidelity": {
+          "mean": 5.0,
+          "n": 30
+        },
+        "voice": {
+          "mean": 3.93,
+          "n": 30
+        },
+        "naturalness": {
+          "mean": 3.67,
+          "n": 30
+        },
+        "accuracy": {
+          "mean": 3.87,
+          "n": 30
+        },
+        "length": {
+          "mean": 5.0,
+          "n": 30
+        }
+      },
+      "checkedLow": {
+        "development": {
+          "mean": 3.8,
+          "n": 15
+        },
+        "fidelity": {
+          "mean": 4.6,
+          "n": 15
+        },
+        "voice": {
+          "mean": 4.07,
+          "n": 15
+        },
+        "naturalness": {
+          "mean": 3.73,
+          "n": 15
+        },
+        "accuracy": {
+          "mean": 3.73,
+          "n": 15
+        },
+        "length": {
+          "mean": 5.0,
+          "n": 15
+        }
+      },
+      "checkedMixed": {
+        "development": {
+          "mean": 4.0,
+          "n": 15
+        },
+        "fidelity": {
+          "mean": 4.87,
+          "n": 15
+        },
+        "voice": {
+          "mean": 4.0,
+          "n": 15
+        },
+        "naturalness": {
+          "mean": 3.73,
+          "n": 15
+        },
+        "accuracy": {
+          "mean": 3.8,
+          "n": 15
+        },
+        "length": {
+          "mean": 4.87,
+          "n": 15
+        }
+      }
+    },
+    "checked-vs-checkedMixed": {
+      "checked": {
+        "development": {
+          "mean": 4.13,
+          "n": 15
+        },
+        "fidelity": {
+          "mean": 5.0,
+          "n": 15
+        },
+        "voice": {
+          "mean": 3.93,
+          "n": 15
+        },
+        "naturalness": {
+          "mean": 3.67,
+          "n": 15
+        },
+        "accuracy": {
+          "mean": 3.87,
+          "n": 15
+        },
+        "length": {
+          "mean": 5.0,
+          "n": 15
+        }
+      },
+      "checkedMixed": {
+        "development": {
+          "mean": 4.0,
+          "n": 15
+        },
+        "fidelity": {
+          "mean": 4.87,
+          "n": 15
+        },
+        "voice": {
+          "mean": 4.0,
+          "n": 15
+        },
+        "naturalness": {
+          "mean": 3.73,
+          "n": 15
+        },
+        "accuracy": {
+          "mean": 3.8,
+          "n": 15
+        },
+        "length": {
+          "mean": 4.87,
+          "n": 15
+        }
+      }
+    }
+  },
+  "errors": {
+    "checked": [
+      {
+        "pair": "P01",
+        "id": "en-US-2",
+        "error": "\"Jumping straight into heavy movement cold is just a missed opportunity to perform your best\": vague, stiff reason"
+      },
+      {
+        "pair": "P01",
+        "id": "en-US-2",
+        "error": "\"do not skip\": uncontracted, reads written rather than spoken"
+      },
+      {
+        "pair": "P01",
+        "id": "en-US-2",
+        "error": "\"safely bring your heart rate up\": slight safety framing without explanation"
+      },
+      {
+        "pair": "P02",
+        "id": "t3-teleprompter",
+        "error": "\"Nós não falamos do mesmo jeito que escrevemos\": a bit formal for a casual voice (\"a gente\")"
+      },
+      {
+        "pair": "P02",
+        "id": "t3-teleprompter",
+        "error": "\"Simbora relaxar os ombros\": phrase slightly bolted on"
+      },
+      {
+        "pair": "P03",
+        "id": "t1-window-light",
+        "error": "\"Ajustar a exposição impede que a câmera mude o brilho sozinha\": just tapping and dragging does not lock exposure; a long press (AE/AF lock) does"
+      },
+      {
+        "pair": "P03",
+        "id": "t1-window-light",
+        "error": "\"difusor profissional\": slight overstatement"
+      },
+      {
+        "pair": "P04",
+        "id": "t4-sound",
+        "error": "\"a lente do seu celular provavelmente já é excelente\": a bit generic"
+      },
+      {
+        "pair": "P04",
+        "id": "t4-sound",
+        "error": "Shortish, close to the lower bound"
+      },
+      {
+        "pair": "P05",
+        "id": "pt-BR-1",
+        "error": "\"Eu já quebrei muito a cara achando...\": unsupported personal story"
+      },
+      {
+        "pair": "P05",
+        "id": "pt-BR-1",
+        "error": "\"igualzinho ao de cem\": absolute equivalence stated without nuance about how much you apply"
+      },
+      {
+        "pair": "P05",
+        "id": "pt-BR-1",
+        "error": "No comment ending or humor beyond slang"
+      },
+      {
+        "pair": "P06",
+        "id": "es-ES-1",
+        "error": "\"cuidar cada detalle\" / \"cuidar que lo que te llevas\": \"cuidar\" repeated"
+      },
+      {
+        "pair": "P06",
+        "id": "es-ES-1",
+        "error": "\"lo que te lleves\" and \"lo que te llevas\" repeated in back-to-back sentences"
+      },
+      {
+        "pair": "P06",
+        "id": "es-ES-1",
+        "error": "Nothing specific to ceramics (clay, wheel, glaze)"
+      },
+      {
+        "pair": "P07",
+        "id": "t4-sound",
+        "error": "\"a lente do seu celular provavelmente já é excelente\": a bit generic"
+      },
+      {
+        "pair": "P07",
+        "id": "t4-sound",
+        "error": "Shortish, close to the lower bound"
+      },
+      {
+        "pair": "P08",
+        "id": "es-ES-0",
+        "error": "Mixes \"vosotros\" (\"os queremos contar\", \"vuestro proyecto\") with \"tú\" (\"si intentas\", \"tu tienda\")"
+      },
+      {
+        "pair": "P08",
+        "id": "es-ES-0",
+        "error": "No ending or invitation after the third error"
+      },
+      {
+        "pair": "P08",
+        "id": "es-ES-0",
+        "error": "\"ignorar el mapa digital\": slightly odd phrasing"
+      },
+      {
+        "pair": "P09",
+        "id": "t2-camera-upgrade",
+        "error": "\"lembre-se que\": should be \"lembre-se de que\""
+      },
+      {
+        "pair": "P09",
+        "id": "t2-camera-upgrade",
+        "error": "\"Simbora testar isso primeiro?\": tacked-on ending"
+      },
+      {
+        "pair": "P09",
+        "id": "t2-camera-upgrade",
+        "error": "\"Se você tem orçamento para investir hoje, não compre uma câmera\": absolute, no case where a camera makes sense"
+      },
+      {
+        "pair": "P10",
+        "id": "es-ES-0",
+        "error": "Mixes \"vosotros\" (\"os queremos contar\", \"vuestro proyecto\") with \"tú\" (\"si intentas\", \"tu tienda\")"
+      },
+      {
+        "pair": "P10",
+        "id": "es-ES-0",
+        "error": "No ending or invitation after the third error"
+      },
+      {
+        "pair": "P10",
+        "id": "es-ES-0",
+        "error": "\"ignorar el mapa digital\": slightly odd phrasing"
+      },
+      {
+        "pair": "P11",
+        "id": "t6-sleep-spending",
+        "error": "\"Existe uma relação muito direta entre o seu sono e o seu saldo bancário\": overstated"
+      },
+      {
+        "pair": "P11",
+        "id": "t6-sleep-spending",
+        "error": "\"é, literalmente, proteger o seu bolso\": \"literalmente\" misused"
+      },
+      {
+        "pair": "P12",
+        "id": "en-US-2",
+        "error": "\"Jumping straight into heavy movement cold is just a missed opportunity to perform your best\": vague, stiff reason"
+      },
+      {
+        "pair": "P12",
+        "id": "en-US-2",
+        "error": "\"do not skip\": uncontracted, reads written rather than spoken"
+      },
+      {
+        "pair": "P12",
+        "id": "en-US-2",
+        "error": "\"safely bring your heart rate up\": slight safety framing without explanation"
+      },
+      {
+        "pair": "P13",
+        "id": "t2-camera-upgrade",
+        "error": "\"lembre-se que\": should be \"lembre-se de que\""
+      },
+      {
+        "pair": "P13",
+        "id": "t2-camera-upgrade",
+        "error": "\"Simbora testar isso primeiro?\": tacked-on ending"
+      },
+      {
+        "pair": "P13",
+        "id": "t2-camera-upgrade",
+        "error": "\"Se você tem orçamento para investir hoje, não compre uma câmera\": absolute, no case where a camera makes sense"
+      },
+      {
+        "pair": "P14",
+        "id": "t3-teleprompter",
+        "error": "\"Nós não falamos do mesmo jeito que escrevemos\": a bit formal for a casual voice (\"a gente\")"
+      },
+      {
+        "pair": "P14",
+        "id": "t3-teleprompter",
+        "error": "\"Simbora relaxar os ombros\": phrase slightly bolted on"
+      },
+      {
+        "pair": "P15",
+        "id": "es-ES-2",
+        "error": "\"para evitar que se pegue al horno durante la cocción\": a production detail of little use to a buyer"
+      },
+      {
+        "pair": "P15",
+        "id": "es-ES-2",
+        "error": "\"lo que evita que acumule humedad\": simplified"
+      },
+      {
+        "pair": "P16",
+        "id": "pt-BR-1",
+        "error": "\"Eu já quebrei muito a cara achando...\": unsupported personal story"
+      },
+      {
+        "pair": "P16",
+        "id": "pt-BR-1",
+        "error": "\"igualzinho ao de cem\": absolute equivalence stated without nuance about how much you apply"
+      },
+      {
+        "pair": "P16",
+        "id": "pt-BR-1",
+        "error": "No comment ending or humor beyond slang"
+      },
+      {
+        "pair": "P17",
+        "id": "en-US-1",
+        "error": "\"tiny, microscopic tears\": redundant; microtears presented as the whole mechanism"
+      },
+      {
+        "pair": "P17",
+        "id": "en-US-1",
+        "error": "\"it is\", \"you are\": uncontracted, written tone"
+      },
+      {
+        "pair": "P17",
+        "id": "en-US-1",
+        "error": "\"Schedule at least two rest days a week\": rigid prescription for everyone"
+      },
+      {
+        "pair": "P18",
+        "id": "en-US-0",
+        "error": "\"can make you unstable and ruin your focus\": the safety point is the real reason, focus is a stretch"
+      },
+      {
+        "pair": "P18",
+        "id": "en-US-0",
+        "error": "Third mistake gets one line, thin compared with the first two"
+      },
+      {
+        "pair": "P19",
+        "id": "en-US-0",
+        "error": "\"can make you unstable and ruin your focus\": the safety point is the real reason, focus is a stretch"
+      },
+      {
+        "pair": "P19",
+        "id": "en-US-0",
+        "error": "Third mistake gets one line, thin compared with the first two"
+      },
+      {
+        "pair": "P20",
+        "id": "pt-BR-0",
+        "error": "\"A umidade faz o ativo penetrar rápido demais, o que aumenta o risco de irritação\": presented as fact for Vitamin C, which is not well established"
+      },
+      {
+        "pair": "P20",
+        "id": "pt-BR-0",
+        "error": "\"pinicação\": uncommon form"
+      },
+      {
+        "pair": "P20",
+        "id": "pt-BR-0",
+        "error": "Opening is a statement that reads like a caption, not spoken"
+      },
+      {
+        "pair": "P21",
+        "id": "pt-BR-0",
+        "error": "\"A umidade faz o ativo penetrar rápido demais, o que aumenta o risco de irritação\": presented as fact for Vitamin C, which is not well established"
+      },
+      {
+        "pair": "P21",
+        "id": "pt-BR-0",
+        "error": "\"pinicação\": uncommon form"
+      },
+      {
+        "pair": "P21",
+        "id": "pt-BR-0",
+        "error": "Opening is a statement that reads like a caption, not spoken"
+      },
+      {
+        "pair": "P22",
+        "id": "t5-emergency-fund",
+        "error": "\"segurança extrema\": slight overstatement (no mention of FGC as the reason)"
+      },
+      {
+        "pair": "P23",
+        "id": "pt-BR-2",
+        "error": "Broken encoding: accented letters replaced with \"%\" (\"D%a\", \"s%erio\", \"s%o\", \"p%alpebras\", \"sa%ude\", \"instant%aneo\", \"esfor%co\", \"m%ascara\", \"c%ilios\", \"l%abios\", \"caf%e\"): unreadable on a teleprompter"
+      },
+      {
+        "pair": "P23",
+        "id": "pt-BR-2",
+        "error": "No comment ending"
+      },
+      {
+        "pair": "P24",
+        "id": "t6-sleep-spending",
+        "error": "\"Existe uma relação muito direta entre o seu sono e o seu saldo bancário\": overstated"
+      },
+      {
+        "pair": "P24",
+        "id": "t6-sleep-spending",
+        "error": "\"é, literalmente, proteger o seu bolso\": \"literalmente\" misused"
+      },
+      {
+        "pair": "P25",
+        "id": "es-ES-1",
+        "error": "\"cuidar cada detalle\" / \"cuidar que lo que te llevas\": \"cuidar\" repeated"
+      },
+      {
+        "pair": "P25",
+        "id": "es-ES-1",
+        "error": "\"lo que te lleves\" and \"lo que te llevas\" repeated in back-to-back sentences"
+      },
+      {
+        "pair": "P25",
+        "id": "es-ES-1",
+        "error": "Nothing specific to ceramics (clay, wheel, glaze)"
+      },
+      {
+        "pair": "P26",
+        "id": "t5-emergency-fund",
+        "error": "\"segurança extrema\": slight overstatement (no mention of FGC as the reason)"
+      },
+      {
+        "pair": "P27",
+        "id": "t1-window-light",
+        "error": "\"Ajustar a exposição impede que a câmera mude o brilho sozinha\": just tapping and dragging does not lock exposure; a long press (AE/AF lock) does"
+      },
+      {
+        "pair": "P27",
+        "id": "t1-window-light",
+        "error": "\"difusor profissional\": slight overstatement"
+      },
+      {
+        "pair": "P28",
+        "id": "es-ES-2",
+        "error": "\"para evitar que se pegue al horno durante la cocción\": a production detail of little use to a buyer"
+      },
+      {
+        "pair": "P28",
+        "id": "es-ES-2",
+        "error": "\"lo que evita que acumule humedad\": simplified"
+      },
+      {
+        "pair": "P29",
+        "id": "en-US-1",
+        "error": "\"tiny, microscopic tears\": redundant; microtears presented as the whole mechanism"
+      },
+      {
+        "pair": "P29",
+        "id": "en-US-1",
+        "error": "\"it is\", \"you are\": uncontracted, written tone"
+      },
+      {
+        "pair": "P29",
+        "id": "en-US-1",
+        "error": "\"Schedule at least two rest days a week\": rigid prescription for everyone"
+      },
+      {
+        "pair": "P30",
+        "id": "pt-BR-2",
+        "error": "Broken encoding: accented letters replaced with \"%\" (\"D%a\", \"s%erio\", \"s%o\", \"p%alpebras\", \"sa%ude\", \"instant%aneo\", \"esfor%co\", \"m%ascara\", \"c%ilios\", \"l%abios\", \"caf%e\"): unreadable on a teleprompter"
+      },
+      {
+        "pair": "P30",
+        "id": "pt-BR-2",
+        "error": "No comment ending"
+      }
+    ],
+    "checkedLow": [
+      {
+        "pair": "P01",
+        "id": "en-US-2",
+        "error": "Says \"five-minute routine\" but three moves at \"just one minute on each move\" add up to three minutes"
+      },
+      {
+        "pair": "P01",
+        "id": "en-US-2",
+        "error": "\"You do not need any gear\": uncontracted, written tone"
+      },
+      {
+        "pair": "P01",
+        "id": "en-US-2",
+        "error": "\"recipe for a rough session\": cliché"
+      },
+      {
+        "pair": "P03",
+        "id": "t1-window-light",
+        "error": "\"evite o sol direto estalando na sua cara\": \"estalando\" is unnatural (\"batendo\")"
+      },
+      {
+        "pair": "P03",
+        "id": "t1-window-light",
+        "error": "Ends abruptly with no closing line"
+      },
+      {
+        "pair": "P03",
+        "id": "t1-window-light",
+        "error": "\"muito mais profissional\": mild overpromise"
+      },
+      {
+        "pair": "P03",
+        "id": "t1-window-light",
+        "error": "No diffusion tip (curtain), the most direct fix for a blown-out face"
+      },
+      {
+        "pair": "P06",
+        "id": "es-ES-1",
+        "error": "\"En un mundo donde casi todo se fabrica a toda prisa\": cliché opener"
+      },
+      {
+        "pair": "P06",
+        "id": "es-ES-1",
+        "error": "\"asegurar que cada detalle sea excelente\", \"una máquina automática\": generic and redundant"
+      },
+      {
+        "pair": "P06",
+        "id": "es-ES-1",
+        "error": "Switches from \"te lleves\" to \"ofreceros\" in the same sentence"
+      },
+      {
+        "pair": "P06",
+        "id": "es-ES-1",
+        "error": "Nothing specific to ceramics or the workshop; no clear closing invitation"
+      },
+      {
+        "pair": "P07",
+        "id": "t4-sound",
+        "error": "\"chiado ensurdecedor\": slight exaggeration"
+      },
+      {
+        "pair": "P07",
+        "id": "t4-sound",
+        "error": "\"A verdade dura é que\": written-text tic"
+      },
+      {
+        "pair": "P07",
+        "id": "t4-sound",
+        "error": "\"Trate o seu som como a metade mais importante\": slightly redundant after the argument"
+      },
+      {
+        "pair": "P08",
+        "id": "es-ES-0",
+        "error": "Title \"pequena\" missing ñ"
+      },
+      {
+        "pair": "P08",
+        "id": "es-ES-0",
+        "error": "\"Hoy os compartimos\": calque, more natural \"queremos compartir con vosotros\""
+      },
+      {
+        "pair": "P08",
+        "id": "es-ES-0",
+        "error": "Advice is aimed at future shop owners, a stretch for a local customer audience"
+      },
+      {
+        "pair": "P13",
+        "id": "t2-camera-upgrade",
+        "error": "\"Eu já estive nesse lugar\": unsupported personal experience"
+      },
+      {
+        "pair": "P13",
+        "id": "t2-camera-upgrade",
+        "error": "\"uma câmera profissional desliga o seu maior superpoder\": odd metaphor"
+      },
+      {
+        "pair": "P13",
+        "id": "t2-camera-upgrade",
+        "error": "\"Ele já é mais do que suficiente para você crescer nas redes sociais\": mild promise"
+      },
+      {
+        "pair": "P14",
+        "id": "t3-teleprompter",
+        "error": "\"Se o texto parecer travado na leitura silenciosa\": the test should be reading aloud, not silently"
+      },
+      {
+        "pair": "P14",
+        "id": "t3-teleprompter",
+        "error": "\"use o zoom de duas vezes do celular\": on the front camera this is digital zoom and softens the image; not hedged"
+      },
+      {
+        "pair": "P14",
+        "id": "t3-teleprompter",
+        "error": "\"Eu já passei muito por isso gravando sozinho no meu quarto\": invented personal experience"
+      },
+      {
+        "pair": "P15",
+        "id": "es-ES-2",
+        "error": "\"con una base sólida que evite que se vuelque fácilmente en tu mesa de trabajo\": odd \"mesa de trabajo\""
+      },
+      {
+        "pair": "P15",
+        "id": "es-ES-2",
+        "error": "\"sin relieves que debiliten la estructura al lavarla a diario\": dubious reasoning about handle joints"
+      },
+      {
+        "pair": "P15",
+        "id": "es-ES-2",
+        "error": "Uses \"tú\" and drops the team voice until the last line; no invitation"
+      },
+      {
+        "pair": "P16",
+        "id": "pt-BR-1",
+        "error": "\"pode sim proteger... tão bem quanto o importado caríssimo\": fine, but \"testes muito rígidos\" slightly emphatic"
+      },
+      {
+        "pair": "P16",
+        "id": "pt-BR-1",
+        "error": "Opening is not a mistake-to-avoid hook (optional)"
+      },
+      {
+        "pair": "P19",
+        "id": "en-US-0",
+        "error": "\"makes it impossible to grow\": overstated"
+      },
+      {
+        "pair": "P19",
+        "id": "en-US-0",
+        "error": "No question opening"
+      },
+      {
+        "pair": "P19",
+        "id": "en-US-0",
+        "error": "\"Finally\" after \"First, Second\": fine but \"ruins your intensity\" is vague"
+      },
+      {
+        "pair": "P21",
+        "id": "pt-BR-0",
+        "error": "Title \"manha\" missing tilde"
+      },
+      {
+        "pair": "P21",
+        "id": "pt-BR-0",
+        "error": "\"Quer uma pele de milhões?\": borderline clickbait"
+      },
+      {
+        "pair": "P21",
+        "id": "pt-BR-0",
+        "error": "\"Eu já errei muito e hoje vim te salvar disso\": unsupported personal story"
+      },
+      {
+        "pair": "P21",
+        "id": "pt-BR-0",
+        "error": "\"Isso dilui o protetor e reduz a eficácia\": plausible but unhedged"
+      },
+      {
+        "pair": "P21",
+        "id": "pt-BR-0",
+        "error": "No comment ending"
+      },
+      {
+        "pair": "P23",
+        "id": "pt-BR-2",
+        "error": "\"truque de mestre\", \"vencer o dia\": clichés"
+      },
+      {
+        "pair": "P23",
+        "id": "pt-BR-2",
+        "error": "Blush on lips and then gloss: a bit redundant"
+      },
+      {
+        "pair": "P24",
+        "id": "t6-sleep-spending",
+        "error": "\"Uma única noite em claro se transforma em dezenas de reais jogados fora\": invented figure stated as fact"
+      },
+      {
+        "pair": "P24",
+        "id": "t6-sleep-spending",
+        "error": "\"o cansaço afeta diretamente o nosso cérebro\": vague science, unhedged"
+      },
+      {
+        "pair": "P24",
+        "id": "t6-sleep-spending",
+        "error": "\"despenca logo pela manhã\": overstated"
+      },
+      {
+        "pair": "P26",
+        "id": "t5-emergency-fund",
+        "error": "\"Quando comecei a organizar minha vida financeira, achei que precisava de muito\": invented story that does not connect to the next line"
+      },
+      {
+        "pair": "P26",
+        "id": "t5-emergency-fund",
+        "error": "\"contas digitais que rendem pelo menos cem por cento do CDI\": fine, but no mention of FGC coverage"
+      },
+      {
+        "pair": "P29",
+        "id": "en-US-1",
+        "error": "\"tiny, harmless tears\": \"harmless\" is an unsupported claim"
+      },
+      {
+        "pair": "P29",
+        "id": "en-US-1",
+        "error": "\"That magic happens later\" / \"crush a bodyweight workout\": borderline hype words"
+      },
+      {
+        "pair": "P29",
+        "id": "en-US-1",
+        "error": "\"You do not actually build muscle while you are exercising\": absolute"
+      },
+      {
+        "pair": "P29",
+        "id": "en-US-1",
+        "error": "No save ending (optional)"
+      }
+    ],
+    "checkedMixed": [
+      {
+        "pair": "P02",
+        "id": "t3-teleprompter",
+        "error": "Ends on the third tip with no wrap-up or closing line"
+      },
+      {
+        "pair": "P02",
+        "id": "t3-teleprompter",
+        "error": "\"Gravar com teleprompter no celular salva vidas\": hyperbole"
+      },
+      {
+        "pair": "P02",
+        "id": "t3-teleprompter",
+        "error": "\"Eu já passei muito por isso\": unsupported personal experience"
+      },
+      {
+        "pair": "P04",
+        "id": "t4-sound",
+        "error": "\"Se você pudesse investir apenas dez reais\": hook promises a ten-reais tip the script never delivers"
+      },
+      {
+        "pair": "P04",
+        "id": "t4-sound",
+        "error": "\"Quando alguém consome o seu conteúdo no celular, geralmente está de fone\": unsupported claim, many watch on the speaker"
+      },
+      {
+        "pair": "P04",
+        "id": "t4-sound",
+        "error": "\"Cuidar do som é um ótimo caminho para prender a atenção\": flat ending"
+      },
+      {
+        "pair": "P04",
+        "id": "t4-sound",
+        "error": "\"diferentão\": fine slang but the hook is wordy"
+      },
+      {
+        "pair": "P05",
+        "id": "pt-BR-1",
+        "error": "\"Os filtros solares usados neles são todos aprovados e eficazes\": sweeping generalization"
+      },
+      {
+        "pair": "P05",
+        "id": "pt-BR-1",
+        "error": "\"Eu já gastei muito dinheiro com protetor solar importado\": unsupported personal story"
+      },
+      {
+        "pair": "P05",
+        "id": "pt-BR-1",
+        "error": "\"testes rigorosos da Anvisa... ele é obrigado a entregar isso\": fine, but no hedge on application amount until the end"
+      },
+      {
+        "pair": "P09",
+        "id": "t2-camera-upgrade",
+        "error": "\"a agilidade do celular é um superpoder imbatível\": hype phrasing"
+      },
+      {
+        "pair": "P09",
+        "id": "t2-camera-upgrade",
+        "error": "\"Eu recebo muito essa pergunta\": unsupported claim"
+      },
+      {
+        "pair": "P09",
+        "id": "t2-camera-upgrade",
+        "error": "Turns the request's \"uma câmera\" into \"câmera profissional\""
+      },
+      {
+        "pair": "P10",
+        "id": "es-ES-0",
+        "error": "\"descuidar la luz\": a little thin on how"
+      },
+      {
+        "pair": "P10",
+        "id": "es-ES-0",
+        "error": "\"¡Os esperamos!\": fine, but tips are aimed at future shop owners"
+      },
+      {
+        "pair": "P11",
+        "id": "t6-sleep-spending",
+        "error": "\"Estudos sugerem uma forte relação\": vague studies with \"forte\" overstated"
+      },
+      {
+        "pair": "P11",
+        "id": "t6-sleep-spending",
+        "error": "\"É a nossa tendência comportamental de buscar conforto\": stiff, textbook phrasing"
+      },
+      {
+        "pair": "P11",
+        "id": "t6-sleep-spending",
+        "error": "\"Bora lá testar isso?\": forced"
+      },
+      {
+        "pair": "P11",
+        "id": "t6-sleep-spending",
+        "error": "At the lower edge of the length"
+      },
+      {
+        "pair": "P12",
+        "id": "en-US-2",
+        "error": "\"Your muscles will thank you\": cliché filler"
+      },
+      {
+        "pair": "P12",
+        "id": "en-US-2",
+        "error": "No question opening or personality beyond the provided hook; little humor"
+      },
+      {
+        "pair": "P17",
+        "id": "en-US-1",
+        "error": "\"bodyweight training actually breaks your muscles down\": overstated, unhedged"
+      },
+      {
+        "pair": "P17",
+        "id": "en-US-1",
+        "error": "\"You do not get stronger while you are working out\": absolute"
+      },
+      {
+        "pair": "P17",
+        "id": "en-US-1",
+        "error": "Many uncontracted forms (\"do not\", \"you are\", \"is not\"): stiff"
+      },
+      {
+        "pair": "P17",
+        "id": "en-US-1",
+        "error": "No question opening"
+      },
+      {
+        "pair": "P18",
+        "id": "en-US-0",
+        "error": "\"skipping the warm-up because you are already comfortable\": muddled reason"
+      },
+      {
+        "pair": "P18",
+        "id": "en-US-0",
+        "error": "\"seeing zero progress\" then mistakes that do not clearly explain zero progress"
+      },
+      {
+        "pair": "P18",
+        "id": "en-US-0",
+        "error": "\"Stop making these mistakes today\": filler"
+      },
+      {
+        "pair": "P20",
+        "id": "pt-BR-0",
+        "error": "Title \"manha\" missing tilde"
+      },
+      {
+        "pair": "P20",
+        "id": "pt-BR-0",
+        "error": "No comment ending"
+      },
+      {
+        "pair": "P20",
+        "id": "pt-BR-0",
+        "error": "\"Para de cometer esses três erros... agora mesmo\": slightly pushy"
+      },
+      {
+        "pair": "P22",
+        "id": "t5-emergency-fund",
+        "error": "\"Esqueça a poupança tradicional\" with no reason given"
+      },
+      {
+        "pair": "P22",
+        "id": "t5-emergency-fund",
+        "error": "Opening is a statement, weaker hook than a question"
+      },
+      {
+        "pair": "P25",
+        "id": "es-ES-1",
+        "error": "Title \"Por que\" should be \"Por qué\""
+      },
+      {
+        "pair": "P25",
+        "id": "es-ES-1",
+        "error": "Mixes \"vosotros\" (\"os fijáis\", \"tengáis\") with \"tú\" (\"Cuando eliges... te llevas\")"
+      },
+      {
+        "pair": "P25",
+        "id": "es-ES-1",
+        "error": "No closing invitation"
+      },
+      {
+        "pair": "P27",
+        "id": "t1-window-light",
+        "error": "Missing diacritics throughout: \"e de graça\" (é), \"otimo\", \"voce\", \"tao\", \"esta\", \"exposicao\", \"ate\": the text is broken as written"
+      },
+      {
+        "pair": "P27",
+        "id": "t1-window-light",
+        "error": "No curtain/diffusion tip"
+      },
+      {
+        "pair": "P27",
+        "id": "t1-window-light",
+        "error": "\"imagem muito melhor\": generic close"
+      },
+      {
+        "pair": "P28",
+        "id": "es-ES-2",
+        "error": "Uses \"tú\" rather than the team's \"vosotros\" warmth; weak close (\"mimamos estos tres puntos\")"
+      },
+      {
+        "pair": "P28",
+        "id": "es-ES-2",
+        "error": "\"para evitar que la humedad pueda filtrarse\": simplified"
+      },
+      {
+        "pair": "P28",
+        "id": "es-ES-2",
+        "error": "Base sign framed only as \"no rayar\", missing the unglazed foot"
+      },
+      {
+        "pair": "P30",
+        "id": "pt-BR-2",
+        "error": "\"sem craquelar\": slightly odd for powder"
+      },
+      {
+        "pair": "P30",
+        "id": "pt-BR-2",
+        "error": "No comment ending (optional)"
+      }
+    ]
+  }
+}

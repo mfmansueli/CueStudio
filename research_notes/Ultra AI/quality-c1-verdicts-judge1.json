@@ -1,0 +1,1005 @@
+{
+  "P01": {
+    "winner": "A",
+    "scores": {
+      "A": {
+        "development": 3,
+        "fidelity": 5,
+        "voice": 3,
+        "naturalness": 3,
+        "accuracy": 4,
+        "length": 5
+      },
+      "B": {
+        "development": 3,
+        "fidelity": 3,
+        "voice": 4,
+        "naturalness": 3,
+        "accuracy": 3,
+        "length": 5
+      }
+    },
+    "errors": {
+      "A": [
+        "\"Jumping straight into heavy movement cold is just a missed opportunity to perform your best\": vague, stiff reason",
+        "\"do not skip\": uncontracted, reads written rather than spoken",
+        "\"safely bring your heart rate up\": slight safety framing without explanation"
+      ],
+      "B": [
+        "Says \"five-minute routine\" but three moves at \"just one minute on each move\" add up to three minutes",
+        "\"You do not need any gear\": uncontracted, written tone",
+        "\"recipe for a rough session\": cliché"
+      ]
+    },
+    "why": "A's timings add up to five minutes as promised; B calls it a five-minute routine but its three one-minute moves only make three."
+  },
+  "P02": {
+    "winner": "A",
+    "scores": {
+      "A": {
+        "development": 4,
+        "fidelity": 5,
+        "voice": 4,
+        "naturalness": 4,
+        "accuracy": 4,
+        "length": 5
+      },
+      "B": {
+        "development": 4,
+        "fidelity": 5,
+        "voice": 4,
+        "naturalness": 4,
+        "accuracy": 4,
+        "length": 5
+      }
+    },
+    "errors": {
+      "A": [
+        "\"Nós não falamos do mesmo jeito que escrevemos\": a bit formal for a casual voice (\"a gente\")",
+        "\"Simbora relaxar os ombros\": phrase slightly bolted on"
+      ],
+      "B": [
+        "Ends on the third tip with no wrap-up or closing line",
+        "\"Gravar com teleprompter no celular salva vidas\": hyperbole",
+        "\"Eu já passei muito por isso\": unsupported personal experience"
+      ]
+    },
+    "why": "Both give the same three solid tips; A adds the narrow text box near the lens and closes cleanly, while B stops after the third tip."
+  },
+  "P03": {
+    "winner": "B",
+    "scores": {
+      "A": {
+        "development": 3,
+        "fidelity": 4,
+        "voice": 3,
+        "naturalness": 3,
+        "accuracy": 5,
+        "length": 5
+      },
+      "B": {
+        "development": 4,
+        "fidelity": 5,
+        "voice": 4,
+        "naturalness": 4,
+        "accuracy": 3,
+        "length": 5
+      }
+    },
+    "errors": {
+      "A": [
+        "\"evite o sol direto estalando na sua cara\": \"estalando\" is unnatural (\"batendo\")",
+        "Ends abruptly with no closing line",
+        "\"muito mais profissional\": mild overpromise",
+        "No diffusion tip (curtain), the most direct fix for a blown-out face"
+      ],
+      "B": [
+        "\"Ajustar a exposição impede que a câmera mude o brilho sozinha\": just tapping and dragging does not lock exposure; a long press (AE/AF lock) does",
+        "\"difusor profissional\": slight overstatement"
+      ]
+    },
+    "why": "B gives the most direct fix for a blown-out face (a thin curtain as diffuser) plus angle and exposure, and reads more naturally; A is accurate on the lock but thinner and has \"estalando\"."
+  },
+  "P04": {
+    "winner": "B",
+    "scores": {
+      "A": {
+        "development": 4,
+        "fidelity": 4,
+        "voice": 4,
+        "naturalness": 4,
+        "accuracy": 3,
+        "length": 5
+      },
+      "B": {
+        "development": 4,
+        "fidelity": 5,
+        "voice": 4,
+        "naturalness": 5,
+        "accuracy": 4,
+        "length": 5
+      }
+    },
+    "errors": {
+      "A": [
+        "\"Se você pudesse investir apenas dez reais\": hook promises a ten-reais tip the script never delivers",
+        "\"Quando alguém consome o seu conteúdo no celular, geralmente está de fone\": unsupported claim, many watch on the speaker",
+        "\"Cuidar do som é um ótimo caminho para prender a atenção\": flat ending",
+        "\"diferentão\": fine slang but the hook is wordy"
+      ],
+      "B": [
+        "\"a lente do seu celular provavelmente já é excelente\": a bit generic",
+        "Shortish, close to the lower bound"
+      ]
+    },
+    "why": "B is tighter and ends on a strong line; A's ten-reais hook goes nowhere and it claims viewers usually watch with headphones."
+  },
+  "P05": {
+    "winner": "A",
+    "scores": {
+      "A": {
+        "development": 4,
+        "fidelity": 5,
+        "voice": 4,
+        "naturalness": 4,
+        "accuracy": 4,
+        "length": 5
+      },
+      "B": {
+        "development": 4,
+        "fidelity": 5,
+        "voice": 3,
+        "naturalness": 4,
+        "accuracy": 3,
+        "length": 5
+      }
+    },
+    "errors": {
+      "A": [
+        "\"Eu já quebrei muito a cara achando...\": unsupported personal story",
+        "\"igualzinho ao de cem\": absolute equivalence stated without nuance about how much you apply",
+        "No comment ending or humor beyond slang"
+      ],
+      "B": [
+        "\"Os filtros solares usados neles são todos aprovados e eficazes\": sweeping generalization",
+        "\"Eu já gastei muito dinheiro com protetor solar importado\": unsupported personal story",
+        "\"testes rigorosos da Anvisa... ele é obrigado a entregar isso\": fine, but no hedge on application amount until the end"
+      ]
+    },
+    "why": "A is more honest about the real trade-offs (denser texture, white cast) without B's sweeping claim that all filters are approved and effective."
+  },
+  "P06": {
+    "winner": "B",
+    "scores": {
+      "A": {
+        "development": 2,
+        "fidelity": 4,
+        "voice": 3,
+        "naturalness": 3,
+        "accuracy": 4,
+        "length": 5
+      },
+      "B": {
+        "development": 4,
+        "fidelity": 5,
+        "voice": 4,
+        "naturalness": 3,
+        "accuracy": 4,
+        "length": 5
+      }
+    },
+    "errors": {
+      "A": [
+        "\"En un mundo donde casi todo se fabrica a toda prisa\": cliché opener",
+        "\"asegurar que cada detalle sea excelente\", \"una máquina automática\": generic and redundant",
+        "Switches from \"te lleves\" to \"ofreceros\" in the same sentence",
+        "Nothing specific to ceramics or the workshop; no clear closing invitation"
+      ],
+      "B": [
+        "\"cuidar cada detalle\" / \"cuidar que lo que te llevas\": \"cuidar\" repeated",
+        "\"lo que te lleves\" and \"lo que te llevas\" repeated in back-to-back sentences",
+        "Nothing specific to ceramics (clay, wheel, glaze)"
+      ]
+    },
+    "why": "B gives concrete reasons (choosing materials, fixing flaws as they go, durability) and a warm invitation; A is generic and cliché."
+  },
+  "P07": {
+    "winner": "B",
+    "scores": {
+      "A": {
+        "development": 4,
+        "fidelity": 5,
+        "voice": 4,
+        "naturalness": 5,
+        "accuracy": 4,
+        "length": 5
+      },
+      "B": {
+        "development": 5,
+        "fidelity": 5,
+        "voice": 4,
+        "naturalness": 4,
+        "accuracy": 4,
+        "length": 5
+      }
+    },
+    "errors": {
+      "A": [
+        "\"a lente do seu celular provavelmente já é excelente\": a bit generic",
+        "Shortish, close to the lower bound"
+      ],
+      "B": [
+        "\"chiado ensurdecedor\": slight exaggeration",
+        "\"A verdade dura é que\": written-text tic",
+        "\"Trate o seu som como a metade mais importante\": slightly redundant after the argument"
+      ]
+    },
+    "why": "B develops the contrast vividly and gives more practical fixes (room, distance, old wired earbuds as a mic) within the length; A is good but thinner."
+  },
+  "P08": {
+    "winner": "A",
+    "scores": {
+      "A": {
+        "development": 4,
+        "fidelity": 5,
+        "voice": 4,
+        "naturalness": 4,
+        "accuracy": 4,
+        "length": 5
+      },
+      "B": {
+        "development": 4,
+        "fidelity": 5,
+        "voice": 3,
+        "naturalness": 3,
+        "accuracy": 4,
+        "length": 5
+      }
+    },
+    "errors": {
+      "A": [
+        "Title \"pequena\" missing ñ",
+        "\"Hoy os compartimos\": calque, more natural \"queremos compartir con vosotros\"",
+        "Advice is aimed at future shop owners, a stretch for a local customer audience"
+      ],
+      "B": [
+        "Mixes \"vosotros\" (\"os queremos contar\", \"vuestro proyecto\") with \"tú\" (\"si intentas\", \"tu tienda\")",
+        "No ending or invitation after the third error",
+        "\"ignorar el mapa digital\": slightly odd phrasing"
+      ]
+    },
+    "why": "A keeps a consistent vosotros voice and closes with a warm invitation; B mixes tú and vosotros and simply stops after the third error."
+  },
+  "P09": {
+    "winner": "B",
+    "scores": {
+      "A": {
+        "development": 4,
+        "fidelity": 5,
+        "voice": 4,
+        "naturalness": 4,
+        "accuracy": 4,
+        "length": 5
+      },
+      "B": {
+        "development": 4,
+        "fidelity": 5,
+        "voice": 4,
+        "naturalness": 4,
+        "accuracy": 4,
+        "length": 5
+      }
+    },
+    "errors": {
+      "A": [
+        "\"lembre-se que\": should be \"lembre-se de que\"",
+        "\"Simbora testar isso primeiro?\": tacked-on ending",
+        "\"Se você tem orçamento para investir hoje, não compre uma câmera\": absolute, no case where a camera makes sense"
+      ],
+      "B": [
+        "\"a agilidade do celular é um superpoder imbatível\": hype phrasing",
+        "\"Eu recebo muito essa pergunta\": unsupported claim",
+        "Turns the request's \"uma câmera\" into \"câmera profissional\""
+      ]
+    },
+    "why": "Close call: both say not yet, but B adds when it does make sense (once the channel earns money), giving a complete answer; A is more detailed but ends weakly and is absolute."
+  },
+  "P10": {
+    "winner": "B",
+    "scores": {
+      "A": {
+        "development": 4,
+        "fidelity": 5,
+        "voice": 3,
+        "naturalness": 3,
+        "accuracy": 4,
+        "length": 5
+      },
+      "B": {
+        "development": 4,
+        "fidelity": 5,
+        "voice": 5,
+        "naturalness": 4,
+        "accuracy": 4,
+        "length": 5
+      }
+    },
+    "errors": {
+      "A": [
+        "Mixes \"vosotros\" (\"os queremos contar\", \"vuestro proyecto\") with \"tú\" (\"si intentas\", \"tu tienda\")",
+        "No ending or invitation after the third error",
+        "\"ignorar el mapa digital\": slightly odd phrasing"
+      ],
+      "B": [
+        "\"descuidar la luz\": a little thin on how",
+        "\"¡Os esperamos!\": fine, but tips are aimed at future shop owners"
+      ]
+    },
+    "why": "B fits a shop owner talking to neighbours (product selection, light, listening to the neighbourhood), keeps vosotros consistent and closes with an invitation."
+  },
+  "P11": {
+    "winner": "B",
+    "scores": {
+      "A": {
+        "development": 4,
+        "fidelity": 5,
+        "voice": 4,
+        "naturalness": 3,
+        "accuracy": 3,
+        "length": 4
+      },
+      "B": {
+        "development": 5,
+        "fidelity": 5,
+        "voice": 4,
+        "naturalness": 4,
+        "accuracy": 4,
+        "length": 5
+      }
+    },
+    "errors": {
+      "A": [
+        "\"Estudos sugerem uma forte relação\": vague studies with \"forte\" overstated",
+        "\"É a nossa tendência comportamental de buscar conforto\": stiff, textbook phrasing",
+        "\"Bora lá testar isso?\": forced",
+        "At the lower edge of the length"
+      ],
+      "B": [
+        "\"Existe uma relação muito direta entre o seu sono e o seu saldo bancário\": overstated",
+        "\"é, literalmente, proteger o seu bolso\": \"literalmente\" misused"
+      ]
+    },
+    "why": "B gives more concrete everyday examples (delivery instead of the fridge, ride app instead of the bus, impulse buys) and a stronger close; A leans on vague \"studies\"."
+  },
+  "P12": {
+    "winner": "A",
+    "scores": {
+      "A": {
+        "development": 3,
+        "fidelity": 5,
+        "voice": 3,
+        "naturalness": 4,
+        "accuracy": 4,
+        "length": 5
+      },
+      "B": {
+        "development": 3,
+        "fidelity": 5,
+        "voice": 3,
+        "naturalness": 3,
+        "accuracy": 4,
+        "length": 5
+      }
+    },
+    "errors": {
+      "A": [
+        "\"Your muscles will thank you\": cliché filler",
+        "No question opening or personality beyond the provided hook; little humor"
+      ],
+      "B": [
+        "\"Jumping straight into heavy movement cold is just a missed opportunity to perform your best\": vague, stiff reason",
+        "\"do not skip\": uncontracted, reads written rather than spoken",
+        "\"safely bring your heart rate up\": slight safety framing without explanation"
+      ]
+    },
+    "why": "Both are correct five-minute routines; A states the reason more plainly and avoids B's stiff \"missed opportunity to perform your best\"."
+  },
+  "P13": {
+    "winner": "A",
+    "scores": {
+      "A": {
+        "development": 5,
+        "fidelity": 5,
+        "voice": 5,
+        "naturalness": 4,
+        "accuracy": 4,
+        "length": 5
+      },
+      "B": {
+        "development": 4,
+        "fidelity": 5,
+        "voice": 4,
+        "naturalness": 4,
+        "accuracy": 4,
+        "length": 5
+      }
+    },
+    "errors": {
+      "A": [
+        "\"Eu já estive nesse lugar\": unsupported personal experience",
+        "\"uma câmera profissional desliga o seu maior superpoder\": odd metaphor",
+        "\"Ele já é mais do que suficiente para você crescer nas redes sociais\": mild promise"
+      ],
+      "B": [
+        "\"lembre-se que\": should be \"lembre-se de que\"",
+        "\"Simbora testar isso primeiro?\": tacked-on ending",
+        "\"Se você tem orçamento para investir hoje, não compre uma câmera\": absolute, no case where a camera makes sense"
+      ]
+    },
+    "why": "A is more vivid and concrete (cost example, window light, lapel mic) and sounds more like this casual creator; B is solid but more generic."
+  },
+  "P14": {
+    "winner": "B",
+    "scores": {
+      "A": {
+        "development": 4,
+        "fidelity": 4,
+        "voice": 4,
+        "naturalness": 3,
+        "accuracy": 3,
+        "length": 5
+      },
+      "B": {
+        "development": 4,
+        "fidelity": 5,
+        "voice": 4,
+        "naturalness": 4,
+        "accuracy": 4,
+        "length": 5
+      }
+    },
+    "errors": {
+      "A": [
+        "\"Se o texto parecer travado na leitura silenciosa\": the test should be reading aloud, not silently",
+        "\"use o zoom de duas vezes do celular\": on the front camera this is digital zoom and softens the image; not hedged",
+        "\"Eu já passei muito por isso gravando sozinho no meu quarto\": invented personal experience"
+      ],
+      "B": [
+        "\"Nós não falamos do mesmo jeito que escrevemos\": a bit formal for a casual voice (\"a gente\")",
+        "\"Simbora relaxar os ombros\": phrase slightly bolted on"
+      ]
+    },
+    "why": "B's tips are all sound and include the narrow text box near the lens; A tells the creator to test the script by reading silently and suggests 2x zoom without caveats."
+  },
+  "P15": {
+    "winner": "B",
+    "scores": {
+      "A": {
+        "development": 3,
+        "fidelity": 4,
+        "voice": 3,
+        "naturalness": 4,
+        "accuracy": 3,
+        "length": 5
+      },
+      "B": {
+        "development": 5,
+        "fidelity": 5,
+        "voice": 5,
+        "naturalness": 4,
+        "accuracy": 4,
+        "length": 5
+      }
+    },
+    "errors": {
+      "A": [
+        "\"con una base sólida que evite que se vuelque fácilmente en tu mesa de trabajo\": odd \"mesa de trabajo\"",
+        "\"sin relieves que debiliten la estructura al lavarla a diario\": dubious reasoning about handle joints",
+        "Uses \"tú\" and drops the team voice until the last line; no invitation"
+      ],
+      "B": [
+        "\"para evitar que se pegue al horno durante la cocción\": a production detail of little use to a buyer",
+        "\"lo que evita que acumule humedad\": simplified"
+      ]
+    },
+    "why": "B gives three concrete, accurate signs a buyer can check (unglazed polished foot, smooth rim glaze, balanced handle) in a warm team voice with an invitation; A's handle reasoning is dubious."
+  },
+  "P16": {
+    "winner": "A",
+    "scores": {
+      "A": {
+        "development": 4,
+        "fidelity": 5,
+        "voice": 5,
+        "naturalness": 4,
+        "accuracy": 5,
+        "length": 5
+      },
+      "B": {
+        "development": 4,
+        "fidelity": 5,
+        "voice": 4,
+        "naturalness": 4,
+        "accuracy": 4,
+        "length": 5
+      }
+    },
+    "errors": {
+      "A": [
+        "\"pode sim proteger... tão bem quanto o importado caríssimo\": fine, but \"testes muito rígidos\" slightly emphatic",
+        "Opening is not a mistake-to-avoid hook (optional)"
+      ],
+      "B": [
+        "\"Eu já quebrei muito a cara achando...\": unsupported personal story",
+        "\"igualzinho ao de cem\": absolute equivalence stated without nuance about how much you apply",
+        "No comment ending or humor beyond slang"
+      ]
+    },
+    "why": "A explains precisely that SPF measures UVB the same at any price, keeps the humor, and ends with the creator's comment question."
+  },
+  "P17": {
+    "winner": "A",
+    "scores": {
+      "A": {
+        "development": 4,
+        "fidelity": 5,
+        "voice": 4,
+        "naturalness": 4,
+        "accuracy": 4,
+        "length": 5
+      },
+      "B": {
+        "development": 4,
+        "fidelity": 5,
+        "voice": 3,
+        "naturalness": 3,
+        "accuracy": 3,
+        "length": 5
+      }
+    },
+    "errors": {
+      "A": [
+        "\"tiny, microscopic tears\": redundant; microtears presented as the whole mechanism",
+        "\"it is\", \"you are\": uncontracted, written tone",
+        "\"Schedule at least two rest days a week\": rigid prescription for everyone"
+      ],
+      "B": [
+        "\"bodyweight training actually breaks your muscles down\": overstated, unhedged",
+        "\"You do not get stronger while you are working out\": absolute",
+        "Many uncontracted forms (\"do not\", \"you are\", \"is not\"): stiff",
+        "No question opening"
+      ]
+    },
+    "why": "A opens with a question, hedges the microtear claim and gives a concrete rest-day target; B overstates (\"breaks your muscles down\") and reads stiffly."
+  },
+  "P18": {
+    "winner": "B",
+    "scores": {
+      "A": {
+        "development": 4,
+        "fidelity": 4,
+        "voice": 4,
+        "naturalness": 4,
+        "accuracy": 4,
+        "length": 5
+      },
+      "B": {
+        "development": 4,
+        "fidelity": 5,
+        "voice": 4,
+        "naturalness": 4,
+        "accuracy": 4,
+        "length": 5
+      }
+    },
+    "errors": {
+      "A": [
+        "\"skipping the warm-up because you are already comfortable\": muddled reason",
+        "\"seeing zero progress\" then mistakes that do not clearly explain zero progress",
+        "\"Stop making these mistakes today\": filler"
+      ],
+      "B": [
+        "\"can make you unstable and ruin your focus\": the safety point is the real reason, focus is a stretch",
+        "Third mistake gets one line, thin compared with the first two"
+      ]
+    },
+    "why": "B's three mistakes each come with a clear fix (warm-up, mat or shoes, track reps); A's third point is muddled."
+  },
+  "P19": {
+    "winner": "A",
+    "scores": {
+      "A": {
+        "development": 4,
+        "fidelity": 5,
+        "voice": 4,
+        "naturalness": 4,
+        "accuracy": 3,
+        "length": 5
+      },
+      "B": {
+        "development": 4,
+        "fidelity": 5,
+        "voice": 4,
+        "naturalness": 4,
+        "accuracy": 4,
+        "length": 5
+      }
+    },
+    "errors": {
+      "A": [
+        "\"makes it impossible to grow\": overstated",
+        "No question opening",
+        "\"Finally\" after \"First, Second\": fine but \"ruins your intensity\" is vague"
+      ],
+      "B": [
+        "\"can make you unstable and ruin your focus\": the safety point is the real reason, focus is a stretch",
+        "Third mistake gets one line, thin compared with the first two"
+      ]
+    },
+    "why": "A picks the three mistakes that matter most for progress (tempo, tracking, focus); B's slippery-floor point is weaker, though A overstates \"impossible to grow\"."
+  },
+  "P20": {
+    "winner": "B",
+    "scores": {
+      "A": {
+        "development": 4,
+        "fidelity": 5,
+        "voice": 4,
+        "naturalness": 4,
+        "accuracy": 2,
+        "length": 5
+      },
+      "B": {
+        "development": 4,
+        "fidelity": 5,
+        "voice": 4,
+        "naturalness": 4,
+        "accuracy": 4,
+        "length": 4
+      }
+    },
+    "errors": {
+      "A": [
+        "\"A umidade faz o ativo penetrar rápido demais, o que aumenta o risco de irritação\": presented as fact for Vitamin C, which is not well established",
+        "\"pinicação\": uncommon form",
+        "Opening is a statement that reads like a caption, not spoken"
+      ],
+      "B": [
+        "Title \"manha\" missing tilde",
+        "No comment ending",
+        "\"Para de cometer esses três erros... agora mesmo\": slightly pushy"
+      ]
+    },
+    "why": "B's three errors are accurate and hedged; A presents a doubtful Vitamin C claim as fact, despite having the comment ending."
+  },
+  "P21": {
+    "winner": "A",
+    "scores": {
+      "A": {
+        "development": 4,
+        "fidelity": 5,
+        "voice": 5,
+        "naturalness": 4,
+        "accuracy": 4,
+        "length": 5
+      },
+      "B": {
+        "development": 4,
+        "fidelity": 5,
+        "voice": 4,
+        "naturalness": 4,
+        "accuracy": 2,
+        "length": 5
+      }
+    },
+    "errors": {
+      "A": [
+        "Title \"manha\" missing tilde",
+        "\"Quer uma pele de milhões?\": borderline clickbait",
+        "\"Eu já errei muito e hoje vim te salvar disso\": unsupported personal story",
+        "\"Isso dilui o protetor e reduz a eficácia\": plausible but unhedged",
+        "No comment ending"
+      ],
+      "B": [
+        "\"A umidade faz o ativo penetrar rápido demais, o que aumenta o risco de irritação\": presented as fact for Vitamin C, which is not well established",
+        "\"pinicação\": uncommon form",
+        "Opening is a statement that reads like a caption, not spoken"
+      ]
+    },
+    "why": "A's three errors are accurate and it sounds more like this funny, casual creator; B has a doubtful Vitamin C claim."
+  },
+  "P22": {
+    "winner": "A",
+    "scores": {
+      "A": {
+        "development": 5,
+        "fidelity": 5,
+        "voice": 4,
+        "naturalness": 4,
+        "accuracy": 5,
+        "length": 5
+      },
+      "B": {
+        "development": 4,
+        "fidelity": 5,
+        "voice": 4,
+        "naturalness": 4,
+        "accuracy": 4,
+        "length": 5
+      }
+    },
+    "errors": {
+      "A": [
+        "\"segurança extrema\": slight overstatement (no mention of FGC as the reason)"
+      ],
+      "B": [
+        "\"Esqueça a poupança tradicional\" with no reason given",
+        "Opening is a statement, weaker hook than a question"
+      ]
+    },
+    "why": "A opens with a stronger hook, explains liquidity for beginners and says why to skip savings accounts; B is correct but flatter."
+  },
+  "P23": {
+    "winner": "B",
+    "scores": {
+      "A": {
+        "development": 4,
+        "fidelity": 5,
+        "voice": 4,
+        "naturalness": 1,
+        "accuracy": 4,
+        "length": 5
+      },
+      "B": {
+        "development": 4,
+        "fidelity": 5,
+        "voice": 4,
+        "naturalness": 4,
+        "accuracy": 4,
+        "length": 5
+      }
+    },
+    "errors": {
+      "A": [
+        "Broken encoding: accented letters replaced with \"%\" (\"D%a\", \"s%erio\", \"s%o\", \"p%alpebras\", \"sa%ude\", \"instant%aneo\", \"esfor%co\", \"m%ascara\", \"c%ilios\", \"l%abios\", \"caf%e\"): unreadable on a teleprompter",
+        "No comment ending"
+      ],
+      "B": [
+        "\"truque de mestre\", \"vencer o dia\": clichés",
+        "Blush on lips and then gloss: a bit redundant"
+      ]
+    },
+    "why": "A's text is corrupted (accented letters replaced with %), so it cannot be recorded as is; B covers five steps and ends with the comment question."
+  },
+  "P24": {
+    "winner": "B",
+    "scores": {
+      "A": {
+        "development": 5,
+        "fidelity": 5,
+        "voice": 4,
+        "naturalness": 4,
+        "accuracy": 4,
+        "length": 5
+      },
+      "B": {
+        "development": 5,
+        "fidelity": 5,
+        "voice": 5,
+        "naturalness": 4,
+        "accuracy": 3,
+        "length": 5
+      }
+    },
+    "errors": {
+      "A": [
+        "\"Existe uma relação muito direta entre o seu sono e o seu saldo bancário\": overstated",
+        "\"é, literalmente, proteger o seu bolso\": \"literalmente\" misused"
+      ],
+      "B": [
+        "\"Uma única noite em claro se transforma em dezenas de reais jogados fora\": invented figure stated as fact",
+        "\"o cansaço afeta diretamente o nosso cérebro\": vague science, unhedged",
+        "\"despenca logo pela manhã\": overstated"
+      ]
+    },
+    "why": "B has sharper, more relatable examples (packed lunch, surge pricing) and a memorable close, though it states an invented \"dezenas de reais\" figure."
+  },
+  "P25": {
+    "winner": "B",
+    "scores": {
+      "A": {
+        "development": 4,
+        "fidelity": 5,
+        "voice": 4,
+        "naturalness": 3,
+        "accuracy": 4,
+        "length": 5
+      },
+      "B": {
+        "development": 4,
+        "fidelity": 5,
+        "voice": 5,
+        "naturalness": 4,
+        "accuracy": 4,
+        "length": 5
+      }
+    },
+    "errors": {
+      "A": [
+        "\"cuidar cada detalle\" / \"cuidar que lo que te llevas\": \"cuidar\" repeated",
+        "\"lo que te lleves\" and \"lo que te llevas\" repeated in back-to-back sentences",
+        "Nothing specific to ceramics (clay, wheel, glaze)"
+      ],
+      "B": [
+        "Title \"Por que\" should be \"Por qué\"",
+        "Mixes \"vosotros\" (\"os fijáis\", \"tengáis\") with \"tú\" (\"Cuando eliges... te llevas\")",
+        "No closing invitation"
+      ]
+    },
+    "why": "B explains the real why (small differences are the mark of the work) in a warmer voice; A is clear but repetitive. B mixes tú and vosotros."
+  },
+  "P26": {
+    "winner": "A",
+    "scores": {
+      "A": {
+        "development": 5,
+        "fidelity": 5,
+        "voice": 4,
+        "naturalness": 4,
+        "accuracy": 5,
+        "length": 5
+      },
+      "B": {
+        "development": 3,
+        "fidelity": 5,
+        "voice": 3,
+        "naturalness": 4,
+        "accuracy": 4,
+        "length": 5
+      }
+    },
+    "errors": {
+      "A": [
+        "\"segurança extrema\": slight overstatement (no mention of FGC as the reason)"
+      ],
+      "B": [
+        "\"Quando comecei a organizar minha vida financeira, achei que precisava de muito\": invented story that does not connect to the next line",
+        "\"contas digitais que rendem pelo menos cem por cento do CDI\": fine, but no mention of FGC coverage"
+      ]
+    },
+    "why": "A gives the same correct numbers and places with a clearer hook and explanation; B's invented story opening doesn't connect."
+  },
+  "P27": {
+    "winner": "A",
+    "scores": {
+      "A": {
+        "development": 4,
+        "fidelity": 5,
+        "voice": 4,
+        "naturalness": 4,
+        "accuracy": 3,
+        "length": 5
+      },
+      "B": {
+        "development": 4,
+        "fidelity": 5,
+        "voice": 4,
+        "naturalness": 1,
+        "accuracy": 5,
+        "length": 5
+      }
+    },
+    "errors": {
+      "A": [
+        "\"Ajustar a exposição impede que a câmera mude o brilho sozinha\": just tapping and dragging does not lock exposure; a long press (AE/AF lock) does",
+        "\"difusor profissional\": slight overstatement"
+      ],
+      "B": [
+        "Missing diacritics throughout: \"e de graça\" (é), \"otimo\", \"voce\", \"tao\", \"esta\", \"exposicao\", \"ate\": the text is broken as written",
+        "No curtain/diffusion tip",
+        "\"imagem muito melhor\": generic close"
+      ]
+    },
+    "why": "B's text has its accents stripped throughout (\"voce\", \"esta\", \"exposicao\"); A is clean and also gives the curtain tip."
+  },
+  "P28": {
+    "winner": "A",
+    "scores": {
+      "A": {
+        "development": 5,
+        "fidelity": 5,
+        "voice": 5,
+        "naturalness": 4,
+        "accuracy": 4,
+        "length": 5
+      },
+      "B": {
+        "development": 4,
+        "fidelity": 5,
+        "voice": 4,
+        "naturalness": 4,
+        "accuracy": 4,
+        "length": 5
+      }
+    },
+    "errors": {
+      "A": [
+        "\"para evitar que se pegue al horno durante la cocción\": a production detail of little use to a buyer",
+        "\"lo que evita que acumule humedad\": simplified"
+      ],
+      "B": [
+        "Uses \"tú\" rather than the team's \"vosotros\" warmth; weak close (\"mimamos estos tres puntos\")",
+        "\"para evitar que la humedad pueda filtrarse\": simplified",
+        "Base sign framed only as \"no rayar\", missing the unglazed foot"
+      ]
+    },
+    "why": "A is more expert (unglazed foot, rim glaze) and warmer with a team invitation; B is fine but thinner."
+  },
+  "P29": {
+    "winner": "A",
+    "scores": {
+      "A": {
+        "development": 4,
+        "fidelity": 5,
+        "voice": 5,
+        "naturalness": 4,
+        "accuracy": 3,
+        "length": 5
+      },
+      "B": {
+        "development": 4,
+        "fidelity": 5,
+        "voice": 4,
+        "naturalness": 4,
+        "accuracy": 4,
+        "length": 5
+      }
+    },
+    "errors": {
+      "A": [
+        "\"tiny, harmless tears\": \"harmless\" is an unsupported claim",
+        "\"That magic happens later\" / \"crush a bodyweight workout\": borderline hype words",
+        "\"You do not actually build muscle while you are exercising\": absolute",
+        "No save ending (optional)"
+      ],
+      "B": [
+        "\"tiny, microscopic tears\": redundant; microtears presented as the whole mechanism",
+        "\"it is\", \"you are\": uncontracted, written tone",
+        "\"Schedule at least two rest days a week\": rigid prescription for everyone"
+      ]
+    },
+    "why": "A sounds more like this creator (question hook, \"Okay, real talk\") with the same core explanation; B is more hedged but plainer."
+  },
+  "P30": {
+    "winner": "B",
+    "scores": {
+      "A": {
+        "development": 4,
+        "fidelity": 5,
+        "voice": 4,
+        "naturalness": 1,
+        "accuracy": 4,
+        "length": 5
+      },
+      "B": {
+        "development": 5,
+        "fidelity": 5,
+        "voice": 5,
+        "naturalness": 5,
+        "accuracy": 4,
+        "length": 5
+      }
+    },
+    "errors": {
+      "A": [
+        "Broken encoding: accented letters replaced with \"%\" (\"D%a\", \"s%erio\", \"s%o\", \"p%alpebras\", \"sa%ude\", \"instant%aneo\", \"esfor%co\", \"m%ascara\", \"c%ilios\", \"l%abios\", \"caf%e\"): unreadable on a teleprompter",
+        "No comment ending"
+      ],
+      "B": [
+        "\"sem craquelar\": slightly odd for powder",
+        "No comment ending (optional)"
+      ]
+    },
+    "why": "A's text is corrupted (accented letters replaced with %); B covers five steps in the creator's playful slang."
+  }
+}

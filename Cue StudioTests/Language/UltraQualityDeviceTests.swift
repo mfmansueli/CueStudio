@@ -22,7 +22,8 @@ import UIKit
 ///
 /// `CUE_DEVICE="iago Lima iphone" TEST_RUNNER_CUE_ULTRA_QUALITY_RUN=q1 scripts/test.sh device UltraQualityDeviceTests`, the iPhone unlocked and
 /// awake (Apple Intelligence is rate limited in the background). `TEST_RUNNER_CUE_ULTRA_QUALITY_CASES=t1-window-light,en-0` and
-/// `TEST_RUNNER_CUE_ULTRA_QUALITY_ENGINES=apple,checked` narrow it. Each idea costs 5 of the lab's calls (2 + 3).
+/// `TEST_RUNNER_CUE_ULTRA_QUALITY_ENGINES=apple,checked` narrow it. Each idea costs 14 of the lab's calls (2 + 3, and 3 for each cheaper
+/// variant of the checked flow that thinks less, `checkedMedium`, `checkedLow` and `checkedMixed`: `UltraThinking`).
 ///
 /// `TEST_RUNNER_CUE_ULTRA_QUALITY_FIT=1` runs the other half instead, with no call to Google: the owner's choice (29/10/2026) is that Ultra writes
 /// freely and the creator fits it to the platform's time when they want, with the page's "Fit to time" (Apple Intelligence, on the iPhone). It
@@ -45,6 +46,20 @@ struct UltraQualityDeviceTests {
 
     nonisolated enum Engine: String, CaseIterable, Sendable {
         case apple, polished, checked
+        /// The app's flow thinking less (`UltraThinking`): in every call, or in all but the claim check (`checkedMixed`). What a cheaper script
+        /// would write.
+        case checkedMedium, checkedLow, checkedMixed
+
+        var flow: UltraFlow { self == .polished ? .polished : .checked }
+
+        var thinking: UltraThinking {
+            switch self {
+            case .checkedMedium: .medium
+            case .checkedLow: .low
+            case .checkedMixed: .lowExceptCheck
+            default: .model
+            }
+        }
     }
 
     private static let environment = ProcessInfo.processInfo.environment
@@ -125,10 +140,10 @@ struct UltraQualityDeviceTests {
         for engine in Self.engines {
             switch engine {
             case .apple: sample.engines[engine.rawValue] = await Self.apple(request)
-            case .polished, .checked:
-                let flow: UltraFlow = engine == .checked ? .checked : .polished
-                try #require(ultra.budget.allows(flow.calls), "The lab's calls are used up (\(ultra.budget.used) of \(ultra.budget.limit))")
-                sample.engines[engine.rawValue] = await Self.ultra(ultraRequest, flow: flow, service: ultra)
+            case .polished, .checked, .checkedMedium, .checkedLow, .checkedMixed:
+                try #require(ultra.budget.allows(engine.flow.calls), "The lab's calls are used up (\(ultra.budget.used) of \(ultra.budget.limit))")
+                ultra.thinking = engine.thinking
+                sample.engines[engine.rawValue] = await Self.ultra(ultraRequest, flow: engine.flow, service: ultra)
             }
             try await Task.sleep(for: .seconds(2))
         }
@@ -279,6 +294,8 @@ struct UltraQualityDeviceTests {
             result.seconds?["check"] = run.checkSeconds
             result.tokens = ["draft": Self.tokens(run.draftReply), "review": Self.tokens(run.reviewReply)]
             if let reply = run.checkReply { result.tokens?["check"] = Self.tokens(reply) }
+            result.calls = run.cost.calls
+            result.usd = run.cost.dollars()
             return result
         } catch {
             return Written(failure: "\(error)")
@@ -357,6 +374,9 @@ struct UltraQualityDeviceTests {
         var changes: [String]?
         var seconds: [String: Double]?
         var tokens: [String: [Int?]]?
+        /// Every call of the script and what they cost (`UltraCost`), the fit that follows a script past its range included.
+        var calls: Int?
+        var usd: Double?
         var words: Int?
         var estimatedSeconds: Double?
 

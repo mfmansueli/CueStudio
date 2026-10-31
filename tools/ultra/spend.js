@@ -174,6 +174,8 @@ async function main() {
       else if (type === "output") counts.output += value;
     }
   }
+  // response code → refused calls (429: Google's capacity or quota at that moment)
+  const refused = new Map();
   for (const s of callSeries) {
     const model = label(s, "model_user_id"), location = label(s, "location") || "global", code = label(s, "response_code");
     models.set(`${model}|${location}`, { model, location });
@@ -182,7 +184,10 @@ async function main() {
       if (!value) continue;
       const counts = cell(day(point), `${model}|${location}`);
       if (code === "200") counts.calls += value;
-      else counts.errors += value;
+      else {
+        counts.errors += value;
+        refused.set(code, (refused.get(code) || 0) + value);
+      }
     }
   }
 
@@ -204,7 +209,7 @@ async function main() {
   const app = appPrice();
 
   if (opts.json) {
-    console.log(JSON.stringify({ project: opts.project, days: opts.days, prices: Object.fromEntries(prices), appPrice: app, rows, total }, null, 2));
+    console.log(JSON.stringify({ project: opts.project, days: opts.days, prices: Object.fromEntries(prices), appPrice: app, rows, total, errorsByCode: Object.fromEntries(refused) }, null, 2));
     return;
   }
   console.log(`Ultra AI spend · ${opts.project} · last ${opts.days} days · Google's own counts (Cloud Monitoring)`);
@@ -233,6 +238,9 @@ async function main() {
   const line = (r) => r.map((c, i) => (i < 2 ? c.padEnd(widths[i]) : c.padStart(widths[i]))).join("  ");
   console.log(line(header));
   for (const r of table) console.log(line(r));
+  if (refused.size) {
+    console.log(`\nErrors by response code: ${[...refused].sort((a, b) => b[1] - a[1]).map(([code, n]) => `${code} × ${n}`).join(", ")}`);
+  }
   if (total.calls) {
     console.log(`\nPer answered call: USD ${dollars(total.usd / total.calls, 4)} · ${number(total.input / total.calls)} input and ${number(total.output / total.calls)} output tokens`);
   }

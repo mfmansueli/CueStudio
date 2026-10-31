@@ -2940,6 +2940,17 @@ Google (248 chamadas; USD 6,01 contra 6,06: a diferença é um pedido indonésio
 rodada, uma chamada voltou recusada (429, cota do modelo) e outra estourou o tempo; repetidas, passaram. Para o Pro (30 por mês), USD 2,25 por
 criador que usa tudo, em média; até 3,60 num idioma como o coreano.
 
+**Quanto o modelo pensa** (`UltraThinking`, `UltraScriptService.thinking`): o app não manda nenhuma configuração de raciocínio (`.model`, o
+modelo decide), como sempre mandou. A comparação usa níveis mais baixos em cada chamada (`ThinkingConfig(thinkingLevel:)`): `.medium`, `.low` e
+`.lowExceptCheck` (baixo no rascunho, no polimento e no Fit; a checagem dos fatos pensa como o modelo quiser). Medido em 31/10/2026 (run `c1`,
+as 15 ideias da comparação de 29/10 escritas pelas quatro versões no iPhone; `UltraQualityDeviceTests`, `tools/ultra/compare.py`): hoje
+**USD 0,055** por roteiro e 30 s, médio 0,055 (não economiza), **baixo 0,025** (−55%, 20 s), misto 0,037 (−33%, 18 s); a checagem com raciocínio
+baixo achou 0,8 correção por roteiro contra 2,4. Dois juízes de IA às cegas (30 pares cada, sementes 29 e 31): hoje contra baixo 6–9 e 7–8, hoje
+contra misto 9–6 e 9–6, notas praticamente iguais (precisão 3,7 a 3,9 de 5 nos três). O dono avalia os roteiros em português às cegas
+(`quality-c1-owner-key.json`) antes de qualquer mudança no padrão. Na mesma rodada, 19 chamadas voltaram recusadas pelo Google (429, sem
+capacidade no momento; repetidas, passaram) e o polimento devolveu duas vezes o português estragado (sem acentos, ou "D%a" no lugar de "Dá"),
+uma delas na versão de hoje.
+
 **Roteiros grátis e Cue Pro** (decisões do dono, 29/10 e 30/10/2026; **prévia em Debug**, sem cobrança): todo mundo tem **3 roteiros Ultra AI grátis**
 (`UsagePolicy.freeUltraScripts`; não há teste grátis do Pro); o Pro soma **30 por mês** (`proUltraScriptsPerMonth`); os grátis são gastos primeiro. Um roteiro só conta quando chega polido (falha ou Stop não
 contam). `UltraAllowance` (puro) e `UltraAllowanceService` (contagem em UserDefaults, mês de calendário): é **só a prévia** do que o criador verá, para o
