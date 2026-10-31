@@ -21,7 +21,8 @@ nonisolated enum ThemeCatalog {
     }
 
     // swiftlint:disable function_body_length
-    /// The starters of a first-flight topic (six each; Wellness and Education, no longer offered, keep their three).
+    /// The starters of a first-flight topic (six each; Wellness and Education, no longer offered, keep their three), then the library's about it
+    /// (`IdeaLibrary`).
     static func ideas(for niche: Niche) -> [ThemeIdea] {
         let entries: [Entry] = switch niche {
         case .lifestyle: [
@@ -379,7 +380,7 @@ nonisolated enum ThemeCatalog {
             ),
         ]
         }
-        return entries.map { entry in
+        let written = entries.map { entry in
             var idea = ThemeIdea(title: entry.title, kind: entry.kind, length: entry.length, niche: niche)
             idea.brief = IdeaBrief(
                 subject: entry.title, angle: entry.angle, openingLine: entry.openingLine, language: interfaceLanguage,
@@ -387,6 +388,9 @@ nonisolated enum ThemeCatalog {
             )
             return idea
         }
+        // Then the library's, in the same language (none repeats a title written here).
+        let titles = Set(written.map(\.id))
+        return written + IdeaLibrary.ideas(for: niche).filter { !titles.contains($0.id) }
     }
     // swiftlint:enable function_body_length
 
