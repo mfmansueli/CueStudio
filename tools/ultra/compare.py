@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""Blind comparison of the scripts three engines wrote for the same ideas: `apple` (Apple Intelligence), `polished` (Ultra AI, draft and
-polish) and `checked` (Ultra AI, draft, claim check and polish). A device run keeps one attachment per idea,
+"""Blind comparison of the scripts engines wrote for the same ideas: `apple` (Apple Intelligence), `polished` (Ultra AI, draft and
+polish), `checked` (Ultra AI, draft, claim check and polish, the app's flow) and the cheaper variants of `checked` that think less
+(`checkedMedium`, `checkedLow` in every step, `checkedMixed` low in all but the claim check: the model's thinking level, `UltraThinking`). A device run keeps one attachment per idea,
 `ultra-quality-<run>-<id>.json`.
 
   tools/ultra/compare.py collect <run> build/results/device-….xcresult [more.xcresult …]
       merges the ideas into research_notes/Ultra AI/quality-<run>.json, each engine with its `metrics`, and prints them
-  tools/ultra/compare.py pairs <run> [--seed N]
+  tools/ultra/compare.py pairs <run> [--seed N] [--without ENGINE...]
       writes quality-<run>-pairs.json and quality-<run>-pairs.md (blind: no engine names) and quality-<run>-key.json (who is A and B)
   tools/ultra/compare.py score <run> <verdicts.json>
       joins a judge's verdicts with the key: wins, mean scores and errors per engine, also in quality-<run>-score-<verdicts>.json
@@ -15,7 +16,9 @@ polish) and `checked` (Ultra AI, draft, claim check and polish). A device run ke
       result lands in the platform's range, numbers the fit added
 
 An idea found in a later xcresult replaces the one of the same id from an earlier one; ideas already in the file are kept unless replaced.
-Pairs: apple against checked for every idea with both texts; polished against checked for every technical idea with both texts.
+Pairs: apple against checked for every idea with both texts; polished against checked for every technical idea with both texts; checked
+against each variant for every idea with both texts. `collect` also prints what each engine's scripts cost (Google's token counts at the
+app's `UltraPrice`).
 The metrics are leads to read the texts with, never a verdict: seconds are words at 150 a minute, new numbers are numbers the request did
 not supply (maybe invented, maybe common knowledge).
 
@@ -36,8 +39,10 @@ import unicodedata
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 FOLDER = os.path.join(ROOT, "research_notes", "Ultra AI")
-ENGINES = ["apple", "polished", "checked"]
-COMPARISONS = ["apple-vs-checked", "polished-vs-checked"]
+VARIANTS = ["checkedMedium", "checkedLow", "checkedMixed"]
+ENGINES = ["apple", "polished", "checked"] + VARIANTS
+COMPARISONS = ["apple-vs-checked", "polished-vs-checked"] + [f"checked-vs-{variant}" for variant in VARIANTS]
+PRICE_FILE = os.path.join(ROOT, "Cue Studio", "Managers", "ScriptAI", "Ultra", "UltraPrice.swift")
 CRITERIA = ["development", "fidelity", "voice", "naturalness", "accuracy", "length"]
 WORDS_PER_MINUTE = 150
 
@@ -312,9 +317,11 @@ def save(path, data):
 
 
 def merge(existing, found):
+    """A later attachment for the same idea replaces the engines it wrote (a rerun of the ones that failed); the others are kept."""
     ideas = {idea["id"]: idea for idea in existing}
     for idea in found:
-        ideas[idea["id"]] = idea
+        earlier = (ideas.get(idea["id"]) or {}).get("engines") or {}
+        ideas[idea["id"]] = {**idea, "engines": {**earlier, **(idea.get("engines") or {})}}
     return [enrich(ideas[key]) for key in sorted(ideas)]
 
 
@@ -326,11 +333,50 @@ def collect(run, results, folder=FOLDER, read=attachments):
     save(path, ideas)
     print(f"{len(found)} ideas read, {len(ideas)} in {shown(path)}")
     print(table(ideas))
+    spent = costs(ideas)
+    if spent:
+        print("\nUSD a script (Google's token counts at UltraPrice):")
+        for name, cell in spent.items():
+            print(f"  {name:<15}{cell['mean']:.4f} mean, {cell['least']:.4f} to {cell['most']:.4f} ({cell['scripts']} scripts)")
     return ideas
 
 
+def price():
+    """USD per million tokens in and out, as the app prices them (`UltraPrice.current`)."""
+    with open(PRICE_FILE, encoding="utf-8") as handle:
+        match = re.search(r"inputPerMillion:\s*([\d.]+),\s*cachedInputPerMillion:\s*([\d.]+),\s*outputPerMillion:\s*([\d.]+)", handle.read())
+    return float(match.group(1)), float(match.group(3))
+
+
+def dollars(engine, rates=None):
+    """What an Ultra engine's calls cost: the app's own sum when recorded (`usd`, a fit included), else from the tokens (`[prompt, output,
+    thinking]` per step); None without either."""
+    if isinstance(engine, dict) and isinstance(engine.get("usd"), (int, float)) and not rates:
+        return engine["usd"]
+    tokens = engine.get("tokens") if isinstance(engine, dict) else None
+    if not tokens:
+        return None
+    rate_in, rate_out = rates or price()
+    total = 0.0
+    for counts in tokens.values():
+        prompt, output, thinking = (list(counts) + [None, None, None])[:3]
+        total += ((prompt or 0) * rate_in + ((output or 0) + (thinking or 0)) * rate_out) / 1e6
+    return total
+
+
+def costs(ideas, rates=None):
+    """Mean, least and most dollars a script per engine, over the ideas it wrote."""
+    out = {}
+    for name in ENGINES:
+        values = [d for d in (dollars((i.get("engines") or {}).get(name), rates) for i in ideas) if d is not None]
+        if values:
+            out[name] = {"scripts": len(values), "mean": round(sum(values) / len(values), 4), "least": round(min(values), 4),
+                         "most": round(max(values), 4)}
+    return out
+
+
 def table(ideas):
-    lines = [f"{'id':<28}{'engine':<10}{'words':>6}{'≈ s':>7}{'fit':>7}{'?':>3}  {'cta':<18}{'catch':>6}{'new#':>5}  failure"]
+    lines = [f"{'id':<28}{'engine':<15}{'words':>6}{'≈ s':>7}{'fit':>7}{'?':>3}  {'cta':<18}{'catch':>6}{'new#':>5}  failure"]
     for idea in ideas:
         for name in ENGINES:
             engine = (idea.get("engines") or {}).get(name)
@@ -338,13 +384,13 @@ def table(ideas):
                 continue
             m = engine.get("metrics")
             if not m:
-                lines.append(f"{idea['id']:<28}{name:<10}{'–':>6}{'–':>7}{'–':>7}{'–':>3}  {'–':<18}{'–':>6}{'–':>5}  "
+                lines.append(f"{idea['id']:<28}{name:<15}{'–':>6}{'–':>7}{'–':>7}{'–':>3}  {'–':<18}{'–':>6}{'–':>5}  "
                              f"{engine.get('failure') or 'no text'}")
                 continue
             fit = m["lengthFit"]
             fit = "–" if fit is None else f"{fit:.2f}" if isinstance(fit, float) else fit
             cta = "–" if m["ctaInEnding"] is None else ",".join(m["ctaInEnding"]) or "no"
-            lines.append(f"{idea['id']:<28}{name:<10}{m['words']:>6}{m['estimatedSeconds']:>7.1f}{fit:>7}"
+            lines.append(f"{idea['id']:<28}{name:<15}{m['words']:>6}{m['estimatedSeconds']:>7.1f}{fit:>7}"
                          f"{'y' if m['endsWithQuestion'] else 'n':>3}  {cta[:17]:<18}{sum(m['catchphrases'].values()):>6}"
                          f"{len(m['newNumbers']):>5}  {engine.get('failure') or ''}")
     return "\n".join(lines)
@@ -383,14 +429,18 @@ def has_text(idea, name):
     return bool(engine and engine.get("text"))
 
 
-def build_pairs(ideas, seed=29):
-    """Blind pairs, shuffled with the seed, and the key that tells which engine wrote A and B."""
+def build_pairs(ideas, seed=29, without=()):
+    """Blind pairs, shuffled with the seed, and the key that tells which engine wrote A and B; engines in `without` are left out."""
+    ideas = [{**idea, "engines": {name: e for name, e in (idea.get("engines") or {}).items() if name not in without}} for idea in ideas]
     candidates = []
     for idea in sorted(ideas, key=lambda i: i["id"]):
         if has_text(idea, "apple") and has_text(idea, "checked"):
             candidates.append((idea, "apple-vs-checked", "apple", "checked"))
         if idea.get("kind") == "technical" and has_text(idea, "polished") and has_text(idea, "checked"):
             candidates.append((idea, "polished-vs-checked", "polished", "checked"))
+        for variant in VARIANTS:
+            if has_text(idea, "checked") and has_text(idea, variant):
+                candidates.append((idea, f"checked-vs-{variant}", "checked", variant))
     rng = random.Random(seed)
     rng.shuffle(candidates)
     pairs, key = [], {}
@@ -447,9 +497,9 @@ def revealing(pairs):
     return [pair["pair"] for pair in pairs if pattern.search(json.dumps(pair, ensure_ascii=False))]
 
 
-def make_pairs(run, seed=29, folder=FOLDER):
+def make_pairs(run, seed=29, folder=FOLDER, without=()):
     ideas = load(path_for(folder, run))
-    pairs, key = build_pairs(ideas, seed)
+    pairs, key = build_pairs(ideas, seed, without)
     save(path_for(folder, run, "-pairs"), pairs)
     save(path_for(folder, run, "-key"), key)
     with open(os.path.join(folder, "quality-" + run + "-pairs.md"), "w", encoding="utf-8") as handle:
@@ -526,11 +576,11 @@ def report(summary):
                 lines.append(wins_line(label, comparison[group][label], engines))
     for group, engines in summary["scores"].items():
         criteria = CRITERIA + sorted({c for e in engines.values() for c in e} - set(CRITERIA))
-        lines += ["", f"mean scores, {group}", f"  {'engine':<10}" + "".join(f"{c[:11]:>12}" for c in criteria)]
+        lines += ["", f"mean scores, {group}", f"  {'engine':<15}" + "".join(f"{c[:11]:>12}" for c in criteria)]
         for engine in ENGINES:
             if engine in engines:
                 cells = [engines[engine].get(c) for c in criteria]
-                lines.append(f"  {engine:<10}" + "".join(f"{cell['mean']:>12.2f}" if cell else f"{'–':>12}" for cell in cells))
+                lines.append(f"  {engine:<15}" + "".join(f"{cell['mean']:>12.2f}" if cell else f"{'–':>12}" for cell in cells))
     for engine in ENGINES:
         if summary["errors"].get(engine):
             lines += ["", f"errors, {engine}"]
@@ -556,6 +606,7 @@ def main(argv=None):
     command = commands.add_parser("pairs")
     command.add_argument("run")
     command.add_argument("--seed", type=int, default=29)
+    command.add_argument("--without", nargs="*", default=[], help="engines to leave out of the pairs")
     command = commands.add_parser("score")
     command.add_argument("run")
     command.add_argument("verdicts")
@@ -566,7 +617,7 @@ def main(argv=None):
     if args.command == "collect":
         collect(args.run, args.results)
     elif args.command == "pairs":
-        make_pairs(args.run, args.seed)
+        make_pairs(args.run, args.seed, without=args.without)
     elif args.command == "fits":
         fits(args.run, args.results)
     else:

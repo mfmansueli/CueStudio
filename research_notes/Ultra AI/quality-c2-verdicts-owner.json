@@ -1,0 +1,82 @@
+{
+  "run": "c2",
+  "judge": "owner",
+  "date": "2026-10-31",
+  "picks": {
+    "beauty-card": {
+      "source": "chat",
+      "best": "A",
+      "engine": "checked",
+      "note": "",
+      "key": {
+        "A": "checked",
+        "B": "checkedMixed"
+      }
+    },
+    "beauty-inspiration": {
+      "source": "chat",
+      "best": "B",
+      "engine": "checkedMixed",
+      "note": "",
+      "key": {
+        "A": "checked",
+        "B": "checkedMixed"
+      }
+    },
+    "beauty-typed1": {
+      "source": "chat",
+      "best": "tie",
+      "engine": "tie",
+      "note": "ambos bons",
+      "key": {
+        "A": "checked",
+        "B": "checkedMixed"
+      }
+    },
+    "filming-card": {
+      "source": "chat",
+      "best": "B",
+      "engine": "checked",
+      "note": "",
+      "key": {
+        "A": "checkedMixed",
+        "B": "checked"
+      }
+    },
+    "filming-inspiration": {
+      "source": "chat",
+      "best": "A",
+      "engine": "checkedMixed",
+      "note": "menos técnico mas ficou muito natural e gostei disso",
+      "key": {
+        "A": "checkedMixed",
+        "B": "checked"
+      }
+    },
+    "filming-typed2": {
+      "source": "chat",
+      "best": "B",
+      "engine": "checked",
+      "note": "com certeza, técnicos mas c naturalidade explicou os pqs",
+      "key": {
+        "A": "checkedMixed",
+        "B": "checked"
+      }
+    },
+    "money-card": {
+      "source": "chat",
+      "best": "B",
+      "engine": "checked",
+      "note": "gostei de ambos mas talvez mais do B",
+      "key": {
+        "A": "checkedMixed",
+        "B": "checked"
+      }
+    }
+  },
+  "tally": {
+    "checked": 4,
+    "checkedMixed": 2,
+    "tie": 1
+  }
+}

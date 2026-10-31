@@ -21,6 +21,9 @@ final class UltraScriptService: UltraScriptWriting {
     /// comparison of 29/10/2026 (15 ideas, two judges, `tools/ultra/compare.py`) the checked script won all 6 pairs against the unchecked one,
     /// its accuracy 4.3 to 4.6 out of 5 against 3.2 to 3.5, and all 15 against Apple Intelligence.
     var flow = UltraFlow.checked
+    /// How much the model thinks in every call (the lab's comparison picks its own). The model's own choice until a cheaper level is shown to
+    /// write as well (`UltraThinking`).
+    var thinking = UltraThinking.model
 
     let consent: UltraConsentService
     let budget: UltraCallBudget
@@ -250,6 +253,8 @@ final class UltraScriptService: UltraScriptWriting {
         _ client: any UltraModelClient, _ stage: UltraStageRequest, cost: inout UltraCost, progress: @escaping @MainActor (Int) -> Void
     ) async throws -> UltraModelReply {
         guard budget.reserve() else { throw UltraError.budgetExhausted }
+        var stage = stage
+        stage.thinking = thinking
         do {
             let reply = try await client.generate(stage, progress: progress)
             cost.add(reply)

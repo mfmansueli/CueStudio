@@ -390,6 +390,24 @@ struct UltraScriptServiceTests {
         #expect(scenario.spend.entries.count == 1)
     }
 
+    /// Today's requests send no thinking setting (the model decides); a level picked for the comparison goes with every call of the script.
+    @Test func theThinkingLevelGoesWithEveryCall() async throws {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        _ = try await scenario.service.run(request)
+        #expect(scenario.client.requests.allSatisfy { $0.thinking == .model })
+        scenario.service.thinking = .low
+        _ = try await scenario.service.run(request)
+        _ = try await scenario.service.fit(fitRequest(longScript))
+        #expect(scenario.client.requests.suffix(4).map(\.thinking) == [.low, .low, .low, .low])
+    }
+
+    @Test func onlyTheClaimCheckKeepsTheModelsOwnThinking() {
+        let stages: [UltraStageRequest.Stage] = [.draft, .check, .review, .fit]
+        #expect(stages.map { UltraThinking.lowExceptCheck.level(for: $0) } == [.low, nil, .low, .low])
+        #expect(stages.allSatisfy { UltraThinking.model.level(for: $0) == nil && UltraThinking.medium.level(for: $0) == .medium })
+    }
+
     @Test func theFitIsReadStrictly() {
         #expect(UltraFitReply(json: #"{"script":" Fitted. "}"#)?.script == "Fitted.")
         #expect(UltraFitReply(json: #"{"script":""}"#) == nil)

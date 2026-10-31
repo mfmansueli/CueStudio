@@ -1,0 +1,47 @@
+{
+  "t1-window-light": {
+    "A": "checkedLow",
+    "B": "checked",
+    "C": "checkedMixed"
+  },
+  "t2-camera-upgrade": {
+    "A": "checkedMixed",
+    "B": "checkedLow",
+    "C": "checked"
+  },
+  "t3-teleprompter": {
+    "A": "checkedMixed",
+    "B": "checked",
+    "C": "checkedLow"
+  },
+  "t4-sound": {
+    "A": "checked",
+    "B": "checkedMixed",
+    "C": "checkedLow"
+  },
+  "t5-emergency-fund": {
+    "A": "checked",
+    "B": "checkedMixed",
+    "C": "checkedLow"
+  },
+  "t6-sleep-spending": {
+    "A": "checked",
+    "B": "checkedMixed",
+    "C": "checkedLow"
+  },
+  "pt-BR-0": {
+    "A": "checkedMixed",
+    "B": "checkedLow",
+    "C": "checked"
+  },
+  "pt-BR-1": {
+    "A": "checkedLow",
+    "B": "checkedMixed",
+    "C": "checked"
+  },
+  "pt-BR-2": {
+    "A": "checkedLow",
+    "B": "checkedMixed",
+    "C": "checked"
+  }
+}

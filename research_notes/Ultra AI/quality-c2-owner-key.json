@@ -1,0 +1,30 @@
+{
+  "beauty-card": {
+    "A": "checked",
+    "B": "checkedMixed"
+  },
+  "beauty-inspiration": {
+    "A": "checked",
+    "B": "checkedMixed"
+  },
+  "beauty-typed1": {
+    "A": "checked",
+    "B": "checkedMixed"
+  },
+  "filming-card": {
+    "A": "checkedMixed",
+    "B": "checked"
+  },
+  "filming-inspiration": {
+    "A": "checkedMixed",
+    "B": "checked"
+  },
+  "filming-typed2": {
+    "A": "checkedMixed",
+    "B": "checked"
+  },
+  "money-card": {
+    "A": "checkedMixed",
+    "B": "checked"
+  }
+}
