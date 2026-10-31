@@ -2926,6 +2926,14 @@ recebe o custo de cada chamada e de cada pedido. O gasto do projeto inteiro (os 
 catálogo, e avisa quando `UltraPrice` ficou para trás. Em 31/10/2026: 233 chamadas respondidas e 1 recusada (429), 278.984 tokens de entrada e
 548.231 de saída, **USD 5,35**, cerca de USD 0,023 por chamada.
 
+**Custo medido no iPhone** (31/10/2026, `UltraCostDeviceTests`: a ideia do card de Scripts e a próxima do Find inspiration escritas pelo Apple
+Intelligence no aparelho, e uma ideia digitada; um criador sintético de finanças e hábitos, TikTok, Auto; o fluxo do app, rascunho, checagem e
+polimento): 9 roteiros, 27 chamadas, nenhum precisou do Fit (190 a 217 palavras, 76 a 87 s), **média USD 0,068 por roteiro** (de 0,050 a 0,088).
+Por origem: card 0,064, Find inspiration 0,068, digitada 0,073; por idioma: português 0,073, inglês 0,069, espanhol 0,063. O raciocínio é 79% do
+custo (54 mil de 95 mil tokens), a entrada 8% (cerca de 3.600 tokens por roteiro) e o texto devolvido 13%; o que varia de um roteiro para outro
+é quanto o modelo pensa, sobretudo na checagem (por etapa, em média: rascunho USD 0,017, checagem 0,027, com 960 a 4.560 tokens de raciocínio,
+polimento 0,024).
+
 **Roteiros grátis e Cue Pro** (decisões do dono, 29/10 e 30/10/2026; **prévia em Debug**, sem cobrança): todo mundo tem **3 roteiros Ultra AI grátis**
 (`UsagePolicy.freeUltraScripts`; não há teste grátis do Pro); o Pro soma **30 por mês** (`proUltraScriptsPerMonth`); os grátis são gastos primeiro. Um roteiro só conta quando chega polido (falha ou Stop não
 contam). `UltraAllowance` (puro) e `UltraAllowanceService` (contagem em UserDefaults, mês de calendário): é **só a prévia** do que o criador verá, para o

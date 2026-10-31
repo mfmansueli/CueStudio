@@ -17,7 +17,7 @@
 #                                    InspirationDeviceTests, QuickEditPreviewLatencyTests, EditorExportDeviceTests, SkinSmoothingDeviceTests,
 #                                    BackgroundDeviceTests, ContinuedTaskDeviceTests, MotionAnalysisDeviceTests, EditorMotionDeviceTests,
 #                                    SplitScreenDeviceTests, BlurAreaDeviceTests, BlurTrackingDeviceTests, CustomFontStoreTests,
-#                                    MediaLibraryStoreTests, TextEffectDeviceTests, UltraDeviceTests)
+#                                    MediaLibraryStoreTests, TextEffectDeviceTests, UltraDeviceTests, UltraCostDeviceTests)
 #   scripts/test.sh device-ui <class>  a UI test class (or Class/test) on that iPhone (opt-in classes skip without their flag)
 #
 # After the mode: --no-build reuses the last build; --repeat N runs until a failure, at most N times (for flaky tests);
@@ -119,7 +119,7 @@ case "$mode" in
             # A portrait in the app's Documents on the device: TEST_RUNNER_CUE_SKIN_MEDIA=Documents/skin.jpg (see SkinSmoothingDeviceTests).
             SkinSmoothingDeviceTests* | BackgroundDeviceTests*) export TEST_RUNNER_CUE_SKIN_E2E=1 ;;
             # Ultra AI's real calls (synthetic data, counted in the lab's 300): the lab's configuration in the app's Documents (DESIGN_PROJECT §57).
-            UltraDeviceTests*) export TEST_RUNNER_CUE_ULTRA_E2E=1 ;;
+            UltraDeviceTests* | UltraCostDeviceTests*) export TEST_RUNNER_CUE_ULTRA_E2E=1 ;;
             # The same ideas by Apple Intelligence and Ultra AI (two flows), for the blind comparison (`tools/ultra/compare.py`).
             UltraQualityDeviceTests*) export TEST_RUNNER_CUE_ULTRA_QUALITY=1 ;;
             # Text to speech heard by this iPhone's recognizer at each speed, voice effects' words and time, library tracks' decoding time.
