@@ -26,7 +26,8 @@ struct PrompterEntryRow: View {
             SettingsListToggle(title: entry.title, detail: entry.detail, isOn: followsVoice)
         case .speed:
             SettingsSliderRow(
-                title: entry.title, valueText: SpeedScale.label(forSpeed: settings.wrappedValue.speed), detail: entry.detail, value: speed,
+                title: entry.title, valueText: SpeedScale.label(forSpeed: settings.wrappedValue.speed),
+                valueSamples: SpeedScale.stops.map(SpeedScale.label(forMultiple:)), detail: entry.detail, value: speed,
                 range: 0...Double(SpeedScale.stops.count - 1), step: 1,
                 minLabel: SpeedScale.label(forMultiple: SpeedScale.stops[0]),
                 maxLabel: SpeedScale.label(forMultiple: SpeedScale.stops[SpeedScale.stops.count - 1]), identifier: "settings.speedSlider"
@@ -90,20 +91,21 @@ struct PrompterEntryRow: View {
             )
         case .sideMargins:
             SettingsSliderRow(
-                title: entry.title, valueText: String(localized: "\(Int(settings.wrappedValue.margin)) pt"), value: settings.margin,
+                title: entry.title, valueText: String(localized: "\(Int(settings.wrappedValue.margin)) pt"),
+                valueSamples: [String(localized: "\(Int(PrompterSettings.marginRange.upperBound)) pt")], value: settings.margin,
                 range: PrompterSettings.marginRange, step: 2, minLabel: "\(Int(PrompterSettings.marginRange.lowerBound))",
                 maxLabel: String(localized: "\(Int(PrompterSettings.marginRange.upperBound)) pt"), identifier: "settings.sideMarginsSlider"
             )
         case .backgroundOpacity:
             SettingsSliderRow(
-                title: entry.title, valueText: "\(Int((settings.wrappedValue.backgroundOpacity * 100).rounded()))%",
+                title: entry.title, valueText: "\(Int((settings.wrappedValue.backgroundOpacity * 100).rounded()))%", valueSamples: ["100%"],
                 value: settings.backgroundOpacity, range: PrompterSettings.backgroundOpacityRange, step: 0.05,
                 minLabel: "0%", maxLabel: "100%", identifier: "settings.backgroundOpacitySlider"
             )
         case .cameraBlur:
             SettingsSliderRow(
                 title: entry.title, valueText: blurPercent.wrappedValue == 0 ? String(localized: "Off") : "\(Int(blurPercent.wrappedValue))%",
-                value: blurPercent, range: 0...100, step: 5, minLabel: String(localized: "Off"), maxLabel: String(localized: "Strong"),
+                valueSamples: [String(localized: "Off"), "100%"], value: blurPercent, range: 0...100, step: 5, minLabel: String(localized: "Off"), maxLabel: String(localized: "Strong"),
                 identifier: "settings.cameraBlurSlider"
             )
         case .socialSafeZone:

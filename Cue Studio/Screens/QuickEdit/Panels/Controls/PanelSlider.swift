@@ -36,8 +36,15 @@ struct PanelSlider: View {
             origin: bipolar ? .center : .leading,
             label: label,
             valueText: format.text(value),
+            valueSamples: valueSamples,
             accessibilityIdentifier: identifier,
             onEditingChanged: onEditingChanged
         )
+    }
+
+    /// The widest values the track can show: its ends, and a step in from the low end (the first with a decimal, "0.6×"), so the value
+    /// keeps one width while dragging.
+    private var valueSamples: [String] {
+        [range.lowerBound, min(range.lowerBound + step, range.upperBound), range.upperBound].map { format.text($0) }
     }
 }

@@ -54,6 +54,7 @@ struct StudioAdjustSlider: View {
         let spec = CueSliderSpec.margins
         return LabeledSlider(
             label: String(localized: "Margin"), valueText: String(localized: "\(Int(session.prompter.margin)) pt"),
+            valueSamples: [String(localized: "\(Int(PrompterSettings.marginRange.upperBound)) pt")],
             value: Binding(
                 get: { session.prompter.margin },
                 set: { session.prompter.margin = min(PrompterSettings.marginRange.upperBound, max(PrompterSettings.marginRange.lowerBound, $0)) }
