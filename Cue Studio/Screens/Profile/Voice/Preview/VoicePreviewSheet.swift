@@ -7,7 +7,7 @@ import SwiftUI
 
 /// "Does this sound like you?" (My Cue Voice · screens 1 and 5): the same sample script written two ways, **My voice** and **Without**, as HOOK, BODY and
 /// CTA, with tags for what shaped it. **Adjust** swaps this sheet for the tone editor and back; **Sounds like me** counts as an approval, closes and says
-/// "Learned from this script". Written on this iPhone; nothing leaves it.
+/// "Saved · Cue learns from it". Written on this iPhone; nothing leaves it.
 struct VoicePreviewSheet: View {
     @Environment(CreatorProfileService.self) private var profile
     @Environment(ToastService.self) private var toast
@@ -167,7 +167,8 @@ struct VoicePreviewSheet: View {
     private func soundsLikeMe() {
         profile.profile.approvals += 1
         Haptics.success()
-        toast.show(String(localized: "Learned from this script"), kind: .cue)
+        // The creator's own choice that went well: ✓, in the same words as "Sounds like me" on the script's page (★ is for what Cue did).
+        toast.show(String(localized: "Saved · Cue learns from it"))
         dismiss()
     }
 }

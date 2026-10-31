@@ -6,7 +6,8 @@
 import Foundation
 
 /// How many videos the creator has shared, kept on this iPhone, and the milestones that count opens (1, 10, 25 and
-/// 50 shared). A video counts once, however many times it is shared.
+/// 50 shared in the creator's life, each with its app icon; owner, 30/10/2026). A video counts once, however many times it is shared. The
+/// year is the universe's retrospective (`shares(in:)`), never a milestone's road.
 @MainActor
 @Observable
 final class MilestoneService {
@@ -29,7 +30,8 @@ final class MilestoneService {
         records += legacy.map { ShareRecord(takeID: $0, date: nil, topic: nil) }
         self.records = records
         firstShareDate = defaults.object(forKey: DefaultsKey.firstShareDate) as? Date
-        celebrated = Set(defaults.array(forKey: DefaultsKey.celebratedMilestones) as? [Int] ?? [])
+        // Kept as `year * 1000 + milestone` while the milestones were counted per year: each one is the life's milestone now.
+        celebrated = Set((defaults.array(forKey: DefaultsKey.celebratedMilestones) as? [Int] ?? []).map(Self.lifeMilestone))
     }
 
     var sharedTakeIDs: Set<UUID> { Set(records.map(\.takeID)) }
@@ -37,7 +39,7 @@ final class MilestoneService {
     /// Videos shared, ever. Icons stay unlocked once this reaches their step.
     var shares: Int { records.count }
 
-    /// Videos shared in the live year: the milestones are counted in it ("23 / 25", "25 videos in 2026"), so each year has its own road.
+    /// Videos shared in the live year, for the universe's look back at it (never a milestone).
     var yearShares: Int { shares(in: UniverseYears.current()) }
 
     func shares(in year: Int, calendar: Calendar = .current) -> Int {
@@ -45,8 +47,8 @@ final class MilestoneService {
     }
 
     /// Counts a video as shared, and adds `platform` to the networks it went to (a video counts once; each network adds one to its planet).
-    /// Returns the milestone this brought the creator to in the live year, once: nil when the video was counted before, no milestone was reached,
-    /// or the icon it opens was already won in an earlier year.
+    /// Returns the milestone this brought the creator to, once in their life: nil when the video was counted before, no milestone was
+    /// reached, or it was already told.
     @discardableResult
     func recordShare(of takeID: UUID, at date: Date = .now, platform: Platform? = nil, topic: String? = nil) -> Int? {
         if let index = records.firstIndex(where: { $0.takeID == takeID }) {
@@ -60,14 +62,12 @@ final class MilestoneService {
         records.append(ShareRecord(takeID: takeID, date: date, platforms: platform.map { [$0] } ?? [], topic: topic))
         if firstShareDate == nil { firstShareDate = date }
         persist()
-        let year = Calendar.current.component(.year, from: date)
-        let count = shares(in: year)
-        let alreadyWon = shares - 1 >= count
-        guard Self.steps.contains(count), !alreadyWon, !celebrated.contains(Self.key(count, in: year)) else { return nil }
-        return count
+        guard Self.steps.contains(shares), !celebrated.contains(shares) else { return nil }
+        return shares
     }
 
-    private static func key(_ milestone: Int, in year: Int) -> Int { year * 1000 + milestone }
+    /// A celebrated key of the per-year days (`year * 1000 + milestone`) as the milestone it was.
+    private static func lifeMilestone(_ key: Int) -> Int { key > 1000 ? key % 1000 : key }
 
     private func persist() {
         defaults.set(sharedTakeIDs.map(\.uuidString), forKey: DefaultsKey.sharedTakeIDs)
@@ -91,18 +91,17 @@ final class MilestoneService {
 
     func markCelebrated(_ milestone: Int) {
         celebrated.insert(milestone)
-        celebrated.insert(Self.key(milestone, in: UniverseYears.current()))
         defaults.set(Array(celebrated), forKey: DefaultsKey.celebratedMilestones)
     }
 
-    /// The next milestone of the live year, nil after the last.
-    var nextMilestone: Int? { Self.steps.first { $0 > yearShares } }
+    /// The next milestone in the creator's life, nil after the last. Its icon is never one already unlocked.
+    var nextMilestone: Int? { Self.steps.first { $0 > shares } }
 
-    /// How far the live year is between the milestone before and the next one (0...1).
+    /// How far the creator is between the milestone before and the next one (0...1).
     var progress: Double {
         guard let next = nextMilestone else { return 1 }
-        let previous = Self.steps.last { $0 <= yearShares } ?? 0
-        return Double(yearShares - previous) / Double(next - previous)
+        let previous = Self.steps.last { $0 <= shares } ?? 0
+        return Double(shares - previous) / Double(next - previous)
     }
 
     func isUnlocked(_ icon: AppIconChoice) -> Bool { shares >= icon.milestone }

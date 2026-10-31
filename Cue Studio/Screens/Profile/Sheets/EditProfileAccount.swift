@@ -28,7 +28,7 @@ struct EditProfileAccount: View {
                 Button(role: .destructive) {
                     Haptics.medium()
                     session.signOut()
-                    toast.show(String(localized: "Signed out"))
+                    toast.showResult(String(localized: "Signed out"))
                 } label: {
                     Text("Sign out")
                         .cueFont(.body, weight: .semibold)
@@ -62,9 +62,9 @@ struct EditProfileAccount: View {
                 profile.profile.name = name
                 onName(name)
             }
-            toast.show(String(localized: "Signed in with Apple"))
+            toast.showResult(String(localized: "Signed in with Apple"))
         case .failure(let error):
-            if (error as? ASAuthorizationError)?.code != .canceled { toast.show(String(localized: "Couldn't sign in · Try again"), kind: .problem) }
+            if (error as? ASAuthorizationError)?.code != .canceled { toast.showResult(String(localized: "Couldn't sign in · Try again"), kind: .problem) }
         }
     }
 }

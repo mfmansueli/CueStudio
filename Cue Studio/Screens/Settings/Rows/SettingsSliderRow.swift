@@ -10,6 +10,9 @@ import SwiftUI
 struct SettingsSliderRow: View {
     let title: String
     let valueText: String
+    /// The values the slider shows when their width differs ("1×", "1.1×"): the value keeps the widest one's width, so moving the
+    /// slider never squeezes the title and its second line beside it.
+    var valueSamples: [String] = []
     var detail: String?
     @Binding var value: Double
     let range: ClosedRange<Double>
@@ -28,7 +31,7 @@ struct SettingsSliderRow: View {
                     }
                 }
                 Spacer(minLength: 8)
-                Text(valueText)
+                SteadyValueText(text: valueText, samples: valueSamples)
                     .monospacedDigit()
                     .foregroundStyle(Palette.ink2)
                     .accessibilityHidden(true)

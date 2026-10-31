@@ -107,4 +107,31 @@ struct OnboardingServiceTests {
         service.markFirstStarShown()
         #expect(OnboardingService(defaults: defaults.defaults).firstStarShown)
     }
+
+    @Test func aFlightLeftAfterItsScriptResumesWhereItWasAndIsNotSkippedForIt() {
+        let (service, defaults) = make()
+        defer { defaults.tearDown() }
+        service.resolve(hasExistingContent: false)
+        for _ in 0..<4 { service.advance() }
+        #expect(service.step == .voice)
+
+        // Closed at the permissions: the script 1.4 kept is in the library.
+        let relaunched = OnboardingService(defaults: defaults.defaults)
+        relaunched.resolve(hasExistingContent: true)
+        #expect(relaunched.isActive && relaunched.step == .voice, "it goes on where it was")
+        relaunched.advance()
+        relaunched.complete()
+        let after = OnboardingService(defaults: defaults.defaults)
+        #expect(after.isCompleted && after.step == .welcome)
+    }
+
+    @Test func aFlightLeftBeforeItsScriptStartsAgain() {
+        let (service, defaults) = make()
+        defer { defaults.tearDown() }
+        service.resolve(hasExistingContent: false)
+        service.advance()
+        service.advance()
+        let relaunched = OnboardingService(defaults: defaults.defaults)
+        #expect(relaunched.step == .welcome, "nothing was kept yet: the topics are picked again")
+    }
 }

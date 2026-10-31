@@ -41,7 +41,8 @@ struct VolumePanel: View {
                 CueSlider(
                     value: Binding(get: { viewModel.clips.targetVolume * 100 }, set: { viewModel.clips.setTargetVolume(($0 / 5).rounded() * 5 / 100) }),
                     range: spec.range, step: spec.step, defaultValue: spec.defaultValue, style: .full, label: volumeLabel,
-                    valueText: PanelValueFormat.percent.text(viewModel.clips.targetVolume * 100), systemIcon: volumeIcon,
+                    valueText: PanelValueFormat.percent.text(viewModel.clips.targetVolume * 100),
+                    valueSamples: [PanelValueFormat.percent.text(spec.range.upperBound)], systemIcon: volumeIcon,
                     accessibilityIdentifier: "edit.volume", onEditingChanged: { _ in }
                 )
                 switch viewModel.selection {

@@ -9,6 +9,8 @@ import SwiftUI
 struct ValueSlider: View {
     let title: String
     let valueText: String
+    /// The values whose width differs ("0%", "100%"): the value keeps the widest one's width (`SteadyValueText`).
+    var valueSamples: [String] = []
     @Binding var value: Double
     let range: ClosedRange<Double>
     var step: Double = 1
@@ -21,7 +23,7 @@ struct ValueSlider: View {
             HStack {
                 Text(title)
                 Spacer()
-                Text(valueText)
+                SteadyValueText(text: valueText, samples: valueSamples)
                     .monospacedDigit()
                     .foregroundStyle(Palette.ink2)
             }

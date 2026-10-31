@@ -30,7 +30,7 @@ struct ClipCropPanel: View {
                 .accessibilityValue(clip?.isMirrored == true ? Text("On") : Text("Off"))
                 .accessibilityAddTraits(.isToggle)
             }
-            PanelNote(text: String(localized: "Drag the box or pull its corners on the video."))
+            PanelNote(text: String(localized: "Drag the box or pull its corners on the video."), teaches: true)
         }
         .task { await viewModel.overlays.loadRecordingSizes() }
     }

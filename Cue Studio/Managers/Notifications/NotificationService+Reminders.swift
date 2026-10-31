@@ -70,6 +70,17 @@ extension NotificationService {
         setNeedsReconcile()
     }
 
+    /// "Undo" after a reminder was removed: it comes back as it was, scheduled again while it is still ahead (a due one is only kept).
+    func restoreReminder(_ reminder: Reminder) async {
+        guard !ReminderChoice.isPast(reminder.time, now: now(), calendar: calendar()) else {
+            var kept = reminder
+            kept.isScheduled = false
+            keep(kept)
+            return
+        }
+        _ = await setReminder(reminder.subject, title: reminder.title, at: reminder.time, replacing: reminder.id)
+    }
+
     private func keep(_ reminder: Reminder) {
         mutate { state in
             state.reminders.removeAll { $0.id == reminder.id }

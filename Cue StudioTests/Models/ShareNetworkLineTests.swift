@@ -13,7 +13,7 @@ struct ShareNetworkLineTests {
     private let ideal: ClosedRange<TimeInterval> = 30...60
 
     @Test func insideTheIdealRangeItFits() {
-        #expect(ShareNetworkLine.text(for: .tiktok, aspect: "9:16", isVertical: true, seconds: 52, ideal: ideal) == "9:16 · 0:52 FITS")
+        #expect(ShareNetworkLine.text(for: .tiktok, aspect: "9:16", isVertical: true, seconds: 52, ideal: ideal) == "9:16 · 0:52 · TARGET LENGTH")
     }
 
     @Test func outsideItSaysHowFarOff() {

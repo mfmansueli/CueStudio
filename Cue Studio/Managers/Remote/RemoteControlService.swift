@@ -3,6 +3,7 @@
 //  Cue Studio
 //
 
+import Accessibility
 import Foundation
 
 /// Control the teleprompter from another device. The same app on both ends: the teleprompter shows
@@ -100,12 +101,15 @@ final class RemoteControlService {
 
     // MARK: - Both
 
+    /// Disconnect: the link ends at once. The screen shows it; VoiceOver hears it, with no toast.
     func disconnect() {
+        let wasConnected = state != .off
         transport.stop()
         role = nil
         code = nil
         state = .off
         teleprompterStatus = nil
+        if wasConnected { AccessibilityNotification.Announcement(String(localized: "Remote disconnected")).post() }
     }
 
     private func handle(_ event: RemoteTransportEvent) {

@@ -52,7 +52,12 @@ extension LookViewModel {
             }
             commit(timeline)
         }
-        sayAfterSheet(everyClip ? String(localized: "Look pasted on every clip") : String(localized: "Look pasted"))
+        // On every clip it reaches clips out of sight, which the toast says; on this one the preview shows it (VoiceOver hears it).
+        if everyClip {
+            sayAfterSheet(String(localized: "Look pasted on every clip"))
+        } else {
+            announce(String(localized: "Look pasted"))
+        }
     }
 
     /// The paste's toast once the sheet has gone (about 0.35 s), so it's seen over the editor, not under a closing sheet.

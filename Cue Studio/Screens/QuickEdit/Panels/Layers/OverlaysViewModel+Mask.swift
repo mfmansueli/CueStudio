@@ -71,7 +71,8 @@ extension OverlaysViewModel {
                     return keyframe
                 }
             }
-            sayUndoable(String(localized: "Mask removed"))
+            // The preview shows it: no toast (the player bar's Undo takes it back).
+            announce(String(localized: "Mask removed"))
             return
         }
         guard media.mask?.shape != shape else { return }
@@ -153,7 +154,7 @@ extension OverlaysViewModel {
                 return keyframe
             }
         }
-        sayUndoable(String(localized: "Mask reset"))
+        announce(String(localized: "Mask reset"))
     }
 
     /// Whether the mask or the picture under it moved from where they start.

@@ -69,7 +69,8 @@ struct SettingsSafeZoneView: View {
     ) -> some View {
         let value = bindings.prompter.customSafeZone[dynamicMember: keyPath]
         return SettingsSliderRow(
-            title: title, valueText: "\(Int(value.wrappedValue.rounded()))%", value: value, range: range, step: 1,
+            title: title, valueText: "\(Int(value.wrappedValue.rounded()))%", valueSamples: ["\(Int(range.upperBound))%"], value: value,
+            range: range, step: 1,
             identifier: "settings.safeZoneMargin.\(title.lowercased())"
         )
         .cardRowBackground(position: position)

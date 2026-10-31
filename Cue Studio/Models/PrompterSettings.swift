@@ -58,7 +58,9 @@ nonisolated struct PrompterSettings: Codable, Hashable, Sendable {
     /// The safe zone the Selfie camera starts with (`SafeZoneChoice.key`: a platform's raw value or "custom"); nil follows the
     /// script's platform (Settings › Prompter › Social safe zone).
     var safeZoneKey: String?
-    var scrollMode: ScrollMode = .steady
+    /// Voice Following unless the creator picked Steady (the owner, 30/10/2026: it is what Cue is for). A session that can't follow the voice
+    /// (no microphone, a language this iPhone can't recognize) reads Steady for itself and keeps this as it is (`PrompterViewModel`).
+    var scrollMode: ScrollMode = .voice
     var studioBackground: StudioBackground = .black
     /// AI Coach: performance cues like PAUSE or SMILE in the prompter. Off until the creator turns
     /// it on.

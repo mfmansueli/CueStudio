@@ -5,14 +5,17 @@
 
 import Foundation
 
-/// The three switches of Settings › Notifications (`NotificationGroup`) and its "Turn on": a yes from iOS there turns on everything Cue
-/// sends, since the card said what (reminders, the routine, tools and news).
+/// The three switches of Settings › Notifications (`NotificationGroup`). A switch touched before iOS was asked asks it, and with a yes turns
+/// on only that switch (owner, 30/10/2026): iOS allowing Cue is never a yes to anything else, and the routine is never switched on by itself.
 extension NotificationService {
+    /// On when one of its categories is; the routine only once it has its days and time.
     func isGroupOn(_ group: NotificationGroup) -> Bool {
-        group.categories.contains { isOn($0) }
+        if group == .routine { return isOn(.routine) && state.routine != nil }
+        return group.categories.contains { isOn($0) }
     }
 
-    /// Sets every category of `group`; the routine, switched on without days yet, starts on its usual ones (Mon, Wed, Fri at 6 PM).
+    /// Sets every category of `group`; the routine, switched on without days yet, starts on the ones its switch showed (Mon, Wed, Fri at
+    /// 6 PM), and its days and time open under it to change.
     func setGroup(_ group: NotificationGroup, isOn: Bool) async {
         if group == .routine, isOn, state.routine == nil {
             await setRoutine(CreationRoutine())
@@ -27,21 +30,17 @@ extension NotificationService {
         await reconcile()
     }
 
-    /// "Turn on": asks iOS when it hasn't been asked, and with a yes turns everything on (`turnEverythingOn`). Returns what iOS answered, as
-    /// soon as it answers: the page celebrates while the plan is made.
+    /// A switch touched while iOS was never asked: iOS asks, and with a yes only `group` turns on (nil: the switch on top, which is iOS's
+    /// permission and nothing more). Returns what iOS answered, as soon as it answers: the page celebrates while the plan is made.
     @discardableResult
-    func allowEverything() async -> NotificationAuthorization {
+    func allow(turningOn group: NotificationGroup?) async -> NotificationAuthorization {
         let answer = await requestAuthorizationIfNeeded()
-        if answer.canSchedule { turnEverythingOn() }
-        return answer
-    }
-
-    /// Every category on, and the routine on its usual days if none was set; the plan is made again right after.
-    func turnEverythingOn() {
-        mutate { state in
-            for category in NotificationCategory.allCases { state.consent[category.rawValue] = true }
-            if state.routine == nil { state.routine = CreationRoutine() }
+        guard answer.canSchedule else { return answer }
+        if let group {
+            await setGroup(group, isOn: true)
+        } else {
+            setNeedsReconcile()
         }
-        setNeedsReconcile()
+        return answer
     }
 }

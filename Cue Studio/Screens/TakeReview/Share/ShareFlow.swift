@@ -22,7 +22,8 @@ final class ShareFlow {
     private(set) var isStarting = false
     /// The caption on the pasteboard for this step; the creator can edit it.
     var caption = ""
-    /// The milestone the first confirmed network reached, for the story after the send-off.
+    /// The milestone the first confirmed network reached, for the story after the send-off. Taken once (`takeReachedMilestone`): the
+    /// same take shared to another network in the same review never tells it again.
     private(set) var reachedMilestone: Int?
     /// The networks the creator said were live, in this run of the queue (the queue itself goes once all are posted).
     private(set) var live: [ShareDestination] = []
@@ -70,6 +71,11 @@ final class ShareFlow {
 
     func isPicked(_ network: ShareDestination) -> Bool { picked.contains(network) }
 
+    /// Photos refused the queue's copy: the step shows the Photos card, as Save does, until it is closed or a save works.
+    var photosAreOff: Bool { review.photosDenied }
+
+    func closePhotosNotice() { review.photosDenied = false }
+
     /// "Share to 3 networks", "Share to TikTok", or "Pick a network".
     var startTitle: String {
         switch picked.count {
@@ -110,7 +116,9 @@ final class ShareFlow {
         isStarting = true
         defer { isStarting = false }
         guard let prepared = await review.prepare(alsoSavingToPhotos: alsoSavesToPhotos, continuing: queue?.operationID) else {
-            // The free exports are gone ("Your video is ready" is up) or it failed (a toast told): the networks stay picked.
+            // The free exports are gone ("Your video is ready" is up) or it failed: the networks stay picked, and a failure's card (with Try
+            // again) waits on the review, which the picker leaves for.
+            if review.exportFailure != nil { step = nil }
             return
         }
         video = prepared
@@ -168,6 +176,12 @@ final class ShareFlow {
         if !live.contains(network) { live.append(network) }
         queues.markPosted(takeID: take.id, network: network)
         advance()
+    }
+
+    /// The milestone this run reached, handed over once: the send-off that tells it clears it.
+    func takeReachedMilestone() -> Int? {
+        defer { reachedMilestone = nil }
+        return reachedMilestone
     }
 
     /// "Not yet": back to its step, where it can be sent again or left for later.

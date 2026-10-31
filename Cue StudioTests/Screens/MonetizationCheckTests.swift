@@ -19,7 +19,7 @@ struct MonetizationCheckTests {
 
     @Test func pastTheMinimumIsMonetizable() {
         #expect(MonetizationCheck.secondsMissing(elapsed: 61, preset: tikTok) == nil)
-        #expect(MonetizationCheck.chipLabel(elapsed: 61, preset: tikTok) == "✓ Monetizable")
+        #expect(MonetizationCheck.chipLabel(elapsed: 61, preset: tikTok) == "Length goal met · 1:00", "The length, never a promise of earnings")
         #expect(MonetizationCheck.warningTitle(elapsed: 61, preset: tikTok) == nil)
     }
 

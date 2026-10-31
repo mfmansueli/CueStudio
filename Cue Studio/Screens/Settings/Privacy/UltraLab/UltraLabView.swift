@@ -127,7 +127,7 @@ struct UltraLabView: View {
         }
         .cueGroupedList()
         .sheet(isPresented: $asksPermission) {
-            UltraConsentSheet(payload: model.payload) { model.ultra.consent.grant() }
+            UltraConsentSheet { model.ultra.consent.grant() }
         }
     }
 

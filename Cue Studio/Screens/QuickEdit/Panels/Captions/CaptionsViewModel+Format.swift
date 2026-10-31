@@ -30,7 +30,8 @@ extension CaptionsViewModel {
             selectedCaptionID = edit.captions.first { $0.sourceID == picked.sourceID && $0.span.contains(picked.start) }?.id
                 ?? edit.captions.first { $0.id == picked.id }?.id
         }
-        sayUndoable(String(localized: "Captions format: \(format.label)"))
+        // The preview shows the new format: no toast (the player bar's Undo takes it back).
+        announce(String(localized: "Captions format: \(format.label)"))
     }
 
     /// Format › Width: how wide a line may run (one undo step); the lines of a format are cut again for the new room.

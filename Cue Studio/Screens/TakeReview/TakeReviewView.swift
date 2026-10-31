@@ -132,11 +132,10 @@ struct TakeReviewView: View {
                 }
             }
             .overlay(alignment: .top) {
-                if showsPickTip {
-                    pickTip
+                VoyageInPlaceTip(step: .pick, place: .review, isAllowed: showsPickTip) { isDone in
+                    pickTip(isDone: isDone)
                         .padding(.horizontal, 16)
                         .padding(.top, 8)
-                        .transition(.opacity.combined(with: .move(edge: .top)))
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
@@ -191,11 +190,14 @@ struct TakeReviewView: View {
         }
         .fullScreenCover(item: $viewModel.celebration) { celebration in
             celebrationView(celebration)
+                // What is said while it is up ("Shared with TikTok", a failure) shows in front of it, not under it.
+                .toastHost(inSheet: true)
         }
         .onChange(of: viewModel.celebration) { _, new in
             guard case .sentOff? = new else { return }
-            // The networks the creator confirmed were counted as they were confirmed (`ShareFlow`); the milestone they reached is told after.
-            reachedMilestone = flow.reachedMilestone
+            // The networks the creator confirmed were counted as they were confirmed (`ShareFlow`); the milestone they reached is told after,
+            // once: sharing the same take again in this review doesn't bring the same story back.
+            reachedMilestone = flow.takeReachedMilestone()
             if !personalization.celebrations { viewModel.celebration = nil }
         }
         .storyCover(isPresented: $tellsFirstStar) {
@@ -216,7 +218,16 @@ struct TakeReviewView: View {
                 )
             }
         }
-        .onAppear { connectFlow(); applyLaunchAction(); considerFirstStar(); showStoriesForTests(); announcePlace() }
+        .onAppear {
+            // A review opened to do something (edit, pick, share) does it first: a celebration never covers an opening action, and comes
+            // at the end of that task instead (`GuidanceGate`).
+            let opensTask = launchAction != nil
+            connectFlow()
+            applyLaunchAction()
+            if !opensTask { considerFirstStar() }
+            showStoriesForTests()
+            announcePlace()
+        }
         .onChange(of: viewModel.savesToPhotos) { _, _ in
             awaitsSavedCheck = true
             showSavedCheck()
@@ -376,6 +387,11 @@ struct TakeReviewView: View {
                 .padding(.top, 22)
                 if let progress = viewModel.exportProgress {
                     ExportProgressCard(progress: progress, mode: viewModel.exportMode).padding(.top, 10)
+                } else if let failure = viewModel.exportFailure {
+                    ExportFailedCard(
+                        failure: failure, onRetry: { Task { await viewModel.retryFailedExport() } }, onClose: viewModel.dismissExportFailure
+                    )
+                    .padding(.top, 10)
                 } else if viewModel.exportStopped {
                     ExportStoppedCard(onSave: { Task { await viewModel.save() } }, onClose: viewModel.dismissStoppedExport).padding(.top, 10)
                 }
@@ -424,8 +440,13 @@ struct TakeReviewView: View {
     /// counts as an export), ready later makes Share glow, and not yet or back change nothing here.
     private func handleEditorOutcome() {
         editorVisits += 1
-        guard let outcome = pendingOutcome else { return }
+        guard let outcome = pendingOutcome else {
+            considerFirstStar()
+            return
+        }
         pendingOutcome = nil
+        // The edit is the task that was opened: its end is the first star's moment (not when the next task, sharing, starts).
+        if outcome != .share { considerFirstStar() }
         switch outcome {
         case .share:
             shareToUniverse()
@@ -470,7 +491,9 @@ struct TakeReviewView: View {
                 video: video, networks: networks, snapshot: sentOffSnapshot(),
                 onShareAgain: { shareAfterClosing(video) },
                 onUniverse: { viewModel.celebration = nil; services.presentation.selectedTab = .profile; onBack() },
-                onDone: { doneWithSendOff() }
+                onDone: { doneWithSendOff() },
+                // One `.success` a story: with a milestone's icon to come, the icon's pop is the peak.
+                endsStory: !personalization.celebrations || (reachedMilestone ?? flow.reachedMilestone) == nil
             )
         }
     }
@@ -555,7 +578,7 @@ struct TakeReviewView: View {
 
     /// The voyage's fourth step: keep the best take. Not over the stories, the editor or a celebration.
     private var showsPickTip: Bool {
-        services.voyage.showsTip(for: .pick) && viewModel.take != nil && !tellsFirstStar && editingTake == nil && viewModel.celebration == nil
+        viewModel.take != nil && !tellsFirstStar && editingTake == nil && viewModel.celebration == nil
     }
 
     /// The take on screen, when it has siblings to compare with ("Compare" opens "Pick the best take").
@@ -564,31 +587,36 @@ struct TakeReviewView: View {
         return take
     }
 
-    private var pickTip: some View {
+    private func pickTip(isDone: Bool) -> some View {
         VoyageTipCard(
-            step: .pick, symbol: VoyageStep.pick.symbol, title: VoyageStep.pick.tipTitle(), message: VoyageStep.pick.tipMessage(),
+            step: .pick, title: VoyageStep.pick.tipTitle(), message: VoyageStep.pick.tipMessage(),
             primary: comparableTake.map { _ in
                 (VoyageStep.pick.tipAction(canCompare: true), {
                     services.voyage.tipActed(.pick, at: .review)
                     suggestBest()
                 })
             },
+            isDone: isDone,
             onClose: { withAnimation(.smooth(duration: 0.25)) { services.voyage.closeTip(.pick, at: .review) } }
         )
-        .onAppear { services.voyage.tipShown(.pick, at: .review) }
     }
 
-    /// The first take Cue ever recorded lights the first star (once, and only when the creator has done the first flight).
+    /// The first take Cue ever recorded (a video imported from Photos never is one) lights the first star (once, and only when the creator
+    /// has done the first flight), at the end of a task: as the review of the recording opens, or when the edit it was opened for closes.
+    /// Once a video is shared, the send-off told it.
     private func considerFirstStar() {
         let onboarding = services.onboarding
         guard onboarding.isCompleted, !onboarding.firstStarShown, personalization.celebrations,
-              services.takes.takes.count == 1 else { return }
+              services.takes.takes.filter({ !$0.isImported }).count == 1, viewModel.take?.isImported == false,
+              editingTake == nil, viewModel.celebration == nil else { return }
         onboarding.markFirstStarShown()
+        guard services.milestones.shares == 0 else { return }
         tellsFirstStar = true
     }
 
     private func finishFirstStar(thenEdit take: Take? = nil) {
         tellsFirstStar = false
+        services.guidance.celebrated()
         guard let take else { return }
         Task {
             try? await Task.sleep(for: .milliseconds(600))
@@ -605,6 +633,7 @@ struct TakeReviewView: View {
     /// "Done" on the send-off: the milestone it reached, if any, comes next.
     private func doneWithSendOff() {
         viewModel.celebration = nil
+        services.guidance.celebrated()
         guard reachedMilestone != nil, personalization.celebrations else { return }
         Task {
             try? await Task.sleep(for: .milliseconds(600))
@@ -613,6 +642,7 @@ struct TakeReviewView: View {
     }
 
     private func finishMilestone(_ reached: Int) {
+        services.guidance.celebrated()
         milestones.markCelebrated(reached)
         reachedMilestone = nil
         tellsMilestone = false

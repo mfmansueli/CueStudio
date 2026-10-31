@@ -33,10 +33,21 @@ nonisolated enum UltraError: LocalizedError, Equatable, Sendable {
         case .budgetExhausted: String(localized: "Ultra AI’s test calls are used up")
         case .noScriptsLeft: String(localized: "Your Ultra AI scripts are used up")
         case .draftFailed(.unreachable): String(localized: "Ultra AI needs the internet · Try again")
-        case .draftFailed: String(localized: "Ultra AI couldn’t draft it · Try again")
-        case .reviewFailed: String(localized: "Ultra AI couldn’t polish the draft · Try again")
+        case .draftFailed: String(localized: "Ultra AI couldn’t draft it")
+        case .reviewFailed: String(localized: "Ultra AI couldn’t polish the draft")
         case .fitFailed(.unreachable): String(localized: "Ultra AI needs the internet · Try again")
-        case .fitFailed: String(localized: "Ultra AI couldn’t fit it to the time · Try again")
+        case .fitFailed: String(localized: "Ultra AI couldn’t fit it to the time")
+        }
+    }
+
+    /// Asking again may well work: the call failed for a reason of its own (it took too long, stopped early, the provider was busy), not the
+    /// network (the toast says so), the setup or a filter, which the same call would meet again. Where the page is still there, the toast
+    /// carries "Try again" (`ScriptFailureNotice`).
+    var isWorthRetrying: Bool {
+        switch self {
+        case .draftFailed(let failure), .reviewFailed(let failure, _), .fitFailed(let failure):
+            [.timedOut, .incomplete, .provider].contains(failure)
+        case .notAvailable, .consentRequired, .consentRevoked, .budgetExhausted, .noScriptsLeft: false
         }
     }
 }

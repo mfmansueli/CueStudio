@@ -294,6 +294,13 @@ extension OverlaysViewModel {
         next.layMedia(at: index, over: shown)
         commit(EditSnapshot(next))
         if hadVoiceCaptions { updateFindings { $0.sourceTranscripts.removeAll { $0.sourceID == id } } }
+        // Both went with the old picture: the toast tells both, so neither leaves without a word (F3).
+        if hidBlur, hadVoiceCaptions {
+            toast.show(
+                String(localized: "Replaced · its Blur area and its voice's captions went with the old one"), kind: .problem, action: undoAction
+            )
+            return
+        }
         if hidBlur {
             toast.show(String(localized: "Replaced · its Blur area was on the old one"), kind: .problem, action: undoAction)
             return

@@ -17,6 +17,9 @@ struct SendOffView: View {
     let onShareAgain: () -> Void
     let onUniverse: () -> Void
     let onDone: () -> Void
+    /// The send-off is the whole story (no milestone's icon comes after it): its landing is the peak and gets the story's one `.success`.
+    /// With a milestone next, the landing is a `.light` tap and the icon's pop has the `.success` (one per story).
+    var endsStory = true
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.sendOffFrozenAt) private var frozenAt
@@ -154,15 +157,17 @@ struct SendOffView: View {
 
     // MARK: - Haptics
 
-    /// `.success` on each arrival (the first one only when three or more land within 0.7 s).
+    /// A `.light` tap on each arrival (the first one only when three or more land within 0.7 s), and the story's one `.success` on the last
+    /// landing when nothing comes after it (`endsStory`).
     private func play() async {
         guard !reduceMotion, frozenAt == nil else { return }
         start = .now
-        for moment in SendOffScript.hapticArrivals(networks: networks.count) {
+        let arrivals = SendOffScript.hapticArrivals(networks: networks.count)
+        for (index, moment) in arrivals.enumerated() {
             let wait = moment - Date.now.timeIntervalSince(start)
             if wait > 0 { try? await Task.sleep(for: .seconds(wait)) }
             if Task.isCancelled { return }
-            Haptics.success()
+            if endsStory, index == arrivals.count - 1 { Haptics.success() } else { Haptics.light() }
         }
     }
 }

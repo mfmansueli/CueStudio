@@ -110,17 +110,60 @@ struct NotificationServiceOpeningTests {
 
     // MARK: - In the app
 
-    @Test func anIntroductionInTheAppNeedsTheCreatorsYesAndComesOnceASession() async {
+    @Test func anIntroductionInTheAppDoesNotNeedToolsAndNewsAndComesOnceASession() async {
         var facts = NotificationFacts(now: Fixtures.monday)
         facts.takes = [Fixtures.take(scriptID: nil)]
         let harness = NotificationServiceHarness(facts: facts)
-        #expect(await harness.service.inAppIntro(afterSession: true) == nil)
-        await harness.service.setGroup(.news, isOn: true)
+        #expect(!harness.service.isOn(.discovery), "the notifications stay off")
+        #expect(await harness.service.inAppIntro(afterSession: false) == nil, "only after a session, or for a notification put off")
         let intro = await harness.service.inAppIntro(afterSession: true)
         #expect(intro != nil && intro?.source == .inApp)
         if let intro { harness.service.introShown(intro) }
         #expect(await harness.service.inAppIntro(afterSession: true) == nil)
         #expect(harness.service.introducedToday)
+    }
+
+    /// UI tests leave the introduction after a session out (`-uiTestFeatureIntro` brings it back); one a notification put off still comes.
+    @Test func withSessionIntroductionsOffOnlyANotificationsOneComes() async throws {
+        var facts = NotificationFacts(now: Fixtures.monday)
+        facts.takes = [Fixtures.take(scriptID: nil)]
+        let harness = NotificationServiceHarness(facts: facts)
+        let service = harness.service
+        let feature = try #require(await service.inAppIntro(afterSession: true)?.feature, "a tool fits this creator")
+        service.sessionIntrosEnabled = false
+        #expect(await service.inAppIntro(afterSession: true) == nil)
+        service.isForegroundBusy = { true }
+        _ = service.foregroundPresentation(for: NotificationPayload(campaign: .feature, feature: feature, destination: .scripts))
+        service.isForegroundBusy = { false }
+        #expect(await service.inAppIntro(afterSession: false)?.feature == feature)
+    }
+
+    @Test func aDeferredIntroductionWaitsUntilItIsOnScreen() async throws {
+        var facts = NotificationFacts(now: Fixtures.monday)
+        facts.takes = [Fixtures.take(scriptID: nil)]
+        let harness = NotificationServiceHarness(facts: facts)
+        let service = harness.service
+        let feature = try #require(await service.inAppIntro(afterSession: true)?.feature, "a tool fits this creator")
+        service.isForegroundBusy = { true }
+        _ = service.foregroundPresentation(for: NotificationPayload(campaign: .feature, feature: feature, destination: .scripts))
+        service.isForegroundBusy = { false }
+        let first = await service.inAppIntro(afterSession: false)
+        #expect(first?.feature == feature)
+        #expect(service.state.deferredIntro == feature, "a sheet in the way (MainView doesn't show it) keeps it for the next quiet moment")
+        let again = await service.inAppIntro(afterSession: false)
+        #expect(again?.feature == feature)
+        if let again { service.introShown(again) }
+        #expect(service.state.deferredIntro == nil)
+    }
+
+    @Test func aHiddenToolCanBeSuggestedAgainFromSettings() {
+        let harness = NotificationServiceHarness()
+        let request = FeatureIntroRequest(feature: .covers, destination: .scripts, projectKey: "p", source: .inApp)
+        harness.service.introDeclined(request)
+        #expect(harness.service.hiddenFeatures == [.covers])
+        harness.service.suggestAgain(.covers)
+        #expect(harness.service.hiddenFeatures.isEmpty)
+        #expect(!harness.service.state.isNotInterested(in: .covers))
     }
 
     @Test func notNowWaitsAndDontSuggestIsForGood() async {

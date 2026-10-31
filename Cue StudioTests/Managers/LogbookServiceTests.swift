@@ -46,11 +46,16 @@ struct LogbookServiceTests {
         #expect(again.entries[0].topic == "niche.finance" && again.entries[0].spokenSeconds == 14)
     }
 
-    @Test func deletingRemovesIt() {
+    /// A deleted idea is gone for good, across a relaunch too; "Delete my Cue data" takes every idea.
+    @Test func deletingRemovesItForGood() throws {
         let (logbook, defaults) = make()
         defer { defaults.tearDown() }
-        let id = logbook.add("Gone soon")?.id ?? UUID()
-        logbook.delete(id)
+        let id = try #require(logbook.add("Gone soon")).id
+        let kept = try #require(logbook.add("Kept")).id
+        logbook.delete([id])
+        #expect(logbook.entries.map(\.id) == [kept])
+        #expect(LogbookService(defaults: defaults.defaults).entries.map(\.id) == [kept], "Gone on the iPhone too")
+        logbook.eraseAll()
         #expect(logbook.entries.isEmpty)
     }
 

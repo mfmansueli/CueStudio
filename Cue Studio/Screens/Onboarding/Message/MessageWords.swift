@@ -30,7 +30,7 @@ struct MessageWords: View {
     /// A caret that blinks after the last word (the CTA's).
     var caret: Color?
     let ambient: Double
-    /// The words' size: the card picks the largest that fits the screen (`MessageCard`).
+    /// The words' size: the chapter picks the largest that lets its page fit (`MessageWordFit`).
     var size: CGFloat = 21
 
     private static let clip = MotionLibrary.clip("1.4_first-message")

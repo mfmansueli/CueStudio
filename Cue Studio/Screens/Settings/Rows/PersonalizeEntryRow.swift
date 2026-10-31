@@ -13,6 +13,7 @@ struct PersonalizeEntryRow: View {
     @Environment(AppIconService.self) private var appIcon
     @Environment(CreatorProfileService.self) private var profile
     @Environment(FirstVoyageService.self) private var voyage
+    @Environment(GuidanceGate.self) private var guidance
 
     @State private var showsTopics = false
 
@@ -64,7 +65,11 @@ struct PersonalizeEntryRow: View {
         case .firstVoyage:
             SettingsListToggle(
                 title: entry.title, detail: voyage.canBeTurnedOn ? entry.detail : String(localized: "You finished your first voyage"),
-                isOn: Binding(get: { voyage.isActive }, set: { voyage.setOn($0) })
+                // Brought back by the creator: its tips may come again where something was closed this session.
+                isOn: Binding(get: { voyage.isActive }, set: { isOn in
+                    voyage.setOn(isOn)
+                    if isOn { guidance.reopenPlaces() }
+                })
             )
             .disabled(!voyage.canBeTurnedOn)
         default:

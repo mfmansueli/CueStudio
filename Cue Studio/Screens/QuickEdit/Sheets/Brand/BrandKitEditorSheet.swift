@@ -142,7 +142,7 @@ struct BrandKitEditorSheet: View {
             PanelRowLabel(label: String(localized: "Logo"), detail: kit.logo?.name)
             let pictures = brand.library.assets(in: .all).filter { $0.kind != .video }
             if pictures.isEmpty {
-                PanelNote(text: String(localized: "Add your logo to your library in Media › Your library, then pick it here."))
+                PanelNote(text: String(localized: "Add your logo to your library in Media › Your library, then pick it here."), teaches: true)
             } else {
                 ScrollView(.horizontal) {
                     HStack(spacing: 8) {

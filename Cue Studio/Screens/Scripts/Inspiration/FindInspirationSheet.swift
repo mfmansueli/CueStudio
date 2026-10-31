@@ -40,7 +40,8 @@ struct FindInspirationSheet: View {
     @State private var ultraConsentFor: ThemeIdea?
     /// Allowed on the disclosure: written once the disclosure has gone.
     @State private var allowedUltraIdea: ThemeIdea?
-    /// The invitation to try Ultra AI was due when the sheet opened (this visit is the AI's second use or a later one).
+    /// The invitation to try Ultra AI was due when the sheet opened (this visit is the AI's second use or a later one). Here it is no card
+    /// above the idea (it pushed the idea under the actions): "Draft with Ultra AI" says the free scripts itself (`ultraButton`).
     @State private var invitesUltra = false
     /// Cue Pro, when Ultra AI's free scripts are used up (over this sheet: the app's own can't be shown while it is up).
     @State private var paywall: PaywallContext?
@@ -93,16 +94,6 @@ struct FindInspirationSheet: View {
                 .padding(.top, 16)
                 notes
                     .padding(.horizontal, Metrics.gutter)
-                if invitesUltra, ultra.showsInvite {
-                    UltraInviteCard(placement: .inspiration) {
-                        if let idea = viewModel.idea { draftWithUltra(idea) }
-                    } onClose: {
-                        ultra.invite?.close()
-                    }
-                    .padding(.horizontal, Metrics.gutter)
-                    .padding(.top, 14)
-                    .transition(.ultraFold)
-                }
                 cardArea
                     .padding(.horizontal, Metrics.gutter)
                     .padding(.top, 18)
@@ -146,9 +137,7 @@ struct FindInspirationSheet: View {
         .sheet(isPresented: $editsTopics) { VoiceEditorSheet(field: .topics) }
         .fullScreenCover(item: $paywall) { PaywallView(context: $0) }
         .sheet(item: $ultraConsentFor, onDismiss: writeAllowedUltra) { idea in
-            UltraConsentSheet(
-                payload: starter.ultraPreview(idea: FindInspirationViewModel.writingText(of: idea), brief: idea.brief), writesNow: true
-            ) {
+            UltraConsentSheet(writesNow: true) {
                 ultra.consent.grant()
                 allowedUltraIdea = idea
             }
@@ -467,17 +456,23 @@ struct FindInspirationSheet: View {
         .accessibilityIdentifier("inspiration.writeNow")
     }
 
-    /// "✦ Draft with Ultra AI" where Ultra is offered: the same idea, written by Ultra. The first time it asks first.
+    /// "✦ Draft with Ultra AI" where Ultra is offered: the same idea, written by Ultra. The first time it asks first. While the invitation to
+    /// Ultra AI is due it is the invitation here, in the same line: "· 3 free", so the sheet stays whole (the owner, 30/10/2026).
     private func ultraButton(_ idea: ThemeIdea?) -> some View {
         Button {
             if let idea { draftWithUltra(idea) }
         } label: {
             HStack(spacing: 6) {
                 Text(verbatim: "✦").accessibilityHidden(true)
-                Text("Draft with Ultra AI")
+                if invitesUltra, ultra.showsInvite {
+                    Text("Draft with Ultra AI · \(UsagePolicy.freeUltraScripts) free")
+                } else {
+                    Text("Draft with Ultra AI")
+                }
             }
             .cueFont(.subheadline, weight: .semibold)
             .foregroundStyle(Palette.aiText)
+            .multilineTextAlignment(.center)
             .padding(.horizontal, 12)
             .frame(minHeight: Metrics.hitTarget)
             .contentShape(Rectangle())
@@ -489,7 +484,7 @@ struct FindInspirationSheet: View {
         .accessibilityIdentifier("inspiration.writeUltra")
     }
 
-    /// "Draft with Ultra AI" (or the invitation's button): Cue Pro when the scripts are used up on the free plan, the permission the first time,
+    /// "Draft with Ultra AI": Cue Pro when the scripts are used up on the free plan, the permission the first time,
     /// otherwise the idea is written.
     private func draftWithUltra(_ idea: ThemeIdea) {
         if starter.ultraUsedUp {

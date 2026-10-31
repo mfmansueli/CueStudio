@@ -104,7 +104,7 @@ struct ExportAccountingTests {
         scenario.photos.error = CocoaError(.fileWriteUnknown)
         await scenario.viewModel.save()
         #expect(scenario.used == 0)
-        #expect(scenario.toast.message == "Couldn't export · Try again")
+        #expect(scenario.viewModel.exportFailure?.line == "Nothing was counted, and your take is safe.")
         #expect(scenario.viewModel.phase == .failed)
     }
 
@@ -120,16 +120,16 @@ struct ExportAccountingTests {
     /// Each way a render can stop says what happened, and none of them costs an export.
     @Test(arguments: [
         (VideoExportError.tooWarm, "Your iPhone is too warm to finish this video. Let it cool down, then export again."),
-        (VideoExportError.interrupted, "iOS stopped the export · Try again"),
-        (VideoExportError.noVideoTrack, "Couldn't export · Try again"),
-        (VideoExportError.exportUnavailable, "Couldn't export · Try again"),
+        (VideoExportError.interrupted, "iOS stopped the export before it finished."),
+        (VideoExportError.noVideoTrack, "Nothing was counted, and your take is safe."),
+        (VideoExportError.exportUnavailable, "Nothing was counted, and your take is safe."),
     ])
     func aStoppedRenderSaysWhyAndDeductsNothing(error: VideoExportError, message: String) async {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }
         scenario.exporter.error = error
         await scenario.viewModel.save()
-        #expect(scenario.toast.message == message)
+        #expect(scenario.viewModel.exportFailure?.line == message)
         #expect(scenario.viewModel.phase == .failed)
         #expect(scenario.used == 0)
         #expect(scenario.ledger.operations.isEmpty)

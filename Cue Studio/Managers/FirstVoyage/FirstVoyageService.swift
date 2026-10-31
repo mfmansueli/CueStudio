@@ -5,21 +5,24 @@
 
 import Foundation
 
-/// The first voyage: the guide that walks a new creator from their first script to their first video shared, in six steps (write,
-/// practice, record, pick the best take, polish, share). No card: one tip at a time, the next step's, where it helps (above the dock on
-/// Scripts, above the tab bar on Takes, and in the place each step happens), and a short notice when a step gets done
-/// (`VoyageNotice`). The steps are read from what the creator has (`VoyageProgress`); this keeps only the voyage's own marks, on this
-/// iPhone.
+/// The first voyage: the guide that walks a new creator from their first script to their first video shared, in six steps (prepare a
+/// script, practice, record, pick the best take, polish, share). No card: one tip at a time, the next step's, where it helps (above the
+/// dock on Scripts, above the tab bar on Takes, and in the place each step happens). A step done is shown done in its own tip, in place
+/// (`VoyageInPlaceTip`); no toast tells it. The steps are read from what the creator has (`VoyageProgress`); this keeps only the
+/// voyage's own marks, on this iPhone.
 ///
 /// Only for creators who haven't shared a video yet: one who had (before the guide existed) never sees it. ✕ on a tip puts that step's
-/// tip away for the session; it comes back next time while the step is still ahead. "Hide guide" puts the voyage away until Settings ›
-/// Personalize brings it back, and the first video shared ends it.
+/// tip away for the session; it comes back next time while the step is still ahead. A step whose tip was seen in its place this session
+/// doesn't float again on Scripts or Takes. "Hide guide" puts the voyage away until Settings › Personalize brings it back, and the first
+/// video shared ends it.
 @MainActor
 @Observable
 final class FirstVoyageService {
     private(set) var marks: VoyageMarks
     /// The steps whose tip was closed with ✕ this session.
     private(set) var closedThisSession: Set<VoyageStep> = []
+    /// The steps whose tip was seen in the place the step happens this session: they don't float again.
+    private(set) var seenInPlaceThisSession: Set<VoyageStep> = []
 
     /// Where a measured moment goes (Analytics, only with "Help improve Cue" on; set by `AppServices`).
     @ObservationIgnored var report: (VoyageTelemetryEvent) -> Void = { _ in }
@@ -68,9 +71,9 @@ final class FirstVoyageService {
         isActive && progress.current == step && !closedThisSession.contains(step)
     }
 
-    /// The step whose tip shows above the dock (Scripts) or the tab bar (Takes), if any.
+    /// The step whose tip shows above the dock (Scripts) or the tab bar (Takes), if any: never one already seen in its place.
     var floatingStep: VoyageStep? {
-        guard let step = progress.current, showsTip(for: step) else { return nil }
+        guard let step = progress.current, showsTip(for: step), !seenInPlaceThisSession.contains(step) else { return nil }
         return step
     }
 
@@ -80,7 +83,7 @@ final class FirstVoyageService {
         return current == .practice || current == .record
     }
 
-    /// The steps done that haven't had their notice yet, in order.
+    /// The steps done that haven't been counted as done yet, in order.
     var stepsToAnnounce: [VoyageStep] {
         let done = progress.done
         return VoyageStep.allCases.filter { done.contains($0) && !marks.announced.contains($0) }
@@ -103,8 +106,9 @@ final class FirstVoyageService {
         update { $0.skippedPolish = true }
     }
 
-    /// A tip came into view (counted once per session and place).
+    /// A tip came into view (counted once per session and place). In the step's own place, it won't float again this session.
     func tipShown(_ step: VoyageStep, at place: VoyageTipPlace) {
+        if place.isInPlace { seenInPlaceThisSession.insert(step) }
         guard isEnabled, shownThisSession.insert("\(step.rawValue).\(place.rawValue)").inserted else { return }
         report(.step(step, .shown, at: place))
     }
@@ -132,24 +136,25 @@ final class FirstVoyageService {
         update { $0.sawDraftTip = true }
     }
 
-    /// The notice for the steps done since the last one, and they are marked as said: the text to show, or nil. The first video shared
-    /// ends the voyage.
-    func takeNotice(hasCaptions: Bool) -> String? {
+    /// The steps done since the last time are counted (measured once each); the first video shared ends the voyage. Nothing is said:
+    /// the tip in place shows its step done, and the send-off tells the first share.
+    func noteStepsDone() {
         let steps = stepsToAnnounce
-        guard isActive, !steps.isEmpty else { return nil }
-        let message = VoyageNotice.message(newlyDone: Set(steps), progress: progress, hasCaptions: hasCaptions)
+        guard isActive, !steps.isEmpty else { return }
         for step in steps { report(.step(step, .stepDone)) }
         update {
             $0.announced.formUnion(steps)
             if steps.contains(.share) { $0.stage = .finished }
         }
-        return message
     }
 
     /// "Hide guide" (off), or Settings › Personalize bringing it back (on, with every tip back too).
     func setOn(_ isOn: Bool) {
         guard canBeTurnedOn else { return }
-        if isOn { closedThisSession = [] }
+        if isOn {
+            closedThisSession = []
+            seenInPlaceThisSession = []
+        }
         update { $0.stage = isOn ? .active : .hidden }
     }
 
@@ -157,6 +162,7 @@ final class FirstVoyageService {
     func reset() {
         guard isEnabled else { return }
         closedThisSession = []
+        seenInPlaceThisSession = []
         marks = VoyageMarks(stage: milestones.shares > 0 ? .notNeeded : .active)
         persist()
     }

@@ -53,23 +53,27 @@ Prioridade 1 é a primeira. "Automática" = o Cue decide a hora, sob os limites 
 - **Categorias** (Settings › Notifications, redesenho de 22/10/2026): a página mostra **três interruptores** (`NotificationGroup`): *Help me finish
   what I start* (`projects`), *Tools and news* (`discovery` + `whatsNew`) e *Remind me to create* (`routine`). *My reminders* não é mais escolha: os
   lembretes que o criador marca **sempre** chegam (`NotificationState.isOn(.reminders)` é sempre verdadeiro). Antes do iOS deixar, *projects* e
-  *routine* começam ligadas e **Tools and news desligada**; o **sim do iOS dado pelo interruptor da página liga tudo**, ferramentas e novidades
-  inclusive, e a rotina nos dias padrão (seg, qua, sex às 18h) se não havia uma (`allowEverything` / `turnEverythingOn`; pedido do dono). O convite e
-  os lembretes pedem a permissão sem ligar ferramentas e novidades. O consentimento de descoberta vale também para as introduções dentro do app.
+  *routine* começam ligadas e **Tools and news desligada**, e a rotina só toca depois que o criador a liga (seus dias e hora ficam à vista na linha do
+  interruptor). O **sim do iOS liga só o que foi tocado** (decisão do dono, 30/10/2026; `allow(turningOn:)`): o interruptor da permissão não liga nenhuma
+  categoria; um interruptor de baixo tocado antes da pergunta liga só ele. O convite e os lembretes pedem a permissão sem ligar ferramentas e novidades.
+  O consentimento de descoberta é **só das notificações**: as introduções dentro do app não dependem dele (cada uma tem Not now, 30 dias, no máximo 2 em
+  90 dias, e "Don’t suggest this", que Settings › Personalize › Hidden suggestions desfaz com `suggestAgain`).
 - **Permissão do iOS é separada** e nunca é consentimento para promoções. O Cue **não pede no lançamento**: pede ao criar o primeiro lembrete, ao
   ligar uma categoria, ao configurar a rotina, quando o criador liga o interruptor da permissão ou diz sim ao convite (abaixo). Com
   `.notDetermined`, nada é agendado. Recusada: o app segue igual, o lembrete fica em Cue ("Kept in Cue") e o Cue **nunca pergunta de novo**.
   `.provisional` agenda (entrega silenciosa) e a página explica. O estado é relido quando o app fica ativo e ao voltar dos Ajustes.
 - **Interruptor do iOS** (topo de Settings › Notifications, `NotificationPermissionRow`): mostra o que o iOS deixa (ligado com `.authorized`,
   `.provisional` ou `.ephemeral`). **Quem manda é o iOS:** um app não pode se dar nem se tirar a permissão. Ligar sem nunca ter sido perguntado traz a
-  pergunta do sistema (uma vez) e, com o sim, liga tudo (acima); qualquer outra mudança abre a página do Cue nos Ajustes
-  (`openNotificationSettingsURLString`). O estado é relido ao voltar dos Ajustes; voltar liberado depois de um não também liga tudo.
+  pergunta do sistema (uma vez) e, com o sim, liga só o que foi tocado (acima); qualquer outra mudança abre a página do Cue nos Ajustes
+  (`openNotificationSettingsURLString`). O estado é relido ao voltar dos Ajustes; voltar liberado depois de um não liga só o interruptor que levou até lá.
 - **Convite antes da pergunta do sistema** (`NotificationService+Invite`, `NotificationInviteSheet`): o iOS pergunta uma vez só, então o Cue a
-  gasta num momento em que ela tem motivo. **Primeira vez:** ao fechar o gravador (ou o editor) com pelo menos uma take, "Want Cue to remind you
-  to finish this video?". **Segunda e última:** só depois de um "Not now", 14 dias depois, ao sair de um roteiro pronto que não foi gravado ("Want
-  a reminder to record this script?"). Nunca no primeiro lançamento nem no primeiro voo, nunca gravando, editando, exportando ou com o remoto,
+  gasta num momento em que ela tem motivo. **Primeira vez:** ao fechar o gravador (ou o editor) numa sessão **seguinte** à da primeira gravação
+  (`GuidanceGate.mayAsk`; sessão = abrir o app ou voltar depois de 30 min), com um vídeo ainda por compartilhar, "Want Cue to remind you to finish this
+  video?"; nunca depois de uma celebração na mesma sessão. **Segunda e última:** só depois de um "Not now", 14 dias depois, ao sair da página de um
+  roteiro pronto que não foi gravado ("Want a reminder to record this script?"), conferido de novo antes de abrir; o botão é **Remind me tomorrow**
+  (a pergunta do iOS e o lembrete daquele roteiro amanhã às 10h). Nunca no primeiro lançamento nem no primeiro voo, nunca gravando, editando, exportando ou com o remoto,
   nunca no dia de uma dica do My Cue Voice ou de uma introdução de ferramenta, no máximo uma introdução por sessão (o convite conta como uma), e
-  só enquanto o iOS não foi perguntado. **Allow notifications** fecha a folha e traz a pergunta do sistema; **Not now** guarda a pergunta.
+  só enquanto o iOS não foi perguntado. **Allow notifications** fecha a folha e traz a pergunta do sistema; **Not now** (ou o ✕, ou deslizar) guarda a pergunta.
   Medido como `invite.firstRecording` / `invite.readyScript`: `eligible` (mostrado), `feature_started` (Allow), `feature_completed` (o iOS
   deixou), `snoozed` (Not now). As datas dos convites (`invitesShown`) ficam depois de "Delete my Cue data": apagar os dados não traz o convite
   de volta. Nos testes de UI o convite só existe com `-uiTestNotificationInvite`.
@@ -211,7 +215,8 @@ notificações desligadas, toque frio abre o script, introdução da ferramenta 
 ilegível, toque repetido; `ShareToUITests.testPostLaterCanRemindTheCreatorTomorrow`. Ganchos Debug: `-uiTestNotificationAuth
 <notDetermined|refuses|authorized|denied|provisional>` (central em memória, sem prompt do sistema) e `-uiTestNotificationTap
 <script|cleanUp|share|deletedScript|invalid|duplicate|routine|logbook|universe>` e `-uiTestNotificationInvite` (o convite pode aparecer;
-sem ele nunca aparece num teste de UI).
+sem ele nunca aparece num teste de UI) e `-uiTestFeatureIntro` (a introdução de uma ferramenta depois de uma sessão no teleprompter; sem ele
+um teste de UI não a vê, e a pedida por uma notificação aparece do mesmo jeito).
 
 Resultados desta entrega: ver o relatório final do PR (suíte completa e `check-warnings.sh`).
 

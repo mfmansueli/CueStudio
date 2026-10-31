@@ -5,7 +5,8 @@
 
 import SwiftUI
 
-/// On AI scripts about factual topics, and on every Ultra draft, until the creator confirms the facts.
+/// On AI scripts about factual topics, and on every Ultra draft, until the creator says they reviewed the claims of this version ("I
+/// checked", recorded with the date); an AI rewrite that changes the words brings it back.
 struct FactCheckBanner: View {
     /// Ultra's drafts say who wrote them: Google's Gemini, with nothing that checks its claims.
     var engine: ScriptEngine = .apple
@@ -25,11 +26,12 @@ struct FactCheckBanner: View {
                 .foregroundStyle(Palette.ink)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .fixedSize(horizontal: false, vertical: true)
-            Button("Checked", action: onChecked)
+            Button("I checked", action: onChecked)
                 .cueFont(.footnote, weight: .semibold)
                 .foregroundStyle(Palette.accText)
                 .frame(minHeight: Metrics.hitTarget)
-                .accessibilityHint(Text("Hides this reminder"))
+                .accessibilityLabel(Text("I reviewed the claims"))
+                .accessibilityHint(Text("Records that you reviewed this version"))
                 .accessibilityIdentifier("detail.factCheckedButton")
         }
         .padding(.leading, 14)

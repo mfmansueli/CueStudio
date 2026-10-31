@@ -30,6 +30,13 @@ extension NotificationService {
         return reason
     }
 
+    /// The invitation was shown today (its "Not now" included): the My Cue Voice tip waits for another day.
+    var invitedToday: Bool {
+        let calendar = calendar()
+        let moment = now()
+        return state.invitesShown.contains { calendar.isDate($0, inSameDayAs: moment) }
+    }
+
     func inviteShown(_ reason: NotificationInviteReason) {
         introsThisSession += 1
         mutate { $0.invitesShown.append(now()) }

@@ -140,7 +140,7 @@ struct QuickCreatorViewModelTests {
         // Only the picked one, and new texts don't follow it.
         #expect(texts[0].preset == .cue)
         #expect(scenario.viewModel.edit.textPreset == nil)
-        #expect(scenario.toast.message == "Label on this text")
+        #expect(scenario.toast.message == nil, "The preview shows the one text restyled: only VoiceOver hears it")
     }
 
     @Test func deletingATextIsUndoable() async {
@@ -563,7 +563,7 @@ struct QuickCreatorViewModelTests {
         scenario.recorder.allowed = false
         await scenario.viewModel.audio.startVoiceOver()
         #expect(!scenario.viewModel.audio.isRecordingVoiceOver)
-        #expect(scenario.toast.message == "Mic is off for Cue")
+        #expect(scenario.toast.message == "The microphone is off for Cue")
         let settings = try #require(scenario.toast.action)
         #expect(settings.title == "Settings")
         settings.perform()

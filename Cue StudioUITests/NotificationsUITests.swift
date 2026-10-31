@@ -5,11 +5,10 @@
 
 import XCTest
 
-/// Notifications from the creator's side: the Settings page (iOS's answer as a switch, whose first yes lights the three switches below
-/// together), a reminder set from a script, and what a tapped notification opens — the script, a tool's introduction before the tool, a
-/// short explanation when the script is gone, nothing for a payload Cue can't read, and one opening for a tap the system repeats. The
-/// permission is an in-memory stand-in (`-uiTestNotificationAuth`), so no system prompt ever shows; a tap is simulated at launch
-/// (`-uiTestNotificationTap`).
+/// Notifications from the creator's side: the Settings page (iOS's answer as a switch; a yes turns on only what was touched), a reminder
+/// set from a script, and what a tapped notification opens — the script, a tool's introduction before the tool, a short explanation
+/// when the script is gone, nothing for a payload Cue can't read, and one opening for a tap the system repeats. The permission is an
+/// in-memory stand-in (`-uiTestNotificationAuth`), so no system prompt ever shows; a tap is simulated at launch (`-uiTestNotificationTap`).
 @MainActor
 final class NotificationsUITests: XCTestCase {
     override func setUp() {
@@ -60,19 +59,33 @@ final class NotificationsUITests: XCTestCase {
         XCTAssertFalse(app.switches["Show titles in previews"].exists, "The page is short: no titles, quiet hours or pause")
     }
 
-    /// The switch on top: iOS asks once and its yes turns everything on together; the routine opens its days.
-    func testTheSwitchAsksIOSAndTurnsEverythingOnTogether() {
+    /// The switch on top: iOS asks once and its yes is iOS's permission, nothing more: the routine and tools and news stay off, the routine
+    /// showing the days and time it would start with. Switched on, it opens them.
+    func testTheSwitchAsksIOSAndTurnsOnOnlyWhatWasTouched() {
         let app = CueApp.launch(seeded: true)
         openNotificationSettings(app)
         flip(app.switches["notifications.permission"])
-        for group in ["finish", "routine", "news"] {
-            XCTAssertTrue(app.switches["notifications.group.\(group)"].matches(NSPredicate(format: "value == '1'"), within: 5), "\(group) lights with the yes")
-        }
-        XCTAssertTrue(element(app, "notifications.routine.day.2").exists(within: 3), "The routine opens on its usual days")
-        XCTAssertTrue(isOn(app.switches["notifications.permission"]))
+        XCTAssertTrue(app.switches["notifications.permission"].matches(NSPredicate(format: "value == '1'"), within: 5))
         XCTAssertEqual(cardTitle(app).label, "Notifications are on")
+        XCTAssertTrue(
+            app.switches["notifications.group.finish"].matches(NSPredicate(format: "value == '1'"), within: 5), "on from the start, now that iOS lets it ring"
+        )
+        XCTAssertFalse(isOn(app.switches["notifications.group.routine"]), "the routine is a choice of its own")
+        XCTAssertFalse(isOn(app.switches["notifications.group.news"]))
+        XCTAssertFalse(element(app, "notifications.routine.day.2").exists)
+        flip(app.switches["notifications.group.routine"])
+        XCTAssertTrue(element(app, "notifications.routine.day.2").exists(within: 3), "The routine opens on the days its line showed")
+        XCTAssertFalse(isOn(app.switches["notifications.group.news"]))
+    }
+
+    /// A switch below touched before iOS was asked: iOS asks, and its yes turns on that switch alone.
+    func testASwitchTouchedFirstAsksIOSAndTurnsOnItselfAlone() {
+        let app = CueApp.launch(seeded: true)
+        openNotificationSettings(app)
         flip(app.switches["notifications.group.news"])
-        XCTAssertFalse(isOn(app.switches["notifications.group.news"]), "Each switch is the creator's after that")
+        XCTAssertTrue(app.switches["notifications.group.news"].matches(NSPredicate(format: "value == '1'"), within: 5))
+        XCTAssertTrue(isOn(app.switches["notifications.permission"]))
+        XCTAssertFalse(isOn(app.switches["notifications.group.routine"]))
     }
 
     func testWithNotificationsOffInIOSTheSwitchOpensIOSSettings() {
@@ -168,7 +181,7 @@ final class NotificationsUITests: XCTestCase {
         let sheet = element(app, "featureIntro.sheet")
         XCTAssertTrue(sheet.exists(within: 15))
         XCTAssertTrue(app.buttons["featureIntro.try"].exists && app.buttons["featureIntro.decline"].exists)
-        XCTAssertTrue(element(app, "featureIntro.note").exists, "What the tool uses is said before Try it")
+        XCTAssertTrue(element(app, "featureIntro.uses").exists, "What the tool uses is said before Try it")
         app.buttons["featureIntro.notNow"].tap()
         XCTAssertFalse(sheet.exists(within: 2))
         XCTAssertFalse(app.buttons["review.shareButton"].exists, "Not now opens nothing")

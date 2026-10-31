@@ -16,7 +16,7 @@ struct LengthZoneTests {
         let zone = LengthZone(text: TestData.words(90), preset: tikTok)
         #expect(zone.isBelowMinimum)
         #expect(!zone.isInIdealRange)
-        #expect(zone.status == "24s to monetize")
+        #expect(zone.status == "24s to the length goal")
     }
 
     /// TikTok's ideal is 1:15–1:45 (the owner's call, 29/10/2026): 200 words take 1:20.
@@ -47,7 +47,7 @@ struct LengthZoneTests {
         let zone = LengthZone(text: TestData.words(150), preset: tikTok)
         #expect(abs(zone.scaleMax - 126) < 0.0001)
         #expect(abs((zone.minimumFraction ?? 0) - 60.0 / 126.0) < 0.0001)
-        #expect(zone.minimumLabel == "1:00 · monetizes")
+        #expect(zone.minimumLabel == "1:00 · Creator Rewards")
     }
 
     @Test func emptyScriptShowsZeroSeconds() {

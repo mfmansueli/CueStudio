@@ -32,7 +32,8 @@ struct DestinationSheet: View {
                 Toggle(isOn: $profile.profile.monetizationGoals) {
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Monetization goals").cueFont(.body, weight: .semibold)
-                        Text("Longer videos earn: TikTok 1:00+, YouTube 8:00+")
+                        // The length the programs ask for, never a promise that a video earns (decision 8).
+                        Text("Length goals of earning programs: TikTok 1:00+, YouTube 8:00+")
                             .cueFont(.footnote)
                             .foregroundStyle(Palette.ink2)
                     }

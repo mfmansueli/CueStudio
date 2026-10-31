@@ -46,6 +46,8 @@ import Foundation
 ///   (`speech`), or is refused the microphone, can't recognize the language, or hears nothing.
 /// - `-uiTestVoiceFollowing <listening|preparing|unavailable>`: the prompter's Voice Following recognition is scripted (the simulator
 ///   can't recognize speech): it listens and hears nothing, stays getting ready, or can't follow the words here (`ScriptedVoiceFollowing`).
+///   It also opens the prompter in Voice Following, the app's default; without it a UI test's prompter opens in Steady, so a test that
+///   doesn't look at the voice never waits on a recognizer the simulator doesn't have.
 /// - `-uiTestOnboarding`: with the above, the first flight shows (it is off in UI tests otherwise).
 /// - `-uiTestPermissions <granted|denied>`: the first flight's permission prompts are answered at once.
 /// - `-uiTestVoyage`: the first voyage (the first video guide) is on; without it no UI test sees its card, strip or tips.
@@ -88,6 +90,8 @@ import Foundation
 /// - `-uiTestNotificationTap <script|cleanUp|share|deletedScript|invalid|duplicate|routine|logbook|universe>`: Cue opens as if launched
 ///   from that notification (`DebugNotificationTaps`).
 /// - `-uiTestNotificationInvite`: Cue's invitation to allow notifications may show (UI tests leave it out otherwise, like the voice tip).
+/// - `-uiTestFeatureIntro`: a tool may be introduced after a session at the teleprompter (UI tests leave it out otherwise: it would cover
+///   the screen a test goes back to). An introduction a notification asks for (`-uiTestNotificationTap cleanUp`) comes either way.
 /// - `-uiTestTopics <list>`: with `-uiTestInMemory`, the creator holds these topics (comma separated: a first-flight topic by its id, `fitness`,
 ///   or one they typed, `custom:Daily Routine`): Find inspiration's filters with several topics, only typed ones, or none (no argument).
 /// - `-uiTestAppLanguage <lproj>`: with `-uiTestInMemory`, Cue's interface starts in that language
@@ -187,6 +191,8 @@ struct LaunchOptions {
     var notificationTap: String?
     /// Cue's invitation to allow notifications; UI tests leave it out unless `-uiTestNotificationInvite`.
     var notificationInvites = true
+    /// A tool's introduction after a session at the teleprompter; UI tests leave it out unless `-uiTestFeatureIntro`.
+    var sessionIntros = true
 
     /// The arguments that stand a screen still at a second of its timeline (to take its pictures), and the milestone to open on.
     private static func readFrozenTimes(_ arguments: [String], into options: inout LaunchOptions) {
@@ -223,6 +229,15 @@ struct LaunchOptions {
         if let index = arguments.firstIndex(of: "-uiTestUltraScriptsLeft"), arguments.indices.contains(index + 1), let left = Int(arguments[index + 1]) {
             options.defaults.set(max(0, UsagePolicy.freeUltraScripts - left), forKey: UltraAllowanceService.freeUsedKey)
         }
+    }
+
+    /// Voice Following is the default, but the simulator can't recognize speech: a UI test's prompter opens Steady unless the test scripts
+    /// the recognition (`-uiTestVoiceFollowing`).
+    private static func readPrompterMode(_ arguments: [String], into defaults: UserDefaults) {
+        guard !arguments.contains("-uiTestVoiceFollowing") else { return }
+        var steady = PrompterSettings()
+        steady.scrollMode = .steady
+        defaults.set(try? JSONEncoder().encode(steady), forKey: DefaultsKey.prompterSettings)
     }
 
     private static func readGenerationExperiment(_ arguments: [String], into options: inout LaunchOptions) {
@@ -329,6 +344,7 @@ struct LaunchOptions {
             }) {
                 options.defaults.set([take.id.uuidString], forKey: DefaultsKey.exportsInFlight)
             }
+            Self.readPrompterMode(arguments, into: options.defaults)
             // A sky that never stops drawing keeps a UI test from ever finding the app idle: tests start with it off
             // (`-uiTestSky serene|adrift|interstellar` brings it back for the ones that look at it).
             if let flag = arguments.firstIndex(of: "-uiTestSky"), arguments.indices.contains(flag + 1) {
@@ -371,6 +387,7 @@ struct LaunchOptions {
             }
             options.notificationCenter = InMemoryNotificationCenter(start: notificationStart ?? .notDetermined)
             options.notificationInvites = arguments.contains("-uiTestNotificationInvite")
+            options.sessionIntros = arguments.contains("-uiTestFeatureIntro")
             options.notificationTap = arguments.firstIndex(of: "-uiTestNotificationTap").flatMap { index in
                 arguments.indices.contains(index + 1) ? arguments[index + 1] : nil
             }

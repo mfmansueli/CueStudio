@@ -48,7 +48,7 @@ struct CoverFinishStep: View {
                     naming = StyleNameRequest(purpose: .save, name: viewModel.suggestedCoverStyleName)
                 }
                 if !viewModel.coverStyles.styles.isEmpty {
-                    PanelNote(text: String(localized: "Your styles are first in Template."))
+                    PanelNote(text: String(localized: "Your styles are first in Template."), teaches: true)
                 }
             }
             if viewModel.hadCover {

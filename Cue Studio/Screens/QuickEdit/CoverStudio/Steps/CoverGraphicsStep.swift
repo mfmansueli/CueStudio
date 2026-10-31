@@ -32,7 +32,7 @@ struct CoverGraphicsStep: View {
             if let item = viewModel.selectedItem {
                 selected(item)
             } else {
-                PanelNote(text: String(localized: "Tap a graphic on the cover to change it. Drag to move, pinch or use the corner to resize and turn."))
+                PanelNote(text: String(localized: "Tap a graphic on the cover to change it. Drag to move, pinch or use the corner to resize and turn."), teaches: true)
             }
         }
     }

@@ -13,13 +13,14 @@ nonisolated enum MonetizationCheck {
         return minimum - elapsed
     }
 
-    /// Chip next to the recording clock: "18s to 1:00" or "✓ Monetizable".
+    /// Chip next to the recording clock: "18s to 1:00" or "Length goal met · 1:00". Only the length is known: never "monetizable" (the
+    /// platform's other rules, and a cut in the editor, decide that; decision 8, 30/10/2026).
     static func chipLabel(elapsed: TimeInterval, preset: PlatformPreset?) -> String? {
         guard let minimum = preset?.minimum else { return nil }
         if let missing = secondsMissing(elapsed: elapsed, preset: preset) {
             return String(localized: "\(DurationText.remaining(missing)) to \(DurationText.clock(minimum))")
         }
-        return String(localized: "✓ Monetizable")
+        return String(localized: "Length goal met · \(DurationText.clock(minimum))")
     }
 
     /// "18s short of 1:00"

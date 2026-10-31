@@ -99,6 +99,9 @@ struct SkinPanel: View {
         .contentMargins(.horizontal, 16, for: .scrollContent)
     }
 
+    /// The widest values a skin dial can show: its ends.
+    static let valueSamples = [SkinBeautyCalibration.range.lowerBound, SkinBeautyCalibration.range.upperBound].map { PanelValueFormat.plain.text($0) }
+
     private func chip(_ control: LookViewModel.SkinControl) -> some View {
         let isPicked = current == control
         let value = look.skinValue(control)
@@ -161,7 +164,8 @@ struct SkinPanel: View {
     private var nameAndValue: some View {
         HStack(alignment: .firstTextBaseline, spacing: 10) {
             Text(current.label).font(.system(.subheadline, weight: .semibold))
-            Text(PanelValueFormat.plain.text(look.skinValue(current)))
+            // As wide as the dial's widest value from the start, so Reset and the note beside it stay put while it turns.
+            SteadyValueText(text: PanelValueFormat.plain.text(look.skinValue(current)), samples: Self.valueSamples, alignment: .leading)
                 .font(.system(.subheadline, weight: .semibold).monospacedDigit())
                 .foregroundStyle(Palette.ink)
         }

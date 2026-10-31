@@ -53,6 +53,8 @@ struct RootView: View {
             .onChange(of: scenePhase) { _, phase in
                 // The motion analyses run only while Cue is in front.
                 services.motion.setActive(phase == .active)
+                // A deleted take's video goes before Cue can be ended unnoticed, and the Undo that would bring back a take without it goes too.
+                if phase == .background, services.takes.purgeAwaiting() { services.toast.dismiss() }
                 guard phase == .active else { return }
                 services.reloadWhatCouldntBeRead()
                 if services.hasUnsavedWork { warnUnsavedWork() }

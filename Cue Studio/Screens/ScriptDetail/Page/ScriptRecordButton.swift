@@ -6,11 +6,9 @@
 import SwiftUI
 
 /// The page's one Record button, pinned under the words: "● Record" (or "● Retake" once there is a take), a full-width capsule of
-/// Liquid Glass tinted the screen's yellow, except on a recorded script that hasn't changed since its take, which is the quiet
-/// glass one. While the AI writes it waits, dimmed.
+/// Liquid Glass tinted the screen's yellow, the same before and after a take (owner, 30/10/2026). While the AI writes it waits, dimmed.
 struct ScriptRecordButton: View {
     let title: LocalizedStringKey
-    let isPrimary: Bool
     let action: () -> Void
 
     var body: some View {
@@ -20,7 +18,7 @@ struct ScriptRecordButton: View {
                 Text(title).cueFont(17, weight: .bold)
             }
         }
-        .buttonStyle(CueStudioButtonStyle(variant: isPrimary ? .primary : .secondary, size: .large, expands: true))
+        .buttonStyle(CueStudioButtonStyle(variant: .primary, size: .large, expands: true))
         .padding(.horizontal, Metrics.gutter)
         .padding(.top, 8)
         .padding(.bottom, 8)
