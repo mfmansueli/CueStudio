@@ -275,4 +275,27 @@ struct CaptionCollectionRendererTests {
         #expect(legacy.captionCollection == nil)
         #expect(legacy.captionStyle == .classic)
     }
+    /// A Hindi word ending a full line keeps its marks: TextKit pins the last mark of a word that only just fits to the line's
+    /// edge and never draws it (the dot of "हैं" went in Bold, seen on an iPhone), so that line gets the room the mark needs,
+    /// and the words stay on their lines.
+    @Test func aMarkEndingAFullLineIsDrawn() throws {
+        let text = "यह तीन आते हैं जिन्होंने"
+        for theme in CaptionTheme.catalog {
+            let layout = try #require(CaptionCollectionRenderer.layout(text, settings: CaptionSettings(theme: theme), frame: frame))
+            #expect(!CaptionCollectionRenderer.pinsAMark(layout.manager, in: layout.container), "\(theme)")
+            let mark = (layout.storage.string as NSString).range(of: "हैं").location + 2
+            let glyph = layout.manager.glyphIndexForCharacter(at: mark)
+            let line = layout.manager.lineFragmentUsedRect(forGlyphAt: glyph, effectiveRange: nil)
+            #expect(layout.manager.location(forGlyphAt: glyph).x < layout.container.size.width - 0.5, "\(theme): the mark is pinned")
+            #expect(line.width > 0)
+        }
+        // Bold balances the sentence so "हैं" ends its first line.
+        let bold = try #require(CaptionCollectionRenderer.layout(text, settings: CaptionSettings(theme: .bold), frame: frame))
+        var lines: [String] = []
+        bold.manager.enumerateLineFragments(forGlyphRange: bold.manager.glyphRange(for: bold.container)) { _, _, _, glyphs, _ in
+            let characters = bold.manager.characterRange(forGlyphRange: glyphs, actualGlyphRange: nil)
+            lines.append((bold.storage.string as NSString).substring(with: characters).trimmingCharacters(in: .whitespaces))
+        }
+        #expect(lines == ["यह तीन आते हैं", "जिन्होंने"])
+    }
 }

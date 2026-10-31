@@ -92,7 +92,7 @@ struct CoverDesignRendererTests {
 
     @Test func theTypefacesExistAtAnySize() {
         for face in TextOverlayFont.editorFonts {
-            #expect(CoverDesignRenderer.words(CoverFont(face), size: 40).pointSize == 40)
+            #expect(CoverDesignRenderer.words(CoverFont(face), size: 40, text: "A").pointSize == 40)
         }
     }
 }

@@ -5,7 +5,8 @@
 
 import SwiftUI
 
-/// Settings › Acknowledgements: the fonts Cue ships, the sample libraries its music and sound effects are played on, the work its
+/// Settings › Acknowledgements: the fonts Cue ships and the ones it downloads for other scripts, the
+/// sample libraries its music and sound effects are played on, the work its
 /// code adapts, and the license of each.
 struct AcknowledgementsView: View {
     private let sounds = SoundSource.inUse
@@ -30,6 +31,22 @@ struct AcknowledgementsView: View {
                 }
             } footer: {
                 Text("The free fonts Cue ships with.")
+            }
+            Section {
+                ZStack(alignment: .leading) {
+                    NavigationLink {
+                        FontPackCreditsView()
+                    } label: { EmptyView() }.opacity(0)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Fonts for other scripts").foregroundStyle(Palette.ink)
+                        Text(verbatim: "Google Fonts · SIL Open Font License 1.1").cueFont(.footnote).foregroundStyle(Palette.ink2)
+                    }
+                    .frame(minHeight: Metrics.listRowContent, alignment: .leading)
+                }
+                .accessibilityIdentifier("acknowledgements.fontPacks")
+                .cardRowBackground(position: .only)
+            } footer: {
+                Text("Free fonts for Japanese, Chinese, Korean, Arabic, Hindi and Thai, downloaded the first time a video uses one.")
             }
             Section {
                 ForEach(Array(sounds.enumerated()), id: \.element.id) { index, source in

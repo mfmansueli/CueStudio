@@ -30,6 +30,8 @@ nonisolated struct LazyText: Sendable {
         drawing.combine(widthFraction)
         drawing.combine(frameHeight)
         drawing.combine(markup)
+        // A script's face that arrived since (`FontPackRegistry`) draws the words again in it.
+        drawing.combine(FontPackRegistry.shared.generation)
         return "\(text.id.uuidString)-\(emphasis?.index ?? -1)-\(Int(frameWidth.rounded()))-\(drawing.finalize())"
     }
 }

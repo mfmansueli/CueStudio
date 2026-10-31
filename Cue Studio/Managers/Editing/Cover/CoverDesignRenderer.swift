@@ -76,7 +76,7 @@ nonisolated enum CoverDesignRenderer {
     }
 
     private static func label(_ text: String, at point: CGPoint, background: UIColor, size: CGSize, alignRight: Bool) {
-        let font = words(.anton, size: size.width * 0.07)
+        let font = words(.anton, size: size.width * 0.07, text: text)
         let attributes: [NSAttributedString.Key: Any] = [.font: font, .foregroundColor: UIColor.black]
         let measured = (text as NSString).size(withAttributes: attributes)
         let padX = size.width * 0.03, padY = size.height * 0.005
@@ -91,9 +91,9 @@ nonisolated enum CoverDesignRenderer {
 
     // MARK: - The words
 
-    /// The words' typeface at `size`.
-    static func words(_ font: CoverFont, size: CGFloat) -> UIFont {
-        TextFont.font(font.face, weight: font.weight, size: size, text: "A")
+    /// The words' typeface at `size`, for `text` (its scripts pick the faces after the family's: `ScriptFontCascade`).
+    static func words(_ font: CoverFont, size: CGFloat, text: String) -> UIFont {
+        TextFont.font(font.face, weight: font.weight, size: size, text: text)
     }
 
     /// A line of word boxes side by side, `gap` apart.
@@ -129,7 +129,7 @@ nonisolated enum CoverDesignRenderer {
             y = box.maxY + size.height * 0.012
         }
         if layout == .number, let number = parts.number {
-            let font = words(design.font, size: width * 0.40)
+            let font = words(design.font, size: width * 0.40, text: number)
             let attributes: [NSAttributedString.Key: Any] = [.font: font, .foregroundColor: yellow, .shadow: shadow(width, blur: 0.05, offset: 0.01)]
             let measured = (number as NSString).size(withAttributes: attributes)
             (number as NSString).draw(at: CGPoint(x: center - measured.width / 2, y: y - measured.height * 0.08), withAttributes: attributes)
@@ -138,7 +138,7 @@ nonisolated enum CoverDesignRenderer {
         guard !parts.words.isEmpty else { return }
 
         // Lay the words out in lines that fit, then draw each line centered.
-        let font = words(design.font, size: width * layout.wordSize)
+        let font = words(design.font, size: width * layout.wordSize, text: title)
         let padX = width * 0.02, gapX = width * 0.024, gapY = size.height * 0.014, padY = size.height * 0.003
         let locale = TextShaping.capitalsLocale(for: parts.words.joined(separator: " "))
         let upper = parts.words.map { TextShaping.uppercased($0, locale: locale) }

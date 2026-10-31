@@ -48,13 +48,14 @@ teleprompter, textos e receitas de projetos anteriores.
 Space Grotesk registra o nome PostScript `SpaceGrotesk-Light`; `CaptionFont` seleciona o eixo
 `wght` explicitamente para renderizar Bold. Não se simula negrito com nome inexistente.
 
-## Cobertura e alternativas locais
+## Cobertura e outras escritas
 
-`CaptionFont` verifica os glifos antes de usar a fonte incorporada. Se faltar cobertura, usa a
-família de sistema iOS no peso compatível e a cascata local do TextKit, incluindo japonês, coreano,
-chinês simplificado, hindi, árabe e tailandês. Isso também cobre eventuais acentos ausentes nas
-famílias display; não substitui caracteres nem baixa fontes. Árabe mantém RTL e modelagem contextual.
-A alternativa pode diferir da família latina, mas usa a mesma composição na prévia e exportação.
+Toda fonte de legenda passa pela cascata de `ScriptFontCascade` (DESIGN_PROJECT §59): a família do estilo continua
+a primeira, e as letras que ela não tem (japonês, chinês, coreano, árabe, hindi, tailandês) saem numa face daquela
+escrita com o caráter do estilo — a da biblioteca baixada, se já está no iPhone, senão a do sistema (Hiragino, PingFang,
+Apple SD Gothic Neo, SF Arabic, Kohinoor Devanagari, Thonburi). O latim da mesma linha fica na família do estilo;
+vietnamita numa família sem as letras dele sai inteiro numa família latina do mesmo caráter. Árabe mantém RTL e
+modelagem contextual. Prévia e exportação pedem a mesma fonte.
 
 Os testes renderizam exemplos dos 15 idiomas do app, incluindo português, turco e vietnamita.
 Cobertura tipográfica não significa disponibilidade de um modelo de fala: a infraestrutura Speech

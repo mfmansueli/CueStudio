@@ -117,3 +117,70 @@ nothing in the app or in a video made with it owes credit, and Cue credits them 
 | [Spanish Classical Guitar](https://freepats.zenvoid.org) | FreePats project | CC0 1.0 | Music |
 | [Kenney sound packs](https://kenney.nl) (Interface, UI, RPG, Casino) | Kenney | CC0 1.0 | Effects |
 
+## Fonts for other scripts (downloaded on demand, not in the app)
+
+Cue ships only a manifest of these families (`Cue Studio/SupportFiles/FontPacks.json`, made by `tools/fonts/make_manifest.py` from
+`tools/fonts/packs.py`): each file is downloaded from the google/fonts repository at commit `6c1dbe27dcf7d817d4b62cec033ba77fa8e2a5ec` the first time a video uses
+it, checked against its SHA-256 and kept on the iPhone. Every family is licensed under the SIL Open Font License 1.1 (the license text Cue shows is
+`Cue Studio/DesignSystem/Fonts/inter-OFL.txt`'s, from its "This Font Software is licensed" on), shown in Settings › Acknowledgements › Fonts for other scripts. The fonts are used unmodified.
+
+| Family | Script | License | Copyright |
+|---|---|---|---|
+| Zen Kaku Gothic New | japanese | SIL OFL 1.1 | Copyright 2022 The Zen Project Authors (https://github.com/googlefonts/zen-kakugothic) |
+| M PLUS Rounded 1c | japanese | SIL OFL 1.1 | Copyright 2016 The Rounded M+ Project Authors. |
+| Zen Maru Gothic | japanese | SIL OFL 1.1 | Copyright 2021 The Zen Maru Gothic Authors (https://github.com/googlefonts/zen-marugothic) |
+| Dela Gothic One | japanese | SIL OFL 1.1 | Copyright 2020 The Dela Gothic Project Authors (https://github.com/syakuzen/DelaGothic) |
+| Reggae One | japanese | SIL OFL 1.1 | Copyright 2020 The Reggae Project Authors (https://github.com/fontworks-fonts/Reggae/), all rights reserved. |
+| Mochiy Pop One | japanese | SIL OFL 1.1 | Copyright 2020 The MochiyPop Project Authors (https://github.com/fontdasu/Mochiypop) |
+| Zen Old Mincho | japanese | SIL OFL 1.1 | Copyright 2021 The Zen Old Mincho Project Authors (https://github.com/googlefonts/zen-oldmincho) |
+| Yomogi | japanese | SIL OFL 1.1 | Copyright 2020 The Yomogi Project Authors (https://github.com/satsuyako/YomogiFont), all rights reserved. |
+| Hachi Maru Pop | japanese | SIL OFL 1.1 | Copyright 2020 The Hachi Maru Pop Project Authors (https://github.com/noriokanisawa/HachiMaruPop) |
+| M PLUS 1 Code | japanese | SIL OFL 1.1 | Copyright 2021 The M+ FONTS Project Authors (https://github.com/coz-m/MPLUS_FONTS) |
+| Noto Sans SC | chineseSimplified | SIL OFL 1.1 | (c) 2014-2021 Adobe (http://www.adobe.com/), with Reserved Font Name 'Source'. |
+| ZCOOL KuaiLe | chineseSimplified | SIL OFL 1.1 | Copyright 2018 The ZCOOL KuaiLe Project Authors (https://github.com/googlefonts/zcool-kuaile) |
+| ZCOOL QingKe HuangYou | chineseSimplified | SIL OFL 1.1 | Copyright 2018 The ZCOOL QingKe HuangYou Project Authors (https://www.github.com/googlefonts/zcool-qingke-huangyou) |
+| ZCOOL XiaoWei | chineseSimplified | SIL OFL 1.1 | Copyright 2018 The ZCOOL XiaoWei Project Authors (https://www.github.com/googlefonts/xiaowei) |
+| Ma Shan Zheng | chineseSimplified | SIL OFL 1.1 | Copyright 2018 The MaShanZheng Project Authors (https://github.com/googlefonts/mashanzheng) |
+| Long Cang | chineseSimplified | SIL OFL 1.1 | Copyright 2018 The LongCang Project Authors (https://github.com/googlefonts/longcang) |
+| Zhi Mang Xing | chineseSimplified | SIL OFL 1.1 | Copyright 2018 The ZhiMangXing Project Authors (https://github.com/googlefonts/zhimangxing) |
+| Noto Sans TC | chineseTraditional | SIL OFL 1.1 | (c) 2014-2021 Adobe (http://www.adobe.com/), with Reserved Font Name 'Source'. |
+| Huninn | chineseTraditional | SIL OFL 1.1 | Copyright 2025 The Huninn Project Authors (https://github.com/justfont/Huninn) |
+| Noto Serif TC | chineseTraditional | SIL OFL 1.1 | (c) 2017-2024 Adobe (http://www.adobe.com/). |
+| LXGW WenKai TC | chineseTraditional | SIL OFL 1.1 | Copyright 2024 The LXGW WenKai Project Authors (https://github.com/lxgw/LxgwWenkaiTC) |
+| Iansui | chineseTraditional | SIL OFL 1.1 | Copyright 2025 The Iansui Project Authors (https://github.com/ButTaiwan/iansui) |
+| Black Han Sans | korean | SIL OFL 1.1 | Copyright 2015 The Black Han Sans Project Authors (https://github.com/zesstype/Black-Han-Sans) |
+| Do Hyeon | korean | SIL OFL 1.1 | Copyright 2018 The Do Hyeon Project Authors |
+| Gasoek One | korean | SIL OFL 1.1 | Copyright 2022 The Gasoek Project Authors (https://github.com/JAMO-TYPEFACE/Gasoek) |
+| Jua | korean | SIL OFL 1.1 | Copyright 2018 The BM JUA Project Authors |
+| Bagel Fat One | korean | SIL OFL 1.1 | Copyright 2022 The Bagel Fat Project Authors (https://github.com/JAMO-TYPEFACE/BagelFat) |
+| Nanum Myeongjo | korean | SIL OFL 1.1 | Copyright © 2010 NHN Corporation. All rights reserved. Font designed by FONTRIX. |
+| Nanum Pen Script | korean | SIL OFL 1.1 | Copyright © 2010 NHN Corporation. All rights reserved. Font designed by Sandoll Communications Inc. |
+| Gaegu | korean | SIL OFL 1.1 | Copyright 2018 The Gaegu Project Authors |
+| Cairo | arabic | SIL OFL 1.1 | Copyright 2009 The Cairo Project Authors (https://github.com/Gue3bara/Cairo) |
+| Almarai | arabic | SIL OFL 1.1 | Copyright (c) 2019 by Almarai. All rights reserved. |
+| Reem Kufi | arabic | SIL OFL 1.1 | Copyright 2015-2022 The Reem Kufi Project Authors (https://github.com/aliftype/reem-kufi). |
+| Lemonada | arabic | SIL OFL 1.1 | Copyright 2011 The Lemonada Project Authors (https://github.com/Gue3bara/Lemonada) |
+| Changa | arabic | SIL OFL 1.1 | Copyright 2018 The Changa Project Authors (https://github.com/eliheuer/changa-vf) |
+| Lalezar | arabic | SIL OFL 1.1 | Copyright 2015 The Lalezar Project Authors (https://github.com/BornaIz/Lalezar) |
+| Marhey | arabic | SIL OFL 1.1 | Copyright 2022 The Marhey Project Authors (https://github.com/namelatype/Marhey) |
+| Amiri | arabic | SIL OFL 1.1 | Copyright 2010-2022 The Amiri Project Authors (https://github.com/aliftype/amiri). |
+| El Messiri | arabic | SIL OFL 1.1 | Copyright 2015 The El Messiri Project Authors (https://github.com/Gue3bara/El-Messiri) |
+| Aref Ruqaa | arabic | SIL OFL 1.1 | Copyright 2015-2021 The Aref Ruqaa Project Authors (https://github.com/alif-type/aref-ruqaa), with Reserved Font Name EURM10. |
+| Mukta | devanagari | SIL OFL 1.1 | Copyright (c) 2014, Girish Dalvi, Ek Type. All rights reserved. |
+| Hind | devanagari | SIL OFL 1.1 | Copyright (c) 2014 Indian Type Foundry (info@indiantypefoundry.com) |
+| Baloo 2 | devanagari | SIL OFL 1.1 | Copyright 2019 The Baloo 2 Project Authors (https://github.com/EkType/Baloo2) |
+| Teko | devanagari | SIL OFL 1.1 | Copyright 2023 The Teko Project Authors (https://www.github.com/googlefonts/teko) |
+| Khand | devanagari | SIL OFL 1.1 | Copyright (c) 2014 Indian Type Foundry (info@indiantypefoundry.com) |
+| Yatra One | devanagari | SIL OFL 1.1 | Copyright 2014 The Yatra Project Authors. |
+| Rozha One | devanagari | SIL OFL 1.1 | Copyright (c) 2014 Indian Type Foundry (info@indiantypefoundry.com) |
+| Martel | devanagari | SIL OFL 1.1 | Copyright (c) 2015 Dan Reynolds. |
+| Kalam | devanagari | SIL OFL 1.1 | Copyright (c) 2014 Indian Type Foundry (info@indiantypefoundry.com) |
+| Kanit | thai | SIL OFL 1.1 | Copyright 2020 The Kanit Project Authors (https://github.com/cadsondemak/kanit) |
+| Prompt | thai | SIL OFL 1.1 | Copyright (c) 2015, Cadson Demak (info@cadsondemak.com) |
+| Mitr | thai | SIL OFL 1.1 | Copyright (c) 2015, Cadson Demak (info@cadsondemak.com) |
+| Mali | thai | SIL OFL 1.1 | Copyright 2018 The Mali Project Authors (https://github.com/cadsondemak/Mali) |
+| Chakra Petch | thai | SIL OFL 1.1 | Copyright 2018 The Chakra Petch Project Authors (https://github.com/m4rc1e/Chakra-Petch.git) |
+| Trirong | thai | SIL OFL 1.1 | Copyright (c) 2015, Cadson Demak (info@cadsondemak.com) |
+| Itim | thai | SIL OFL 1.1 | Copyright (c) 2015, Cadson Demak (info@cadsondemak.com), Copyright (c) 2014, Pablo Impallari (www.impallari.com/impallari@gmail.com) |
+| Sriracha | thai | SIL OFL 1.1 | Copyright (c) 2015, Cadson Demak (info@cadsondemak.com), Copyright (c) 2014, Pablo Impallari (www.impallari.com/impallari@gmail.com) |
+| Charm | thai | SIL OFL 1.1 | Copyright 2018 The Charm Project Authors (https://github.com/cadsondemak/charm) |

@@ -239,6 +239,18 @@ nonisolated enum CaptionCollectionRenderer {
     }
 
     /// Adds `room` points to every space between words (a style whose word being said pops); nothing with no room asked.
+    /// Whether TextKit pinned a mark (a vowel sign, Devanagari's anusvara, a Thai tone mark) to a line's right edge, where it
+    /// draws it nowhere.
+    static func pinsAMark(_ manager: NSLayoutManager, in container: NSTextContainer) -> Bool {
+        guard let text = manager.textStorage?.string as NSString? else { return false }
+        let glyphs = manager.glyphRange(for: container)
+        return (glyphs.location..<NSMaxRange(glyphs)).contains { glyph in
+            guard manager.location(forGlyphAt: glyph).x >= container.size.width - 0.5,
+                  let scalar = Unicode.Scalar(text.character(at: manager.characterIndexForGlyph(at: glyph))) else { return false }
+            return [.nonspacingMark, .spacingMark].contains(scalar.properties.generalCategory)
+        }
+    }
+
     private static func spaceOut(_ storage: NSTextStorage, by room: CGFloat) {
         guard room > 0 else { return }
         let text = storage.string as NSString
@@ -390,6 +402,7 @@ nonisolated enum CaptionCollectionRenderer {
         }.max() ?? 0
         let paragraph = NSMutableParagraphStyle()
         paragraph.lineBreakMode = .byWordWrapping
+        paragraph.lineBreakStrategy = .hangulWordPriority
         paragraph.lineSpacing = CGFloat(spec.lineSpacing) * unit
         attributes[.paragraphStyle] = paragraph
         let storage = NSTextStorage(string: display, attributes: attributes)
@@ -428,6 +441,7 @@ nonisolated enum CaptionCollectionRenderer {
         case .trailing: .right
         }
         paragraph.lineBreakMode = .byWordWrapping
+        paragraph.lineBreakStrategy = .hangulWordPriority
         paragraph.baseWritingDirection = ScriptDirection.isRightToLeft(language: nil, text: display) ? .rightToLeft : .leftToRight
         // Letters spaced out only where the writing allows it.
         let kern = spec.tracking > 0 && TextShaping.allowsLetterSpacing(in: display) ? CGFloat(spec.tracking) * unit : 0
@@ -483,11 +497,21 @@ nonisolated enum CaptionCollectionRenderer {
             // A line broken by hand goes on a new line only where the creator put it.
             let balanced = display.contains("\n") ? maxWidth
                 : words.count > spec.balanceFromWords ? max(longest + 2 * unit, fullWidth / balanceRatio) : fullWidth
-            let width = min(maxWidth, max(1, balanced))
+            var width = min(maxWidth, max(1, balanced))
             let container = NSTextContainer(size: CGSize(width: width, height: .greatestFiniteMagnitude))
             container.lineFragmentPadding = 0
             manager.addTextContainer(container)
             manager.ensureLayout(for: container)
+            // TextKit keeps a word on a line while all but its last mark fits, then pins that mark to the edge and draws it
+            // nowhere: the dot of a Hindi "हैं" ending a full line went. The lines get room for it a tenth of the type size at a
+            // time, less than any word with its space, so no word changes line.
+            var widened = 0
+            while widened < 4, Self.pinsAMark(manager, in: container) {
+                width += pointSize * 0.1
+                container.size = CGSize(width: width, height: .greatestFiniteMagnitude)
+                manager.ensureLayout(for: container)
+                widened += 1
+            }
             let glyphs = manager.glyphRange(for: container)
             var count = 0
             manager.enumerateLineFragments(forGlyphRange: glyphs) { _, _, _, _, _ in count += 1 }

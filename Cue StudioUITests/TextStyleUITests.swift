@@ -209,6 +209,33 @@ final class TextStyleUITests: XCTestCase {
         XCTAssertTrue(outline.isSelected)
     }
 
+    /// A creator who writes only Latin (the demo is in English) sees no other script's fonts: no library, no chip, no header.
+    /// Words in Japanese typed into the title bring the Japanese library, after the Latin families.
+    func testOtherScriptsFontsShowOnlyForWordsInThem() {
+        let app = EditorApp.open(demo: true)
+        _ = openTextStyle(app)
+        EditorApp.showTextTab(app, "font")
+        let latin = app.buttons["edit.textFont.montserrat"]
+        XCTAssertTrue(latin.exists(within: 5))
+        let library = app.descendants(matching: .any).matching(NSPredicate(
+            format: "identifier BEGINSWITH 'edit.textFont.library.' OR identifier BEGINSWITH 'edit.textFont.pack.'"
+        ))
+        XCTAssertEqual(library.count, 0)
+        XCTAssertFalse(app.staticTexts["Japanese fonts"].exists)
+
+        let field = app.textFields["edit.textField"]
+        XCTAssertTrue(field.exists(within: 5))
+        field.tap()
+        field.typeText(" 朝ごはん")
+        EditorApp.showTextTab(app, "font")
+        let japanese = app.descendants(matching: .any)["edit.textFont.library.japanese"]
+        scrollPanel(app, to: japanese)
+        XCTAssertTrue(japanese.exists)
+        XCTAssertTrue(app.buttons["edit.textFont.pack.zenkakugothicnew"].exists)
+        XCTAssertFalse(app.descendants(matching: .any)["edit.textFont.library.arabic"].exists)
+        XCTAssertGreaterThan(japanese.frame.minY, latin.frame.minY)
+    }
+
     func testApplyingATextsStyleToCaptionsAsksThenShowsCustomUntilAPresetReplacesIt() {
         let app = EditorApp.open(demo: true)
         _ = openTextStyle(app)

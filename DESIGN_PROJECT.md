@@ -1507,8 +1507,8 @@ auditoria: `reports/editor-award-checklist.md`.
 - **Texto da capa** (`CoverTextLayout`, Core Text): o bloco inteiro cabe — a letra diminui (até 3,4% da largura) até a palavra mais longa, as
   linhas (até 6) e a altura caberem, sempre dentro da capa em volta do centro e longe de tags, @handle e rótulos do antes/depois. Quebra só no
   início de uma palavra (separação de palavras do sistema: espaços, ou dicionário em japonês, chinês e tailandês); RTL alinha do próprio lado;
-  fontes sem a escrita caem para as versões em negrito do sistema (Thonburi-Bold, Hiragino W7, PingFang, Geeza Pro…); emoji e acentos medidos
-  como glifos. Destaque em caixa só passa da palavra onde há espaço. "Too long to fit…" quando nem o menor tamanho cabe. Sombra suave atrás de
+  uma fonte sem a escrita do título a desenha na face daquela escrita com o caráter da fonte (§59), e a altura da linha segue a face mais alta
+  da linha só quando o título tem uma dessas escritas; emoji e acentos medidos como glifos. Destaque em caixa só passa da palavra onde há espaço. "Too long to fit…" quando nem o menor tamanho cabe. Sombra suave atrás de
   palavras sem caixa (lê em foto clara); contorno com junção redonda; tinta automática sobre a cor de destaque/caixa (contraste ≥ 3 ou troca).
 - **Estilo salvo** (`CoverStyle`, `DefaultsKey.myCoverStudioStyle`; o antigo `myCoverLook` é convertido): modelo, como o título é composto, efeito
   e força, gráficos (lugar, tamanho, giro, cor); nunca palavras, destaques, foto, enquadramento, texto do kicker ou de uma tag.
@@ -1977,9 +1977,9 @@ iguais ou melhores; o fundo e o recorte num painel só, de propósito.
   SF Pro, Space Grotesk, Unbounded, Syne, Anton, Bangers, DM Serif Display, Instrument Serif, Caveat, Space Mono (as favoritas das legendas
   primeiro; as cinco primeiras e Bangers vieram da pesquisa de 2025–26, SIL OFL 1.1, em Acknowledgements). A capa usa as mesmas e seus pesos
   (`CoverFont` = família + peso; capas antigas com "Grotesk", "Serif" abrem nas mesmas faces). Caption style › Adjust troca a família **sobre um
-  estilo** (`CaptionSettings.face`, chip "Style's font" volta à dele) e mantém o resto; escolher outro estilo traz a fonte dele. Texto num idioma que a
-  família não cobre (árabe, hindi, tailandês, CJK; vietnamita em Poppins, Rubik, DM Sans, DM Serif, Instrument Serif, Syne e Caveat) sai na fonte
-  do sistema.
+  estilo** (`CaptionSettings.face`, chip "Style's font" volta à dele) e mantém o resto; escolher outro estilo traz a fonte dele. Texto numa escrita que a
+  família não tem (japonês, chinês, coreano, árabe, hindi, tailandês) sai numa face daquela escrita com o mesmo caráter do estilo, e o latim da
+  mesma linha fica na família; vietnamita numa família sem as letras dele sai inteiro numa família latina do mesmo caráter (§59).
 - **Cores:** uma paleta de 13 na mesma ordem em todo seletor do editor e da capa (`OverlayColor.palette`: White, Paper, Ink, Yellow, Peach,
   Orange, Red, Blush, Lavender, Blue, Cyan, Mint, Lime) — texto, caixa, gráficos, legenda, destaque da legenda (`CaptionAccent` é a paleta),
   palavras da capa e fundo do vídeo; em linhas (7 + 6), todas à vista. Black, Green, Pink e Purple ficam só para edições antigas. A cor do
@@ -2450,7 +2450,7 @@ Tudo fica neste iPhone.
   estilos e peso vêm da própria fonte (tabela OS/2, e o eixo de peso de uma fonte variável). Uma fonte com o mesmo nome PostScript de uma que o
   iPhone ou o Cue já têm é recusada ("… is already on this iPhone"); o mesmo arquivo de novo diz "already in your fonts"; um arquivo que falha não
   deixa nada. Registro só para o Cue (`.process`), nunca para outros apps, e o arquivo nunca é movido depois de registrado. Desenhada pelo mesmo
-  `TextFont` da prévia e da exportação; **letras que a fonte não tem** saem na fonte do sistema, no mesmo peso, letra a letra (cascade list).
+  `TextFont` da prévia e da exportação; **letras que a fonte não tem** saem pela mesma cascata das famílias do Cue (§59: a face da escrita, depois a do sistema no mesmo peso).
   Um vídeo guarda a fonte como "custom:<família>": se a família não está no iPhone (removida de vez), o texto sai em SF Pro, o seletor mostra o
   nome com a nota "… isn’t on this iPhone · drawn in SF Pro until you import it again", e importar a mesma família devolve a fonte ao vídeo.
   **Uma família que ficou em `fonts.json` sem o arquivo** (o arquivo sumiu, o Cue abriu de novo): importar o mesmo arquivo a repara, em vez
@@ -2460,6 +2460,8 @@ Tudo fica neste iPhone.
   Importar de novo uma família removida a devolve aos seletores. **Remover** (Your fonts, com Undo) tira dos seletores, mas o vídeo, estilo salvo ou kit que usa continua desenhando nela; os arquivos só são
   apagados num lançamento em que nada salvo cita a família (vídeos, rascunhos com o desfazer, estilos salvos, kits). Só fontes que o criador
   pode usar: o Cue não traz fontes comerciais de terceiros nem presume direito de redistribuição, e diz isso sob o botão.
+- **Fontes baixadas** (§59): as famílias das bibliotecas de outras escritas que estão no iPhone aparecem em Your fonts, em "Downloaded fonts"
+  (amostra na própria escrita, família, biblioteca e tamanho), cada uma com remover; removida, baixa de novo se um vídeo precisar.
 - **As listas** (`library.json`, `kits.json`, `fonts.json`) podem ser lidas depois do primeiro desbloqueio do iPhone (uma exportação que segue
   com o iPhone bloqueado acha as fontes); se o Cue abrir sem conseguir lê-las, nada é gravado por cima e elas são lidas de novo quando o Cue volta
   (`reloadIfUnread`). As varreduras datam um arquivo pela mudança dele também, não só dos bytes: um link novo para bytes antigos conta como novo.
@@ -2959,7 +2961,6 @@ Para ver sem gastar chamadas: `-uiTestUltra -uiTestUltraAllowed -uiTestUltraPace
 Intelligence) e a linha sob o título "Free to try · 3 exports and 3 Ultra AI scripts included."; assinando pelo Pro da Ultra AI, o toast "Welcome to Cue
 Pro · 30 Ultra AI scripts this month".
 
-
 ## 58. Comunicação reativa: toasts, avisos no lugar e textos honestos (30 de outubro de 2026; pedido do dono)
 
 A metade reativa da revisão de comunicação (`reports/comunicacao-revisao-2026-10-30.md`; inventário em `comunicacao-2-reativo`). Sem fila de toasts.
@@ -3003,3 +3004,64 @@ A metade reativa da revisão de comunicação (`reports/comunicacao-revisao-2026
   (`FactReview`: um resumo do texto, a versão, a data); o toast é "Claims reviewed for this version". Uma reescrita da IA que muda as palavras traz o lembrete
   de volta, e o Undo para as palavras revisadas o tira. Esconder não é revisar: só o botão grava.
 - **"Sounds like me"** diz "Saved · Cue learns from it" com ✓ na página e na folha da prévia (a ★ é do que o Cue fez).
+
+## 59. Fontes para outras escritas (31 de outubro de 2026; pedido do dono)
+
+O criador que escreve em japonês, chinês, coreano, árabe, hindi ou tailandês tem o mesmo cuidado com a letra que o de escrita latina: cada
+estilo de legenda, família de texto e fonte de capa tem um par em cada escrita, com o mesmo caráter, e uma biblioteca de famílias livres para
+escolher, baixadas só quando usadas.
+
+- **Escritas cobertas** (`WritingScript`): japonês, chinês simplificado, chinês tradicional, coreano, árabe, devanágari (hindi) e tailandês, as
+  escritas dos idiomas do Cue (`CueLanguage`) que as famílias do app não têm. Vietnamita é latim com mais acentos (§44). Cirílico, grego e
+  hebraico só chegam digitados à mão e saem na cascata do sistema. Ideogramas sem kana são lidos como japonês, chinês tradicional ou simplificado
+  conforme os idiomas do criador (roteiro e interface, lidos no lançamento); com kana, sempre japonês.
+- **Caráter** (`TypeCharacter`): cada família latina tem um (Montserrat e Poppins geométricas; Rubik arredondada; Anton condensada; Unbounded e
+  Syne largas; Bangers quadrinho; DM Serif e Instrument Serif serifadas; Caveat manuscrita; Space Mono mono; as outras sans), e os estilos de
+  legenda chegam ao dele pelo nome da fonte. `ScriptTypeMap` liga escrita × caráter a uma família da biblioteca (Dela Gothic One para a condensada
+  em japonês, Zen Old Mincho para a serifada, Lalezar para a larga em árabe, Sriracha para a manuscrita em tailandês…) e às faces do sistema
+  (Hiragino, PingFang, Apple SD Gothic Neo, SF Arabic, Kohinoor Devanagari, Thonburi). Chinês e coreano sans ficam nas faces do sistema (nada a
+  baixar); a geométrica em hindi fica na Poppins do app. Anton, Bangers e as legendas condensadas pedem a escrita no peso mais pesado.
+- **Uma cascata, não troca** (`ScriptFontCascade`, por `TextFont` e `CaptionFont`): a fonte do estilo continua sendo a primeira, e a lista de
+  cascata do Core Text recebe, para cada escrita do texto, a família da biblioteca (se o arquivo está aqui, no eixo de peso) e depois as faces
+  do sistema; latim da mesma linha fica na família do estilo. Uma linha toda numa escrita que a família não tem (sem latim) é composta
+  sobre a fonte do sistema no peso do estilo, com as faces do próprio sistema, como o Cue sempre fez (altura de linha e aparência de um
+  vídeo antigo ficam iguais); a família da biblioteca com o caráter do estilo vai na frente assim que está no iPhone, e um vídeo que a usa
+  a pede (abaixo). As faces do sistema por caráter (Mincho para serifada, Thonburi Bold para Anton…) valem nas linhas que misturam latim. Uma família da biblioteca escolhida como fonte desenha na face do sistema da escrita
+  até chegar. Prévia, exportação, capa e efeitos de texto pedem a mesma fonte; os caches mudam de chave quando um arquivo chega
+  (`FontPackRegistry.generation`), e a prévia e a capa são desenhadas de novo. Efeitos: japonês e chinês letra a letra, árabe, hindi e tailandês
+  por palavra; um efeito que anda por palavra (Editorial reveal) corta japonês, chinês e tailandês nas palavras do idioma (`NLTokenizer`), já
+  que essas escritas não põem espaço entre elas, e nunca move a linha inteira como uma peça. Coreano pesado sai na Apple SD Gothic Neo Bold, a
+  mais pesada do iPhone (a Heavy só existe no Mac). O TextKit deixa uma palavra na linha enquanto tudo menos a última marca cabe e
+  depois não desenha essa marca (o ponto de "हैं" no fim de uma linha cheia sumia no Bold): a legenda ganha espaço para ela, um décimo do
+  tamanho da letra por vez, menos que qualquer palavra, então nenhuma palavra muda de linha (`CaptionCollectionRenderer.pinsAMark`).
+- **Legendas ouvidas:** o reconhecimento de fala ouve a pontuação do japonês e do chinês ("。", "，", "「") como palavra própria; ela se junta à
+  palavra a que pertence, no tempo dela (`CaptionBuilder.attachingMarks`), então nenhuma linha acende um "。" sozinho nem põe espaço antes dele,
+  e uma pausa ouvida depois da pontuação do roteiro ("米。" e "，") some.
+- **Biblioteca** (`SupportFiles/FontPacks.json`, 58 famílias do Google Fonts, todas SIL OFL 1.1; gerado por `tools/fonts/make_manifest.py` de
+  `tools/fonts/packs.py`, presos a um commit de google/fonts, com SHA-256 e tamanho de cada arquivo): japonês 10, chinês simplificado 7, chinês
+  tradicional 5, coreano 8, árabe 10, hindi 9, tailandês 9. O app leva só o manifesto (55 KB), nunca as fontes.
+- **Onde aparece** (`ScriptLibraryOffer`): Text style › Font, Caption style › Adjust e o título da capa mostram a biblioteca de uma escrita só
+  quando as palavras sendo estilizadas estão nela, ou quando o idioma da legenda, do roteiro ou da interface a usa; as escritas do texto vêm
+  primeiro. Um criador só em idiomas latinos não vê nada (nem seção, nem selo). Cada biblioteca fica depois das famílias latinas: título
+  ("Japanese fonts"), chips com amostra na escrita e o nome da família, desenhados na própria família, e a marca de estado: nuvem (baixa ao
+  escolher), anel de progresso, nada quando pronta, e `warnText` quando falhou ("… couldn’t download. Check the connection and tap it again.").
+  Pesos e tamanho são os mesmos controles das latinas. Nota de rodapé: "Free fonts from Google Fonts. Each downloads the first time a video uses it."
+- **Quando baixa** (`FontPackStore`, `FontPackNeeds`): só quando o criador escolhe uma família, ou quando uma legenda, texto ou título de capa
+  numa dessas escritas pede a face do seu estilo; nunca no lançamento, nunca para uma escrita sem uso. Um arquivo por peso pedido, conferido
+  (tamanho e SHA-256; falhou, é descartado), guardado em Application Support/FontPacks fora do backup, registrado só para o Cue (`.process`) e
+  registrado de novo nos lançamentos seguintes sem rede. A fonte vem por `FontPackSource` (hoje `GoogleFontsPackSource`, raw.githubusercontent.com;
+  testes, prévias e `-uiTestInMemory` usam `OfflineFontPackSource`). Apagar tudo (Settings) apaga também as fontes baixadas.
+- **Exportação** (`VideoExportService.fontWait`): pede as famílias que o vídeo usa e espera por elas no máximo 15 s; a que não chegou sai na face
+  do sistema da escrita (nunca um quadrado). Um arquivo que chega durante a exportação só entra depois dela, então um vídeo nunca troca de face
+  no meio.
+- **Créditos:** Settings › Acknowledgements › Fonts for other scripts (cada família por escrita, com o texto da OFL).
+- **Medido:** contraste dos chips e notas com os tokens de `Palette` já medidos (`ink`, `inkSoft`, `warnText`). Folhas de contato:
+  `ScriptFontSheetCaptureTests` (`TEST_RUNNER_CUE_SCRIPT_FONT_SHEET=<pasta>`, `TEST_RUNNER_CUE_SCRIPT_FONT_PACKS=<arquivos baixados>`).
+- **No aparelho** (`ScriptFontDeviceTests`, `CUE_DEVICE=<iPhone> scripts/test.sh device ScriptFontDeviceTests`, sem ninguém no iPhone; iPhone 15
+  Pro, 31/10/2026): as 27 faces do sistema que o mapa nomeia existem e desenham sua escrita; todos os arquivos que um peso pede, das 58 famílias,
+  baixados da internet, conferidos, registrados e desenhando (japonês 73 MB em 6 s, chinês tradicional 66 MB em 2,5 s, árabe 3 MB em 3 s); a
+  exportação esperou 0,4 s pelo arquivo chinês maior (17 MB), nunca mais que os 15 s; oito arquivos CJK desenhados (42 MB no disco) fizeram a
+  memória crescer menos de 2 MB. Legendas como o criador as tem: em japonês, chinês simplificado e tradicional, coreano, árabe, hindi, tailandês
+  e vietnamita, uma voz do sistema e uma pessoa lendo (FLEURS) são legendadas pelo reconhecimento do iPhone, e a linha ouvida é desenhada nos 20
+  estilos de legenda (três momentos da fala), nas 15 famílias de texto e nos 6 efeitos (três momentos da entrada), com as famílias baixadas antes:
+  toda letra tem face, e a da escrita sai na face da biblioteca ou na do estilo. As folhas ficam em Documents/ScriptFontSheets do app.

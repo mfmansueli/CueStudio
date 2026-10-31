@@ -37,9 +37,12 @@ struct EditorFontCatalogTests {
         #expect(TextFont.font(.poppins, weight: .heavy, size: 20, text: "A").fontName == "Poppins-ExtraBold")
     }
 
-    @Test func aScriptTheFamilyLacksFallsBackToTheSystem() {
-        let arabic = TextFont.font(.montserrat, weight: .bold, size: 30, text: "مرحبا")
-        #expect(!arabic.fontName.contains("Montserrat"))
+    @Test func aScriptTheFamilyLacksIsDrawnByAFaceThatHasIt() {
+        // The family stays the font (its Latin in the same line keeps it); the Arabic letters come from the cascade.
+        let arabic = TextFont.font(.montserrat, weight: .bold, size: 30, text: "Hi مرحبا")
+        #expect(arabic.fontName.hasPrefix("Montserrat"))
+        let runs = ScriptFontCascadeTests.runs("مرحبا", font: arabic)
+        #expect(!runs.isEmpty && runs.allSatisfy { !$0.font.hasPrefix("Montserrat") && $0.font != "LastResort" }, "\(runs)")
     }
 
     @Test func theNearestWeightLeansHeavier() {

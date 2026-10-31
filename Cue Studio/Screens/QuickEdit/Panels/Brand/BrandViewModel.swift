@@ -8,10 +8,11 @@ import PhotosUI
 import SwiftUI
 
 /// The creator's own things in the editor (`EditorPart`): the media library (in Add photo or video), brand kits (✦ Smart ›
-/// Brand) and imported fonts (in every font picker). The library, the kits and the fonts live in their stores, outside any
+/// Brand), imported fonts and the script libraries' downloaded ones (in every font picker).
+/// The library, the kits and the fonts live in their stores, outside any
 /// video; what this part puts on a video becomes the video's own (its link to a file, a copy of a style), one undo step each.
 ///
-/// Each part of the work is in its own extension (`+Library`, `+Kits`, `+Fonts`).
+/// Each part of the work is in its own extension (`+Library`, `+Kits`, `+Fonts`, `+FontPacks`).
 @MainActor
 @Observable
 final class BrandViewModel: EditorPart {
@@ -19,7 +20,11 @@ final class BrandViewModel: EditorPart {
     @ObservationIgnored let library: MediaLibraryStore
     @ObservationIgnored let kits: BrandKitStore
     @ObservationIgnored let fonts: CustomFontStore
+    /// The script libraries' files (`FontPackStore`).
+    let fontPacks: FontPackStore
     @ObservationIgnored let styles: TextStyleStoring
+    /// The creator's script language and the app's, for the libraries a picker offers (`ScriptLibraryOffer`).
+    @ObservationIgnored let writingLanguages: () -> (script: CueLanguage?, interface: CueLanguage?)
 
     /// Add photo or video shows the creator's library instead of Photos (kept while the editor is open).
     var showsLibrary = false
@@ -37,11 +42,16 @@ final class BrandViewModel: EditorPart {
     /// Font files are being picked in Files.
     var isImportingFonts = false
 
-    init(session: EditorSession, library: MediaLibraryStore, kits: BrandKitStore, fonts: CustomFontStore, styles: TextStyleStoring) {
+    init(
+        session: EditorSession, library: MediaLibraryStore, kits: BrandKitStore, fonts: CustomFontStore, fontPacks: FontPackStore,
+        styles: TextStyleStoring, writingLanguages: @escaping () -> (script: CueLanguage?, interface: CueLanguage?) = { (nil, nil) }
+    ) {
         self.session = session
         self.library = library
         self.kits = kits
         self.fonts = fonts
+        self.fontPacks = fontPacks
         self.styles = styles
+        self.writingLanguages = writingLanguages
     }
 }

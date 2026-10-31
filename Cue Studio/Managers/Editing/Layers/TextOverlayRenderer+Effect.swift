@@ -44,6 +44,7 @@ nonisolated extension TextOverlayRenderer {
         key.combine(effect.intensity)
         key.combine(effect.direction)
         key.combine(widthFraction)
+        key.combine(FontPackRegistry.shared.generation)
         return TextEffectRequest(
             string: NSAttributedString(string: words, attributes: attributes), effect: effect, color: ink(text.color),
             accent: ink(effect.accent), pointSize: pointSize, maxWidth: max(1, maxWidth), padding: padding, byWords: byWords,

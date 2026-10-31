@@ -107,12 +107,6 @@ nonisolated struct CoverTextLayout {
         ).placed(center: center, style: style, highlights: highlights, maxWidth: maxWidth, rightToLeft: rightToLeft, overflows: true)
     }
 
-    /// Bold faces of the system's fonts for scripts the cover fonts lack: Thai, Japanese, Chinese, Korean, Arabic, Hindi.
-    private static let boldFallbacks = [
-        "Thonburi-Bold", "HiraginoSans-W7", "PingFangSC-Semibold", "PingFangTC-Semibold", "AppleSDGothicNeo-Bold", "GeezaPro-Bold",
-        "KohinoorDevanagari-Semibold",
-    ]
-
     /// Whether the first letter with a direction is written right to left (Arabic, Hebrew, …).
     static func isRightToLeft(_ text: String) -> Bool {
         for scalar in text.unicodeScalars {
@@ -125,17 +119,11 @@ nonisolated struct CoverTextLayout {
         return false
     }
 
-    /// The typeface of a cover's words at `size`. Letters it lacks (Arabic, Thai, Japanese, Chinese, Hindi…) come from the
-    /// system's heavy type first, so a title in another script is as bold as the template; emoji come from the system's.
-    static func font(_ font: CoverFont, size: CGFloat) -> UIFont {
-        let base = CoverDesignRenderer.words(font, size: size)
-        let heavy = UIFont.systemFont(ofSize: size, weight: font.isSerif ? .semibold : .heavy).fontDescriptor
-        // The system's own fallbacks are regular weight for some scripts (Thai): their bold faces come first.
-        let bold = boldFallbacks.map { UIFontDescriptor(name: $0, size: size) }
-        let descriptor = base.fontDescriptor.addingAttributes([
-            UIFontDescriptor.AttributeName(rawValue: kCTFontCascadeListAttribute as String): [heavy] + bold,
-        ])
-        return UIFont(descriptor: descriptor, size: size)
+    /// The typeface of a cover's words at `size` for `text`: the family at its weight, and for letters in another script (Arabic,
+    /// Thai, Japanese, Chinese, Hindi…) that script's face with the family's character, at the same weight
+    /// (`ScriptFontCascade`), so a title in another script is as bold as the template; emoji come from the system's.
+    static func font(_ font: CoverFont, size: CGFloat, text: String) -> UIFont {
+        CoverDesignRenderer.words(font, size: size, text: text)
     }
 
     /// The words as measured for one font size.
@@ -145,6 +133,8 @@ nonisolated struct CoverTextLayout {
         var ranges: [NSRange] = []
         var lineCount = 0
         var lineHeight: CGFloat = 0
+        /// The tallest letters' reach above the baseline: the family's, or another script's face when it reaches higher.
+        var ascent: CGFloat = 0
         var longestWord: CGFloat = 0
         var totalHeight: CGFloat = 0
         var numberText: NSAttributedString?
@@ -157,7 +147,7 @@ nonisolated struct CoverTextLayout {
             body: String, number: String?, kicker: String, style: CoverTitleStyle, fontSize: CGFloat, maxWidth: CGFloat, coverWidth: CGFloat
         ) -> Attempt {
             var attempt = Attempt()
-            let font = CoverTextLayout.font(style.font, size: fontSize)
+            let font = CoverTextLayout.font(style.font, size: fontSize, text: body)
             attempt.font = font
             attempt.text = NSAttributedString(string: body, attributes: [.font: font, .ligature: 1])
             // Room for a highlight's box on both sides of the longest word.
@@ -168,11 +158,18 @@ nonisolated struct CoverTextLayout {
             }.max() ?? 0
             attempt.ranges = Self.breakLines(attempt.text, width: maxWidth - pad)
             attempt.lineCount = attempt.ranges.count
-            attempt.lineHeight = (font.ascender - font.descender) * Self.lineSpacing(style.font)
+            // A line is as tall as its tallest face: Japanese, Thai or Arabic letters from the cascade can reach past the family's.
+            // Latin titles (emoji too) keep the family's own line, as they always did.
+            var ascent: CGFloat = 0, descent: CGFloat = 0
+            if !WritingScript.scripts(in: body).isEmpty {
+                _ = CTLineGetTypographicBounds(CTLineCreateWithAttributedString(attempt.text), &ascent, &descent, nil)
+            }
+            attempt.ascent = max(font.ascender, ascent) * Self.lineSpacing(style.font)
+            attempt.lineHeight = (max(font.ascender, ascent) + max(-font.descender, descent)) * Self.lineSpacing(style.font)
             var total = attempt.lineHeight * CGFloat(attempt.lineCount)
             attempt.gap = fontSize * 0.16
             if let number {
-                let numberFont = CoverTextLayout.font(style.font, size: min(fontSize * 2.6, coverWidth * 0.42))
+                let numberFont = CoverTextLayout.font(style.font, size: min(fontSize * 2.6, coverWidth * 0.42), text: number)
                 let text = NSAttributedString(string: number, attributes: [.font: numberFont])
                 attempt.numberText = text
                 attempt.numberSize = CGSize(width: Self.width(of: text), height: (numberFont.ascender - numberFont.descender) * 0.86)
@@ -281,7 +278,6 @@ nonisolated struct CoverTextLayout {
                 number = (numberText, CGRect(x: x, y: y, width: numberSize.width, height: numberSize.height))
                 y += numberSize.height + gap
             }
-            let ascent = font.ascender * Self.lineSpacing(style.font)
             var placed: [Line] = []
             for entry in lines {
                 let x: CGFloat = switch alignment {

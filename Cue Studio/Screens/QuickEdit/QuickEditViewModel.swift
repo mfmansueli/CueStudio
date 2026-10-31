@@ -152,6 +152,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         drafts: QuickEditDraftStoring, toast: ToastService, player: EditPlayback? = nil,
         mediaImporter: EditMediaImporting? = nil, recorder: VoiceOverRecording? = nil, styles: TextStyleStoring? = nil,
         mediaLibrary: MediaLibraryStore? = nil, brandKits: BrandKitStore? = nil, fonts: CustomFontStore? = nil,
+        fontPacks: FontPackStore? = nil, writingLanguages: @escaping () -> (script: CueLanguage?, interface: CueLanguage?) = { (nil, nil) },
         editorPreferences: EditorPreferencesStoring? = nil, prompterLook: PrompterSettings = PrompterSettings(),
         coverPictures: CoverPicturing? = nil, soundPreviews: SoundPreviewing? = nil,
         translations: TranslationAvailabilityChecking = AppleTranslationAvailability(), motion: MotionAnalysisService? = nil,
@@ -186,9 +187,12 @@ final class QuickEditViewModel: EditorHost, EditorPart {
             session: session, editing: editing, takes: takes, library: library, styles: styles, translations: translations,
             speechLanguage: speechLanguage, likelySpokenLanguages: likelySpokenLanguages, languageConflict: languageConflict
         )
+        // Without the app's stores (tests, previews): ones of their own in a temporary folder, never the creator's.
+        let scratch = URL.temporaryDirectory.appending(path: "EditorAssets-\(UUID().uuidString)", directoryHint: .isDirectory)
+        let fontPacks = fontPacks ?? FontPackStore(source: OfflineFontPackSource(), directory: scratch.appending(path: "FontPacks"))
         cover = CoverViewModel(
             session: session, editing: editing, pictures: coverPictures ?? CoverPictureService(), importer: mediaImporter,
-            styles: styles
+            styles: styles, fontPacks: fontPacks, writingLanguages: writingLanguages
         )
         look = LookViewModel(session: session, editing: editing, motion: motion)
         clips = ClipsViewModel(session: session, editing: editing, takes: takes, library: library, speechLanguage: speechLanguage)
@@ -200,8 +204,6 @@ final class QuickEditViewModel: EditorHost, EditorPart {
             session: session, editing: editing, importer: mediaImporter, recorder: recorder ?? VoiceOverRecorder(),
             editorPreferences: preferences, prompterLook: prompterLook, soundPreviews: soundPreviews ?? SoundPreviewPlayer()
         )
-        // Without the app's stores (tests, previews): ones of their own in a temporary folder, never the creator's.
-        let scratch = URL.temporaryDirectory.appending(path: "EditorAssets-\(UUID().uuidString)", directoryHint: .isDirectory)
         brand = BrandViewModel(
             session: session,
             library: mediaLibrary ?? MediaLibraryStore(
@@ -213,7 +215,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
             fonts: fonts ?? CustomFontStore(
                 repository: LocalCustomFontRepository(directory: scratch.appending(path: "Fonts")), directory: scratch.appending(path: "Fonts")
             ),
-            styles: styles
+            fontPacks: fontPacks, styles: styles, writingLanguages: writingLanguages
         )
         session.host = self
         self.player.playingStopped = { [weak self] in self?.audio.playingStopped() }
@@ -248,6 +250,8 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         player.show(edit)
         player.seek(to: playhead)
         cover.drawCover()
+        // The script libraries' faces the video's words need, if they aren't here yet.
+        brand.requestFontPacks()
         // Only an edit that uses Follow face or Stabilize has its recordings analyzed now; the others when Format or
         // Stabilize opens (an hour of video is a lot to analyze for nothing).
         look.requestMotionAnalysisIfNeeded()
@@ -279,7 +283,15 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         clips.updateCurveSoundStepping()
         player.show(playedEdit)
         cover.editChanged()
+        brand.requestFontPacks()
         scheduleDraftSave()
+    }
+
+    /// A script's face arrived or went (`FontPackStore.generation`): the preview and the cover draw their words again.
+    func fontPacksChanged() {
+        guard source == .ready else { return }
+        player.redraw()
+        cover.drawCover()
     }
 
     // MARK: - Panels and picking

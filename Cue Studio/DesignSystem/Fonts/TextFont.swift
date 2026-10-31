@@ -8,9 +8,10 @@ import UIKit
 
 /// The UIFont for words on the video, the same in the preview, the export and the editor's
 /// sample cards. Most bundled faces are variable (DM Sans and TikTok Sans: weight and optical size;
-/// the others: weight, within their own range); Poppins comes as one file per weight. Text in a
-/// script the face doesn't cover uses the system font at the same weight, so every language keeps
-/// its letters.
+/// the others: weight, within their own range); Poppins comes as one file per weight. Words in another
+/// script draw in that script's face with the same character and weight (`ScriptFontCascade`), so a style
+/// keeps its personality in Japanese, Arabic or Thai; Latin letters the face lacks (Vietnamese in some)
+/// move the whole text to a Latin face like it that has them.
 nonisolated enum TextFont {
     private static let wght: NSNumber = 0x7767_6874
     private static let opsz: NSNumber = 0x6F70_737A
@@ -41,34 +42,40 @@ nonisolated enum TextFont {
     ]
 
     static func font(_ face: TextOverlayFont, weight: TextOverlayWeight, size: CGFloat, text: String) -> UIFont {
-        let system = UIFont.systemFont(ofSize: size, weight: uiWeight(weight))
-        if let family = face.customFamily {
-            // An imported family not on this iPhone draws in SF Pro (the panel says so).
-            guard let match = CustomFontRegistry.shared.face(of: family, weight: weight) else { return system }
-            return imported(match, weight: weight, size: size, fallback: system)
+        let base = latinFont(face, weight: weight, size: size, text: text)
+        if face.pack == nil, face.customFamily == nil, ScriptFontCascade.setsOnSystem(base.font, text) {
+            return ScriptFontCascade.font(
+                ScriptFontCascade.system(size: size, weight: weight, design: base.design), character: face.character,
+                weight: face.scriptWeight(weight), text: text, design: base.design, systemFaces: false
+            )
         }
-        switch face {
-        case .classic, .sfPro: return system
-        case .rounded: return designed(system, .rounded)
-        case .serif: return designed(system, .serif)
-        case .mono: return designed(system, .monospaced)
-        case .poppins:
-            // One file per weight: Regular, Medium, Bold (Semibold too) and ExtraBold for Heavy.
-            let name = switch weight {
-            case .regular: "Poppins-Regular"
-            case .medium: "Poppins-Medium"
-            case .semibold, .bold: "Poppins-Bold"
-            case .heavy: "Poppins-ExtraBold"
-            }
-            return bundled(name, size: size, axes: [:], text: text, fallback: system)
-        default:
-            guard let spec = bundledFaces[face] else { return system }
-            var axes: [NSNumber: Double] = [:]
-            if let range = spec.weights { axes[wght] = min(max(weight.value, range.lowerBound), range.upperBound) }
-            if let range = spec.opticalSizes { axes[opsz] = min(max(Double(size), range.lowerBound), range.upperBound) }
-            let fallback = spec.design == .default ? system : designed(system, spec.design)
-            return bundled(spec.name, size: size, axes: axes, text: text, fallback: fallback)
+        return ScriptFontCascade.font(base.font, character: face.character, weight: face.scriptWeight(weight), text: text, design: base.design)
+    }
+
+    /// A caption preset's own bundled file (`CaptionStyleSpec.fontName`) at a point on its weight axis, drawing every script
+    /// like any face: `character` and `scriptWeight` pick the other scripts' faces; a Latin face of the same character stands
+    /// in when the file is missing or lacks Latin letters of `text`, and a line the file draws none of is set on the system
+    /// font at `systemWeight`.
+    static func named(
+        _ name: String, variation: Double, size: CGFloat, text: String, character: TypeCharacter, scriptWeight: TextOverlayWeight,
+        systemWeight: UIFont.Weight
+    ) -> UIFont {
+        var font = UIFont(name: name, size: size)
+        if let named = font {
+            let descriptor = named.fontDescriptor.addingAttributes([
+                UIFontDescriptor.AttributeName(rawValue: kCTFontVariationAttribute as String): [wght: NSNumber(value: variation)],
+            ])
+            font = UIFont(descriptor: descriptor, size: size)
         }
+        guard let font, ScriptFontCascade.coversLatin(font, text) else {
+            return Self.font(ScriptTypeMap.latinStandIn(for: character), weight: scriptWeight, size: size, text: text)
+        }
+        guard !ScriptFontCascade.setsOnSystem(font, text) else {
+            return ScriptFontCascade.font(
+                UIFont.systemFont(ofSize: size, weight: systemWeight), character: character, weight: scriptWeight, text: text, systemFaces: false
+            )
+        }
+        return ScriptFontCascade.font(font, character: character, weight: scriptWeight, text: text)
     }
 
     static func uiWeight(_ weight: TextOverlayWeight) -> UIFont.Weight {
@@ -81,13 +88,57 @@ nonisolated enum TextFont {
         }
     }
 
+    // MARK: - Private
+
+    /// The face itself, before the other scripts: the bundled file at its weight, an imported family, a library family, or
+    /// a system design; the design the system font keeps after it.
+    private static func latinFont(
+        _ face: TextOverlayFont, weight: TextOverlayWeight, size: CGFloat, text: String
+    ) -> (font: UIFont, design: UIFontDescriptor.SystemDesign) {
+        let system = UIFont.systemFont(ofSize: size, weight: uiWeight(weight))
+        if let family = face.customFamily {
+            // An imported family not on this iPhone draws in SF Pro (the panel says so). Letters it lacks come from the
+            // cascade one by one: an imported family covers what its maker drew, and the rest of the line keeps it.
+            guard let match = CustomFontRegistry.shared.face(of: family, weight: weight) else { return (system, .default) }
+            return (imported(match, weight: weight, size: size) ?? system, .default)
+        }
+        if let pack = face.pack {
+            return (ScriptFontCascade.font(pack: pack, weight: weight, size: size, text: ""), .default)
+        }
+        switch face {
+        case .classic, .sfPro: return (system, .default)
+        case .rounded: return (designed(system, .rounded), .rounded)
+        case .serif: return (designed(system, .serif), .serif)
+        case .mono: return (designed(system, .monospaced), .monospaced)
+        case .poppins:
+            // One file per weight: Regular, Medium, Bold (Semibold too) and ExtraBold for Heavy.
+            let name = switch weight {
+            case .regular: "Poppins-Regular"
+            case .medium: "Poppins-Medium"
+            case .semibold, .bold: "Poppins-Bold"
+            case .heavy: "Poppins-ExtraBold"
+            }
+            return (bundled(name, face: face, weight: weight, size: size, axes: [:], text: text), .default)
+        default:
+            guard let spec = bundledFaces[face] else { return (system, .default) }
+            var axes: [NSNumber: Double] = [:]
+            if let range = spec.weights { axes[wght] = min(max(weight.value, range.lowerBound), range.upperBound) }
+            if let range = spec.opticalSizes { axes[opsz] = min(max(Double(size), range.lowerBound), range.upperBound) }
+            return (bundled(spec.name, face: face, weight: weight, size: size, axes: axes, text: text), spec.design)
+        }
+    }
+
     private static func designed(_ font: UIFont, _ design: UIFontDescriptor.SystemDesign) -> UIFont {
         guard let descriptor = font.fontDescriptor.withDesign(design) else { return font }
         return UIFont(descriptor: descriptor, size: font.pointSize)
     }
 
-    private static func bundled(_ name: String, size: CGFloat, axes: [NSNumber: Double], text: String, fallback: UIFont) -> UIFont {
-        guard let base = UIFont(name: name, size: size) else { return fallback }
+    /// The bundled file at its axes; when it lacks Latin letters of `text`, the Latin face of its character that has them.
+    private static func bundled(
+        _ name: String, face: TextOverlayFont, weight: TextOverlayWeight, size: CGFloat, axes: [NSNumber: Double], text: String
+    ) -> UIFont {
+        let standIn = { latinFont(ScriptTypeMap.latinStandIn(for: face.character), weight: face.scriptWeight(weight), size: size, text: "").font }
+        guard let base = UIFont(name: name, size: size) else { return standIn() }
         var font = base
         if !axes.isEmpty {
             let variation = axes.mapValues { NSNumber(value: $0) }
@@ -96,29 +147,17 @@ nonisolated enum TextFont {
             ])
             font = UIFont(descriptor: descriptor, size: size)
         }
-        return covers(font, text) ? font : fallback
+        return ScriptFontCascade.coversLatin(font, text) ? font : standIn()
     }
 
-    /// An imported face at `weight` (on its weight axis when it has one). Letters it lacks are drawn, one by one, in the
-    /// system font at the same weight: an imported family covers what its maker drew, and the rest of the line keeps it.
-    private static func imported(_ face: CustomFontFace, weight: TextOverlayWeight, size: CGFloat, fallback: UIFont) -> UIFont {
-        guard let base = UIFont(name: face.postScriptName, size: size) else { return fallback }
-        var attributes: [UIFontDescriptor.AttributeName: Any] = [
-            UIFontDescriptor.AttributeName(rawValue: kCTFontCascadeListAttribute as String): [fallback.fontDescriptor],
-        ]
-        if let range = face.weightRange {
-            attributes[UIFontDescriptor.AttributeName(rawValue: kCTFontVariationAttribute as String)] = [
+    /// An imported face at `weight` (on its weight axis when it has one).
+    private static func imported(_ face: CustomFontFace, weight: TextOverlayWeight, size: CGFloat) -> UIFont? {
+        guard let base = UIFont(name: face.postScriptName, size: size) else { return nil }
+        guard let range = face.weightRange else { return base }
+        return UIFont(descriptor: base.fontDescriptor.addingAttributes([
+            UIFontDescriptor.AttributeName(rawValue: kCTFontVariationAttribute as String): [
                 wght: NSNumber(value: min(max(weight.value, range.lowerBound), range.upperBound)),
-            ]
-        }
-        return UIFont(descriptor: base.fontDescriptor.addingAttributes(attributes), size: size)
-    }
-
-    /// Whether the face has every letter of `text` (spaces aside).
-    private static func covers(_ font: UIFont, _ text: String) -> Bool {
-        let characters = Array(text.unicodeScalars.filter { !CharacterSet.whitespacesAndNewlines.contains($0) }.map(String.init).joined().utf16)
-        guard !characters.isEmpty else { return true }
-        var glyphs = [CGGlyph](repeating: 0, count: characters.count)
-        return CTFontGetGlyphsForCharacters(font as CTFont, characters, &glyphs, characters.count)
+            ],
+        ]), size: size)
     }
 }

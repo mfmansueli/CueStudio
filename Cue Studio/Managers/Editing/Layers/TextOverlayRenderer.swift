@@ -453,6 +453,8 @@ nonisolated enum TextOverlayRenderer {
         case .trailing: rightToLeft ? .left : .right
         }
         paragraph.lineBreakMode = .byWordWrapping
+        // Korean breaks between its words (at the spaces), never inside one; the other scripts as before.
+        paragraph.lineBreakStrategy = .hangulWordPriority
         return paragraph
     }
 
