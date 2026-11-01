@@ -183,6 +183,40 @@ struct PrompterViewModelTests {
         #expect(scenario.camera.recordingsStarted == 0)
     }
 
+    /// A9: leaving Cue (Home, a call, Siri) during the countdown stops it, and coming back doesn't start the take.
+    @Test func leavingCueDuringTheCountdownStopsIt() async {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        scenario.preferences.camera.countdown = .three
+        await scenario.viewModel.recordButtonTapped()
+        #expect(scenario.viewModel.countdown == 3)
+        scenario.viewModel.sceneChanged(isActive: false)
+        #expect(scenario.viewModel.countdown == nil)
+        scenario.viewModel.sceneChanged(isActive: true)
+        try? await Task.sleep(for: .milliseconds(1200))
+        #expect(scenario.camera.recordingsStarted == 0)
+        #expect(!scenario.viewModel.isRecording)
+    }
+
+    /// A9: a call or Split View taking the camera stops the countdown, and Record says why instead of starting a take that can't record.
+    @Test func aCameraTakenByACallStopsTheCountdownAndSaysWhy() async {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        scenario.preferences.camera.countdown = .three
+        await scenario.viewModel.recordButtonTapped()
+        scenario.camera.interruption = .inUseElsewhere
+        scenario.viewModel.cameraInterruptionChanged()
+        #expect(scenario.viewModel.countdown == nil)
+        await scenario.viewModel.recordButtonTapped()
+        #expect(scenario.camera.recordingsStarted == 0)
+        #expect(scenario.toast.message == CameraInterruption.inUseElsewhere.title)
+        scenario.camera.interruption = nil
+        scenario.preferences.camera.countdown = .off
+        await scenario.viewModel.recordButtonTapped()
+        #expect(scenario.camera.recordingsStarted == 1, "once the camera is back, Record records")
+        await scenario.viewModel.disappear()
+    }
+
     @Test func microphonePillOpensAudioInputBeforeRecording() async {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }
@@ -238,6 +272,30 @@ struct PrompterViewModelTests {
         #expect(take.edit?.background(for: nil)?.style == .blur)
         #expect(take.edit?.editedDuration == 42)
         #expect(!take.isEdited)
+    }
+
+    /// A10: the camera recorded less than was asked for (no 4K at 60 fps on this camera): the take says what it really is, so it isn't
+    /// offered a 4K export that would only enlarge it, and the creator is told once per format.
+    @Test func aTakeSaysTheFormatTheCameraReallyRecorded() async throws {
+        let scenario = makeScenario(script: TestData.script(platform: .reels))
+        defer { scenario.defaults.tearDown() }
+        var asked = scenario.viewModel.session.camera
+        asked.resolution = .uhd4K
+        asked.frameRate = .fps60
+        scenario.viewModel.session.camera = asked
+        scenario.camera.deliveredResolution = .hd1080
+        scenario.camera.deliveredFrameRate = .fps60
+        await scenario.viewModel.recordButtonTapped()
+        await scenario.viewModel.recordButtonTapped()
+        let take = try #require(scenario.takes.takes.first)
+        #expect(take.resolution == .hd1080 && take.frameRate == .fps60)
+        let told = String(localized: "Recorded in \("1080p") at \(60) fps · This camera can’t do \("4K") at \(60) fps")
+        #expect(scenario.toast.message == told)
+        scenario.toast.dismiss()
+        await scenario.viewModel.recordButtonTapped()
+        await scenario.viewModel.recordButtonTapped()
+        #expect(scenario.takes.takes.count == 2)
+        #expect(scenario.toast.message != told, "said once per format")
     }
 
     @Test func withoutABackgroundTheTakeHasNoRecipe() async throws {

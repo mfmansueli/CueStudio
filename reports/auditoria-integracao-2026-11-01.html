@@ -123,7 +123,24 @@ tr:last-child td { border-bottom: 0; }
     </tbody>
   </table></div>
   <p><b>Contraste:</b> nenhuma cor nova. O Stop da barra usa <code>Palette.aiTextStrong</code>, o mesmo token do Undo e do Try again ao lado (já medido em <code>PaletteContrastTests</code>); os avisos são alertas do sistema e o toast existente.</p>
-  <p><b>Dependem do iPhone</b>, na sua ordem: B20 e B10 (prioridade muito alta), A9, A16 e A10 (alta), B9 e B18 (média).</p>
+</section>
+
+<section>
+  <h2>Os itens de aparelho, corrigidos (01/11, noite)</h2>
+  <p>Os sete, na sua ordem. Cada um tem testes de unidade da condição; o teste à mão no iPhone segue na lista abaixo, com a build instalada no iago Lima.</p>
+  <div class="table"><table>
+    <thead><tr><th>ID</th><th>Como ficou</th></tr></thead>
+    <tbody>
+      <tr><td><code>B20</code></td><td>As legendas que uma exportação ouviu enquanto um rascunho esperava entram no rascunho ao reabrir (se ele nunca teve legendas próprias), e desfazer não as tira. Legendas que o criador apagou continuam apagadas. Também não contam como "edição inacabada".</td></tr>
+      <tr><td><code>B10</code></td><td>Nunca um trecho preto calado: Save e Share conferem os arquivos antes. Se algo sumiu, <b>"Missing media"</b> oferece <b>Open editor</b>, <b>Remove and export</b> e Cancel (só Open editor quando todo clipe toca a gravação que sumiu). O editor diz o mesmo ao abrir, com <b>Remove</b> (um passo de desfazer) ou pedindo o Replace.</td></tr>
+      <tr><td><code>A9</code></td><td>Sair do Cue durante a contagem a cancela, e voltar não começa a take. Ligação, outro app, Split View ou calor que tomam a câmera param a contagem e a área da câmera diz por quê ("The camera is in use" / "The camera is paused"). O Record avisa em vez de começar. Um erro da sessão tenta reiniciar uma vez antes de "The camera stopped".</td></tr>
+      <tr><td><code>A16</code></td><td>Depois das três tentativas rápidas, aparece "Voice Following paused · Scrolling while you talk" e o Cue tenta de novo a cada 5 s enquanto o modo Voice está ligado. Ao voltar para o Cue, tenta na hora. Antes, desistia pelo resto da sessão.</td></tr>
+      <tr><td><code>A10</code></td><td>A take guarda o formato que a câmera gravou de verdade (o formato ativo), não o pedido. Um 4K60 que a frontal não faz vira "1080p", e o Cue diz isso uma vez por formato na sessão.</td></tr>
+      <tr><td><code>B9</code></td><td>Uma fila que recomeça para o mesmo vídeo (Edit first, depois Share) segue com a nova exportação. As redes já postadas continuam postadas e não aparecem de novo.</td></tr>
+      <tr><td><code>B18</code></td><td>Tocar a notificação da revisão que já está aberta não a abre de novo (antes, ela voltava depois de fechada).</td></tr>
+    </tbody>
+  </table></div>
+  <p><b>Contraste:</b> nenhuma cor nova. O aviso da câmera usa o mesmo bloco das outras mensagens da câmera (<code>Palette.ink2</code> sobre o fundo opaco da câmera, já medido); os demais são alertas do sistema e o toast existente.</p>
 </section>
 
 <section>
@@ -374,11 +391,12 @@ tr:last-child td { border-bottom: 0; }
     <li><b>B4:</b> mudar algo, "Not yet", Save: aparece "Unfinished edit"; conferir o vídeo no Fotos.</li>
     <li><b>A13:</b> num roteiro, Improve › Shorter e tentar digitar: o texto não muda; Stop no toast para.</li>
     <li><b>B5:</b> com 0 exportações, Share to universe, escolher redes, comprar (StoreKit de teste).</li>
-    <li><b>B9:</b> fila com 2 redes, postar a primeira, "Edit first" na segunda, Done › Share.</li>
-    <li><b>A9:</b> contagem de 10 s e ir para a tela inicial; ligação com a câmera aberta; Split View no iPad.</li>
-    <li><b>A10:</b> pedir 4K60 na câmera frontal e comparar a informação do take com o arquivo.</li>
+    <li><b>B9:</b> fila com 2 redes, postar a primeira, "Edit first" na segunda, Done › Share: só a segunda deve aparecer.</li>
+    <li><b>A9:</b> contagem de 10 s e ir para a tela inicial: ao voltar, nada grava. Receber uma ligação com a câmera aberta: a área diz "The camera is in use". No iPad, abrir em Split View: "The camera is paused".</li>
+    <li><b>A10:</b> pedir 4K60 na câmera frontal e gravar: a take diz o formato real (1080p no 15 Pro) e aparece o aviso uma vez.</li>
+    <li><b>B20:</b> editar, "Not yet", ligar legendas na revisão e salvar; Continue: as legendas estão lá.</li>
     <li><b>A15:</b> rodar o atalho "New script" durante uma gravação.</li>
-    <li><b>A16:</b> ler com Voice Following e chamar a Siri duas vezes.</li>
+    <li><b>A16:</b> ler com Voice Following e chamar a Siri duas vezes: volta a seguir as palavras sozinho.</li>
     <li><b>A17:</b> digitar uma ideia longa, escolher rede e formato, e fechar o Cue pelo seletor de apps: ao abrir, tudo volta.</li>
     <li><b>B18:</b> sair durante uma exportação, voltar pela notificação e fechar a revisão.</li>
     <li><b>A8:</b> o tmp sendo limpo só se reproduz com o iPhone quase sem espaço (difícil; pode ficar para um teste automatizado com repositório falso).</li>

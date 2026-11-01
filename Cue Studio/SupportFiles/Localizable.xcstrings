@@ -3228,6 +3228,125 @@
         }
       }
     },
+    "A call or another app is using it. It comes back when it’s free." : {
+      "comment" : "Detail under 'The camera is in use' in the teleprompter",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مكالمة أو تطبيق آخر يستخدمها. ستعود عندما تصبح متاحة."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Et opkald eller en anden app bruger det. Det kommer tilbage, når det er ledigt."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Anruf oder eine andere App verwendet sie. Sie ist wieder da, sobald sie frei ist."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una llamada u otra app la está usando. Vuelve cuando quede libre."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un appel ou une autre app l’utilise. Elle revient dès qu’elle est libre."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कोई कॉल या दूसरी ऐप इसका उपयोग कर रही है। खाली होते ही यह वापस आ जाएगा।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Panggilan atau app lain sedang menggunakannya. Kamera kembali saat sudah bebas."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una chiamata o un’altra app la sta usando. Torna quando è libera."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通話または別のアプリが使用しています。空いたら戻ります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "통화나 다른 앱이 사용 중이에요. 사용이 끝나면 돌아와요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En samtale eller en annen app bruker det. Det kommer tilbake når det er ledig."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Een gesprek of een andere app gebruikt hem. Hij komt terug zodra hij vrij is."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uma ligação ou outro app está usando. Ela volta quando ficar livre."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ett samtal eller en annan app använder den. Den kommer tillbaka när den är ledig."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "มีสายโทรหรือแอปอื่นกำลังใช้อยู่ กล้องจะกลับมาเมื่อว่าง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bir arama veya başka bir uygulama kullanıyor. Boşalınca geri gelir."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Một cuộc gọi hoặc ứng dụng khác đang dùng. Camera sẽ trở lại khi rảnh."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通话或其他 App 正在使用相机。空闲后会恢复。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通話或其他 App 正在使用相機。空閒後會恢復。"
+          }
+        }
+      }
+    },
     "A check from Google (Firebase App Check) confirms each request comes from Cue." : {
       "comment" : "What Ultra AI sends › What Google does with it: a row",
       "localizations" : {
@@ -13410,6 +13529,125 @@
         }
       }
     },
+    "It comes back in a moment." : {
+      "comment" : "Detail under 'The camera is paused' for any other short interruption of the camera",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ستعود بعد لحظة."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Det kommer tilbage om et øjeblik."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sie ist gleich wieder da."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vuelve en un momento."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elle revient dans un instant."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "यह थोड़ी देर में वापस आएगा।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamera akan kembali sebentar lagi."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Torna tra un attimo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "まもなく戻ります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "곧 돌아와요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Det kommer tilbake om et øyeblikk."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hij komt zo terug."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ela volta em instantes."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Den kommer tillbaka om en stund."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "จะกลับมาในอีกสักครู่"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Birazdan geri gelir."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sẽ trở lại trong giây lát."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "稍后会恢复。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "稍後會恢復。"
+          }
+        }
+      }
+    },
     "It’s almost time: %@. Here’s one thing worth knowing." : {
       "comment" : "Find inspiration: the opening line of a starter tied to an occasion coming up, said on camera (%@ is the occasion's name)",
       "localizations" : {
@@ -18356,6 +18594,125 @@
         }
       }
     },
+    "Recorded in %@ at %lld fps · This camera can’t do %@ at %lld fps" : {
+      "comment" : "Toast after a take when the camera recorded in a smaller format than the one chosen (e.g. 'Recorded in 1080p at 60 fps · This camera can’t do 4K at 60 fps'); said once per format per session",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تم التسجيل بدقة %1$@ و%2$lld إطارًا/ث · لا تدعم هذه الكاميرا %3$@ و%4$lld إطارًا/ث"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Optaget i %1$@ ved %2$lld fps · Dette kamera kan ikke %3$@ ved %4$lld fps"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In %1$@ mit %2$lld fps aufgenommen · Diese Kamera kann kein %3$@ mit %4$lld fps"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grabado en %1$@ a %2$lld fps · Esta cámara no puede grabar en %3$@ a %4$lld fps"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enregistré en %1$@ à %2$lld ips · Cette caméra ne peut pas filmer en %3$@ à %4$lld ips"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ में %2$lld fps पर रिकॉर्ड हुआ · यह कैमरा %3$@ में %4$lld fps नहीं कर सकता"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Direkam dalam %1$@ pada %2$lld fps · Kamera ini tidak bisa %3$@ pada %4$lld fps"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registrato in %1$@ a %2$lld fps · Questa fotocamera non supporta %3$@ a %4$lld fps"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@・%2$lld fpsで録画しました · このカメラは%3$@・%4$lld fpsに対応していません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@, %2$lld fps로 녹화했어요 · 이 카메라는 %3$@, %4$lld fps를 지원하지 않아요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tatt opp i %1$@ med %2$lld fps · Dette kameraet kan ikke %3$@ med %4$lld fps"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opgenomen in %1$@ met %2$lld fps · Deze camera kan geen %3$@ met %4$lld fps"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gravado em %1$@ a %2$lld fps · Esta câmera não grava em %3$@ a %4$lld fps"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inspelat i %1$@ med %2$lld fps · Den här kameran klarar inte %3$@ med %4$lld fps"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "อัดเป็น %1$@ ที่ %2$lld fps · กล้องนี้อัด %3$@ ที่ %4$lld fps ไม่ได้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@, %2$lld fps ile kaydedildi · Bu kamera %3$@, %4$lld fps yapamıyor"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đã quay ở %1$@, %2$lld fps · Camera này không quay được %3$@, %4$lld fps"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已按 %1$@、%2$lld fps 录制 · 此相机不支持 %3$@、%4$lld fps"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已用 %1$@、%2$lld fps 錄影 · 此相機不支援 %3$@、%4$lld fps"
+          }
+        }
+      }
+    },
     "Records that you reviewed this version" : {
       "comment" : "VoiceOver hint of the I checked button on the fact-check reminder.",
       "localizations" : {
@@ -21700,6 +22057,125 @@
         }
       }
     },
+    "Something went wrong with the camera." : {
+      "comment" : "Detail under 'The camera stopped' when the system gives no reason for the camera's error",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "حدث خطأ في الكاميرا."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der opstod en fejl med kameraet."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bei der Kamera ist ein Fehler aufgetreten."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Algo salió mal con la cámara."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un problème est survenu avec la caméra."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कैमरे में कुछ गड़बड़ हो गई।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terjadi masalah pada kamera."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Si è verificato un problema con la fotocamera."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カメラで問題が発生しました。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "카메라에 문제가 생겼어요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noe gikk galt med kameraet."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Er ging iets mis met de camera."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Algo deu errado com a câmera."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Något gick fel med kameran."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เกิดข้อผิดพลาดกับกล้อง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamerada bir sorun oluştu."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đã xảy ra lỗi với camera."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "相机出了点问题。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "相機發生問題。"
+          }
+        }
+      }
+    },
     "Step %lld done" : {
       "comment" : "VoiceOver announcement when a first voyage step is done in place (its number)",
       "localizations" : {
@@ -22410,6 +22886,363 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "感恩節"
+          }
+        }
+      }
+    },
+    "The camera works with one app at a time. Use Cue in full screen to record." : {
+      "comment" : "Detail under 'The camera is paused' on iPad in Split View or Slide Over",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تعمل الكاميرا مع تطبيق واحد في كل مرة. استخدم Cue بملء الشاشة للتسجيل."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kameraet virker med én app ad gangen. Brug Cue i fuld skærm for at optage."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Kamera funktioniert mit einer App gleichzeitig. Nutze Cue im Vollbild, um aufzunehmen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La cámara funciona con una app a la vez. Usa Cue a pantalla completa para grabar."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La caméra fonctionne avec une seule app à la fois. Utilisez Cue en plein écran pour enregistrer."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कैमरा एक समय में एक ही ऐप के साथ काम करता है। रिकॉर्ड करने के लिए Cue को फ़ुल स्क्रीन में इस्तेमाल करें।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamera bekerja dengan satu app dalam satu waktu. Gunakan Cue dalam layar penuh untuk merekam."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La fotocamera funziona con un’app alla volta. Usa Cue a schermo intero per registrare."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カメラは一度に1つのアプリでしか使えません。録画するには Cue をフルスクリーンで使ってください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "카메라는 한 번에 한 앱에서만 작동해요. 녹화하려면 Cue를 전체 화면으로 사용하세요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kameraet fungerer med én app om gangen. Bruk Cue i fullskjerm for å ta opp."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De camera werkt met één app tegelijk. Gebruik Cue schermvullend om op te nemen."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A câmera funciona com um app por vez. Use o Cue em tela cheia para gravar."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kameran fungerar med en app i taget. Använd Cue i helskärm för att spela in."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "กล้องใช้ได้ทีละแอป ใช้ Cue แบบเต็มหน้าจอเพื่ออัด"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamera aynı anda tek bir uygulamayla çalışır. Kaydetmek için Cue’yu tam ekran kullanın."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Camera chỉ hoạt động với một ứng dụng mỗi lúc. Hãy dùng Cue toàn màn hình để quay."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "相机一次只能用于一个 App。请全屏使用 Cue 来录制。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "相機一次只能用於一個 App。請全螢幕使用 Cue 來錄影。"
+          }
+        }
+      }
+    },
+    "The camera is paused" : {
+      "comment" : "Title over the camera area in the teleprompter while the camera is paused for a while (Split View, heat)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الكاميرا متوقفة مؤقتًا"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kameraet er sat på pause"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Kamera ist pausiert"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La cámara está en pausa"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La caméra est en pause"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कैमरा रुका हुआ है"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamera dijeda"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La fotocamera è in pausa"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カメラは一時停止中です"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "카메라가 일시 정지됐어요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kameraet er satt på pause"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De camera is gepauzeerd"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A câmera está pausada"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kameran är pausad"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "กล้องหยุดชั่วคราว"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamera duraklatıldı"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Camera đang tạm dừng"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "相机已暂停"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "相機已暫停"
+          }
+        }
+      }
+    },
+    "The camera is in use" : {
+      "comment" : "Title over the camera area in the teleprompter while a call or another app has the camera",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الكاميرا قيد الاستخدام"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kameraet er i brug"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Kamera wird verwendet"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La cámara está en uso"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La caméra est utilisée"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कैमरा उपयोग में है"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamera sedang digunakan"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La fotocamera è in uso"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カメラは使用中です"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "카메라를 사용 중이에요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kameraet er i bruk"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De camera is in gebruik"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A câmera está em uso"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kameran används"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "กล้องกำลังถูกใช้งาน"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamera kullanımda"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Camera đang được dùng"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "相机正在使用中"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "相機正在使用中"
           }
         }
       }
@@ -23838,6 +24671,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "有尚未完成的變更。你可以繼續剪輯，或匯出上次完成的版本。"
+          }
+        }
+      }
+    },
+    "This device needs to cool down. The camera comes back in a moment." : {
+      "comment" : "Detail under 'The camera is paused' when the system pauses the camera for heat or power",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يحتاج هذا الجهاز إلى أن يبرد. ستعود الكاميرا بعد لحظة."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denne enhed skal køle ned. Kameraet kommer tilbage om et øjeblik."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieses Gerät muss abkühlen. Die Kamera ist gleich wieder da."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este dispositivo necesita enfriarse. La cámara vuelve en un momento."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cet appareil doit refroidir. La caméra revient dans un instant."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "इस डिवाइस को ठंडा होने की ज़रूरत है। कैमरा थोड़ी देर में वापस आएगा।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perangkat ini perlu mendingin. Kamera akan kembali sebentar lagi."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Questo dispositivo deve raffreddarsi. La fotocamera torna tra un attimo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このデバイスを冷ます必要があります。カメラはまもなく戻ります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 기기의 열을 식혀야 해요. 카메라는 곧 돌아와요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denne enheten må kjøle seg ned. Kameraet kommer tilbake om et øyeblikk."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dit apparaat moet afkoelen. De camera komt zo terug."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este aparelho precisa esfriar. A câmera volta em instantes."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Den här enheten behöver svalna. Kameran kommer tillbaka om en stund."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "อุปกรณ์นี้ต้องคลายความร้อน กล้องจะกลับมาในอีกสักครู่"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu cihazın soğuması gerekiyor. Kamera birazdan geri gelir."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thiết bị này cần nguội bớt. Camera sẽ trở lại trong giây lát."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此设备需要降温。相机稍后会恢复。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此裝置需要降溫。相機稍後會恢復。"
           }
         }
       }
@@ -28851,6 +29803,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "影片已儲存。無法儲存封面影像。"
+          }
+        }
+      }
+    },
+    "Voice Following paused · Scrolling while you talk" : {
+      "comment" : "Toast in the teleprompter when speech recognition stopped several times (a call, Siri): the text scrolls while the creator talks, and Voice Following picks up again by itself",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تم إيقاف تتبّع الصوت مؤقتًا · يتحرك النص أثناء حديثك"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Følg stemmen er sat på pause · Ruller, mens du taler"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stimme folgen pausiert · Scrollt, während du sprichst"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seguimiento de voz en pausa · Se desplaza mientras hablas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suivi vocal en pause · Défile pendant que vous parlez"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आवाज़ ट्रैकिंग रुकी · आपके बोलते समय स्क्रॉल हो रहा है"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ikuti Suara dijeda · Bergulir saat Anda bicara"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Segui voce in pausa · Scorre mentre parli"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "音声追従を一時停止 · 話している間はスクロール"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "음성 따라가기 일시 정지 · 말하는 동안 스크롤돼요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Følg stemmen er satt på pause · Ruller mens du snakker"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stem volgen gepauzeerd · Scrolt terwijl je praat"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seguir voz pausado · Rolando enquanto você fala"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Följ rösten pausad · Rullar medan du pratar"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "หยุดติดตามเสียงชั่วคราว · เลื่อนขณะที่คุณพูด"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ses Takibi duraklatıldı · Konuşurken kayıyor"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đã tạm dừng Theo giọng nói · Cuộn khi bạn nói"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "语音跟随已暂停 · 你说话时滚动"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "跟隨語音已暫停 · 你說話時捲動"
           }
         }
       }

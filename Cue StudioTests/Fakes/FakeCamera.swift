@@ -9,6 +9,7 @@ import AVFAudio
 @MainActor
 final class FakeCamera: CameraControlling {
     var status: CameraStatus = .running
+    var interruption: CameraInterruption?
     private(set) var isRecording = false
     /// Nil until started; then the lens asked for, unless a test says this device lacks it.
     var activeLens: CameraLens?
@@ -17,6 +18,9 @@ final class FakeCamera: CameraControlling {
     var missingLenses: Set<CameraLens> = []
     var failsToRecord = false
     var clipDuration: TimeInterval = 42
+    /// The format the camera "really" recorded in, when it differs from the one asked for.
+    var deliveredResolution: VideoResolution?
+    var deliveredFrameRate: FrameRate?
     /// Where the next clip is (a fresh name in the temporary folder when nil).
     var clipURL: URL?
     /// Runs while a take is starting, before it records (the creator leaving then).
@@ -62,7 +66,7 @@ final class FakeCamera: CameraControlling {
     func stopRecording() async -> RecordedClip? {
         isRecording = false
         let url = clipURL ?? URL.temporaryDirectory.appending(path: "fake-take-\(UUID().uuidString).mov")
-        let clip = RecordedClip(url: url, duration: clipDuration)
+        let clip = RecordedClip(url: url, duration: clipDuration, resolution: deliveredResolution, frameRate: deliveredFrameRate)
         if let reason = endsByItselfWhileStopping { onRecordingEnded?(clip, reason) }
         return clip
     }

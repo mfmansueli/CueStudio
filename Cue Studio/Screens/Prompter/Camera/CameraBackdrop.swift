@@ -32,6 +32,11 @@ struct CameraBackdrop: View {
             case .running, .starting, .idle:
                 if camera.status == .running {
                     feed.transition(.opacity)
+                    // A call or Split View took the camera: said over the still picture, which stays in place for when it comes back.
+                    if let interruption = camera.interruption {
+                        message(title: interruption.title, detail: interruption.detail, showsSettings: false)
+                            .transition(.opacity)
+                    }
                 } else {
                     CameraFeedPlaceholder()
                 }
@@ -55,6 +60,7 @@ struct CameraBackdrop: View {
         .captureWatermarked(isSceneCaptured, markY: captureMarkY)
         .ignoresSafeArea()
         .animation(.easeOut(duration: 0.3), value: camera.status)
+        .animation(.easeOut(duration: 0.3), value: camera.interruption)
     }
 
     /// The live image and the background effect's frames over it. Hidden, the preview stays in place: its rotation

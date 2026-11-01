@@ -22,6 +22,9 @@ final class PresentationService {
     /// Takes opens filtered this way (from "Your universe"); Takes takes it and clears it.
     var takesRequest: TakesRequest?
     var prompter: PrompterLaunch?
+    /// The take whose review is on screen (`TakeReviewView` sets it): a notification about that take doesn't open it a second time, which
+    /// came back after the creator closed it (B18).
+    var reviewOnScreen: UUID?
     /// Cue Pro over the whole app, from somewhere that isn't a sheet (the dock's writer chip when Ultra AI's free scripts are used up).
     var paywall: PaywallContext?
     /// This device is the remote of a teleprompter on another one.
@@ -72,6 +75,8 @@ final class PresentationService {
 
     func openReview(of take: Take, then action: ReviewLaunchAction? = nil) {
         sheet = nil
+        // Already there: the export it tells about, or the queue's "Continue posting" card, is on the review the creator sees.
+        guard reviewOnScreen != take.id || !(action == nil || action == .continueQueue) else { return }
         prompter = PrompterLaunch(scriptID: take.scriptID, mode: .selfie, reviewTakeID: take.id, reviewAction: action)
     }
 

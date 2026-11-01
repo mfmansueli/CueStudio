@@ -703,7 +703,8 @@ outra: `ExportLedgerService.begin(inheritingCountFrom:)`).
 **A fila** (`ShareQueue`, `ShareQueueService`, `ShareFlow`): "Posting to n networks" (com 2+, nas 2 primeiras vezes); o passo de cada rede ("1 OF 3",
 segmentos, legenda copiada e editável, "In the share sheet, tap {app}", "◀ Cue", **Send to {app}** · Edit first · **Post later** (`Menu`: Tonight, Tomorrow,
 Pick a date and time…, No reminder; §27)); "Posted on {rede}?": **só "Yes, it's live" conta** e acende o planeta (`MilestoneService.recordShare`).
-Cada passo tem a altura do próprio conteúdo. Fechar manda o resto para depois ("Saved · continue anytime"); o card **Continue posting**
+Cada passo tem a altura do próprio conteúdo. Uma fila que recomeça para o mesmo vídeo (o **Edit first** de uma rede, depois Share de novo) segue
+com a nova exportação e as redes já postadas continuam postadas, nunca oferecidas de novo (`ShareQueue.keepPosted`). Fechar manda o resto para depois ("Saved · continue anytime"); o card **Continue posting**
 (`ContinuePostingCard`, 60 pt, 104 pt acima do fundo) aparece em Scripts, Takes e na revisão. Falta a linha "Cover frame 0:03" (o app não escolhe capa).
 Apagar o take de vez leva a fila dele junto (sem card nem lembrete de um vídeo que não existe). Sem exportações grátis, "Share to n networks" abre "Your
 video is ready"; o Pro comprado dali segue com a fila (uma cópia em Fotos, o passo da primeira rede), nunca um salvamento solto.
@@ -1073,7 +1074,14 @@ apertado ou não) em `PaletteContrastTests`.
 (`.glassProminent` quando ligado). Do Cue: gravar, medidor de voz, última take, rótulos de microfone e formato e o painel de vidro noturno. Sem gesto que
 cobre o painel: as ações (`setScrollMode`, `setSpeed`, `togglePlay`, `rewind`) chamam `bar.touch()`. Gravando, os controles recolhidos ficam escondidos do
 VoiceOver (`SelfieControlSheet`); a área de toque da folha é contêiner de acessibilidade (`ControlSheet`). **Nenhuma take se perde:** cada take pede
-tempo em segundo plano do começo até entrar na biblioteca (`ApplicationGrace`), sair do gravador no meio (ou enquanto a câmera ainda começa) guarda a
+tempo em segundo plano do começo até entrar na biblioteca (`ApplicationGrace`). **Sair do Cue durante a contagem** (Home, ligação, Siri, Central de
+Controle) a cancela, e voltar não começa a take. Uma ligação, outro app, o Split View do iPad ou o calor que tomam a câmera também param a contagem, e a
+área da câmera diz por quê ("The camera is in use" / "The camera is paused", com o motivo), em vez de uma imagem congelada; o Record avisa e não começa
+(`CameraInterruption`). Um erro da sessão (serviços de mídia reiniciados depois de uma ligação) tenta reiniciar uma vez antes de "The camera stopped". A take
+guarda o **formato que a câmera gravou de verdade** (`RecordedClip.resolution`/`frameRate`, lido do formato ativo), não o pedido: um 4K60 que a frontal não
+faz vira "1080p", e o Cue diz uma vez por formato na sessão ("Recorded in 1080p at 60 fps · This camera can’t do 4K at 60 fps"). O **Voice Following**
+que para sozinho (ligação, Siri) tenta de novo três vezes em seguida e, depois, diz "Voice Following paused · Scrolling while you talk" e tenta a cada 5 s
+enquanto o modo Voice está ligado; voltar ao Cue tenta na hora. Sair do gravador no meio (ou enquanto a câmera ainda começa) guarda a
 take sem a revisão, e uma que o sistema encerrou enquanto o criador parava entra uma vez só; o que ficou em `tmp/take-*.mov` (Cue parou no meio, ou a
 biblioteca não a recebeu) volta na abertura seguinte, e o que não toca é apagado (`TakeRecovery`). Se a lista de takes não
 pode ser gravada (iPhone cheio), a take não entra e o vídeo volta para `tmp/take-*.mov` com o nome da câmera ("The take couldn't be saved") e uma nota do
@@ -1210,6 +1218,8 @@ para que uma gravação de tela saia assinada (a exportação é o vídeo limpo)
 ## 27. Notificações, lembretes e introdução de ferramentas
 
 Sistema completo em `NOTIFICATIONS.md`. Na interface:
+- **Toque numa notificação da revisão que já está na tela** (a exportação terminou, a vez da fila) não a abre de novo
+  (`PresentationService.reviewOnScreen`): antes, ela voltava depois que o criador a fechava.
 - **Settings › Notifications** (`NotificationsSettingsView`, redesenho do dono 22/10/2026: curta e direta, a versão B do canvas; valor "Off" ou
   "Reminders: n"): no topo, **o interruptor do iOS** (`NotificationPermissionRow`): sino em contorno `accText` que balança de leve a cada ~5 s enquanto
   está desligado; "Notifications are off · Cue can’t remind you yet." / "Notifications are off in iOS · Allow Cue in iOS Settings." / "Notifications

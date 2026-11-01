@@ -132,6 +132,10 @@ final class PrompterViewModel {
     /// Times in a row recognition ended on its own and was started again (`restartSpeech`).
     var speechRestarts = 0
     static let maximumSpeechRestarts = 3
+    /// After the quick restarts, how often recognition is tried again while Voice Following is on (a call, Siri).
+    let speechRetryInterval: Duration
+    /// The formats already said to differ from the one asked for (`tellIfFormatDiffers`).
+    @ObservationIgnored var toldFormats: Set<String> = []
     /// How long recognition that ended by itself waits before it starts again.
     let speechRestartDelay: Duration
     var transcription: SpeechTranscription?
@@ -188,9 +192,11 @@ final class PrompterViewModel {
         microphone: MicrophoneAccess = MicrophoneAccess(),
         clock: @escaping () -> TimeInterval = { ProcessInfo.processInfo.systemUptime },
         speechRestartDelay: Duration = .seconds(1),
+        speechRetryInterval: Duration = .seconds(5),
         recordingGrace: @escaping @MainActor () -> @MainActor () -> Void = { ApplicationGrace.begin(named: "Cue take") }
     ) {
         self.speechRestartDelay = speechRestartDelay
+        self.speechRetryInterval = speechRetryInterval
         self.recordingGrace = recordingGrace
         scriptID = launch.scriptID
         mode = launch.mode
@@ -551,11 +557,7 @@ final class PrompterViewModel {
             await stopRecording()
             return
         }
-        guard camera.status == .running else {
-            toast.show(String(localized: "The camera isn't ready"), kind: .problem)
-            watchOutcome = .failedStart
-            return
-        }
+        guard cameraCanRecord else { return }
         let seconds = session.camera.countdown.rawValue
         if seconds > 0 {
             startCountdown(from: seconds) { [weak self] in
@@ -602,7 +604,36 @@ final class PrompterViewModel {
         if wasCounting { AccessibilityNotification.Announcement(String(localized: "Countdown cancelled")).post() }
     }
 
+    /// The camera runs and nothing has it for a while (a call, Split View): else the creator is told and nothing starts. Asked at the tap
+    /// and again when a countdown ends, since a call can take the camera in between.
+    private var cameraCanRecord: Bool {
+        guard camera.status == .running, camera.interruption == nil else {
+            toast.show(camera.interruption?.title ?? String(localized: "The camera isn't ready"), kind: .problem)
+            watchOutcome = .failedStart
+            watch?.publishCurrent()
+            return false
+        }
+        return true
+    }
+
+    /// The camera stopped for a while (a call, another app, Split View): a countdown stops, so a take never starts in its middle. A take
+    /// already recording is ended and filed by the camera itself (`onRecordingEnded`).
+    func cameraInterruptionChanged() {
+        if camera.interruption != nil { cancelCountdown() }
+    }
+
+    /// Cue left the screen (Home, a call, Siri, Control Center): a countdown stops, so a take never starts unseen. Back on screen, Voice
+    /// Following listens again at once if the system took the microphone meanwhile.
+    func sceneChanged(isActive: Bool) {
+        guard isActive else {
+            cancelCountdown()
+            return
+        }
+        resumeSpeechIfStopped()
+    }
+
     private func beginRecording() async {
+        guard cameraCanRecord else { return }
         // Recording without answering the recommendation keeps the Creator Setup, which is what the
         // screen showed.
         session.settleUndecided()
@@ -694,18 +725,37 @@ final class PrompterViewModel {
         }
         do {
             let take = try takes.addTake(
-                fileAt: clip.url, duration: clip.duration, script: script, camera: session.camera, background: camera.background
+                fileAt: clip.url, duration: clip.duration, script: script, camera: session.camera, background: camera.background,
+                delivered: (clip.resolution, clip.frameRate)
             )
             if openReview {
                 reviewStartsWithPick = shouldPickBest(after: take)
                 reviewingTake = take
             }
-            if let message { toast.show(message, kind: .problem) }
+            if let message {
+                toast.show(message, kind: .problem)
+            } else {
+                tellIfFormatDiffers(take)
+            }
             watchOutcome = .saved(take: take.number, seconds: clip.duration)
         } catch {
             toast.show(String(localized: "The take couldn't be saved"), kind: .problem)
             watchOutcome = .failedSave
         }
+    }
+
+    /// The camera recorded in less than was asked for (no 4K at 60 fps on this camera): said once per format this session, so the take's
+    /// "1080p" isn't a surprise and nobody exports it in 4K hoping for more.
+    private func tellIfFormatDiffers(_ take: Take) {
+        let asked = session.camera
+        guard take.resolution != asked.resolution || take.frameRate != asked.frameRate else { return }
+        let key = "\(asked.resolution.rawValue)-\(asked.frameRate.rawValue)>\(take.resolution.rawValue)-\(take.frameRate.rawValue)"
+        guard !toldFormats.contains(key) else { return }
+        toldFormats.insert(key)
+        let message = String(
+            localized: "Recorded in \(take.resolution.label) at \(take.frameRate.rawValue) fps · This camera can’t do \(asked.resolution.label) at \(asked.frameRate.rawValue) fps"
+        )
+        toast.show(message, kind: .problem)
     }
 
     /// "Stop when script ends": a short beat after the last line, then stop.

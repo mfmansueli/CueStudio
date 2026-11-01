@@ -33,12 +33,14 @@ final class ShareQueueService {
 
     // MARK: - Changing
 
-    /// A new queue for a video (it replaces one that was left for it before).
+    /// A queue for a video, on its newest export. One left for it before goes on rather than starting over: the networks already posted
+    /// stay posted (B9: "Edit first" on the second network, then Share, never offers the first one again). Nothing left to post, no queue.
     @discardableResult
     func begin(takeID: UUID, operationID: UUID, title: String, networks: [ShareDestination]) -> ShareQueue {
-        let queue = ShareQueue(takeID: takeID, operationID: operationID, title: title, networks: networks, updatedAt: now())
+        var queue = ShareQueue(takeID: takeID, operationID: operationID, title: title, networks: networks, updatedAt: now())
+        if let left = self.queue(forTake: takeID) { queue.keepPosted(from: left) }
         queues.removeAll { $0.takeID == takeID }
-        queues.append(queue)
+        if !queue.isDone { queues.append(queue) }
         save()
         return queue
     }

@@ -26,11 +26,14 @@ struct PrompterViewModelVoiceTests {
         let preferences: PreferencesService
         let languages: LanguageService
         let clock: TestClock
+        let toast: ToastService
         let defaults: TestDefaults
     }
 
     /// A two-paragraph script laid out as two lines each, 50 pt apart, with Voice Following on.
-    private func makeScenario(mode: PrompterMode = .studio, prepare: (FakeSpeechTranscriber) -> Void = { _ in }) -> Scenario {
+    private func makeScenario(
+        mode: PrompterMode = .studio, retry: Duration = .seconds(5), prepare: (FakeSpeechTranscriber) -> Void = { _ in }
+    ) -> Scenario {
         let defaults = TestDefaults()
         let script = TestData.script(text: "One two three four.\nFive six seven eight.")
         let library = ScriptLibraryService(repository: FakeScriptRepository(scripts: [script]))
@@ -46,13 +49,14 @@ struct PrompterViewModelVoiceTests {
         prepare(speech)
         let languages = TestData.languages(defaults: defaults.defaults)
         let clock = TestClock()
+        let toast = ToastService()
         let viewModel = PrompterViewModel(
             launch: PrompterLaunch(scriptID: script.id, mode: mode),
             library: library, takes: TakeLibraryService(repository: FakeTakeRepository()), preferences: preferences,
             profile: CreatorProfileService(defaults: defaults.defaults), rules: TestData.rulesService(),
             camera: camera, audio: audio, microphones: FakeMicrophones(), speech: speech, languages: languages,
-            remote: RemoteControlService(transport: FakeRemoteTransport()), toast: ToastService(), clock: { clock.now },
-            speechRestartDelay: .milliseconds(20)
+            remote: RemoteControlService(transport: FakeRemoteTransport()), toast: toast, clock: { clock.now },
+            speechRestartDelay: .milliseconds(20), speechRetryInterval: retry
         )
         let lineHeight = viewModel.lineHeight
         viewModel.updateLayout(contentHeight: 150 + 2 * lineHeight)
@@ -60,7 +64,7 @@ struct PrompterViewModelVoiceTests {
         viewModel.updateParagraphFrame(150..<(150 + 2 * lineHeight), at: 1)
         return Scenario(
             viewModel: viewModel, camera: camera, audio: audio, speech: speech, preferences: preferences,
-            languages: languages, clock: clock, defaults: defaults
+            languages: languages, clock: clock, toast: toast, defaults: defaults
         )
     }
 
@@ -155,22 +159,43 @@ struct PrompterViewModelVoiceTests {
         await scenario.viewModel.disappear()
     }
 
-    /// It tries a few times, not forever: a recognizer that keeps failing leaves the text on the level.
-    @Test func aRecognizerThatKeepsStoppingIsGivenUpOn() async {
-        let scenario = makeScenario(mode: .studio)
+    /// A16: after a call or Siri, a few quick restarts, then "Voice Following paused" said once and a try every few seconds, so the words
+    /// are followed again by themselves instead of the rest of the session on the level.
+    @Test func aRecognizerThatKeepsStoppingSaysSoAndKeepsTrying() async {
+        let scenario = makeScenario(mode: .studio, retry: .milliseconds(600))
         defer { scenario.defaults.tearDown() }
         await startListening(scenario)
-        // Three restarts in a row, each one a second after the recognizer stopped...
+        // Three restarts in a row, each one a moment after the recognizer stopped...
         for attempt in 1...3 {
             scenario.speech.endOnItsOwn()
             await waitSeconds(10) { scenario.speech.startCount == attempt + 1 && scenario.viewModel.followsSpeech }
             #expect(scenario.speech.startCount == attempt + 1)
         }
-        // ...and then it stays on the level.
+        // ...then it says so, scrolls while the creator talks, and tries again a little later.
         scenario.speech.endOnItsOwn()
-        await waitSeconds(1) { false }
-        #expect(scenario.speech.startCount == 4)
-        #expect(!scenario.viewModel.followsSpeech)
+        await Wait.until { !scenario.viewModel.followsSpeech }
+        #expect(scenario.toast.message == String(localized: "Voice Following paused · Scrolling while you talk"))
+        #expect(scenario.viewModel.voiceFollowStatus == .scrollsWhileTalking)
+        await waitSeconds(10) { scenario.speech.startCount == 5 && scenario.viewModel.followsSpeech }
+        #expect(scenario.speech.startCount == 5)
+        #expect(scenario.viewModel.followsSpeech)
+        await scenario.viewModel.disappear()
+    }
+
+    /// A16: back in Cue after the call, it listens again at once rather than waiting for the next try.
+    @Test func comingBackToCueListensAgainAtOnce() async {
+        let scenario = makeScenario(mode: .studio, retry: .seconds(120))
+        defer { scenario.defaults.tearDown() }
+        await startListening(scenario)
+        for attempt in 1...4 {
+            scenario.speech.endOnItsOwn()
+            if attempt < 4 { await waitSeconds(10) { scenario.speech.startCount == attempt + 1 && scenario.viewModel.followsSpeech } }
+        }
+        await Wait.until { !scenario.viewModel.followsSpeech }
+        scenario.viewModel.sceneChanged(isActive: true)
+        await waitSeconds(10) { scenario.speech.startCount == 5 && scenario.viewModel.followsSpeech }
+        #expect(scenario.speech.startCount == 5)
+        #expect(scenario.viewModel.followsSpeech)
         await scenario.viewModel.disappear()
     }
 

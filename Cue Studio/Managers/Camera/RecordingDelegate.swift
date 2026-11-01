@@ -19,6 +19,14 @@ nonisolated final class RecordingDelegate: NSObject, AVCaptureFileOutputRecordin
     }
 
     private let state = Mutex(State())
+    /// The camera's format while it records (`RecordedClip.resolution`, `frameRate`).
+    private let resolution: VideoResolution?
+    private let frameRate: FrameRate?
+
+    init(resolution: VideoResolution? = nil, frameRate: FrameRate? = nil) {
+        self.resolution = resolution
+        self.frameRate = frameRate
+    }
 
     func fileOutput(
         _ output: AVCaptureFileOutput,
@@ -34,7 +42,8 @@ nonisolated final class RecordingDelegate: NSObject, AVCaptureFileOutputRecordin
     func finish(at url: URL, duration: TimeInterval, error: (any Error)?) {
         // Some errors still leave a complete, playable file.
         let finishedAnyway = (error as NSError?)?.userInfo[AVErrorRecordingSuccessfullyFinishedKey] as? Bool ?? false
-        let clip = (error == nil || finishedAnyway) ? RecordedClip(url: url, duration: duration) : nil
+        let clip = (error == nil || finishedAnyway)
+            ? RecordedClip(url: url, duration: duration, resolution: resolution, frameRate: frameRate) : nil
         typealias Ended = @Sendable (RecordedClip?, RecordingEndReason) -> Void
         let (waiting, endedByItself) = state.withLock { state -> (CheckedContinuation<RecordedClip?, Never>?, Ended?) in
             state.finished = true

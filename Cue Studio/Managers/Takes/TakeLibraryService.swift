@@ -107,13 +107,15 @@ final class TakeLibraryService {
 
     // MARK: - Actions
 
-    /// Moves the recording into the library and records its metadata. A background effect chosen
+    /// Moves the recording into the library and records its metadata: the format the camera really recorded in (`delivered`), else the
+    /// one asked for. A background effect chosen
     /// while recording becomes the take's recipe (the recording keeps the camera's own image). When the library can't be
     /// written (the iPhone full), the take isn't added and its video goes back where the camera left it, where
     /// `TakeRecovery` finds it at the next launch: never a video in the library that no take points to.
     @discardableResult
     func addTake(
-        fileAt url: URL, duration: TimeInterval, script: Script?, camera: CameraSettings, background: BackgroundEffect? = nil
+        fileAt url: URL, duration: TimeInterval, script: Script?, camera: CameraSettings, background: BackgroundEffect? = nil,
+        delivered: (resolution: VideoResolution?, frameRate: FrameRate?) = (nil, nil)
     ) throws -> Take {
         let fileName = try repository.storeVideo(from: url)
         var take = Take(
@@ -124,8 +126,8 @@ final class TakeLibraryService {
             duration: duration,
             recordedAt: now(),
             fileName: fileName,
-            resolution: camera.resolution,
-            frameRate: camera.frameRate,
+            resolution: delivered.resolution ?? camera.resolution,
+            frameRate: delivered.frameRate ?? camera.frameRate,
             aspect: camera.aspect,
             platform: script?.platform
         )

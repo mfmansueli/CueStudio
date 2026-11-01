@@ -49,6 +49,7 @@ struct TakeReviewView: View {
     @Environment(MilestoneService.self) private var milestones
     @Environment(AppIconService.self) private var appIcon
     @Environment(StoreManager.self) private var store
+    @Environment(PresentationService.self) private var presentation
     /// The milestone a share just reached, told once the send-off is done.
     @State private var reachedMilestone: Int?
     @State private var tellsMilestone = false
@@ -283,6 +284,7 @@ struct TakeReviewView: View {
             // A review opened to do something (edit, pick, share) does it first: a celebration never covers an opening action, and comes
             // at the end of that task instead (`GuidanceGate`).
             let opensTask = launchAction != nil
+            presentation.reviewOnScreen = viewModel.takeID
             connectFlow()
             applyLaunchAction()
             if !opensTask { considerFirstStar() }
@@ -294,7 +296,11 @@ struct TakeReviewView: View {
             showSavedCheck()
         }
         .onChange(of: viewModel.celebration == nil) { _, _ in showSavedCheck() }
-        .onDisappear { playback.pause(); viewModel.leave() }
+        .onDisappear {
+            playback.pause()
+            viewModel.leave()
+            if presentation.reviewOnScreen == viewModel.takeID { presentation.reviewOnScreen = nil }
+        }
         .modifier(ExportPresentations(viewModel: viewModel, isActive: viewModel.celebration == nil))
     }
 

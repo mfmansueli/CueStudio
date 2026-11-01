@@ -29,4 +29,10 @@ protocol CameraControlling: AnyObject {
     func setLevelHandler(_ handler: (@Sendable (AudioLevelSample) -> Void)?)
     /// Called when a take ends without Stop: the storage filled up or a call took the camera. The clip is what could be saved.
     var onRecordingEnded: (@MainActor (RecordedClip?, RecordingEndReason) -> Void)? { get set }
+    /// The camera stopped for a while (a call, Split View, heat): nothing records until it ends.
+    var interruption: CameraInterruption? { get }
+}
+
+extension CameraControlling {
+    var interruption: CameraInterruption? { nil }
 }
