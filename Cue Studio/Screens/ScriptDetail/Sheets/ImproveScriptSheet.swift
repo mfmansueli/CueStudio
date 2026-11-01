@@ -42,9 +42,9 @@ struct ImproveScriptSheet: View {
         .presentationDetents([.medium, .large])
     }
 
-    /// Who does the work, or why the tools that need it aren't there.
+    /// Who does the work (Private Cloud Compute first, the iPhone when it is out of reach: `AIModelRoute`), or why the tools that need it aren't there.
     private var subtitle: String? {
-        if viewModel.canDraft { return String(localized: "Apple Intelligence · runs on your iPhone") }
+        if viewModel.canDraft { return String(localized: "Apple Intelligence · Private Cloud Compute") }
         return viewModel.drafting.cause?.isLanguage == true ? viewModel.drafting.reason : nil
     }
 

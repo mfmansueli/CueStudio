@@ -14,12 +14,24 @@ nonisolated enum RewriteRunner {
 
     static func run(_ text: String, tool: ScriptTool, context: RewriteContext, ask: Ask) async throws -> RewriteResult {
         let first = try await pass(text, tool: tool, context: context, ask: ask)
-        // "Fit to time" counts words badly, part by part: a script that came back outside the length gets one more round over what is left.
+        // "Fit to time" counts words badly, part by part: a script that came back outside the length (as the length bar tells it, not within a slack
+        // the bar doesn't have) gets up to two more rounds over what is left, as long as each comes nearer. Measured on the iPhone (run `after`,
+        // 01/11/2026), Private Cloud Compute lengthening a script of 50 to 77 words stopped at 59 to 70 s of 75–105 after two.
         guard let goal = fitGoal(for: tool, context: context), !first.isUntouched else { return first }
-        let widened = (Int(Double(goal.lowerBound) * (1 - RewriteOutcome.slack))...Int(Double(goal.upperBound) * (1 + RewriteOutcome.slack)))
-        guard !widened.contains(ReadTime.wordCount(in: first.text)) else { return first }
-        let second = try await pass(first.text, tool: tool, context: context, ask: ask)
-        return second.isUntouched ? first : RewriteResult(text: second.text, parts: first.parts, leftAsWritten: first.leftAsWritten)
+        var current = first
+        for _ in 0..<2 {
+            let words = ReadTime.wordCount(in: current.text)
+            guard !goal.contains(words) else { break }
+            let next = try await pass(current.text, tool: tool, context: context, ask: ask)
+            guard !next.isUntouched, distance(of: ReadTime.wordCount(in: next.text), from: goal) < distance(of: words, from: goal) else { break }
+            current = RewriteResult(text: next.text, parts: first.parts, leftAsWritten: first.leftAsWritten)
+        }
+        return current
+    }
+
+    /// How many words `words` is outside `goal` (0 inside it).
+    private static func distance(of words: Int, from goal: ClosedRange<Int>) -> Int {
+        max(goal.lowerBound - words, words - goal.upperBound, 0)
     }
 
     private static func pass(_ text: String, tool: ScriptTool, context: RewriteContext, ask: Ask) async throws -> RewriteResult {
@@ -30,6 +42,7 @@ nonisolated enum RewriteRunner {
             return RewriteResult(text: text, parts: 1, leftAsWritten: 1)
         }
         let expansion = goal.map { Double(($0.lowerBound + $0.upperBound) / 2) / Double(max(1, words)) } ?? 1
+        let aim = goal.map { self.aim(within: $0, from: words) }
         let chunks = RewriteChunker.chunks(of: text, for: tool, expansion: expansion)
         let asked = chunks.filter(\.isRewritten).count
         guard asked > 0 else { return RewriteResult(text: text, parts: 1, leftAsWritten: 1) }
@@ -45,7 +58,7 @@ nonisolated enum RewriteRunner {
             }
             asking += 1
             let part = ScriptPromptBuilder.RewritePart(
-                index: asking, count: asked, target: goal.map { target(for: chunk, of: words, goal: $0) }, leadIn: chunk.leadIn
+                index: asking, count: asked, target: aim.map { target(for: chunk, of: words, goal: $0) }, leadIn: chunk.leadIn
             )
             do {
                 if let written = try await settle(chunk, tool: tool, part: part, ask: ask) {
@@ -62,7 +75,7 @@ nonisolated enum RewriteRunner {
             }
         }
         if left == asked, let skipped { throw skipped }
-        return RewriteResult(text: left == asked ? text : RewriteChunker.joined(outputs), parts: asked, leftAsWritten: left)
+        return RewriteResult(text: left == asked ? text : RewriteChunker.joined(outputs, gaps: chunks.map(\.gap)), parts: asked, leftAsWritten: left)
     }
 
     // MARK: - One part
@@ -75,8 +88,12 @@ nonisolated enum RewriteRunner {
         var best: (text: String, outcome: RewriteOutcome)?
         for _ in 0..<2 {
             let raw = try await ask(chunk.text, current)
-            // The model is told to add nothing of its own and still does: scene directions and sound effects in brackets.
-            let answer = tool == .translate ? raw : RewriteOutcome.withoutInventedCues(raw, comparedTo: chunk.text)
+            // The model is told to add nothing of its own and still does: scene directions and sound effects in brackets. And it drops the
+            // creator's cues, which go back where they were (`CueRestorer`). A translation renames the cues it was given, so they are kept as they
+            // come; but a part with none gets none ("[Voiceover]", "[Cut to: …]" in Ultra AI's scripts).
+            let translatesCues = tool == .translate && CueParser.count(in: chunk.text) > 0
+            let answer = translatesCues ? raw
+                : CueRestorer.restoring(RewriteOutcome.withoutInventedCues(raw, comparedTo: chunk.text), from: chunk.text)
             let outcome = RewriteOutcome.judge(tool, before: chunk.text, after: answer, target: part.target)
             if outcome.isAcceptable(for: tool) { return answer }
             if best == nil || isCloser(answer, than: best?.text ?? "", allowed: allowed) { best = (answer, outcome) }
@@ -117,9 +134,19 @@ nonisolated enum RewriteRunner {
     /// The words "Fit to time" aims for, in all; nil for the other tools.
     private static func fitGoal(for tool: ScriptTool, context: RewriteContext) -> ClosedRange<Int>? {
         guard tool == .fitToTime else { return nil }
-        let low = ReadTime.words(for: context.idealRange.lowerBound)
-        let high = max(low, ReadTime.words(for: context.idealRange.upperBound))
+        let low = ReadTime.words(for: context.idealRange.lowerBound, language: context.paceLanguage)
+        let high = max(low, ReadTime.words(for: context.idealRange.upperBound, language: context.paceLanguage))
         return low...high
+    }
+
+    /// The words "Fit to time" asks for: inside the platform's range, on the side away from where the model misses. Measured on the iPhone
+    /// (ScriptToolsQualityDeviceTests, 01/11/2026), cutting an Ultra AI script to 75–105 s it stopped past the top (111–132 s on the device, 106–120 s
+    /// on Private Cloud Compute), and it writes less than asked when it lengthens (`lengthAskFactor`): a cut aims at the lower part of the range, a
+    /// lengthening at the upper part, so a miss still lands inside it.
+    private static func aim(within goal: ClosedRange<Int>, from words: Int) -> ClosedRange<Int> {
+        let span = Double(goal.upperBound - goal.lowerBound)
+        let (low, high) = words > goal.upperBound ? (0.05, 0.55) : (0.45, 0.95)
+        return (goal.lowerBound + Int(span * low))...(goal.lowerBound + Int(span * high))
     }
 
     /// A part's share of the words the whole is to have.

@@ -225,7 +225,7 @@ struct MainView: View {
             StartRecordingSheet(
                 mode: .new,
                 recent: Array(library.scripts.prefix(StartRecordingSheet.recentLimit)),
-                readSeconds: { ReadTime.seconds(for: $0.text) },
+                readSeconds: { $0.readSeconds },
                 onPick: { presentation.openPrompter(scriptID: $0.id, mode: .selfie) },
                 onNewScript: { presentation.present(.newScript) },
                 onSkip: { presentation.openPrompter(scriptID: nil, mode: .selfie) }

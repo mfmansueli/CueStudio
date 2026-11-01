@@ -56,6 +56,12 @@ struct RewriteNoticeTests {
         #expect(notice.message.hasPrefix("Closer to the 1:00 to 1:30 goal · now "))
     }
 
+    /// A little past the range (10% over, which the rewrite's own check lets through) is past it, as the length bar says: no "done" over "CUT 9S".
+    @Test func fitToTimeJustPastTheRangeSaysHowFarAsTheBarDoes() {
+        let notice = Self.notice(.fitToTime, before: Self.words(600), after: Self.words(ReadTime.words(for: 99)))
+        #expect(notice.message.hasPrefix("Closer to the 1:00 to 1:30 goal · now 1:39"))
+    }
+
     @Test func fitToTimeThatArrivedSaysDone() {
         let notice = Self.notice(.fitToTime, before: Self.words(600), after: Self.words(ReadTime.words(for: 75)))
         #expect(notice.message == "Done it")

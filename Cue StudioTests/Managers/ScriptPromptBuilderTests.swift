@@ -178,11 +178,47 @@ struct ScriptPromptBuilderTests {
         #expect(!ScriptPromptBuilder.lengthRule(minimumWords: 150).contains("sentences in every block"))
     }
 
+    /// "3 new hooks" names the hook it replaces (the opening sentence of a long paragraph, not the paragraph), the words it may take and the language.
+    @Test func theHooksPromptNamesTheHookItReplaces() {
+        let text = "Você treina em casa e não vê resultado? Não precisa de academia grande. Eu vejo os mesmos três erros todo dia, e hoje a gente "
+            + "corrige todos eles.\n\nPrimeiro, o treino aleatório."
+        let context = RewriteContext(
+            structure: .generic, platform: .tiktok, idealRange: 60...90, sourceLanguage: Locale.Language(identifier: "pt-BR")
+        )
+        let prompt = ScriptPromptBuilder.hooksPrompt(for: text, context: context)
+        #expect(prompt.contains("(\"Você treina em casa e não vê resultado?\")"))
+        #expect(prompt.contains("at most 8 words"))
+        #expect(prompt.contains("Write them in Portuguese"))
+    }
+
+    /// "Shorter" says how many words there are and how many to answer with; a big cut says what to keep.
+    @Test func shorterAndBigCutsSayWhatToAimFor() {
+        let context = RewriteContext(structure: .generic, platform: .tiktok, idealRange: 60...90)
+        let shorter = ScriptPromptBuilder.rewritePrompt(for: Self.words(40), tool: .shorterAndDirect, context: context, on: .privateCloud)
+        #expect(shorter.contains("it has 40 words now, answer with about 26"))
+        let onDevice = ScriptPromptBuilder.rewritePrompt(for: Self.words(40), tool: .shorterAndDirect, context: context)
+        #expect(onDevice.contains("about a third shorter") && !onDevice.contains("40 words"), "the device model cut less when given the count")
+        #expect(ScriptPromptBuilder.fitInstruction(for: 40...70, sourceWords: 350).contains("keep the opening line"))
+        #expect(ScriptPromptBuilder.fitInstruction(for: 200...260, sourceWords: 350).contains("Cut what matters least"))
+        #expect(ScriptPromptBuilder.fitInstruction(for: 200...260, sourceWords: 60).contains("about 4 times as long"))
+    }
+
+    private static func words(_ count: Int) -> String {
+        (0..<count).map { "word\($0)" }.joined(separator: " ") + "."
+    }
+
     @Test func aCueRepeatedOverAndOverStaysOnce() {
         let stuck = "I start here. [pause]... [pause]... [pause]... [pause]... [pause]... and go on. [smile] [smile] [smile] Done."
         #expect(ScriptPromptBuilder.collapsingRepeatedCues(stuck) == "I start here. [pause] and go on. [smile] Done.")
         let fine = "One. [pause] Two. [pause] Three. [pause] [smile] Four. [pause][pause]"
         #expect(ScriptPromptBuilder.collapsingRepeatedCues(fine) == fine, "two in a row, or the same cue far apart, is the creator's own")
+    }
+
+    /// Three pauses in a row the creator typed are theirs: a rewrite of their text keeps them, while one the model got stuck on is still cut.
+    @Test func aRewriteKeepsTheCreatorsOwnRunOfCues() {
+        let mine = "Wait for it. [pause] [pause] [pause] Now."
+        #expect(ScriptPromptBuilder.clean("Hold on. [pause] [pause] [pause] Now.", source: mine) == "Hold on. [pause] [pause] [pause] Now.")
+        #expect(ScriptPromptBuilder.clean("Hold on. [pause] [pause] [pause] Now.", source: "Wait for it. [pause] Now.") == "Hold on. [pause] Now.")
     }
 
     @Test func whatTheCreatorTypedIsWhatTheModelMustKeep() {

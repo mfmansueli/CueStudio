@@ -74,7 +74,7 @@ final class UltraAIUITests: XCTestCase {
         let improve = app.buttons["page.improveButton"]
         XCTAssertTrue(improve.exists(within: 5), "No Improve on a script Ultra AI wrote")
         improve.tap()
-        XCTAssertTrue(app.staticTexts["Apple Intelligence · runs on your iPhone"].exists(within: 5), "Improve doesn't say Apple Intelligence does it")
+        XCTAssertTrue(app.staticTexts["Apple Intelligence · Private Cloud Compute"].exists(within: 5), "Improve doesn't say Apple Intelligence does it")
         let fit = app.buttons["improve.tool.fitToTime"]
         XCTAssertTrue(fit.exists(within: 5), "Improve has no Fit to time")
         XCTAssertFalse(fit.label.contains("Ultra AI"), "Fit to time still names Ultra AI: \(fit.label)")

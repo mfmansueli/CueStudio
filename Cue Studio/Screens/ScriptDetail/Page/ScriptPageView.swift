@@ -458,7 +458,9 @@ struct ScriptPageView: View {
     private func practiceTip(isDone: Bool) -> some View {
         VoyageTipCard(
             step: .practice, title: VoyageStep.practice.tipTitle(),
-            message: VoyageStep.practice.tipMessage(duration: script.isEmpty ? nil : DurationText.clock(ReadTime.seconds(for: viewModel.page.text))),
+            message: VoyageStep.practice.tipMessage(
+                duration: script.isEmpty ? nil : DurationText.clock(ReadTime.seconds(for: viewModel.page.text, language: viewModel.paceLanguage))
+            ),
             primary: (VoyageStep.practice.tipAction(), {
                 voyage.tipActed(.practice, at: .page)
                 focus = nil

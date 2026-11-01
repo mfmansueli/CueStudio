@@ -161,7 +161,7 @@ final class UltraScriptService: UltraScriptWriting {
         guard !script.text.isEmpty else { throw UltraError.reviewFailed(.incomplete, draft: draft) }
         // A vertical video that came back past its range (a little over it, never past two minutes) is fitted into it, one more call. A fit
         // that fails or may not go out leaves the polished script.
-        if case .ideal(let range) = payload.length, let limit = payload.length.overflowWords, ReadTime.wordCount(in: script.text) > limit,
+        if case .ideal(let range) = payload.length, let limit = payload.length.overflowWords(in: request.language), ReadTime.wordCount(in: script.text) > limit,
            let shorter = try? await fitted(UltraFitRequest(
                script: script.text, platform: request.platform, range: range, voice: request.voice, language: request.language?.locale.language
            ), cost: &cost), !shorter.isEmpty {

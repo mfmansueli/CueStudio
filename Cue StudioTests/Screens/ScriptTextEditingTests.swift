@@ -35,4 +35,22 @@ struct ScriptTextEditingTests {
         #expect(ScriptTextEditing.hookOptions(from: hooks, rotation: 0) == ["a", "b", "c"])
         #expect(ScriptTextEditing.hookOptions(from: hooks, rotation: 3) == ["d", "a", "b"])
     }
+
+    /// A hook Cue offers is never one its own tip calls long; where too few fit, the shortest of the rest make up three.
+    @Test func hookOptionsLeaveOutTheOnesTheTipWouldCallLong() {
+        let long = "This opening line takes far longer than a few seconds to say out loud."
+        #expect(!ScriptTextEditing.hookOptions(from: ["a b", long, "c d", "e f"], rotation: 0).contains(long))
+        let longer = long + " And then some more."
+        #expect(ScriptTextEditing.hookOptions(from: ["a b", longer, long], rotation: 0) == ["a b", long, longer])
+    }
+
+    /// Every ready-made hook of every format, in English, is said within the hook's few seconds (the translations are measured the same way
+    /// when they are offered: `hookOptions`).
+    @Test(arguments: [nil] + ScriptType.allCases.map(Optional.some))
+    func everyReadyMadeHookIsShortInEnglish(_ type: ScriptType?) {
+        let hooks = type?.structure(hooksIn: .english).hooks ?? ScriptStructure.generic(hooksIn: .english).hooks
+        for hook in hooks {
+            #expect(ReadTime.seconds(for: hook) <= ScriptBlocks.hookTarget, "\(hook) runs \(ReadTime.seconds(for: hook)) s")
+        }
+    }
 }

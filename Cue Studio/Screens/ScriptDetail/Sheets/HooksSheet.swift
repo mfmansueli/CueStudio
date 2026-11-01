@@ -10,6 +10,8 @@ import SwiftUI
 struct HooksSheet: View {
     let currentHook: String
     let options: [String]
+    /// The script's language, whose pace times each hook (`ReadTime.pace(for:)`).
+    var language: CueLanguage?
     /// The model is writing new options.
     var isLoading = false
     let onPick: (String) -> Void
@@ -27,7 +29,7 @@ struct HooksSheet: View {
                     HStack {
                         Text("Current")
                         Spacer()
-                        Text("~\(DurationText.short(ReadTime.seconds(for: currentHook)))")
+                        Text("~\(DurationText.short(ReadTime.seconds(for: currentHook, language: language)))")
                             .foregroundStyle(Palette.warnText)
                     }
                     .cueFont(.caption2, weight: .bold)
@@ -61,7 +63,7 @@ struct HooksSheet: View {
                                         .cueFont(.body, weight: .medium)
                                         .foregroundStyle(Palette.ink)
                                         .frame(maxWidth: .infinity, alignment: .leading)
-                                    Text("~\(DurationText.short(ReadTime.seconds(for: hook)))")
+                                    Text("~\(DurationText.short(ReadTime.seconds(for: hook, language: language)))")
                                         .cueFont(.footnote, weight: .semibold).monospacedDigit()
                                         .foregroundStyle(Palette.accText)
                                 }

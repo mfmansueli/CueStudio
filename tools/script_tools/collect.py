@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Gathers what ScriptToolsQualityDeviceTests printed (TOOLRUN lines in build/logs/test-device.log) into
-research_notes/Script tools/<run>.jsonl, one line per script, tool and model; a case run again replaces its line.
+research_notes/Script tools/<run>.jsonl, one line per script, kind (whole script, selection, version), tool and model; a case run again
+replaces its line.
 
     python3 tools/script_tools/collect.py [log]
 """
@@ -13,7 +14,7 @@ OUT = os.path.join(ROOT, "research_notes", "Script tools")
 
 
 def key(row):
-    return (row["id"], row["tool"], row["route"])
+    return (row["id"], row.get("kind", "whole"), row["tool"], row["route"])
 
 
 def main():
@@ -41,7 +42,7 @@ def main():
                         kept[key(row)] = row
         kept.update(rows)
         with open(path, "w", encoding="utf-8") as handle:
-            for row in sorted(kept.values(), key=lambda r: (r["tool"], r["id"], r["route"])):
+            for row in sorted(kept.values(), key=lambda r: (r.get("kind", "whole"), r["tool"], r["id"], r["route"])):
                 handle.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
         print(f"{run}: {len(rows)} new, {len(kept)} in {os.path.relpath(path, ROOT)}")
 

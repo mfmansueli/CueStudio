@@ -15,11 +15,15 @@ nonisolated struct RewriteChunk: Equatable, Sendable {
     /// What comes right before this part, for the model to read and not to touch (a closing paragraph is easier to strengthen next to what leads
     /// up to it).
     let leadIn: String?
+    /// What follows the part in the script: a blank line, a line break, a space (a paragraph cut at its sentences), or "" at the end. The parts are
+    /// put back with it (`RewriteChunker.joined`), so a tool never changes how the script is laid out.
+    let gap: String
 
-    init(text: String, isRewritten: Bool = true, leadIn: String? = nil) {
+    init(text: String, isRewritten: Bool = true, leadIn: String? = nil, gap: String = "") {
         self.text = text
         self.isRewritten = isRewritten
         self.leadIn = leadIn
+        self.gap = gap
     }
 
     var words: Int { ReadTime.wordCount(in: text) }

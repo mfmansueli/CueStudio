@@ -1,0 +1,102 @@
+{
+ "ar-SA": {
+  "catalog": 0.839,
+  "fleurs": 0.898,
+  "pace": 0.9
+ },
+ "da-DK": {
+  "catalog": 1.02,
+  "fleurs": 0.966,
+  "pace": 1.0
+ },
+ "de-DE": {
+  "catalog": 1.009,
+  "fleurs": 1.047,
+  "pace": 1.0
+ },
+ "en-US": {
+  "catalog": 1.0,
+  "fleurs": 1.0,
+  "pace": 1.0
+ },
+ "es-ES": {
+  "catalog": 1.054,
+  "fleurs": 1.218,
+  "pace": 1.1
+ },
+ "fr-FR": {
+  "catalog": 1.074,
+  "fleurs": 1.346,
+  "pace": 1.15
+ },
+ "hi-IN": {
+  "catalog": 1.134,
+  "fleurs": 1.191,
+  "pace": 1.1
+ },
+ "id-ID": {
+  "catalog": 0.883,
+  "fleurs": 0.761,
+  "pace": 0.85
+ },
+ "it-IT": {
+  "catalog": 1.006,
+  "fleurs": 1.162,
+  "pace": 1.0
+ },
+ "ja-JP": {
+  "catalog": 1.34,
+  "fleurs": 0.97,
+  "pace": 1.0
+ },
+ "ko-KR": {
+  "catalog": 0.747,
+  "fleurs": 0.572,
+  "pace": 0.75
+ },
+ "nb-NO": {
+  "catalog": 1.006,
+  "fleurs": 1.238,
+  "pace": 1.1
+ },
+ "nl-NL": {
+  "catalog": 1.059,
+  "fleurs": 1.231,
+  "pace": 1.1
+ },
+ "pt-BR": {
+  "catalog": 1.04,
+  "fleurs": 0.936,
+  "pace": 1.0
+ },
+ "sv-SE": {
+  "catalog": 1.004,
+  "fleurs": 0.673,
+  "pace": 1.0
+ },
+ "th-TH": {
+  "catalog": 0.957,
+  "fleurs": 1.099,
+  "pace": 1.0
+ },
+ "tr-TR": {
+  "catalog": 0.805,
+  "fleurs": 0.709,
+  "pace": 0.8
+ },
+ "vi-VN": {
+  "catalog": 1.227,
+  "fleurs": 1.139,
+  "pace": 1.15
+ },
+ "zh-CN": {
+  "catalog": 1.051,
+  "fleurs": 1.204,
+  "pace": 1.1
+ },
+ "zh-TW": {
+  "catalog": 1.063,
+  "fleurs": 1.141,
+  "pace": 1.1
+ }
+}

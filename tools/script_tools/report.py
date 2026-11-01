@@ -5,10 +5,15 @@
 
 Checks (the same ones the script page's safety nets and ScriptToolsDeviceTests use, measured on words without cues):
 - every tool: an answer came back, the cues the script had are all still there (none invented), no number the script didn't have;
-- fitToTime: the speaking time (150 words a minute, as the page counts) is inside the platform's range, 10% either side counted apart;
+- fitToTime: the speaking time (150 words a minute times the language's pace, research_notes/Pace/pace.json, as the page counts) is inside the
+  platform's range, 10% either side counted apart;
 - shorterAndDirect: fewer than 90% of the words; fixGrammar: 85–115% of the words; inMyVoice / moreHuman / lessDefensive / moreEnergy:
   changed, 60–140% of the words; strongerCTA: only the last paragraph changed; translate: changed and the cues kept;
-- newHooks: three, all different, none longer than 30 words, none the opening it replaces.
+- newHooks: three, all different, none the hook it replaces, each said within 3.5 s (the page's hook tip); "long" counts the ones past it.
+
+Each tool's line is split by where the script came from (ultra / apple / hand), so the two models can be compared on Ultra AI's scripts. The selection
+bar's tools (on a passage) and "Make a version for…" (Fit to time to Instagram Stories) have lines of their own: "selection:shorterAndDirect",
+"version:fitToTime".
 """
 import glob
 import json
@@ -19,6 +24,7 @@ import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 NOTES = os.path.join(ROOT, "research_notes", "Script tools")
+PACE = {k: v["pace"] for k, v in json.load(open(os.path.join(ROOT, "research_notes", "Pace", "pace.json"))).items()}
 CUE = re.compile(r"\[[^\]\n]*\]")
 NUMBER = re.compile(r"\d+(?:[.,]\d+)?")
 CJK = re.compile(r"[぀-ヿ㐀-鿿가-힯฀-๿]")
@@ -44,6 +50,27 @@ def paragraphs(text):
     return [p.strip() for p in re.split(r"\n\s*\n", text or "") if p.strip()]
 
 
+def hook_of(text):
+    """The hook as the page reads it (ScriptHook): a first paragraph of up to 25 words whole, else its first sentence (with the next if short)."""
+    first = next((p for p in paragraphs(text) if not p.lower().startswith("[paid partnership]")), "")
+    if words(first) <= 25:
+        return first
+    sentences = re.findall(r"[^.!?。！？]+[.!?。！？]*\s*", first)
+    if len(sentences) > 1 and words(sentences[0]) <= 3:
+        sentences[0] += sentences.pop(1)
+    return sentences[0].strip() if sentences else first
+
+
+def per_second(row):
+    """Words a second at the natural pace of the row's language (ReadTime.pace(for:))."""
+    return 2.5 * PACE.get(row.get("language", ""), 1.0)
+
+
+def group_of(row):
+    kind = row.get("kind", "whole")
+    return row["tool"] if kind == "whole" else f"{kind}:{row['tool']}"
+
+
 def same(a, b):
     key = lambda t: re.sub(r"\W", "", spoken(t).lower())
     return key(a) == key(b)
@@ -57,11 +84,12 @@ def check(row):
     before, tool = row["before"], row["tool"]
     if tool == "newHooks":
         hooks = row.get("hooks") or []
-        first = paragraphs(before)[0] if paragraphs(before) else ""
-        ok = len(hooks) == 3 and len({h.lower() for h in hooks}) == 3 and all(0 < words(h) <= 30 for h in hooks)
+        first = hook_of(before)
+        long = [h for h in hooks if words(h) / per_second(row) > 3.5]
+        ok = len(hooks) == 3 and len({h.lower() for h in hooks}) == 3 and all(words(h) > 0 for h in hooks) and not long
         ok = ok and not any(same(h, first) for h in hooks)
         if not ok:
-            notes.append(f"hooks {[words(h) for h in hooks]}")
+            notes.append(f"hooks {[words(h) for h in hooks]} words" + (f", {len(long)} long" if long else ""))
         return ok, notes
     after = row.get("after") or ""
     ratio = words(after) / max(1, words(before))
@@ -76,7 +104,7 @@ def check(row):
     if added and tool != "translate":
         notes.append(f"new numbers {sorted(added)[:3]}")
     if tool == "fitToTime":
-        seconds = words(after) / 2.5
+        seconds = words(after) / per_second(row)
         low, high = row["range"]
         if not low <= seconds <= high:
             ok = False
@@ -118,15 +146,20 @@ def main():
     for run in runs:
         rows = [json.loads(line) for line in open(os.path.join(NOTES, f"{run}.jsonl"), encoding="utf-8") if line.strip()]
         print(f"\n=== {run}: {len(rows)} results")
-        for tool in sorted({r["tool"] for r in rows}):
+        for tool in sorted({group_of(r) for r in rows}):
             for route in ("device", "cloud"):
-                group = [r for r in rows if r["tool"] == tool and r["route"] == route]
+                group = [r for r in rows if group_of(r) == tool and r["route"] == route]
                 if not group:
                     continue
                 results = [(r, *check(r)) for r in group]
                 passed = sum(1 for _, ok, _ in results if ok)
                 seconds = statistics.median(r["seconds"] for r in group)
-                print(f"{tool:17} {route:6} {passed:2}/{len(group):<2} median {seconds:5.1f}s")
+                origins = []
+                for origin in ("ultra", "apple", "hand"):
+                    mine = [ok for r, ok, _ in results if r["origin"] == origin]
+                    if mine:
+                        origins.append(f"{origin} {sum(mine)}/{len(mine)}")
+                print(f"{tool:17} {route:6} {passed:2}/{len(group):<2} median {seconds:5.1f}s   " + " · ".join(origins))
                 for r, ok, notes in results:
                     if not ok or notes:
                         mark = "  " if ok else "✘ "

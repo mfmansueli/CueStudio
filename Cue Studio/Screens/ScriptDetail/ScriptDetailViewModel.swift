@@ -124,25 +124,35 @@ final class ScriptDetailViewModel {
         rules.preset(for: script?.platform ?? .tiktok, monetizationGoals: profile.profile.monetizationGoals)
     }
 
+    /// The language whose pace times the script (`ReadTime.pace(for:)`): its own, or read from the words on the page, as the list does.
+    var paceLanguage: CueLanguage? { script?.language ?? LanguageDetector.quickLanguage(in: workingText) }
+
     var blocks: [ScriptBlock] {
-        ScriptBlocks.blocks(for: workingText, structure: structure)
+        ScriptBlocks.blocks(for: workingText, structure: structure, language: paceLanguage)
     }
 
     var summaries: [BlockSummary] { ScriptBlocks.summaries(of: blocks) }
 
     var zone: LengthZone {
-        LengthZone(text: workingText, preset: preset)
+        LengthZone(text: workingText, preset: preset, language: paceLanguage)
     }
 
     /// Seconds the hook runs when it is too long.
-    var hookOverrun: TimeInterval? { ScriptBlocks.hookOverrun(in: workingText, structure: structure) }
+    var hookOverrun: TimeInterval? { ScriptBlocks.hookOverrun(in: workingText, structure: structure, language: paceLanguage) }
 
     var scriptTakes: [Take] { takes.takes(for: scriptID) }
 
     var currentHook: String { ScriptHook.text(of: workingText) }
 
     var hookOptions: [String] {
-        generatedHooks ?? ScriptTextEditing.hookOptions(from: structure.hooks, rotation: hookRotation)
+        generatedHooks ?? ScriptTextEditing.hookOptions(from: templateHooks, rotation: hookRotation, language: paceLanguage)
+    }
+
+    /// The format's ready-made hooks in the script's language (read from the words when the script doesn't say; the interface's when neither
+    /// does): a hook is read to camera, so a Portuguese script never gets English ones because the app is in English.
+    private var templateHooks: [String] {
+        let language = script?.language ?? LanguageDetector.language(in: workingText)
+        return (script?.type?.structure(hooksIn: language) ?? ScriptStructure.generic(hooksIn: language)).hooks
     }
 
     /// Written by AI about a factual topic and not checked yet.
@@ -165,9 +175,10 @@ final class ScriptDetailViewModel {
 
     /// The tools of Improve: "In my voice" first, then the format's own. Every touch-up is Apple Intelligence's, on the iPhone or Private Cloud
     /// Compute, whoever wrote the script (owner, 01/11/2026: Ultra AI writes, it never touches up, so a script costs one writing); where it can't
-    /// draft this script, only the tools that need no model are there ("3 new hooks" then stays the tools row's Hook, its starters).
+    /// draft this script, only the tools that need no model are there. "3 new hooks" is never one of them: the tools row's Hook opens the same
+    /// sheet, and the tip that the hook runs long opens it from here.
     var tools: [ScriptTool] {
-        ([.inMyVoice] + structure.tools).filter { canDraft || (!$0.needsLanguageModel && $0 != .newHooks) }
+        ([.inMyVoice] + structure.tools).filter { $0 != .newHooks && (canDraft || !$0.needsLanguageModel) }
     }
 
     /// Improve has something to offer: a tool, or the tip that the hook runs long.
@@ -202,7 +213,7 @@ final class ScriptDetailViewModel {
     /// The hook alone is replaced (`ScriptHook`): the rest of its paragraph, a disclosure and the cues around it stay, and Undo puts it back.
     func replaceHook(with hook: String) {
         guard let script else { return }
-        let message = String(localized: "Hook replaced · ~\(DurationText.short(ReadTime.seconds(for: hook)))")
+        let message = String(localized: "Hook replaced · ~\(DurationText.short(ReadTime.seconds(for: hook, language: paceLanguage)))")
         adopt(ScriptHook.replacing(in: script.text, with: hook), message: message)
     }
 
@@ -316,7 +327,9 @@ final class ScriptDetailViewModel {
         defer { runningTool = nil }
         do {
             let result = try await writer.rewriteReported(before, with: tool, context: rewriteContext)
-            let notice = RewriteNotice.after(tool, before: before, result: result, done: doneMessage(for: tool), idealRange: preset.idealRange)
+            let notice = RewriteNotice.after(
+                tool, before: before, result: result, done: doneMessage(for: tool), idealRange: preset.idealRange, language: paceLanguage
+            )
             if notice.changesScript {
                 // What the AI wrote changes the claims: whatever was checked before is to be checked again (decision 9).
                 adopt(result.text, message: notice.message, about: title)
@@ -400,7 +413,7 @@ final class ScriptDetailViewModel {
             )
             var message = String(localized: "\(platform.label) version saved")
             // The version is the script as the platform's length asks it, or says how far it got.
-            if let length = RewriteNotice.lengthNote(words: ReadTime.wordCount(in: result.text), idealRange: range) {
+            if let length = RewriteNotice.lengthNote(words: ReadTime.wordCount(in: result.text), idealRange: range, language: script.paceLanguage) {
                 message += " · " + length
             }
             sayResult(message, kind: .cue, ending: work, about: title, away: Self.versionSaved(platform.label, of: title))

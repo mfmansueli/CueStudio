@@ -185,8 +185,9 @@ extension ScriptDetailViewModel {
         ScriptCue.bar.map(\.name) + preferences.customCues
     }
 
-    /// A cue from the bar above the keyboard, where the caret is (over the selection, if there is one). With the cues hidden, adding one
-    /// shows them again: a cue put in out of sight was only an empty gap in the words (the owner's call, 20/10/2026).
+    /// A cue from the bar above the keyboard, where the caret is: before the selected words, if there are some, which stay (a cue says how to
+    /// say them; it never takes their place). One space on each side, never two. With the cues hidden, adding one shows them again: a cue put in
+    /// out of sight was only an empty gap in the words (the owner's call, 20/10/2026).
     func insertCue(named name: String) {
         guard !page.isWriting else { return }
         if !showsCues { showsCues = true }
@@ -194,11 +195,11 @@ extension ScriptDetailViewModel {
         let characters = text.count
         let range = page.selection ?? characters..<characters
         let lower = text.index(text.startIndex, offsetBy: min(range.lowerBound, characters))
-        let upper = text.index(text.startIndex, offsetBy: min(range.upperBound, characters))
         let offset = text.distance(from: text.startIndex, to: lower)
-        let needsSpace = offset > 0 && !text[text.index(before: lower)].isWhitespace
-        let insertion = (needsSpace ? " " : "") + "[\(name)] "
-        text.replaceSubrange(lower..<upper, with: insertion)
+        let spaceBefore = offset > 0 && !text[text.index(before: lower)].isWhitespace
+        let spaceAfter = lower == text.endIndex || !text[lower].isWhitespace
+        let insertion = (spaceBefore ? " " : "") + "[\(name)]" + (spaceAfter ? " " : "")
+        text.insert(contentsOf: insertion, at: lower)
         // The cue dropping in is felt.
         Haptics.selection()
         page.text = text
@@ -423,9 +424,11 @@ extension ScriptDetailViewModel {
                 if revealPause > .zero { try? await Task.sleep(for: .seconds(ArrivingText.settleTime)) }
                 guard !Task.isCancelled else { return }
                 finishWriting(generated)
+                let asked = request.targetRange
+                let low = ReadTime.words(for: asked.lowerBound, language: request.language)
                 GenerationLog.report(
                     timings: generated.timings, ui: returnedAt.duration(to: .now), total: startedAt.duration(to: .now),
-                    requestedWords: ReadTime.words(for: request.targetRange.lowerBound)...ReadTime.words(for: request.targetRange.upperBound),
+                    requestedWords: low...max(low, ReadTime.words(for: asked.upperBound, language: request.language)),
                     writtenWords: ReadTime.wordCount(in: generated.text)
                 )
             } catch {

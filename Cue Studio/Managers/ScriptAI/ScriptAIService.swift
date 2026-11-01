@@ -29,6 +29,7 @@ final class ScriptAIService: ScriptWriting {
     private let privateCloud: PrivateCloudComputeLanguageModel?
     private let capabilities: AIModelCapabilities
     private let planner: AIModelPlanner
+    /// The model every task tries first, whatever `AIModelRoute.choose` would pick (the device measurements compare the two); nil follows it.
     private let preferredModel: AIModelRoute?
     /// Optional evaluation override. Production keeps the framework default until measured against real outputs.
     let cloudReasoning: ContextOptions.ReasoningLevel?
@@ -163,7 +164,7 @@ final class ScriptAIService: ScriptWriting {
         var script = await expandingIfShort(try await writing.write(request), for: request, on: model, language: language, meter: meter)
         // A script that is still a sliver of what was asked (the model wrote six words, or stopped after one block) is a failed sample, not a short one:
         // lengthening a block of a few words doesn't fix it, a fresh draft often does. One more, and the longer of the two is kept.
-        let minimum = ReadTime.words(for: request.targetRange.lowerBound)
+        let minimum = ReadTime.words(for: request.targetRange.lowerBound, language: request.language)
         if request.durationPolicy == .targeted, model == .onDevice, script.usedLanguageModel, Self.expandsShortScripts,
            Double(ScriptExpansion.words(in: script.text)) < Double(minimum) * Self.sliver {
             AIFailureReport.note(
@@ -433,14 +434,15 @@ final class ScriptAIService: ScriptWriting {
             @MainActor func attempt(on model: AIModelRoute) async throws -> String {
                 let instructions = ScriptPromptBuilder.rewriteInstructions(voice: AIRequestPolicy.voice(voice, on: model), language: expected)
                 let session = self.session(on: model, instructions: instructions, transformsText: true)
-                let prompt = ScriptPromptBuilder.rewritePrompt(for: part, tool: tool, context: context, part: details)
+                let prompt = ScriptPromptBuilder.rewritePrompt(for: part, tool: tool, context: context, part: details, on: model)
                 // A bound on what a part may answer: a part that goes on and on (measured on an iPhone 15 Pro, a script lengthened for YouTube) ran into the
                 // model's window and took the whole tool down with "too long". Cut at its bound it is a part that missed, and is asked again or left as it was.
                 let options = GenerationOptions(maximumResponseTokens: Self.rewriteTokens(for: part, details: details))
-                let response = try await self.answering { try await session.respond(to: prompt, options: options).content }
+                let answer = try await self.answering { try await session.respond(to: prompt, options: options).content }
+                let response = ScriptPromptBuilder.withoutEchoedInstructions(answer, prompt: prompt, source: part)
                 // The creator's own sentences the model kept as they were keep their dashes; what it wrote has none.
                 let preserved = ScriptPromptBuilder.preserved(inRewriteOf: part, tool: tool, voice: context.voice)
-                let rewritten = ScriptPromptBuilder.clean(response, language: expected, preserving: preserved)
+                let rewritten = ScriptPromptBuilder.clean(response, language: expected, preserving: preserved, source: part)
                 guard !rewritten.isEmpty else { throw ScriptAIError.emptyResponse }
                 try Self.requireLanguage(expected, in: rewritten)
                 return rewritten
@@ -479,7 +481,7 @@ final class ScriptAIService: ScriptWriting {
             }.filter { !$0.isEmpty }
             guard !hooks.isEmpty else { throw ScriptAIError.emptyResponse }
             try Self.requireLanguage(context.sourceLanguage, in: hooks.joined(separator: " "))
-            return Array(hooks.prefix(3))
+            return ScriptTextEditing.hookOptions(from: hooks, rotation: 0, language: context.paceLanguage)
         }
     }
 
@@ -668,9 +670,12 @@ final class ScriptAIService: ScriptWriting {
         for task: AIModelRoute.Task, languages: [Locale.Language], translation: (source: String, target: String)? = nil
     ) async throws -> AIPlan {
         guard isEnabled else { throw ScriptAIError.modelUnavailable(AIAvailability.turnedOffReason) }
-        let planned = await planner.plan(
-            preferredModel == .privateCloud ? .freePrompt : task, languages: languages.map(Self.locale(for:)), checksFallback: false
-        )
+        let routed: AIModelRoute.Task = switch preferredModel {
+        case .privateCloud: .freePrompt
+        case .onDevice: .format
+        case nil: task
+        }
+        let planned = await planner.plan(routed, languages: languages.map(Self.locale(for:)), checksFallback: false)
         try Task.checkCancellation()
         switch planned {
         case .success(let plan):
@@ -775,7 +780,7 @@ final class ScriptAIService: ScriptWriting {
     /// room for the structure around it. Cut short, a script written for the doubled ask came back with its last block unfinished.
     static func responseTokens(for request: ScriptRequest, on route: AIModelRoute = .onDevice) -> Int {
         if route == .privateCloud, request.durationPolicy == .informative { return 4_096 }
-        let words = ScriptPromptBuilder.askedRange(for: request.targetRange, on: route).high
+        let words = ScriptPromptBuilder.askedRange(for: request.targetRange, on: route, language: request.language).high
         return min(route == .privateCloud ? AIRequestPolicy.cloudResponseTokens : 1_800, max(600, words * 3 + 350))
     }
 
@@ -789,8 +794,8 @@ final class ScriptAIService: ScriptWriting {
             return ScriptDraft.Block(label: block.label ?? "", text: text)
         }
         let words = blocks.reduce(0) { $0 + ReadTime.wordCount(in: CueParser.stripCues($1.text)) }
-        let low = ReadTime.words(for: request.targetRange.lowerBound)
-        let high = ScriptPromptBuilder.askedRange(for: request.targetRange).high
+        let low = ReadTime.words(for: request.targetRange.lowerBound, language: request.language)
+        let high = ScriptPromptBuilder.askedRange(for: request.targetRange, language: request.language).high
         guard words >= max(15, low / 2), words <= high * 2 else { return nil }
         // One block alone is a script only when it holds most of one: measured on an iPhone 15 Pro the model sometimes put the whole script in its first
         // block and stopped (103 to 120 words), and sometimes ran on in it without end (more than a thousand), which is not one.

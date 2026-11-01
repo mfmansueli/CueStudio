@@ -10,7 +10,8 @@ nonisolated enum ScriptBlocks {
     /// Viewers decide in the first 3 seconds; a little slack before warning.
     static let hookTarget: TimeInterval = 3.5
 
-    static func blocks(for text: String, structure: ScriptStructure) -> [ScriptBlock] {
+    /// - Parameter language: the script's, whose pace times each block (`ReadTime.pace(for:)`).
+    static func blocks(for text: String, structure: ScriptStructure, language: CueLanguage? = nil) -> [ScriptBlock] {
         let paragraphs = CueParser.paragraphs(in: text)
         var blocks: [ScriptBlock] = []
         for (index, paragraph) in paragraphs.enumerated() {
@@ -19,7 +20,7 @@ nonisolated enum ScriptBlocks {
                 index: index,
                 label: label,
                 text: paragraph,
-                seconds: ReadTime.seconds(for: paragraph),
+                seconds: ReadTime.seconds(for: paragraph, language: language),
                 showsLabel: index == 0 || blocks[index - 1].label != label
             ))
         }
@@ -41,9 +42,9 @@ nonisolated enum ScriptBlocks {
 
     /// How long the hook (`ScriptHook`: the opening sentence of a long first paragraph, a short one whole) runs when it is over the target.
     /// Serious formats have no hook.
-    static func hookOverrun(in text: String, structure: ScriptStructure) -> TimeInterval? {
+    static func hookOverrun(in text: String, structure: ScriptStructure, language: CueLanguage? = nil) -> TimeInterval? {
         guard !structure.isSerious else { return nil }
-        let seconds = ReadTime.seconds(for: ScriptHook.text(of: text))
+        let seconds = ReadTime.seconds(for: ScriptHook.text(of: text), language: language)
         return seconds > hookTarget ? seconds : nil
     }
 }

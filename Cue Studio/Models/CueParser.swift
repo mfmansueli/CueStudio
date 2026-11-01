@@ -6,7 +6,8 @@
 import Foundation
 
 /// Parses the script text format: paragraphs separated by line breaks, stage cues in square
-/// brackets (`[pause]`, `[smile]`, `[look at camera]`).
+/// brackets (`[pause]`, `[smile]`, `[look at camera]`). A cue never spans a line break (as deleting one, `ScriptCueDeletion`): a "[" left
+/// open doesn't swallow the paragraphs up to the next "]" from the word count and the prompter.
 nonisolated enum CueParser {
     /// Non-empty paragraphs, trimmed.
     static func paragraphs(in text: String) -> [String] {
@@ -18,7 +19,7 @@ nonisolated enum CueParser {
     static func segments(in paragraph: String) -> [CueSegment] {
         var result: [CueSegment] = []
         var cursor = paragraph.startIndex
-        for match in paragraph.matches(of: /\[[^\]]*\]/) {
+        for match in paragraph.matches(of: /\[[^\]\n]*\]/) {
             if cursor < match.range.lowerBound {
                 result.append(CueSegment(kind: .speech, text: String(paragraph[cursor..<match.range.lowerBound])))
             }
@@ -38,14 +39,14 @@ nonisolated enum CueParser {
     /// How many stage cues the text has (`[pause]`, `[smile]`…): the "4 CUES" of a script's row and strip. An empty
     /// pair of brackets isn't one.
     static func count(in text: String) -> Int {
-        text.matches(of: /\[[^\]]*\]/).filter { match in
+        text.matches(of: /\[[^\]\n]*\]/).filter { match in
             !text[match.range].dropFirst().dropLast().trimmingCharacters(in: .whitespaces).isEmpty
         }.count
     }
 
     /// The text without cues, with the spaces around removed cues collapsed.
     static func stripCues(_ text: String) -> String {
-        text.replacing(/[ \t]*\[[^\]]*\][ \t]*/, with: " ")
+        text.replacing(/[ \t]*\[[^\]\n]*\][ \t]*/, with: " ")
             .split(separator: "\n", omittingEmptySubsequences: false)
             .map { $0.trimmingCharacters(in: .whitespaces) }
             .joined(separator: "\n")

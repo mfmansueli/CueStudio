@@ -46,9 +46,14 @@ nonisolated enum ScriptTextEditing {
         return trimmed.isEmpty ? line : line + "\n\n" + text
     }
 
-    /// Three hook ideas starting at `rotation`, so "More options" walks through the list.
-    static func hookOptions(from hooks: [String], rotation: Int) -> [String] {
-        guard !hooks.isEmpty else { return [] }
-        return (0..<min(3, hooks.count)).map { hooks[($0 + rotation) % hooks.count] }
+    /// Three hook ideas starting at `rotation`, so "More options" walks through the list. Only the ones said within the hook's few seconds
+    /// (`ScriptBlocks.hookTarget`): a hook Cue offers is never one its own tip calls long. Where fewer than three are (a translation runs longer),
+    /// the shortest of the rest make up the three.
+    static func hookOptions(from hooks: [String], rotation: Int, language: CueLanguage? = nil) -> [String] {
+        let fitting = hooks.filter { ReadTime.seconds(for: $0, language: language) <= ScriptBlocks.hookTarget }
+        let rest = hooks.filter { !fitting.contains($0) }.sorted { ReadTime.wordCount(in: $0) < ReadTime.wordCount(in: $1) }
+        let pool = fitting + rest.prefix(max(0, min(3, hooks.count) - fitting.count))
+        guard !pool.isEmpty else { return [] }
+        return (0..<min(3, pool.count)).map { pool[($0 + rotation) % pool.count] }
     }
 }

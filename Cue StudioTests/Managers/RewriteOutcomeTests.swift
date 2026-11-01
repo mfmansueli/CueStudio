@@ -90,6 +90,12 @@ struct RewriteOutcomeTests {
         #expect(RewriteOutcome.withoutInventedCues(after, comparedTo: "First paragraph.\n\nSecond paragraph. [smile]") == after)
     }
 
+    /// Lengthening a script with eight cues, the model wrote nine: a cue the script has stays as many times as it has it.
+    @Test func aCueTheModelRepeatedStaysOnlyAsOftenAsTheScriptHasIt() {
+        let after = "Hello. [pause] Welcome back. [pause] Let’s go. [pause]"
+        #expect(RewriteOutcome.withoutInventedCues(after, comparedTo: "Hello. [pause] Welcome. [pause]") == "Hello. [pause] Welcome back. [pause] Let’s go.")
+    }
+
     @Test func aParagraphThatWasOnlyAnInventedCueGoesWithIt() {
         let after = "One.\n\n[Music swells]\n\nTwo."
         #expect(RewriteOutcome.withoutInventedCues(after, comparedTo: "One.\n\nTwo.") == "One.\n\nTwo.")

@@ -127,4 +127,13 @@ struct ScriptPageUltraTests {
         #expect(scenario.viewModel.tools.allSatisfy { !$0.needsLanguageModel })
         #expect(!scenario.viewModel.tools.contains(.fitToTime))
     }
+
+    /// "3 new hooks" isn't in Improve: the tools row's Hook opens the same sheet.
+    @Test func improveDoesNotRepeatTheHookButton() {
+        let scenario = fitScenario(draftedBy: .ultra)
+        defer { scenario.defaults.tearDown() }
+        #expect(scenario.viewModel.canDraft)
+        #expect(!scenario.viewModel.tools.contains(.newHooks))
+        #expect(scenario.viewModel.tools.contains(.fitToTime))
+    }
 }

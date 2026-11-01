@@ -533,7 +533,7 @@ struct ScriptsView: View {
     }
 
     private func readSeconds(_ script: Script) -> TimeInterval {
-        ReadTime.seconds(for: script.text)
+        script.readSeconds
     }
 
     private func line(of script: Script, state: ScriptState) -> ScriptRowLine {

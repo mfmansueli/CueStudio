@@ -183,8 +183,17 @@ struct ScriptPageViewModelTests {
         defer { scenario.defaults.tearDown() }
         scenario.viewModel.page.selection = 5..<5
         scenario.viewModel.insertCue(named: ScriptCue.smile.name)
-        #expect(scenario.viewModel.page.text == "Hello [smile]  world")
-        #expect(scenario.viewModel.page.selection == 14..<14)
+        #expect(scenario.viewModel.page.text == "Hello [smile] world")
+        #expect(scenario.viewModel.page.selection == 13..<13)
+    }
+
+    /// Words selected and a cue tapped: the cue goes before them and the words stay.
+    @Test func aCueOverSelectedWordsGoesBeforeThemAndKeepsThem() {
+        let scenario = makeScenario(script: TestData.script(text: "This part matters most."))
+        defer { scenario.defaults.tearDown() }
+        scenario.viewModel.page.selection = 10..<17
+        scenario.viewModel.insertCue(named: ScriptCue.emphasis.name)
+        #expect(scenario.viewModel.page.text == "This part [emphasis] matters most.")
     }
 
     @Test func addingACueWithTheCuesHiddenShowsThemAgain() {
@@ -205,7 +214,7 @@ struct ScriptPageViewModelTests {
         defer { scenario.defaults.tearDown() }
         scenario.viewModel.page.selection = 5..<5
         scenario.viewModel.addCue("  [laugh] ")
-        #expect(scenario.viewModel.page.text == "Hello [laugh]  world")
+        #expect(scenario.viewModel.page.text == "Hello [laugh] world")
         #expect(scenario.viewModel.barCues == ["pause", "smile", "emphasis", "look at camera", "laugh"])
         // Kept with the creator's preferences, not with this script.
         #expect(PreferencesService(defaults: scenario.defaults.defaults).customCues == ["laugh"])

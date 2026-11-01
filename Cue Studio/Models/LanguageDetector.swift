@@ -50,6 +50,17 @@ nonisolated enum LanguageDetector {
         dominantLanguage(in: text, preferring: preferred).flatMap(CueLanguage.matching(language:))
     }
 
+    /// The language of a text read at once from its first 600 characters, for what only needs the language roughly and asks often: how long a
+    /// script runs at its language's pace (`ReadTime.pace(for:)`), in every row of the list. Nil for a text too short to tell by (three words).
+    static func quickLanguage(in text: String) -> CueLanguage? {
+        let spoken = String(CueParser.stripCues(String(text.prefix(700))).prefix(600))
+        guard WordSegmenter.roughWordCount(of: spoken) >= 3 else { return nil }
+        let recognizer = NLLanguageRecognizer()
+        recognizer.processString(spoken)
+        guard let language = recognizer.dominantLanguage, language != .undetermined else { return nil }
+        return CueLanguage.matching(language: Locale.Language(identifier: language.rawValue))
+    }
+
     /// Whether `words`, a short stretch of a text written in `code`, are clearly in another
     /// language: an English phrase in a Portuguese script. Needs two words and some letters, since
     /// a lone word says nothing about its language.

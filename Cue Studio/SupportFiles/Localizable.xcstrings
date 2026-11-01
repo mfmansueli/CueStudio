@@ -3347,6 +3347,125 @@
         }
       }
     },
+    "A friend made me try this." : {
+      "comment" : "A ready-made opening line or tone of a script format, shown as an example the creator can pick and read to camera. No dashes in any language.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "صديقة جعلتني أجرّب هذا."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En veninde fik mig til at prøve det."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eine Freundin ließ mich das testen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una amiga me hizo probar esto."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une amie me l’a fait essayer."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "एक दोस्त ने मुझसे ये ट्राई करवाया।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temanku yang menyuruhku mencoba ini."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Me l’ha fatto provare un’amica."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "友だちにすすめられて試してみた。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "친구가 써 보라고 해서 써 봤어요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En venninne fikk meg til å prøve dette."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Een vriendin liet me dit proberen."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uma amiga me fez experimentar isso."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En vän fick mig att prova det här."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เพื่อนชวนให้ลองอันนี้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bunu bana bir arkadaşım denetti."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bạn mình rủ mình thử cái này."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "朋友让我试了这个。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "朋友拉我試了這個。"
+          }
+        }
+      }
+    },
     "A short %@ story" : {
       "comment" : "Find inspiration: the title of a starter made from the creator's own topic (%@ is the topic, as they typed it)",
       "localizations" : {
@@ -4418,6 +4537,125 @@
         }
       }
     },
+    "Apple Intelligence · Private Cloud Compute" : {
+      "comment" : "Subtitle of the Improve sheet: the touch-ups are done by Apple Intelligence on Apple's Private Cloud Compute. Both are Apple brand names, not translated.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence · Private Cloud Compute"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence · Private Cloud Compute"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence · Private Cloud Compute"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence · Private Cloud Compute"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence · Private Cloud Compute"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence · Private Cloud Compute"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence · Private Cloud Compute"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence · Private Cloud Compute"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence · Private Cloud Compute"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence · Private Cloud Compute"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence · Private Cloud Compute"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence · Private Cloud Compute"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence · Private Cloud Compute"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence · Private Cloud Compute"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence · Private Cloud Compute"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence · Private Cloud Compute"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence · Private Cloud Compute"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence · Private Cloud Compute"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence · Private Cloud Compute"
+          }
+        }
+      }
+    },
     "Apple Intelligence writes by default. Ultra AI sends your request and voice preferences to Google, which runs its model, only when you allow it and pick it for a script. Writing examples and imported excerpts stay on this iPhone." : {
       "comment" : "Privacy sheet: which AI is used and what Ultra AI sends",
       "localizations" : {
@@ -5128,6 +5366,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "開學季"
+          }
+        }
+      }
+    },
+    "Change one thing tomorrow: this." : {
+      "comment" : "A ready-made opening line or tone of a script format, shown as an example the creator can pick and read to camera. No dashes in any language.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "غيّر شيئًا واحدًا غدًا: هذا."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ændr én ting i morgen: den her."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ändere morgen eine Sache: diese."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cambia una cosa mañana: esta."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Changez une chose demain : celle-ci."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कल बस एक चीज़ बदलें: यह।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ubah satu hal besok: yang ini."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Domani cambia una cosa: questa."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "明日ひとつだけ変えるなら、これ。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "내일 하나만 바꾼다면, 이거예요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Endre én ting i morgen: denne."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verander morgen één ding: dit."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mude uma coisa amanhã: esta."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ändra en sak i morgon: den här."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "พรุ่งนี้เปลี่ยนแค่อย่างเดียว: อันนี้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yarın tek bir şeyi değiştir: bunu."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mai chỉ đổi một điều: điều này."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "明天只改一件事：这个。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "明天只改一件事：這個。"
           }
         }
       }
@@ -11625,6 +11982,125 @@
         }
       }
     },
+    "I tried everything. These stuck." : {
+      "comment" : "A ready-made opening line or tone of a script format, shown as an example the creator can pick and read to camera. No dashes in any language.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جرّبت كل شيء. هذه وحدها بقيت."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jeg prøvede alt. Det her holdt."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ich habe alles probiert. Das hier blieb."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lo probé todo. Esto se quedó."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "J’ai tout essayé. Voilà ce qui reste."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "मैंने सब आज़माया। ये टिके रहे।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aku sudah coba semua. Ini yang bertahan."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ho provato di tutto. Questi sono rimasti."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全部試した。残ったのはこれ。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다 해 봤어요. 남은 건 이거예요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jeg prøvde alt. Disse ble værende."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ik probeerde alles. Dit bleef hangen."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Testei de tudo. Ficaram estes."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jag testade allt. De här stannade."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ลองมาหมดแล้ว เหลือแค่นี้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Her şeyi denedim. Bunlar kaldı."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thử hết rồi, còn lại mấy cái này."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "什么都试过了，留下的是这些。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "什麼都試過了，留下的是這些。"
+          }
+        }
+      }
+    },
     "I want to hear from you on this one about %@." : {
       "comment" : "Find inspiration: the opening line of a starter made from the creator's own topic, said on camera (%@ is the topic, as they typed it)",
       "localizations" : {
@@ -14191,6 +14667,125 @@
         }
       }
     },
+    "My most embarrassing moment yet." : {
+      "comment" : "A ready-made opening line or tone of a script format, shown as an example the creator can pick and read to camera. No dashes in any language.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أكثر لحظة محرجة مررت بها."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mit mest pinlige øjeblik til dato."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mein bisher peinlichster Moment."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mi momento más vergonzoso hasta ahora."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mon moment le plus gênant à ce jour."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अब तक का मेरा सबसे शर्मनाक पल।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Momen paling memalukan dalam hidupku."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il mio momento più imbarazzante finora."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今までで一番恥ずかしかった瞬間。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지금까지 제일 창피했던 순간이에요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mitt mest pinlige øyeblikk så langt."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mijn gênantste moment tot nu toe."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meu momento mais constrangedor até hoje."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mitt pinsammaste ögonblick hittills."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ช่วงเวลาที่น่าอายที่สุดของฉัน"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Şimdiye kadarki en utanç verici anım."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Khoảnh khắc xấu hổ nhất của mình."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "我迄今最尴尬的一刻。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "我至今最尷尬的一刻。"
+          }
+        }
+      }
+    },
     "Never sent" : {
       "comment" : "What Ultra AI sends: section header",
       "localizations" : {
@@ -16091,6 +16686,244 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "正在用你的口吻潤飾"
+          }
+        }
+      }
+    },
+    "POV: everyone asks you for advice." : {
+      "comment" : "A ready-made opening line or tone of a script format, shown as an example the creator can pick and read to camera. No dashes in any language.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "POV: الجميع يطلبون نصيحتك."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "POV: alle spørger dig til råds."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "POV: Alle fragen dich um Rat."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "POV: todos te piden consejo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "POV : tout le monde vous demande conseil."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "POV: सब आपसे सलाह माँगते हैं।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "POV: semua orang minta saranmu."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "POV: tutti ti chiedono consiglio."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "POV：みんながあなたに相談しに来る。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "POV: 모두가 당신에게 조언을 구해요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "POV: alle spør deg om råd."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "POV: iedereen vraagt jou om advies."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "POV: todo mundo te pede conselho."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "POV: alla frågar dig om råd."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "POV: ใครๆ ก็มาขอคำปรึกษาจากคุณ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "POV: herkes sana akıl danışıyor."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "POV: ai cũng hỏi xin lời khuyên của bạn."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "POV：大家都来找你要建议。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "POV：大家都來找你要建議。"
+          }
+        }
+      }
+    },
+    "POV: 7 a.m., and the idea lands." : {
+      "comment" : "A ready-made opening line or tone of a script format, shown as an example the creator can pick and read to camera. No dashes in any language.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "POV: السابعة صباحًا، والفكرة تصل."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "POV: klokken 7, og idéen lander."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "POV: 7 Uhr morgens, die Idee ist da."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "POV: las 7 y llega la idea."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "POV : 7 h, l’idée arrive."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "POV: सुबह 7 बजे, और आइडिया आ गया।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "POV: jam 7 pagi, ide pun datang."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "POV: le 7 del mattino, arriva l’idea."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "POV：朝7時、アイデアが降りてくる。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "POV: 아침 7시, 아이디어가 떠올라요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "POV: klokka 7, og ideen lander."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "POV: 7 uur ’s ochtends, het idee is daar."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "POV: 7 da manhã, e a ideia chega."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "POV: klockan 7, och idén landar."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "POV: เจ็ดโมงเช้า ไอเดียมาพอดี"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "POV: sabah 7, fikir geliyor."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "POV: 7 giờ sáng, ý tưởng ập đến."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "POV：早上 7 点，灵感来了。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "POV：早上 7 點，靈感來了。"
           }
         }
       }
@@ -27609,6 +28442,244 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "正在寫草稿"
+          }
+        }
+      }
+    },
+    "You've heard this forever. It's wrong. [pause]" : {
+      "comment" : "A ready-made opening line or tone of a script format, shown as an example the creator can pick and read to camera. No dashes in any language. Keep the cue in square brackets, named in the language.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "سمعت هذا طوال عمرك. وهو خطأ. [وقفة]"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Det har du altid hørt. Det er forkert. [pause]"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das hörst du schon ewig. Es ist falsch. [Pause]"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lo has oído siempre. Es falso. [pausa]"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vous l’entendez depuis toujours. C’est faux. [pause]"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "हमेशा यही सुना। ये गलत है। [रुकें]"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamu selalu dengar ini. Itu salah. [jeda]"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lo senti da sempre. È sbagliato. [pausa]"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ずっとそう聞いてきたはず。でも間違い。[間]"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "늘 그렇게 들어 왔죠. 틀렸어요. [멈춤]"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dette har du alltid hørt. Det er feil. [pause]"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je hoort het al jaren. Het klopt niet. [pauze]"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você sempre ouviu isso. Está errado. [pausa]"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du har alltid hört det. Det är fel. [paus]"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ได้ยินแบบนี้มาตลอด แต่มันผิด [หยุด]"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bunu hep duydun. Yanlış. [durakla]"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bạn nghe điều này mãi rồi. Nó sai. [dừng]"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这话你听了太久，可它是错的。[停顿]"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "這話你聽了太久，但那是錯的。[停頓]"
+          }
+        }
+      }
+    },
+    "You asked in the comments. Here goes." : {
+      "comment" : "A ready-made opening line or tone of a script format, shown as an example the creator can pick and read to camera. No dashes in any language.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "سألتم في التعليقات. إليكم الجواب."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I spurgte i kommentarerne. Her er svaret."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eure Frage aus den Kommentaren. Los geht’s."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lo preguntaron en los comentarios. Allá voy."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vous l’avez demandé en commentaire. C’est parti."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपने कमेंट्स में पूछा। तो सुनिए।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kalian tanya di komentar. Ini jawabannya."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Me l’avete chiesto nei commenti. Eccomi."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コメントで質問をもらったので、答えます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "댓글로 물어보셨죠. 답할게요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dere spurte i kommentarene. Her kommer svaret."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gevraagd in de comments. Hier komt het."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vocês perguntaram nos comentários. Lá vai."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ni frågade i kommentarerna. Här kommer svaret."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "มีคนถามในคอมเมนต์ มาตอบให้แล้ว"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yorumlarda sordunuz. İşte cevabı."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Có bạn hỏi ở bình luận. Trả lời đây."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "评论区有人问了，我来回答。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "留言區有人問了，我來回答。"
           }
         }
       }
@@ -70741,125 +71812,6 @@
         }
       }
     },
-    "A friend made me try this. I owe her." : {
-      "comment" : "A ready-made opening line or tone of a script format, shown as an example the creator can pick and read to camera. No dashes in any language.",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "جعلتني صديقة أجرّب هذا، وأنا مدين لها."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "En veninde fik mig til at prøve det her. Jeg skylder hende."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Eine Freundin hat mich das ausprobieren lassen. Ich schulde ihr was."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Una amiga me hizo probar esto y le debo una."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Une amie me l’a fait essayer, je lui dois bien ça."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "एक दोस्त ने इसे ट्राई करवाया, उसका शुक्रिया।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Temanku yang menyuruhku mencoba ini, aku berutang padanya."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Me l’ha fatto provare un’amica: le devo un favore."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "友だちにすすめられて試したら、もう感謝しかない。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "친구 추천으로 써 봤는데, 정말 고마워요."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "En venninne fikk meg til å prøve dette. Jeg skylder henne en tjeneste."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Een vriendin liet me dit proberen. Ik sta bij haar in het krijt."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Uma amiga me fez experimentar isso. Fico devendo essa."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "En vän fick mig att prova det här. Jag är skyldig henne en tjänst."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "เพื่อนชวนให้ลอง ต้องขอบคุณเธอเลย"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bir arkadaşım bunu denememi istedi, ona borçluyum."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bạn mình rủ thử cái này, phải cảm ơn cô ấy mới được."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "朋友让我试了这个，真得谢谢她。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "朋友拉我試了這個，真的要謝謝她。"
-          }
-        }
-      }
-    },
     "A great trip doesn’t need a big budget. It needs a plan." : {
       "comment" : "Find inspiration: a starter idea's opening line, a first sentence the creator could say to camera",
       "localizations" : {
@@ -91987,124 +92939,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Apple Intelligence · 在這部 iPhone 上"
-          }
-        }
-      }
-    },
-    "Apple Intelligence · runs on your iPhone" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence · يعمل على الـ iPhone"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence · kører på din iPhone"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence · läuft auf deinem iPhone"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence · se ejecuta en tu iPhone"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence · s’exécute sur votre iPhone"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence · आपके iPhone पर चलता है"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence · berjalan di iPhone-mu"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence · gira sul tuo iPhone"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence · iPhone上で動作"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence · iPhone에서 실행"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence · kjører på iPhonen din"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence · draait op je iPhone"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence · roda no seu iPhone"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence · körs på din iPhone"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence · ทำงานบน iPhone ของคุณ"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence · iPhone’unda çalışır"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence · chạy trên iPhone của bạn"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence · 在你的 iPhone 上运行"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence · 在你的 iPhone 上執行"
           }
         }
       }
@@ -233367,125 +234201,6 @@
         }
       }
     },
-    "I tried everything. These are the ones that stuck." : {
-      "comment" : "A ready-made opening line or tone of a script format, shown as an example the creator can pick and read to camera. No dashes in any language.",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "جرّبت كل شيء، وهذا ما نجح معي."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jeg har prøvet alt. Det her er det, der holdt."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ich hab alles ausprobiert. Die hier sind geblieben."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lo probé todo y estos son los que se quedaron."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "J’ai tout essayé, et voici ce que j’ai gardé."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "मैंने सब आज़माया, ये वाले टिके रहे।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aku sudah mencoba semuanya, dan ini yang bertahan."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ho provato di tutto: ecco quelli che ho tenuto."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "全部試して、残ったのはこれ。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "다 써 봤는데, 남은 건 이것들이에요."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jeg har prøvd alt. Dette er det som ble værende."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ik heb alles geprobeerd en dit is wat bleef hangen."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Testei de tudo. Esses foram os que ficaram."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jag har provat allt. Det här är det som fastnade."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ลองมาหมดแล้ว นี่คืออันที่ใช้ต่อจริง"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Her şeyi denedim; kalıcı olanlar bunlar."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mình thử đủ cả. Đây là những cái mình giữ lại."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "全都试过了，留下来的是这些。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "我什麼都試過了，這些是真正留下來的。"
-          }
-        }
-      }
-    },
     "I used to hit snooze four times. Then I tried this." : {
       "comment" : "My Cue Voice: preview and learning",
       "localizations" : {
@@ -236212,124 +236927,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "如果學過的東西第二天就忘，試試這個。"
-          }
-        }
-      }
-    },
-    "If you only change one thing tomorrow, make it this." : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "إن غيّرت شيئًا واحدًا غدًا، فليكن هذا."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hvis du kun ændrer én ting i morgen, så lad det være det her."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wenn du morgen nur eine Sache änderst, dann diese."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Si mañana solo cambias una cosa, que sea esta."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Si vous ne changez qu’une chose demain, que ce soit celle-là."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "अगर कल सिर्फ़ एक चीज़ बदलें, तो यह बदलें।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kalau besok kamu cuma mengubah satu hal, ubah yang ini."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Se domani cambi una sola cosa, che sia questa."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "明日ひとつだけ変えるなら、これ。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "내일 딱 하나만 바꾼다면, 이거예요."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hvis du bare endrer én ting i morgen, la det være dette."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Als je morgen maar één ding verandert, laat het dit zijn."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Se for mudar uma coisa só amanhã, que seja esta."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Om du bara ändrar en sak i morgon, låt det vara det här."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ถ้าพรุ่งนี้จะเปลี่ยนแค่อย่างเดียว ให้เป็นอันนี้"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Yarın tek bir şeyi değiştireceksen, bu olsun."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nếu mai chỉ đổi một điều, hãy đổi điều này."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "明天如果只改一件事，就改这个。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "如果明天你只改變一件事，就改這件。"
           }
         }
       }
@@ -337114,124 +337711,6 @@
         }
       }
     },
-    "POV: it's 7 a.m. and the idea just landed." : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "POV: الساعة السابعة صباحًا وجاءت الفكرة للتو."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "POV: klokken er 7, og idéen er lige landet."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "POV: Es ist 7 Uhr morgens und die Idee ist gerade gelandet."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "POV: son las 7 de la mañana y acaba de llegar la idea."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "POV : il est 7 h du matin et l’idée vient d’arriver."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "POV: सुबह के 7 बजे हैं और आइडिया अभी-अभी आया है।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "POV: jam 7 pagi dan idenya baru saja muncul."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "POV: sono le 7 del mattino e l’idea è appena arrivata."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "POV：朝7時、アイデアが降りてきた。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "POV: 아침 7시, 아이디어가 막 떠올랐어요."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "POV: klokka er 7 om morgenen, og ideen har akkurat landet."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "POV: het is 7 uur ’s ochtends en het idee is net binnen."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "POV: são 7 da manhã e a ideia acabou de chegar."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "POV: klockan är 7 på morgonen och idén har just landat."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "POV: ตอนเจ็ดโมงเช้า ไอเดียเพิ่งมา"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "POV: sabah 7 ve fikir az önce geldi."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "POV: 7 giờ sáng và ý tưởng vừa xuất hiện."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "POV：早上 7 点，灵感刚刚降临。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "POV：早上 7 點，靈感剛剛降臨。"
-          }
-        }
-      }
-    },
     "POV: you finally hit record" : {
       "localizations" : {
         "ar" : {
@@ -337583,124 +338062,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "POV：你終於不再浪費早晨了。"
-          }
-        }
-      }
-    },
-    "POV: you're the one they all ask for advice." : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "POV: أنت الشخص الذي يسأله الجميع النصيحة."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "POV: du er den, alle spørger om råd."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "POV: Du bist die Person, die alle um Rat fragen."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "POV: eres a quien todos piden consejo."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "POV : c’est à vous que tout le monde demande conseil."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "POV: आप वही हैं जिनसे सब सलाह माँगते हैं।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "POV: kamu orang yang selalu dimintai saran."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "POV: sei quello a cui tutti chiedono consigli."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "POV：みんなが相談に来る人になった。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "POV: 모두가 조언을 구하는 사람이 됐어요."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "POV: du er den alle spør om råd."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "POV: jij bent degene die iedereen om raad vraagt."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "POV: você é quem todo mundo procura pra pedir conselho."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "POV: du är den alla frågar om råd."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "POV: คุณคือคนที่ทุกคนมาขอคำแนะนำ"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "POV: herkesin tavsiye sorduğu kişi sensin."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "POV: bạn là người ai cũng hỏi xin lời khuyên."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "POV：你成了大家都来请教的那个人。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "POV：你成了大家都來請教的那個人。"
           }
         }
       }
@@ -409593,125 +409954,6 @@
         }
       }
     },
-    "Someone asked this in the comments, so let me answer." : {
-      "comment" : "A ready-made opening line or tone of a script format, shown as an example the creator can pick and read to camera. No dashes in any language.",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "سأل أحدهم عن هذا في التعليقات، فدعني أجيب."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nogen spurgte om det her i kommentarerne, så lad mig svare."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jemand hat das in den Kommentaren gefragt, hier meine Antwort."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alguien lo preguntó en los comentarios, así que te respondo."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "On me l’a demandé en commentaire, je réponds."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "किसी ने कमेंट में यह पूछा, तो चलिए जवाब देते हैं।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ada yang tanya ini di komentar, aku jawab ya."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Me l’hanno chiesto nei commenti: rispondo."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "コメントで質問があったので、答えます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "댓글로 질문이 와서 답해 볼게요."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Noen spurte om dette i kommentarfeltet, så jeg svarer."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Iemand vroeg dit in de reacties, dus ik geef antwoord."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alguém perguntou isso nos comentários, então deixa eu responder."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Någon frågade det här i kommentarerna, så jag svarar."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "มีคนถามในคอมเมนต์ ขอตอบหน่อย"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Biri bunu yorumlarda sordu, yanıtlayayım."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Có bạn hỏi trong bình luận, để mình trả lời nhé."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "评论区有人问这个，我来回答。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "有人在留言區問了這個，我來回答。"
-          }
-        }
-      }
-    },
     "Songwriting" : {
       "comment" : "My Cue Voice: a more specific topic inside a topic",
       "localizations" : {
@@ -456283,124 +456525,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "這就是我信賴的早晨流程，沒有例外。"
-          }
-        }
-      }
-    },
-    "This is the most embarrassing thing that's happened to me." : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "هذا أكثر موقف محرج حدث لي."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Det her er det mest pinlige, der nogensinde er sket for mig."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Das ist das Peinlichste, was mir je passiert ist."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Es lo más vergonzoso que me ha pasado."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "C’est le truc le plus gênant qui me soit arrivé."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "यह मेरे साथ हुई सबसे शर्मनाक चीज़ है।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ini hal paling memalukan yang pernah kualami."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "È la cosa più imbarazzante che mi sia mai successa."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "人生でいちばん恥ずかしかった出来事です。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "제 인생에서 가장 민망했던 일이에요."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dette er det mest pinlige som noen gang har skjedd meg."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dit is het meest gênante dat me ooit is overkomen."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Essa é a coisa mais constrangedora que já me aconteceu."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Det här är det mest pinsamma som någonsin hänt mig."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "นี่คือเรื่องที่น่าอายที่สุดที่เคยเจอ"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bu, başıma gelen en utanç verici şey."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Đây là chuyện xấu hổ nhất từng xảy ra với mình."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "这是我遇到过最尴尬的事。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "這是我遇過最尷尬的事。"
           }
         }
       }
@@ -512568,124 +512692,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "你這樣做是錯的。解決辦法在這裡。[停頓]"
-          }
-        }
-      }
-    },
-    "You've been told this your whole life. It's wrong. [pause]" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "قيل لك هذا طوال حياتك. وهو خطأ. [وقفة]"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Det har du fået at vide hele dit liv. Det er forkert. [pause]"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Das hat man dir dein Leben lang erzählt. Es ist falsch. [Pause]"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Te lo han dicho toda la vida. Es falso. [pausa]"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "On vous l’a répété toute votre vie. C’est faux. [pause]"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "आपको जीवन भर यही बताया गया। यह गलत है। [रुकें]"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sejak dulu kamu diberi tahu begini. Itu salah. [jeda]"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Te l’hanno detto per tutta la vita. È sbagliato. [pausa]"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ずっとそう言われてきたけど、それは間違い。[間]"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "평생 그렇게 들어 왔죠. 그건 틀렸어요. [멈춤]"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Du har fått høre dette hele livet. Det er feil. [pause]"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dit is je je hele leven verteld. Het is niet waar. [pauze]"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Disseram isso a vida inteira. Está errado. [pausa]"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Du har fått höra det hela livet. Det är fel. [paus]"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ถูกบอกแบบนี้มาทั้งชีวิต แต่มันผิด [หยุด]"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hayatın boyunca sana bunu söylediler. Yanlış. [durakla]"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bạn nghe điều này cả đời. Nó sai rồi. [dừng]"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "这话你听了一辈子，可它是错的。[停顿]"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "你從小到大都聽人這麼說。但那是錯的。[停頓]"
           }
         }
       }

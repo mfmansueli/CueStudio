@@ -68,7 +68,7 @@ nonisolated struct UltraPayload: Hashable, Sendable {
         if PlatformRegister(request.platform) == .professional { lines.append("Register: professional (no slang, no swearing, no emojis).") }
         lines.append(formatLine)
         if request.structure.isSerious { lines.append(ScriptPromptBuilder.seriousRule) }
-        lines.append(length.promptLine)
+        lines.append(length.promptLine(in: request.language))
         return lines.joined(separator: "\n")
     }
 

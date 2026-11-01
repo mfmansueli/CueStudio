@@ -13,9 +13,10 @@ nonisolated struct LengthZone: Equatable, Sendable {
     let seconds: TimeInterval
     let preset: PlatformPreset
 
-    init(text: String, preset: PlatformPreset) {
+    /// - Parameter language: the script's, whose pace sets the seconds (`ReadTime.pace(for:)`: a Korean minute holds fewer words).
+    init(text: String, preset: PlatformPreset, language: CueLanguage? = nil) {
         words = ReadTime.wordCount(in: text)
-        seconds = ReadTime.seconds(for: text)
+        seconds = ReadTime.seconds(for: text, language: language)
         self.preset = preset
     }
 

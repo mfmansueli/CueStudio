@@ -78,7 +78,7 @@ struct VoiceCheckedWriting {
     func violations(in script: GeneratedScript, for request: ScriptRequest) -> [VoiceViolation] {
         let voice = VoiceConstraintChecker.violations(
             in: script.text, voice: request.voice, language: request.language,
-            minimumWords: request.durationPolicy == .targeted ? ReadTime.words(for: request.targetRange.lowerBound) : 0,
+            minimumWords: request.durationPolicy == .targeted ? ReadTime.words(for: request.targetRange.lowerBound, language: request.language) : 0,
             openingLine: request.brief?.openingLine
         )
         let required = request.requiredPhrases.filter { !ScriptVerbatimRequirements.contains($0, in: script.text) }.map {
