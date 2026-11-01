@@ -1,0 +1,355 @@
+<title>Auditoria de integração</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one reading column; the flow as a numbered strip; each finding a card with chips for priority and status; P3 in a table. */
+:root {
+  --bg: #f6f5f2; --surface: #ffffff; --ink: #17181c; --ink-soft: #4a4c55; --line: #dedbd3;
+  --accent: #6b4fd6; --accent-soft: #ece8fb;
+  --p1: #a3261b; --p1-bg: #fbe5e2; --p2: #8a5300; --p2-bg: #fbf0dc; --p3: #3d5a80; --p3-bg: #e5edf7;
+  --ok: #1f7a4a; --ok-bg: #e3f3ea; --sus: #6b4fd6; --sus-bg: #ece8fb;
+  --body: "Instrument Sans", "Segoe UI", system-ui, sans-serif; --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0f1016; --surface: #181a23; --ink: #f1f1f4; --ink-soft: #b4b6c2; --line: #2c2f3b;
+  --accent: #b6a6ff; --accent-soft: #262141;
+  --p1: #ff9b8f; --p1-bg: #3a1714; --p2: #f2b95b; --p2-bg: #2d2312; --p3: #9cc0ee; --p3-bg: #172333;
+  --ok: #6fd39c; --ok-bg: #15291f; --sus: #c4b6ff; --sus-bg: #262141; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0f1016; --surface: #181a23; --ink: #f1f1f4; --ink-soft: #b4b6c2; --line: #2c2f3b;
+  --accent: #b6a6ff; --accent-soft: #262141;
+  --p1: #ff9b8f; --p1-bg: #3a1714; --p2: #f2b95b; --p2-bg: #2d2312; --p3: #9cc0ee; --p3-bg: #172333;
+  --ok: #6fd39c; --ok-bg: #15291f; --sus: #c4b6ff; --sus-bg: #262141; color-scheme: dark }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.55; }
+.wrap { max-width: 900px; margin: 0 auto; padding-block: 32px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 40px; }
+header, section { display: grid; gap: 14px; }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); }
+h1 { font-size: clamp(30px, 6vw, 44px); line-height: 1.1; margin: 0; text-wrap: balance; }
+h2 { font-size: 23px; margin: 0; text-wrap: balance; }
+h3 { font-size: 17px; margin: 0; line-height: 1.35; }
+p { margin: 0; max-width: 70ch; }
+.lede { font-size: 18px; color: var(--ink-soft); }
+ul, ol { margin: 0; padding-left: 22px; display: grid; gap: 6px; max-width: 72ch; }
+code { font-family: var(--mono); font-size: .85em; overflow-wrap: anywhere; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.stat { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; display: grid; gap: 2px; }
+.stat b { font-family: var(--mono); font-size: 26px; font-variant-numeric: tabular-nums; }
+.stat span { color: var(--ink-soft); font-size: 14px; }
+.flow { list-style: none; padding: 0; display: grid; gap: 8px; counter-reset: f; }
+.flow li { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px 10px 46px; position: relative; }
+.flow li::before { counter-increment: f; content: counter(f); position: absolute; left: 12px; top: 10px; width: 24px; height: 24px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); font-family: var(--mono); font-size: 12px; font-weight: 600; display: grid; place-items: center; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; display: grid; gap: 8px; }
+.head { display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; }
+.id { font-family: var(--mono); font-size: 13px; color: var(--ink-soft); }
+.chip { font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: .04em; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+.P1 { background: var(--p1-bg); color: var(--p1); } .P2 { background: var(--p2-bg); color: var(--p2); } .P3 { background: var(--p3-bg); color: var(--p3); }
+.conf { background: var(--ok-bg); color: var(--ok); } .susp { background: var(--sus-bg); color: var(--sus); }
+.dev { background: var(--accent-soft); color: var(--accent); }
+dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 4px 12px; font-size: 15px; }
+dt { color: var(--ink-soft); font-weight: 600; }
+dd { margin: 0; min-width: 0; }
+@media (max-width: 560px) { dl { grid-template-columns: 1fr; } dt { margin-top: 6px; } }
+.table { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 14px; min-width: 640px; }
+th, td { padding: 9px 12px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); }
+tr:last-child td { border-bottom: 0; }
+.note { background: var(--p2-bg); border-radius: 12px; padding: 14px 16px; display: grid; gap: 8px; }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+.grid2 > div { min-width: 0; }
+</style>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">audit/integration-flows · main c50039c3 · 01/11/2026 · só leitura, nenhum código mudou</div>
+  <h1>Auditoria de integração</h1>
+  <p class="lede">Os fluxos do Cue Studio de ponta a ponta: da ideia ao roteiro (Apple Intelligence no aparelho, Private Cloud Compute e Ultra AI), à gravação, à edição, à exportação e ao compartilhamento, incluindo voltar, pular, cancelar, errar e retomar.</p>
+  <p>Dois agentes leram o código, sem build. Eu conferi na fonte os achados que estão no topo. <b>Confirmado</b> quer dizer que o caminho foi lido de ponta a ponta no código. <b>Suspeita</b> quer dizer que depende de rodar no aparelho. Nenhuma remoção é sugerida sem a busca em todo o app e nos testes.</p>
+  <div class="stats">
+    <div class="stat"><b>3</b><span>P1: perda de trabalho ou caminho quebrado que o criador vai encontrar</span></div>
+    <div class="stat"><b>21</b><span>P2: resultado errado, perda em caso raro, risco</span></div>
+    <div class="stat"><b>18</b><span>P3: aresta, mensagem, limpeza</span></div>
+    <div class="stat"><b>4</b><span>códigos sem uso ou duplicados, confirmados</span></div>
+    <div class="stat"><b>14</b><span>pontos a testar no iPhone</span></div>
+  </div>
+</header>
+
+<section>
+  <h2>Como as partes se ligam</h2>
+  <ol class="flow">
+    <li><b>Ideia → pedido.</b> Dock, Find inspiration, Logbook, responder um comentário e o briefing de marca passam por <code>ScriptStarter.write</code>, que monta o <code>ScriptRequest</code> e escolhe o motor (Ultra só se escolhida, permitida e com roteiros sobrando; senão Apple Intelligence).</li>
+    <li><b>Roteiro vazio + estrela.</b> O starter cria logo um roteiro vazio na biblioteca (salvo em disco), começa a estrela e abre a página com o pedido.</li>
+    <li><b>A página escreve.</b> <code>ScriptAIService</code> (PCC primeiro, aparelho como reserva) ou <code>UltraScriptService</code> (Firebase: rascunho, checagem e polimento). O texto só vai para a biblioteca em <code>finishWriting</code>, depois da revelação.</li>
+    <li><b>Outros nascimentos.</b> Roteiro em branco, formato, importar, onboarding (roteiro fixo), tradução e "Make a version for…" (cópias via <code>library.create</code>).</li>
+    <li><b>Página → gravador.</b> Record abre o <code>PrompterView</code> em tela cheia; <code>SessionSetupService</code> junta o setup do criador e o da plataforma; Voice Following é o padrão, Steady é a reserva.</li>
+    <li><b>Gravação → take.</b> <code>CameraManager</code> grava em <code>tmp/take-*.mov</code>; <code>TakeLibraryService.addTake</code> move para <code>Application Support/Takes</code> e grava <code>takes.json</code>; se falhar, o vídeo volta ao tmp e <code>TakeRecovery</code> o recupera no próximo lançamento.</li>
+    <li><b>Revisão.</b> <code>TakeReviewViewModel</code>: melhor take, apagar (com Undo), refazer, roteiro e editar.</li>
+    <li><b>Editor.</b> <code>QuickEditViewModel</code> com rascunho por take (<code>QuickEditDraftStore</code>, salva 600 ms depois de cada mudança), mídia em <code>EditMedia</code>; Done aplica a edição ao take.</li>
+    <li><b>Exportação.</b> <code>BackgroundExportRunner</code> → <code>ExportLedgerService</code> (conta uma vez por arquivo) → <code>VideoExportService</code> → Fotos, share sheet ou a fila "Share to universe".</li>
+    <li><b>Limpeza.</b> Ao fechar a revisão, os arquivos exportados saem; ao abrir o app, sobras com mais de 24 h ou 7 dias; "Delete my Cue data" apaga tudo.</li>
+  </ol>
+</section>
+
+<section>
+  <h2>P1 · Corrigir primeiro</h2>
+
+  <div class="card">
+    <div class="head"><span class="id">A1</span><h3>O roteiro que a IA está escrevendo só existe na memória até o fim da revelação</h3><span class="chip P1">P1</span><span class="chip conf">CONFIRMADO</span><span class="chip dev">iPhone</span></div>
+    <dl>
+      <dt>Evidência</dt><dd><code>ScriptStarter.swift:174-177</code> cria o roteiro com <code>title: "", text: ""</code> e salva na hora; o texto só é gravado em <code>finishWriting</code> (<code>ScriptDetailViewModel+Page.swift:485-503</code>), depois da estrela e da revelação. Em segundo plano, <code>commitPage</code> não salva enquanto <code>page.isWriting</code>. Nada apaga roteiros vazios ao abrir o app. Na Ultra, o roteiro já foi descontado antes da revelação (<code>UltraScriptService.swift:87-91</code>).</dd>
+      <dt>Impacto</dt><dd>Se o Cue é fechado ou morto pelo iOS durante a espera (3 a 60 s) ou a revelação, o roteiro some, fica um "Untitled script" vazio em DRAFTS e a ideia do dock também se perde. Na Ultra, um roteiro pago se perde.</dd>
+      <dt>Correção</dt><dd>Gravar título e texto na biblioteca assim que <code>generate</code> volta, antes da revelação; pedir tempo de segundo plano durante a geração (A11); ao abrir o app, apagar roteiros vazios criados pelo fluxo de IA (marcados como pendentes).</dd>
+      <dt>No iPhone</dt><dd>Mandar uma ideia, fechar o Cue durante a estrela e reabrir; repetir durante a revelação.</dd>
+    </dl>
+  </div>
+
+  <div class="card">
+    <div class="head"><span class="id">B1</span><h3>Uma edição deixada aberta num take não é encontrada por Takes, "Continue" nem pela notificação</h3><span class="chip P1">P1</span><span class="chip conf">CONFIRMADO</span><span class="chip dev">iPhone</span></div>
+    <dl>
+      <dt>Evidência</dt><dd>O estágio "In edit" vale se qualquer take do vídeo tem rascunho (<code>TakeStage.swift:23</code>), mas Edit no cartão de Takes abre <code>video.best</code>, o melhor ou o mais novo (<code>TakeVideo.swift:21</code>). Na revisão, o botão diz "Continue" se algum irmão tem rascunho (<code>TakeReviewViewModel.swift:171</code>), mas abre o take atual (<code>TakeReviewView.swift:376-379</code>). A notificação vai ao take mais novo (<code>ProjectCampaigns.swift:89</code>).</dd>
+      <dt>Impacto</dt><dd>Editar o take 1, tocar "Not yet", gravar o take 2: Takes, Continue e a notificação abrem o take 2 sem "Draft restored", e o criador acha que perdeu a edição.</dd>
+      <dt>Correção</dt><dd>Esses três caminhos abrem o take que tem o rascunho (o mais recente entre os irmãos); "Continue" só aparece nesse take.</dd>
+      <dt>No iPhone</dt><dd>Os passos acima, depois Takes › Edit: ver qual take abre.</dd>
+    </dl>
+  </div>
+
+  <div class="card">
+    <div class="head"><span class="id">B2</span><h3>Sair da revisão durante uma exportação joga o resultado onde ninguém vê</h3><span class="chip P1">P1</span><span class="chip conf">CONFIRMADO no código</span><span class="chip dev">iPhone</span></div>
+    <dl>
+      <dt>Evidência</dt><dd>Durante a exportação só a barra de ações fica desligada; Voltar e Apagar (<code>ReviewToolbar.swift:26, 46</code>), o menu do take e o deslize no vídeo (<code>TakeReviewView.swift:268-273</code>) continuam valendo. A exportação roda numa <code>Task</code> solta e termina num view model que não está mais na tela; <code>leave()</code> não apaga o arquivo porque <code>runningAction != nil</code> (<code>TakeReviewViewModel.swift:399-401</code>). Apagar no meio: o vídeo de um take apagado ainda pode ir para Fotos e contar uma exportação.</dd>
+      <dt>Impacto</dt><dd>Share ou More: a share sheet nunca aparece. Share to universe: nada acontece. Save video: salva e desconta sem confirmação. O cartão de progresso só some.</dd>
+      <dt>Correção</dt><dd>Enquanto exporta, travar ou confirmar Voltar, Apagar, deslize e menu; ou levar a exportação para um serviço que sobrevive à tela e reconecta na revisão.</dd>
+      <dt>No iPhone</dt><dd>Exportar um take de 2 a 6 min com More ou Save, deslizar para outro take no meio, ver o que aparece.</dd>
+    </dl>
+  </div>
+</section>
+
+<section>
+  <h2>P2 · Confirmados no código</h2>
+
+  <div class="card">
+    <div class="head"><span class="id">A6</span><h3>Voltar ou Stop durante a revelação corta um roteiro que já chegou inteiro</h3><span class="chip P2">P2</span><span class="chip conf">CONFIRMADO</span><span class="chip dev">iPhone</span></div>
+    <dl><dt>Evidência</dt><dd><code>stopWriting</code> guarda só <code>page.revealed</code> (<code>+Page.swift:527-544</code>), embora o texto inteiro já esteja na memória; na Ultra ele já foi descontado.</dd>
+    <dt>Impacto</dt><dd>Tocar Voltar enquanto as palavras aparecem salva o roteiro cortado no meio da frase.</dd>
+    <dt>Correção</dt><dd>Depois que o modelo respondeu, sair ou parar salva o texto inteiro (junto com A1).</dd></dl>
+  </div>
+
+  <div class="card">
+    <div class="head"><span class="id">A13</span><h3>A página continua editável enquanto um retoque roda, e o resultado cai em cima do que foi digitado</h3><span class="chip P2">P2</span><span class="chip conf">CONFIRMADO</span></div>
+    <dl><dt>Evidência</dt><dd>O editor só trava em <code>page.isWriting || previewedText != nil</code> (<code>ScriptPageView.swift:337</code>), não com <code>runningTool</code> nem <code>page.isRewriting</code>. O retoque do roteiro inteiro troca todo o texto; o da seleção troca o intervalo guardado, que se desloca se o criador digitou antes dele.</dd>
+    <dt>Impacto</dt><dd>O que foi digitado durante um Improve de 5 a 30 s some (só o Undo de 4 s devolve); um retoque de trecho pode cair no lugar errado e embaralhar o texto.</dd>
+    <dt>Correção</dt><dd>Travar o editor enquanto um retoque roda, ou descartar o resultado se o texto mudou desde o pedido.</dd></dl>
+  </div>
+
+  <div class="card">
+    <div class="head"><span class="id">B4</span><h3>Compartilhar ou salvar um take com rascunho aberto exporta a versão salva antiga, sem aviso</h3><span class="chip P2">P2</span><span class="chip conf">CONFIRMADO</span><span class="chip dev">iPhone</span></div>
+    <dl><dt>Evidência</dt><dd>A exportação usa <code>take.edit</code> (<code>TakeReviewViewModel.swift:449-455, 667-670</code>); a revisão só olha o rascunho para o estágio e o rótulo "Continue".</dd>
+    <dt>Impacto</dt><dd>Depois de "Not yet, I'll come back", Share ou Save mandam a edição anterior.</dd>
+    <dt>Correção</dt><dd>Com rascunho aberto, perguntar "Terminar a edição antes?" (Continuar editando / Exportar a última salva).</dd></dl>
+  </div>
+
+  <div class="card">
+    <div class="head"><span class="id">B3</span><h3>O mesmo vídeo, sem mudança, desconta de novo depois que a revisão fecha</h3><span class="chip P2">P2</span><span class="chip conf">CONFIRMADO · limite já escrito no SHARING §5</span></div>
+    <dl><dt>Evidência</dt><dd>Fechar a revisão apaga o arquivo (<code>releaseFiles</code>); reaproveitar e "já contado" exigem que o arquivo exista (<code>ExportLedgerService.swift:62-69</code>), mesmo com a operação contada guardada por 7 dias. O SHARING.md diz ao mesmo tempo que "uma operação já contada nunca pede a cota de novo".</dd>
+    <dt>Impacto</dt><dd>Salvar no Fotos, fechar, voltar e compartilhar o mesmo vídeo gasta mais uma exportação grátis; com 0, o criador cai no paywall por um vídeo que já pagou.</dd>
+    <dt>Correção</dt><dd>Procurar a operação contada pela impressão digital mesmo sem o arquivo e refazer o vídeo dentro dela (como já acontece em "Ready to travel"). <b>Decisão sua.</b></dd></dl>
+  </div>
+
+  <div class="card">
+    <div class="head"><span class="id">A2</span><h3>Editar de novo depois de gravar, na mesma visita, não sobe a versão: "Changed since take" erra</h3><span class="chip P2">P2</span><span class="chip conf">CONFIRMADO</span></div>
+    <dl><dt>Evidência</dt><dd><code>bumpedVersion</code> é marcado na primeira edição (<code>+Page.swift:50, 62</code>) e nunca volta a falso (<code>ScriptPageState.swift:49</code> é a única declaração); o gravador é tela cheia, então a página fica com o mesmo view model.</dd>
+    <dt>Impacto</dt><dd>Um roteiro cujas palavras mudaram depois do último take não mostra "Changed since take 2", e a revisão diz "From script v2" para palavras que já não são da v2.</dd>
+    <dt>Correção</dt><dd>Zerar a marca quando um take desse roteiro é salvo, ou comparar com a versão do último take.</dd></dl>
+  </div>
+
+  <div class="card">
+    <div class="head"><span class="id">A3 · A4 · A5 · A23</span><h3>Ideias e comentários se perdem ao cancelar, e o texto do dock é apagado por fluxos que não vieram dele</h3><span class="chip P2">P2</span><span class="chip conf">CONFIRMADO</span></div>
+    <dl><dt>Evidência</dt><dd>
+      <b>A3:</b> "Draft it now" no Find inspiration consome a ideia antes de o roteiro existir (<code>FindInspirationSheet.swift:538</code> → <code>IdeaSuggestionService.selected</code>). Cancelar ou uma falha sem "Try again" perde a ideia, e o Cue ainda aprende um gosto que não virou roteiro.<br>
+      <b>A4:</b> no <code>abort</code> (<code>ScriptStarter.swift:206-215</code>) o comentário só é guardado no Logbook se houve erro: Cancelar o perde. Na falha, ele vai ao Logbook sem nenhuma mensagem dizendo isso.<br>
+      <b>A5:</b> <code>writeByHand</code> termina com <code>ideaDraft.clear()</code> (<code>:219-222</code>). "Write it myself" num comentário e Write no Logbook sem IA apagam o que o criador estava digitando no dock, junto com as escolhas dos chips.<br>
+      <b>A23:</b> um roteiro escrito de outro lugar zera os chips do dock quando o texto dele está vazio.</dd>
+    <dt>Correção</dt><dd>Consumir a ideia só quando o roteiro chega; guardar o comentário também ao cancelar e dizer "Saved to your Logbook"; não limpar o dock em fluxos que não vieram dele.</dd></dl>
+  </div>
+
+  <div class="card">
+    <div class="head"><span class="id">A7</span><h3>Traduções e "Make a version for…" chegam como READY TO RECORD</h3><span class="chip P2">P2</span><span class="chip conf">CONFIRMADO</span></div>
+    <dl><dt>Evidência</dt><dd><code>library.create</code> sem <code>isFinished</code> (<code>ScriptDetailViewModel.swift:369-373, 409-413</code>), e <code>Script.init</code> põe <code>isFinished ?? !text.isEmpty</code>, ou seja, pronto. Sua regra de 20/10 é que o que a IA escreve começa como rascunho. As cópias também perdem a marca da Ultra (<code>draftedBy</code>).</dd>
+    <dt>Correção</dt><dd>Criar as cópias com <code>isFinished: false</code> e levar <code>draftedBy</code>.</dd></dl>
+  </div>
+
+  <div class="card">
+    <div class="head"><span class="id">A12</span><h3>Retomar um onboarding interrompido põe TikTok como plataforma padrão</h3><span class="chip P2">P2</span><span class="chip conf">CONFIRMADO</span></div>
+    <dl><dt>Evidência</dt><dd>A plataforma escolhida fica só na memória; só o passo é salvo (<code>OnboardingService.swift:18-23, 44-47</code>). Ao retomar, <code>applyChoices</code> grava <code>.tiktok</code> como padrão (<code>CreatorProfileService.swift:60</code>).</dd>
+    <dt>Impacto</dt><dd>Quem escolheu Instagram ou YouTube e teve o Cue fechado nas permissões ou na prática fica com TikTok para os próximos roteiros.</dd>
+    <dt>Correção</dt><dd>Salvar plataforma e temas junto com o passo, ou não aplicar escolhas que não foram feitas nesta sessão.</dd></dl>
+  </div>
+
+  <div class="card">
+    <div class="head"><span class="id">B5</span><h3>Comprar o Pro a partir da fila de compartilhamento não segue em frente; tocar de novo salva uma cópia a mais no Fotos</h3><span class="chip P2">P2</span><span class="chip conf">CONFIRMADO no código</span><span class="chip dev">iPhone</span></div>
+    <dl><dt>Evidência</dt><dd><code>ShareFlow.start</code> já voltou quando as exportações acabaram (<code>ShareFlow.swift:118-123</code>). Depois da compra, <code>continueAfterPurchase</code> roda a exportação pendente, que salva no Fotos e não alimenta a fila (<code>TakeReviewViewModel.swift:374-378</code>). Um segundo toque salva de novo (<code>:491</code>).</dd>
+    <dt>Correção</dt><dd>A fila retoma sozinha depois da compra, ou não salvar de novo uma operação já salva.</dd></dl>
+  </div>
+
+  <div class="card">
+    <div class="head"><span class="id">B6</span><h3>O salvamento automático do rascunho e o da ida ao segundo plano falham em silêncio</h3><span class="chip P2">P2</span><span class="chip conf">CONFIRMADO</span></div>
+    <dl><dt>Evidência</dt><dd><code>try? Self.write</code> em <code>QuickEditDraftStore.swift:38-41</code>; <code>autosaveDraft</code> e <code>pauseAndKeepDraft</code> ignoram o resultado (<code>QuickEditViewModel.swift:601-605, 650-657</code>); o aviso "Couldn't save your work" só olha roteiros e takes.</dd>
+    <dt>Impacto</dt><dd>Num iPhone cheio, uma edição longa não deixa rascunho; se o iOS fecha o Cue em segundo plano, a edição some sem aviso.</dd>
+    <dt>Correção</dt><dd>Registrar a falha, avisar no editor e incluir no aviso geral.</dd></dl>
+  </div>
+
+  <div class="card">
+    <div class="head"><span class="id">B7</span><h3>Apagar um take deixa a fila de compartilhamento e os lembretes dele</h3><span class="chip P2">P2</span><span class="chip conf">CONFIRMADO</span></div>
+    <dl><dt>Evidência</dt><dd><code>TakeLibraryService.delete</code>/<code>purge</code> não chamam <code>shareQueue.discard</code>; só <code>MainView.continuePosting</code> descarta, quando o criador toca Continue (<code>MainView.swift:103-108</code>). <code>exists(.shareQueue)</code> nas notificações olha só a fila (lembretes: inferido).</dd>
+    <dt>Impacto</dt><dd>Cartão "Continue posting" de um vídeo apagado, um Continue que só faz o cartão sumir, e lembretes soltos.</dd>
+    <dt>Correção</dt><dd>Descartar a fila ao apagar o take e conferir o take nas notificações.</dd></dl>
+  </div>
+
+  <div class="card">
+    <div class="head"><span class="id">B8</span><h3>"Delete my Cue data" e apagar pela aba Takes deixam vídeos exportados e capas no tmp</h3><span class="chip P2">P2</span><span class="chip conf">CONFIRMADO</span></div>
+    <dl><dt>Evidência</dt><dd>O apagador só libera os arquivos dos takes vivos (<code>DataEraserService.swift:80-84</code>); <code>TakesViewModel.deleteConfirmed</code> não libera nada; <code>Cue-cover-*.jpg</code> nunca é apagado (<code>TakeReviewViewModel.swift:741</code>). O DESIGN_PROJECT promete que "vídeos exportados à espera" são apagados.</dd>
+    <dt>Impacto</dt><dd>Depois de "apagar tudo", vídeos renderizados e capas continuam no iPhone por 24 h ou mais (as capas até o iOS limpar o tmp). É uma promessa de privacidade.</dd>
+    <dt>Correção</dt><dd>O apagador libera todas as operações e remove <code>tmp/Cue-*</code>; apagar pela aba libera os arquivos do take; a capa temporária sai depois de salva.</dd></dl>
+  </div>
+
+  <div class="card">
+    <div class="head"><span class="id">A8</span><h3>Um take recuperado depois de uma falha volta como freestyle e sem aviso</h3><span class="chip P2">P2</span><span class="chip conf">CONFIRMADO</span> <span class="chip susp">SUSPEITA: o tmp ser limpo</span></div>
+    <dl><dt>Evidência</dt><dd>Quando salvar falha, o vídeo volta ao tmp (<code>TakeLibraryService.swift:124-134</code>); <code>TakeRecovery.recover</code> o arquiva com <code>script: nil</code> (<code>TakeRecovery.swift:59</code>), e a contagem é ignorada.</dd>
+    <dt>Impacto</dt><dd>O take do roteiro X reaparece como "Freestyle recording", fora dos takes do roteiro, sem mensagem. Num iPhone cheio, que é quando isso acontece, o iOS pode limpar o tmp antes.</dd>
+    <dt>Correção</dt><dd>Gravar ao lado do arquivo o roteiro e a versão; guardar a sobra em Application Support; avisar "1 take recovered".</dd></dl>
+  </div>
+
+  <div class="card">
+    <div class="head"><span class="id">A17</span><h3>A ideia do dock e as escolhas dos chips vivem só na memória</h3><span class="chip P2">P2</span><span class="chip conf">CONFIRMADO · por desenho</span></div>
+    <dl><dt>Evidência</dt><dd>Só o motor é salvo; texto, plataforma, formato, marca e briefing não (<code>IdeaDraftService.swift:15-34</code>, "lives with the app session").</dd>
+    <dt>Impacto</dt><dd>Se o iOS tira o Cue da memória enquanto o criador vai copiar algo em outro app, uma ideia longa digitada ou ditada some.</dd>
+    <dt>Correção</dt><dd>Salvar o texto e o briefing enquanto são digitados. <b>Decisão sua.</b></dd></dl>
+  </div>
+</section>
+
+<section>
+  <h2>P2 · Suspeitas que dependem do iPhone</h2>
+  <div class="table"><table>
+    <thead><tr><th>ID</th><th>O que pode acontecer</th><th>Por que suspeitamos</th><th>Correção</th></tr></thead>
+    <tbody>
+      <tr><td><code>A9</code></td><td>Sair durante a contagem regressiva e voltar pode começar o take ou dar erro cru; no iPad (Split View) ou depois de uma ligação, a câmera congela sem mensagem.</td><td>Nada no gravador reage a <code>scenePhase</code> nem às interrupções do <code>AVCaptureSession</code>; a contagem é um <code>Task.sleep</code> (<code>PrompterViewModel.swift:578-592</code>).</td><td>Cancelar a contagem ao sair; tratar interrupção e erro de mídia com mensagem e reinício.</td></tr>
+      <tr><td><code>A10</code></td><td>Um take gravado em 1080p (câmera frontal) pode mostrar "4K" e oferecer exportar em 4K, o que só aumentaria a imagem.</td><td>O take guarda a resolução e os fps pedidos, não os entregues (<code>TakeLibraryService.swift:112-113</code>; o seletor cai para formato menor).</td><td>Guardar o formato real da câmera e avisar quando difere.</td></tr>
+      <tr><td><code>A11</code></td><td>Sair do Cue durante a geração (a Ultra leva até ~60 s) provavelmente faz a geração falhar; chamadas da Ultra já feitas são pagas.</td><td>Só o gravador e a exportação pedem tempo de segundo plano.</td><td>Pedir tempo de segundo plano da escrita até o fim (com A1).</td></tr>
+      <tr><td><code>A16</code></td><td>Depois de uma ligação ou Siri, o Voice Following pode parar de seguir as palavras pelo resto da sessão, ainda dizendo "Voice Following".</td><td>Depois de 3 reinícios, <code>restartSpeech</code> desiste sem aviso (<code>PrompterViewModel+VoiceFollow.swift:152-160</code>).</td><td>Avisar e passar para Steady, ou tentar de novo com intervalo.</td></tr>
+      <tr><td><code>B9</code></td><td>"Edit first" dentro da fila recomeça a fila e oferece de novo redes já postadas.</td><td><code>start()</code> chama <code>queues.begin</code>, que troca a fila do take por uma nova (<code>ShareQueueService.swift:38-43</code>).</td><td>Manter a fila e apontá-la para a nova exportação.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section>
+  <h2>P3 · Arestas</h2>
+  <div class="table"><table>
+    <thead><tr><th>ID</th><th>Problema</th><th>Estado</th><th>Correção</th></tr></thead>
+    <tbody>
+      <tr><td><code>A14</code></td><td>Retake pela aba Takes com microfone negado: Play não mexe o texto (não cai no Steady).</td><td>Confirmado</td><td>Preparar o modo de rolagem no <code>retake()</code>.</td></tr>
+      <tr><td><code>A15</code></td><td>Atalhos da Siri não olham a tela: "New script" encerra um take sendo gravado; pode abrir sobre o onboarding.</td><td>Confirmado</td><td>As mesmas checagens das notificações.</td></tr>
+      <tr><td><code>A18 · B19</code></td><td>O botão Script aparece para um roteiro apagado (página "This script was deleted"); o retake vira freestyle.</td><td>Confirmado</td><td>Esconder ou oferecer "Restaurar roteiro" do snapshot.</td></tr>
+      <tr><td><code>A22</code></td><td>"Make a version for…" usa o texto salvo, não o da página: perde o que foi digitado no último segundo.</td><td>Confirmado</td><td>Salvar a página antes.</td></tr>
+      <tr><td><code>A24</code></td><td>O Watch pode começar um take com o microfone negado (o botão do iPhone fica desligado).</td><td>Confirmado (Watch ainda não vai no app)</td><td>Checar o microfone no início.</td></tr>
+      <tr><td><code>B10</code></td><td>Uma mídia que sumiu vira buraco preto ou some da exportação sem aviso.</td><td>Suspeita (raro)</td><td>Conferir os arquivos antes de exportar.</td></tr>
+      <tr><td><code>B11</code></td><td>Um Done que falhou ao salvar ainda manda Share/Download para a revisão.</td><td>Confirmado</td><td>Devolver "Not yet" na falha.</td></tr>
+      <tr><td><code>B12</code></td><td>Vídeos órfãos em <code>Takes</code> depois de um travamento no Undo de 4 s ou de um delete que falhou.</td><td>Confirmado (§37)</td><td>Ao abrir, recuperar ou apontar vídeos que o <code>takes.json</code> não cita.</td></tr>
+      <tr><td><code>B13</code></td><td>Importar com o iPhone cheio diz "Can't import this video" e deixa a cópia em EditMedia por 7 dias.</td><td>Confirmado</td><td>"Free up space" e apagar a cópia.</td></tr>
+      <tr><td><code>B14</code></td><td>Qualidade e legendas da exportação não são lembradas, e o Save sai sempre em 1080p, mesmo de um take 4K.</td><td>Confirmado</td><td>Lembrar a escolha e oferecer no Save.</td></tr>
+      <tr><td><code>B15</code></td><td>Falha ao salvar a capa é engolida.</td><td>Confirmado</td><td>Avisar.</td></tr>
+      <tr><td><code>B16</code></td><td>O cartão de exportação interrompida sempre oferece Save (que desconta), mesmo quando era um envio; marcas de takes apagados não são limpas.</td><td>Confirmado</td><td>Guardar a ação que parou; limpar as marcas.</td></tr>
+      <tr><td><code>B18</code></td><td>Tocar a notificação de exportação com a revisão aberta reabre a revisão depois que o criador a fecha.</td><td>Suspeita</td><td>Ignorar o toque se aquela revisão já está na tela.</td></tr>
+      <tr><td><code>B20</code></td><td>Legendas guardadas por uma exportação se perdem se um rascunho antigo é reaberto e concluído.</td><td>Suspeita</td><td>Juntar a transcrição ao rascunho ao abrir.</td></tr>
+      <tr><td>22/10 · A1</td><td>Outros toasts de sucesso ("version saved", "Duplicated") ainda aparecem quando o salvamento já falhou.</td><td>Confirmado</td><td>Não dizer sucesso com <code>saveFailed</code>.</td></tr>
+      <tr><td>22/10 · A7</td><td>Importar um documento com camada de texto roda na thread principal.</td><td>Confirmado</td><td>Mover para fora da principal.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section>
+  <h2>Código sem uso ou duplicado</h2>
+  <p>Todos foram procurados no app inteiro, nos testes, no Info.plist e nos App Intents. Nenhum é removido sem o seu OK.</p>
+  <div class="table"><table>
+    <thead><tr><th>ID</th><th>O quê</th><th>Evidência</th><th>Sugestão</th></tr></thead>
+    <tbody>
+      <tr><td><code>A20</code></td><td><code>ScriptRequest.Source.format</code> nunca é criado em produção (o N12 da auditoria de 22/10 continua aberto), com ramos em <code>ScriptAIService</code>, <code>UltraPayload</code>, <code>ScriptPromptBuilder</code> e <code>StubScriptWriter</code>.</td><td><code>ScriptRequestFactory</code> só cria <code>.prompt</code>; só testes chegam ao resto.</td><td>Remover o caso e os ramos, ou ligá-lo de propósito.</td></tr>
+      <tr><td><code>A19</code></td><td>O alerta de erro da página e o "Try again" dela não são alcançáveis no app.</td><td>Só aparecem sem a estrela, e todo pedido de escrita começa a estrela (<code>ScriptStarter.swift:199</code>); só testes chegam lá.</td><td>Remover, ou documentar para que serve.</td></tr>
+      <tr><td><code>A21</code></td><td>Criar um "roteiro em branco" está escrito quatro vezes, e as cópias já divergem (de onde vem a plataforma, com ou sem formato).</td><td><code>MainView.writeNewScript</code>, <code>ScriptsView.newBlankScript</code>, <code>ScriptStarter.openBlankDraft</code>/<code>startFromFormat</code>, cópia em <code>FindInspirationSheet</code>.</td><td>Um só <code>ScriptStarter.newBlank</code>.</td></tr>
+      <tr><td><code>B17</code></td><td>Integrações de compartilhamento dormentes (TikTok Share Kit, Instagram, abrir app, LinkedIn): inalcançáveis porque <code>integrationsEnabled = false</code>, mas o SDK do TikTok vai no app. O SHARING.md cita <code>QuickEditExportModel</code>, que não existe, e diz 5 exportações grátis quando o código tem 3 (<code>UsagePolicy.freeExports</code>).</td><td><code>ShareIntegrationConfiguration.swift:25</code>, <code>ShareRouteResolver.swift:26</code>.</td><td>Corrigir o SHARING.md; manter o código para a fase B ou tirá-lo até lá. <b>Decisão sua.</b></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section>
+  <h2>A auditoria de 22/10 hoje</h2>
+  <div class="grid2">
+    <div class="card"><h3>Fechados</h3><ul>
+      <li>Vídeo movido perdido se os dados falham: <code>addTake</code> desfaz e devolve o vídeo.</li>
+      <li>Apagar take deixa rascunho e mídia: fechado para o rascunho e a mídia dele.</li>
+      <li>O apagador só via takes vivos: agora apaga as pastas inteiras.</li>
+      <li>Importação que falha deixava cópia: apagada na hora, e há uma varredura de órfãos.</li>
+      <li>OCR parava em 10 páginas: agora diz "Pages read: X of Y" e desenha fora da thread principal.</li>
+    </ul></div>
+    <div class="card"><h3>Ainda abertos em parte</h3><ul>
+      <li>Salvar sem avisar a falha: roteiros, takes e Done avisam; o rascunho do editor ainda não (B6).</li>
+      <li>Apagar take: fila (B7), arquivos no tmp (B8) e órfãos (B12).</li>
+      <li>N9: comentário guardado sem mensagem (A4); a ideia do Find inspiration se perde (A3).</li>
+      <li>N12: o caminho <code>.format</code> continua sem uso (A20).</li>
+    </ul></div>
+  </div>
+  <p>Firebase, privacidade (PrivacyInfo), paywall e Dynamic Type ficaram de fora desta rodada: são os itens que você adiou em 22/10.</p>
+</section>
+
+<section>
+  <h2>O que conferimos e está certo</h2>
+  <ul>
+    <li>Salvar o take: Stop, fim sozinho e sair no meio do início salvam, com tempo de segundo plano e sem salvar duas vezes.</li>
+    <li>As bibliotecas de roteiros e takes sobrevivem a um arquivo danificado (lidas registro a registro, cópia guardada).</li>
+    <li>A Ultra AI nunca entra no lugar do Apple Intelligence sem o criador escolher, a permissão é conferida antes de cada chamada e o roteiro só é descontado no sucesso. Nenhum texto do app diz "Gemini".</li>
+    <li>Toda saída de vídeo passa pelo razão de exportações; o razão é gravado antes do contador do Keychain; uma operação conta uma vez.</li>
+    <li>Câmera negada mostra "Open Settings"; microfone negado cai no Steady nas sessões normais.</li>
+    <li>Apagar roteiro e pasta tem Undo; o rascunho do take sai junto com ele.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Para testar no iPhone quando ele voltar</h2>
+  <ol>
+    <li><b>A1, A6:</b> mandar uma ideia e fechar o Cue durante a estrela; repetir durante a revelação; tocar Voltar durante a revelação.</li>
+    <li><b>A11:</b> mandar uma ideia (Apple Intelligence e Ultra AI), ir para a tela inicial por 20 s e voltar.</li>
+    <li><b>B1:</b> editar o take 1, "Not yet", gravar o take 2, abrir por Takes › Edit, por Continue e pela notificação.</li>
+    <li><b>B2:</b> exportar um take longo e deslizar para outro take, ou voltar, no meio.</li>
+    <li><b>B4:</b> mudar algo, "Not yet", Save, conferir o vídeo no Fotos.</li>
+    <li><b>B5:</b> com 0 exportações, Share to universe, escolher redes, comprar (StoreKit de teste).</li>
+    <li><b>B9:</b> fila com 2 redes, postar a primeira, "Edit first" na segunda, Done › Share.</li>
+    <li><b>A9:</b> contagem de 10 s e ir para a tela inicial; ligação com a câmera aberta; Split View no iPad.</li>
+    <li><b>A10:</b> pedir 4K60 na câmera frontal e comparar a informação do take com o arquivo.</li>
+    <li><b>A15:</b> rodar o atalho "New script" durante uma gravação.</li>
+    <li><b>A16:</b> ler com Voice Following e chamar a Siri duas vezes.</li>
+    <li><b>A17:</b> digitar uma ideia longa e abrir apps pesados até o Cue sair da memória.</li>
+    <li><b>B18:</b> sair durante uma exportação, voltar pela notificação e fechar a revisão.</li>
+    <li><b>A8:</b> o tmp sendo limpo só se reproduz com o iPhone quase sem espaço (difícil; pode ficar para um teste automatizado com repositório falso).</li>
+  </ol>
+  <p>Vários dos confirmados (B1, B4, A2, A3, A7, A12, B7) podem ganhar um teste automatizado no simulador na mesma entrega da correção, sem depender do aparelho.</p>
+</section>
+
+<section>
+  <h2>Ordem sugerida para corrigir</h2>
+  <ol>
+    <li><b>Perda de trabalho:</b> A1 + A6 + A11 (gravar o roteiro assim que chega, tempo de segundo plano, limpar vazios), B2, B6, A13, B4.</li>
+    <li><b>Caminhos quebrados:</b> B1, A2, A3/A4/A5/A23, A7, A12, B5, B7, B8, A8.</li>
+    <li><b>Robustez que pede o iPhone:</b> A9, A10, A16, A15, B9.</li>
+    <li><b>Limpeza:</b> A19, A20, A21, documentação (B17) e os P3.</li>
+  </ol>
+  <div class="note">
+    <h3>Decisões que são suas</h3>
+    <ul>
+      <li><b>B3:</b> o mesmo vídeo, sem mudança, deve descontar de novo depois que a revisão fecha? Sugiro que não.</li>
+      <li><b>A17:</b> guardar a ideia do dock entre aberturas do app? Sugiro que sim, só o texto e o briefing.</li>
+      <li><b>B17:</b> manter o código das integrações (TikTok, Instagram) para a fase B ou tirá-lo até lá?</li>
+      <li><b>A19 e A20:</b> posso remover o código sem uso?</li>
+    </ul>
+  </div>
+</section>
+</div>
