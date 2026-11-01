@@ -18,9 +18,12 @@ nonisolated enum FitTopUp {
     /// `addition` as it may go into `text`, or nil: without cues of its own, with no number the script doesn't have, about as long as asked, and not
     /// the script's own sentences again.
     static func accepted(_ addition: String, into text: String, asked: Int) -> String? {
-        let cleaned = RewriteOutcome.withoutInventedCues(addition, comparedTo: "")
-            .replacing(/[ \t]{2,}/, with: " ")
-            .trimmingCharacters(in: .whitespacesAndNewlines)
+        let cleaned: String
+        switch reading(of: addition, against: text) {
+        case .addition(let written): cleaned = clean(written)
+        case .scriptAgain(let added?): cleaned = clean(added)
+        case .scriptAgain(nil): return nil
+        }
         let words = ReadTime.wordCount(in: cleaned)
         guard words >= max(3, asked / 4), words <= asked * 2 + 10 else { return nil }
         guard numbers(in: cleaned).isSubset(of: numbers(in: text)) else { return nil }
@@ -51,6 +54,37 @@ nonisolated enum FitTopUp {
         let head = String(script[..<at])
         let joiner = head.last?.isWhitespace == true ? "" : spacer
         return head + joiner + addition + spacer + String(script[at...]).trimmingCharacters(in: .whitespaces)
+    }
+
+    /// What the answer is: the addition alone, as asked, or the script written again with the addition in it, which Private Cloud Compute gave
+    /// 4 times in 4 (ScriptToolsQualityDeviceTests, 01/11/2026). Then the addition is the sentences the script doesn't have, when they are one run;
+    /// new sentences here and there mean the creator's were changed, and nothing is taken.
+    private enum Reading {
+        case addition(String)
+        case scriptAgain(added: String?)
+    }
+
+    private static func reading(of answer: String, against text: String) -> Reading {
+        let script = key(text)
+        let sentences = answer.split(separator: "\n").flatMap { ScriptParagraphs.sentences(of: String($0)) }.filter { !key($0).isEmpty }
+        let isOld = sentences.map { script.contains(key($0)) }
+        let old = isOld.filter { $0 }.count
+        guard old >= 2, old * 2 >= sentences.count else { return .addition(answer) }
+        let new = isOld.indices.filter { !isOld[$0] }
+        guard let first = new.first, let last = new.last, new.count == last - first + 1 else { return .scriptAgain(added: nil) }
+        return .scriptAgain(added: sentences[first...last].joined())
+    }
+
+    /// Letters and digits only, in lower case and one space apart: a sentence matches the script's whatever the model did to its dashes and cues.
+    private static func key(_ text: String) -> String {
+        let letters = CueParser.stripCues(text).lowercased().map { $0.isLetter || $0.isNumber ? $0 : " " }
+        return String(letters).split(separator: " ").joined(separator: " ")
+    }
+
+    private static func clean(_ text: String) -> String {
+        RewriteOutcome.withoutInventedCues(text, comparedTo: "")
+            .replacing(/[ \t]{2,}/, with: " ")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
     private static func numbers(in text: String) -> Set<String> {

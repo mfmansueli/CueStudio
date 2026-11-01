@@ -22,8 +22,12 @@ nonisolated enum ReadTime {
         if WordSegmenter.containsUnspacedScript(spoken) {
             return WordSegmenter.wordCount(in: spoken)
         }
+        // Only what is said counts: a cue before a full stop ("básicos [sorpresa].") leaves the stop alone, and a dash or an ellipsis between
+        // spaces is no word. Counted as words, they made Apple Intelligence's scripts (a cue before most stops) seem 4 to 6% longer than they
+        // are read (ScriptToolsQualityDeviceTests, 01/11/2026), and "Fit to time" stopped short of the range.
         return spoken
             .split(whereSeparator: { $0.isWhitespace || $0.isNewline })
+            .filter { $0.contains(where: { $0.isLetter || $0.isNumber }) }
             .count
     }
 

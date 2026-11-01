@@ -1087,6 +1087,8 @@ promessa por teste) e `ScriptToolsDeviceTests` no iPhone. **Falsos alarmes do ra
   palavras não contam como feito (exceto Fix grammar). Cues inventados (`[Scene: …]`, `[Cena 1]`) saem, e uma cue do roteiro fica só quantas vezes ele a
   tem; a que o modelo apagou volta ao lugar (`CueRestorer`). Uma tradução de roteiro sem cues não ganha nenhuma; linhas do pedido que o modelo repetiu
   ("This is part 1 of 3…") saem (`withoutEchoedInstructions`).
+- A duração conta só o que se fala: uma cue antes do ponto ("básicos [sorpresa].") não deixa o ponto como palavra, nem um travessão ou reticências
+  soltos (`ReadTime.wordCount`; contados, faziam os roteiros do Apple Intelligence parecerem 4 a 6% mais longos).
 - O pedido diz a meta em números: *Shorter* no PCC "it has 44 words now, answer with about 28" (o modelo do aparelho cortou menos com a conta e fica
   com "about a third shorter"); *Fit to time* a faixa da parte (mirando a metade de baixo ao
   cortar e a de cima ao alongar, porque o modelo erra para o lado de onde partiu), "about 4 times as long" quando precisa dobrar ou mais, e no corte
@@ -1095,7 +1097,9 @@ promessa por teste) e `ScriptToolsDeviceTests` no iPhone. **Falsos alarmes do ra
 - `RewriteRunner`: uma segunda pergunta dizendo o erro em números; quem erra duas vezes **fica como o criador escreveu** (a não ser que tenha feito parte do
   pedido); Fit to time faz até mais duas rodadas enquanto fica fora da faixa da barra e cada uma chega mais perto, e o alongamento que ainda fica curto
   ganha só o que falta, escrito à parte (um ponto, um exemplo, um momento do dia de quem fala) e posto antes do fecho, com as palavras do criador como
-  estavam e sem número que o roteiro não tenha (`FitTopUp`; reescrever tudo de novo tirava parte do que a rodada anterior pôs); uma parte recusada não leva as outras;
+  estavam e sem número que o roteiro não tenha (`FitTopUp`; reescrever tudo de novo tirava parte do que a rodada anterior pôs). O PCC devolve o roteiro
+  inteiro com o acréscimo dentro: as frases novas são tiradas dele quando formam um bloco só, e uma resposta que mexeu nas frases do criador não entra.
+  Medido no iPhone (01/11): Fit to time no PCC 22 de 23 (alongar 11 de 12, cortar 11 de 11); no modelo do aparelho, alongar 11 de 12; uma parte recusada não leva as outras;
   resposta limitada à janela do modelo. Roteiro já no tamanho não chama o modelo.
 - Grades de proteção para texto do próprio criador (`permissiveContentTransformations`); recusa vira "Apple Intelligence won’t work on this text. Try
   rewording it, or use another tool." (`ScriptAIError.declined`).

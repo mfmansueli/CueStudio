@@ -30,4 +30,16 @@ struct FitTopUpTests {
             == "Even a short loop clears my head before work starts.")
         #expect(FitTopUp.accepted("Yes.", into: script, asked: 40) == nil, "far shorter than asked")
     }
+
+    /// Private Cloud Compute answers with the whole script and the addition in it: the addition is taken out, and a script changed here and
+    /// there gives nothing.
+    @Test func whenTheModelWritesTheScriptAgainOnlyTheNewRunIsTaken() {
+        let script = "Morning walks changed my week. [pause] I go before coffee, every single day.\n\nTry it tomorrow and tell me."
+        let answer = "Morning walks changed my week. I go before coffee — every single day.\n\nYesterday the street was empty and I heard the birds. "
+            + "It felt like the day had not started yet.\n\nTry it tomorrow and tell me."
+        #expect(FitTopUp.accepted(answer, into: script, asked: 20) == "Yesterday the street was empty and I heard the birds. It felt like the day had not started yet.")
+        let changed = "My morning walks changed everything this week. I go before coffee, every single day.\n\nYesterday the street was empty. "
+            + "\n\nTry it tomorrow and tell me."
+        #expect(FitTopUp.accepted(changed, into: script, asked: 20) == nil)
+    }
 }

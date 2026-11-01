@@ -54,4 +54,8 @@ struct ReadTimeTests {
         set.language = .english
         #expect(set.paceLanguage == .english)
     }
+
+    @Test func aCueBeforeAFullStopOrADashBetweenSpacesIsNoWord() {
+        #expect(ReadTime.wordCount(in: "Empezó con cinco productos [sorpresa]. Luego — más … [pause]") == 6)
+    }
 }
