@@ -21,7 +21,8 @@ nonisolated enum IdeaLibrary {
     }
 
     /// The pack's ideas about `niche`, in the pack's order (its angles in turn), as starters: whole briefs without the model's angle mark, so the
-    /// card treats them as starters (shown once each).
+    /// card treats them as starters (shown once each). Like the model's ideas, a brief that runs past the card's limit is cut there
+    /// (`IdeaBriefReader.cardLimit`), and the field fits its own 200 (`IdeaBrief.composerText`); the writer gets the brief the card shows.
     static func ideas(for niche: Niche, in pack: IdeaLibraryPack? = current) -> [ThemeIdea] {
         guard let pack else { return [] }
         let language = Locale.Language(identifier: pack.language).minimalIdentifier
@@ -32,7 +33,8 @@ nonisolated enum IdeaLibrary {
             idea.brief = IdeaBrief(
                 subject: entry.title, angle: entry.pointOfView, openingLine: entry.openingLine, language: language, angleKind: angle.rawValue,
                 topicKey: niche.rawValue, topic: niche.promptName
-            )
+            ).fitted(to: IdeaBriefReader.cardLimit)
+            idea.title = idea.brief?.subject ?? entry.title
             return idea
         }
     }

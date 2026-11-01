@@ -28,7 +28,7 @@ struct ThemeCatalogTests {
 
     @Test func everyStarterIsAWholeBriefThatFitsTheComposer() {
         for niche in Niche.allCases {
-            for idea in ThemeCatalog.ideas(for: niche) {
+            for idea in ThemeCatalog.written(for: niche) {
                 guard let brief = idea.brief else {
                     Issue.record("\(idea.title) has no brief")
                     continue

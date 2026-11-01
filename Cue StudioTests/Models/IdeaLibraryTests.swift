@@ -30,6 +30,13 @@ struct IdeaLibraryTests {
             #expect(IdeaAngle(rawValue: idea.angle) != nil && Niche(rawValue: idea.topic) != nil)
             #expect(!idea.title.isEmpty && !idea.pointOfView.isEmpty && !idea.openingLine.isEmpty)
         }
+        // What the card and the field get: within the card's limit, like the model's ideas, and the field's 200.
+        for idea in Niche.offered.flatMap({ IdeaLibrary.ideas(for: $0, in: pack) }) {
+            let brief = try #require(idea.brief)
+            #expect(brief.fitted(to: IdeaBriefReader.cardLimit) == brief, "\(localization): \(idea.title)")
+            #expect(brief.composerText.count <= IdeaPromptDraft.maxCharacters, "\(localization): \(idea.title)")
+            #expect(idea.title == brief.subject)
+        }
     }
 
     @Test func aPacksIdeasAreStartersWithWholeBriefs() throws {

@@ -1294,8 +1294,11 @@ nada de história, resultado, número ou tendência inventados).
   antes a 7 depois; sem região, nenhuma), uma vaga a cada dois lotes é sobre ela; nos outros, uma continua um dos 3 vídeos compartilhados mais novos; a
   cada três, uma responde a próxima pergunta depois de um comentário já respondido. Nunca o lote inteiro. **Ideias de partida:** primeiro as ligadas (a
   data chegando, os 2 vídeos mais novos), depois 6 escritas por tema do primeiro voo e a **biblioteca** (`IdeaLibrary`, ~40 por tema em cada um dos 20
-  idiomas, dentro do app, escritas uma vez pela Ultra AI nativamente em cada idioma e filtradas: `IdeaLibraryDeviceTests`,
-  `tools/ideas/collect_library.py`, `IdeaLibraryBuildTests`); para temas digitados ou do My Cue Voice, 16 modelos (um por ângulo). O gosto ordena as
+  idiomas, 7.987 ideias e 2,9 MB dentro do app, escritas uma vez pela Ultra AI nativamente em cada idioma, ~US$ 17 dos créditos do Google em 100
+  chamadas, e filtradas por idioma, ideia fraca, repetida e porcentagem: `IdeaLibraryDeviceTests`, `tools/ideas/collect_library.py`,
+  `IdeaLibraryBuildTests`; como nos roteiros, é um rascunho: cena imaginada em primeira pessoa pode, número, estudo, credencial ou resultado inventado
+  não; amostra em português aprovada pelo dono, 01/11/2026; o cartão mostra a ideia inteira até 300 caracteres e o campo a encaixa em 200, como as do
+  modelo, e o roteirista recebe a ideia do cartão); para temas digitados ou do My Cue Voice, 16 modelos (um por ângulo). O gosto ordena as
   de partida (as preferidas intercaladas com as outras, as passadas por último). Sem Apple Intelligence é tudo o que a folha e o ↻ mostram, sem custo
   nenhum depois. **Gosto** (`IdeaTaste`, entre sessões, qualquer idioma): passar −0,35, usar +1,5, enviar pelo card +3, roteiro escrito +4 (o ângulo só
   conta se ainda estava no texto); no máximo metade do lote para os ângulos preferidos, o resto para os menos vistos. Testes de UI: datas só com

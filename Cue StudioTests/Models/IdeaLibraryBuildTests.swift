@@ -10,7 +10,8 @@ import Testing
 /// The developer tool that turns what Ultra AI wrote (`IdeaLibraryDeviceTests`, gathered by `tools/ideas/collect_library.py` into
 /// `research_notes/Ideas/library-raw/<localization>.jsonl`) into the packs the app holds (`Cue Studio/SupportFiles/IdeaLibrary/`), with the app's
 /// own filters: the language the pack is for (`OutputLanguageCheck`), no idea with both weaknesses (`IdeaSpecificity`), no title said again in
-/// other words (`IdeaSimilarity`), each topic's ideas with their angles in turn. Prints what each filter took out.
+/// other words (`IdeaSimilarity`), no percentage (the usual shape of a figure no creator could source), each topic's ideas with their angles in
+/// turn. Prints what each filter took out.
 ///
 /// The simulator can't open the Desktop, so the files go through a folder outside it: `python3 tools/ideas/collect_library.py stage <folder>`,
 /// `TEST_RUNNER_CUE_IDEA_LIBRARY_DIR=<folder> scripts/test.sh only "Cue StudioTests/IdeaLibraryBuildTests"`, then
@@ -75,7 +76,9 @@ struct IdeaLibraryBuildTests {
         guard let angle = IdeaAngle(rawValue: idea.angle) else { return "unknown angle" }
         guard !idea.title.isEmpty, !idea.pointOfView.isEmpty, !idea.openingLine.isEmpty else { return "empty part" }
         guard idea.title.count <= titleLimit else { return "long title" }
-        guard OutputLanguageCheck.isPlausible([idea.title, idea.pointOfView, idea.openingLine].joined(separator: " "), in: language) else {
+        let text = [idea.title, idea.pointOfView, idea.openingLine].joined(separator: " ")
+        guard text.firstMatch(of: /\d\s?[%٪]|[%٪]\s?\d/) == nil else { return "percentage" }
+        guard OutputLanguageCheck.isPlausible(text, in: language) else {
             return "other language"
         }
         var theme = ThemeIdea(title: idea.title, kind: angle.kind, length: .minute1, niche: .lifestyle)
