@@ -9,8 +9,7 @@ import SwiftUI
 /// 5 pt track with the ideal range in green and the script's length. The fill tells where it is: yellow under the ideal, green inside
 /// it (it says ✓ and glows once on the way in, with a light tap), orange past it (it says how much to cut, with a firm tap). The fill
 /// grows on a spring as the creator types; the taps are only for the creator's own words, not the AI's as they arrive. Past the ideal, a line
-/// under the track says so ("Past the TikTok ideal") with the button that fits it, when the page can: "Fit with Ultra AI" on a script Ultra AI
-/// wrote (one request to Google), "Fit to time" otherwise.
+/// under the track says so ("Past the TikTok ideal") with "Fit to time" (Apple Intelligence) when the page can.
 struct ScriptLengthBar: View {
     let zone: LengthZone
     /// The creator's own typing moves it (not the AI writing): crossing into the ideal range or past it is felt.
@@ -19,8 +18,6 @@ struct ScriptLengthBar: View {
     var platform: Platform?
     /// Fits the script into the ideal; nil when nothing can (no AI for it, or the AI is writing).
     var onFit: (() -> Void)?
-    /// Ultra AI fits it, and the button says so.
-    var fitsWithUltra = false
     /// The fit is running: the button waits.
     var isFitting = false
 
@@ -99,7 +96,7 @@ struct ScriptLengthBar: View {
                 Button(action: onFit) {
                     HStack(spacing: 6) {
                         if isFitting { ProgressView().controlSize(.mini) } else { Image(systemName: "sparkles") }
-                        Text(fitsWithUltra ? "Fit with Ultra AI" : "Fit to time")
+                        Text("Fit to time")
                     }
                 }
                 .buttonStyle(.cueAI(.compact, expands: false))

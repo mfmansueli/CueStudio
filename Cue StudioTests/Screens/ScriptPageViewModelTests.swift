@@ -336,10 +336,18 @@ struct ScriptPageViewModelTests {
         scenario.writer.isAvailable = false
         scenario.viewModel.page.selection = 0..<22
         await scenario.viewModel.rewriteSelection(.cut)
-        #expect(scenario.viewModel.page.text == " More words follow.")
+        #expect(scenario.viewModel.page.text == "More words follow.")
         #expect(scenario.writer.lastRewrite == nil)
         try #require(scenario.toast.action).perform()
         #expect(scenario.viewModel.page.text == "Hello there my friend. More words follow.")
+    }
+
+    /// Cut is a deletion like any other on the page: a cue it cuts into goes whole, and no doubled space is left.
+    @Test func cutTakesACueWholeAndLeavesOneSpace() {
+        #expect(ScriptDetailViewModel.cutting(2..<10, from: "Hello [pause] world") == "He world")
+        #expect(ScriptDetailViewModel.cutting(4..<8, from: "one two three") == "one three")
+        #expect(ScriptDetailViewModel.cutting(0..<4, from: "one two") == "two")
+        #expect(ScriptDetailViewModel.cutting(3..<7, from: "one two\nthree") == "one\nthree")
     }
 
     @Test func aFailedRewriteSaysSoAndKeepsTheWords() async {

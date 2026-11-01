@@ -86,7 +86,7 @@ struct ScriptPageUltraTests {
     // MARK: - Fit to time
 
     /// The page on a saved script of about 300 words (twice Reels' 30–60 seconds), written by `draftedBy`.
-    private func fitScenario(draftedBy: ScriptEngine?, ultraReady: Bool = true) -> Scenario {
+    private func fitScenario(draftedBy: ScriptEngine?) -> Scenario {
         let defaults = TestDefaults()
         var script = TestData.script(title: "Window light", text: Array(repeating: "Light from the side shapes the face and the eyes.", count: 30)
             .joined(separator: " "))
@@ -98,7 +98,7 @@ struct ScriptPageUltraTests {
         takes.load()
         let writer = FakeScriptWriter()
         let ultra = FakeUltraScriptWriter()
-        ultra.isReady = ultraReady
+        ultra.isReady = true
         let viewModel = ScriptDetailViewModel(
             scriptID: script.id, startsEditing: false, library: library, takes: takes, preferences: PreferencesService(defaults: defaults.defaults),
             profile: CreatorProfileService(defaults: defaults.defaults), rules: TestData.rulesService(), writer: writer, ultra: ultra,
@@ -107,36 +107,24 @@ struct ScriptPageUltraTests {
         return Scenario(viewModel: viewModel, library: library, writer: writer, ultra: ultra, defaults: defaults)
     }
 
-    @Test func ultraFitsAScriptItWroteInThePlatformsRange() async {
+    /// Every touch-up is Apple Intelligence's, on a script Ultra wrote too (owner, 01/11/2026): Ultra writes, it never touches up, so a script
+    /// costs one writing.
+    @Test(arguments: [ScriptTool.fitToTime, .shorterAndDirect, .moreEnergy])
+    func everyToolOnAnUltraScriptIsAppleIntelligences(_ tool: ScriptTool) async {
         let scenario = fitScenario(draftedBy: .ultra)
         defer { scenario.defaults.tearDown() }
-        #expect(scenario.viewModel.ultraFitsToTime && scenario.viewModel.canFitToTime)
-        await scenario.viewModel.run(.fitToTime)
-        #expect(scenario.ultra.fits.count == 1 && scenario.writer.lastRewrite == nil)
-        #expect(scenario.ultra.fits.first?.range == scenario.viewModel.preset.idealRange && scenario.ultra.fits.first?.platform == .reels)
-        #expect(scenario.library.script(id: scenario.viewModel.scriptID)?.text == "The Ultra script, fitted.")
+        await scenario.viewModel.run(tool)
+        #expect(scenario.writer.lastRewrite?.tool == tool)
+        #expect(scenario.ultra.requests.isEmpty)
     }
 
-    @Test func appleIntelligenceFitsEveryOtherScript() async {
-        let scenario = fitScenario(draftedBy: nil)
-        defer { scenario.defaults.tearDown() }
-        #expect(!scenario.viewModel.ultraFitsToTime)
-        await scenario.viewModel.run(.fitToTime)
-        #expect(scenario.ultra.fits.isEmpty && scenario.writer.lastRewrite?.tool == .fitToTime)
-    }
-
-    @Test func withoutUltrasPermissionAppleIntelligenceFitsIt() async {
-        let scenario = fitScenario(draftedBy: .ultra, ultraReady: false)
-        defer { scenario.defaults.tearDown() }
-        #expect(!scenario.viewModel.ultraFitsToTime)
-        await scenario.viewModel.run(.fitToTime)
-        #expect(scenario.ultra.fits.isEmpty && scenario.writer.lastRewrite?.tool == .fitToTime)
-    }
-
-    @Test func otherToolsOnAnUltraScriptStayAppleIntelligences() async {
+    /// Where Apple Intelligence can't draft, the tools that need it aren't offered at all (not dimmed), and Fit to time isn't Ultra's either.
+    @Test func withoutAppleIntelligenceOnlyTheToolsThatNeedNoModelAreThere() {
         let scenario = fitScenario(draftedBy: .ultra)
         defer { scenario.defaults.tearDown() }
-        await scenario.viewModel.run(.shorterAndDirect)
-        #expect(scenario.ultra.fits.isEmpty && scenario.writer.lastRewrite?.tool == .shorterAndDirect)
+        scenario.writer.isAvailable = false
+        #expect(!scenario.viewModel.canDraft)
+        #expect(scenario.viewModel.tools.allSatisfy { !$0.needsLanguageModel })
+        #expect(!scenario.viewModel.tools.contains(.fitToTime))
     }
 }

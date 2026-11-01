@@ -8,20 +8,26 @@ import Testing
 
 @Suite("ScriptTextEditing")
 struct ScriptTextEditingTests {
-    @Test func replacesOnlyTheFirstParagraph() {
-        let text = "\nOld hook.\nBody.\n\nClose."
-        #expect(ScriptTextEditing.replacingOpening(of: text, with: "New hook.") == "\nNew hook.\nBody.\n\nClose.")
-    }
-
-    @Test func emptyTextBecomesTheHook() {
-        #expect(ScriptTextEditing.replacingOpening(of: "  ", with: "Hook") == "Hook")
-    }
-
     @Test func disclosureGoesUpFrontOnce() {
         let once = ScriptTextEditing.addingDisclosure(to: "Hello.")
         #expect(once.hasPrefix(ScriptTextEditing.disclosureLine(in: .english)))
         #expect(once == "[paid partnership] Quick heads-up: this video is sponsored.\n\nHello.")
         #expect(ScriptTextEditing.addingDisclosure(to: once) == once)
+    }
+
+    @Test(arguments: [
+        "Ich habe es ausprobiert.\n\n[paid partnership] Kurzer Hinweis: Dieses Video ist gesponsert.",
+        "Kurzer Hinweis: Dieses Video ist gesponsert.\n\nIch habe es ausprobiert.",
+        "Probei por um mês. #publi",
+        "I tried it for a month. #ad",
+    ])
+    func aScriptAlreadyDisclosedAnywhereIsNotDisclosedAgain(_ text: String) {
+        #expect(ScriptTextEditing.hasDisclosure(text))
+        #expect(ScriptTextEditing.addingDisclosure(to: text) == text)
+    }
+
+    @Test func wordsThatOnlyLookLikeATagAreNotADisclosure() {
+        #expect(!ScriptTextEditing.hasDisclosure("I read the #adventure books. Add a pub quiz."))
     }
 
     @Test func hookOptionsRotate() {

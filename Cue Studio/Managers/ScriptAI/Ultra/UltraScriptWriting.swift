@@ -20,6 +20,4 @@ protocol UltraScriptWriting: AnyObject {
     func noteAIUse()
     /// Writes the developed draft, checks its claims and polishes it; only the polished script comes back. Throws `UltraError`, or `CancellationError`.
     func generate(_ request: ScriptRequest, reporting meter: WritingProgressMeter?) async throws -> GeneratedScript
-    /// "Fit to time" on a script Ultra wrote: one call, the fitted speech. Throws `UltraError`, or `CancellationError`.
-    func fit(_ request: UltraFitRequest) async throws -> String
 }

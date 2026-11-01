@@ -58,8 +58,9 @@ final class UltraAIUITests: XCTestCase {
         XCTAssertFalse(text(app, containing: "Gemini").exists, "The brand of the model is on screen")
     }
 
-    /// On a script Ultra AI wrote, Improve's "Fit to time" says it is Ultra AI's, and fitting it puts Ultra's answer on the page.
-    func testUltraFitsAScriptItWroteToTheTime() {
+    /// On a script Ultra AI wrote, every touch-up is Apple Intelligence's (owner, 01/11/2026: Ultra writes, it never touches up): Improve says
+    /// so, its Fit to time doesn't name Ultra AI, and fitting puts Apple Intelligence's answer on the page, not a second call to Google.
+    func testEveryTouchUpOnAnUltraScriptIsAppleIntelligences() {
         let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestUltra", "-uiTestUltraAllowed"])
         pickUltra(app)
         let field = element(app, "ideaCard.field")
@@ -73,19 +74,17 @@ final class UltraAIUITests: XCTestCase {
         let improve = app.buttons["page.improveButton"]
         XCTAssertTrue(improve.exists(within: 5), "No Improve on a script Ultra AI wrote")
         improve.tap()
-        // The header doesn't say Apple Intelligence runs it all: Ultra AI fits this one.
-        XCTAssertTrue(app.staticTexts["Fit to time by Ultra AI · the rest on your iPhone"].exists(within: 5), "Improve's header doesn't say Ultra AI fits it")
-        XCTAssertFalse(app.staticTexts["Apple Intelligence · runs on your iPhone"].exists)
+        XCTAssertTrue(app.staticTexts["Apple Intelligence · runs on your iPhone"].exists(within: 5), "Improve doesn't say Apple Intelligence does it")
         let fit = app.buttons["improve.tool.fitToTime"]
         XCTAssertTrue(fit.exists(within: 5), "Improve has no Fit to time")
-        XCTAssertTrue(fit.label.contains("Ultra AI"), "Fit to time doesn't say Ultra AI fits this script: \(fit.label)")
+        XCTAssertFalse(fit.label.contains("Ultra AI"), "Fit to time still names Ultra AI: \(fit.label)")
         fit.tap()
-        XCTAssertTrue(editor.matches(NSPredicate(format: "value CONTAINS %@", "Ultra fitted script"), within: 15))
-        XCTAssertFalse(text(app, containing: "Gemini").exists, "The brand of the model is on screen")
+        XCTAssertTrue(editor.matches(NSPredicate(format: "value CONTAINS %@", "Rewritten with fitToTime"), within: 15))
+        XCTAssertFalse(editor.matches(NSPredicate(format: "value CONTAINS %@", "Ultra fitted script"), within: 1))
     }
 
-    /// A script Ultra AI wrote past the platform's ideal: the length bar says so under its track and offers "Fit with Ultra AI", which fits it;
-    /// Record's "A bit long" question says Ultra AI makes it shorter.
+    /// A script Ultra AI wrote past the platform's ideal: the length bar says so under its track and offers Apple Intelligence's "Fit to time";
+    /// Record's "A bit long" question makes it shorter the same way.
     func testTheLengthBarSaysAnUltraScriptIsPastTheIdealAndFitsIt() {
         let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestUltra", "-uiTestUltraAllowed", "-uiTestUltraLong"])
         pickUltra(app)
@@ -101,15 +100,13 @@ final class UltraAIUITests: XCTestCase {
         XCTAssertTrue(past.exists(within: 5), "The length bar doesn't say the script is past the ideal")
         XCTAssertTrue(past.label.contains("TikTok"), "The line doesn't name the platform: \(past.label)")
         let fit = app.buttons["page.lengthBar.fit"]
-        XCTAssertTrue(fit.exists && fit.label.contains("Ultra AI"), "The bar's fit doesn't say Ultra AI: \(fit.label)")
-        // Record asks once about the length, and its shorter way names Ultra AI.
+        XCTAssertTrue(fit.exists && !fit.label.contains("Ultra AI"), "The bar's fit still names Ultra AI: \(fit.label)")
         app.buttons["detail.recordButton"].tap()
         let shorter = app.buttons["page.nudge.shorter"]
         XCTAssertTrue(shorter.exists(within: 5), "No \"A bit long\" question")
-        XCTAssertTrue(shorter.label.contains("Ultra AI"), "The nudge's Make it shorter doesn't say Ultra AI: \(shorter.label)")
+        XCTAssertFalse(shorter.label.contains("Ultra AI"), "The nudge's Make it shorter still names Ultra AI: \(shorter.label)")
         shorter.tap()
-        XCTAssertTrue(editor.matches(NSPredicate(format: "value CONTAINS %@", "Ultra fitted script"), within: 15))
-        XCTAssertTrue(past.isGone(within: 3), "The line stays once the script fits")
+        XCTAssertTrue(editor.matches(NSPredicate(format: "value CONTAINS %@", "Rewritten with fitToTime"), within: 15))
         XCTAssertFalse(text(app, containing: "Gemini").exists, "The brand of the model is on screen")
     }
 
@@ -351,7 +348,7 @@ final class UltraAIUITests: XCTestCase {
         try shot(app, "ultra_cost_03_total")
     }
 
-    /// The pictures of the length bar past the ideal with "Fit with Ultra AI", Improve's header, the "A bit long" question and What Ultra AI
+    /// The pictures of the length bar past the ideal, Improve's header, the "A bit long" question and What Ultra AI
     /// sends, for `tools/contrast/audit.py` (`TEST_RUNNER_CUE_FIDELITY_DIR=<folder>`).
     func testCaptureUltraFitAndPrivacyForTheContrastAudit() throws {
         guard let path = ProcessInfo.processInfo.environment["CUE_FIDELITY_DIR"] else { throw XCTSkip("Set TEST_RUNNER_CUE_FIDELITY_DIR to capture") }

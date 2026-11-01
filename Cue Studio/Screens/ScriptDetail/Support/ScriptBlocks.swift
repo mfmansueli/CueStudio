@@ -39,9 +39,11 @@ nonisolated enum ScriptBlocks {
         return summaries
     }
 
-    /// How long the hook runs when it is over the target. Serious formats have no hook.
-    static func hookOverrun(in blocks: [ScriptBlock], structure: ScriptStructure) -> TimeInterval? {
-        guard !structure.isSerious, let opening = blocks.first, opening.seconds > hookTarget else { return nil }
-        return opening.seconds
+    /// How long the hook (`ScriptHook`: the opening sentence of a long first paragraph, a short one whole) runs when it is over the target.
+    /// Serious formats have no hook.
+    static func hookOverrun(in text: String, structure: ScriptStructure) -> TimeInterval? {
+        guard !structure.isSerious else { return nil }
+        let seconds = ReadTime.seconds(for: ScriptHook.text(of: text))
+        return seconds > hookTarget ? seconds : nil
     }
 }

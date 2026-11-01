@@ -357,121 +357,121 @@
         }
       }
     },
-    "[the script on the page, with your edits]" : {
-      "comment" : "What Cue sends for Ultra AI: placeholder for the script inside the Fit to time call",
+    "[the script polished in step 3]" : {
+      "comment" : "What Ultra AI sends, step 4: placeholder for the script the polish of step 3 wrote",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "[النص الموجود في الصفحة مع تعديلاتك]"
+            "value" : "[النص الذي تم صقله في الخطوة 3]"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "[manuskriptet på siden med dine ændringer]"
+            "value" : "[manuskriptet poleret i trin 3]"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "[das Skript auf der Seite, mit deinen Änderungen]"
+            "value" : "[das in Schritt 3 überarbeitete Skript]"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "[el guion de la página, con tus cambios]"
+            "value" : "[el guion pulido en el paso 3]"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "[le script de la page, avec vos modifications]"
+            "value" : "[le script peaufiné à l’étape 3]"
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "[पेज पर मौजूद स्क्रिप्ट, आपके बदलावों के साथ]"
+            "value" : "[चरण 3 में निखारी गई स्क्रिप्ट]"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "[naskah di halaman, beserta suntinganmu]"
+            "value" : "[naskah yang dipoles di langkah 3]"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "[il copione nella pagina, con le tue modifiche]"
+            "value" : "[il copione rifinito nel passaggio 3]"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "[ページの台本（あなたの編集を含む）]"
+            "value" : "[ステップ3で仕上げた台本]"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "[페이지의 대본, 수정한 내용 포함]"
+            "value" : "[3단계에서 다듬은 대본]"
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "[manuset på siden, med endringene dine]"
+            "value" : "[manuset finpusset i trinn 3]"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "[het script op de pagina, met je aanpassingen]"
+            "value" : "[het in stap 3 opgepoetste script]"
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "[o roteiro da página, com as suas edições]"
+            "value" : "[o roteiro refinado na etapa 3]"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "[manuset på sidan, med dina ändringar]"
+            "value" : "[manuset som putsades i steg 3]"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "[สคริปต์ในหน้า พร้อมการแก้ไขของคุณ]"
+            "value" : "[สคริปต์ที่ขัดเกลาแล้วในขั้นตอนที่ 3]"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "[sayfadaki senaryo, düzenlemelerinle]"
+            "value" : "[3. adımda cilalanan senaryo]"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "[kịch bản trên trang, kèm chỉnh sửa của bạn]"
+            "value" : "[kịch bản đã trau chuốt ở bước 3]"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "[页面上的脚本，含你的修改]"
+            "value" : "[第 3 步润色后的脚本]"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "[頁面上的腳本，含你的修改]"
+            "value" : "[第 3 步潤飾後的腳本]"
           }
         }
       }
@@ -9602,244 +9602,6 @@
         }
       }
     },
-    "Fit with Ultra AI" : {
-      "comment" : "Script page, under the length bar past the ideal: the button on a script Ultra AI wrote (one request to Google)",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "الملاءمة مع Ultra AI"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tilpas med Ultra AI"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mit Ultra AI anpassen"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ajustar con Ultra AI"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ajuster avec Ultra AI"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI से फ़िट करें"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sesuaikan dengan Ultra AI"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Adatta con Ultra AI"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AIで合わせる"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI로 맞추기"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tilpass med Ultra AI"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aanpassen met Ultra AI"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ajustar com o Ultra AI"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Anpassa med Ultra AI"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ปรับด้วย Ultra AI"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI ile sığdır"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chỉnh vừa bằng Ultra AI"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "用 Ultra AI 适配"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "用 Ultra AI 配合"
-          }
-        }
-      }
-    },
-    "Fit to time by Ultra AI · the rest on your iPhone" : {
-      "comment" : "Improve script sheet: subtitle on a script Ultra AI wrote (its Fit to time goes to Google; the other tools run on the iPhone)",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ملاءمة المدة بواسطة Ultra AI · والباقي على الـ iPhone"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tilpas længden med Ultra AI · resten på din iPhone"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auf Länge bringen mit Ultra AI · der Rest auf deinem iPhone"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ajustar a la duración con Ultra AI · el resto en tu iPhone"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ajuster à la durée par Ultra AI · le reste sur votre iPhone"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "समय में फ़िट करें Ultra AI से · बाकी आपके iPhone पर"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sesuaikan durasi oleh Ultra AI · sisanya di iPhone-mu"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Adatta alla durata con Ultra AI · il resto sul tuo iPhone"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "時間に合わせるはUltra AI · ほかはiPhone上で"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "시간에 맞추기는 Ultra AI · 나머지는 iPhone에서"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tilpass til tid med Ultra AI · resten på iPhonen din"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Op lengte brengen door Ultra AI · de rest op je iPhone"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ajustar ao tempo pelo Ultra AI · o resto no seu iPhone"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Anpassa till tid med Ultra AI · resten på din iPhone"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ปรับให้พอดีเวลาโดย Ultra AI · ที่เหลือทำบน iPhone ของคุณ"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Süreye sığdır Ultra AI ile · gerisi iPhone’unda"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vừa thời lượng bằng Ultra AI · phần còn lại trên iPhone của bạn"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "适配时长由 Ultra AI 完成 · 其余在你的 iPhone 上"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "配合時長由 Ultra AI 完成 · 其餘在你的 iPhone 上"
-          }
-        }
-      }
-    },
     "Follows up your video “%@”" : {
       "comment" : "Find inspiration's card, under an idea that follows up a video the creator shared; %@ is that video's title",
       "localizations" : {
@@ -13529,125 +13291,6 @@
         }
       }
     },
-    "Make it shorter with Ultra AI" : {
-      "comment" : "\"A bit long for TikTok\" sheet: the button on a script Ultra AI wrote (Ultra AI shortens it)",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "اجعله أقصر مع Ultra AI"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gør det kortere med Ultra AI"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mit Ultra AI kürzen"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hazlo más corto con Ultra AI"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Raccourcir avec Ultra AI"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI से छोटा करें"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Buat lebih singkat dengan Ultra AI"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Accorcialo con Ultra AI"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AIで短くする"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI로 더 짧게"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gjør det kortere med Ultra AI"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Maak het korter met Ultra AI"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Deixar mais curto com o Ultra AI"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gör det kortare med Ultra AI"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ทำให้สั้นลงด้วย Ultra AI"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI ile kısalt"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rút ngắn bằng Ultra AI"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "用 Ultra AI 改短"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "用 Ultra AI 改短"
-          }
-        }
-      }
-    },
     "Meet Ultra AI" : {
       "comment" : "Title of Ultra AI's permission sheet, an invitation to try it",
       "localizations" : {
@@ -15619,121 +15262,121 @@
         }
       }
     },
-    "Only when you ask, on a script Ultra AI wrote: that script with your edits, the platform’s length and how you speak." : {
-      "comment" : "What Cue sends for Ultra AI: what the optional fourth call (Fit to time) carries",
+    "Only when the script from step 3 runs well past the platform’s length: that script, the length and how you speak." : {
+      "comment" : "What Ultra AI sends, step 4: the extra call that fits a script that came back well past the platform's length",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "فقط عندما تطلب ذلك، على نص كتبه Ultra AI: ذلك النص مع تعديلاتك، ومدة المنصة، وطريقة كلامك."
+            "value" : "فقط عندما يتجاوز النص من الخطوة 3 مدة المنصة بكثير: ذلك النص، والمدة، وطريقة كلامك."
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kun når du beder om det, på et manuskript Ultra AI har skrevet: det manuskript med dine ændringer, platformens længde og hvordan du taler."
+            "value" : "Kun når manuskriptet fra trin 3 bliver meget længere end platformens længde: det manuskript, længden og hvordan du taler."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nur wenn du es willst, bei einem Skript von Ultra AI: dieses Skript mit deinen Änderungen, die Länge der Plattform und wie du sprichst."
+            "value" : "Nur wenn das Skript aus Schritt 3 deutlich länger ist als die Länge der Plattform: dieses Skript, die Länge und wie du sprichst."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Solo cuando lo pides, en un guion escrito por Ultra AI: ese guion con tus cambios, la duración de la plataforma y cómo hablas."
+            "value" : "Solo cuando el guion del paso 3 se pasa mucho de la duración de la plataforma: ese guion, la duración y cómo hablas."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Seulement quand vous le demandez, sur un script écrit par Ultra AI : ce script avec vos modifications, la durée de la plateforme et votre façon de parler."
+            "value" : "Seulement quand le script de l’étape 3 dépasse largement la durée de la plateforme : ce script, la durée et votre façon de parler."
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "सिर्फ़ जब आप कहें, Ultra AI की लिखी स्क्रिप्ट पर: आपके बदलावों के साथ वह स्क्रिप्ट, प्लेटफ़ॉर्म की लंबाई और आप कैसे बोलते हैं।"
+            "value" : "सिर्फ़ तब जब चरण 3 की स्क्रिप्ट प्लेटफ़ॉर्म की लंबाई से काफ़ी ज़्यादा हो: वह स्क्रिप्ट, लंबाई और आप कैसे बोलते हैं।"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hanya saat kamu minta, pada naskah yang ditulis Ultra AI: naskah itu beserta suntinganmu, durasi platform, dan cara kamu bicara."
+            "value" : "Hanya saat naskah dari langkah 3 jauh melebihi durasi platform: naskah itu, durasinya, dan cara kamu bicara."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Solo quando lo chiedi, su un copione scritto da Ultra AI: quel copione con le tue modifiche, la durata della piattaforma e come parli."
+            "value" : "Solo quando il copione del passaggio 3 supera di molto la durata della piattaforma: quel copione, la durata e come parli."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ultra AIが書いた台本で、あなたが頼んだときだけ。編集を含めたその台本、プラットフォームの長さ、あなたの話し方。"
+            "value" : "ステップ3の台本がプラットフォームの長さを大きく超えたときだけ。その台本、長さ、あなたの話し方。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ultra AI가 쓴 대본에서 요청할 때만: 수정한 내용을 포함한 그 대본, 플랫폼 길이, 내 말투."
+            "value" : "3단계의 대본이 플랫폼 길이를 크게 넘을 때만: 그 대본, 길이, 내 말투."
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bare når du ber om det, på et manus Ultra AI har skrevet: det manuset med endringene dine, plattformens lengde og hvordan du snakker."
+            "value" : "Bare når manuset fra trinn 3 blir mye lengre enn plattformens lengde: det manuset, lengden og hvordan du snakker."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Alleen als je erom vraagt, bij een script van Ultra AI: dat script met je aanpassingen, de lengte van het platform en hoe je praat."
+            "value" : "Alleen als het script uit stap 3 ruim langer is dan de lengte van het platform: dat script, de lengte en hoe je praat."
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Só quando você pede, num roteiro que o Ultra AI escreveu: esse roteiro com as suas edições, o tempo da rede e como você fala."
+            "value" : "Só quando o roteiro da etapa 3 passa bem do tempo da rede: esse roteiro, o tempo e como você fala."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bara när du ber om det, på ett manus som Ultra AI skrev: det manuset med dina ändringar, plattformens längd och hur du pratar."
+            "value" : "Bara när manuset från steg 3 blir mycket längre än plattformens längd: det manuset, längden och hur du pratar."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "เฉพาะเมื่อคุณขอ ในสคริปต์ที่ Ultra AI เขียน: สคริปต์นั้นพร้อมการแก้ไขของคุณ ความยาวของแพลตฟอร์ม และวิธีพูดของคุณ"
+            "value" : "เฉพาะเมื่อสคริปต์จากขั้นตอนที่ 3 ยาวเกินความยาวของแพลตฟอร์มไปมาก: สคริปต์นั้น ความยาว และวิธีพูดของคุณ"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Yalnızca sen istediğinde, Ultra AI’ın yazdığı bir senaryoda: düzenlemelerinle o senaryo, platformun süresi ve nasıl konuştuğun."
+            "value" : "Yalnızca 3. adımdaki senaryo platformun süresini epey aştığında: o senaryo, süre ve nasıl konuştuğun."
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chỉ khi bạn yêu cầu, trên kịch bản do Ultra AI viết: kịch bản đó kèm chỉnh sửa của bạn, thời lượng của nền tảng và cách bạn nói."
+            "value" : "Chỉ khi kịch bản ở bước 3 dài vượt xa thời lượng của nền tảng: kịch bản đó, thời lượng và cách bạn nói."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "仅在你要求时，针对 Ultra AI 写的脚本：含你修改的该脚本、平台时长，以及你的说话方式。"
+            "value" : "仅当第 3 步的脚本远超平台时长时：该脚本、时长，以及你的说话方式。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "僅在你要求時，針對 Ultra AI 寫的腳本：含你修改的該腳本、平台時長，以及你的說話方式。"
+            "value" : "僅當第 3 步的腳本遠超平台時長時：該腳本、時長，以及你的說話方式。"
           }
         }
       }
@@ -22767,125 +22410,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ULTRA AI"
-          }
-        }
-      }
-    },
-    "Ultra AI · %@" : {
-      "comment" : "Improve script: subtitle of Fit to time on a script Ultra AI wrote, which Ultra AI fits (sent to Google); %@ is the platform's ideal length",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI · %@"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI · %@"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI · %@"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI · %@"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI · %@"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI · %@"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI · %@"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI · %@"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI · %@"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI · %@"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI · %@"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI · %@"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI · %@"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI · %@"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI · %@"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI · %@"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI · %@"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI · %@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI · %@"
           }
         }
       }
@@ -365097,124 +364621,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "報導、分析、評論、回應"
-          }
-        }
-      }
-    },
-    "Requires Apple Intelligence" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "يتطلب Apple Intelligence"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kræver Apple Intelligence"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Erfordert Apple Intelligence"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Requiere Apple Intelligence"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nécessite Apple Intelligence"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence ज़रूरी है"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Memerlukan Apple Intelligence"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Richiede Apple Intelligence"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligenceが必要です"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence 필요"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Krever Apple Intelligence"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vereist Apple Intelligence"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Requer Apple Intelligence"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kräver Apple Intelligence"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ต้องใช้ Apple Intelligence"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence gerektirir"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cần Apple Intelligence"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "需要 Apple Intelligence"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "需要 Apple Intelligence"
           }
         }
       }

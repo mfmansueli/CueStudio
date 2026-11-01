@@ -17,12 +17,11 @@ nonisolated struct ScriptStrip: Equatable, Sendable {
     let changedSinceTake: Int?
     /// The words were edited this visit (a recorded script has moved on from its take).
     let isEdited: Bool
-    /// The tools row offers "✦ Shape": there are words, none of them cues yet, and Apple Intelligence runs.
+    /// The tools row offers "✦ Shape": there are words, and no cues yet but a disclosure's. Shape is rules, so it is there without
+    /// Apple Intelligence too.
     let canShape: Bool
 
-    init(
-        script: Script, takes: [Take], hasAI: Bool, isEdited: Bool
-    ) {
+    init(script: Script, takes: [Take], isEdited: Bool) {
         state = script.state(takeCount: takes.count)
         cueCount = CueParser.count(in: script.text)
         let latest = takes.max { $0.number < $1.number }
@@ -30,7 +29,7 @@ nonisolated struct ScriptStrip: Equatable, Sendable {
         let changed = script.changedSince(latestTakeVersion: latest?.scriptVersion) || (isEdited && !takes.isEmpty)
         changedSinceTake = changed ? latest?.number : nil
         self.isEdited = isEdited
-        canShape = hasAI && cueCount == 0 && !script.isEmpty
+        canShape = ScriptCueShaper.cueCount(in: script.text) == 0 && !script.isEmpty
     }
 
     /// The one thing the strip says in words, in yellow beside RECORDED: "Changed since take 3", when the script has moved on from

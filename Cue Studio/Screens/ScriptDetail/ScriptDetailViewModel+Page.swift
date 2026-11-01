@@ -99,16 +99,19 @@ extension ScriptDetailViewModel {
         var current = script
         // The strip reads the words on the page, which may be ahead of what was saved a moment ago (or still arriving).
         if page.isLoaded { current.text = page.isWriting ? (page.revealed ?? "") : page.text }
-        return ScriptStrip(script: current, takes: scriptTakes, hasAI: writer.isLanguageModelAvailable, isEdited: page.isEdited && !page.isDone)
+        return ScriptStrip(script: current, takes: scriptTakes, isEdited: page.isEdited && !page.isDone)
     }
 
-    /// "✦ Shape": adds cues where they help the delivery (never changes the words, never changes the state).
+    /// "✦ Shape": adds cues where they help the delivery, named in the script's language (never changes the words, never changes the state).
+    /// Cues hidden on the page come back on, or the toast would name cues nobody can see.
     func shape() {
         guard !page.isWriting else { return }
-        let result = ScriptCueShaper.shaped(page.text)
+        let language = script?.language ?? LanguageDetector.language(in: page.text)
+        let result = ScriptCueShaper.shaped(page.text, language: language, isSerious: structure.isSerious)
         guard result.added > 0 else { return }
         page.text = result.text
         page.selection = nil
+        showsCues = true
         commitPage()
         toast.show(String(localized: "\(result.added) cues added"), kind: .cue)
     }
@@ -302,22 +305,38 @@ extension ScriptDetailViewModel {
         pageDidEdit()
     }
 
+    /// Cut, like a deletion on the page: a cue it cuts into goes whole (`ScriptCueDeletion`), and the words around it keep one space between
+    /// them. Undo puts the page back as it was.
     private func cut(_ selected: String, range: Range<Int>) {
-        var text = page.text
-        let lower = text.index(text.startIndex, offsetBy: range.lowerBound)
-        let upper = text.index(text.startIndex, offsetBy: range.upperBound)
-        text.removeSubrange(lower..<upper)
-        page.text = text
+        let before = page.text
+        page.text = Self.cutting(range, from: before)
         page.selection = nil
         pageDidEdit()
         toast.show(String(localized: "Cut"), action: ToastAction(title: String(localized: "Undo")) { [weak self] in
             guard let self else { return }
-            var restored = page.text
-            let spot = restored.index(restored.startIndex, offsetBy: min(range.lowerBound, restored.count))
-            restored.insert(contentsOf: selected, at: spot)
-            page.text = restored
+            page.text = before
             pageDidEdit()
         })
+    }
+
+    /// `text` without the characters in `range`, a cue it cuts into whole, and no doubled space where they were.
+    nonisolated static func cutting(_ range: Range<Int>, from text: String) -> String {
+        var characters = Array(text)
+        let lower = min(range.lowerBound, characters.count)
+        characters.removeSubrange(lower..<min(range.upperBound, characters.count))
+        var cut = String(characters)
+        var at = lower
+        if let whole = ScriptCueDeletion.completing(from: text, to: cut) {
+            cut = whole.text
+            at = whole.caret
+        }
+        var result = Array(cut)
+        if at > 0, at < result.count, result[at] == " ", result[at - 1] == " " || result[at - 1] == "\n" {
+            result.remove(at: at)
+        } else if at < result.count, at == 0, result[at] == " " {
+            result.remove(at: at)
+        }
+        return String(result)
     }
 
     /// ✓ Keep, or a tap outside: the new words are the creator's. The AI changed them, so claims reviewed before are to be checked again.
