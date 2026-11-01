@@ -60,6 +60,10 @@ struct TakeReviewView: View {
     @State private var bestBursts = 0
     /// Save's ✓, for a moment once the video is in Photos (after "Ready to travel" closes, so it is seen).
     @State private var justSaved = false
+    /// Back or another take, asked for while the video exports: it waits for "Cancel export?".
+    @State private var exitDuringExport: ReviewExit?
+    /// Save or Share, asked for with an edit left open: it waits for "Keep editing" or the finished video's export.
+    @State private var exportPastUnfinishedEdit: ReviewExport?
     @State private var awaitsSavedCheck = false
     /// "Take 2 of 3" under the bar, after a swipe.
     @State private var showsPlace = false
@@ -138,6 +142,26 @@ struct TakeReviewView: View {
                         .padding(.top, 8)
                 }
             }
+            // On the stack, not beside "Cancel export?": one alert per view.
+            .alert(
+                "Unfinished edit",
+                isPresented: Binding(get: { exportPastUnfinishedEdit != nil }, set: { if !$0 { exportPastUnfinishedEdit = nil } }),
+                presenting: exportPastUnfinishedEdit
+            ) { request in
+                Button("Keep editing") { editingTake = viewModel.take }
+                if viewModel.hasFinishedEdit {
+                    Button("Export last finished version") { run(request) }
+                } else {
+                    Button("Export original") { run(request) }
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: { _ in
+                if viewModel.hasFinishedEdit {
+                    Text("There are unfinished changes. You can keep editing or export the last finished version.")
+                } else {
+                    Text("There are unfinished changes. You can keep editing or export the original video.")
+                }
+            }
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackgroundVisibility(.hidden, for: .navigationBar)
             .toolbar {
@@ -158,6 +182,23 @@ struct TakeReviewView: View {
         // A video player's controls: they stop growing at a large text size, or the actions land on
         // top of each other and the stage names turn into "ESC…".
         .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
+        .alert(
+            "Cancel export?",
+            isPresented: Binding(get: { exitDuringExport != nil }, set: { if !$0 { exitDuringExport = nil } }),
+            presenting: exitDuringExport
+        ) { exit in
+            Button("Cancel export", role: .destructive) {
+                // False when the file got on its way meanwhile: it ends as it would have, and the review shows it.
+                if viewModel.cancelExport() { follow(exit) }
+            }
+            Button("Keep exporting", role: .cancel) {}
+        } message: { _ in
+            Text("The video won't be saved or shared.")
+        }
+        // The export ended while the question was open: what it did shows (saved, the share sheet), never a "cancelled".
+        .onChange(of: viewModel.runningAction == nil) { _, ended in
+            if ended { exitDuringExport = nil }
+        }
         .task(id: PlayerKey(takeID: viewModel.takeID, edit: viewModel.take?.edit)) { await runPlayer() }
         .onChange(of: viewModel.take?.edit?.showsCaptions ?? false) { _, shown in
             viewModel.burnsInCaptions = shown
@@ -269,7 +310,7 @@ struct TakeReviewView: View {
             DragGesture(minimumDistance: 40).onEnded { drag in
                 // A clear horizontal swipe goes to the next (left) or the previous (right) take.
                 guard abs(drag.translation.width) > 60, abs(drag.translation.width) > abs(drag.translation.height) * 1.5 else { return }
-                selectNeighbor(drag.translation.width < 0 ? 1 : -1)
+                leave(.neighbor(drag.translation.width < 0 ? 1 : -1))
             }
         )
     }
@@ -334,7 +375,7 @@ struct TakeReviewView: View {
         ReviewToolbar(
             take: take,
             placeLabel: placeLabel(for: take),
-            onBack: onBack,
+            onBack: { leave(.back) },
             onToggleBest: {
                 if !take.isBest {
                     HapticPatterns.playBestTake()
@@ -347,10 +388,11 @@ struct TakeReviewView: View {
                 playback.pause()
                 onDeleted(viewModel.delete())
             },
-            onPrevious: viewModel.neighbor(-1) == nil ? nil : { selectNeighbor(-1) },
-            onNext: viewModel.neighbor(1) == nil ? nil : { selectNeighbor(1) },
-            onSuggest: viewModel.offersBestSuggestion ? { suggestBest() } : nil,
-            bestBursts: bestBursts
+            onPrevious: viewModel.neighbor(-1) == nil ? nil : { leave(.neighbor(-1)) },
+            onNext: viewModel.neighbor(1) == nil ? nil : { leave(.neighbor(1)) },
+            onSuggest: viewModel.offersBestSuggestion && viewModel.runningAction == nil ? { suggestBest() } : nil,
+            bestBursts: bestBursts,
+            isExporting: viewModel.runningAction != nil
         )
     }
 
@@ -380,9 +422,9 @@ struct TakeReviewView: View {
                     },
                     // An imported video wasn't recorded here: nothing to record again.
                     onRetake: take.isImported ? nil : onRetake,
-                    onSave: { Task { await viewModel.save() } },
+                    onSave: { export(.save) },
                     onScript: take.scriptID.map { id in { playback.pause(); onOpenScript(id) } },
-                    onShare: { shareToUniverse() }
+                    onShare: { export(.share) }
                 )
                 .padding(.top, 22)
                 if let progress = viewModel.exportProgress {
@@ -393,7 +435,7 @@ struct TakeReviewView: View {
                     )
                     .padding(.top, 10)
                 } else if viewModel.exportStopped {
-                    ExportStoppedCard(onSave: { Task { await viewModel.save() } }, onClose: viewModel.dismissStoppedExport).padding(.top, 10)
+                    ExportStoppedCard(onSave: { export(.save) }, onClose: viewModel.dismissStoppedExport).padding(.top, 10)
                 }
                 if viewModel.photosDenied {
                     PhotosDeniedCard { viewModel.photosDenied = false }.padding(.top, 10)
@@ -429,6 +471,37 @@ struct TakeReviewView: View {
     // MARK: - Takes
 
     /// Swipe or the chip: another take of the same video, paused.
+    /// Save or Share. With an edit left open that would change the video, "Unfinished edit" asks first: they export the finished video
+    /// (or the recording, when no edit was ever finished), never the draft.
+    private func export(_ request: ReviewExport) {
+        guard viewModel.hasUnfinishedEdit else { return run(request) }
+        playback.pause()
+        exportPastUnfinishedEdit = request
+    }
+
+    private func run(_ request: ReviewExport) {
+        switch request {
+        case .save: Task { await viewModel.save() }
+        case .share: shareToUniverse()
+        }
+    }
+
+    /// A way out of the review (Back, another take). While the video exports, "Cancel export?" asks first; once the file is on its way
+    /// (`isDelivering`) it can't be called back, so nothing is asked and the way out waits: it ends in a moment, and says so. Leaving Cue
+    /// is not a way out: the export goes on.
+    private func leave(_ exit: ReviewExit) {
+        guard viewModel.runningAction != nil else { return follow(exit) }
+        guard viewModel.canCancelExport else { return }
+        exitDuringExport = exit
+    }
+
+    private func follow(_ exit: ReviewExit) {
+        switch exit {
+        case .back: onBack()
+        case .neighbor(let offset): selectNeighbor(offset)
+        }
+    }
+
     private func selectNeighbor(_ offset: Int) {
         guard let next = viewModel.neighbor(offset) else { return }
         Haptics.selection()
@@ -468,7 +541,7 @@ struct TakeReviewView: View {
         guard let launchAction, let take = viewModel.take else { return }
         onLaunchActionDone()
         switch launchAction {
-        case .share: shareToUniverse()
+        case .share: export(.share)
         case .continueQueue: continueQueue(nil)
         case .postLater(let network): continueQueue(network)
         case .edit: editingTake = take
@@ -679,6 +752,18 @@ struct TakeReviewView: View {
     // MARK: - Playback
 
     /// Reloads the player when the take changes or is edited.
+    /// What a tap exports (`export`).
+    private enum ReviewExport {
+        case save
+        case share
+    }
+
+    /// Where a way out of the review goes (`leave`).
+    private enum ReviewExit {
+        case back
+        case neighbor(Int)
+    }
+
     private struct PlayerKey: Equatable {
         let takeID: UUID
         let edit: TakeEdit?

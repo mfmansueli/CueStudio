@@ -27,6 +27,15 @@ final class TakeReviewViewModel {
 
     let takeID: UUID
     private(set) var runningAction: ExportAction?
+    /// The running export's file is on its way (Photos, the share sheet, another app): from here it can't be called back, and it ends as it
+    /// would have.
+    private(set) var isDelivering = false
+    /// A way out of the review asks "Cancel export?" first; past the render (`isDelivering`) nothing is asked: it ends in a moment.
+    var canCancelExport: Bool { runningAction != nil && !isDelivering }
+    /// The running export (`export`), so "Cancel export" can stop it.
+    @ObservationIgnored private var exportJob: Task<Bool, Error>?
+    /// The file the running export made or reused: one stopped before it left Cue leaves no copy behind.
+    @ObservationIgnored private var preparedOperation: UUID?
     /// Where the export is, told apart: preparing, saving, handed over, cancelled, failed, delivered.
     private(set) var phase: ExportPhase = .idle
     /// Set when an export is ready for the system share sheet.
@@ -61,6 +70,8 @@ final class TakeReviewViewModel {
     private(set) var exportFailure: ExportFailure?
     /// Operations whose cover was saved to Photos with the video ("Video and cover saved" on Ready to travel).
     private(set) var coversSaved: Set<UUID> = []
+    /// **Try again** on a cover that couldn't be saved (tests wait on it).
+    @ObservationIgnored private(set) var coverRetry: Task<Void, Never>?
     /// Where "#ad" goes for a sponsored video (the system pasteboard; a test swaps it).
     @ObservationIgnored var copiesCaption: (String) -> Void = { UIPasteboard.general.string = $0 }
     var burnsInCaptions = false
@@ -168,6 +179,12 @@ final class TakeReviewViewModel {
     var stage: TakeStage {
         TakeStage(takes: siblings, hasDraft: { [drafts] in drafts.hasDraft(for: $0) })
     }
+
+    /// An edit left open on this take would change its video: Save and Share ask first, since they export the finished one (B4).
+    var hasUnfinishedEdit: Bool { take.map { drafts.unfinishedEdit(of: $0) != nil } ?? false }
+
+    /// The take has a finished edit: without one, an export is the recording as it was ("Export original").
+    var hasFinishedEdit: Bool { take?.edit != nil }
 
     /// An edit is open on this take: the main action reads "Continue" and goes on with it. On another take of the video, Edit starts its own
     /// (Takes, "In edit" and the reminder open the take whose edit is open: `QuickEditDraftStoring.takeInEdit`).
@@ -317,7 +334,7 @@ final class TakeReviewViewModel {
     }
 
     /// The export of this file is already counted (saved, or sent before): sharing it again costs nothing.
-    func isCounted(_ video: ExportedVideo) -> Bool { ledger.operation(id: video.operationID)?.isCounted ?? false }
+    func isCounted(_ video: ExportedVideo) -> Bool { ledger.isCounted(operationID: video.operationID) }
 
     func isSaved(_ video: ExportedVideo) -> Bool { savedOperations.contains(video.operationID) }
 
@@ -425,35 +442,60 @@ final class TakeReviewViewModel {
         dismissStoppedExport()
         // Marked while it runs: still marked when Cue opens again means it stopped with Cue.
         preferences.exportsInFlight.insert(take.id)
-        defer {
-            runningAction = nil
-            exportProgress = nil
-            exportMode = nil
-            preferences.exportsInFlight.remove(take.id)
-        }
-        do {
-            // The file and where it goes, as one piece of work iOS can let run outside Cue.
-            let delivered = try await background.run(
-                title: String(localized: "Exporting your video"), subtitle: take.label, started: { exportMode = $0 }, work: { report in
+        // The file and where it goes, as one piece of work iOS can let run outside Cue (leaving Cue is not cancelling).
+        let job = Task { @MainActor in
+            try await background.run(
+                title: String(localized: "Exporting your video"), subtitle: take.label, started: { self.exportMode = $0 }, work: { report in
                 guard let operation = try await self.prepareOperation(for: take, action: action, continuing: operationID, progress: { fraction in
                     self.exportProgress = fraction
                     report(fraction)
                 }) else {
                     return false
                 }
+                self.preparedOperation = operation.id
+                // "Cancel export" before this line: nothing leaves Cue, nothing is counted. Checked and marked with no wait between them, on
+                // the main actor, so a cancel can't land halfway (`cancelExport` refuses once delivering).
+                try Task.checkCancellation()
+                self.isDelivering = true
                 try await self.deliver(action, operation: operation, take: take)
                 self.onExported(take.id, self.savedOperations.contains(operation.id))
                 return true
             })
+        }
+        exportJob = job
+        defer {
+            runningAction = nil
+            exportProgress = nil
+            exportMode = nil
+            exportJob = nil
+            isDelivering = false
+            preparedOperation = nil
+            preferences.exportsInFlight.remove(take.id)
+        }
+        do {
+            let delivered = try await job.value
             if !delivered { phase = .idle }
+        } catch where job.isCancelled {
+            // Cancelled on the way out of the review: the file it made goes (the record stays, uncounted).
+            phase = .idle
+            if let preparedOperation { ledger.releaseFile(of: preparedOperation) }
         } catch {
             phase = .failed
             report(error, action: action)
         }
     }
 
+    /// "Cancel export" (leaving the review while it exports): the render stops and nothing is saved, shared or counted, not even by a
+    /// render that ends late. False once the file is on its way (`isDelivering`): that delivery ends as it would have, and says so.
+    @discardableResult
+    func cancelExport() -> Bool {
+        guard let exportJob, !isDelivering else { return false }
+        exportJob.cancel()
+        return true
+    }
+
     /// The file for this export: the one already made for the same edit and settings, else a new render. Nil when the
-    /// free exports are used up (the paywall is open). An operation that was already counted never needs the quota again.
+    /// free exports are used up (the paywall is open). A video already counted never needs the quota again, its file there or made again.
     private func prepareOperation(
         for take: Take, action: ExportAction, continuing operationID: UUID?, progress: @escaping @MainActor (Double) -> Void
     ) async throws -> ExportOperation? {
@@ -465,7 +507,7 @@ final class TakeReviewViewModel {
         let fingerprint = ExportFingerprint.make(takeID: take.id, source: source, options: options)
         let reusable = ledger.reusableOperation(fingerprint: fingerprint)
         let continued = operationID.flatMap { ledger.operation(id: $0) }.flatMap { $0.fingerprint == fingerprint ? $0 : nil }
-        if action != .render, !(reusable?.isCounted ?? false), !(continued?.isCounted ?? false), !quota.canExport(tier: tier()) {
+        if action != .render, !ledger.isCounted(fingerprint: fingerprint), !quota.canExport(tier: tier()) {
             pendingAction = action
             exportDeclined = false
             showsExportReady = true
@@ -499,7 +541,7 @@ final class TakeReviewViewModel {
                     let assetID = try await photos.saveVideo(at: ledger.fileURL(of: operation))
                     recordDelivery(.photoLibrary(assetID: assetID), operation: operation, take: take)
                     savedOperations.insert(operation.id)
-                    _ = try? await saveCoverIfChosen()
+                    await saveCover(after: operation)
                 } catch PhotoLibraryError.notAuthorized {
                     // The networks can take the file without Photos: the queue goes on, and the first network that gets it counts the export.
                     // The queue's step shows the Photos card (with Open Settings), as Save does.
@@ -514,8 +556,7 @@ final class TakeReviewViewModel {
             savedOperations.insert(operation.id)
             savesToPhotos += 1
             recordDelivery(.photoLibrary(assetID: assetID), operation: operation, take: take)
-            let withCover = (try? await saveCoverIfChosen()) ?? false
-            if withCover { coversSaved.insert(operation.id) }
+            let withCover = await saveCover(after: operation)
             photosDenied = false
             showsShareSheet = false
             // No toast: "Ready to travel" says it all, its button turned into "✓ Saved to Photos", the free exports on its meter, and
@@ -547,7 +588,7 @@ final class TakeReviewViewModel {
                 return
             }
             recordDelivery(.photoLibrary(assetID: assetID), operation: operation, take: take)
-            _ = try? await saveCoverIfChosen()
+            await saveCover(after: operation)
             // Share Kit takes the library's identifier; without one, the app opens and the creator picks the video.
             if route == .shareKit && assetID == nil { route = .saveAndOpen }
         }
@@ -738,6 +779,44 @@ final class TakeReviewViewModel {
         let shared = label.map { String(localized: "Shared with \($0)") } ?? String(localized: "Shared")
         guard let left = quota.exportsLeft(for: tier()) else { return shared }
         return shared + " · " + String(localized: "\(left) of \(UsagePolicy.freeExports) free exports left")
+    }
+
+    /// The chosen cover, saved to Photos after its video: true when one was. One that couldn't be saved says so, the video being there, with
+    /// **Try again**, which saves the cover alone (`retryCover`).
+    @discardableResult
+    private func saveCover(after operation: ExportOperation) async -> Bool {
+        do {
+            let saved = try await saveCoverIfChosen()
+            if saved { coversSaved.insert(operation.id) }
+            return saved
+        } catch {
+            if !(error is PhotoLibraryError), let failure = EditorFailureReport.make(error, operation: "cover", edit: take?.edit) {
+                reportFailure(failure)
+            }
+            offerCoverAgain(for: operation.id)
+            return false
+        }
+    }
+
+    private func offerCoverAgain(for operationID: UUID) {
+        toast.showResult(
+            String(localized: "Video saved. Couldn't save the cover image."), kind: .problem,
+            action: ToastAction(title: String(localized: "Try again")) { [weak self] in self?.retryCover(for: operationID) }
+        )
+    }
+
+    /// The cover alone, drawn and saved again: no new video, nothing counted.
+    func retryCover(for operationID: UUID) {
+        coverRetry?.cancel()
+        coverRetry = Task {
+            do {
+                guard try await saveCoverIfChosen() else { return }
+                coversSaved.insert(operationID)
+                toast.show(String(localized: "Cover saved to Photos"))
+            } catch {
+                offerCoverAgain(for: operationID)
+            }
+        }
     }
 
     /// Draws the take's cover and saves it to Photos. False when no cover was chosen.

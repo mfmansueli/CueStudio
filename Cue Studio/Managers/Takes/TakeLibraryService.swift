@@ -26,6 +26,8 @@ final class TakeLibraryService {
     @ObservationIgnored private var canSave = true
     /// Takes deleted whose Undo may still be on screen: their videos wait here (`awaitPurge`) until it is out of reach.
     @ObservationIgnored private var awaiting: [UUID: RemovedTake] = [:]
+    /// Deletions written down before they run, so one iOS cuts short finishes at the next launch (`TakeOrphanSweep`).
+    private let pendingDeletions: PendingTakeDeletions?
     /// A take is gone for good (deleted, or its Undo out of reach): what other services keep for it goes too (its exported files, a share
     /// queue left halfway). Set once by `AppServices`.
     @ObservationIgnored var takeGone: ((Take) -> Void)?
@@ -33,11 +35,21 @@ final class TakeLibraryService {
     /// `saveAgainIfFailed` when Cue comes back to the front. The app says so (`RootView`).
     private(set) var saveFailed = false
 
-    init(repository: TakeRepository = LocalTakeRepository(), drafts: QuickEditDraftStoring? = nil, now: @escaping () -> Date = Date.init) {
+    init(
+        repository: TakeRepository = LocalTakeRepository(), drafts: QuickEditDraftStoring? = nil, pendingDeletions: PendingTakeDeletions? = nil,
+        now: @escaping () -> Date = Date.init
+    ) {
         self.repository = repository
         self.drafts = drafts
+        self.pendingDeletions = pendingDeletions
         self.now = now
     }
+
+    /// The library on disk was read: until it is, nothing may look nameless (`TakeOrphanSweep`).
+    var isRead: Bool { canSave }
+
+    /// The videos of deleted takes whose Undo may still bring them back.
+    var videosAwaitingPurge: Set<String> { Set(awaiting.values.map(\.take.fileName)) }
 
     func load() {
         do {
@@ -212,11 +224,7 @@ final class TakeLibraryService {
 
     func delete(_ id: UUID) {
         guard let take = take(id: id) else { return }
-        do {
-            try repository.deleteVideo(named: take.fileName)
-        } catch {
-            logger.error("Could not delete take video: \(error.localizedDescription)")
-        }
+        deleteVideo(of: take)
         takes.removeAll { $0.id == id }
         persist()
         removeEditFiles(of: take)
@@ -242,11 +250,14 @@ final class TakeLibraryService {
         guard !takes.contains(where: { $0.id == removed.take.id }) else { return }
         takes.insert(removed.take, at: min(removed.position, takes.count))
         persist()
+        pendingDeletions?.remove([removed.take.fileName])
     }
 
-    /// A deleted take's video waits for its Undo to be out of reach (`purgeAwaiting`).
+    /// A deleted take's video waits for its Undo to be out of reach (`purgeAwaiting`), written down meanwhile: Cue ended before that, the next
+    /// launch removes it.
     func awaitPurge(_ removed: RemovedTake) {
         awaiting[removed.take.id] = removed
+        pendingDeletions?.add([removed.take.fileName])
     }
 
     /// The Undo of the deleted take `id` is gone (its toast left): its video goes, unless the take came back.
@@ -255,8 +266,8 @@ final class TakeLibraryService {
         purge(removed)
     }
 
-    /// Cue is going to the background, where it may be ended unnoticed: every deleted take still waiting goes now (a video left behind
-    /// would stay on the iPhone for good: nothing sweeps orphans, §37). True when one was waiting, so its Undo can be taken away too.
+    /// Cue is going to the background, where it may be ended unnoticed: every deleted take still waiting goes now (what iOS cuts short is
+    /// written down and finishes at the next launch, `TakeOrphanSweep`). True when one was waiting, so its Undo can be taken away too.
     @discardableResult
     func purgeAwaiting() -> Bool {
         let waiting = awaiting.values
@@ -268,12 +279,19 @@ final class TakeLibraryService {
     /// The Undo is out of reach: the video and what Quick edit added go for good (unless the take came back).
     func purge(_ removed: RemovedTake) {
         guard !takes.contains(where: { $0.id == removed.take.id }) else { return }
+        deleteVideo(of: removed.take)
+        removeEditFiles(of: removed.take)
+    }
+
+    /// A video that couldn't be removed stays written down, for the next launch's sweep.
+    private func deleteVideo(of take: Take) {
         do {
-            try repository.deleteVideo(named: removed.take.fileName)
+            try repository.deleteVideo(named: take.fileName)
+            pendingDeletions?.remove([take.fileName])
         } catch {
+            pendingDeletions?.add([take.fileName])
             logger.error("Could not delete take video: \(error.localizedDescription)")
         }
-        removeEditFiles(of: removed.take)
     }
 
     /// What Quick edit added belongs to this take alone: the saved edit's media, and the draft with the media only it names

@@ -823,7 +823,7 @@ struct ScriptsDock: View {
         let idea = hasTypedIdea ? nil : suggestion
         // An idea in a language Apple Intelligence can't draft in takes nothing off: the starter says why (with "Write it") and it stays.
         guard IdeaSendTimeline.measure("Drafting check", { starter.drafting(before: idea ?? ideaDraft.submission).isAvailable }) else {
-            starter.write(idea: idea, from: sendCenter)
+            starter.write(idea: idea, fromDock: true, from: sendCenter)
             return
         }
         IdeaSendTimeline.measure("Takeoff haptic") { HapticPatterns.playTakeoff() }
@@ -837,7 +837,7 @@ struct ScriptsDock: View {
         let note = IdeaSendTimeline.measure("Next idea") { suggestions.sent() }
         // A suggested idea used for real: its introduction stops (a note of their own is the Logbook's, not the ideas').
         if note == nil { notifications.recordUse(.ideas) }
-        starter.write(idea: idea, brief: brief, from: sendCenter) { [logbook] scriptID in
+        starter.write(idea: idea, brief: brief, fromDock: true, from: sendCenter) { [logbook] scriptID in
             if let note { logbook.markShaped(note, as: scriptID) }
         }
     }

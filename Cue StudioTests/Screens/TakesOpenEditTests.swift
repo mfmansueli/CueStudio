@@ -31,6 +31,31 @@ struct TakesOpenEditTests {
         #expect(drafts.takeInEdit(among: takes)?.id == takes[2].id)
     }
 
+    /// Save and Share ask about an edit left open only when it would change the video: the editor opened and left as it was ("Not yet"
+    /// keeps a draft even then) or a draft equal to the finished edit is not one.
+    @Test func onlyAnEditThatWouldChangeTheVideoIsUnfinished() {
+        var take = TestData.take(scriptID: UUID())
+        let drafts = FakeDraftStore()
+        #expect(drafts.unfinishedEdit(of: take) == nil)
+
+        func keep(_ edit: TakeEdit) {
+            drafts.drafts[take.id] = QuickEditDraft(
+                takeID: take.id, edit: edit, playhead: 0, history: EditHistory<EditSnapshot>(), savedAt: TestData.now
+            )
+        }
+        // Opened and left as it was.
+        keep(QuickEditViewModel.startingEdit(for: take))
+        #expect(drafts.unfinishedEdit(of: take) == nil)
+        // Captions turned on and left there.
+        var changed = QuickEditViewModel.startingEdit(for: take)
+        changed.showsCaptions.toggle()
+        keep(changed)
+        #expect(drafts.unfinishedEdit(of: take) != nil)
+        // That change finished (Done), then the editor opened again and left as it was.
+        take.edit = changed
+        #expect(drafts.unfinishedEdit(of: take) == nil)
+    }
+
     @Test func editAndTheInEditCardOpenTheTakeWhoseEditIsOpen() throws {
         let script = UUID()
         // The edit was left on take 1 ("Not yet"), then take 2 was recorded and starred.

@@ -14,6 +14,8 @@ final class FakeScriptWriter: ScriptWriting {
     var generatedTitle = "Generated title"
     var statesFacts = false
     var rewrittenText = "Rewritten with energy!"
+    /// Runs while a rewrite is with the model (before it answers): a Stop, or typing, meanwhile.
+    var whileRewriting: (@MainActor () -> Void)?
     var hookIdeas = ["New hook one.", "New hook two.", "New hook three."]
     var ideas: [ThemeIdea] = []
     var error: Error?
@@ -78,11 +80,6 @@ final class FakeScriptWriter: ScriptWriting {
                 title: generatedTitle, text: generatedText, usedLanguageModel: true,
                 needsFactCheck: request.isFactualTopic || statesFacts, model: .privateCloud
             )
-        case .format(let type, let brief):
-            if availability.isAvailable {
-                return GeneratedScript(title: type.draftTitle(from: brief), text: generatedText, usedLanguageModel: true, model: .onDevice)
-            }
-            return GeneratedScript(title: type.draftTitle(from: brief), text: type.draft(from: brief), usedLanguageModel: false)
         }
     }
 
@@ -97,6 +94,7 @@ final class FakeScriptWriter: ScriptWriting {
         guard availability.isAvailable else { throw ScriptAIError.modelUnavailable(availability.reason ?? "") }
         lastRewrite = (tool, context)
         lastRewrittenSource = text
+        whileRewriting?()
         return rewrittenText
     }
 

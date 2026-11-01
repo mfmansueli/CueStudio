@@ -173,10 +173,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         self.editing = editing
         self.drafts = drafts
         self.toast = toast
-        var edit = take.edit ?? TakeEdit(sourceDuration: take.duration, aspect: take.aspect)
-        if take.edit == nil { edit.captionCollection?.safeMargins = CaptionsViewModel.captionSafeMargins(for: take, aspect: take.aspect) }
-        edit.captions = edit.captions.map(CaptionRevision.withoutContinuation)
-        document = EditDocument(edit)
+        document = EditDocument(Self.startingEdit(for: take))
         let player = player ?? QuickEditPlayer(videoURL: takes.videoURL(for: take), editing: editing)
         self.player = player
         let jobs = EditorJobs()
@@ -397,6 +394,14 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     var canUndo: Bool { document.canUndo && !audio.isRecordingVoiceOver }
     var canRedo: Bool { document.canRedo && !audio.isRecordingVoiceOver }
     var hasUnsavedChanges: Bool { document.hasUnsavedChanges }
+
+    /// What the editor opens on before a draft: the take's finished edit, or a new one fitted to it.
+    static func startingEdit(for take: Take) -> TakeEdit {
+        var edit = take.edit ?? TakeEdit(sourceDuration: take.duration, aspect: take.aspect)
+        if take.edit == nil { edit.captionCollection?.safeMargins = CaptionsViewModel.captionSafeMargins(for: take, aspect: take.aspect) }
+        edit.captions = edit.captions.map(CaptionRevision.withoutContinuation)
+        return edit
+    }
 
     // MARK: - Playback
 

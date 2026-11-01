@@ -62,7 +62,7 @@ tr:last-child td { border-bottom: 0; }
 
 <div class="wrap">
 <header>
-  <div class="eyebrow">audit/integration-flows · main c50039c3 · 01/11/2026 · só leitura, nenhum código mudou</div>
+  <div class="eyebrow">audit/integration-flows · a partir de main c50039c3 · 01/11/2026 · auditoria, correções e as suas 13 decisões</div>
   <h1>Auditoria de integração</h1>
   <p class="lede">Os fluxos do Cue Studio de ponta a ponta: da ideia ao roteiro (Apple Intelligence no aparelho, Private Cloud Compute e Ultra AI), à gravação, à edição, à exportação e ao compartilhamento, incluindo voltar, pular, cancelar, errar e retomar.</p>
   <p>Dois agentes leram o código, sem build. Eu conferi na fonte os achados que estão no topo. <b>Confirmado</b> quer dizer que o caminho foi lido de ponta a ponta no código. <b>Suspeita</b> quer dizer que depende de rodar no aparelho. Nenhuma remoção é sugerida sem a busca em todo o app e nos testes.</p>
@@ -99,7 +99,31 @@ tr:last-child td { border-bottom: 0; }
       <tr><td>22/10</td><td>"Duplicated" e "version saved" não aparecem quando o salvamento falhou; importar documento roda fora da thread principal (HTML continua na principal, exigência do WebKit); SHARING.md corrigido (3 exportações grátis, sem <code>QuickEditExportModel</code>).</td></tr>
     </tbody>
   </table></div>
-  <p><b>Ficaram para você:</b> B2, B3, B4, A4, A13, A17, A19, A20, B12, B13, B15, B17 e A23 (os chips do dock valem para roteiros de qualquer origem, então zerá-los depois de um roteiro do Logbook é decisão de desenho). <b>Dependem do iPhone:</b> A9, A10, A16, B9, B10, B18, B20.</p>
+</section>
+
+<section>
+  <h2>Suas decisões, feitas (01/11)</h2>
+  <p>As 13 decisões com as condições técnicas que você pôs. Cada uma tem testes de unidade que exercitam a condição, não só a tela. Textos novos entraram nos 20 idiomas.</p>
+  <div class="table"><table>
+    <thead><tr><th>ID</th><th>Como ficou</th></tr></thead>
+    <tbody>
+      <tr><td><code>B2</code></td><td>Durante a exportação, Voltar, o gesto de fechar e trocar de take passam por <b>"Cancel export?"</b> (<b>Cancel export</b> / <b>Keep exporting</b>). A lixeira e a estrela ficam desligadas. Cancelar para o trabalho de verdade: nada é salvo, compartilhado nem contado depois. Se a entrega já tinha terminado, aparece o sucesso. Ir para o segundo plano não cancela.</td></tr>
+      <tr><td><code>B3</code></td><td>O registro de uma versão contada não expira mais (nem em 7 dias) e é independente do arquivo em cache: vive enquanto a take existir, versões antigas incluídas. Identidade = conteúdo e ajustes que mudam o vídeo; o destino não conta. Vale com pedidos ao mesmo tempo, falha no meio e reabertura do app.</td></tr>
+      <tr><td><code>B4</code></td><td>Exportar com uma edição aberta pergunta <b>"There are unfinished changes. You can keep editing or export the last finished version."</b> (<b>Export original</b> quando a take nunca teve edição terminada). Só pergunta quando o rascunho muda o vídeo de fato.</td></tr>
+      <tr><td><code>A13</code></td><td>Durante um retoque da IA o texto fica travado, o toast "Rewriting the script…" tem <b>Stop</b> e a barra da seleção também. O resultado só entra se ainda for do mesmo roteiro, versão e pedido.</td></tr>
+      <tr><td><code>A4</code></td><td>O comentário vai para o Logbook <b>antes</b> da geração começar; tentar de novo não duplica; um que já estava no Logbook mantém o item. "Saved to Logbook" só aparece com o salvamento confirmado.</td></tr>
+      <tr><td><code>A17</code></td><td>O dock guarda no disco o texto, o briefing e as escolhas (rede, duração, formato, marca), sem prazo. Só limpa quando o roteiro da ideia é salvo; uma geração anterior que termina nunca apaga o que você escreveu depois.</td></tr>
+      <tr><td><code>A23</code></td><td>Ideias de fora (Logbook, Find inspiration, comentário, "Start from a format") não leem nem limpam as escolhas do dock: usam a sua rede do Profile e Auto. Cada geração tira uma foto das escolhas no início.</td></tr>
+      <tr><td><code>B12</code></td><td>Vídeos de take sem dono saem 7 dias depois da <b>primeira vez</b> que aparecem sem dono (essa data fica guardada). Só na pasta Takes, longe da abertura, depois da recuperação, com a biblioteca lida, todo JSON do Cue legível e nenhum citando o arquivo, nada em uso. Exclusões decididas ficam anotadas e terminam se o iOS interromper (inclui a take apagada com o Undo na tela).</td></tr>
+      <tr><td><code>B13</code></td><td>Importar com o iPhone cheio apaga só a cópia daquela tentativa (se não der, ela fica anotada e sai na abertura seguinte) e diz "Not enough space on this iPhone · Free some and try again" só quando o erro é mesmo de espaço.</td></tr>
+      <tr><td><code>B15</code></td><td><b>"Video saved. Couldn't save the cover image."</b> com <b>Try again</b>, que salva só a capa: nenhum vídeo novo, nada contado. Deu certo: "Cover saved to Photos".</td></tr>
+      <tr><td><code>B17</code></td><td>Arquivo e manifestos conferidos: o SDK do TikTok é código-fonte, dois bundles de 20 KB, manifestos sem dado coletado nem rastreio, e só um arquivo o usava. <b>Saiu do app.</b> O código da fase B fica isolado atrás de <code>TIKTOK_SHARE_KIT</code>; SHARING.md diz como religar.</td></tr>
+      <tr><td><code>A19</code></td><td>Todo erro de escrita sai pela estrela (motivo no toast, Try again quando faz sentido: falha do modelo ou da Ultra AI, resposta vazia ou inválida; indisponível e idioma dizem o motivo). O alerta da página saiu.</td></tr>
+      <tr><td><code>A20</code></td><td><code>ScriptRequest</code> não é gravado em lugar nenhum (nem disco, fila ou link), então o caso <code>.format</code> saiu sem precisar de compatibilidade, junto com o formulário de formato que só ele usava e os 117 textos dele.</td></tr>
+    </tbody>
+  </table></div>
+  <p><b>Contraste:</b> nenhuma cor nova. O Stop da barra usa <code>Palette.aiTextStrong</code>, o mesmo token do Undo e do Try again ao lado (já medido em <code>PaletteContrastTests</code>); os avisos são alertas do sistema e o toast existente.</p>
+  <p><b>Dependem do iPhone</b>, na sua ordem: B20 e B10 (prioridade muito alta), A9, A16 e A10 (alta), B9 e B18 (média).</p>
 </section>
 
 <section>
@@ -346,15 +370,16 @@ tr:last-child td { border-bottom: 0; }
     <li><b>A1, A6:</b> mandar uma ideia e fechar o Cue durante a estrela; repetir durante a revelação; tocar Voltar durante a revelação.</li>
     <li><b>A11:</b> mandar uma ideia (Apple Intelligence e Ultra AI), ir para a tela inicial por 20 s e voltar.</li>
     <li><b>B1:</b> editar o take 1, "Not yet", gravar o take 2, abrir por Takes › Edit, por Continue e pela notificação.</li>
-    <li><b>B2:</b> exportar um take longo e deslizar para outro take, ou voltar, no meio.</li>
-    <li><b>B4:</b> mudar algo, "Not yet", Save, conferir o vídeo no Fotos.</li>
+    <li><b>B2:</b> exportar um take longo e, no meio, tocar Voltar, deslizar para fechar e trocar de take: cada um pergunta "Cancel export?"; cancelar não salva nem conta.</li>
+    <li><b>B4:</b> mudar algo, "Not yet", Save: aparece "Unfinished edit"; conferir o vídeo no Fotos.</li>
+    <li><b>A13:</b> num roteiro, Improve › Shorter e tentar digitar: o texto não muda; Stop no toast para.</li>
     <li><b>B5:</b> com 0 exportações, Share to universe, escolher redes, comprar (StoreKit de teste).</li>
     <li><b>B9:</b> fila com 2 redes, postar a primeira, "Edit first" na segunda, Done › Share.</li>
     <li><b>A9:</b> contagem de 10 s e ir para a tela inicial; ligação com a câmera aberta; Split View no iPad.</li>
     <li><b>A10:</b> pedir 4K60 na câmera frontal e comparar a informação do take com o arquivo.</li>
     <li><b>A15:</b> rodar o atalho "New script" durante uma gravação.</li>
     <li><b>A16:</b> ler com Voice Following e chamar a Siri duas vezes.</li>
-    <li><b>A17:</b> digitar uma ideia longa e abrir apps pesados até o Cue sair da memória.</li>
+    <li><b>A17:</b> digitar uma ideia longa, escolher rede e formato, e fechar o Cue pelo seletor de apps: ao abrir, tudo volta.</li>
     <li><b>B18:</b> sair durante uma exportação, voltar pela notificação e fechar a revisão.</li>
     <li><b>A8:</b> o tmp sendo limpo só se reproduz com o iPhone quase sem espaço (difícil; pode ficar para um teste automatizado com repositório falso).</li>
   </ol>
@@ -369,14 +394,6 @@ tr:last-child td { border-bottom: 0; }
     <li><b>Robustez que pede o iPhone:</b> A9, A10, A16, A15, B9.</li>
     <li><b>Limpeza:</b> A19, A20, A21, documentação (B17) e os P3.</li>
   </ol>
-  <div class="note">
-    <h3>Decisões que são suas</h3>
-    <ul>
-      <li><b>B3:</b> o mesmo vídeo, sem mudança, deve descontar de novo depois que a revisão fecha? Sugiro que não.</li>
-      <li><b>A17:</b> guardar a ideia do dock entre aberturas do app? Sugiro que sim, só o texto e o briefing.</li>
-      <li><b>B17:</b> manter o código das integrações (TikTok, Instagram) para a fase B ou tirá-lo até lá?</li>
-      <li><b>A19 e A20:</b> posso remover o código sem uso?</li>
-    </ul>
-  </div>
+  <p>As decisões que eram suas foram tomadas em 01/11 e estão feitas (seção acima). O que falta depende do iPhone.</p>
 </section>
 </div>

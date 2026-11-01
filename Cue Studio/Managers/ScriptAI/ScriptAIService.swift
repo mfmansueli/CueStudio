@@ -104,7 +104,7 @@ final class ScriptAIService: ScriptWriting {
         beginForeground()
         defer { endForeground() }
         let begin = ContinuousClock.now
-        let task: AIModelRoute.Task = preferredModel == .privateCloud || request.isFreePrompt ? .freePrompt : .format
+        let task: AIModelRoute.Task = .freePrompt
         guard isEnabled else { throw ScriptAIError.modelUnavailable(AIAvailability.turnedOffReason) }
         let languages = request.language.map { [$0.locale] } ?? []
         let language = languages.first?.identifier
@@ -115,16 +115,8 @@ final class ScriptAIService: ScriptWriting {
         case .success(let planned):
             plan = planned
         case .failure(let failure):
-            // A format has its own structured draft, in the language, that needs no model at all.
-            guard case .format(let type, let brief) = request.source else {
-                AIFailureReport.note(failure, operation: "script", route: nil, language: language, seconds: 0, isFinal: true)
-                throw failure.error()
-            }
-            return GeneratedScript(
-                title: type.draftTitle(from: brief, language: request.language),
-                text: structuredDraft(type: type, brief: brief, voice: request.voice, language: request.language),
-                usedLanguageModel: false
-            )
+            AIFailureReport.note(failure, operation: "script", route: nil, language: language, seconds: 0, isFinal: true)
+            throw failure.error()
         }
         // A request near the edge of the window leaves out what is optional of the voice first (`ContextBudget`).
         // A short request that still ran out of room (the model went on and on) is worth one more try on the
@@ -373,10 +365,7 @@ final class ScriptAIService: ScriptWriting {
             throw ScriptAIError.emptyResponse
         }
         try Self.requireLanguage(request.language?.locale.language, in: text)
-        let title: String = switch request.source {
-        case .format(let type, let brief): type.draftTitle(from: brief, language: request.language)
-        case .prompt: ScriptPromptBuilder.cleanTitle(draft.title, language: language, preserving: request.preservedPhrases)
-        }
+        let title = ScriptPromptBuilder.cleanTitle(draft.title, language: language, preserving: request.preservedPhrases)
         return GeneratedScript(
             title: title,
             text: text,
@@ -385,21 +374,6 @@ final class ScriptAIService: ScriptWriting {
             model: model,
             timings: timings
         )
-    }
-
-    /// The brief turned into the format's structure, with the creator's first catchphrase up front.
-    private func structuredDraft(type: ScriptType, brief: [String: String], voice: CreatorVoice?, language: CueLanguage?) -> String {
-        let draft = type.draft(from: brief, language: language)
-        guard let phrase = voice?.phrases.first, !type.structure.isSerious else { return draft }
-        // A catchphrase that ends a sentence leads into the draft as it is; otherwise the language's comma joins them (Cue writes no dashes).
-        if let last = phrase.last, ".!?…。！？".contains(last) { return "\(phrase) \(draft)" }
-        let comma = switch language?.interfaceLocalization {
-        case "ja": "、"
-        case "zh-Hans", "zh-Hant": "，"
-        case "ar": "، "
-        default: ", "
-        }
-        return phrase + comma + ScriptType.lowercasedFirst(draft)
     }
 
     // MARK: - Editing

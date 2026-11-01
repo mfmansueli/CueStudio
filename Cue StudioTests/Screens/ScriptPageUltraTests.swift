@@ -17,6 +17,7 @@ struct ScriptPageUltraTests {
         let library: ScriptLibraryService
         let writer: FakeScriptWriter
         let ultra: FakeUltraScriptWriter
+        let toast: ToastService
         let defaults: TestDefaults
     }
 
@@ -30,13 +31,16 @@ struct ScriptPageUltraTests {
         let writer = FakeScriptWriter()
         var request = ScriptRequest(source: .prompt("Carnival in Salvador"), platform: .reels, tone: nil, voice: nil, targetRange: 30...60)
         request.engine = .ultra
+        let toast = ToastService()
         let viewModel = ScriptDetailViewModel(
-            scriptID: script.id, startsEditing: false, writing: request, ideaDraft: IdeaDraftService(), revealPause: .zero,
+            scriptID: script.id, startsEditing: false, writing: request, revealPause: .zero,
             library: library, takes: takes, preferences: PreferencesService(defaults: defaults.defaults),
             profile: CreatorProfileService(defaults: defaults.defaults), rules: TestData.rulesService(), writer: writer, ultra: ultra,
-            toast: ToastService()
+            toast: toast
         )
-        return Scenario(viewModel: viewModel, library: library, writer: writer, ultra: ultra ?? FakeUltraScriptWriter(), defaults: defaults)
+        return Scenario(
+            viewModel: viewModel, library: library, writer: writer, ultra: ultra ?? FakeUltraScriptWriter(), toast: toast, defaults: defaults
+        )
     }
 
     @Test func ultraWritesItAndAppleIntelligenceIsNeverAsked() async {
@@ -57,7 +61,7 @@ struct ScriptPageUltraTests {
         scenario.ultra.error = UltraError.reviewFailed(.provider, draft: "A draft that must never be shown as the script.")
         scenario.viewModel.beginWritingIfNeeded()
         await scenario.viewModel.pageWritingTask?.value
-        #expect(scenario.viewModel.page.writingError == UltraError.reviewFailed(.provider, draft: "").localizedDescription)
+        #expect(scenario.toast.message == UltraError.reviewFailed(.provider, draft: "").localizedDescription)
         let saved = scenario.library.script(id: scenario.viewModel.scriptID)
         #expect(saved?.text.isEmpty == true && saved?.draftedBy == nil)
         #expect(scenario.writer.lastRequest == nil)
@@ -69,7 +73,7 @@ struct ScriptPageUltraTests {
         scenario.viewModel.beginWritingIfNeeded()
         await scenario.viewModel.pageWritingTask?.value
         #expect(scenario.writer.lastRequest == nil)
-        #expect(scenario.viewModel.page.writingError == UltraError.notAvailable.localizedDescription)
+        #expect(scenario.toast.message == UltraError.notAvailable.localizedDescription)
     }
 
     @Test func anOlderLibraryReadsWithoutProvenance() throws {
@@ -99,12 +103,13 @@ struct ScriptPageUltraTests {
         let writer = FakeScriptWriter()
         let ultra = FakeUltraScriptWriter()
         ultra.isReady = true
+        let toast = ToastService()
         let viewModel = ScriptDetailViewModel(
             scriptID: script.id, startsEditing: false, library: library, takes: takes, preferences: PreferencesService(defaults: defaults.defaults),
             profile: CreatorProfileService(defaults: defaults.defaults), rules: TestData.rulesService(), writer: writer, ultra: ultra,
-            toast: ToastService()
+            toast: toast
         )
-        return Scenario(viewModel: viewModel, library: library, writer: writer, ultra: ultra, defaults: defaults)
+        return Scenario(viewModel: viewModel, library: library, writer: writer, ultra: ultra, toast: toast, defaults: defaults)
     }
 
     /// Every touch-up is Apple Intelligence's, on a script Ultra wrote too (owner, 01/11/2026): Ultra writes, it never touches up, so a script

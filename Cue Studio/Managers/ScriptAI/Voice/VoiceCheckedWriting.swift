@@ -88,7 +88,7 @@ struct VoiceCheckedWriting {
         // Profile pronouns remain in the prompt, but cannot force a correction that changes who did what.
         let unresolved = ScriptVerbatimSlots(phrases: request.requiredPhrases).hasUnresolvedMarker(in: script.text)
             ? [VoiceViolation(kind: .requiredPhrase, detail: "Replace any incomplete exact-wording marker with its complete assigned phrase, unchanged.")] : []
-        let applicable = voice.filter { !(request.modelRoute == .privateCloud && request.isFreePrompt && $0.kind == .pronoun) }
+        let applicable = voice.filter { !(request.modelRoute == .privateCloud && $0.kind == .pronoun) }
         return applicable + required + unresolved
     }
 }

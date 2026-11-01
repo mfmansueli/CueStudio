@@ -20,7 +20,6 @@ struct ScriptDetailView: View {
             scriptID: route.scriptID,
             startsEditing: route.startsEditing,
             writing: route.writing,
-            ideaDraft: services.ideaDraft,
             revealPause: UIAccessibility.isReduceMotionEnabled ? .zero : services.scriptRevealPause,
             library: services.library,
             takes: services.takes,
@@ -63,15 +62,6 @@ struct ScriptDetailView: View {
         .onAppear { viewModel.isOnScreen = true }
         .onDisappear { viewModel.isOnScreen = false }
         .onDisappear(perform: offerReminderInvite)
-        .alert("Couldn't draft the script", isPresented: Binding(
-            get: { viewModel.page.writingError != nil },
-            set: { if !$0 { viewModel.page.writingError = nil } }
-        )) {
-            Button("Try again") { viewModel.retryWriting() }
-            Button("OK", role: .cancel) {}
-        } message: {
-            Text(viewModel.page.writingError ?? "")
-        }
         .alert("New folder", isPresented: $viewModel.isNamingFolder) {
             TextField("Folder name", text: $viewModel.newFolderName)
             Button("Cancel", role: .cancel) {}

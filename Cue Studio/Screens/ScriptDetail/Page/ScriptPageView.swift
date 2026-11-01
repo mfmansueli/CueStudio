@@ -107,6 +107,7 @@ struct ScriptPageView: View {
                         )
                         .padding(.top, 12)
                         .dimmedWhileTyping(isTyping)
+                        .disabled(viewModel.isTouchingUp)
                         editor
                             .padding(.top, 8)
                         Color.clear.frame(height: 1).id(Self.writingEnd)
@@ -328,13 +329,14 @@ struct ScriptPageView: View {
         return ScriptTextEditor(
             text: Binding(
                 get: { viewModel.page.revealed ?? viewModel.previewedText ?? viewModel.page.text },
-                set: { if !viewModel.page.isWriting { viewModel.page.text = $0 } }
+                set: { if !viewModel.page.isWriting, !viewModel.isTouchingUp { viewModel.page.text = $0 } }
             ),
             selection: $viewModel.page.selection,
             passage: viewModel.page.passage?.range,
             textSize: viewModel.page.textSize,
             showsCues: viewModel.showsCues,
-            isLocked: viewModel.page.isWriting || viewModel.previewedText != nil,
+            // A touch-up rewriting these words: they wait for it (its Stop is the toast's or the selection bar's).
+            isLocked: viewModel.page.isWriting || viewModel.previewedText != nil || viewModel.isTouchingUp,
             focus: $focus,
             onEdit: {
                 if !viewModel.page.isWriting {
@@ -364,7 +366,8 @@ struct ScriptPageView: View {
                     onAction: { action in Task { await viewModel.rewriteSelection(action) } },
                     onKeep: viewModel.keepPassage,
                     onUndo: viewModel.undoPassage,
-                    onRetry: { Task { await viewModel.retryPassage() } }
+                    onRetry: { Task { await viewModel.retryPassage() } },
+                    onStop: viewModel.stopTouchingUp
                 )
                 .transition(.opacity.combined(with: .move(edge: .bottom)))
             }

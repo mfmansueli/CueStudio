@@ -14,11 +14,11 @@ struct ScriptPromptBuilderTests {
         styles: [.shortSentences, .storytelling], niches: [.wellness], topics: [VoiceTopicEntry(topic: .niche(.wellness))]
     )
 
+    /// An idea with the format the creator picked on the card.
     private func formatRequest(type: ScriptType = .list, voice: CreatorVoice? = nil) -> ScriptRequest {
-        ScriptRequest(
-            source: .format(type, brief: ["topic": "Morning habits"]), platform: .tiktok, tone: .casual,
-            voice: voice, targetRange: 60...90
-        )
+        var request = ScriptRequest(source: .prompt("Morning habits"), platform: .tiktok, tone: .casual, voice: voice, targetRange: 60...90)
+        request.format = type
+        return request
     }
 
     private func promptRequest(_ text: String, voice: CreatorVoice? = nil) -> ScriptRequest {
@@ -43,13 +43,12 @@ struct ScriptPromptBuilderTests {
         #expect(ScriptPromptBuilder.themesPrompt(for: [.wellness], language: .german).hasSuffix("Write the ideas in German."))
     }
 
-    @Test func formatPromptCarriesStructureLengthAndBrief() {
+    @Test func aChosenFormatCarriesItsStructureAndLength() {
         let prompt = ScriptPromptBuilder.prompt(for: formatRequest())
         #expect(prompt.contains("Hook → Tips → CTA"))
         let asked = ScriptPromptBuilder.askedRange(for: 60...90)
         #expect(prompt.contains("between \(asked.low) and \(asked.high) spoken words"))
-        #expect(prompt.contains("- Topic: Morning habits"))
-        #expect(prompt.contains("Tone: casual."))
+        #expect(prompt.contains("The video: Morning habits"))
     }
 
     @Test func freePromptCarriesTheIdeaAndItsLength() {
@@ -61,9 +60,9 @@ struct ScriptPromptBuilderTests {
         #expect(!prompt.contains("Tone:"))
     }
 
-    @Test func freePromptsAskForAccuracy() {
+    @Test func everyScriptAsksForAccuracy() {
         #expect(ScriptPromptBuilder.instructions(for: promptRequest("Anything")).contains(ScriptPromptBuilder.accuracyRule))
-        #expect(!ScriptPromptBuilder.instructions(for: formatRequest()).contains(ScriptPromptBuilder.accuracyRule))
+        #expect(ScriptPromptBuilder.instructions(for: formatRequest()).contains(ScriptPromptBuilder.accuracyRule))
     }
 
     @Test func instructionsCarryTheCreatorsVoice() {

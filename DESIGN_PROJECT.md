@@ -109,6 +109,14 @@ amarelo), o aviso de Pouca Energia e a dica da barra de ferramentas vestem a mes
   vira **Deselect all**, `checklist.unchecked`; dono, 31/10/2026) e a lixeira.
 - As ideias do Logbook não ficam na lista: moram na página do Logbook (o botão da barra, §22). Carregando: `ScriptRowSkeleton` (`SkeletonShine`,
   1,4 s). Vazio: §30 e §32.
+- **O dock guarda o que tem** (decisão do dono, 01/11; `DockDraft`, `DefaultsKey.dockDraft`): o texto, o briefing do Find inspiration e as escolhas
+  do cartão (rede, duração, formato, marca) ficam no disco a cada mudança, sem prazo de validade, e voltam quando o iOS fecha o Cue no meio (copiar
+  algo em outro app, uma ideia ditada longa). Só saem quando a ideia do próprio dock vira roteiro **depois de salvo** (a estrela solta o roteiro já
+  guardado) e o dock ainda está como foi enviado (mudado no meio, é uma ideia nova e fica), ou pelo "Delete my Cue data".
+- **As escolhas do cartão são do dock** (`ScriptStarter.write(fromDock:)`): valem para o que sai dele (o texto do campo, a ideia do cartão, o
+  anúncio do cartão), lidas uma vez no envio (mudar depois não muda o pedido em andamento). Uma ideia de outro lugar (Logbook, Find inspiration, um
+  comentário, "Start from a format") é escrita com os padrões do criador (a rede do Profile, Auto) e as escolhas do próprio fluxo, e não limpa nem
+  muda o dock.
 - **Folhas da linha 1:** Format, For {Rede}, ✦ Voz e a lâmpada abrem todas em tela inteira (`.large`, sem meia altura).
 - **Formatos (`09` §1):** grade de 9 (Auto · Talking head · Tutorial · Storytime · List / tips · Review · Myth vs fact · POV · Sponsored ad, com o selo
   "needs brand info" numa linha própria) e **More formats** com os `ScriptType` que a grade não mostra. *Talking head* = sem `ScriptType`.
@@ -374,8 +382,11 @@ para o brilho e o desfoque, o efeito sumia no meio e o editor aparecia com o tex
 
 Enquanto o roteiro é escrito, `ArrivingText` substitui o editor: cada palavra entra de blur 7 pt e 5 pt abaixo em 0,3 s, com brilho violeta (`Palette.Page.arrivalGlow`
 a 95%, some em 0,8 s), a cada 0,17 s (mais rápido quando chegam muitas, nunca > ~1 s atrás do modelo); cursor violeta de 2 pt pisca depois da última.
-Pílula **"✦ Drafting in your voice"** (`ScriptWritingPill`, 34 pt): brilho de borda 2,4 s e brilho branco a cada 1,6 s; sem a estrela por cima (Try again)
-mostra a porcentagem até as palavras chegarem. **A página escrevendo é a página escrita:** título, duração, faixa de estado (com **Stop** no lugar de
+Pílula **"✦ Drafting in your voice"** (`ScriptWritingPill`, 34 pt): brilho de borda 2,4 s e brilho branco a cada 1,6 s; sem a estrela por cima
+mostra a porcentagem até as palavras chegarem. **Uma escrita que falha** sai pela estrela (todo pedido do app tem a sua): ela cai, o roteiro vazio
+some e o toast diz o motivo, com **Try again** quando pedir de novo pode dar certo (`ScriptFailureNotice`: falha do modelo ou da Ultra AI, resposta
+vazia ou inválida; indisponível, outro idioma ou espera dizem o motivo sem o botão). A página não tem alerta de erro (saiu em 01/11/2026, decisão do
+dono: só testes chegavam a ele); se escrevesse sem estrela, o mesmo toast diria o motivo e a página ficaria para o criador escrever. **A página escrevendo é a página escrita:** título, duração, faixa de estado (com **Stop** no lugar de
 Shape), "Does it sound like you?" e o aviso de fatos (desabilitados) já no lugar, com as margens do editor (`ScriptTextEditor.textInsets`); nada se move
 ao terminar. **Acabamento (pedido do dono, 20/10/2026):** o título chega primeiro, palavra por palavra (`WordsFromLight` sobre o campo), e o texto começa
 0,45 s depois; a página rola sozinha (0,8 s, a cada ~160 caracteres) para manter as palavras novas à vista; no fim espera as últimas chegarem
@@ -460,7 +471,10 @@ ajuda um idioma, então o idioma vem antes). Escrever à mão, importar, telepro
   Logbook (a ideia continua esperando), Find inspiration, a última pergunta do My Cue Voice ("Done" em vez de "✦ Draft my script") e "+ › Let Cue draft
   it" (some, como sem IA). O dock pergunta de novo ao voltar para o app e, enquanto o modelo se prepara, a cada 30 s.
 - **Answer a comment:** o idioma é o do comentário (não o do inglês que o embrulha); se o modelo não escreve, o subtítulo do "Is this right?" diz o motivo
-  + "Write your reply yourself." e só fica **Write it myself** (primário). Uma falha tardia (a IA mudou durante a estrela) guarda o comentário no Logbook.
+  + "Write your reply yourself." e só fica **Write it myself** (primário). O comentário vai para o Logbook **antes** de a estrela subir (decisão do
+  dono, 01/11; `LogbookService.keep`), para que um Cancel, uma falha ou o Cue fechado nunca o percam (a folha já fechou): Cancel ou falha o deixam lá
+  e o toast diz "Saved to Logbook" (na falha, depois do motivo), só quando ele está mesmo lá; tentar de novo o mesmo comentário é a mesma nota,
+  nunca uma cópia; escrita a resposta, a nota feita para ela sai (o comentário fica no roteiro) e uma que já esperava no Logbook vira "shaped".
 - **Sponsored ad:** no idioma da ideia do dock, quando conhecido; se o modelo não escreve, o botão é **Open the draft** e a nota de baixo dá o motivo +
   "Open the draft to write it yourself."
 - **Ferramentas da página:** no idioma do roteiro, o subtítulo do Improve diz o motivo e as ferramentas que precisam do modelo **não aparecem** (nem
@@ -484,7 +498,9 @@ entrega comprovada; só o app abriu → "Ready to travel" (`ReadyToTravelView`) 
 to post it"); Instagram: "Opened X with your video · Cue can't see if you post it", sem celebração. Toasts: "Shared with X", "Sharing cancelled",
 "Couldn't share · Try again", "Saved to Photos · Open X to post it", "X isn't on this iPhone · Pick another app", "X didn't take the video". Nada diz
 "postado". **Save video** não tem toast: o botão vira "Saved to Photos" (ou "Video and cover saved" quando a capa foi junto) e a contagem grátis fica no
-medidor da folha. Sem Fotos, um cartão no lugar ("Photos is off for Cue" / "Allow it to save your video." / **Open Settings**, `PermissionNoticeCard`)
+medidor da folha. **Capa que não salvou** (decisão do dono, 01/11/2026; vale em Save, na fila de envio e no envio que passa pelo Fotos): o vídeo fica
+salvo e um toast diz "Video saved. Couldn't save the cover image." com **Try again**, que desenha e salva só a capa (nenhum vídeo novo, nada contado;
+deu certo: "Cover saved to Photos" e o botão passa a "Video and cover saved"); a falha vai ao Console e ao Crashlytics como `Editor.cover.<motivo>`. Sem Fotos, um cartão no lugar ("Photos is off for Cue" / "Allow it to save your video." / **Open Settings**, `PermissionNoticeCard`)
 fica na revisão e na fila de envio (`shareFlow.photosOff`) até resolver. Uma exportação que falhou deixa o cartão **Couldn’t export** com o motivo e
 **Try again** na revisão e em Ready to travel (§58). Vídeo sem legendas: cartão "No captions on this video" com o motivo em Ready to travel.
 
@@ -506,8 +522,8 @@ vão ao Analytics; **Delete my Cue data**, `DataEraserService`, apaga do iPhone 
 e a fila de compartilhamento, Logbook, marcas, My Cue Voice, ideias e o gosto aprendido, meus estilos, o setup, as marcas da
 primeira viagem, os rascunhos, as cópias de uma biblioteca danificada e os lembretes; as pastas de takes, mídias do editor e rascunhos saem
 inteiras, com o que nenhuma take nomeia mais, as gravações em `tmp/take-*.mov` que a recuperação traria de volta (com as notas delas) e tudo o que o Cue
-deixou no tmp com o nome `Cue-` (vídeos exportados, também de takes apagadas antes, e capas) (o único lugar que limpa "órfãos", porque o criador pediu
-tudo; §37); ficam a compra, o contador de exportações grátis e o registro delas
+deixou no tmp com o nome `Cue-` (vídeos exportados, também de takes apagadas antes, e capas) (na hora, sem a semana que a varredura de órfãos
+espera, §37); ficam a compra, o contador de exportações grátis e o registro delas
 (só ids), a contagem de vídeos compartilhados do universo, o idioma e o que já está no Fotos), Permissions (`PermissionsService`), Acknowledgements. **Reset Creator Setup fica como está** (decisão pendente, `09` §13).
 **Remote** (`SettingsRemoteView`, redesenho do dono 21/10/2026, conceito "dois aparelhos"): `ScrollView` sobre o céu. No topo a cena
 (`RemoteHero`, posições em `RemoteSceneLayout`, aparelhos em `RemotePhone`, tudo num relógio só): o teleprompter à esquerda (roteiro subindo
@@ -900,6 +916,12 @@ sentir livre para escrever como quiser). **Sem dicas embaixo do texto** (gancho 
   subtítulo "Apple Intelligence · Private Cloud Compute". **As cues do criador nunca se perdem num retoque** (`CueRestorer`): a que o modelo apagou
   volta depois da frase que ela seguia (ou antes da que ela precedia, ou no mesmo ponto do parágrafo), e a que ele repetiu ou inventou sai. **Add disclosure** reconhece um aviso de publi em qualquer dos idiomas do app, em qualquer parágrafo,
   pela cue `[paid partnership]` ou por hashtag (#ad, #publi, #werbung, 광고…; #adventure não é), e então diz "Disclosure is already first".
+- **Enquanto um retoque reescreve a página** (decisão do dono, 01/11; `isTouchingUp`): uma ferramenta no roteiro inteiro (Improve, Fit to time), a
+  seleção ou "In my voice" do Preview, o texto fica travado como quando a IA escreve, e a fileira de ferramentas espera. A ferramenta no roteiro
+  inteiro mostra o toast de trabalho **"Rewriting the script…"** com **Stop**; a seleção mostra "Drafting…" com **Stop** na própria barra. Stop
+  solta o modelo e o que ele responder depois não entra; e uma resposta só entra se o roteiro ainda tem a mesma versão e as mesmas palavras de
+  quando foi pedida (`touchingUp`), senão não entra em lugar nenhum (nunca no lugar errado). O Undo de 4 s segue como conveniência. Tradução e
+  "Make a version for…" fazem uma cópia e deixam a página livre.
 - **Recortar** pela barra da seleção (Cut) leva uma cue inteira e deixa um espaço só entre as palavras.
 - **Duração numa linha** (`ScriptLengthBar`): "113 WORDS · ~0:45" à esquerda, "IDEAL 1:15–1:45" à direita, trilho de 5 pt; amarelo abaixo do ideal,
   verde dentro (com ✓, brilha uma vez e toque leve ao entrar), laranja acima ("CUT 6S", toque firme). Acima do ideal, uma linha sob o trilho avisa
@@ -1749,10 +1771,15 @@ auditoria: `reports/editor-award-checklist.md`.
 - **Edit by text numa montagem** corta só o clipe onde as palavras foram lidas (uma cópia as mantém); palavras com 44 pt; a nota diz que Undo traz
   de volta o que foi cortado.
 - **iPhone quente e espaço:** ficam na exportação da revisão (§38).
-- **Arquivos:** no lançamento, `EditStorageCleaner` apaga só os sons temporários de sessões passadas e, ao lado das gravações, as análises
-  `.cueeyes` que nada lê mais (as mídias das edições
-  nunca são varridas: só a edição remove o que acrescentou; um varredor de "órfãos" foi descartado na revisão porque uma lista de takes que não
-  carregasse apagaria tudo). Excluir uma take (na hora ou depois do Undo) leva o rascunho dela e as mídias que só o rascunho nomeava; um vídeo
+- **Arquivos:** no lançamento, `EditStorageCleaner` apaga os sons temporários de sessões passadas, ao lado das gravações as análises
+  `.cueeyes` que nada lê mais, e as mídias das edições que nenhum JSON do Cue nomeia há uma semana (`orphanedMedia`).
+  **Vídeos de takes sem dono** (decisão do dono, 01/11/2026; `TakeOrphanSweep`): uma vez por lançamento, depois da recuperação das gravações e
+  longe da abertura, só na pasta `Takes`, só vídeos e as análises deles (nunca um JSON). Um vídeo sai só se, naquele momento, a biblioteca foi lida,
+  todo JSON do Cue em Application Support pôde ser lido e nenhum o nomeia (a biblioteca, as cópias guardadas de uma danificada, os rascunhos…),
+  nenhuma take em memória o tem nem uma take apagada espera o Undo com ele, não mudou há 10 min e foi **visto sem dono pela primeira vez há 7 dias
+  ou mais** (essa data fica guardada: a data do arquivo diz quando foi feito, não desde quando ninguém o nomeia). Uma exclusão decidida é anotada
+  antes de rodar (`PendingTakeDeletions`: a take apagada enquanto o Undo está na tela, uma exclusão que falhou, um órfão vencido) e termina no
+  lançamento seguinte se o iOS a interromper, a não ser que a take tenha voltado. Excluir uma take (na hora ou depois do Undo) leva o rascunho dela e as mídias que só o rascunho nomeava; um vídeo
   importado que não pode ser lido não deixa cópia. **Bibliotecas:** takes, roteiros e as listas de uma edição (textos, mídias, músicas,
   legendas…) são lidos item por item (`LossyList`); um item ilegível fica de fora sozinho e o arquivo como era é guardado ao lado
   (`takes-kept-…`/`scripts-kept-…`); uma biblioteca que não pôde ser lida nunca é gravada por cima. **Sair do editor só diz "salvo" quando está no
@@ -1810,6 +1837,14 @@ A exportação é a da revisão da take (`TakeReviewViewModel`: Save, Share to u
 - **Na revisão, enquanto exporta** (`ExportProgressCard`, sobre `surface2`): "Exporting · N%" com barra; embaixo "You can leave Cue. The export goes
   on." (tarefa aceita) ou "Keep Cue open until it’s done."; com o iPhone quente (`thermalState` `.serious`/`.critical`, `DeviceHeat`), "The iPhone
   is hot, so the export takes longer. Let it cool down if you can." (`warnText`). A qualidade e as animações não mudam.
+- **Sair da revisão enquanto exporta** (decisão do dono, 01/11): Voltar e a troca de take (deslizar, as setas do menu do título) passam pela
+  mesma pergunta, o alerta do sistema **"Cancel export?"** ("The video won't be saved or shared.", **Cancel export** destrutivo e **Keep
+  exporting**). A estrela, a lixeira e Suggest best ficam desligadas até a exportação acabar. **Cancel export** interrompe o trabalho de verdade
+  (`cancelExport`: cancela a tarefa da exportação, que o `AVAssetExportSession` ouve; um passo que não ouve e termina tarde esbarra na conferência
+  logo antes da entrega): nada é salvo, compartilhado nem contado, e a cópia feita é apagada. A partir da entrega (Fotos, a folha de
+  compartilhar, outro app: `isDelivering`, marcado sem espera depois da conferência) não dá mais para cancelar: Voltar não pergunta e espera, e a
+  entrega termina como terminaria e aparece ("Ready to travel"); se ela acabar com a pergunta aberta, a pergunta fecha. Ir para outro app ou para
+  a tela inicial **não** é cancelar: a exportação segue como antes.
 - **Espaço:** antes de renderizar, "Not enough space on this iPhone. Free about N MB and try again." (`StorageSpace`: o dobro do tamanho estimado,
   2,2 MB/s em 1080p e 6,5 em 4K, + 150 MB); nada começa.
 - **Parou com o Cue** (fechado pelo seletor de apps, ou encerrado pelo iOS): a take fica marcada enquanto exporta (`PreferencesService
@@ -2232,7 +2267,13 @@ InShot, Edits, Descript e Captions (pesquisa de 24/10: os apps põem a limpeza d
   Download video dizia "SAVED", que se confundia com o "EDIT SAVED" de cima: agora "IN PHOTOS". A organização dos projetos (Takes: To pick, In edit,
   Ready, Shared) fica igual. Uma edição deixada aberta é achada onde ficou: o cartão "In edit", o Edit de Takes e o lembrete de terminar abrem o take
   dessa edição (a deixada por último, se há mais de uma), nunca uma edição nova no melhor take; na revisão, **Continue** aparece no take da edição
-  aberta, e nos outros takes do vídeo **Edit** começa a edição deles (o que o fim do editor compartilha é sempre o take editado). Um Done cuja edição não pôde ser salva no take volta à revisão como "Not yet" (rascunho), sem compartilhar nem
+  aberta, e nos outros takes do vídeo **Edit** começa a edição deles (o que o fim do editor compartilha é sempre o take editado). **Save** e
+  **Share** (também o Share da aba Takes e o Save do cartão de exportação parada) num take com uma edição aberta que mudaria o vídeo perguntam
+  antes (decisão do dono, 01/11): o alerta **"Unfinished edit"** diz "There are unfinished changes. You can keep editing or export the last
+  finished version." com **Keep editing** (abre o editor), **Export last finished version** e Cancel; num take que nunca teve uma edição
+  concluída, a mensagem termina em "export the original video." e o botão é **Export original**. Só pergunta quando o rascunho difere do que o
+  editor abriria (`QuickEditDraftStoring.unfinishedEdit`): abrir o editor e sair sem mexer ("Not yet" guarda o rascunho mesmo assim) não pergunta.
+  A exportação nunca usa o rascunho. Um Done cuja edição não pôde ser salva no take volta à revisão como "Not yet" (rascunho), sem compartilhar nem
   baixar o vídeo como estava. O rascunho que não pôde ser gravado quando o Cue vai para o segundo plano (iPhone cheio) é dito na hora ("Couldn't save
   the edits · Free up space on this iPhone") e gravado de novo na volta.
 - **De propósito, igual:** apagar um clipe volta às ferramentas principais (escolher o seguinte faria um segundo toque no Excluir fixo apagar outro).
@@ -3121,7 +3162,8 @@ A metade reativa da revisão de comunicação (`reports/comunicacao-revisao-2026
   O aviso de Fala não foi ligado: nenhuma tela sabe que ela está desligada (só o onboarding pede). Contraste medido em
   `PaletteContrastTests.aNoticeCardReads`.
 - **Legendas que faltam** na capa de Ready to travel ("No captions on this video" e o motivo) e a celebração só depois do anúncio (a ordem do aviso corrigida).
-  Save não tem toast: o botão diz "Saved to Photos" ou "Video and cover saved", e a contagem grátis fica no medidor.
+  Save não tem toast: o botão diz "Saved to Photos" ou "Video and cover saved", e a contagem grátis fica no medidor (a capa que não salvou tem o seu,
+  com Try again, §9).
 - **Hosts de toast nas folhas grandes** (`toastHost(inSheet: true)`): Import a script, Brand brief, Edit profile, Share my universe, as capas da celebração
   e o fluxo de envio; Add media já tinha o do editor.
 - **Editor, menos toasts**: o que a prévia já mostra não tem toast, só o anúncio do VoiceOver (`EditorSession.announce`), e o Undo fica na barra do player:

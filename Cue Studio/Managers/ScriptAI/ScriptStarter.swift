@@ -26,9 +26,13 @@ final class ScriptStarter {
     /// Told when a script was written from an idea of Find inspiration's (what of its brief the creator's text still said): the strongest sign of
     /// what they want, which the next ideas lean to (`IdeaSuggestionService.generated(from:)`). Set by `AppServices`, so no screen has to.
     var briefWritten: ((IdeaBrief) -> Void)?
-    /// Keeps an audience comment whose reply couldn't be drafted after all (Apple Intelligence changed while the star rose): the sheet it was
-    /// read in is gone, so it waits in the Logbook. Set by `AppServices`.
-    var keepsComment: ((ScriptComment) -> Void)?
+    /// Keeps an audience comment in the Logbook before its reply is asked for, so a Cancel, a failure or Cue closing never loses it (its sheet
+    /// is gone): the note it is in, and whether it was made now (the same words already waiting there are that note, never a copy). Nil when it
+    /// couldn't be kept. Set by `AppServices`.
+    var keepsComment: ((ScriptComment) -> (note: UUID, isNew: Bool)?)?
+    /// The reply is written: the note made for it goes (the comment is on the script), one that was already waiting is shaped into it. Set by
+    /// `AppServices`.
+    var commentAnswered: ((_ note: (note: UUID, isNew: Bool), _ scriptID: UUID) -> Void)?
 
     init(
         library: ScriptLibraryService, rules: PlatformRulesService, profile: CreatorProfileService,
@@ -56,6 +60,9 @@ final class ScriptStarter {
 
     /// The platform the card's chip shows: the creator's choice for this idea, or their default.
     var platform: Platform { ideaDraft.platform ?? factory.defaultPlatform }
+
+    /// The creator's own platform (Profile): what a script started away from the dock is for, unless its flow says another.
+    var defaultPlatform: Platform { factory.defaultPlatform }
 
     /// Whether the dock's ideas can be drafted, told before anything is typed: in the Script Language when one is set. On Auto-detect the
     /// language is the idea's own, known only when it is sent (`write`), so only what doesn't depend on it is told. With Ultra chosen (and
@@ -119,25 +126,36 @@ final class ScriptStarter {
         writer.drafting(in: factory.knownLanguage(for: text ?? ""))
     }
 
-    /// Writes `idea` (the card's own text when nil), for the platform and format chosen on the card. The idea's star is the transition
-    /// (`IdeaTransitionService`): it rises from `origin` (the arrow; the bottom of the screen when nil) while the page is opened under it
-    /// and the AI writes.
+    /// Writes `idea` (the card's own text when nil). The idea's star is the transition (`IdeaTransitionService`): it rises from `origin` (the
+    /// arrow; the bottom of the screen when nil) while the page is opened under it and the AI writes.
+    ///
+    /// The card's choices (platform, length, format, brand) are the dock's: they shape what is sent from it (`fromDock`: its own text, an idea
+    /// on its card, its sponsored ad), read once here so changing them afterwards never changes a request under way, and they go back to the
+    /// defaults only once that script is saved, if the dock is still as it was sent. An idea from elsewhere (Logbook, Find inspiration, a
+    /// comment) is written with the creator's defaults and its flow's own choices, and leaves the dock as it is (A23).
     /// - Parameter comment: the audience comment the script answers, kept on the script.
     /// - Parameter brief: the inspiration `idea` came from (the card's own brief when the card's text is written); only what the text still
     ///   says of it reaches the model.
     /// - Parameter engine: who writes it, when the caller asked for one (Find inspiration's "Draft with Ultra"); nil follows the dock's chip.
+    /// - Parameter fromDock: sent from the dock (its card's idea, its ad); nil means "when `idea` is nil", the field's own text.
     /// - Parameter whenWritten: runs when the idea has become a script (not when it was cancelled or failed).
     @discardableResult
     func write(
         idea: String? = nil, length: ScriptLength? = nil, comment: ScriptComment? = nil, platform: Platform? = nil, brief: IdeaBrief? = nil,
-        engine: ScriptEngine? = nil, from origin: CGPoint? = nil, whenWritten: ((UUID) -> Void)? = nil
+        engine: ScriptEngine? = nil, fromDock: Bool? = nil, from origin: CGPoint? = nil, whenWritten: ((UUID) -> Void)? = nil
     ) -> UUID? {
         guard let text = idea ?? ideaDraft.submission, !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return nil }
+        let fromDock = fromDock ?? (idea == nil)
+        // The dock as it was sent: cleared once the script is saved only if it is still this (`clearDock`).
+        let sentDock = fromDock ? ideaDraft.snapshot : nil
+        // An audience comment is in the Logbook before anything is asked of it (A4): it is let go only once its reply is a script.
+        let kept = comment.flatMap { keepsComment?($0) }
         var request = IdeaSendTimeline.measure("Idea request") {
             factory.request(
-                idea: text, platform: platform ?? ideaDraft.platform, format: ideaDraft.format, length: length ?? ideaDraft.length,
-                brand: ideaDraft.brand, brief: brief ?? (idea == nil ? ideaDraft.brief : nil), languageText: comment?.text,
-                formatChoice: ideaDraft.formatChoice
+                idea: text, platform: platform ?? (fromDock ? ideaDraft.platform : nil), format: fromDock ? ideaDraft.format : nil,
+                length: length ?? (fromDock ? ideaDraft.length : .auto), brand: fromDock ? ideaDraft.brand : nil,
+                brief: brief ?? (idea == nil ? ideaDraft.brief : nil), languageText: comment?.text,
+                formatChoice: fromDock ? ideaDraft.formatChoice : nil
             )
         }
         // Ultra only when it was picked and is still allowed: never as a silent stand-in for Apple Intelligence. An answered comment stays with
@@ -162,11 +180,13 @@ final class ScriptStarter {
             if let failure = writer.writingFailure(in: asked) {
                 AIFailureReport.note(failure, operation: "script", route: nil, language: request.language?.locale.identifier, seconds: 0, isFinal: true)
             }
-            toast.show(cause.reason, kind: .problem, action: ToastAction(title: String(localized: "Write it")) { [weak self] in
+            let reason = kept == nil ? cause.reason : cause.reason + " · " + Self.savedToLogbook
+            toast.show(reason, kind: .problem, action: ToastAction(title: String(localized: "Write it")) { [weak self] in
                 guard let self else { return }
                 // The dock's own idea leaves the dock as it becomes the draft; an idea from elsewhere leaves the creator's draft alone.
-                let id = openBlankDraft(title: text, format: request.format, comment: comment)
-                if idea == nil { ideaDraft.clear() }
+                let id = openBlankDraft(title: text, format: request.format, comment: comment, fromDock: fromDock)
+                if let sentDock { clearDock(sent: sentDock, ownText: idea == nil) }
+                if let kept { commentAnswered?(kept, id) }
                 whenWritten?(id)
             })
             return nil
@@ -183,7 +203,7 @@ final class ScriptStarter {
         transition.begin(
             from: origin ?? .zero, idea: text, platformName: request.platform.label, engine: request.engine,
             abort: { [weak self] in
-                self?.abort(scriptID, keeping: comment) { [weak self] in
+                self?.abort(scriptID, keeping: kept) { [weak self] in
                     // The same idea (the field's own when it came from the dock: it is still there), the same choices, a new star.
                     self?.write(
                         idea: idea, length: length, comment: comment, platform: platform, brief: brief, engine: engine, whenWritten: whenWritten
@@ -194,6 +214,9 @@ final class ScriptStarter {
                 if let brief = request.brief { self?.briefWritten?(brief) }
                 // The writer stays the creator's pick for the next idea. One Apple Intelligence wrote counts towards the invitation to try Ultra.
                 if request.engine == .apple { self?.ultra?.noteAIUse() }
+                if let kept { self?.commentAnswered?(kept, scriptID) }
+                // Saved by now (the page keeps the script before the star lets go): the dock it came from starts over.
+                if let sentDock { self?.clearDock(sent: sentDock, ownText: idea == nil) }
                 whenWritten?(scriptID)
             }
         )
@@ -202,38 +225,53 @@ final class ScriptStarter {
     }
 
     /// Cancel, or an error while the star is on screen: no script is created, and the idea is still in the field. After an error, the toast
-    /// says why, with "Try again" (`again`) when asking again may work; an answered comment (whose sheet is gone) is kept in the Logbook
-    /// instead, where it is written from again.
-    private func abort(_ scriptID: UUID, keeping comment: ScriptComment?, again: @escaping @MainActor () -> Void) {
+    /// says why, with "Try again" (`again`) when asking again may work. An answered comment (whose sheet is gone) stays in the Logbook, where
+    /// it was kept before the star rose, and the toast says so: after a Cancel too (it gives up on that reply, not on the comment).
+    private func abort(_ scriptID: UUID, keeping comment: (note: UUID, isNew: Bool)?, again: @escaping @MainActor () -> Void) {
         // Under the cover: the live app comes back already on Scripts.
         presentation.showScriptsList(animated: false)
         library.delete([scriptID])
-        guard transition.leftBecauseOfError else { return }
-        if let comment { keepsComment?(comment) }
+        guard transition.leftBecauseOfError else {
+            if comment != nil { toast.showResult(Self.savedToLogbook) }
+            return
+        }
         guard let failure = transition.failure else { return }
         let retry = failure.canRetry && comment == nil
-        toast.showResult(failure.reason, kind: .problem, action: retry ? ToastAction(title: String(localized: "Try again"), perform: again) : nil)
+        let reason = comment == nil ? failure.reason : failure.reason + " · " + Self.savedToLogbook
+        toast.showResult(reason, kind: .problem, action: retry ? ToastAction(title: String(localized: "Try again"), perform: again) : nil)
+    }
+
+    private static var savedToLogbook: String { String(localized: "Saved to Logbook") }
+
+    /// A script sent from the dock is saved: the dock starts over, unless the creator changed it meanwhile (that is a new idea, never wiped).
+    /// An idea on its card (`ownText` false) leaves words typed in the field where they are.
+    private func clearDock(sent: DockDraft, ownText: Bool) {
+        guard ideaDraft.snapshot == sent, ownText || ideaDraft.isEmpty else { return }
+        ideaDraft.clear()
     }
 
     /// With no Apple Intelligence, "Write it": the idea becomes the title of a blank draft, opened to write in (04 · F2). The dock's own idea
     /// (no `idea`) leaves the dock with it; one from elsewhere (a comment answered by hand, the Logbook) leaves what the creator was typing there.
     @discardableResult
     func writeByHand(idea: String? = nil, format: ScriptType? = nil, comment: ScriptComment? = nil) -> UUID? {
-        let id = openBlankDraft(title: idea ?? ideaDraft.submission ?? "", format: format, comment: comment)
+        let id = openBlankDraft(title: idea ?? ideaDraft.submission ?? "", format: format, comment: comment, fromDock: idea == nil)
         if idea == nil { ideaDraft.clear() }
         return id
     }
 
-    /// A blank draft named `title`, opened to write in; the dock's own draft stays.
+    /// A blank draft named `title`, opened to write in; the dock's own draft stays. The card's choices only for the dock's own idea.
     @discardableResult
-    private func openBlankDraft(title: String, format: ScriptType?, comment: ScriptComment?) -> UUID {
-        newBlank(title: title, platform: comment?.platform ?? platform, format: format ?? ideaDraft.format, comment: comment)
+    private func openBlankDraft(title: String, format: ScriptType?, comment: ScriptComment?, fromDock: Bool) -> UUID {
+        newBlank(
+            title: title, platform: comment?.platform ?? (fromDock ? platform : defaultPlatform),
+            format: format ?? (fromDock ? ideaDraft.format : nil), comment: comment
+        )
     }
 
-    /// "Start from a format": a blank draft with the format's sections, to write in.
+    /// "Start from a format" (the + menu, not the dock): a blank draft with the format's sections, for the creator's own platform.
     @discardableResult
-    func startFromFormat(_ choice: FormatChoice) -> UUID {
-        newBlank(platform: platform, format: choice.scriptType)
+    func startFromFormat(_ choice: FormatChoice, platform: Platform? = nil) -> UUID {
+        newBlank(platform: platform ?? defaultPlatform, format: choice.scriptType)
     }
 
     /// Every blank draft the creator writes in: in the Script Language, a draft (not ready to record), opened with the keyboard.

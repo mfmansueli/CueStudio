@@ -32,5 +32,29 @@ extension QuickEditDraftStoring {
             .max { $0.1 < $1.1 }?.0
     }
 
+    /// The edit left open on `take`, when it would change the video: what Save and Share ask about first. An editor opened and left as it
+    /// was ("Not yet" keeps a draft even then) or a draft equal to the finished edit is not one.
+    func unfinishedEdit(of take: Take) -> QuickEditDraft? {
+        guard let draft = draft(for: take.id) else { return nil }
+        var start = QuickEditViewModel.startingEdit(for: take)
+        start.timeline = start.timeline.fitted(toSourceDuration: draft.edit.timeline.sourceDuration)
+        var left = draft.edit
+        left.captions = left.captions.map(CaptionRevision.withoutContinuation)
+        // A new edit names its pieces anew each time it is made: the same untouched recording, named otherwise, is no change.
+        if take.edit == nil, Self.sameCuts(start.timeline, left.timeline) { start.timeline = left.timeline }
+        return left == start ? nil : draft
+    }
+
     func saveSoon(_ draft: QuickEditDraft) { try? save(draft) }
+
+    /// The same pieces of the same recording, whatever they are called.
+    private static func sameCuts(_ one: EditTimeline, _ other: EditTimeline) -> Bool {
+        guard one.sourceDuration == other.sourceDuration, one.isArranged == other.isArranged, one.otherSources == other.otherSources,
+              one.segments.count == other.segments.count else { return false }
+        return zip(one.segments, other.segments).allSatisfy { piece, kept in
+            var renamed = piece
+            renamed.id = kept.id
+            return renamed == kept
+        }
+    }
 }

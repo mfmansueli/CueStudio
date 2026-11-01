@@ -71,7 +71,11 @@ extension ScriptDetailViewModel {
         page.isRewriting = true
         defer { page.isRewriting = false }
         do {
-            let rewritten = try await writer.rewrite(page.text, with: .inMyVoice, context: context)
+            let text = page.text
+            let asked = context
+            guard let rewritten = try await touchingUp({ [writer] in try await writer.rewrite(text, with: .inMyVoice, context: asked) }) else {
+                return
+            }
             page.text = rewritten
             page.voicePreview?.showing = .mine
             page.voicePreview?.without = nil

@@ -4,12 +4,18 @@
 //
 
 import Foundation
+#if TIKTOK_SHARE_KIT
 import TikTokOpenSDKCore
 import TikTokOpenShareSDK
 
 /// The only file that knows TikTok's SDK (OpenSDK 2.x, Share Kit). It sends the library identifier of a video Cue just
 /// saved; TikTok's app reads the video from Photos itself, so Cue needs no more than the add-only access it already has
 /// (TikTok answers with a "no photo library permission" state when *its* access is missing).
+///
+/// Phase B: compiled only with the `tiktok-opensdk-ios` package in the project and `TIKTOK_SHARE_KIT` among the app's compilation conditions
+/// (`Config/App.xcconfig`; a flag, not `canImport`, which a build folder that still holds the SDK's modules would answer yes). Cue launches
+/// without it (decision of the owner, 01/11/2026: an SDK nothing calls in phase A has no place in the app); `SHARING.md` ("Fase B") says how to
+/// put it back.
 @MainActor
 final class TikTokShareManager: TikTokSharing {
     /// Share Kit calls back through a universal link; the request has to stay alive until it does.
@@ -51,3 +57,17 @@ final class TikTokShareManager: TikTokSharing {
         }
     }
 }
+#else
+/// Phase A ships without TikTok's SDK (decision of the owner, 01/11/2026; `SHARING.md`, "Fase B"): Share Kit is never sent, so TikTok takes its
+/// fallback (saved to Photos and TikTok opened, or the share sheet) and no callback is Cue's to read.
+@MainActor
+final class TikTokShareManager: TikTokSharing {
+    func share(assetID: String, redirectURI: String, finished: @escaping @MainActor @Sendable (ShareOutcome) -> Void) -> Bool {
+        false
+    }
+
+    func handleCallback(_ url: URL) -> Bool {
+        false
+    }
+}
+#endif

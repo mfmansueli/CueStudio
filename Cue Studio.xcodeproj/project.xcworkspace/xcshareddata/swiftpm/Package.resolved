@@ -117,15 +117,6 @@
         "revision" : "f4a19a3c313dc2616c70bb49d29a799fb16be837",
         "version" : "2.4.1"
       }
-    },
-    {
-      "identity" : "tiktok-opensdk-ios",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/tiktok/tiktok-opensdk-ios",
-      "state" : {
-        "revision" : "cb0cdc785b653c3be116fd1302ec280fbcfac695",
-        "version" : "2.5.0"
-      }
     }
   ],
   "version" : 3

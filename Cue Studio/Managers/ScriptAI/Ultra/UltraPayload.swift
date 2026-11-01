@@ -102,14 +102,11 @@ nonisolated struct UltraPayload: Hashable, Sendable {
         return "Say these words exactly as written: " + phrases.map { "“\($0)”" }.joined(separator: "; ") + "."
     }
 
-    /// The creator's words as they typed them (never shortened or normalized), or a format's answers one per line.
+    /// The creator's words as they typed them (never shortened or normalized).
     private var currentRequest: String {
         switch request.source {
         case .prompt(let text):
             return "The creator's request, in their exact words:\n\"\"\"\n\(text)\n\"\"\""
-        case .format(let type, let brief):
-            let answers = brief.sorted { $0.key < $1.key }.filter { !$0.value.isEmpty }.map { "- \($0.key): \($0.value)" }
-            return "The creator's request: a \(type.promptName) script from these answers, in their exact words:\n" + answers.joined(separator: "\n")
         }
     }
 }

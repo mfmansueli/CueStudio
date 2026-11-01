@@ -50,6 +50,17 @@ nonisolated enum FormatChoice: Hashable, Identifiable, Sendable {
         self = type.map(FormatChoice.type) ?? .auto
     }
 
+    /// The choice an `id` names (as kept on disk, `DockDraft`); nil for one this version doesn't know.
+    init?(id: String) {
+        switch id {
+        case FormatChoice.auto.id: self = .auto
+        case FormatChoice.talkingHead.id: self = .talkingHead
+        default:
+            guard let type = ScriptType(rawValue: id) else { return nil }
+            self = .type(type)
+        }
+    }
+
     var title: String {
         switch self {
         case .auto: String(localized: "Auto")

@@ -15,8 +15,11 @@ final class FakePhotoSaver: PhotoSaving {
     var imageError: Error?
     /// What Photos says the new asset is called; nil when it gives no identifier.
     var givesIdentifiers = true
+    /// Runs as the video is handed to Photos (a save under way).
+    var whileSaving: (@MainActor () -> Void)?
 
     func saveVideo(at url: URL) async throws -> String? {
+        whileSaving?()
         if let error { throw error }
         savedURLs.append(url)
         return givesIdentifiers ? "asset-\(savedURLs.count)" : nil

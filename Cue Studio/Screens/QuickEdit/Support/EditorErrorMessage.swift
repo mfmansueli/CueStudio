@@ -16,7 +16,7 @@ nonisolated enum EditorErrorMessage {
         }
         let chain = errors(under: error as NSError)
         if chain.contains(where: isOutOfSpace) {
-            return String(localized: "Not enough space on this iPhone · Free some and try again")
+            return outOfSpace
         }
         if chain.contains(where: { $0.domain == NSOSStatusErrorDomain && $0.code == AVAudioSession.ErrorCode.insufficientPriority.rawValue }) {
             return String(localized: "Another app is using the microphone · Close it and try again")
@@ -25,6 +25,13 @@ nonisolated enum EditorErrorMessage {
             return String(localized: "Photos couldn't hand this over · Check your connection and try again")
         }
         return fallback
+    }
+
+    static var outOfSpace: String { String(localized: "Not enough space on this iPhone · Free some and try again") }
+
+    /// The error (or one under it) is the iPhone being full, and nothing else.
+    static func isOutOfSpace(_ error: any Error) -> Bool {
+        errors(under: error as NSError).contains(where: isOutOfSpace)
     }
 
     /// The error and the ones under it, outermost first.

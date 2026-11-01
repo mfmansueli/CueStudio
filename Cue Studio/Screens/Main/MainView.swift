@@ -197,6 +197,23 @@ struct MainView: View {
 
     private var canDraftAd: Bool { services.aiStatus.isAvailable && adDrafting.isAvailable }
 
+    /// A brand brief filled in: the card's ad is written from it (by hand, for the card's platform, without Apple Intelligence); "Draft" opens
+    /// the ad's sections to write.
+    private func writeAd(from brief: BrandBrief, for purpose: BrandBriefPurpose) {
+        switch purpose {
+        case .writeFromCard where canDraftAd:
+            // The ad is written from the brief and nothing else: the card's idea, or the product itself.
+            services.ideaDraft.formatChoice = .type(.ad)
+            services.ideaDraft.brand = brief
+            let idea = services.ideaDraft.submission ?? String(localized: "A sponsored ad for \(brief.product) by \(brief.name)")
+            services.starter.write(idea: idea, fromDock: true)
+        case .writeFromCard:
+            services.starter.startFromFormat(.type(.ad), platform: services.starter.platform)
+        case .draft:
+            services.starter.startFromFormat(.type(.ad))
+        }
+    }
+
     /// Why the ad opens as a draft to write, when the language is the reason (without Apple Intelligence the sheet simply has no AI).
     private var adDraftingNotice: String? {
         guard let cause = adDrafting.cause, cause.isLanguage else { return nil }
@@ -290,16 +307,7 @@ struct MainView: View {
                 notice: purpose == .writeFromCard ? adDraftingNotice : nil
             ) { brief in
                 presentation.sheet = nil
-                switch purpose {
-                case .writeFromCard where canDraftAd:
-                    // The ad is written from the brief and nothing else: the card's idea, or the product itself.
-                    services.ideaDraft.formatChoice = .type(.ad)
-                    services.ideaDraft.brand = brief
-                    let idea = services.ideaDraft.submission ?? String(localized: "A sponsored ad for \(brief.product) by \(brief.name)")
-                    services.starter.write(idea: idea)
-                case .writeFromCard, .draft:
-                    services.starter.startFromFormat(.type(.ad))
-                }
+                writeAd(from: brief, for: purpose)
             }
         case .createFor:
             DestinationSheet(current: services.starter.platform) {

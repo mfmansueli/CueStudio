@@ -538,7 +538,8 @@ struct FindInspirationSheet: View {
         guard engine == .ultra || canDraft else {
             viewModel.willWrite(idea)
             // Not `starter.writeByHand`, which empties the composer: the creator's own draft stays where it was.
-            starter.newBlank(title: idea.title, platform: starter.platform, format: ideaDraft.format)
+            // The creator's own platform: the dock's choices are the dock's (A23).
+            starter.newBlank(title: idea.title, platform: starter.defaultPlatform)
             return
         }
         HapticPatterns.playTakeoff()

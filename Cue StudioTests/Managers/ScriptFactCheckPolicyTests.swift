@@ -15,10 +15,4 @@ struct ScriptFactCheckPolicyTests {
         #expect(ScriptFactCheckPolicy.needsReview(for: request, on: .onDevice, statesFacts: true))
         #expect(!ScriptFactCheckPolicy.needsReview(for: request, on: .onDevice, statesFacts: false))
     }
-
-    @Test func structuredBriefsRetainTheirExistingPolicy() {
-        var structured = request
-        structured.source = .format(.story, brief: [:])
-        #expect(!ScriptFactCheckPolicy.needsReview(for: structured, on: .privateCloud, statesFacts: true))
-    }
 }

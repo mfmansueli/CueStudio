@@ -41,9 +41,25 @@ nonisolated enum EditMediaFiles {
         do {
             try linking(source, destination)
         } catch {
-            try FileManager.default.copyItem(at: source, to: destination)
+            do {
+                try FileManager.default.copyItem(at: source, to: destination)
+            } catch {
+                discardPartial(destination)
+                throw error
+            }
         }
         return name
+    }
+
+    /// What an import that failed (the iPhone full, Photos stopping, a library that couldn't take it in) left of its own copy goes now, and
+    /// nothing else; a copy that can't be removed now is written down, and the next launch removes it whatever its age (`EditStorageCleaner`).
+    static func discardPartial(_ url: URL, defaults: UserDefaults = .standard) {
+        let path = url.path(percentEncoded: false)
+        guard FileManager.default.fileExists(atPath: path) else { return }
+        try? FileManager.default.removeItem(at: url)
+        guard FileManager.default.fileExists(atPath: path) else { return }
+        let pending = Set(defaults.stringArray(forKey: DefaultsKey.editMediaDeletionsPending) ?? []).union([url.lastPathComponent])
+        defaults.set(pending.sorted(), forKey: DefaultsKey.editMediaDeletionsPending)
     }
 
     /// "Delete my Cue data": the whole folder, with what an earlier deletion or a failed import left.

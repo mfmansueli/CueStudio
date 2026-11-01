@@ -25,13 +25,8 @@ struct ScriptTypeV29Tests {
     }
 
     @Test(arguments: [ScriptType.mythFact, .pov])
-    func aNewFormatBuildsAnOfflineDraftWithOneParagraphPerStep(type: ScriptType) {
-        let draft = type.draft(from: [:])
-        #expect(!draft.isEmpty)
-        #expect(!type.draftTitle(from: [:]).isEmpty)
-        #expect(!type.briefFields.isEmpty)
+    func aNewFormatHasItsHooks(type: ScriptType) {
         #expect(type.structure.hooks.count == 4)
-        #expect(draft.components(separatedBy: "\n\n").count >= 3)
     }
 
     @Test func aFormatSavedByThisBuildDecodesAndOneFromANewerBuildDoesNot() throws {

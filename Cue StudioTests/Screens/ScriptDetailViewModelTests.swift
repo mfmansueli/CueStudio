@@ -77,6 +77,40 @@ struct ScriptDetailViewModelTests {
         #expect(scenario.toast.message == "Requires Apple Intelligence.")
     }
 
+    /// A tool rewriting the whole script: the page waits for it (it says so, with Stop), and a Stop drops what the model answers after.
+    @Test func aToolsRewriteLocksThePageAndItsStopKeepsTheWords() async {
+        let script = TestData.script(text: "Calm words.")
+        let scenario = makeScenario(script: script)
+        defer { scenario.defaults.tearDown() }
+        scenario.viewModel.loadPage(startsInDraft: false)
+        let viewModel = scenario.viewModel
+        let toast = scenario.toast
+        scenario.writer.whileRewriting = {
+            #expect(viewModel.isTouchingUp)
+            #expect(toast.message == "Rewriting the script…")
+            #expect(toast.action?.title == "Stop")
+            viewModel.stopTouchingUp()
+        }
+        await viewModel.run(.moreEnergy)
+        #expect(scenario.library.script(id: script.id)?.text == "Calm words.")
+        #expect(viewModel.page.text == "Calm words.")
+        #expect(!viewModel.isTouchingUp)
+        #expect(toast.message == nil, "Nothing to say: the creator stopped it")
+        // Not stopped: it lands, and the page is free again.
+        scenario.writer.whileRewriting = nil
+        await viewModel.run(.moreEnergy)
+        #expect(scenario.library.script(id: script.id)?.text == "Rewritten with energy!")
+    }
+
+    /// A translation makes a copy: the page stays free while it is written.
+    @Test func aTranslationLeavesThePageFree() async {
+        let scenario = makeScenario(script: TestData.script(text: "Calm words."))
+        defer { scenario.defaults.tearDown() }
+        let viewModel = scenario.viewModel
+        scenario.writer.whileRewriting = { #expect(!viewModel.isTouchingUp) }
+        await viewModel.run(.translate, language: .spanish)
+    }
+
     @Test func inMyVoiceComesFirstAndRewritesWithTheVoice() async {
         let script = TestData.script(text: "Plain words.", type: .apology)
         let scenario = makeScenario(script: script)

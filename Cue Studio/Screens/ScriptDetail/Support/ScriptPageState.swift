@@ -39,8 +39,6 @@ struct ScriptPageState {
     var revealed: String?
     /// How much of the script the AI has written, while the page waits for it (the pill's percentage); nil otherwise.
     var progress: WritingProgressMeter?
-    /// Why the last writing failed; the page offers "Try again".
-    var writingError: String?
     /// The voice comparison on a script just written in the creator's voice.
     var voicePreview: VoicePreview?
     /// The Adjust sheet is open.

@@ -36,6 +36,25 @@ final class LogbookService {
         return entry
     }
 
+    /// An audience comment about to be answered (`ScriptStarter.keepsComment`): kept as a waiting idea ("@maya: …"), or the same words
+    /// already waiting (a second try never makes a copy). Nil when it couldn't be kept: the toast says "Saved to Logbook" only when it is there.
+    func keep(_ comment: ScriptComment) -> (note: UUID, isNew: Bool)? {
+        let words = (comment.author.map { "\($0): \(comment.text)" } ?? comment.text).trimmingCharacters(in: .whitespacesAndNewlines)
+        if let waiting = waiting.first(where: { $0.text == words }) { return (waiting.id, false) }
+        guard let entry = add(words), entries.contains(where: { $0.id == entry.id }) else { return nil }
+        return (entry.id, true)
+    }
+
+    /// The comment's reply was written: the note made for it goes (the comment is on the script); one that was waiting before is shaped into it,
+    /// like an idea written from the Logbook.
+    func answered(_ kept: (note: UUID, isNew: Bool), as scriptID: UUID) {
+        if kept.isNew {
+            delete([kept.note])
+        } else {
+            markShaped(kept.note, as: scriptID)
+        }
+    }
+
     func setTopic(_ topic: String?, of id: UUID) {
         guard let index = entries.firstIndex(where: { $0.id == id }), entries[index].topic != topic else { return }
         entries[index].topic = topic

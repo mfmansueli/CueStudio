@@ -4,6 +4,6 @@ import Foundation
 /// Free PCC drafts stay marked for creator review; the existing banner is informational.
 nonisolated enum ScriptFactCheckPolicy {
     static func needsReview(for request: ScriptRequest, on route: AIModelRoute, statesFacts: Bool) -> Bool {
-        request.isFreePrompt && (route == .privateCloud || request.isFactualTopic || statesFacts)
+        route == .privateCloud || request.isFactualTopic || statesFacts
     }
 }

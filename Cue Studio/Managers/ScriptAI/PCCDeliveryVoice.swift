@@ -4,7 +4,7 @@ import Foundation
 /// An evaluation ablation, not a replacement for the creator's saved profile.
 nonisolated enum PCCDeliveryVoice {
     static func prepare(_ request: ScriptRequest, on route: AIModelRoute) -> ScriptRequest {
-        guard route == .privateCloud, request.isFreePrompt, request.durationPolicy == .informative,
+        guard route == .privateCloud, request.durationPolicy == .informative,
               var voice = request.voice else { return request }
         // Keep the resolved default before removing the role that may have supplied it.
         voice.speaksAs = voice.resolvedSpeaksAs
