@@ -127,7 +127,10 @@ struct AppServices {
         }
         capabilities = LanguageCapabilityService(checker: options.languageCapabilities)
         library = ScriptLibraryService(repository: options.scriptRepository)
-        takes = TakeLibraryService(repository: options.takeRepository, drafts: options.draftStore)
+        takes = TakeLibraryService(
+            repository: options.takeRepository, drafts: options.draftStore,
+            pendingDeletions: options.isInMemory ? nil : PendingTakeDeletions(defaults: options.defaults)
+        )
         preferences = PreferencesService(defaults: options.defaults)
         personalization = PersonalizationService(defaults: options.defaults)
         onboarding = OnboardingService(defaults: options.defaults, isEnabled: options.showsOnboarding, startStep: options.onboardingStep)
@@ -165,6 +168,12 @@ struct AppServices {
         )
         store = StoreManager()
         ledger = ExportLedgerService(store: options.exportLedger, quota: quota)
+        // A deleted take leaves nothing behind: its exported videos waiting in tmp, their records, and a "Continue posting" for a video that
+        // is gone.
+        takes.takeGone = { [ledger, shareQueue] take in
+            ledger.forget(takeID: take.id)
+            shareQueue.discard(takeID: take.id)
+        }
         presentation = PresentationService()
         toast = ToastService()
         panelNotes = PanelNoteMemory(defaults: options.defaults)
@@ -238,7 +247,8 @@ struct AppServices {
             defaults: options.defaults
         )
         starter.briefWritten = { [ideaSuggestions] brief in ideaSuggestions.generated(from: brief) }
-        starter.keepsComment = { [logbook] comment in logbook.add(comment.author.map { "\($0): \(comment.text)" } ?? comment.text) }
+        starter.keepsComment = { [logbook] comment in logbook.keep(comment) }
+        starter.commentAnswered = { [logbook] kept, scriptID in logbook.answered(kept, as: scriptID) }
         brands = BrandStore(repository: options.brandRepository)
         let fontFolder = options.assetRoot?.appending(path: "Fonts", directoryHint: .isDirectory) ?? CustomFontFiles.directory
         fonts = CustomFontStore(repository: LocalCustomFontRepository(directory: fontFolder), directory: fontFolder)
@@ -263,7 +273,7 @@ struct AppServices {
             library: library, takes: takes, drafts: options.draftStore, logbook: logbook, brands: brands,
             profile: profile, preferences: preferences, defaults: options.defaults, notifications: notifications, voyage: voyage,
             draftLearning: draftLearning, voiceQuestions: voiceQuestions, ledger: ledger, shareQueue: shareQueue, ideas: ideaSuggestions,
-            fonts: fonts, fontPacks: fontPacks, mediaLibrary: mediaLibrary, brandKits: brandKits
+            fonts: fonts, fontPacks: fontPacks, mediaLibrary: mediaLibrary, brandKits: brandKits, ideaDraft: ideaDraft
         )
         topicTagging = TopicTaggingService(library: library, profile: profile, personalization: personalization, writer: writer)
     }
@@ -328,10 +338,15 @@ struct AppServices {
             try? await Task.sleep(for: .seconds(12))
             await fonts.sweepRemoved(defaults: defaults)
         }
-        // A take a past session never filed (Cue stopped mid-take, or the library couldn't take it in) comes back (`TakeRecovery`).
-        Task { [takes, preferences] in
+        // A take a past session never filed (Cue stopped mid-take, or the library couldn't take it in) comes back (`TakeRecovery`); then,
+        // well after launch, the take videos nothing names go once their week is up, and deletions iOS cut short finish (`TakeOrphanSweep`).
+        Task { [takes, preferences, library, defaults] in
             try? await Task.sleep(for: .seconds(3))
-            await TakeRecovery.recover(into: takes, camera: preferences.camera, launchedAt: launchedAt)
+            await TakeRecovery.recover(
+                into: takes, camera: preferences.camera, launchedAt: launchedAt, script: { library.script(id: $0) }
+            )
+            try? await Task.sleep(for: .seconds(12))
+            await TakeOrphanSweep.sweep(takes: takes, pending: PendingTakeDeletions(defaults: defaults))
         }
     }
 

@@ -18,7 +18,14 @@ final class DocumentImportService: DocumentImporting {
         UTType(filenameExtension: "fountain") ?? .plainText,
     ]
 
-    func importDocument(at url: URL) throws -> ImportedDocument {
+    /// Read off the main thread (a long PDF's text layer takes seconds), except HTML: WebKit reads it, on the main thread only.
+    func importDocument(at url: URL) async throws -> ImportedDocument {
+        let ext = url.pathExtension.lowercased()
+        if ext == "html" || ext == "htm" { return try Self.read(url) }
+        return try await Task.detached(priority: .userInitiated) { try Self.read(url) }.value
+    }
+
+    nonisolated private static func read(_ url: URL) throws -> ImportedDocument {
         let scoped = url.startAccessingSecurityScopedResource()
         defer { if scoped { url.stopAccessingSecurityScopedResource() } }
 
@@ -73,14 +80,14 @@ final class DocumentImportService: DocumentImporting {
 
     // MARK: - Readers
 
-    private func plainText(at url: URL) throws -> String {
+    nonisolated private static func plainText(at url: URL) throws -> String {
         var encoding = String.Encoding.utf8
         if let text = try? String(contentsOf: url, usedEncoding: &encoding) { return text }
         if let text = try? String(contentsOf: url, encoding: .isoLatin1) { return text }
         throw DocumentImportError.unreadable
     }
 
-    private func attributedText(at url: URL, type: NSAttributedString.DocumentType) throws -> String {
+    nonisolated private static func attributedText(at url: URL, type: NSAttributedString.DocumentType) throws -> String {
         do {
             return try NSAttributedString(url: url, options: [.documentType: type], documentAttributes: nil).string
         } catch {

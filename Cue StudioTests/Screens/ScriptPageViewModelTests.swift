@@ -20,12 +20,12 @@ struct ScriptPageViewModelTests {
         let writer: FakeScriptWriter
         let toast: ToastService
         let profile: CreatorProfileService
-        let ideaDraft: IdeaDraftService
         let defaults: TestDefaults
     }
 
     private func makeScenario(
-        script: Script = TestData.script(), takeCount: Int = 0, startsEditing: Bool = false, writing: ScriptRequest? = nil
+        script: Script = TestData.script(), takeCount: Int = 0, startsEditing: Bool = false, writing: ScriptRequest? = nil,
+        revealPause: Duration = .zero
     ) -> Scenario {
         let defaults = TestDefaults()
         let repository = FakeScriptRepository(scripts: [script])
@@ -38,15 +38,14 @@ struct ScriptPageViewModelTests {
         let writer = FakeScriptWriter()
         let toast = ToastService()
         let profile = CreatorProfileService(defaults: defaults.defaults)
-        let ideaDraft = IdeaDraftService()
         let viewModel = ScriptDetailViewModel(
-            scriptID: script.id, startsEditing: startsEditing, writing: writing, ideaDraft: ideaDraft, revealPause: .zero,
+            scriptID: script.id, startsEditing: startsEditing, writing: writing, revealPause: revealPause,
             library: library, takes: takes, preferences: PreferencesService(defaults: defaults.defaults), profile: profile,
             rules: TestData.rulesService(), writer: writer, toast: toast
         )
         return Scenario(
             viewModel: viewModel, library: library, repository: repository, writer: writer, toast: toast, profile: profile,
-            ideaDraft: ideaDraft, defaults: defaults
+            defaults: defaults
         )
     }
 
@@ -100,6 +99,26 @@ struct ScriptPageViewModelTests {
         scenario.viewModel.commitPage()
         #expect(scenario.library.script(id: scenario.viewModel.scriptID)?.version == 2)
         #expect(scenario.library.script(id: scenario.viewModel.scriptID)?.text == "Second change.")
+    }
+
+    /// Recorded again on the new version (the camera is over the same page, the same visit): the next change is a new version again,
+    /// so "Changed since take" and the review's "From script v…" tell the truth.
+    @Test func aChangeAfterATakeOnTheNewVersionMakesAnotherVersionInTheSameVisit() {
+        let scenario = makeScenario(takeCount: 1)
+        defer { scenario.defaults.tearDown() }
+        let id = scenario.viewModel.scriptID
+        scenario.viewModel.page.text = "First change."
+        scenario.viewModel.commitPage()
+        #expect(scenario.library.script(id: id)?.version == 2)
+        _ = try? scenario.viewModel.takes.addTake(
+            fileAt: URL(filePath: "/tmp/take.mov"), duration: 30, script: scenario.library.script(id: id), camera: CameraSettings()
+        )
+        scenario.viewModel.page.text = "Second change."
+        scenario.viewModel.commitPage()
+        #expect(scenario.library.script(id: id)?.version == 3)
+        scenario.viewModel.page.text = "Third change."
+        scenario.viewModel.commitPage()
+        #expect(scenario.library.script(id: id)?.version == 3, "the edits until the next take are that same version")
     }
 
     /// A full iPhone: the new version stays in memory (one per visit still), and the page never says "Saved as v…".
@@ -291,6 +310,36 @@ struct ScriptPageViewModelTests {
         scenario.writer.isAvailable = false
         scenario.viewModel.page.selection = 0..<21
         #expect(!scenario.viewModel.showsSelectionBar)
+    }
+
+    /// A selection being rewritten: the page waits (nothing typed can move the words it rewrites), and the bar's Stop leaves them as they
+    /// were.
+    @Test func aSelectionsRewriteLocksThePageAndItsStopLeavesTheWords() async {
+        let text = "Hello there my friend. More words follow."
+        let scenario = makeScenario(script: TestData.script(text: text))
+        defer { scenario.defaults.tearDown() }
+        let viewModel = scenario.viewModel
+        viewModel.page.selection = 0..<21
+        scenario.writer.whileRewriting = {
+            #expect(viewModel.isTouchingUp)
+            viewModel.stopTouchingUp()
+        }
+        await viewModel.rewriteSelection(.shorter)
+        #expect(viewModel.page.text == text)
+        #expect(viewModel.page.passage == nil)
+        #expect(!viewModel.isTouchingUp)
+    }
+
+    /// Words that changed while the model wrote (a sync, a slip past the lock): its answer lands nowhere rather than in the wrong place.
+    @Test func aSelectionsRewriteForWordsThatChangedLandsNowhere() async {
+        let scenario = makeScenario(script: TestData.script(text: "Hello there my friend. More words follow."))
+        defer { scenario.defaults.tearDown() }
+        let viewModel = scenario.viewModel
+        viewModel.page.selection = 0..<21
+        scenario.writer.whileRewriting = { viewModel.page.text = "New start. Hello there my friend. More words follow." }
+        await viewModel.rewriteSelection(.shorter)
+        #expect(viewModel.page.text == "New start. Hello there my friend. More words follow.")
+        #expect(viewModel.page.passage == nil)
     }
 
     @Test func aRewriteReplacesTheWordsInPlaceAndWaitsForKeep() async {
@@ -525,10 +574,10 @@ struct ScriptPageViewModelTests {
 
     // MARK: - The AI writes into the page
 
-    @Test func theIdeaIsWrittenIntoTheEmptyPageAndTheCardEmpties() async {
+    /// (The dock starts over when the starter's star lets go, the script saved: `ScriptStarterTests`.)
+    @Test func theIdeaIsWrittenIntoTheEmptyPage() async {
         let scenario = makeScenario(script: TestData.script(title: "", text: ""), writing: request())
         defer { scenario.defaults.tearDown() }
-        scenario.ideaDraft.text = "Carnival in Salvador"
         scenario.writer.generatedTitle = "Carnival"
         scenario.viewModel.beginWritingIfNeeded()
         #expect(scenario.viewModel.page.isWriting)
@@ -537,19 +586,41 @@ struct ScriptPageViewModelTests {
         #expect(scenario.library.script(id: scenario.viewModel.scriptID)?.isFinished == false, "the AI drafts: a draft until the creator says ready")
         let saved = scenario.library.script(id: scenario.viewModel.scriptID)
         #expect(saved?.title == "Carnival" && saved?.text == scenario.writer.generatedText)
-        #expect(scenario.ideaDraft.isEmpty)
         #expect(scenario.toast.message == "Draft ready · Edit anything")
     }
 
-    /// "Draft it now" in Find inspiration writes an idea that isn't the card's: the creator's own draft stays in the card.
-    @Test func aScriptWrittenFromAnotherIdeaLeavesTheCardsDraft() async {
-        let scenario = makeScenario(script: TestData.script(title: "", text: ""), writing: request())
+    /// The script is in the library as soon as the model has written it: the words still arriving only show it, so a Cue that iOS closes
+    /// meanwhile keeps it (and an Ultra AI script, already paid for). Leaving then keeps it whole, never cut at the word on screen.
+    @Test func theScriptIsSavedBeforeItsWordsArriveAndLeavingKeepsItWhole() async throws {
+        let scenario = makeScenario(script: TestData.script(title: "", text: ""), writing: request(), revealPause: .milliseconds(40))
         defer { scenario.defaults.tearDown() }
-        scenario.ideaDraft.text = "my own half idea"
+        let id = scenario.viewModel.scriptID
+        scenario.writer.generatedTitle = "Carnival"
+        scenario.writer.generatedText = Array(repeating: "Salvador sings all night long.", count: 12).joined(separator: " ")
+        #expect(scenario.library.script(id: id)?.awaitsDraft == false, "a page opened on a script already made")
         scenario.viewModel.beginWritingIfNeeded()
-        await scenario.viewModel.pageWritingTask?.value
-        #expect(scenario.library.script(id: scenario.viewModel.scriptID)?.isFinished == false)
-        #expect(scenario.ideaDraft.text == "my own half idea")
+        for _ in 0..<200 where (scenario.viewModel.page.revealed ?? "").isEmpty { try await Task.sleep(for: .milliseconds(10)) }
+        #expect(scenario.viewModel.page.isWriting)
+        let saved = try #require(scenario.library.script(id: id))
+        #expect(saved.title == "Carnival" && saved.text == ScriptParagraphs.arranged(scenario.writer.generatedText))
+        #expect(!saved.isFinished && !saved.awaitsDraft)
+        scenario.viewModel.leavePage()
+        #expect(!scenario.viewModel.page.isWriting)
+        #expect(scenario.library.script(id: id)?.text == ScriptParagraphs.arranged(scenario.writer.generatedText))
+        #expect(scenario.toast.message == nil, "no \"Draft ready\" for a page that is gone")
+    }
+
+    /// "Stop" while the words arrive is the creator's choice: what has arrived stays, as before.
+    @Test func stopWhileTheWordsArriveKeepsWhatArrived() async throws {
+        let scenario = makeScenario(script: TestData.script(title: "", text: ""), writing: request(), revealPause: .milliseconds(40))
+        defer { scenario.defaults.tearDown() }
+        scenario.writer.generatedText = Array(repeating: "Salvador sings all night long.", count: 12).joined(separator: " ")
+        scenario.viewModel.beginWritingIfNeeded()
+        for _ in 0..<200 where (scenario.viewModel.page.revealed ?? "").isEmpty { try await Task.sleep(for: .milliseconds(10)) }
+        let shown = try #require(scenario.viewModel.page.revealed)
+        scenario.viewModel.stopWriting()
+        let kept = scenario.library.script(id: scenario.viewModel.scriptID)?.text ?? ""
+        #expect(kept.count < scenario.writer.generatedText.count && kept.hasPrefix(shown.prefix(10)))
     }
 
     @Test func whileThePageWaitsForTheScriptItSaysHowMuchIsWritten() async {
@@ -572,7 +643,7 @@ struct ScriptPageViewModelTests {
         scenario.writer.error = ScriptAIError.emptyResponse
         scenario.viewModel.beginWritingIfNeeded()
         await scenario.viewModel.pageWritingTask?.value
-        #expect(scenario.viewModel.page.writingError != nil && scenario.viewModel.page.progress == nil)
+        #expect(scenario.toast.message != nil && scenario.viewModel.page.progress == nil)
     }
 
     @Test func stoppingTakesThePercentageAway() {
@@ -596,20 +667,17 @@ struct ScriptPageViewModelTests {
         #expect(scenario.viewModel.needsFactCheck)
     }
 
-    @Test func aFailureKeepsTheIdeaAndCanBeTriedAgain() async {
+    /// A page writing without the star (every request from the app has one, `ScriptStarterTests` covers its toast and Try again): the same words
+    /// in a toast, and the page is the creator's to write in.
+    @Test func aFailureWithoutTheStarSaysWhyAndLeavesThePageToWriteIn() async {
         let scenario = makeScenario(script: TestData.script(title: "", text: ""), writing: request())
         defer { scenario.defaults.tearDown() }
-        scenario.ideaDraft.text = "Carnival in Salvador"
         scenario.writer.error = ScriptAIError.emptyResponse
         scenario.viewModel.beginWritingIfNeeded()
         await scenario.viewModel.pageWritingTask?.value
-        #expect(!scenario.viewModel.page.isWriting && scenario.viewModel.page.writingError != nil)
-        #expect(scenario.ideaDraft.text == "Carnival in Salvador")
-        scenario.writer.error = nil
-        scenario.viewModel.retryWriting()
-        await scenario.viewModel.pageWritingTask?.value
-        #expect(scenario.viewModel.page.writingError == nil)
-        #expect(scenario.library.script(id: scenario.viewModel.scriptID)?.text == scenario.writer.generatedText)
+        #expect(!scenario.viewModel.page.isWriting)
+        #expect(scenario.toast.message == "Couldn’t draft it")
+        #expect(scenario.library.script(id: scenario.viewModel.scriptID)?.awaitsDraft != true)
     }
 
     @Test func stopKeepsOnlyTheWordsThatArrivedAndEndsTheWriting() {
@@ -619,16 +687,7 @@ struct ScriptPageViewModelTests {
         // Nothing has arrived yet: stopping leaves an empty page, a writer that's done, and no error.
         scenario.viewModel.stopWriting()
         #expect(!scenario.viewModel.page.isWriting && scenario.viewModel.page.text.isEmpty)
-        #expect(scenario.viewModel.page.writingError == nil)
-    }
-
-    @Test func stoppingBeforeTheFirstWordKeepsTheIdeaOnTheCard() {
-        let scenario = makeScenario(script: TestData.script(title: "", text: ""), writing: request())
-        defer { scenario.defaults.tearDown() }
-        scenario.ideaDraft.text = "Carnival in Salvador"
-        scenario.viewModel.beginWritingIfNeeded()
-        scenario.viewModel.stopWriting()
-        #expect(scenario.ideaDraft.text == "Carnival in Salvador")
+        #expect(scenario.toast.message == nil)
     }
 
     @Test func anErrorIsNotRetriedJustBecauseThePageShowsAgain() async {
@@ -637,21 +696,20 @@ struct ScriptPageViewModelTests {
         scenario.writer.error = ScriptAIError.emptyResponse
         scenario.viewModel.beginWritingIfNeeded()
         await scenario.viewModel.pageWritingTask?.value
-        #expect(scenario.viewModel.page.writingError != nil)
+        #expect(scenario.toast.message != nil)
         scenario.writer.error = nil
         scenario.viewModel.beginWritingIfNeeded()
-        #expect(!scenario.viewModel.page.isWriting, "only Try again starts it once more")
-        #expect(scenario.viewModel.page.writingError != nil)
+        #expect(!scenario.viewModel.page.isWriting, "only the star's Try again asks once more")
     }
 
     @Test func aRequestTheSystemEndsIsAFailureNotAnEndlessWait() async {
-        // A cancellation the page didn't ask for (the framework ended the request): the page says so and offers Try again.
+        // A cancellation the page didn't ask for (the framework ended the request): it is said, never waited on.
         let scenario = makeScenario(script: TestData.script(title: "", text: ""), writing: request())
         defer { scenario.defaults.tearDown() }
         scenario.writer.error = CancellationError()
         scenario.viewModel.beginWritingIfNeeded()
         await scenario.viewModel.pageWritingTask?.value
-        #expect(!scenario.viewModel.page.isWriting && scenario.viewModel.page.writingError != nil)
+        #expect(!scenario.viewModel.page.isWriting && scenario.toast.message != nil)
     }
 
     @Test func whileTheWordsArriveThePageIsTheOneItWillBe() {

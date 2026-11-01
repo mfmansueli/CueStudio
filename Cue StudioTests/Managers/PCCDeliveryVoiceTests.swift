@@ -42,15 +42,12 @@ struct PCCDeliveryVoiceTests {
         #expect(original.voice == before, "The saved profile/request is not mutated")
     }
 
-    @Test func doesNotChangeLocalTargetedOrStructuredRequests() {
+    @Test func doesNotChangeLocalOrTargetedRequests() {
         let original = Self.request()
         #expect(PCCDeliveryVoice.prepare(original, on: .onDevice) == original)
         var explicit = original
         explicit.durationPolicy = .targeted
         #expect(PCCDeliveryVoice.prepare(explicit, on: .privateCloud) == explicit)
-        var structured = original
-        structured.source = .format(.story, brief: [:])
-        #expect(PCCDeliveryVoice.prepare(structured, on: .privateCloud) == structured)
         var noVoice = original
         noVoice.voice = nil
         #expect(PCCDeliveryVoice.prepare(noVoice, on: .privateCloud) == noVoice)

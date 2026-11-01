@@ -10,6 +10,19 @@ import Testing
 @MainActor
 @Suite("Delete my Cue data")
 struct DataEraserServiceTests {
+    /// What Cue left in the temporary folder under its own name goes with everything else (exported videos waiting there, of takes
+    /// deleted before too, and covers); nothing else there is Cue's to remove.
+    @Test func cuesOwnTemporaryFilesGoAndNothingElse() throws {
+        let folder = URL.temporaryDirectory.appending(path: "erase-\(UUID().uuidString)", directoryHint: .isDirectory)
+        try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: folder) }
+        for name in ["Cue-1a2b3c4d.mov", "Cue-cover-1a2b3c4d.jpg", "Cue-speech-9.caf", "other-app.mov"] {
+            try Data("x".utf8).write(to: folder.appending(path: name))
+        }
+        DataEraserService.removeTemporaryFiles(in: folder)
+        #expect(try FileManager.default.contentsOfDirectory(atPath: folder.path(percentEncoded: false)) == ["other-app.mov"])
+    }
+
     @Test func everythingTheCreatorMadeGoesAndTheExportCounterStays() {
         let defaults = TestDefaults()
         defer { defaults.tearDown() }

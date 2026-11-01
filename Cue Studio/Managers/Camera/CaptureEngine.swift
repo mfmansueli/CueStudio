@@ -169,6 +169,13 @@ actor CaptureEngine {
         return activeLens
     }
 
+    /// Starts the session again after a runtime error. False when it doesn't run.
+    func restart() -> Bool {
+        guard isConfigured else { return false }
+        if !session.isRunning { session.startRunning() }
+        return session.isRunning
+    }
+
     func stop() {
         if session.isRunning {
             session.stopRunning()
@@ -240,10 +247,22 @@ actor CaptureEngine {
         if connection.isVideoRotationAngleSupported(rotationAngle) {
             connection.videoRotationAngle = rotationAngle
         }
-        let delegate = RecordingDelegate()
+        let delegate = RecordingDelegate(resolution: deliveredResolution, frameRate: deliveredFrameRate)
         delegate.setEndedByItself(endedByItself)
         recordingDelegate = delegate
         movieOutput.startRecording(to: url, recordingDelegate: delegate)
+    }
+
+    /// The format the camera records in now, which can be smaller than the one asked for (`CaptureFormatSelector` falls back).
+    private var deliveredResolution: VideoResolution? {
+        guard let format = videoInput?.device.activeFormat else { return nil }
+        let size = CMVideoFormatDescriptionGetDimensions(format.formatDescription)
+        return VideoResolution.nearest(shortSide: CGFloat(min(size.width, size.height)))
+    }
+
+    private var deliveredFrameRate: FrameRate? {
+        guard let duration = videoInput?.device.activeVideoMinFrameDuration, duration.isValid, duration.seconds > 0 else { return nil }
+        return FrameRate.nearest(to: 1 / duration.seconds)
     }
 
     func stopRecording() async -> RecordedClip? {

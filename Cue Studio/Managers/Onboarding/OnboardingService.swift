@@ -22,6 +22,8 @@ final class OnboardingService {
     var platform: Platform = .tiktok
     /// The first take played its "first star": it is told once.
     private(set) var firstStarShown: Bool
+    /// The flight came back where a past session left it (after 1.4): its choices went into the app then, and only the chapter was kept.
+    let isResumed: Bool
 
     private let defaults: UserDefaults
     private let isEnabled: Bool
@@ -32,7 +34,9 @@ final class OnboardingService {
         self.isEnabled = isEnabled
         isCompleted = !isEnabled || defaults.bool(forKey: DefaultsKey.onboardingCompleted)
         firstStarShown = defaults.bool(forKey: DefaultsKey.firstStarShown)
-        step = startStep ?? Self.keptStep(in: defaults) ?? .welcome
+        let kept = Self.keptStep(in: defaults)
+        isResumed = startStep == nil && kept != nil
+        step = startStep ?? kept ?? .welcome
     }
 
     /// The chapter a flight was left on, once it had made its script.

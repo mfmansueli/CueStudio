@@ -57,6 +57,29 @@ struct ShareQueueServiceTests {
         #expect(service.queues.count == 1 && service.queue(forTake: take)?.count == 2)
     }
 
+    /// B9: "Edit first" on the second network, then Share again with the same networks: the queue goes on with the new export, and the
+    /// network already posted isn't offered again (nor is a queue kept when nothing is left to post).
+    @Test func aQueueStartedAgainKeepsWhatWasPostedOnTheNewExport() {
+        let (service, defaults) = make()
+        defer { defaults.tearDown() }
+        let take = UUID()
+        service.begin(takeID: take, operationID: UUID(), title: "A", networks: [.tiktok, .reels])
+        service.markPosted(takeID: take, network: .tiktok)
+        let edited = UUID()
+        service.begin(takeID: take, operationID: edited, title: "A", networks: [.tiktok, .reels])
+        let queue = service.queue(forTake: take)
+        #expect(queue?.operationID == edited)
+        #expect(queue?.posted == [.tiktok])
+        #expect(queue?.current?.network == .reels)
+        #expect(queue?.position(of: ShareQueueItem(network: .reels, state: .pending)) == 2, "still 2 OF 2")
+
+        let other = UUID()
+        service.begin(takeID: other, operationID: UUID(), title: "B", networks: [.tiktok, .reels])
+        service.markPosted(takeID: other, network: .tiktok)
+        service.begin(takeID: other, operationID: UUID(), title: "B", networks: [.tiktok])
+        #expect(service.queue(forTake: other) == nil, "nothing left to post")
+    }
+
     @Test func aQueueGoesWhenEveryNetworkIsPosted() {
         let (service, defaults) = make()
         defer { defaults.tearDown() }

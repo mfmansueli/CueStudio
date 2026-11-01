@@ -132,7 +132,7 @@ final class FindInspirationViewModel {
         draft.undoUse()
     }
 
-    /// "Draft it now": the idea was picked as it is (the script it becomes is the engine's to count).
+    /// "Draft it now": the idea became a script as it is (used, and a taste learned; the script is the engine's to count).
     func willWrite(_ idea: ThemeIdea) {
         suggestions.selected(idea)
     }

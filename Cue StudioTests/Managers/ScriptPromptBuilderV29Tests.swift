@@ -42,16 +42,6 @@ struct ScriptPromptBuilderV29Tests {
         #expect(!ScriptPromptBuilder.prompt(for: adRequest(brand: nil)).contains("Use only the facts below"))
     }
 
-    @Test func aFormatBriefIsReplacedByTheBrandBriefForAnAd() {
-        let request = ScriptRequest(
-            source: .format(.ad, brief: ["brand": "Old brand"]), platform: .tiktok, tone: nil, voice: nil, targetRange: 30...45,
-            brand: brand
-        )
-        let prompt = ScriptPromptBuilder.prompt(for: request)
-        #expect(prompt.contains("Oat & Co."))
-        #expect(!prompt.contains("Old brand"))
-    }
-
     @Test func thePersonalityAndProofLayersReachTheInstructions() {
         var profile = CreatorProfile(niches: [.tech], role: .personal)
         profile.confirm(.audience)

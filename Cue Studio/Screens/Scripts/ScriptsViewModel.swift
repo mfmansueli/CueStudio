@@ -95,6 +95,8 @@ final class ScriptsViewModel {
 
     func duplicate(_ script: Script) {
         library.duplicate([script.id])
+        // Not written (a full iPhone): the app says so (`RootView`), never that it was saved.
+        guard !library.saveFailed else { return }
         toast.show(String(localized: "Duplicated"))
     }
 
@@ -148,6 +150,8 @@ final class ScriptsViewModel {
         guard !scripts.isEmpty else { return }
         library.duplicate(scripts)
         isSelecting = false
+        // Not written (a full iPhone): the app says so (`RootView`), never that it was saved.
+        guard !library.saveFailed else { return }
         toast.show(String(localized: "Duplicated"))
     }
 

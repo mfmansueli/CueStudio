@@ -543,10 +543,7 @@ struct ScriptsView: View {
     }
 
     private func newBlankScript() {
-        let script = library.create(
-            title: "", text: "", platform: profile.profile.defaultPlatform, language: languages.scriptLanguage, isFinished: false
-        )
-        presentation.openScript(script.id, editing: true)
+        starter.newBlank(platform: profile.profile.defaultPlatform)
     }
 }
 

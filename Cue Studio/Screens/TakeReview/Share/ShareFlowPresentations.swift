@@ -15,7 +15,7 @@ struct ShareFlowPresentations: ViewModifier {
     func body(content: Content) -> some View {
         content
             .onChange(of: flow.step) { old, new in if old != nil, new != nil { Haptics.selection() } }
-            .sheet(isPresented: Binding(get: { flow.step != nil }, set: { if !$0 { leave() } })) {
+            .sheet(isPresented: Binding(get: { flow.step != nil }, set: { if !$0 { flow.sheetDismissed() } })) {
                 sheetContent
                     .cueSheetChrome()
                     // A step's own words (a reminder set, a network left for later) show in front of the sheet, not under it.
@@ -50,7 +50,12 @@ struct ShareFlowPresentations: ViewModifier {
             case .explainer?:
                 ShareQueueExplainer(networks: flow.queue?.items.map(\.network) ?? []) { flow.finishExplainer() }
             case .step(let network)?:
-                if let queue = flow.queue { ShareQueueStep(flow: flow, queue: queue, network: network, hasCaptions: flow.video?.hasCaptions ?? false) }
+                if let queue = flow.queue {
+                    ShareQueueStep(
+                        flow: flow, queue: queue, network: network, hasCaptions: flow.video?.hasCaptions ?? false,
+                        missingCaptions: flow.video?.missingCaptions
+                    )
+                }
             case .confirm(let network)?:
                 if let queue = flow.queue { ShareQueueConfirm(flow: flow, queue: queue, network: network) }
             case nil:
@@ -64,9 +69,5 @@ struct ShareFlowPresentations: ViewModifier {
 
     private var detents: Set<PresentationDetent> {
         flow.step == .picker ? [.large] : [.height(min(fitted + Metrics.sheetBarHeight, 760)), .large]
-    }
-
-    private func leave() {
-        if flow.step == .picker || flow.queue == nil { flow.step = nil } else { flow.close() }
     }
 }

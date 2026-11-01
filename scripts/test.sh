@@ -130,6 +130,8 @@ case "$mode" in
             # Text to speech heard by this iPhone's recognizer at each speed, voice effects' words and time, library tracks' decoding time.
             AudioMixDeviceTests*) export TEST_RUNNER_CUE_AUDIO_E2E=1 ;;
             ScriptFontDeviceTests*) export TEST_RUNNER_CUE_FONT_E2E=1 ;;
+            # A take asked in 4K at 60 fps on the front and back cameras: what the take says against the recorded file (A10).
+            CameraFormatDeviceTests*) export TEST_RUNNER_CUE_CAMERA_FORMAT=1 ;;
             # Real exports that only an iPhone can run (an HLG take: the Simulator's VideoToolbox can't convert it), with no flag.
             RealExports/*) ;;
             *) usage ;;

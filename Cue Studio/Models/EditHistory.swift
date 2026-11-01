@@ -67,6 +67,14 @@ nonisolated struct EditHistory<State: Codable & Hashable & Sendable>: Codable, H
         return next
     }
 
+    /// The same steps, each changed by `transform` (a draft picked up again taking in what the take gained meanwhile, `EditDocument.open`).
+    func mapped(_ transform: (State) -> State) -> EditHistory {
+        var copy = self
+        copy.past = past.map(transform)
+        copy.future = future.map(transform)
+        return copy
+    }
+
     /// The same steps, each written relative to the state it is applied on (`thin(step, newer)`; the newest undo and redo
     /// steps are applied on `current`), so a saved history doesn't hold the same big part once per step.
     func thinned(current: State, _ thin: (_ step: State, _ newer: State) -> State) -> EditHistory {

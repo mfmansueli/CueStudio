@@ -20,6 +20,8 @@ nonisolated enum DefaultsKey {
     static let creatorProfile = "creatorProfile"
     /// Who writes the Scripts dock's next idea (`ScriptEngine` raw value): the creator's last pick on the writer chip; absent = Apple Intelligence.
     static let dockWriter = "dockWriter"
+    /// The dock's idea, its brief and the card's choices (`DockDraft`), as the creator left them.
+    static let dockDraft = "dockDraft"
     /// The card's suggested ideas written by the model and not yet shown, and the titles of the ones that were (`IdeaSuggestionService`).
     static let ideaSuggestions = "ideaSuggestions"
     /// The library has held a script at least once (`LibraryHistory`): an empty Scripts is then the returning state, not the first-use one.
@@ -64,6 +66,12 @@ nonisolated enum DefaultsKey {
     /// Debug builds: this install has launched before. UserDefaults goes with the app and the Keychain stays, so without
     /// it the launch is a new install's first, and the free exports start over (`UsageQuotaService`).
     static let installLaunched = "installLaunched"
+    /// Take videos whose deletion was decided and hasn't finished (`PendingTakeDeletions`).
+    static let takeDeletionsPending = "takeDeletionsPending"
+    /// When each take video nothing names was first found so (`[String: Date]`, `TakeOrphanSweep`).
+    static let takeOrphanSightings = "takeOrphanSightings"
+    /// Copies a failed import left in the edits' media that couldn't be removed then (`EditMediaFiles.discardPartial`).
+    static let editMediaDeletionsPending = "editMediaDeletionsPending"
     /// How the Takes tab lays videos out (`TakeLayout` raw value); absent = the grid.
     static let takesLayout = "takesLayout"
     /// The Sign in with Apple account (ID, and the name and email Apple shared once).

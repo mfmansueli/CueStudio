@@ -58,6 +58,7 @@ final class ShareFlow {
         self.toast = toast
         review.queueInterceptor = { [weak self] destination, result in self?.sheetEnded(for: destination, result: result) ?? false }
         review.queueOperation = { [weak self] in self?.queue?.operationID }
+        review.queueResumes = { [weak self] in await self?.start() }
     }
 
     // MARK: - Reading
@@ -204,6 +205,14 @@ final class ShareFlow {
     func editFirst() {
         step = nil
         onEditFirst()
+    }
+
+    /// The sheet went away. Only the creator's swipe down leaves the rest of the queue for later: when Cue took the sheet away itself (Send,
+    /// Edit first, the last network), the step is already gone, and the system's word of it, which an iPhone gives as the sheet finishes
+    /// leaving, changes nothing.
+    func sheetDismissed() {
+        guard let step else { return }
+        if step == .picker || queue == nil { self.step = nil } else { close() }
     }
 
     private func advance() {

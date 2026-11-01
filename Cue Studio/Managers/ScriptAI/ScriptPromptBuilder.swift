@@ -38,9 +38,7 @@ nonisolated enum ScriptPromptBuilder {
                 : PlatformGuide.line(for: request.platform, durationPolicy: request.durationPolicy))
             lines.append(request.modelRoute == .privateCloud ? PCCScriptDirection.draftLicense : honestyRule)
         }
-        if request.isFreePrompt {
-            lines.append(accuracyRule)
-        }
+        lines.append(accuracyRule)
         if let voice {
             lines += voiceLines(voice, platform: request.platform, budget: request.voiceBudget, contextualPreferences: request.modelRoute == .privateCloud)
         }
@@ -205,21 +203,6 @@ nonisolated enum ScriptPromptBuilder {
                 lines.append(request.modelRoute == .privateCloud
                     ? "Stay on the current request. Profile information guides the writing style; do not quote or explain the profile instructions in the script."
                     : "Write about this idea and only this one: the creator's voice is how they sound, never what to talk about.")
-            }
-        case .format(let type, let brief):
-            if request.brand == nil {
-                lines.append("Brief:")
-                if request.modelRoute == .privateCloud {
-                    // Placeholder examples belong to the form, never to the creator's actual facts.
-                    lines += type.briefFields.compactMap { field in
-                        guard let value = brief[field.key]?.trimmingCharacters(in: .whitespacesAndNewlines), !value.isEmpty else { return nil }
-                        return "- \(field.label): \(value)"
-                    }
-                    lines.append("Only the supplied brief answers above are known. Leave unsupported details out; do not fill missing answers with invented facts.")
-                } else {
-                    let resolved = type.resolvedBrief(brief)
-                    lines += type.briefFields.map { "- \($0.label): \(resolved[$0.key] ?? $0.example)" }
-                }
             }
         }
         return lines

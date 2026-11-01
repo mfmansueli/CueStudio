@@ -79,18 +79,6 @@ struct PCCScriptDirectionTests {
         #expect(!instructions.contains("close by pointing to the next video"))
     }
 
-    @Test func anIncompleteCloudBriefNeverTurnsFormExamplesIntoTheCreatorsFacts() {
-        var original = request()
-        original.source = .format(.story, brief: ["setup": "The Aurora 27 meeting ended at 14:35!", "twist": "  "])
-        let cloud = AIRequestPolicy.prepare(original, on: .privateCloud)
-        let prompt = ScriptPromptBuilder.prompt(for: cloud)
-        #expect(prompt.contains("The Aurora 27 meeting ended at 14:35!"), "names, quantities and punctuation survive")
-        for field in ScriptType.story.briefFields {
-            #expect(!prompt.contains(field.example), "a missing answer must not become a fictional contract or testimonial")
-        }
-        #expect(prompt.contains("missing answers"))
-    }
-
     @Test func seriousStatementsDoNotAcquireAnEntertainmentOrEngagementChecklist() {
         var original = request()
         original.format = .apology

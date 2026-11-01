@@ -69,7 +69,7 @@ struct ScriptGenerationFlowDeviceTests {
         let request = flow.presentation.scriptsPath.first?.writing
         if let request {
             let viewModel = ScriptDetailViewModel(
-                scriptID: id, ideaDraft: flow.ideaDraft, revealPause: .zero, library: flow.library,
+                scriptID: id, revealPause: .zero, library: flow.library,
                 takes: TakeLibraryService(repository: FakeTakeRepository()),
                 preferences: PreferencesService(defaults: flow.defaults.defaults), profile: flow.profile, rules: flow.rules,
                 writer: flow.writer, toast: flow.toast
@@ -78,7 +78,7 @@ struct ScriptGenerationFlowDeviceTests {
             for _ in 0..<600 where viewModel.page.isWriting {
                 try await Task.sleep(for: .milliseconds(100))
             }
-            print("FLOW page after writing: writing \(viewModel.page.isWriting) · error \(viewModel.page.writingError ?? "none") · toast \(flow.toast.message ?? "none")")
+            print("FLOW page after writing: writing \(viewModel.page.isWriting) · toast \(flow.toast.message ?? "none")")
         }
         return (try #require(flow.library.script(id: id)), request)
     }

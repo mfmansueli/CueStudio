@@ -634,6 +634,33 @@ struct QuickEditViewModelTests {
         #expect(notYet.toast.message == "Couldn't save the edits · Free up space on this iPhone")
     }
 
+    /// "Yes, share" or "Download" whose edit couldn't be saved on the take: the review goes on as "Not yet" (the edit is a draft), never
+    /// sharing or saving the video as it was before the edit.
+    @Test func aDoneThatCouldntSaveIsANotYetForTheReview() async {
+        let repository = FakeTakeRepository()
+        let scenario = await makeScenario(repository: repository)
+        repository.failsToSave = true
+        dragHandle(.start, to: 4, on: scenario.viewModel)
+        #expect(scenario.viewModel.finish(.share) == .notYet)
+        let saved = await makeScenario()
+        dragHandle(.start, to: 4, on: saved.viewModel)
+        #expect(saved.viewModel.finish(.download) == .download)
+    }
+
+    /// Cue went to the background and the draft couldn't be written (a full iPhone): said at once, and written on the way back.
+    @Test func aDraftThatCantBeKeptInTheBackgroundIsSaidAndTriedAgain() async {
+        let drafts = FakeDraftStore()
+        let scenario = await makeScenario(drafts: drafts)
+        dragHandle(.start, to: 4, on: scenario.viewModel)
+        drafts.failsToSave = true
+        scenario.viewModel.pauseAndKeepDraft()
+        #expect(scenario.toast.message == "Couldn't save the edits · Free up space on this iPhone")
+        #expect(drafts.drafts.isEmpty)
+        drafts.failsToSave = false
+        scenario.viewModel.becameActive()
+        #expect(drafts.drafts.count == 1)
+    }
+
     // MARK: - Done asks "Is it ready to post?"
 
     @Test func doneOpensTheQuestionAndLeavesTheEditAsItWas() async {

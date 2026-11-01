@@ -154,6 +154,34 @@ struct ScriptStarterTests {
         #expect(scenario.ideaDraft.text == "My own idea in the dock")
     }
 
+    /// "Write it myself" on a comment, or Write on an idea of the Logbook without Apple Intelligence: the draft opens named after it, and what
+    /// the creator was typing in the dock (and its chips) stays. The dock's own idea written by hand leaves it, as before.
+    @Test func writingAnotherIdeaByHandLeavesTheDockAlone() {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        scenario.ideaDraft.text = "My own idea in the dock"
+        scenario.ideaDraft.platform = .youtube
+        let id = scenario.starter.writeByHand(idea: "A comment to answer")
+        #expect(scenario.library.script(id: id)?.title == "A comment to answer")
+        #expect(scenario.library.script(id: id)?.isFinished == false)
+        #expect(scenario.ideaDraft.text == "My own idea in the dock" && scenario.ideaDraft.platform == .youtube)
+        scenario.starter.writeByHand()
+        #expect(scenario.library.scripts.first?.title == "My own idea in the dock")
+        #expect(scenario.ideaDraft.isEmpty && scenario.ideaDraft.platform == nil)
+    }
+
+    /// The script made for the AI to write into says so until its words arrive: a Cue closed under the star leaves no empty "Untitled".
+    @Test func theScriptMadeForTheAIWaitsForItsWords() {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        scenario.ideaDraft.text = "Carnival in Salvador"
+        scenario.starter.write()
+        #expect(scenario.library.scripts.first?.awaitsDraft == true)
+        // A blank draft the creator opens is theirs from the start.
+        scenario.starter.newBlank(platform: .reels)
+        #expect(scenario.library.scripts.first?.awaitsDraft == false && scenario.library.scripts.first?.platform == .reels)
+    }
+
     /// Every cause is told the same way, before the star, with its own words.
     @Test(arguments: [AIPlanFailure.deviceNotSupported, .turnedOff, .modelPreparing])
     func whatAppleIntelligenceCantDoIsToldBeforeTheStar(_ failure: AIPlanFailure) {
@@ -205,23 +233,122 @@ struct ScriptStarterTests {
         #expect(request.language == .portugueseBrazil)
     }
 
-    // MARK: - A late failure
+    // MARK: - The dock's idea and choices (A17, A23)
 
-    /// Apple Intelligence changed while the star rose: the reply couldn't be drafted, and the comment (whose sheet is gone) is kept.
-    /// Cancel keeps nothing: the creator chose it.
-    @Test func aCommentWhoseReplyFailedLateIsKeptAndCancelKeepsNothing() {
+    /// The dock's own idea: it stays in the dock while the script is written, and the dock starts over only once the script is saved.
+    @Test func theDocksIdeaLeavesTheDockOnlyOnceItsScriptIsSaved() async {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }
-        var kept: [ScriptComment] = []
-        scenario.starter.keepsComment = { kept.append($0) }
+        scenario.ideaDraft.text = "Carnival in Salvador"
+        scenario.ideaDraft.platform = .youtube
+        scenario.starter.write()
+        #expect(scenario.presentation.scriptsPath.first?.writing?.platform == .youtube)
+        #expect(scenario.ideaDraft.text == "Carnival in Salvador", "Still there while it is written")
+        await scenario.transition.contentReady()
+        #expect(scenario.ideaDraft.isEmpty)
+        #expect(scenario.ideaDraft.platform == nil)
+    }
+
+    /// A dock changed while its last idea was written is a new idea: the script arriving never wipes it.
+    @Test func aDockChangedMeanwhileIsNeverWiped() async {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        scenario.ideaDraft.text = "Carnival in Salvador"
+        scenario.starter.write()
+        scenario.ideaDraft.text = "Next: winter in Gramado"
+        await scenario.transition.contentReady()
+        #expect(scenario.ideaDraft.text == "Next: winter in Gramado")
+    }
+
+    /// An idea from elsewhere (the Logbook here) is written with the creator's defaults, not the dock's choices, and leaves the dock as it is.
+    @Test func anIdeaFromElsewhereNeitherUsesNorClearsTheDock() async {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        scenario.ideaDraft.text = "my own half idea"
+        scenario.ideaDraft.platform = .youtube
+        scenario.ideaDraft.formatChoice = .type(.tutorial)
+        scenario.starter.write(idea: "Why I stopped posting daily")
+        let request = scenario.presentation.scriptsPath.first?.writing
+        #expect(request?.platform == scenario.starter.defaultPlatform)
+        #expect(request?.format == nil)
+        await scenario.transition.contentReady()
+        #expect(scenario.ideaDraft.text == "my own half idea")
+        #expect(scenario.ideaDraft.platform == .youtube)
+        #expect(scenario.ideaDraft.formatChoice == .type(.tutorial))
+    }
+
+    /// An idea on the dock's card (the field empty) follows the dock's choices, which start over once its script is saved.
+    @Test func anIdeaOnTheDocksCardFollowsAndThenResetsItsChoices() async {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        scenario.ideaDraft.platform = .youtube
+        scenario.starter.write(idea: "A card's idea", fromDock: true)
+        #expect(scenario.presentation.scriptsPath.first?.writing?.platform == .youtube)
+        await scenario.transition.contentReady()
+        #expect(scenario.ideaDraft.platform == nil)
+    }
+
+    /// The dock is kept on disk as it changes, its choices with it, with no expiry: Cue closed and opened again finds it; once it is cleared,
+    /// nothing is left to come back.
+    @Test func theDockIsKeptAcrossLaunchesWithItsChoices() {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let dock = IdeaDraftService(defaults: defaults.defaults)
+        dock.text = "Carnival in Salvador"
+        dock.platform = .youtube
+        dock.length = .minutes2
+        dock.formatChoice = .type(.tutorial)
+        let reopened = IdeaDraftService(defaults: defaults.defaults)
+        #expect(reopened.text == "Carnival in Salvador")
+        #expect(reopened.platform == .youtube)
+        #expect(reopened.length == .minutes2)
+        #expect(reopened.formatChoice == .type(.tutorial))
+        reopened.clear()
+        #expect(defaults.defaults.data(forKey: DefaultsKey.dockDraft) == nil)
+        #expect(IdeaDraftService(defaults: defaults.defaults).snapshot.isEmpty)
+    }
+
+    // MARK: - A late failure
+
+    /// An answered comment is in the Logbook before the star rises (its sheet is gone): a late failure or a Cancel leaves it there, and the
+    /// toast says so; a second try is the same note, never a copy; the reply written lets the note made for it go.
+    @Test func anAnsweredCommentIsKeptBeforeTheStarAndLetGoOnceWritten() async throws {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        let logbook = LogbookService(defaults: scenario.defaults.defaults)
+        scenario.starter.keepsComment = { logbook.keep($0) }
+        scenario.starter.commentAnswered = { logbook.answered($0, as: $1) }
         let comment = ScriptComment(author: "@maya", text: "Do you ever skip the gym?", platform: .tiktok)
+
         scenario.starter.write(idea: AnswerCommentViewModel.idea(for: comment), comment: comment)
+        #expect(logbook.waiting.map(\.text) == ["@maya: Do you ever skip the gym?"], "Kept before anything is asked of it")
         scenario.transition.fail()
-        #expect(kept == [comment])
         #expect(scenario.library.scripts.isEmpty)
+        #expect(scenario.toast.message?.hasSuffix("Saved to Logbook") == true)
+
         scenario.starter.write(idea: AnswerCommentViewModel.idea(for: comment), comment: comment)
         scenario.transition.cancel()
-        #expect(kept.count == 1)
+        #expect(logbook.waiting.count == 1, "The same note, not a copy")
+        #expect(scenario.toast.message == "Saved to Logbook")
+
+        // Written this time: the note was already waiting, so it is shaped into the script.
+        let id = try #require(scenario.starter.write(idea: AnswerCommentViewModel.idea(for: comment), comment: comment))
+        await scenario.transition.contentReady()
+        #expect(logbook.waiting.isEmpty)
+        #expect(logbook.entries.first?.shapedScriptID == id)
+    }
+
+    /// A comment answered at the first try: its note goes with the reply written (the comment is on the script).
+    @Test func aCommentAnsweredAtOnceLeavesNoNote() async {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        let logbook = LogbookService(defaults: scenario.defaults.defaults)
+        scenario.starter.keepsComment = { logbook.keep($0) }
+        scenario.starter.commentAnswered = { logbook.answered($0, as: $1) }
+        let comment = ScriptComment(author: nil, text: "How do you plan a week of posts?", platform: .tiktok)
+        scenario.starter.write(idea: AnswerCommentViewModel.idea(for: comment), comment: comment)
+        await scenario.transition.contentReady()
+        #expect(logbook.entries.isEmpty)
     }
 
     @Test func aSupportedLanguageStillGoesToTheModel() {

@@ -97,6 +97,36 @@ struct TakeLibraryServiceTests {
         #expect(told == 0)
     }
 
+    /// The recording that goes back says which script it was read from (`TakeRecoveryNote`), so it comes back under it.
+    @Test func aTakeTheLibraryCantWriteLeavesANoteOfItsScript() {
+        let (service, repository) = makeService()
+        repository.failsToSave = true
+        var script = TestData.script()
+        script.version = 2
+        let clip = clipURL()
+        defer { TakeRecoveryNote.remove(for: clip) }
+        _ = try? service.addTake(fileAt: clip, duration: 30, script: script, camera: CameraSettings())
+        #expect(TakeRecoveryNote.read(for: clip) == TakeRecoveryNote(scriptID: script.id, scriptVersion: 2))
+    }
+
+    /// A take gone for good tells the services that keep something for it (its exported files, a share queue); one deleted with Undo
+    /// still in reach doesn't, and one brought back never did.
+    @Test func aTakeGoneForGoodIsToldOnceItsUndoIsOutOfReach() throws {
+        let kept = TestData.take(scriptID: UUID(), number: 1), doomed = TestData.take(scriptID: UUID(), number: 2)
+        let other = TestData.take(scriptID: UUID(), number: 3)
+        let (service, _) = makeService(takes: [kept, doomed, other])
+        var gone: [UUID] = []
+        service.takeGone = { gone.append($0.id) }
+        let undone = try #require(service.remove(kept.id))
+        service.restore(undone)
+        service.purge(undone)
+        let removed = try #require(service.remove(doomed.id))
+        #expect(gone.isEmpty)
+        service.purge(removed)
+        service.delete(other.id)
+        #expect(gone == [doomed.id, other.id])
+    }
+
     /// On disk: `takes.json` can't be written (a folder stands in its place), so the recording goes back to the camera's
     /// folder under its own name, where `TakeRecovery` looks at the next launch, and the library keeps no video without a take.
     @Test func aRecordingTheLibraryCantRecordIsLeftForTheNextLaunch() throws {

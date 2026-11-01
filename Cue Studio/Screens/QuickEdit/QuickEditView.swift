@@ -104,8 +104,7 @@ struct QuickEditView: View {
                     duration: DurationText.clock(viewModel.edit.editedDuration),
                     onMeasure: { doneSheetHeight = $0 + 34 },
                     onAnswer: { outcome in
-                        viewModel.finish(outcome)
-                        onClose(outcome)
+                        onClose(viewModel.finish(outcome))
                     }
                 )
                 .presentationDetents([.height(doneSheetHeight)])

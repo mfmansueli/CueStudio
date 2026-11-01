@@ -42,7 +42,8 @@ final class EditDocument {
     // MARK: - Opening
 
     /// The recording opened: the take's edit fits the file's own length, and a draft left behind that differs from it is
-    /// picked up with its undo steps. True when the draft was.
+    /// picked up with its undo steps, taking in the captions the take was given while it waited (`withCaptionsHeardMeanwhile`). True when the
+    /// draft was.
     @discardableResult
     func open(sourceDuration duration: TimeInterval, draft: QuickEditDraft?) -> Bool {
         original.timeline = original.timeline.fitted(toSourceDuration: duration)
@@ -53,8 +54,14 @@ final class EditDocument {
         var start = draft.edit
         start.captions = start.captions.map(CaptionRevision.withoutContinuation)
         start.timeline = start.timeline.fitted(toSourceDuration: duration)
-        history = draft.history
-        edit = start
+        let caught = start.withCaptionsHeardMeanwhile(from: original)
+        // Its undo steps leave those captions where they are (a step's nil lines leave the lines as they are), rather than taking them away.
+        history = caught == start ? draft.history : draft.history.mapped { step in
+            var step = step
+            if step.captions?.isEmpty == true, step.captionChanges == nil { step.captions = nil }
+            return step
+        }
+        edit = caught
         return true
     }
 

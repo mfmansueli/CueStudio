@@ -130,8 +130,63 @@ struct ExportLedgerServiceTests {
         #expect(setup.ledger.hasCountedOperation(forTake: take))
         setup.ledger.releaseFiles(forTake: take)
         #expect(!FileManager.default.fileExists(atPath: file.path))
-        #expect(!setup.ledger.hasCountedOperation(forTake: take))
+        // The file was only a copy: the video it made is still counted.
+        #expect(setup.ledger.hasCountedOperation(forTake: take))
+        #expect(setup.ledger.isCounted(fingerprint: "f"))
         #expect(setup.ledger.operation(id: operation.id)?.isCounted == true)
+    }
+
+    /// Saved, its file cleared, made again for a share the next day: the same video, one export.
+    @Test func theSameVideoMadeAgainIsNotCountedTwice() throws {
+        let setup = makeSetup()
+        defer { setup.defaults.tearDown() }
+        let take = UUID()
+        let saved = setup.ledger.begin(takeID: take, fingerprint: "f", file: try write("a.mov", in: setup))
+        setup.ledger.recordDelivery(.photoLibrary(assetID: nil), for: saved.id, tier: .free)
+        setup.ledger.releaseFiles(forTake: take)
+        let again = setup.ledger.begin(takeID: take, fingerprint: "f", file: try write("b.mov", in: setup))
+        #expect(again.isCounted)
+        #expect(setup.ledger.isCounted(operationID: again.id))
+        #expect(!setup.ledger.recordDelivery(.activity(type: "a"), for: again.id, tier: .free))
+        #expect(setup.quota.exportsUsed == 1)
+        // Another edit is another video.
+        let edited = setup.ledger.begin(takeID: take, fingerprint: "g", file: try write("c.mov", in: setup))
+        #expect(!edited.isCounted)
+        #expect(setup.ledger.recordDelivery(.activity(type: "a"), for: edited.id, tier: .free))
+        #expect(setup.quota.exportsUsed == 2)
+    }
+
+    /// Two files of one video, both made before either was delivered, then both delivered: one export.
+    @Test func twoCopiesOfOneVideoDeliveredCountOnce() throws {
+        let setup = makeSetup()
+        defer { setup.defaults.tearDown() }
+        let take = UUID()
+        let first = setup.ledger.begin(takeID: take, fingerprint: "f", file: try write("a.mov", in: setup))
+        let second = setup.ledger.begin(takeID: take, fingerprint: "f", file: try write("b.mov", in: setup))
+        #expect(setup.ledger.recordDelivery(.photoLibrary(assetID: nil), for: first.id, tier: .free))
+        #expect(!setup.ledger.recordDelivery(.activity(type: "a"), for: second.id, tier: .free))
+        #expect(setup.quota.exportsUsed == 1)
+        #expect(setup.ledger.operation(id: second.id)?.isCounted == true)
+    }
+
+    /// A counted video's record has no expiry: a month on, after a restart, it still says counted; it goes with its take.
+    @Test func aCountedVideoStaysUntilItsTakeGoes() throws {
+        let setup = makeSetup()
+        defer { setup.defaults.tearDown() }
+        let take = UUID()
+        let operation = setup.ledger.begin(takeID: take, fingerprint: "f", file: try write("a.mov", in: setup))
+        setup.ledger.recordDelivery(.photoLibrary(assetID: nil), for: operation.id, tier: .free)
+        let other = setup.ledger.begin(takeID: UUID(), fingerprint: "o", file: try write("o.mov", in: setup))
+        setup.ledger.recordDelivery(.photoLibrary(assetID: nil), for: other.id, tier: .free)
+
+        let monthLater = makeSetupSharing(setup, now: now.addingTimeInterval(30 * 24 * 3600))
+        #expect(monthLater.isCounted(fingerprint: "f"))
+        #expect(!monthLater.recordDelivery(.activity(type: "a"), for: operation.id, tier: .free))
+
+        monthLater.forget(takeID: take)
+        #expect(monthLater.operation(id: operation.id) == nil)
+        #expect(!setup.store.operations.contains { $0.takeID == take }, "Forgotten on disk too")
+        #expect(monthLater.isCounted(fingerprint: "o"), "Other takes keep theirs")
     }
 
     @Test func replacingTheFileKeepsTheOperationAndItsCount() throws {
@@ -157,7 +212,7 @@ struct ExportLedgerServiceTests {
         #expect(!FileManager.default.fileExists(atPath: oldFile.path))
         #expect(afterADay.operation(id: operation.id) != nil)
 
-        // A week later the record goes too.
+        // A week later the record of a video never delivered goes too.
         let weekLater = now.addingTimeInterval(ExportLedgerService.recordRetention + 60)
         let afterAWeek = makeSetupSharing(setup, now: weekLater)
         #expect(afterAWeek.operation(id: operation.id) == nil)

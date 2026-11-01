@@ -11,7 +11,7 @@ nonisolated enum PCCScriptDirection {
     static let draftLicense = "Ghostwrite a generous, developed first draft that gives the creator useful material to reshape and cut. Complete the reasoning with concrete consequences and examples rather than concluding after a few outline-like lines. Speak confidently as the creator: first-person opinions, preferences, recommendations, rhetorical questions, analogies and proposed everyday examples are welcome. Choose a useful point of view and develop it, rather than retreating into neutral advice. Short sentences can build substantial paragraphs. A proposed example is creative material, not evidence of the creator's real past. Keep concrete biographical claims, clients, measured results, credentials and past events grounded in supplied details; do not present an invented testimonial as real."
 
     static func usesAutomaticFormat(_ request: ScriptRequest) -> Bool {
-        request.modelRoute == .privateCloud && request.isFreePrompt && request.format == nil && request.formatChoice != .talkingHead
+        request.modelRoute == .privateCloud && request.format == nil && request.formatChoice != .talkingHead
     }
 
     /// The model reads intent in the creator's language during the same call that writes the script.

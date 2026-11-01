@@ -35,7 +35,7 @@ final class ScriptLibraryService {
     func load() {
         do {
             let snapshot = try repository.load()
-            scripts = snapshot.scripts.sorted { $0.updatedAt > $1.updatedAt }
+            scripts = Self.withoutUnwrittenDrafts(snapshot.scripts).sorted { $0.updatedAt > $1.updatedAt }
             folders = snapshot.folders
             canSave = true
         } catch {
@@ -53,10 +53,23 @@ final class ScriptLibraryService {
     func reloadIfUnread() {
         guard !canSave, let saved = try? repository.load() else { return }
         let made = Set(scripts.map(\.id))
-        scripts = (scripts + saved.scripts.filter { !made.contains($0.id) }).sorted { $0.updatedAt > $1.updatedAt }
+        let past = Self.withoutUnwrittenDrafts(saved.scripts.filter { !made.contains($0.id) })
+        scripts = (scripts + past).sorted { $0.updatedAt > $1.updatedAt }
         folders = saved.folders + folders.filter { !saved.folders.contains($0) }
         canSave = true
         logger.notice("Scripts read after all: \(saved.scripts.count) on disk, \(made.count) made meanwhile")
+    }
+
+    /// A past session's script the AI never got to write (Cue closed during the star) is an empty "Untitled script" nobody made: it goes.
+    /// One that has words (it can't, but) only stops waiting. Saved again with the next change.
+    private static func withoutUnwrittenDrafts(_ scripts: [Script]) -> [Script] {
+        scripts.compactMap { script in
+            guard script.awaitsDraft else { return script }
+            guard !script.isEmpty || !script.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return nil }
+            var kept = script
+            kept.awaitsDraft = false
+            return kept
+        }
     }
 
     func script(id: UUID?) -> Script? {
@@ -69,14 +82,17 @@ final class ScriptLibraryService {
     @discardableResult
     func create(
         title: String, text: String, platform: Platform, type: ScriptType? = nil, folder: String? = nil,
-        factCheck: Bool = false, language: CueLanguage? = nil, comment: ScriptComment? = nil, isFinished: Bool? = nil
+        factCheck: Bool = false, language: CueLanguage? = nil, comment: ScriptComment? = nil, isFinished: Bool? = nil,
+        awaitsDraft: Bool = false, draftedBy: ScriptEngine? = nil
     ) -> Script {
         let date = now()
-        let script = Script(
+        var script = Script(
             title: title, text: text, platform: platform, type: type,
             folder: folder, createdAt: date, updatedAt: date, factCheck: factCheck, language: language, comment: comment,
             isFinished: isFinished
         )
+        script.awaitsDraft = awaitsDraft
+        script.draftedBy = draftedBy
         scripts.insert(script, at: 0)
         persist()
         return script

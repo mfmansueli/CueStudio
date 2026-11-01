@@ -90,12 +90,13 @@ final class AppNotificationFacts: NotificationFactsSource {
             let video = byVideo[take.scriptID ?? take.id] ?? [take]
             let stage = TakeStage(takes: video, hasDraft: { drafts.hasDraft(for: $0) })
             // An edit still open is what the creator sees; the file is read only when there is one.
-            let edit = drafts.hasDraft(for: take.id) ? drafts.draft(for: take.id)?.edit ?? take.edit : take.edit
+            let draft = drafts.hasDraft(for: take.id) ? drafts.draft(for: take.id) : nil
+            let edit = draft?.edit ?? take.edit
             return NotificationFacts.TakeFact(
                 id: take.id, scriptID: take.scriptID, title: take.scriptTitle, recordedAt: take.recordedAt, duration: take.duration,
                 stage: stage, isExported: take.isExported, videoExported: video.contains(where: \.isExported), platform: take.platform,
                 language: nil, hasCaptions: !(edit?.captions.isEmpty ?? true), cleanUpAnalyzed: edit?.cleanUpAnalyzed ?? false,
-                toolsUsed: FeatureAdoption.tools(in: edit)
+                toolsUsed: FeatureAdoption.tools(in: edit), draftSavedAt: draft?.savedAt
             )
         }
     }

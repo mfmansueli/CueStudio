@@ -26,6 +26,10 @@ final class CameraManager: CameraControlling {
     private(set) var backgroundFrame: CGImage?
     /// Whether this camera can give frames for the live preview next to the recording.
     private(set) var showsBackgroundLive = true
+    /// The camera stopped for a while (a call, another app, Split View, heat): the camera area says so, and the record button waits.
+    private(set) var interruption: CameraInterruption?
+    /// The session's interruption and error notices; the manager lives as long as the app.
+    @ObservationIgnored private var observers: [NSObjectProtocol] = []
 
     private let engine = CaptureEngine()
 
@@ -34,6 +38,38 @@ final class CameraManager: CameraControlling {
 
     /// For the preview layer only.
     var previewSession: AVCaptureSession { engine.session }
+
+    init() {
+        let center = NotificationCenter.default
+        let session = engine.session
+        observers = [
+            center.addObserver(forName: AVCaptureSession.wasInterruptedNotification, object: session, queue: .main) { [weak self] note in
+                let reason = (note.userInfo?[AVCaptureSessionInterruptionReasonKey] as? Int).flatMap(AVCaptureSession.InterruptionReason.init)
+                MainActor.assumeIsolated { self?.interruption = CameraInterruption(reason: reason) }
+            },
+            center.addObserver(forName: AVCaptureSession.interruptionEndedNotification, object: session, queue: .main) { [weak self] _ in
+                MainActor.assumeIsolated { self?.interruption = nil }
+            },
+            center.addObserver(forName: AVCaptureSession.runtimeErrorNotification, object: session, queue: .main) { [weak self] note in
+                let error = note.userInfo?[AVCaptureSessionErrorKey] as? AVError
+                let message = error?.localizedDescription ?? String(localized: "Something went wrong with the camera.")
+                MainActor.assumeIsolated {
+                    guard let self else { return }
+                    Task { await self.recover(message: message) }
+                }
+            },
+        ]
+    }
+
+    /// The session stopped on an error (the media services were reset, mostly after a call): it starts again once, and only if that
+    /// fails does the camera area say it stopped, with the reason.
+    private func recover(message: String) async {
+        guard status == .running else { return }
+        interruption = nil
+        if await engine.restart() { return }
+        if isRecording { _ = await stopRecording() }
+        status = .failed(message)
+    }
 
     // MARK: - Session
 
@@ -107,6 +143,7 @@ final class CameraManager: CameraControlling {
         _ = await engine.setBackgroundPreview(nil, mirrored: false, handler: nil)
         backgroundFrame = nil
         await engine.stop()
+        interruption = nil
         if status == .running || status == .starting { status = .idle }
     }
 

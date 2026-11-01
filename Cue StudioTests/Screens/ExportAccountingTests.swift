@@ -38,11 +38,21 @@ struct ExportAccountingTests {
 
     /// `restarting` builds the app again on the same disk: the export count, the ledger and the take library.
     private func makeScenario(
-        tier: MembershipTier = .free, used: Int = 0, restarting previous: Scenario? = nil, type: ScriptType? = nil
+        tier: MembershipTier = .free, used: Int = 0, restarting previous: Scenario? = nil, type: ScriptType? = nil, withCover: Bool = false,
+        edit: TakeEdit? = nil
     ) -> Scenario {
         let defaults = previous?.defaults ?? TestDefaults()
         let script = TestData.script(text: "Okay, real talk.", type: type)
-        let take = previous?.take ?? TestData.take(scriptID: script.id)
+        let take = previous?.take ?? {
+            var take = TestData.take(scriptID: script.id)
+            take.edit = edit
+            if withCover {
+                var edit = TakeEdit(sourceDuration: 20, aspect: .portrait)
+                edit.cover = VideoCover(source: .frame(1.5))
+                take.edit = edit
+            }
+            return take
+        }()
         let library = ScriptLibraryService(repository: FakeScriptRepository(scripts: [script]))
         library.load()
         let takes = previous?.takes ?? {
@@ -74,6 +84,47 @@ struct ExportAccountingTests {
     private let airDrop = "com.apple.UIKit.activity.AirDrop"
 
     // MARK: - Saving to Photos
+
+    /// A photo the edit shows is gone from the iPhone (B10): Save and Share ask first, and "Remove and export" keeps the edit without it,
+    /// so the video never goes out with a gap nobody chose.
+    @Test func mediaThatIsGoneIsFoundBeforeExportingAndRemovedOnlyWhenAsked() {
+        var edit = TakeEdit(sourceDuration: 20, aspect: .portrait)
+        let gone = "gone-\(UUID().uuidString).jpg"
+        edit.media = [MediaOverlay(kind: .photo, fileName: gone, aspect: 1, mediaDuration: nil, span: TimeSpan(start: 0, end: 2))]
+        let scenario = makeScenario(edit: edit)
+        defer { scenario.defaults.tearDown() }
+        #expect(scenario.viewModel.missingMedia == [gone])
+        #expect(scenario.viewModel.canRemoveMissingMedia)
+        #expect(scenario.viewModel.removeMissingMedia())
+        #expect(scenario.viewModel.missingMedia.isEmpty)
+        #expect(scenario.takes.take(id: scenario.take.id)?.edit?.media.isEmpty == true)
+        #expect(scenario.exporter.exports.isEmpty, "removing exports nothing by itself")
+    }
+
+    /// The video saved, its cover not (B15): it says so, and Try again saves the cover alone, with no new video and nothing counted.
+    @Test func aCoverThatCouldntBeSavedIsSaidAndTriedAgainAlone() async {
+        let scenario = makeScenario(withCover: true)
+        defer { scenario.defaults.tearDown() }
+        scenario.photos.imageError = CocoaError(.fileWriteUnknown)
+        await scenario.viewModel.save()
+        #expect(scenario.photos.savedURLs.count == 1)
+        #expect(scenario.used == 1)
+        #expect(scenario.toast.message == "Video saved. Couldn't save the cover image.")
+        guard case .readyToTravel(let video)? = scenario.viewModel.celebration else {
+            Issue.record("Ready to travel didn't open")
+            return
+        }
+        #expect(!scenario.viewModel.savedCover(video))
+        scenario.photos.imageError = nil
+        let exports = scenario.exporter.exports.count
+        scenario.toast.action?.perform()
+        await scenario.viewModel.coverRetry?.value
+        #expect(scenario.photos.savedImages.count == 1)
+        #expect(scenario.toast.message == "Cover saved to Photos")
+        #expect(scenario.viewModel.savedCover(video))
+        #expect(scenario.photos.savedURLs.count == 1 && scenario.exporter.exports.count == exports, "No new video")
+        #expect(scenario.used == 1, "Nothing counted")
+    }
 
     @Test func aSuccessfulSaveDeductsOneExport() async {
         let scenario = makeScenario()
@@ -456,6 +507,30 @@ struct ExportAccountingTests {
         scenario.viewModel.activityFinished(.completed(activityType: airDrop), for: share)
         #expect(scenario.used == 1)
         #expect(scenario.toast.message == nil)
+    }
+
+    /// Saved today, shared tomorrow: the review closed and the file went, but it is the same video, and no free export (here the last one)
+    /// is spent on it again. Changing anything makes another video, which follows the quota.
+    @Test func theSameVideoSharedAfterItsFileWentIsNotCountedAgain() async throws {
+        let scenario = makeScenario(used: UsagePolicy.freeExports - 1)
+        defer { scenario.defaults.tearDown() }
+        await scenario.viewModel.save()
+        #expect(scenario.used == UsagePolicy.freeExports)
+        scenario.viewModel.celebration = nil
+        scenario.viewModel.leave()
+
+        let tomorrow = makeScenario(restarting: scenario)
+        await tomorrow.viewModel.share(to: nil)
+        #expect(!tomorrow.viewModel.showsExportReady, "No paywall for a video already counted")
+        let share = try #require(tomorrow.viewModel.activity)
+        tomorrow.viewModel.activityFinished(.completed(activityType: airDrop), for: share)
+        #expect(tomorrow.used == UsagePolicy.freeExports)
+        #expect(tomorrow.exporter.exports.count == 1, "Made again: its file was gone")
+
+        tomorrow.viewModel.activity = nil
+        tomorrow.viewModel.burnsInCaptions.toggle()
+        await tomorrow.viewModel.share(to: nil)
+        #expect(tomorrow.viewModel.showsExportReady, "Another video: the free exports are used up")
     }
 
     @Test func aRepeatedSaveReusesTheFileAndDeductsOnce() async {

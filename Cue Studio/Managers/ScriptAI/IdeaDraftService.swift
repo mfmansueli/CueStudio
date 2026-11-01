@@ -7,26 +7,36 @@ import Foundation
 
 /// The idea the creator is writing or dictating on the empty Scripts screen: one copy of the text,
 /// read and written by the card, the composer sheet and the generation flow, so a draft is never
-/// lost or duplicated on its way from one to another. It lives with the app session, so closing
-/// Generate with AI keeps the draft in the card, and only a script written from it clears it.
+/// lost or duplicated on its way from one to another. Kept on disk with its brief and the card's choices as they change (`DockDraft`),
+/// so Cue closed by iOS finds it again; only a script written from it (once saved) or the creator clears it.
 @MainActor
 @Observable
 final class IdeaDraftService {
-    private(set) var draft = IdeaPromptDraft()
+    private(set) var draft = IdeaPromptDraft() {
+        didSet { persist() }
+    }
 
     /// What the creator chose on Generate with AI for this idea (nil: their default platform), kept
     /// here so closing that screen and opening it again finds the same choices.
-    var platform: Platform?
-    var length: ScriptLength = .auto
+    var platform: Platform? {
+        didSet { persist() }
+    }
+    var length: ScriptLength = .auto {
+        didSet { persist() }
+    }
     /// The tile picked on the format sheet (Format ⌄ on the card); Auto picks from the idea.
-    var formatChoice: FormatChoice = .auto
+    var formatChoice: FormatChoice = .auto {
+        didSet { persist() }
+    }
     /// How Cue structures the script: the picked format's type; nil for Auto and Talking head.
     var format: ScriptType? {
         get { formatChoice.scriptType }
         set { formatChoice = FormatChoice(newValue) }
     }
     /// The brand brief of a sponsored ad picked on the card: the ad is written from it, and from nothing else.
-    var brand: BrandBrief?
+    var brand: BrandBrief? {
+        didSet { persist() }
+    }
     /// Who writes the idea: Apple Intelligence, or Ultra when the creator picked it on the dock (and allowed it). The creator's last pick stays,
     /// across scripts and launches (the owner's call, 29/10/2026): the writer chip always shows it.
     var engine: ScriptEngine = .apple {
@@ -36,7 +46,9 @@ final class IdeaDraftService {
     var wantsFocus = false
     /// The inspiration the text came from ("Start with it" in Find inspiration). Kept as it was given; what is sent is only what the text
     /// still says of it (`ScriptRequestFactory`), so a creator who changes the idea's direction is never overridden by the card.
-    private(set) var brief: IdeaBrief?
+    private(set) var brief: IdeaBrief? {
+        didSet { persist() }
+    }
     /// What the field held before "Start with it" replaced it: Undo puts it back.
     private(set) var replacedText: String?
     /// Where the writer's pick is kept between launches; nil keeps it for the session only.
@@ -45,6 +57,33 @@ final class IdeaDraftService {
     init(defaults: UserDefaults? = nil) {
         self.defaults = defaults
         engine = defaults?.string(forKey: DefaultsKey.dockWriter).flatMap(ScriptEngine.init(rawValue:)) ?? .apple
+        // The dock as it was left (observers don't run here, so nothing is written back).
+        if let saved = defaults?.data(forKey: DefaultsKey.dockDraft).flatMap({ try? JSONDecoder().decode(DockDraft.self, from: $0) }) {
+            var restored = IdeaPromptDraft()
+            restored.text = IdeaPromptDraft.limited(saved.text, replacing: "")
+            draft = restored
+            brief = saved.brief
+            platform = saved.platform
+            length = saved.length
+            formatChoice = FormatChoice(id: saved.format) ?? .auto
+            brand = saved.brand
+        }
+    }
+
+    /// The dock as it is now: what a script sent from it compares with when it arrives (`ScriptStarter`), so a dock changed meanwhile is never
+    /// cleared.
+    var snapshot: DockDraft {
+        DockDraft(text: draft.text, brief: brief, platform: platform, length: length, format: formatChoice.id, brand: brand)
+    }
+
+    private func persist() {
+        guard let defaults else { return }
+        let saved = snapshot
+        if saved.isEmpty {
+            defaults.removeObject(forKey: DefaultsKey.dockDraft)
+        } else {
+            defaults.set(try? JSONEncoder().encode(saved), forKey: DefaultsKey.dockDraft)
+        }
     }
 
     /// The text as the creator sees it. Writing it here (typing, paste, an example) ends a dictation
@@ -110,7 +149,8 @@ final class IdeaDraftService {
 
     // MARK: - Clearing
 
-    /// The idea became a script: the next one starts empty, with the choices back to the defaults. The writer stays the creator's pick.
+    /// The idea became a script (or "Delete my Cue data"): the next one starts empty, with the choices back to the defaults, on disk too. The
+    /// writer stays the creator's pick.
     func clear() {
         draft = IdeaPromptDraft()
         platform = nil

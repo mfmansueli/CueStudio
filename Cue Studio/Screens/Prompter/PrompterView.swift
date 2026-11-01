@@ -25,6 +25,7 @@ struct PrompterView: View {
     @Environment(ToastService.self) private var toast
     @Environment(LanguageService.self) private var languages
     @Environment(FirstVoyageService.self) private var voyage
+    @Environment(\.scenePhase) private var scenePhase
 
     init(launch: PrompterLaunch, services: AppServices) {
         self.services = services
@@ -126,6 +127,13 @@ struct PrompterView: View {
         }
         .onChange(of: viewModel.session.prompter.scrollMode) {
             viewModel.scrollModeChanged()
+        }
+        // Leaving Cue stops a countdown, and so does a call taking the camera: a take never starts unseen.
+        .onChange(of: scenePhase) { _, phase in
+            viewModel.sceneChanged(isActive: phase == .active)
+        }
+        .onChange(of: viewModel.camera.interruption) {
+            viewModel.cameraInterruptionChanged()
         }
         .sheet(item: $viewModel.sheet) { sheet in
             sheetContent(sheet)

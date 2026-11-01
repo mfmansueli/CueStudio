@@ -33,7 +33,9 @@ struct ShareFlowTests {
         var networks: [ShareDestination]?
     }
 
-    private func makeScenario(usedExports: Int = 0, platform: Platform? = .tiktok) -> Scenario {
+    private func makeScenario(
+        usedExports: Int = 0, platform: Platform? = .tiktok, tier: @escaping @MainActor () -> MembershipTier = { .free }
+    ) -> Scenario {
         let defaults = TestDefaults()
         let script = TestData.script(text: "Okay, real talk.")
         var take = TestData.take(scriptID: script.id)
@@ -48,7 +50,7 @@ struct ShareFlowTests {
         let ledger = ExportLedgerService(store: FakeExportLedgerStore(), quota: quota)
         let toast = ToastService()
         let review = TakeReviewViewModel(
-            takeID: take.id, takes: takes, quota: quota, tier: { .free },
+            takeID: take.id, takes: takes, quota: quota, tier: tier,
             exporter: exporter, photos: photos, sharing: FakeVideoSharing(), ledger: ledger, editing: FakeTakeEditor(), library: library,
             rules: TestData.rulesService(), profile: CreatorProfileService(defaults: defaults.defaults),
             preferences: PreferencesService(defaults: defaults.defaults), drafts: FakeDraftStore(), toast: toast
@@ -168,6 +170,23 @@ struct ShareFlowTests {
         #expect(scenario.flow.costLine?.isWarning == true)
     }
 
+    /// Pro bought from "Your video is ready" over the networks: the queue goes on (one save to Photos, the first network's step), never a
+    /// lone save that leaves the networks waiting and saves again at the next "Share".
+    @Test func buyingProFromTheNetworksGoesOnWithTheQueue() async throws {
+        final class Tier { var value = MembershipTier.free }
+        let tier = Tier()
+        let scenario = makeScenario(usedExports: UsagePolicy.freeExports) { tier.value }
+        defer { scenario.defaults.tearDown() }
+        scenario.flow.openPicker(with: try #require(await rendered(scenario)))
+        await scenario.flow.start()
+        #expect(scenario.review.showsExportReady && scenario.queues.queue(forTake: scenario.take.id) == nil)
+        tier.value = .subscriber
+        await scenario.review.continueAfterPurchase()
+        #expect(scenario.queues.queue(forTake: scenario.take.id)?.current != nil)
+        #expect(scenario.photos.savedURLs.count == 1)
+        #expect(scenario.flow.step != nil && scenario.flow.step != .picker)
+    }
+
     @Test func aVideoAlreadyCountedCostsNothingMoreToShare() async throws {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }
@@ -283,6 +302,34 @@ struct ShareFlowTests {
         #expect(scenario.flow.step == nil)
         #expect(scenario.queues.pending == nil)
         #expect(scenario.queues.later(forTake: scenario.take.id).map(\.network) == [.reels, .linkedin])
+        #expect(scenario.toast.message == "Saved · continue anytime")
+    }
+
+    /// An iPhone tells the sheet's binding it closed after Cue closed it (Send, Edit first): the queue stays as it was, and only a swipe down
+    /// while a step is up leaves the rest for later.
+    @Test func theSheetLeavingAfterSendOrEditFirstKeepsTheQueue() async throws {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        try await startedWithThree(scenario)
+        await scenario.flow.send(to: .tiktok)
+        scenario.flow.sheetDismissed()
+        #expect(scenario.queues.queue(forTake: scenario.take.id)?.current?.network == .tiktok)
+        #expect(scenario.toast.message != "Saved · continue anytime")
+        let operation = try #require(scenario.queues.queue(forTake: scenario.take.id)?.operationID)
+        let share = ActivityShare(operationID: operation, url: URL(filePath: "/tmp/x.mov"), destination: .tiktok)
+        scenario.review.activityFinished(.completed(activityType: "com.zhiliaoapp.musically.share"), for: share)
+        await Wait.until { scenario.flow.step == .confirm(.tiktok) }
+        #expect(scenario.flow.step == .confirm(.tiktok), "Posted on TikTok? still comes")
+        scenario.flow.confirmLive(.tiktok)
+
+        scenario.flow.editFirst()
+        scenario.flow.sheetDismissed()
+        #expect(scenario.queues.queue(forTake: scenario.take.id)?.current?.network == .reels)
+        #expect(scenario.queues.later(forTake: scenario.take.id).isEmpty)
+
+        scenario.flow.step = .step(.reels)
+        scenario.flow.sheetDismissed()
+        #expect(scenario.queues.later(forTake: scenario.take.id).map(\.network) == [.reels, .linkedin], "a swipe down leaves the rest for later")
         #expect(scenario.toast.message == "Saved · continue anytime")
     }
 

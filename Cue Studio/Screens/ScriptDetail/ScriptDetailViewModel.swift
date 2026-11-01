@@ -28,14 +28,21 @@ final class ScriptDetailViewModel {
     /// What the AI is to write into the page when it opens (an idea sent from the card), and the
     /// same request kept for "Try again".
     var pendingRequest: ScriptRequest?
+    /// The script the AI wrote, whole, while its words are still arriving on the page (saved already: leaving keeps all of it).
+    var arrivedScript: GeneratedScript?
+    /// The time iOS gives Cue in the background while a script is written (`ApplicationGrace`); a test stands in for it.
+    var writingGrace: @MainActor () -> @MainActor () -> Void = { ApplicationGrace.begin(named: "Cue script") }
     /// The words shown to the creator, a few at a time; zero with Reduce Motion.
     let revealPause: Duration
-    let ideaDraft: IdeaDraftService?
     /// The paragraph to bring into view (a tap on a block of the Details sheet).
     var readScrollTarget: Int?
     var isNamingFolder = false
     var newFolderName = ""
     private(set) var runningTool: ScriptTool?
+    /// Stops the touch-up rewriting the page (`touchingUp`), for its Stop.
+    @ObservationIgnored private var cancelTouchUp: (() -> Void)?
+    /// The touch-up whose words may land: one stopped, or followed by another, lands nowhere.
+    @ObservationIgnored private var touchUpTicket: UUID?
     private(set) var hookRotation = 0
     /// Hooks written by the model for this script; nil until asked, or without Apple Intelligence.
     private(set) var generatedHooks: [String]?
@@ -66,7 +73,6 @@ final class ScriptDetailViewModel {
         scriptID: UUID,
         startsEditing: Bool = false,
         writing request: ScriptRequest? = nil,
-        ideaDraft: IdeaDraftService? = nil,
         revealPause: Duration = .milliseconds(55),
         library: ScriptLibraryService,
         takes: TakeLibraryService,
@@ -92,7 +98,6 @@ final class ScriptDetailViewModel {
         self.writer = writer
         self.ultra = ultra
         self.toast = toast
-        self.ideaDraft = ideaDraft
         self.revealPause = revealPause
         pendingRequest = request
         loadPage(startsInDraft: startsEditing)
@@ -259,6 +264,45 @@ final class ScriptDetailViewModel {
 
     // MARK: - Tools
 
+    /// A touch-up is rewriting the page's words (a tool on the whole script, a selection, the voice): the page waits for it, so nothing typed
+    /// meanwhile is written over or moves the words it rewrites (A13). A translation or a version makes a copy and leaves the page free.
+    var isTouchingUp: Bool {
+        page.isRewriting || runningTool.map { $0 != .translate && $0 != .newHooks } ?? false
+    }
+
+    /// Stop on a touch-up (the working toast's, the selection bar's): the model is let go, and whatever it answers after lands nowhere.
+    func stopTouchingUp() {
+        touchUpTicket = nil
+        cancelTouchUp?()
+        cancelTouchUp = nil
+    }
+
+    /// Runs the model's touch-up so Stop can end it. `working` shows that it runs, with Stop, until it answers. Nil when it was stopped,
+    /// or when what it was asked about changed before it answered (the script's version, the page's words): its words then land nowhere.
+    func touchingUp<Value: Sendable>(working: String? = nil, _ ask: @escaping @MainActor () async throws -> Value) async throws -> Value? {
+        let ticket = UUID()
+        touchUpTicket = ticket
+        let version = script?.version
+        let words = page.text
+        let job = Task { @MainActor in try await ask() }
+        cancelTouchUp = { job.cancel() }
+        var pill: UUID?
+        if let working {
+            toast.show(working, kind: .working, action: ToastAction(title: String(localized: "Stop")) { [weak self] in self?.stopTouchingUp() })
+            pill = toast.pill
+        }
+        defer {
+            if let pill { toast.endWorking(pill) }
+            if touchUpTicket == ticket {
+                touchUpTicket = nil
+                cancelTouchUp = nil
+            }
+        }
+        let value = try await withTaskCancellationHandler { try await job.value } onCancel: { job.cancel() }
+        guard touchUpTicket == ticket, !job.isCancelled, script?.version == version, page.text == words else { return nil }
+        return value
+    }
+
     func run(_ tool: ScriptTool, language: CueLanguage? = nil) async {
         guard runningTool == nil else { return }
         switch tool {
@@ -326,7 +370,10 @@ final class ScriptDetailViewModel {
         runningTool = tool
         defer { runningTool = nil }
         do {
-            let result = try await writer.rewriteReported(before, with: tool, context: rewriteContext)
+            let context = rewriteContext
+            guard let result = try await touchingUp(working: String(localized: "Rewriting the script…"), { [writer] in
+                try await writer.rewriteReported(before, with: tool, context: context)
+            }) else { return }
             let notice = RewriteNotice.after(
                 tool, before: before, result: result, done: doneMessage(for: tool), idealRange: preset.idealRange, language: paceLanguage
             )
@@ -365,13 +412,16 @@ final class ScriptDetailViewModel {
                 sayResult(String(localized: "Couldn’t draft it"), kind: .problem, action: retry { await $0.run(.translate, language: language) }, about: title)
                 return
             }
-            // A translation is a new script in the new language; the original stays as written.
+            // A translation is a new script in the new language; the original stays as written. What the AI writes is a draft until the
+            // creator says it is ready (the owner's call, 20/10/2026), and an Ultra AI draft stays one in any language.
             library.create(
                 title: String(localized: "\(script.displayTitle) (\(language.localizedName))"),
                 text: result.text, platform: script.platform, type: script.type, folder: script.folder,
-                factCheck: copiesNeedFactCheck, language: language
+                factCheck: copiesNeedFactCheck, language: language, isFinished: false, draftedBy: script.draftedBy
             )
             sheet = nil
+            // Not written (a full iPhone): the app says so (`RootView`), never that it was saved.
+            guard !library.saveFailed else { return }
             var message = String(localized: "\(language.localizedName) version saved")
             if result.leftAsWritten > 0 {
                 message += " · " + String(localized: "\(result.leftAsWritten) of \(result.parts) parts left as written")
@@ -405,12 +455,14 @@ final class ScriptDetailViewModel {
             context.platform = platform
             let range = rules.preset(for: platform, monetizationGoals: profile.profile.monetizationGoals).idealRange
             context.idealRange = range
-            let result = try await writer.rewriteReported(script.text, with: .fitToTime, context: context)
+            // The words on the page, the last one typed included (saved a second later).
+            let result = try await writer.rewriteReported(workingText, with: .fitToTime, context: context)
             library.create(
                 title: String(localized: "\(script.displayTitle) (\(platform.label))"),
                 text: result.text, platform: platform, type: script.type, folder: script.folder,
-                factCheck: copiesNeedFactCheck, language: script.language
+                factCheck: copiesNeedFactCheck, language: script.language, isFinished: false, draftedBy: script.draftedBy
             )
+            guard !library.saveFailed else { return }
             var message = String(localized: "\(platform.label) version saved")
             // The version is the script as the platform's length asks it, or says how far it got.
             if let length = RewriteNotice.lengthNote(words: ReadTime.wordCount(in: result.text), idealRange: range, language: script.paceLanguage) {
@@ -444,6 +496,8 @@ final class ScriptDetailViewModel {
 
     func duplicate() {
         library.duplicate([scriptID])
+        // Not written (a full iPhone): the app says so (`RootView`), never that it was saved.
+        guard !library.saveFailed else { return }
         toast.show(String(localized: "Duplicated"))
     }
 

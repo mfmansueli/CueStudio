@@ -146,14 +146,27 @@ extension PrompterViewModel {
         await restartSpeech(after: generation)
     }
 
-    /// A recognizer that stops by itself (the system took the audio for a moment, a model was
-    /// unloaded) is started again, a few times in a row, before the text settles for the level. Every
-    /// word it confirms in between starts the count over.
+    /// A recognizer that stops by itself (the system took the audio for a moment, a model was unloaded) is started again: a few times
+    /// a second apart, then, said once ("Voice Following paused"), every few seconds while Voice Following is on, so after a call or Siri
+    /// the words are followed again by themselves (the line says it scrolls while you talk meanwhile). Every word it confirms starts the
+    /// count over.
     private func restartSpeech(after generation: Int) async {
-        guard speechRestarts < Self.maximumSpeechRestarts else { return }
         speechRestarts += 1
-        try? await Task.sleep(for: speechRestartDelay)
+        let quick = speechRestarts <= Self.maximumSpeechRestarts
+        if speechRestarts == Self.maximumSpeechRestarts + 1 {
+            toast.show(String(localized: "Voice Following paused · Scrolling while you talk"), kind: .problem)
+        }
+        try? await Task.sleep(for: quick ? speechRestartDelay : speechRetryInterval)
         guard !Task.isCancelled, speechGeneration == generation else { return }
+        speechSession = nil
+        startSpeechIfNeeded()
+    }
+
+    /// Back on screen with Voice Following on and recognition stopped by itself meanwhile: it listens again at once.
+    func resumeSpeechIfStopped() {
+        guard session.prompter.scrollMode == .voice, script != nil, !followsSpeech, speechPreparation == nil, speechUnavailable == nil,
+              speechSession != nil else { return }
+        speechRestarts = 0
         speechSession = nil
         startSpeechIfNeeded()
     }

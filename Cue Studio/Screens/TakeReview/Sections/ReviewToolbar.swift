@@ -20,6 +20,8 @@ struct ReviewToolbar: ToolbarContent {
     var onSuggest: (() -> Void)?
     /// Counts the times a take was made the best here: the star's sparks fly at each.
     var bestBursts = 0
+    /// The video is exporting: the star and the bin wait (the take stays as it is until the export ends or is cancelled).
+    var isExporting = false
 
     var body: some ToolbarContent {
         ToolbarItem(placement: .topBarLeading) {
@@ -43,9 +45,11 @@ struct ReviewToolbar: ToolbarContent {
             .accessibilityLabel(Text("Best take"))
             .accessibilityValue(Text(take.isBest ? "On" : "Off"))
             .accessibilityIdentifier("review.bestButton")
+            .disabled(isExporting)
             Button(action: onDelete) { Image(systemName: "trash") }
                 .accessibilityLabel(Text("Delete"))
                 .accessibilityIdentifier("review.deleteButton")
+                .disabled(isExporting)
         }
     }
 

@@ -46,8 +46,12 @@ extension ScriptDetailViewModel {
         let textChanged = CueParser.paragraphs(in: page.text) != CueParser.paragraphs(in: script.text)
         guard titleChanged || textChanged else { return }
         if textChanged { voiceQuestions?.noteEdit(ofScript: scriptID) }
-        let takeCount = scriptTakes.count
-        let bumpsVersion = textChanged && takeCount > 0 && !page.bumpedVersion
+        // A new version when the words change after a take was recorded on this one; the edits after it, until the next take, are that
+        // same version. Takes saved before versions were kept fall back to once per visit.
+        let recorded = scriptTakes
+        let takeCount = recorded.count
+        let latestTakeVersion = recorded.compactMap(\.scriptVersion).max()
+        let bumpsVersion = textChanged && takeCount > 0 && (latestTakeVersion.map { script.version <= $0 } ?? !page.bumpedVersion)
         let title = page.title
         let text = textChanged ? page.text : script.text
         library.update(scriptID) { script in
@@ -85,9 +89,16 @@ extension ScriptDetailViewModel {
     /// The page goes away (back, or another tab): what was written is kept, a writing in progress stops. Leaving never changes the
     /// script's state (the owner's call, 20/10/2026: Back is how creators leave, and it must not decide that a script is a draft or ready);
     /// only the "Ready to record" switch does, and recording. A recorded script's strip says "Changed since take" after edits.
+    /// Leaving: a script that has arrived and is still showing its words is kept whole (it was paid for, and saved already); one still
+    /// being asked for stops.
     func leavePage() {
         endVoicePreview()
-        stopWriting()
+        if page.isWriting, let arrivedScript {
+            pageWritingTask?.cancel()
+            finishWriting(arrivedScript, quietly: true)
+        } else {
+            stopWriting()
+        }
         commitPage()
     }
 
@@ -266,7 +277,11 @@ extension ScriptDetailViewModel {
         do {
             var context = rewriteContext
             context.isPassage = true
-            let result = try await writer.rewriteReported(selected, with: tool, context: context)
+            let asked = context
+            // Stopped (the bar's Stop) or outdated: the words stay as they are.
+            guard let result = try await touchingUp({ [writer] in try await writer.rewriteReported(selected, with: tool, context: asked) }) else {
+                return
+            }
             // The tool couldn't do what it says to these words: they stay, and the creator is told, instead of a "change" that changes nothing.
             guard !result.isUntouched, result.text != selected else {
                 sayResult(
@@ -381,14 +396,13 @@ extension ScriptDetailViewModel {
     /// A script opened from the card's arrow: the words are written into the page, in violet,
     /// the title first, with Stop within reach.
     func beginWritingIfNeeded() {
-        // After an error the page waits for "Try again": coming back to it doesn't start the model by itself.
-        guard let request = pendingRequest, !page.isWriting, page.writingError == nil else { return }
+        // A request that failed is let go (`write`): coming back to the page never starts the model by itself.
+        guard let request = pendingRequest, !page.isWriting else { return }
         write(request)
     }
 
     func write(_ request: ScriptRequest) {
         pendingRequest = request
-        page.writingError = nil
         page.isWriting = true
         page.revealed = ""
         // The star says how much is written while it waits; the page's pill says it when there is no star.
@@ -396,7 +410,11 @@ extension ScriptDetailViewModel {
         page.progress = meter
         transition?.track(meter)
         let startedAt = ContinuousClock.now
+        arrivedScript = nil
+        // A script asked for keeps writing for the few seconds iOS allows after Cue leaves (Ultra AI takes up to a minute).
+        let endGrace = writingGrace()
         pageWritingTask = Task { [weak self] in
+            defer { endGrace() }
             guard let self else { return }
             do {
                 var generated = try await generate(request, reporting: meter)
@@ -404,18 +422,13 @@ extension ScriptDetailViewModel {
                 // In paragraphs, a blank line between them: easier to read, and each one arrives as a piece short enough to draw.
                 generated.text = ScriptParagraphs.arranged(generated.text)
                 meter.finish()
+                // Saved as it arrives: the star and the words arriving only show it, and a Cue that iOS closes meanwhile keeps the script.
+                keepArrived(generated)
                 let returnedAt = ContinuousClock.now
                 // The star opens the page (ring, crossfade) before the first word is written.
                 await transition?.contentReady()
                 guard !Task.isCancelled else { return }
                 page.title = generated.title
-                // What the written page shows around the words is in place before they arrive: the fact check and the voice question.
-                if generated.needsFactCheck {
-                    library.update(scriptID) { script in
-                        script.factCheck = true
-                        if generated.engine == .ultra { script.draftedBy = .ultra }
-                    }
-                }
                 // The voice question compares with Apple Intelligence's own rewrites: not on an Ultra AI script.
                 if request.engine == .apple { beginVoicePreview(for: request) }
                 // The title arrives first, word by word (`ScriptPageHeader`), then the words under it.
@@ -446,9 +459,13 @@ extension ScriptDetailViewModel {
                     transition.fail(saying: Self.failureMessage(for: error), canRetry: ScriptFailureNotice.isWorthRetrying(error))
                     return
                 }
+                // No star (a page asked to write without one; every request from the app has its star): the same words in a toast,
+                // and the page is the creator's to write in. Asking again is the star's Try again, from where the idea was sent.
                 page.isWriting = false
                 page.revealed = nil
-                page.writingError = error.localizedDescription
+                pendingRequest = nil
+                if script?.awaitsDraft == true { library.update(scriptID) { $0.awaitsDraft = false } }
+                toast.showResult(Self.failureMessage(for: error), kind: .problem)
             }
         }
     }
@@ -467,11 +484,6 @@ extension ScriptDetailViewModel {
     }
 
     /// "Try again" after an error: the same idea, once more.
-    func retryWriting() {
-        guard let request = pendingRequest else { return }
-        write(request)
-    }
-
     private func reveal(_ text: String) async {
         let words = text.split(separator: " ", omittingEmptySubsequences: false)
         var shown = 0
@@ -482,16 +494,9 @@ extension ScriptDetailViewModel {
         }
     }
 
-    private func finishWriting(_ generated: GeneratedScript) {
-        let request = pendingRequest
-        page.text = generated.text
-        page.revealed = nil
-        page.progress = nil
-        page.isWriting = false
-        pageWritingTask = nil
-        pendingRequest = nil
-        // Written: two soft taps as the page becomes the creator's.
-        HapticPatterns.playFinish()
+    /// The script as the model wrote it, in the library before its words are shown (the fact check is in place around them).
+    private func keepArrived(_ generated: GeneratedScript) {
+        arrivedScript = generated
         library.update(scriptID) { script in
             script.title = generated.title
             script.text = generated.text
@@ -500,27 +505,30 @@ extension ScriptDetailViewModel {
             // The AI drafts for the creator: what it writes is a draft until they switch it to "Ready to record" (the owner's call,
             // 20/10/2026).
             script.isFinished = false
+            script.awaitsDraft = false
         }
-        // The idea became a script: the card starts empty the next time.
-        clearDraft(writtenFrom: request)
+    }
+
+    /// - Parameter quietly: left before the words finished arriving: no taps and no toast for a page that is gone.
+    private func finishWriting(_ generated: GeneratedScript, quietly: Bool = false) {
+        let request = pendingRequest
+        arrivedScript = nil
+        page.text = generated.text
+        page.revealed = nil
+        page.progress = nil
+        page.isWriting = false
+        pageWritingTask = nil
+        pendingRequest = nil
+        // Written: two soft taps as the page becomes the creator's.
+        if !quietly { HapticPatterns.playFinish() }
         if request?.voice != nil { voiceQuestions?.recordVoiceScript(scriptID) }
         draftLearning?.noteDraft(generated.text, for: scriptID)
+        guard !quietly else { return }
         toast.show(generated.engine == .ultra
             ? String(localized: "Ultra AI draft ready · Check facts")
             : generated.needsFactCheck
             ? String(localized: "Draft ready · Check facts")
             : String(localized: "Draft ready · Edit anything"), kind: .cue)
-    }
-
-    /// The card's idea became this script: it starts empty the next time. A script written from something else (an idea written as it is
-    /// from Find inspiration, an answered comment) leaves the creator's own draft where it was.
-    private func clearDraft(writtenFrom request: ScriptRequest?) {
-        guard let ideaDraft else { return }
-        if case .prompt(let text) = request?.source, let draft = ideaDraft.submission,
-           text.trimmingCharacters(in: .whitespacesAndNewlines) != draft.trimmingCharacters(in: .whitespacesAndNewlines) {
-            return
-        }
-        ideaDraft.clear()
     }
 
     /// "Stop": the words that have arrived stay; the rest isn't written.
@@ -529,14 +537,15 @@ extension ScriptDetailViewModel {
         pageWritingTask = nil
         guard page.isWriting else { return }
         page.isWriting = false
-        let request = pendingRequest
+        arrivedScript = nil
+        // Stopped by the creator: the page is theirs now, whatever it holds.
+        if script?.awaitsDraft == true { library.update(scriptID) { $0.awaitsDraft = false } }
         pendingRequest = nil
         // A script stopped halfway isn't the one to judge the voice by.
         page.voicePreview = nil
-        // The idea leaves the card only if some of it became a script: stopped before the first word, it stays.
+        // What arrived is the page's (the dock it came from started over when the script was saved, `ScriptStarter`).
         if let revealed = page.revealed, !revealed.isEmpty {
             page.text = revealed
-            clearDraft(writtenFrom: request)
         }
         page.revealed = nil
         page.progress = nil

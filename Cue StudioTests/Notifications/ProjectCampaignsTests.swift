@@ -64,6 +64,18 @@ struct ProjectCampaignsTests {
         #expect(found.first?.earliest == monday + Fixtures.hours(48))
     }
 
+    /// The edit was left open on take 1 and take 2 came after: the reminder opens the edit where it was, not a new one on take 2.
+    @Test func aRecordingToFinishOpensTheTakeWhoseEditIsOpen() {
+        let script = Fixtures.script(.recorded)
+        var edited = Fixtures.take(scriptID: script.id, recordedAt: monday, stage: .edit)
+        edited.draftSavedAt = monday + Fixtures.hours(1)
+        let newer = Fixtures.take(scriptID: script.id, recordedAt: monday + Fixtures.hours(2), stage: .edit)
+        var facts = NotificationFacts(now: monday)
+        facts.scripts = [script]
+        facts.takes = [edited, newer]
+        #expect(candidates(facts).first?.destination == .takeEditor(edited.id, tool: nil))
+    }
+
     @Test func anExportedVideoHasNoNextStep() {
         let script = Fixtures.script(.recorded)
         var facts = NotificationFacts(now: monday)

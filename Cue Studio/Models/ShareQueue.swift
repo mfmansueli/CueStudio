@@ -61,6 +61,11 @@ nonisolated struct ShareQueue: Codable, Hashable, Identifiable, Sendable {
         for index in items.indices where items[index].state == .pending { items[index].state = .later }
     }
 
+    /// The networks `left` (this video's earlier queue) already posted are posted here too.
+    mutating func keepPosted(from left: ShareQueue) {
+        for index in items.indices where left.posted.contains(items[index].network) { items[index].state = .posted }
+    }
+
     /// "POST TO LINKEDIN LATER": a network left for later is the one being posted now.
     mutating func resume(_ network: ShareDestination) { set(network, to: .pending) }
 

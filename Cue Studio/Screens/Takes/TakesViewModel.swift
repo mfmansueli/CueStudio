@@ -51,7 +51,8 @@ final class TakesViewModel {
     // MARK: - Importing
 
     /// "Import video": a video from Photos becomes a video of its own here, marked imported (never a take of the teleprompter),
-    /// and opens straight in the editor.
+    /// and opens straight in the editor. One that can't come in leaves nothing of its copy behind, and says the iPhone is full only when that
+    /// is what stopped it.
     func importVideo(_ item: PhotosPickerItem) async {
         guard !isImporting else { return }
         isImporting = true
@@ -63,15 +64,23 @@ final class TakesViewModel {
         }
         do {
             let video = try await importer.importVideo(item) { _ in }
-            let take = try takes.importVideo(
-                fileAt: video.url, duration: video.duration, uprightSize: video.uprightSize, frameRate: video.frameRate
-            )
+            let take: Take
+            do {
+                take = try takes.importVideo(
+                    fileAt: video.url, duration: video.duration, uprightSize: video.uprightSize, frameRate: video.frameRate
+                )
+            } catch {
+                // The library couldn't take it in (given back where it was copied): this attempt's copy goes.
+                EditMediaFiles.discardPartial(video.url)
+                throw error
+            }
             refresh()
             presentation.openReview(of: take, then: .edit)
         } catch is CancellationError {
             // Stopped: nothing to say.
         } catch {
-            toast.showResult(String(localized: "Can't import this video"), kind: .problem, ending: work)
+            let message = EditorErrorMessage.isOutOfSpace(error) ? EditorErrorMessage.outOfSpace : String(localized: "Can't import this video")
+            toast.showResult(message, kind: .problem, ending: work)
         }
     }
 
@@ -158,9 +167,11 @@ final class TakesViewModel {
         filter.stage = filter.stage == stage ? nil : stage
     }
 
+    /// A video "In edit" (and its Edit) opens on the take whose edit is open, not on the best one, where a new edit would start.
     func open(_ video: TakeVideo, then action: ReviewLaunchAction? = nil) {
-        guard let best = video.best else { return }
-        presentation.openReview(of: best, then: action)
+        let inEdit = action == .edit || video.stage == .edit ? drafts.takeInEdit(among: video.takes) : nil
+        guard let take = inEdit ?? video.best else { return }
+        presentation.openReview(of: take, then: action)
     }
 
     func retake(_ video: TakeVideo) {

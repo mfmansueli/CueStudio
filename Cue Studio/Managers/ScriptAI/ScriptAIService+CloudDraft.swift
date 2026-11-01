@@ -9,7 +9,7 @@ extension ScriptAIService {
         correcting violations: [VoiceViolation], attempt: ScriptDraftAttempt
     ) async throws -> GeneratedScript {
         #if DEBUG
-        if evaluatesFreeProse, request.isFreePrompt, request.durationPolicy == .informative {
+        if evaluatesFreeProse, request.durationPolicy == .informative {
             return try await streamCloudProse(request, since: begin, insistsOnLanguage: insistsOnLanguage, correcting: violations, attempt: attempt)
         }
         #endif

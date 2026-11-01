@@ -16,7 +16,13 @@ nonisolated struct PickedMovie: Transferable, Sendable {
         FileRepresentation(importedContentType: .movie) { received in
             let ext = received.file.pathExtension.isEmpty ? "mov" : received.file.pathExtension
             let destination = try EditMediaFiles.newFile(pathExtension: ext)
-            try FileManager.default.copyItem(at: received.file, to: destination.url)
+            do {
+                try FileManager.default.copyItem(at: received.file, to: destination.url)
+            } catch {
+                // A copy cut short (the iPhone full) leaves nothing behind.
+                EditMediaFiles.discardPartial(destination.url)
+                throw error
+            }
             return PickedMovie(url: destination.url)
         }
     }

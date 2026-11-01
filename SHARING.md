@@ -21,18 +21,25 @@ Uma exportação grátis é descontada **uma vez por operação** (um arquivo ex
 - **Uma vez só:** `ExportLedgerService` guarda cada operação (`ExportOperation`, JSON em Application Support) com `countedAt`. Salvar e depois
   compartilhar o mesmo arquivo, callbacks repetidos, tentativas e a volta do app depois de fechado não descontam de novo. O razão é gravado
   **antes** da cota (Keychain): se o app morrer entre os dois, no pior caso uma exportação deixa de ser contada, nunca é contada duas vezes.
-- **Mesmo arquivo:** `ExportFingerprint` (SHA-256 do take, da edição, do formato, das legendas, da qualidade e do arquivo gravado) decide se o
-  arquivo já exportado serve de novo. Qualquer mudança gera outra operação, que segue a cota normal. Um arquivo que o sistema apagou é refeito
-  **na mesma operação** quando o criador compartilha de novo a partir de "Ready to travel".
-- **Uma operação já contada nunca pede a cota de novo:** com 0 exportações grátis sobrando, ainda dá para compartilhar o vídeo que acabou de
-  ser salvo; uma edição diferente abre o paywall.
-- O contador no Keychain (5 grátis) não foi tocado: o uso existente vale, e reinstalar não devolve exportações.
-- **Limpeza:** `leave()` (ao fechar a revisão sem nada em andamento) apaga o arquivo temporário; ao abrir o app, arquivos com mais de 24 h somem
-  e registros com mais de 7 dias também. O arquivo fica enquanto a folha de compartilhamento, a celebração ou uma exportação precisam dele.
+- **Mesmo vídeo:** `ExportFingerprint` (SHA-256 do take, da edição inteira (cortes, legendas, áudio, mídias, efeitos), do formato, das legendas
+  queimadas, da qualidade e do arquivo gravado; o destino não entra) decide se é o mesmo vídeo. Qualquer mudança é outro vídeo, que segue a
+  cota normal. Um arquivo que o sistema apagou é refeito **na mesma operação** quando o criador compartilha de novo a partir de "Ready to
+  travel"; em qualquer outro caminho, o arquivo refeito é uma operação nova que já nasce contada.
+- **Um vídeo já contado nunca pede a cota de novo**, com o arquivo ainda lá ou não: salvar hoje e compartilhar amanhã (a revisão fechou, o
+  arquivo foi apagado) é uma exportação só, e com 0 grátis sobrando o paywall não abre para ele; uma edição diferente abre. A conferência e a
+  marca são um passo só na main actor (`recordDelivery`): duas entregas ao mesmo tempo de cópias do mesmo vídeo descontam uma vez.
+- O contador no Keychain (3 grátis, `UsagePolicy.freeExports`) não foi tocado: o uso existente vale, e reinstalar não devolve exportações.
+- **Limpeza:** `leave()` (ao fechar a revisão sem nada em andamento) apaga o arquivo temporário; ao abrir o app, arquivos com mais de 24 h somem,
+  e registros de vídeos nunca entregues com mais de 7 dias também. **O registro de um vídeo contado não expira**: fica enquanto o take existir
+  (é pequeno; o arquivo de vídeo é que sai). O arquivo fica enquanto a folha de compartilhamento, a celebração ou uma exportação precisam dele.
+  Um take apagado de vez (pela revisão, depois do Undo, ou pela aba Takes) leva os arquivos exportados dele, os registros dele no razão
+  (`ExportLedgerService.forget`) e a fila de "Share to universe" (`TakeLibraryService.takeGone`); "Delete my Cue data" apaga tudo o que o Cue deixou no tmp com o nome `Cue-` (`DataEraserService.removeTemporaryFiles`).
+  A capa salva em Fotos não fica no tmp: o arquivo sai assim que o Fotos tem a cópia dele.
 
 Caminhos de exportação (todos passam pelo razão): **Take Review** (`TakeReviewViewModel`: Save video, tiles de plataforma, More, "Ready to
-travel" › Share to / Other apps, "On its way" › Share again, e o "download" do fim do editor), **Quick edit** (`QuickEditExportModel`:
-Export video, Share). `saveCoverIfChosen` salva só uma imagem e nunca conta. O compartilhamento de roteiros (texto) e do universo (imagem) não é
+travel" › Share to / Other apps, "On its way" › Share again, e o "download" do fim do editor). O editor não exporta: as respostas do fim dele
+("Yes, share", "Download video") voltam à revisão, que exporta; um Done cuja edição não foi salva no take volta como "Not yet" (a edição fica
+rascunho), nunca exporta o vídeo como estava. `saveCoverIfChosen` salva só uma imagem e nunca conta. O compartilhamento de roteiros (texto) e do universo (imagem) não é
 exportação de vídeo.
 
 ## 1.1. "Share to universe" (fase A): uma exportação por envio, uma rede por vez
@@ -41,6 +48,8 @@ O botão amarelo da revisão renderiza o arquivo uma vez (`ExportAction.render`:
 (`ShareIntegrationConfiguration.integrationsEnabled = false`: `ShareRouteResolver` devolve `.activitySheet` para todos). Conta **uma** exportação: quando o arquivo sai (salvo em Fotos pela opção "Also save to Photos", ou a primeira atividade
 concluída), nunca por rede; editar e reexportar dentro da fila herda a contagem (`ExportLedgerService.begin(inheritingCountFrom:)`). Uma atividade concluída pergunta "Posted on {rede}?": só **Yes, it's live** marca a rede como postada,
 grava o `ShareRecord` (plataforma, data, tema) e acende o planeta; **Not yet** volta ao passo; cancelar a folha também. O Cue nunca afirma que algo foi publicado sem a resposta do criador.
+Sem exportações grátis, "Share to N networks" abre "Your video is ready"; o Pro comprado dali segue com a fila (`TakeReviewViewModel.queueResumes` chama
+`ShareFlow.start` de novo: uma cópia em Fotos, o passo da primeira rede), nunca um salvamento solto que deixaria as redes esperando.
 
 ## 2. Estados (`ExportPhase`) e mensagens
 
@@ -55,7 +64,7 @@ envios com entrega.
 
 | Destino | Rota | Evidência de entrega | Sem configuração / app ausente |
 |---|---|---|---|
-| TikTok | **Share Kit** (`TikTokShareManager`): salva em Fotos, manda o `localIdentifier` do asset | callback do Share Kit (`errorCode == 0` e `shareState` 20000/20015) | sem client key/redirect URI: **salvar e abrir**; sem app: folha do sistema |
+| TikTok | **Share Kit** (`TikTokShareManager`, fase B: o SDK fica fora do app de lançamento, §4): salva em Fotos, manda o `localIdentifier` do asset | callback do Share Kit (`errorCode == 0` e `shareState` 20000/20015) | sem client key/redirect URI: **salvar e abrir**; sem app: folha do sistema |
 | Instagram Reels | `instagram-reels://share` + vídeo na área de transferência (`com.instagram.sharedSticker.backgroundVideo`, expira em 5 min) | **nenhuma** (a Meta não dá callback). O vídeo vai para a área de transferência local e o compositor abre com ele; **não sobe para a rede** até a pessoa tocar em compartilhar lá. Conta como saída do Cue (`pasteboardHandoff`), sem celebração | sem Meta App ID, vídeo fora de 3–60 s: salvar e abrir |
 | Instagram Stories | `instagram-stories://share?source_application=<ID>` + o mesmo item | **nenhuma** (idem) | sem Meta App ID, vídeo > 20 s: salvar e abrir |
 | YouTube / Shorts | folha do sistema (a extensão de compartilhamento do app do YouTube, quando a versão instalada tem) | atividade concluída | app ausente: folha do sistema |
@@ -78,8 +87,17 @@ foi inventada.
      em `CFBundleURLTypes › CFBundleURLSchemes`;
    - um **universal link** do Cue (domínio com `apple-app-site-association`) registrado como redirect URI → `TikTokShareRedirectURI`, mais o
      entitlement **Associated Domains** (`applinks:<domínio>`) em `Cue Studio.entitlements`;
-   - a aprovação do app/Share Kit pela TikTok. Sem ela o app do TikTok não devolve resultado.
-   - O SDK (`tiktok-opensdk-ios` 2.5.0, SPM) já está no projeto e o callback já entra por `onOpenURL`/`onContinueUserActivity` (`RootView`).
+   - a aprovação do app/Share Kit pela TikTok. Sem ela o app do TikTok não devolve resultado. A TikTok só aprova apps já publicados na App Store; o FAQ
+     dela fala de uma revisão excepcional para app não lançado, mas o plano não conta com ela.
+   - **Fase B: o SDK** (decisão do dono, 01/11/2026). O Cue é lançado **sem** o `tiktok-opensdk-ios`: na fase A nada o chama, e um SDK parado não
+     entra no app. Conferido antes de tirar: código-fonte (2,9 MB no checkout, dois bundles de 20 KB no app), manifestos de privacidade sem dado
+     coletado, sem rastreio e sem API de motivo declarado, e um único arquivo do app o usava. O código da fase B fica, isolado:
+     `Managers/Share/TikTok/TikTokShareManager.swift` compila o Share Kit só com `#if TIKTOK_SHARE_KIT` (uma condição explícita: `canImport`
+     diria sim numa pasta de build que ainda guarda os módulos do SDK); sem ela, a mesma classe responde "não enviado" e o TikTok usa o fallback. `TikTokShareResult` (os códigos do Share Kit) e a rota seguem testados. **Para ligar:**
+     (1) adicionar o pacote `https://github.com/tiktok/tiktok-opensdk-ios` (2.5.0 ou mais novo da 2.x) ao alvo do app com os produtos
+     `TikTokOpenSDKCore` e `TikTokOpenShareSDK`, e `TIKTOK_SHARE_KIT` em `SWIFT_ACTIVE_COMPILATION_CONDITIONS` de `Config/App.xcconfig`; (2) voltar `LSApplicationQueriesSchemes` com `tiktoksharesdk`, `snssdk1180` e `snssdk1233` (o SDK
+     consulta esses esquemas); (3) as chaves acima; (4) `ShareIntegrationConfiguration.integrationsEnabled = true` depois da validação em aparelho.
+     O callback já entra por `onOpenURL`/`onContinueUserActivity` (`RootView`).
 2. **Instagram Reels / Stories** (Meta for Developers):
    - criar um app Meta, deixá-lo **Live**, e colocar o **App ID** em `MetaAppID`. A página de Reels exige o App ID e o app em produção.
    - A página de Stories lista vídeo de fundo na tabela de formatos mas só mostra código iOS para imagem; usamos a mesma chave `backgroundVideo`
@@ -87,7 +105,7 @@ foi inventada.
 3. **YouTube**: o app do YouTube voltou a ter extensão de compartilhamento de vídeo na versão 19.47.7 (relatado pela imprensa, **não** pela
    documentação do Google). Confirmar em aparelho; se não aparecer na folha, o destino precisa virar "salvar e abrir".
 4. **LinkedIn**: nenhuma integração pública aceita um vídeo de outro app; o vídeo é só salvo em Fotos e o Cue recomenda postar pelo app.
-5. `LSApplicationQueriesSchemes` declara só o que o SDK do TikTok consulta (`tiktoksharesdk`, `snssdk1180`, `snssdk1233`). O Cue não pergunta se um app está instalado: o iOS 27 depreciou `canOpenURL` ("tente abrir e trate a falha"), então o destino é tentado e, se não abre, o vídeo vai para a folha do sistema.
+5. Sem o SDK, o Info.plist não declara `LSApplicationQueriesSchemes`. O Cue não pergunta se um app está instalado: o iOS 27 depreciou `canOpenURL` ("tente abrir e trate a falha"), então o destino é tentado e, se não abre, o vídeo vai para a folha do sistema.
 
 **Validação em aparelho (pendente):** só um iPhone com TikTok, Instagram, YouTube e LinkedIn instalados e as credenciais acima mostra a
 entrega de verdade. Os testes automáticos cobrem a contagem, as rotas, o mapeamento dos códigos do TikTok e o que o Cue escreve na área de

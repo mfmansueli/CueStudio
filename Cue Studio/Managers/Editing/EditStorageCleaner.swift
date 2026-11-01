@@ -56,7 +56,7 @@ nonisolated enum EditStorageCleaner {
     @concurrent
     static func clean(
         launchedAt: Date, recordingFolders: [URL] = [LocalTakeRepository.defaultDirectory, EditMediaFiles.directory],
-        media: URL = EditMediaFiles.directory, support: URL = .applicationSupportDirectory
+        media: URL = EditMediaFiles.directory, support: URL = .applicationSupportDirectory, defaults: UserDefaults = .standard
     ) async {
         let temporary = URL.temporaryDirectory
         for name in staleSounds(files: modified(in: temporary), launchedAt: launchedAt) {
@@ -65,16 +65,31 @@ nonisolated enum EditStorageCleaner {
         for folder in recordingFolders {
             for name in retired(modified(in: folder).keys) { try? FileManager.default.removeItem(at: folder.appending(path: name)) }
         }
-        sweepOrphanedMedia(launchedAt: launchedAt, media: media, support: support)
+        sweepOrphanedMedia(launchedAt: launchedAt, media: media, support: support, defaults: defaults)
     }
 
-    /// The edits' media nothing in `support` names (`orphanedMedia`), with their sidecars.
-    static func sweepOrphanedMedia(launchedAt: Date, media: URL, support: URL) {
+    /// The edits' media nothing in `support` names (`orphanedMedia`), with their sidecars; and, whatever their age, the copies of failed
+    /// imports written down because they couldn't be removed then (`EditMediaFiles.discardPartial`).
+    static func sweepOrphanedMedia(launchedAt: Date, media: URL, support: URL, defaults: UserDefaults = .standard) {
         let files = modified(in: media)
-        guard !files.isEmpty else { return }
+        let pending = Set(defaults.stringArray(forKey: DefaultsKey.editMediaDeletionsPending) ?? [])
+        guard !files.isEmpty else {
+            if !pending.isEmpty { defaults.removeObject(forKey: DefaultsKey.editMediaDeletionsPending) }
+            return
+        }
         // A saved file that can't be read now (the iPhone locked since it started, a damaged file) might name any of them.
         guard let saved = savedText(in: support, skipping: media) else { return }
         let orphans = orphanedMedia(files: files, launchedAt: launchedAt) { saved.contains($0) }
+        var left = Set<String>()
+        for name in pending where files[name] != nil && !saved.contains(name) {
+            try? FileManager.default.removeItem(at: media.appending(path: name))
+            if FileManager.default.fileExists(atPath: media.appending(path: name).path(percentEncoded: false)) { left.insert(name) }
+        }
+        if left.isEmpty {
+            defaults.removeObject(forKey: DefaultsKey.editMediaDeletionsPending)
+        } else {
+            defaults.set(left.sorted(), forKey: DefaultsKey.editMediaDeletionsPending)
+        }
         for name in orphans {
             try? FileManager.default.removeItem(at: media.appending(path: name))
             for sidecar in sidecarExtensions {
@@ -83,14 +98,15 @@ nonisolated enum EditStorageCleaner {
         }
     }
 
-    /// Every JSON file Cue keeps under `support` (outside `media`), as one text to look names up in; nil when one of them
-    /// can't be read as text.
-    static func savedText(in support: URL, skipping media: URL) -> String? {
-        let skipped = media.standardizedFileURL.path(percentEncoded: false)
+    /// Every JSON file Cue keeps under `support` (outside `media`, when given), as one text to look names up in; nil when one of
+    /// them can't be read as text.
+    static func savedText(in support: URL, skipping media: URL? = nil) -> String? {
+        let skipped = media?.standardizedFileURL.path(percentEncoded: false)
         var text = ""
         let files = FileManager.default.enumerator(at: support, includingPropertiesForKeys: nil)
         while let url = files?.nextObject() as? URL {
-            guard !url.standardizedFileURL.path(percentEncoded: false).hasPrefix(skipped), url.pathExtension == "json" else { continue }
+            if let skipped, url.standardizedFileURL.path(percentEncoded: false).hasPrefix(skipped) { continue }
+            guard url.pathExtension == "json" else { continue }
             guard let data = try? Data(contentsOf: url), let read = String(bytes: data, encoding: .utf8) else { return nil }
             text += read
         }

@@ -27,6 +27,23 @@ struct PresentationServiceTests {
         #expect(presentation.sheet == nil)
     }
 
+    /// B18: a notification about the take whose review is already on screen (its export finished, its queue's turn) doesn't open it a
+    /// second time, which came back after the creator closed it; another take's review, or one asked to do something else, still opens.
+    @Test func aNotificationForTheReviewOnScreenDoesNotOpenItAgain() {
+        let presentation = PresentationService()
+        let take = TestData.take(scriptID: UUID())
+        presentation.reviewOnScreen = take.id
+        presentation.openReview(of: take)
+        presentation.openReview(of: take, then: .continueQueue)
+        #expect(presentation.prompter == nil)
+        presentation.openReview(of: take, then: .edit)
+        #expect(presentation.prompter?.reviewAction == .edit)
+        presentation.prompter = nil
+        presentation.reviewOnScreen = nil
+        presentation.openReview(of: take)
+        #expect(presentation.prompter?.reviewTakeID == take.id)
+    }
+
     @Test func theIdeaCardsSheetsAreDistinct() {
         let sheets: [AppSheet] = [.ideas, .format, .createFor]
         #expect(Set(sheets.map(\.id)).count == 3)

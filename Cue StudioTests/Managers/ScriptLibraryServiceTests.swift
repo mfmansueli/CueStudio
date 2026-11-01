@@ -35,6 +35,24 @@ struct ScriptLibraryServiceTests {
         #expect(repository.snapshot.scripts.map(\.id) == [script.id])
     }
 
+    /// Cue closed while the AI was writing (the star still up): the empty "Untitled script" made for its words doesn't come back. One
+    /// that has words, or a title, stays (and stops waiting); a blank draft the creator made is theirs, empty or not.
+    @Test func aScriptTheAINeverGotToWriteIsGoneAtTheNextLaunch() throws {
+        var unwritten = TestData.script(title: "", text: "")
+        unwritten.awaitsDraft = true
+        var named = TestData.script(title: "Carnival", text: "")
+        named.awaitsDraft = true
+        let blank = TestData.script(title: "", text: "")
+        let (service, _) = makeService(scripts: [unwritten, named, blank])
+        #expect(service.script(id: unwritten.id) == nil)
+        #expect(service.script(id: named.id)?.awaitsDraft == false)
+        #expect(service.script(id: blank.id) != nil)
+        // Saved across a relaunch: the mark is in the file, read by older builds as nothing.
+        let made = service.create(title: "", text: "", platform: .tiktok, awaitsDraft: true)
+        let data = try JSONEncoder().encode(service.script(id: made.id))
+        #expect(try JSONDecoder().decode(Script.self, from: data).awaitsDraft)
+    }
+
     @Test func loadSortsByLastEdited() {
         let old = TestData.script(title: "Old", updatedAt: now.addingTimeInterval(-100))
         let new = TestData.script(title: "New", updatedAt: now)

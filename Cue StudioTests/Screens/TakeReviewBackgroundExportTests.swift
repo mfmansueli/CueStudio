@@ -20,6 +20,7 @@ struct TakeReviewBackgroundExportTests {
         let scheduler: FakeContinuedTaskScheduler
         let preferences: PreferencesService
         let toast: ToastService
+        let quota: UsageQuotaService
     }
 
     private let script = TestData.script(text: "Okay, real talk.")
@@ -44,7 +45,9 @@ struct TakeReviewBackgroundExportTests {
             preferences: preferences, drafts: FakeDraftStore(), toast: toast,
             background: BackgroundExportRunner(scheduler: scheduler) { {} }, freeSpace: { freeSpace }
         )
-        return Scenario(viewModel: viewModel, exporter: exporter, photos: photos, scheduler: scheduler, preferences: preferences, toast: toast)
+        return Scenario(
+            viewModel: viewModel, exporter: exporter, photos: photos, scheduler: scheduler, preferences: preferences, toast: toast, quota: quota
+        )
     }
 
     @Test func theFileAndTheSaveRunAsOneTaskIOSCanCarryOn() async throws {
@@ -104,6 +107,76 @@ struct TakeReviewBackgroundExportTests {
         #expect(scenario.photos.savedURLs.isEmpty)
         #expect(scheduler.task?.finished == false)
         #expect(scenario.preferences.exportsInFlight.isEmpty)
+    }
+
+    // MARK: - Cancel export (leaving the review while it exports)
+
+    /// "Cancel export" while the file is made: nothing is saved or counted, nothing says it failed, nothing stays marked; with iOS's
+    /// continued task and without it.
+    @Test(arguments: [true, false])
+    func cancellingWhileTheFileIsMadeLeavesNothing(continuedTask: Bool) async throws {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let scheduler = FakeContinuedTaskScheduler()
+        scheduler.supportsBackgroundGPU = continuedTask
+        let scenario = makeScenario(take: TestData.take(scriptID: script.id), defaults: defaults, scheduler: scheduler)
+        let viewModel = scenario.viewModel
+        scenario.exporter.beforeFinishing = {
+            #expect(viewModel.canCancelExport)
+            #expect(viewModel.cancelExport())
+        }
+        await viewModel.save()
+        #expect(scenario.photos.savedURLs.isEmpty)
+        #expect(scenario.quota.exportsUsed == 0)
+        #expect(viewModel.phase == .idle)
+        #expect(viewModel.exportFailure == nil)
+        #expect(viewModel.runningAction == nil)
+        #expect(!viewModel.canCancelExport)
+        #expect(scenario.preferences.exportsInFlight.isEmpty)
+    }
+
+    /// A step that didn't hear the cancel ends late with its file: still nothing saved or counted, and its copy goes.
+    @Test func aRenderThatEndsAfterTheCancelSavesNothing() async throws {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let scenario = makeScenario(take: TestData.take(scriptID: script.id), defaults: defaults)
+        let viewModel = scenario.viewModel
+        scenario.exporter.ignoresCancellation = true
+        scenario.exporter.beforeFinishing = { viewModel.cancelExport() }
+        await viewModel.save()
+        let file = try #require(scenario.exporter.files.first)
+        #expect(scenario.photos.savedURLs.isEmpty)
+        #expect(scenario.quota.exportsUsed == 0)
+        #expect(viewModel.exportFailure == nil)
+        #expect(!FileManager.default.fileExists(atPath: file.path))
+    }
+
+    /// Once the video is being saved it can't be called back: "Cancel export" says so (false), and the save ends as it would have.
+    @Test func aSaveUnderWayCantBeCancelledAndEndsSaved() async throws {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let scenario = makeScenario(take: TestData.take(scriptID: script.id), defaults: defaults)
+        let viewModel = scenario.viewModel
+        scenario.photos.whileSaving = {
+            #expect(!viewModel.canCancelExport)
+            #expect(!viewModel.cancelExport())
+        }
+        await viewModel.save()
+        #expect(scenario.photos.savedURLs.count == 1)
+        #expect(scenario.quota.exportsUsed == 1)
+        guard case .readyToTravel? = viewModel.celebration else {
+            Issue.record("The save shows as saved")
+            return
+        }
+    }
+
+    /// Nothing exporting: nothing to cancel.
+    @Test func withNoExportThereIsNothingToCancel() {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let scenario = makeScenario(take: TestData.take(scriptID: script.id), defaults: defaults)
+        #expect(!scenario.viewModel.canCancelExport)
+        #expect(!scenario.viewModel.cancelExport())
     }
 
     @Test func aFullIPhoneIsToldBeforeAnyWork() async throws {

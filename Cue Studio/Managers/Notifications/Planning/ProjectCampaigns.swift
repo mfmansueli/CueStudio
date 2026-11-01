@@ -86,7 +86,9 @@ nonisolated enum ProjectCampaigns {
     ) -> CampaignCandidate? {
         guard let latest = takes.max(by: { $0.recordedAt < $1.recordedAt }), !takes.contains(where: \.isExported),
               latest.stage != .shared else { return nil }
-        let destination: NotificationDestination = latest.stage == .edit ? .takeEditor(latest.id, tool: nil) : .takeReview(latest.id)
+        // An edit left open is finished where it was left: on its own take, not on the newest one.
+        let inEdit = takes.filter { $0.draftSavedAt != nil }.max { ($0.draftSavedAt ?? .distantPast) < ($1.draftSavedAt ?? .distantPast) }
+        let destination: NotificationDestination = latest.stage == .edit ? .takeEditor((inEdit ?? latest).id, tool: nil) : .takeReview(latest.id)
         return CampaignCandidate(
             campaign: .recordingToFinish, feature: nil, projectKey: key,
             earliest: max(latest.recordedAt, startedAt) + policy.recordingToFinishDelay,
