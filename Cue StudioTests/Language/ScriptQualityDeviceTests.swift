@@ -201,7 +201,7 @@ struct ScriptQualityDeviceTests {
         Self.record(sample, named: "quality-sample-\(Self.run)-tiktok-duration.json")
         #expect(sample.wasWritten)
         let words = ReadTime.wordCount(in: sample.text ?? "")
-        let target = ScriptPromptBuilder.askedRange(for: request.targetRange, on: .privateCloud)
+        let target = ScriptPromptBuilder.askedRange(for: request.targetRange, on: .privateCloud, language: request.language)
         #expect(words >= target.low, "Expected at least \(target.low) spoken words near the chosen upper duration; got \(words)")
     }
 
@@ -320,7 +320,7 @@ struct ScriptQualityDeviceTests {
         sample.responseCap = ScriptAIService.responseTokens(for: request, on: request.modelRoute ?? .onDevice)
         if request.durationPolicy == .targeted {
             sample.minimumWords = ReadTime.words(for: request.targetRange.lowerBound)
-            let asked = ScriptPromptBuilder.askedRange(for: request.targetRange, on: request.modelRoute ?? .onDevice)
+            let asked = ScriptPromptBuilder.askedRange(for: request.targetRange, on: request.modelRoute ?? .onDevice, language: request.language)
             sample.askedWords = [asked.low, asked.high]
         }
         sample.voiceTrimmed = request.voice.map { voice in

@@ -17,7 +17,8 @@
 #                                    InspirationDeviceTests, QuickEditPreviewLatencyTests, EditorExportDeviceTests, SkinSmoothingDeviceTests,
 #                                    BackgroundDeviceTests, ContinuedTaskDeviceTests, MotionAnalysisDeviceTests, EditorMotionDeviceTests,
 #                                    SplitScreenDeviceTests, BlurAreaDeviceTests, BlurTrackingDeviceTests, CustomFontStoreTests,
-#                                    MediaLibraryStoreTests, TextEffectDeviceTests, UltraDeviceTests, UltraCostDeviceTests, IdeaLibraryDeviceTests)
+#                                    MediaLibraryStoreTests, TextEffectDeviceTests, UltraDeviceTests, UltraCostDeviceTests, IdeaLibraryDeviceTests,
+#                                    ScriptToolsQualityDeviceTests)
 #   scripts/test.sh device-ui <class>  a UI test class (or Class/test) on that iPhone (opt-in classes skip without their flag)
 #
 # After the mode: --no-build reuses the last build; --repeat N runs until a failure, at most N times (for flaky tests);
@@ -122,6 +123,8 @@ case "$mode" in
             UltraDeviceTests* | UltraCostDeviceTests*) export TEST_RUNNER_CUE_ULTRA_E2E=1 ;;
             # The idea library written by Ultra AI, once (IdeaLibraryDeviceTests; tools/ideas/collect_library.py).
             IdeaLibraryDeviceTests*) export TEST_RUNNER_CUE_IDEA_LIBRARY=1 ;;
+            # Every tool of "Improve script" on real scripts, on both of Apple's models (tools/script_tools/collect.py, report.py).
+            ScriptToolsQualityDeviceTests*) export TEST_RUNNER_CUE_TOOLS_QUALITY=1 ;;
             # The same ideas by Apple Intelligence and Ultra AI (two flows), for the blind comparison (`tools/ultra/compare.py`).
             UltraQualityDeviceTests*) export TEST_RUNNER_CUE_ULTRA_QUALITY=1 ;;
             # Text to speech heard by this iPhone's recognizer at each speed, voice effects' words and time, library tracks' decoding time.

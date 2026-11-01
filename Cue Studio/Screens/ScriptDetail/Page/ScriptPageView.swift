@@ -84,7 +84,7 @@ struct ScriptPageView: View {
                         }
                         ScriptLengthBar(
                             zone: viewModel.zone, feelsChanges: !viewModel.page.isWriting, platform: script.platform, onFit: fitToTime,
-                            fitsWithUltra: viewModel.ultraFitsToTime, isFitting: viewModel.runningTool == .fitToTime
+                            isFitting: viewModel.runningTool == .fitToTime
                         )
                             .padding(.top, 14)
                             .dimmedWhileTyping(isTyping)
@@ -95,8 +95,8 @@ struct ScriptPageView: View {
                                 .dimmedWhileTyping(isTyping)
                         }
                         ScriptToolsRow(
-                            // A script Ultra AI wrote keeps "Improve" for its Fit to time even where Apple Intelligence doesn't run.
-                            offersImprove: viewModel.isLanguageModelAvailable || viewModel.ultraFitsToTime,
+                            // Without Apple Intelligence for this script, Improve holds only what needs no model (and is gone when that is nothing).
+                            offersImprove: viewModel.offersImprove,
                             // While the AI writes, Stop is the strip's and Shape waits for the words.
                             offersShape: viewModel.strip?.canShape == true && !viewModel.page.isWriting,
                             showsCues: $viewModel.showsCues,
@@ -257,7 +257,7 @@ struct ScriptPageView: View {
 
     /// The length bar's fit, past the ideal: none while the AI writes, while another tool runs, or where nothing can fit it.
     private var fitToTime: (() -> Void)? {
-        guard viewModel.canFitToTime, !viewModel.page.isWriting, viewModel.runningTool == nil || viewModel.runningTool == .fitToTime else { return nil }
+        guard viewModel.canDraft, !viewModel.page.isWriting, viewModel.runningTool == nil || viewModel.runningTool == .fitToTime else { return nil }
         return { Task { await viewModel.run(.fitToTime) } }
     }
 
@@ -425,8 +425,7 @@ struct ScriptPageView: View {
                 viewModel.commitPage()
                 onRecord()
             },
-            offersShorter: viewModel.canFitToTime,
-            shorterByUltra: viewModel.ultraFitsToTime,
+            offersShorter: viewModel.canDraft,
             onShorter: {
                 viewModel.page.showsLengthNudge = false
                 Task { await viewModel.run(.fitToTime) }
@@ -459,7 +458,9 @@ struct ScriptPageView: View {
     private func practiceTip(isDone: Bool) -> some View {
         VoyageTipCard(
             step: .practice, title: VoyageStep.practice.tipTitle(),
-            message: VoyageStep.practice.tipMessage(duration: script.isEmpty ? nil : DurationText.clock(ReadTime.seconds(for: viewModel.page.text))),
+            message: VoyageStep.practice.tipMessage(
+                duration: script.isEmpty ? nil : DurationText.clock(ReadTime.seconds(for: viewModel.page.text, language: viewModel.paceLanguage))
+            ),
             primary: (VoyageStep.practice.tipAction(), {
                 voyage.tipActed(.practice, at: .page)
                 focus = nil

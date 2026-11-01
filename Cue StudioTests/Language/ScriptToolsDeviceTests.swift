@@ -217,7 +217,7 @@ struct ScriptToolsDeviceTests {
         #expect(hooks.count == 3)
         #expect(Set(hooks.map { $0.lowercased() }).count == 3, "Two hooks are the same")
         #expect(hooks.allSatisfy { !$0.isEmpty && words($0) <= 30 }, "A hook is empty or is not a hook")
-        let opening = ScriptTextEditing.opening(of: Self.wordy)
+        let opening = ScriptHook.text(of: Self.wordy)
         #expect(!hooks.contains(opening), "A hook is the opening it was meant to replace")
     }
 

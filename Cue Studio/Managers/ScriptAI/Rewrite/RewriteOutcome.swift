@@ -100,7 +100,7 @@ nonisolated enum RewriteOutcome: Equatable, Sendable {
         switch tool {
         case .inMyVoice: "use the creator's own words, phrases and rhythm, and change the wording of most sentences, keeping every point."
         case .moreEnergy: "make the sentences punchier and more excited."
-        case .moreHuman: "use plain, spoken words instead of the scripted ones."
+        case .moreHuman: "say every sentence in other, plainer spoken words, keeping what it means."
         case .lessDefensive: "take out the excuses and the defensive lines."
         case .strongerCTA: "make the call to action clearer and more direct."
         case .translate: "translate every sentence."
@@ -123,11 +123,14 @@ nonisolated enum RewriteOutcome: Equatable, Sendable {
 
     /// `after` without the stage cues it was not given. Asked to fix a comma, the model wrote "[Scene: Interior, morning light streaming through curtains…]"
     /// above the script; every bracket is a cue to Cue (it counts them, it shows them, the prompter skips them), so an invented one is a stray line in
-    /// the creator's script.
+    /// the creator's script. A cue the script has is kept as many times as the script has it: lengthening a script with eight, the model wrote nine.
     static func withoutInventedCues(_ after: String, comparedTo before: String) -> String {
-        let known = Set(cues(in: before).map(cueKey))
-        let cleaned = after.replacing(/\[[^\]]*\]/) { match -> String in
-            known.contains(cueKey(String(match.output))) ? String(match.output) : ""
+        var known = cues(in: before).map(cueKey).reduce(into: [String: Int]()) { $0[$1, default: 0] += 1 }
+        let cleaned = after.replacing(/\[[^\]\n]*\]/) { match -> String in
+            let key = cueKey(String(match.output))
+            guard known[key, default: 0] > 0 else { return "" }
+            known[key, default: 0] -= 1
+            return String(match.output)
         }
         guard cleaned != after else { return after }
         let lines = cleaned.components(separatedBy: "\n").map { $0.replacing(/[ \t]{2,}/, with: " ").trimmingCharacters(in: .whitespaces) }
@@ -147,7 +150,7 @@ nonisolated enum RewriteOutcome: Equatable, Sendable {
     }
 
     private static func cues(in text: String) -> [String] {
-        text.matches(of: /\[[^\]]*\]/).map { String(text[$0.range]) }
+        text.matches(of: /\[[^\]\n]*\]/).map { String(text[$0.range]) }
     }
 
     private static func cueKey(_ cue: String) -> String {

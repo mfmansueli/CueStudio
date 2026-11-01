@@ -103,7 +103,7 @@ struct VoyageFloatingTip: View {
     /// How long the script reads, for Practice ("0:44").
     private func duration(for step: VoyageStep) -> String? {
         guard step == .practice, let script = navigator.latestScript, !script.isEmpty else { return nil }
-        return DurationText.clock(ReadTime.seconds(for: script.text))
+        return DurationText.clock(script.readSeconds)
     }
 
     private func act(_ step: VoyageStep) {

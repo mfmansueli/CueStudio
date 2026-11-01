@@ -6,22 +6,25 @@
 import SwiftUI
 
 /// "Improve script": the tools of the script's format (and "In my voice") as a list, with a tip
-/// first when the opening runs long. Everything runs on the iPhone, except "Fit to time" on a script
-/// Ultra AI wrote, which the header and its row say; a tool changes the script and the toast offers Undo.
+/// first when the opening runs long. Every tool is Apple Intelligence's, whoever wrote the script; where it
+/// can't draft this script only the tools that need no model are listed. A tool changes the script and the
+/// toast offers Undo.
 struct ImproveScriptSheet: View {
     let viewModel: ScriptDetailViewModel
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 14) {
-                // A script in a language Apple Intelligence can't draft in: the subtitle says so, and the tools that need it are dimmed.
+                // A script in a language Apple Intelligence can't draft in: the subtitle says so, and the tools that need it aren't there.
                 SheetHeader(title: String(localized: "Improve script"), subtitle: subtitle)
                 if let overrun = viewModel.hookOverrun {
                     hookTip(overrun)
                 }
-                GroupedCard(background: Palette.surface2, radius: 16, dividerInset: 62) {
-                    ForEach(viewModel.tools) { tool in
-                        row(tool)
+                if !viewModel.tools.isEmpty {
+                    GroupedCard(background: Palette.surface2, radius: 16, dividerInset: 62) {
+                        ForEach(viewModel.tools) { tool in
+                            row(tool)
+                        }
                     }
                 }
                 if viewModel.needsFactCheck {
@@ -39,11 +42,10 @@ struct ImproveScriptSheet: View {
         .presentationDetents([.medium, .large])
     }
 
-    /// Who does the work. On a script Ultra AI wrote its Fit to time goes to Google, so the header doesn't say Apple Intelligence runs it all.
+    /// Who does the work (Private Cloud Compute first, the iPhone when it is out of reach: `AIModelRoute`), or why the tools that need it aren't there.
     private var subtitle: String? {
-        if viewModel.drafting.cause?.isLanguage == true { return viewModel.drafting.reason }
-        return viewModel.ultraFitsToTime
-            ? String(localized: "Fit to time by Ultra AI · the rest on your iPhone") : String(localized: "Apple Intelligence · runs on your iPhone")
+        if viewModel.canDraft { return String(localized: "Apple Intelligence · Private Cloud Compute") }
+        return viewModel.drafting.cause?.isLanguage == true ? viewModel.drafting.reason : nil
     }
 
     /// "Your hook runs ~12s" with what to aim for: opens the hook options.
@@ -83,8 +85,6 @@ struct ImproveScriptSheet: View {
 
     private func row(_ tool: ScriptTool) -> some View {
         let isRunning = viewModel.runningTool == tool
-        let byUltra = tool == .fitToTime && viewModel.ultraFitsToTime
-        let dimmed = byUltra ? false : tool.needsLanguageModel && !viewModel.canDraft
         let subtitle = tool.subtitle(idealRange: viewModel.preset.idealRange, platform: viewModel.script?.platform ?? .tiktok)
         let label = HStack(spacing: 12) {
             Group {
@@ -102,7 +102,7 @@ struct ImproveScriptSheet: View {
                 Text(tool.label)
                     .cueFont(.body, weight: .semibold)
                     .foregroundStyle(Palette.ink)
-                Text(byUltra ? String(localized: "Ultra AI · \(subtitle)") : subtitle)
+                Text(subtitle)
                     .cueFont(.footnote)
                     .foregroundStyle(Palette.ink2)
             }
@@ -137,9 +137,7 @@ struct ImproveScriptSheet: View {
                 .buttonStyle(.plain)
             }
         }
-        .opacity(dimmed ? 0.5 : 1)
         .disabled(viewModel.runningTool != nil)
-        .accessibilityHint(dimmed ? Text(viewModel.drafting.reason ?? String(localized: "Requires Apple Intelligence")) : Text(""))
         .accessibilityIdentifier("improve.tool.\(tool.rawValue)")
     }
 }

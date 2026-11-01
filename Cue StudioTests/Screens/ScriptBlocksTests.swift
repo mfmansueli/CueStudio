@@ -30,18 +30,15 @@ struct ScriptBlocksTests {
 
     @Test func longHookIsFlagged() {
         // 30 words take 12 seconds at the natural pace (150 words a minute).
-        let blocks = ScriptBlocks.blocks(for: TestData.words(30) + "\n\nBody.", structure: .generic)
-        #expect(ScriptBlocks.hookOverrun(in: blocks, structure: .generic) == 12)
+        #expect(ScriptBlocks.hookOverrun(in: TestData.words(30) + "\n\nBody.", structure: .generic) == 12)
     }
 
     @Test func shortHookIsFine() {
-        let blocks = ScriptBlocks.blocks(for: text, structure: .generic)
-        #expect(ScriptBlocks.hookOverrun(in: blocks, structure: .generic) == nil)
+        #expect(ScriptBlocks.hookOverrun(in: text, structure: .generic) == nil)
     }
 
     @Test func seriousFormatsHaveNoHookWarning() {
         let structure = ScriptType.apology.structure
-        let blocks = ScriptBlocks.blocks(for: TestData.words(20), structure: structure)
-        #expect(ScriptBlocks.hookOverrun(in: blocks, structure: structure) == nil)
+        #expect(ScriptBlocks.hookOverrun(in: TestData.words(20), structure: structure) == nil)
     }
 }

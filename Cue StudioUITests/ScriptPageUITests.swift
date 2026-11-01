@@ -17,7 +17,12 @@ final class ScriptPageUITests: XCTestCase {
         continueAfterFailure = false
     }
 
+    /// The screen as a PNG in `CUE_SCREENSHOT_DIR` (on the Simulator), and kept in the result (on the iPhone too, read back with `xcresulttool`).
     private func capture(_ app: XCUIApplication, _ name: String) throws {
+        let shot = XCTAttachment(screenshot: app.screenshot())
+        shot.name = name
+        shot.lifetime = .keepAlways
+        add(shot)
         guard let folder = ProcessInfo.processInfo.environment["CUE_SCREENSHOT_DIR"] else { return }
         let directory = URL(fileURLWithPath: folder, isDirectory: true)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
@@ -169,13 +174,21 @@ final class ScriptPageUITests: XCTestCase {
         XCTAssertFalse(app.buttons["page.selection.keep"].exists)
     }
 
-    func testWithoutAppleIntelligenceThePageHasNoShapeNoImproveAndNoBar() throws {
+    /// Without Apple Intelligence the touch-ups aren't there at all, not even dimmed (owner, 01/11/2026), but what runs on rules stays: Shape
+    /// adds the cues, the Hook offers the format's starters, and Improve keeps only the tip that this opening runs long (9 words, 3.6 s).
+    func testWithoutAppleIntelligenceThePageKeepsWhatRunsOnRulesAndNoTouchUp() throws {
         let app = CueApp.launch(seeded: true, ai: .none)
         app.openScriptPage(titled: Self.draft)
         XCTAssertTrue(element(app, "page.strip").exists(within: 5))
-        XCTAssertFalse(app.buttons["page.shapeButton"].exists)
-        XCTAssertFalse(app.buttons["page.improveButton"].exists)
+        XCTAssertTrue(app.buttons["page.shapeButton"].exists, "Shape runs on rules: it stays without Apple Intelligence")
         XCTAssertTrue(app.buttons["page.hookButton"].exists)
         try capture(app, "4.1_no_ai")
+        let improve = app.buttons["page.improveButton"]
+        XCTAssertTrue(improve.exists, "Improve has the hook tip to offer")
+        improve.tap()
+        XCTAssertTrue(element(app, "improve.hookTip").exists(within: 5), "No tip that the opening runs long")
+        try capture(app, "4.2_no_ai_improve")
+        let tools = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'improve.tool.'"))
+        XCTAssertEqual(tools.count, 0, "A touch-up is offered without Apple Intelligence")
     }
 }

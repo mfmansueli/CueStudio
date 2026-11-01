@@ -457,8 +457,9 @@ ajuda um idioma, então o idioma vem antes). Escrever à mão, importar, telepro
   + "Write your reply yourself." e só fica **Write it myself** (primário). Uma falha tardia (a IA mudou durante a estrela) guarda o comentário no Logbook.
 - **Sponsored ad:** no idioma da ideia do dock, quando conhecido; se o modelo não escreve, o botão é **Open the draft** e a nota de baixo dá o motivo +
   "Open the draft to write it yourself."
-- **Ferramentas da página:** no idioma do roteiro, o subtítulo do Improve diz o motivo e as ferramentas que precisam do modelo ficam esmaecidas; a barra
-  da seleção não aparece; Shorter do aviso de duração some; "Make a version for…" diz o motivo antes do "Drafting…". Hooks caem nos do formato. Os
+- **Ferramentas da página:** no idioma do roteiro, o subtítulo do Improve diz o motivo e as ferramentas que precisam do modelo **não aparecem** (nem
+  esmaecidas; dono, 01/11/2026): ficam Add disclosure e a dica do gancho, e o Improve some quando não sobra nada; Shape e o Hook (ganchos do formato)
+  ficam, porque são regras; a barra da seleção não aparece; o Fit to time da barra de duração e o Shorter do aviso somem; "Make a version for…" diz o motivo antes do "Drafting…". Hooks caem nos do formato. Os
   erros dão o motivo quando o criador pode agir (idioma, **par** de idiomas, modelo se preparando, resultado em outro idioma); "Couldn't draft it · Try
   again" só quando tentar de novo resolve. Parar não mostra erro. **Translate** só age com o idioma escolhido, e cada destino que o modelo não escreve
   diz embaixo "Apple Intelligence can’t draft in it yet".
@@ -865,17 +866,40 @@ sentir livre para escrever como quiser). **Sem dicas embaixo do texto** (gancho 
   roteiro pronto não o rebaixa); só o interruptor muda, e gravar (leva a pronto e depois a gravado). **O roteiro que a IA escreve começa como rascunho**
   ("AI is drafting for you"). A página não tem "Done": digitando, o ✓ da barra só fecha o teclado (e a plataforma e o ••• voltam).
 - **Linha de ferramentas** (`ScriptToolsRow`, sob a barra de duração; dono, 31/10/2026): Hook, Improve, **✦ Shape** (ao lado de Improve, no mesmo
-  estilo, só quando o texto não tem cues e o Apple Intelligence roda, nunca enquanto a IA escreve) e Cues, cada pílula na sua largura natural, numa
+  estilo, só quando o texto não tem cues, nunca enquanto a IA escreve; com ou sem Apple Intelligence, porque é regra) e Cues, cada pílula na sua largura natural, numa
   rolagem horizontal sem indicador; a linha vai até a borda da tela, a primeira pílula começa na margem do texto e o que sai se apaga num degradê. O
   **AA** (tamanho do texto) fica fixo no fim, fora da rolagem: muda como a página é lida, não as palavras.
+- **✦ Shape** (`ScriptCueShaper`, regras, sem modelo): até quatro cues onde ajudam a fala, só acrescentadas (as palavras não mudam): uma pausa depois
+  da primeira frase do gancho, ênfase no começo do meio, olhar para a câmera antes do fecho e um sorriso no fim dele (nunca num formato sério: um
+  pedido de desculpas não fecha sorrindo). Um roteiro escrito num bloco só (comum à mão) é moldado pelas frases. Os nomes saem no idioma do roteiro
+  (`ScriptCue.name(in:)`); a cue do aviso de publi não conta como cue nem recebe outra.
+- **Gancho** (`ScriptHook`): o que se ouve nos primeiros segundos. Um primeiro parágrafo de até 25 palavras é o gancho inteiro (o bloco de gancho do
+  Apple Intelligence); um maior (os parágrafos da Ultra AI, um roteiro num bloco) começa pela primeira frase, junto com a seguinte quando a primeira tem
+  até 3 palavras ("Okay, real talk."). O aviso de publi nunca é o gancho e as cues em volta ficam. A dica do Improve ("o gancho passa de 3,5 s") mede
+  esse trecho, e escolher um gancho novo (botão **Hook** da página ou a dica do Improve) troca só ele (o resto do parágrafo fica), com Undo e uma
+  versão nova do roteiro. Com o modelo, ele escreve **cinco** e a folha mostra os três que se dizem em 3,5 s no ritmo do idioma (medido em 01/11:
+  pedidos três de até 8 palavras, um em cada três passava; `HookIdeas`). Sem o modelo, os ganchos prontos do formato saem **no idioma do roteiro**
+  (não no do app) e só os que se dizem em 3,5 s nesse idioma; se sobram menos de três, os mais curtos completam.
+- **Improve** (`ImproveScriptSheet`): "In my voice" e as ferramentas do formato, sem "3 new hooks" (o botão Hook da página já abre a mesma folha).
+  **Todo retoque é do Apple Intelligence**, quem quer que tenha escrito o roteiro (dono, 01/11/2026: a Ultra AI escreve, não retoca, para o roteiro
+  custar uma escrita só): **primeiro no Private Cloud Compute**, o iPhone quando ele está fora de alcance ou recusa (`AIModelRoute`; medido em 01/11
+  com 23 roteiros reais, `ScriptToolsQualityDeviceTests`: o PCC cumpriu o que a ferramenta promete 86 vezes em 113, o aparelho 58, em 2 s contra 5);
+  subtítulo "Apple Intelligence · Private Cloud Compute". **As cues do criador nunca se perdem num retoque** (`CueRestorer`): a que o modelo apagou
+  volta depois da frase que ela seguia (ou antes da que ela precedia, ou no mesmo ponto do parágrafo), e a que ele repetiu ou inventou sai. **Add disclosure** reconhece um aviso de publi em qualquer dos idiomas do app, em qualquer parágrafo,
+  pela cue `[paid partnership]` ou por hashtag (#ad, #publi, #werbung, 광고…; #adventure não é), e então diz "Disclosure is already first".
+- **Recortar** pela barra da seleção (Cut) leva uma cue inteira e deixa um espaço só entre as palavras.
 - **Duração numa linha** (`ScriptLengthBar`): "113 WORDS · ~0:45" à esquerda, "IDEAL 1:15–1:45" à direita, trilho de 5 pt; amarelo abaixo do ideal,
   verde dentro (com ✓, brilha uma vez e toque leve ao entrar), laranja acima ("CUT 6S", toque firme). Acima do ideal, uma linha sob o trilho avisa
-  (**⚠︎ Past the TikTok ideal**, `warnText`) com o botão que encaixa, quando a página pode (✦ **Fit to time**; num roteiro da Ultra AI, ✦ **Fit with Ultra
-  AI**, uma chamada ao Google; some enquanto a IA escreve ou outra ferramenta roda). Cresce numa mola; os toques são só do que o criador
+  (**⚠︎ Past the TikTok ideal**, `warnText`) com o botão que encaixa, quando o Apple Intelligence escreve o roteiro (✦ **Fit to time**, também num
+  roteiro da Ultra AI; some enquanto a IA escreve ou outra ferramenta roda). Cresce numa mola; os toques são só do que o criador
   digita (não da IA). O título não tem contador embaixo.
-  O tempo é sempre no **ritmo natural de fala** (150 palavras por minuto, o mesmo em que a IA escreve), não na velocidade de rolagem do
-  teleprompter (decisão do dono, 20/10/2026: a 0,4× um roteiro de 1 min aparecia como 2:28 e "CUT 58S"). Vale também para a duração na lista,
-  no Hook, no "Start recording" e na melhor tomada; só o tempo dentro do gravador (Studio) segue a velocidade escolhida.
+  O tempo é sempre no **ritmo natural de fala** (150 palavras por minuto em inglês, o mesmo em que a IA escreve), não na velocidade de rolagem do
+  teleprompter. **Cada idioma tem o seu ritmo** (`ReadTime.pace(for:)`, medido em 01/11/2026 com as leituras FLEURS e as frases traduzidas do app,
+  `tools/pace/measure.py`): um minuto tem menos palavras em coreano (0,75×), turco (0,8×), indonésio (0,85×) e árabe (0,9×), e mais em espanhol,
+  hindi, norueguês, holandês e chinês (1,1×), francês e vietnamita (1,15×); os outros ficam em 1×. Vale para a barra, a lista, a dica do gancho, os
+  ganchos, o aviso do Fit to time e as palavras que a IA (Apple e Ultra) é pedida a escrever; o idioma é o do roteiro, ou o das palavras dele quando
+  não tem (`Script.paceLanguage`). A velocidade de rolagem não entra (decisão do dono, 20/10/2026: a 0,4× um roteiro de 1 min aparecia
+  como 2:28 e "CUT 58S"); vale também para o "Start recording" e a melhor tomada, e só o tempo dentro do gravador (Studio) segue a velocidade escolhida.
 - **Tab bar:** a página a esconde do jeito do sistema (`toolbarVisibility(.hidden, for: .tabBar)` na página; a da lista fica na raiz da pilha, não na
   pilha toda), então ela sai e volta junto com a animação de entrar e sair, sem o dock e a barra pularem (no voltar e no Cancel da estrela).
 - **Título na barra:** rolando além do título, a barra mostra o título pequeno com "WORDS · ~TEMPO" embaixo (como Notas e Mail).
@@ -887,7 +911,7 @@ sentir livre para escrever como quiser). **Sem dicas embaixo do texto** (gancho 
   igual em Record e Retake: decisão do dono, 30/10/2026) sobre o efeito de borda do sistema. Sempre visível (sobe com o teclado do título); o teclado do texto põe as cues
   no lugar dele; apagado enquanto a IA escreve. (A barra de baixo do sistema não dá largura toda.)
 - **Cues sobre o teclado** (`ScriptCuesBar`, no mesmo `safeAreaBar`): uma barra de Liquid Glass (tingida com `surface`), cues como etiquetas amarelas que
-  rolam com degradê nas pontas, divisor e **+** fixo. O + abre "New cue" (sem colchetes, até 24 caracteres, `ScriptCueName`): entra no cursor e fica na barra
+  rolam com degradê nas pontas, divisor e **+** fixo. A cue entra no cursor; com palavras selecionadas, entra antes delas e as palavras ficam (um espaço de cada lado, nunca dois). O + abre "New cue" (sem colchetes, até 24 caracteres, `ScriptCueName`): entra no cursor e fica na barra
   para todos os roteiros depois das quatro do quadro (`PreferencesService.customCues`); segurar uma do criador: "Remove from bar". (O
   `ToolbarItem(placement: .keyboard)` não dá largura e deixava as cues sem fundo.)
 - **Cues ligadas/desligadas** (botão **Cues** ao lado de Improve, `Toggle` `.button`; `PreferencesService.showsCuesOnPage`, ligado por padrão): desligado,
@@ -1056,18 +1080,34 @@ promessa por teste) e `ScriptToolsDeviceTests` no iPhone. **Falsos alarmes do ra
 
 **Reescrita** (`Managers/ScriptAI/Rewrite/`; antes, "Fix grammar" trocava 1309 palavras por 188 e dizia "Grammar fixed"):
 - `RewriteChunker`: partes de ~150 palavras (custo por `PromptCost`), cada uma vai sozinha; um roteiro de qualquer tamanho volta inteiro (≈ 5 s por 100
-  palavras). "Stronger CTA" só pergunta o último parágrafo; "Fit to time" que precisa crescer 3× usa partes menores.
-- `RewriteOutcome`: *Shorter & direct* 45–90% das palavras, *Fix grammar* ±15%, *In my voice* 50–140%, *Fit to time* dentro da faixa ±15%; nenhuma ferramenta
-  perde mais da metade dos cues (tradução fora); as mesmas palavras não contam como feito (exceto Fix grammar). Cues inventados (`[Scene: …]`) saem.
+  palavras), e as partes voltam com o que havia entre elas (linha em branco, quebra, espaço). "Stronger CTA" só pergunta o último parágrafo (num
+  roteiro de um parágrafo só, as duas últimas frases); "Fit to time" que precisa crescer 3× usa partes menores, e um corte para menos da metade (a
+  versão para Stories) vai inteiro, num pedido só (medido em 01/11: em três partes, 350 palavras viravam 52–92 s para 15–30 s).
+- `RewriteOutcome`: *Shorter & direct* 45–90% das palavras, *Fix grammar* ±15%, *In my voice* 50–140%, *Fit to time* dentro da faixa ±15%; as mesmas
+  palavras não contam como feito (exceto Fix grammar). Cues inventados (`[Scene: …]`, `[Cena 1]`) saem, e uma cue do roteiro fica só quantas vezes ele a
+  tem; a que o modelo apagou volta ao lugar (`CueRestorer`). Uma tradução de roteiro sem cues não ganha nenhuma; linhas do pedido que o modelo repetiu
+  ("This is part 1 of 3…") saem (`withoutEchoedInstructions`).
+- A duração conta só o que se fala: uma cue antes do ponto ("básicos [sorpresa].") não deixa o ponto como palavra, nem um travessão ou reticências
+  soltos (`ReadTime.wordCount`; contados, faziam os roteiros do Apple Intelligence parecerem 4 a 6% mais longos).
+- O pedido diz a meta em números: *Shorter* no PCC "it has 44 words now, answer with about 28" (o modelo do aparelho cortou menos com a conta e fica
+  com "about a third shorter"); *Fit to time* a faixa da parte (mirando a metade de baixo ao
+  cortar e a de cima ao alongar, porque o modelo erra para o lado de onde partiu), "about 4 times as long" quando precisa dobrar ou mais, e no corte
+  para menos da metade: manter a abertura, um ou dois pontos e o fecho. O *Rewrite* da barra da seleção pede "diga de outro jeito" (com "more human",
+  um trecho que já soava falado voltava igual 3 vezes em 10).
 - `RewriteRunner`: uma segunda pergunta dizendo o erro em números; quem erra duas vezes **fica como o criador escreveu** (a não ser que tenha feito parte do
-  pedido); Fit to time ainda faz uma segunda rodada; uma parte recusada não leva as outras; resposta limitada à janela do modelo. Roteiro já no tamanho não
-  chama o modelo.
+  pedido); Fit to time faz até mais duas rodadas enquanto fica fora da faixa da barra e cada uma chega mais perto, e o alongamento que ainda fica curto
+  ganha só o que falta, escrito à parte (um ponto, um exemplo, um momento do dia de quem fala) e posto antes do fecho, com as palavras do criador como
+  estavam e sem número que o roteiro não tenha (`FitTopUp`; reescrever tudo de novo tirava parte do que a rodada anterior pôs). O PCC devolve o roteiro
+  inteiro com o acréscimo dentro: as frases novas são tiradas dele quando formam um bloco só, e uma resposta que mexeu nas frases do criador não entra.
+  Medido no iPhone (01/11): Fit to time no PCC 22 de 23 (alongar 11 de 12, cortar 11 de 11); no modelo do aparelho, alongar 11 de 12; uma parte recusada não leva as outras;
+  resposta limitada à janela do modelo. Roteiro já no tamanho não chama o modelo.
 - Grades de proteção para texto do próprio criador (`permissiveContentTransformations`); recusa vira "Apple Intelligence won’t work on this text. Try
   rewording it, or use another tool." (`ScriptAIError.declined`).
 - `RewriteNotice` escolhe o toast pelo que aconteceu (textos em §33): "Shorter · 132 → 53 words", "Closer to 1:15–1:45 · now 0:48", "Already within the target length · 1:15–1:45",
   "No mistakes to fix", "n of m parts left as written", "Couldn’t draft it" com o botão **Try again** (nada salvo, sem Undo). Roteiro vazio não chama o modelo.
-- **Num roteiro da Ultra AI** (`Script.draftedBy == .ultra`), com a permissão dela, *Fit to time* e o *Shorter* do aviso antes de gravar são da Ultra AI
-  (uma chamada, §57); sem a permissão, e em qualquer outro roteiro, continuam do Apple Intelligence. As outras ferramentas são sempre do Apple Intelligence.
+- **Todo retoque é do Apple Intelligence**, também num roteiro da Ultra AI (dono, 01/11/2026), primeiro no Private Cloud Compute (`AIModelRoute`). A
+  qualidade é medida em `ScriptToolsQualityDeviceTests` (23 roteiros reais da Ultra AI, do Apple Intelligence e escritos à mão; o roteiro inteiro, as
+  quatro ferramentas da seleção num trecho e a versão para Stories; `tools/script_tools/report.py`).
 
 **Ideias do ↻ e do Find inspiration** (`IdeaSuggestionService`, no ambiente; detalhes do pool em §30): ideias do modelo sobre **todos** os assuntos do
 criador (`IdeaTopic`, `CreatorProfile.ideaTopics`: os do primeiro voo, os do My Cue Voice e os digitados, com subtemas); lotes de 6 pedidos quando restam
@@ -2915,17 +2955,13 @@ rede, nunca acima de 2 min (`UltraLength.ideal`: "Length: 75 to 105 seconds… n
 o assunto pede (`UltraLength.free`). Um roteiro vertical que volta mais de 15% acima da faixa (ou de 2 min, `overflowWords`) é encaixado nela por mais
 uma chamada (`UltraScriptService.run`); se ela falhar ou não puder sair, fica o roteiro polido. Uma duração escolhida pelo criador é a intenção dele
 (`UltraLength.required`) e não é encaixada sozinha. A Ultra AI escreve em **parágrafos curtos** (um tema cada, duas a quatro frases, linha em branco
-entre eles), pedido nas três etapas e no Fit to time. *Fit to time* num roteiro da Ultra AI é
-**uma chamada da Ultra AI, quando o criador pede** (`UltraScriptService.fit`, `UltraFitRequest`, `UltraInstructions.fitter`): o roteiro da página com as
-edições dele, a rede, a faixa ideal dela em palavras e o jeito de falar; volta só o texto (JSON `{"script"}`), mantém as ressalvas que a checagem pôs, a
-primeira frase, quem fala e o fim, e corrige as contagens ("cinco passos") do que saiu. Um roteiro já na faixa não gasta chamada. Conta no limite do
-laboratório, não nos roteiros do criador. Onde ela encaixa, a tela diz que é ela: a linha do Improve ("Ultra AI · …"), o subtítulo da folha (**Fit to
-time by Ultra AI · the rest on your iPhone**, no lugar de "Apple Intelligence · runs on your iPhone"; o rodapé de fatos diz "Ultra AI · Check facts
-before recording"), o botão do "A bit long for TikTok" (**Make it shorter with Ultra AI**) e o da barra de duração (**Fit with Ultra AI**). Por que não o do Apple: no iPhone (29/10/2026, 13 roteiros da Ultra de 300–480 palavras, TikTok 60–90 s), o
-*Fit to time* do Apple Intelligence deixou 10 fora da faixa (102–122 s) e cortou nas emendas ("cinco passos" com quatro, "Terceiro" sem "Segundo"; juiz: 0
-para gravar, 10 para refazer); o da Ultra AI pôs os 13 entre 72 e 89 s em 9–30 s (juiz: 8 para gravar como estão, 5 com ajustes pequenos, 0 para refazer; precisão 4,5 de 5,
-depois de a instrução mandar manter as ressalvas, a primeira frase e quem fala: a primeira versão tirava "pode" e "aumenta o risco" e ficava em 3,9).
-Ainda escapa, às vezes, uma ressalva ("muchísimos años" → "siempre") ou um detalhe concreto que vira generalidade (`research_notes/Ultra AI/fit-q1*.json`). Deixar a versão curta sempre pronta custaria uma chamada em todo roteiro; sob demanda só custa quando é usada.
+entre eles), pedido nas três etapas e no encaixe. **Depois de escrito, todo retoque é do Apple Intelligence** (Fit to time, Improve, a barra da
+seleção), no iPhone ou no Private Cloud Compute (dono, 01/11/2026: a Ultra AI escreve, não retoca; cada retoque com ela seria mais uma chamada paga).
+A chamada de encaixe (`UltraScriptService.fit`, `UltraFitRequest`, `UltraInstructions.fitter`) só sai durante a escrita, para o roteiro que voltou além
+da faixa: o roteiro polido, a rede, a faixa ideal em palavras e o jeito de falar; volta só o texto (JSON `{"script"}`), mantém as ressalvas que a
+checagem pôs, a primeira frase, quem fala e o fim, e corrige as contagens ("cinco passos") do que saiu. Medido no iPhone (29/10/2026, 13 roteiros de
+300–480 palavras, TikTok 60–90 s): pôs os 13 entre 72 e 89 s (juiz: 8 para gravar como estão, 5 com ajustes pequenos, 0 para refazer;
+`research_notes/Ultra AI/fit-q1*.json`). "What Ultra AI sends" mostra essa chamada como o passo 4.
 
 
 **Limite do laboratório:** 1.000 chamadas neste iPhone (autorizadas pelo dono: 30, 80 e 300 em 29/10/2026 para medir e melhorar a qualidade; 1.000 em 31/10 para medir o custo em todos os idiomas e baratear sem perder qualidade, cerca de USD 23 no máximo),

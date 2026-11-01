@@ -50,6 +50,31 @@ struct RewriteRunnerTests {
         #expect(result.parts == 1 && result.leftAsWritten == 0)
     }
 
+    /// A translation of a script with no cues gets none: the iPhone's model wrote "[Cut to: Close-up of hands working on a piece]" and
+    /// "[Voiceover]" into an Ultra AI script it translated. One with cues keeps them, renamed in the target language.
+    @Test func aTranslationAddsNoCuesToAScriptWithNone() async throws {
+        let context = RewriteContext(structure: .generic, platform: .tiktok, idealRange: 60...90, language: .english)
+        let plain = Model { _, _ in "[Voiceover] I make every piece by hand. [Cut to: hands] It takes a day." }
+        let result = try await RewriteRunner.run("Hago cada pieza a mano. Tarda un día.", tool: .translate, context: context, ask: plain.ask)
+        #expect(result.text == "I make every piece by hand. It takes a day.")
+        let cued = Model { _, _ in "I make every piece by hand. [pause] It takes a day." }
+        let kept = try await RewriteRunner.run("Hago cada pieza a mano. [pausa] Tarda un día.", tool: .translate, context: context, ask: cued.ask)
+        #expect(kept.text.contains("[pause]"))
+    }
+
+    /// A model that repeats the prompt's own lines (on the iPhone, "This is part 1 of 3 of a longer script…" opened a translation) has them taken
+    /// out; a line the script itself says stays.
+    @Test func linesOfThePromptTheModelRepeatedAreTakenOut() {
+        let prompt = ScriptPromptBuilder.rewritePrompt(
+            for: "Hago cada pieza a mano.", tool: .translate, context: Self.context, part: .init(index: 1, count: 3)
+        )
+        let echoed = "This is part 1 of 3 of a longer script. Edit only this part and answer with only this part: no introduction and no "
+            + "ending that is not here.\n\nI make every piece by hand."
+        #expect(ScriptPromptBuilder.withoutEchoedInstructions(echoed, prompt: prompt, source: "Hago cada pieza a mano.") == "I make every piece by hand.")
+        let untouched = "I make every piece by hand.\n\nNo second line."
+        #expect(ScriptPromptBuilder.withoutEchoedInstructions(untouched, prompt: prompt, source: "Hago cada pieza a mano.") == untouched)
+    }
+
     @Test func aLongScriptComesBackWholeAPartAtATime() async throws {
         let text = Self.script(paragraphs: 12, words: 70)
         let model = Model { text, _ in text + " ok" }
@@ -113,6 +138,17 @@ struct RewriteRunnerTests {
         #expect(result.text.hasPrefix("I don’t know why"))
     }
 
+    /// The iPhone's model dropped every cue of a script when it shortened it, twice, and the cue-less text was taken: the cues go back.
+    @Test func cuesTheModelDroppedGoBackInsteadOfTheScriptLosingThem() async throws {
+        let text = "Use a spotter when you lift heavy weights at home. [pause] It keeps your form steady and safe. [smile] "
+            + "Stretch before and after, every single time. [look at camera] Keep your space clear of clutter and cables."
+        let model = Model { _, _ in "Use a spotter when lifting. It keeps your form steady. Stretch every time. Keep your space clear." }
+        let result = try await RewriteRunner.run(text, tool: .shorterAndDirect, context: Self.context, ask: model.ask)
+        #expect(model.asked.count == 1)
+        #expect(result.leftAsWritten == 0)
+        #expect(result.text == "Use a spotter when lifting. [pause] It keeps your form steady. [smile] Stretch every time. [look at camera] Keep your space clear.")
+    }
+
     @Test func aStrongerCTAChangesTheClosingAndNothingElse() async throws {
         let text = Self.script(paragraphs: 4, words: 40)
         let model = Model { _, _ in "Follow now, and send this to a friend who needs it today, because it takes only a minute to try and see." }
@@ -145,6 +181,38 @@ struct RewriteRunnerTests {
         let count = ReadTime.wordCount(in: result.text)
         #expect(count < ReadTime.wordCount(in: text))
         #expect(count >= Int(Double(low) * 0.7) && count <= Int(Double(high) * 1.3), "\(count) words for \(low)–\(high)")
+    }
+
+    /// A model that lengthens by half each time it is asked still gets there: "Fit to time" goes round again while each round comes nearer.
+    @Test func aLengtheningThatStopsShortGoesRoundAgain() async throws {
+        let text = Self.script(paragraphs: 1, words: 50)
+        let model = Model { text, _ in
+            let words = text.split(separator: " ")
+            return (words + words.prefix(words.count / 2)).joined(separator: " ")
+        }
+        let result = try await RewriteRunner.run(text, tool: .fitToTime, context: Self.context, ask: model.ask)
+        let count = ReadTime.wordCount(in: result.text)
+        #expect((ReadTime.words(for: 60)...ReadTime.words(for: 90)).contains(count), "\(count) words")
+    }
+
+    /// Rounds that each add only a little stop short; what is missing is then written as an addition, which goes in before the close.
+    @Test func aLengtheningStillShortGetsAnAdditionBeforeItsClose() async throws {
+        let text = Self.script(paragraphs: 2, words: 40)
+        let model = Model { text, _ in text + " more" }
+        let topUp = Model { _, _ in "" }
+        let ask: RewriteRunner.Ask = { part, details in
+            if let words = details.addition {
+                _ = try await topUp.ask(part, details)
+                return Array(repeating: "fresh", count: words).joined(separator: " ") + "."
+            }
+            return try await model.ask(part, details)
+        }
+        let result = try await RewriteRunner.run(text, tool: .fitToTime, context: Self.context, ask: ask)
+        let count = ReadTime.wordCount(in: result.text)
+        #expect((ReadTime.words(for: 60)...ReadTime.words(for: 90)).contains(count), "\(count) words")
+        #expect(topUp.asked.count == 1)
+        let paragraphs = result.text.components(separatedBy: "\n\n")
+        #expect(paragraphs.count == 3 && paragraphs[1].hasPrefix("fresh") && paragraphs[2].hasPrefix("word1x0"), "the addition goes before the close")
     }
 
     @Test func aPartTheModelWontTouchIsLeftAndTheOthersAreDone() async throws {

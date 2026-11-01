@@ -33,7 +33,7 @@ struct RewriteChunkerTests {
         let chunks = RewriteChunker.chunks(of: text, for: .fixGrammar)
         #expect(chunks.count >= 4)
         #expect(chunks.reduce(0) { $0 + $1.words } == ReadTime.wordCount(in: text))
-        #expect(RewriteChunker.joined(chunks.map(\.text)).replacingOccurrences(of: "\n\n", with: " ") == text.replacingOccurrences(of: "\n\n", with: " "))
+        #expect(RewriteChunker.joined(chunks.map(\.text), gaps: chunks.map(\.gap)) == text)
     }
 
     @Test func noPartIsBiggerThanTheModelAnswersInFull() {
@@ -59,6 +59,28 @@ struct RewriteChunkerTests {
         #expect(chunks[1].text == Self.paragraph(4, words: 40))
         #expect(chunks[1].leadIn == Self.paragraph(3, words: 40))
         #expect(chunks[0].text == Self.script(paragraphs: 4, words: 40))
+        #expect(chunks[0].gap == "\n\n")
+    }
+
+    /// A script in one paragraph (as creators often write) closes with its last two sentences: the rest isn't asked about at all.
+    @Test func aStrongerCTAOnAScriptInOneParagraphOnlyTouchesItsLastSentences() {
+        let text = "Today I show my Sunday routine. First I write a list. Then I sort it by week. Follow me for the rest."
+        let chunks = RewriteChunker.chunks(of: text, for: .strongerCTA)
+        #expect(chunks.count == 2)
+        #expect(chunks[0] == RewriteChunk(text: "Today I show my Sunday routine. First I write a list.", isRewritten: false, gap: " "))
+        #expect(chunks[1].text == "Then I sort it by week. Follow me for the rest.")
+        #expect(chunks[1].leadIn == "First I write a list.")
+        #expect(RewriteChunker.joined(chunks.map(\.text), gaps: chunks.map(\.gap)) == text)
+    }
+
+    /// The parts go back with what was between them: single line breaks stay single, and a paragraph cut at its sentences stays one paragraph.
+    @Test func thePartsKeepTheScriptsLayout() {
+        let sentence = "This is one sentence of the long paragraph that never ends, with enough words in it to count."
+        let long = Array(repeating: sentence, count: 30).joined(separator: " ")
+        let text = "Line one.\nLine two.\n\n" + long + "\n\nThe end."
+        let chunks = RewriteChunker.chunks(of: text, for: .fixGrammar)
+        #expect(chunks.count > 2)
+        #expect(RewriteChunker.joined(chunks.map(\.text), gaps: chunks.map(\.gap)) == text)
     }
 
     @Test func aScriptOfOneParagraphIsItsOwnClosing() {
@@ -74,7 +96,14 @@ struct RewriteChunkerTests {
         #expect(grown.count > same.count)
     }
 
-    @Test func partsAreJoinedByABlankLine() {
-        #expect(RewriteChunker.joined(["One. ", " Two.", "", "Three."]) == "One.\n\nTwo.\n\nThree.")
+    /// A version for Instagram Stories asked of three parts came back two to three times its length: a script to be cut to less than half goes whole.
+    @Test func aScriptToBeCutToLessThanHalfGoesWhole() {
+        let text = Self.script(paragraphs: 5, words: 40)
+        #expect(RewriteChunker.chunks(of: text, for: .fitToTime, expansion: 0.3) == [RewriteChunk(text: text)])
+        #expect(RewriteChunker.chunks(of: Self.script(paragraphs: 12, words: 60), for: .fitToTime, expansion: 0.3).count > 1, "too long to go whole")
+    }
+
+    @Test func partsAreJoinedByWhatWasBetweenThemAndAnEmptyOneIsLeftOut() {
+        #expect(RewriteChunker.joined(["One. ", " Two.", "", "Three."], gaps: ["\n", "\n\n", "\n\n", ""]) == "One.\nTwo.\n\nThree.")
     }
 }

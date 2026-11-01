@@ -5,10 +5,9 @@
 
 import Foundation
 
-/// What Ultra's "Fit to time" sends (one call, only for a script Ultra wrote): the script on the page, its platform, the words the platform's
-/// range asks for, and how the creator speaks (`VoiceBriefBuilder.ultraProjection`'s delivery, the same the polish gets). Owner's choice,
-/// 29/10/2026: Ultra writes freely and the creator fits it when they want; on the iPhone, Apple Intelligence's "Fit to time" brought only 4 of
-/// 15 of Ultra's scripts into TikTok's range (`research_notes/Ultra AI/fit-q1.json`).
+/// What Ultra's fit sends (one call, only while Ultra writes, for a script that came back past its platform's range): the polished script, its
+/// platform, the words the platform's range asks for, and how the creator speaks (`VoiceBriefBuilder.ultraProjection`'s delivery, the same the
+/// polish gets). Fit to time on the page is Apple Intelligence's (owner, 01/11/2026).
 nonisolated struct UltraFitRequest: Hashable, Sendable {
     let script: String
     let platform: Platform
@@ -19,10 +18,11 @@ nonisolated struct UltraFitRequest: Hashable, Sendable {
     /// What "What Cue sends" shows for the script's word count (its preview has a placeholder for a script); nil counts the script.
     var countShown: String?
 
-    /// The words the range asks for, at the creator's natural pace.
+    /// The words the range asks for, at the creator's natural pace in the script's language (`ReadTime.pace(for:)`).
     var words: ClosedRange<Int> {
-        let low = ReadTime.words(for: range.lowerBound)
-        return low...max(low, ReadTime.words(for: range.upperBound))
+        let pace = language.flatMap(CueLanguage.matching(language:))
+        let low = ReadTime.words(for: range.lowerBound, language: pace)
+        return low...max(low, ReadTime.words(for: range.upperBound, language: pace))
     }
 
     var stage: UltraStageRequest {

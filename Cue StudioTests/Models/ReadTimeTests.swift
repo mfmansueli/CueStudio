@@ -32,4 +32,30 @@ struct ReadTimeTests {
         #expect(ReadTime.words(for: 120, speed: 0.5) == 215)
         #expect(abs(ReadTime.words(for: 90) - 225) <= 1)
     }
+    /// A minute holds fewer words in Korean and more in French (`ReadTime.pace(for:)`): the same 150 words run longer in Korean, shorter in
+    /// French, and English (or an unknown language) is as before.
+    @Test func eachLanguageIsTimedAtItsOwnPace() {
+        let text = TestData.words(150)
+        #expect(abs(ReadTime.seconds(for: text) - 60) < 0.01)
+        #expect(abs(ReadTime.seconds(for: text, language: .english) - 60) < 0.01)
+        #expect(abs(ReadTime.seconds(for: text, language: .korean) - 80) < 0.01)
+        #expect(ReadTime.seconds(for: text, language: .french) < 53)
+        #expect(ReadTime.words(for: 60, language: .korean) == 113)
+        #expect(ReadTime.words(for: 60, language: .portugueseBrazil) == 150)
+    }
+
+    /// A script the creator wrote has no language set: it is timed at the pace of the language its words are in, the same in the list and on
+    /// the page.
+    @Test func aScriptWithoutALanguageIsTimedByItsWords() {
+        let korean = TestData.script(text: "오늘은 제가 아침에 하는 세 가지 습관을 알려 드릴게요. 첫 번째는 일어나자마자 물 한 잔을 마시는 거예요.")
+        #expect(korean.paceLanguage == .korean)
+        #expect(korean.readSeconds == ReadTime.seconds(for: korean.text, language: .korean))
+        var set = korean
+        set.language = .english
+        #expect(set.paceLanguage == .english)
+    }
+
+    @Test func aCueBeforeAFullStopOrADashBetweenSpacesIsNoWord() {
+        #expect(ReadTime.wordCount(in: "Empezó con cinco productos [sorpresa]. Luego — más … [pause]") == 6)
+    }
 }

@@ -161,7 +161,7 @@ final class UltraScriptService: UltraScriptWriting {
         guard !script.text.isEmpty else { throw UltraError.reviewFailed(.incomplete, draft: draft) }
         // A vertical video that came back past its range (a little over it, never past two minutes) is fitted into it, one more call. A fit
         // that fails or may not go out leaves the polished script.
-        if case .ideal(let range) = payload.length, let limit = payload.length.overflowWords, ReadTime.wordCount(in: script.text) > limit,
+        if case .ideal(let range) = payload.length, let limit = payload.length.overflowWords(in: request.language), ReadTime.wordCount(in: script.text) > limit,
            let shorter = try? await fitted(UltraFitRequest(
                script: script.text, platform: request.platform, range: range, voice: request.voice, language: request.language?.locale.language
            ), cost: &cost), !shorter.isEmpty {
@@ -202,8 +202,10 @@ final class UltraScriptService: UltraScriptWriting {
         return (reply, seconds, answer)
     }
 
-    /// "Fit to time" for a script Ultra wrote: one call, counted like the others, only with permission and never after a Stop. The fitted
-    /// speech, cleaned as a script is; a failure leaves the page as it was. A script already in the range comes back as it is, with no call.
+    /// The fit stage alone (one call, counted like the others, only with permission and never after a Stop), for the device measurements
+    /// (`UltraQualityDeviceTests`, `UltraCostDeviceTests`) and its tests. The app fits only a script that came back past its range, inside
+    /// `run`: Fit to time on the page is Apple Intelligence's (owner, 01/11/2026: Ultra writes, it never touches up). A script already in the range
+    /// comes back as it is, with no call.
     func fit(_ request: UltraFitRequest) async throws -> String {
         var cost = UltraCost()
         var done = false

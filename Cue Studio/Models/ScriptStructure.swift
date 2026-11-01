@@ -14,22 +14,26 @@ nonisolated struct ScriptStructure: Hashable, Sendable {
     let tools: [ScriptTool]
     let hooks: [String]
     /// Serious formats (apologies, statements) never get hooks, hype or calls to action.
-    let isSerious: Bool
+    var isSerious = false
 
     /// Used by scripts without a format.
-    static let generic = ScriptStructure(
-        label: String(localized: "Talking video"),
-        blocks: [String(localized: "Hook"), String(localized: "Body"), String(localized: "CTA")],
-        tones: [.casual, .energetic, .expert, .funny],
-        tools: [.newHooks, .fitToTime, .moreEnergy, .fixGrammar, .translate],
-        hooks: [
-            String(localized: "Okay, real talk: this one matters."),
-            String(localized: "Nobody talks about this, so I will."),
-            String(localized: "Stop scrolling for ten seconds."),
-            String(localized: "I tested this so you don't have to."),
-        ],
-        isSerious: false
-    )
+    static let generic = generic(hooksIn: nil)
+
+    /// The structure of a script without a format, its ready-made hooks written in `language` (nil: the interface's).
+    static func generic(hooksIn language: CueLanguage?) -> ScriptStructure {
+        ScriptStructure(
+            label: String(localized: "Talking video"),
+            blocks: [String(localized: "Hook"), String(localized: "Body"), String(localized: "CTA")],
+            tones: [.casual, .energetic, .expert, .funny],
+            tools: [.newHooks, .fitToTime, .moreEnergy, .fixGrammar, .translate],
+            hooks: [
+                String(localized: "Okay, real talk: this one matters.", writtenIn: language),
+                String(localized: "Nobody talks about this, so I will.", writtenIn: language),
+                String(localized: "Stop scrolling for ten seconds.", writtenIn: language),
+                String(localized: "I tested this so you don't have to.", writtenIn: language),
+            ]
+        )
+    }
 
     /// Label for a block index given the number of paragraphs: the first paragraph is always the
     /// opening block, the last one the closing block, the ones in between walk the middle blocks.

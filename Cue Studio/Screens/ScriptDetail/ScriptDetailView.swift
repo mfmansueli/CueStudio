@@ -85,6 +85,7 @@ struct ScriptDetailView: View {
                 HooksSheet(
                     currentHook: viewModel.currentHook,
                     options: viewModel.hookOptions,
+                    language: viewModel.paceLanguage,
                     isLoading: viewModel.isLoadingHooks,
                     onPick: { viewModel.replaceHook(with: $0) },
                     onMore: { Task { await viewModel.showMoreHooks() } }

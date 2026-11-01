@@ -32,34 +32,37 @@ nonisolated enum UltraLength: Hashable, Sendable {
 
     /// The longest a script on its platform's range may come back before it is fitted into it (`UltraScriptService`): a little over the range,
     /// never past two minutes. Nil for the other policies, which are never fitted by themselves.
-    var overflowWords: Int? {
+    var overflowWords: Int? { overflowWords(in: nil) }
+
+    /// `overflowWords` at the pace of `language` (`ReadTime.pace(for:)`: fewer words a minute in Korean, more in French).
+    func overflowWords(in language: CueLanguage?) -> Int? {
         guard case .ideal(let range) = self else { return nil }
-        return ReadTime.words(for: min(range.upperBound * 1.15, ScriptRequestFactory.autoCeiling))
+        return ReadTime.words(for: min(range.upperBound * 1.15, ScriptRequestFactory.autoCeiling), language: language)
     }
 
-    /// The line the prompt carries, with the words a natural pace gives (150 a minute) so the model needn't convert.
-    var promptLine: String {
+    /// The line the prompt carries, with the words a natural pace gives (150 a minute in English, `ReadTime.pace(for:)` in other languages) so
+    /// the model needn't convert.
+    var promptLine: String { promptLine(in: nil) }
+
+    /// `promptLine` with the words at the pace of `language`.
+    func promptLine(in language: CueLanguage?) -> String {
+        func words(_ seconds: TimeInterval) -> Int { ReadTime.words(for: seconds, language: language) }
         switch self {
         case .free:
             return "Length: free. There is no time or word target: the subject and the request decide. Do not pad, and do not cut useful development."
         case .reference(let seconds):
-            return "Length: about \(Int(seconds)) seconds of speech (about \(Self.words(seconds)) words at a natural pace), as a reference, not a limit. "
+            return "Length: about \(Int(seconds)) seconds of speech (about \(words(seconds)) words at a natural pace), as a reference, not a limit. "
                 + "Do not pad to reach it, and do not cut useful development to stay under it."
         case .required(let range):
             let low = Int(range.lowerBound), high = Int(range.upperBound)
-            return "Length: the creator chose \(low) to \(high) seconds of speech (about \(Self.words(range.lowerBound)) to "
-                + "\(Self.words(range.upperBound)) words at a natural pace). Treat it as their intent: develop enough to fill it, without "
+            return "Length: the creator chose \(low) to \(high) seconds of speech (about \(words(range.lowerBound)) to "
+                + "\(words(range.upperBound)) words at a natural pace). Treat it as their intent: develop enough to fill it, without "
                 + "padding, and stay within it."
         case .ideal(let range):
             let low = Int(range.lowerBound), high = Int(range.upperBound)
-            return "Length: \(low) to \(high) seconds of speech (about \(Self.words(range.lowerBound)) to \(Self.words(range.upperBound)) words "
+            return "Length: \(low) to \(high) seconds of speech (about \(words(range.lowerBound)) to \(words(range.upperBound)) words "
                 + "at a natural pace), the length that works on this platform. Develop the idea fully within it, without padding, and never go "
-                + "past \(Self.words(range.upperBound)) words: choose the strongest points instead of covering everything."
+                + "past \(words(range.upperBound)) words: choose the strongest points instead of covering everything."
         }
-    }
-
-    /// The words at 150 a minute, the pace the rest of Cue counts with.
-    private static func words(_ seconds: TimeInterval) -> Int {
-        Int((seconds * 150 / 60).rounded())
     }
 }

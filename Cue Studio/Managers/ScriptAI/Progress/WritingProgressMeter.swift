@@ -31,7 +31,7 @@ final class WritingProgressMeter {
 
     /// A meter for `request`, expecting the fewest words the creator asked for (what the model writes, about).
     convenience init(for request: ScriptRequest) {
-        self.init(expectedWords: ReadTime.words(for: request.targetRange.lowerBound))
+        self.init(expectedWords: ReadTime.words(for: request.targetRange.lowerBound, language: request.language))
     }
 
     var isFinished: Bool { estimate.isFinished }

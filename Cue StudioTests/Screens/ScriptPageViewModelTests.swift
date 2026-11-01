@@ -183,8 +183,17 @@ struct ScriptPageViewModelTests {
         defer { scenario.defaults.tearDown() }
         scenario.viewModel.page.selection = 5..<5
         scenario.viewModel.insertCue(named: ScriptCue.smile.name)
-        #expect(scenario.viewModel.page.text == "Hello [smile]  world")
-        #expect(scenario.viewModel.page.selection == 14..<14)
+        #expect(scenario.viewModel.page.text == "Hello [smile] world")
+        #expect(scenario.viewModel.page.selection == 13..<13)
+    }
+
+    /// Words selected and a cue tapped: the cue goes before them and the words stay.
+    @Test func aCueOverSelectedWordsGoesBeforeThemAndKeepsThem() {
+        let scenario = makeScenario(script: TestData.script(text: "This part matters most."))
+        defer { scenario.defaults.tearDown() }
+        scenario.viewModel.page.selection = 10..<17
+        scenario.viewModel.insertCue(named: ScriptCue.emphasis.name)
+        #expect(scenario.viewModel.page.text == "This part [emphasis] matters most.")
     }
 
     @Test func addingACueWithTheCuesHiddenShowsThemAgain() {
@@ -205,7 +214,7 @@ struct ScriptPageViewModelTests {
         defer { scenario.defaults.tearDown() }
         scenario.viewModel.page.selection = 5..<5
         scenario.viewModel.addCue("  [laugh] ")
-        #expect(scenario.viewModel.page.text == "Hello [laugh]  world")
+        #expect(scenario.viewModel.page.text == "Hello [laugh] world")
         #expect(scenario.viewModel.barCues == ["pause", "smile", "emphasis", "look at camera", "laugh"])
         // Kept with the creator's preferences, not with this script.
         #expect(PreferencesService(defaults: scenario.defaults.defaults).customCues == ["laugh"])
@@ -336,10 +345,18 @@ struct ScriptPageViewModelTests {
         scenario.writer.isAvailable = false
         scenario.viewModel.page.selection = 0..<22
         await scenario.viewModel.rewriteSelection(.cut)
-        #expect(scenario.viewModel.page.text == " More words follow.")
+        #expect(scenario.viewModel.page.text == "More words follow.")
         #expect(scenario.writer.lastRewrite == nil)
         try #require(scenario.toast.action).perform()
         #expect(scenario.viewModel.page.text == "Hello there my friend. More words follow.")
+    }
+
+    /// Cut is a deletion like any other on the page: a cue it cuts into goes whole, and no doubled space is left.
+    @Test func cutTakesACueWholeAndLeavesOneSpace() {
+        #expect(ScriptDetailViewModel.cutting(2..<10, from: "Hello [pause] world") == "He world")
+        #expect(ScriptDetailViewModel.cutting(4..<8, from: "one two three") == "one three")
+        #expect(ScriptDetailViewModel.cutting(0..<4, from: "one two") == "two")
+        #expect(ScriptDetailViewModel.cutting(3..<7, from: "one two\nthree") == "one\nthree")
     }
 
     @Test func aFailedRewriteSaysSoAndKeepsTheWords() async {

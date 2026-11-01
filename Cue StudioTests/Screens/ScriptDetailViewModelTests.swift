@@ -98,15 +98,31 @@ struct ScriptDetailViewModelTests {
     }
 
     @Test func withoutTheModelHooksComeFromTheFormat() async {
-        let script = TestData.script(text: "Old hook.\n\nBody.")
+        var script = TestData.script(text: "Old hook.\n\nBody.")
+        script.language = .english
         let scenario = makeScenario(script: script)
         defer { scenario.defaults.tearDown() }
         scenario.writer.isAvailable = false
         await scenario.viewModel.openHooks()
         let first = scenario.viewModel.hookOptions
-        #expect(first == ScriptTextEditing.hookOptions(from: ScriptStructure.generic.hooks, rotation: 0))
+        #expect(first == ScriptTextEditing.hookOptions(from: ScriptStructure.generic(hooksIn: .english).hooks, rotation: 0))
         await scenario.viewModel.showMoreHooks()
         #expect(scenario.viewModel.hookOptions != first)
+    }
+
+    /// The format's hooks are read to camera, so they are in the script's language, not the app's.
+    @Test func theFormatsHooksAreInTheScriptsLanguage() async {
+        var script = TestData.script(text: "Gancho antigo.\n\nCorpo do roteiro.")
+        script.language = .portugueseBrazil
+        script.type = .review
+        let scenario = makeScenario(script: script)
+        defer { scenario.defaults.tearDown() }
+        scenario.writer.isAvailable = false
+        await scenario.viewModel.openHooks()
+        let portuguese = ScriptType.review.structure(hooksIn: .portugueseBrazil).hooks
+        #expect(!scenario.viewModel.hookOptions.isEmpty)
+        #expect(scenario.viewModel.hookOptions.allSatisfy { portuguese.contains($0) })
+        #expect(!scenario.viewModel.hookOptions.contains("Honest verdict, no sponsor."))
     }
 
     @Test func checkedClearsTheFactCheckWithoutReordering() {

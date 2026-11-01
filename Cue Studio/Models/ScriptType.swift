@@ -28,8 +28,11 @@ nonisolated enum ScriptType: String, Codable, CaseIterable, Identifiable, Sendab
         }
     }
 
-    var structure: ScriptStructure {
-        let generic = ScriptStructure.generic
+    var structure: ScriptStructure { structure(hooksIn: nil) }
+
+    /// The format's structure, its ready-made hooks written in `language` (the script's: they are read to camera); nil is the interface's.
+    func structure(hooksIn language: CueLanguage?) -> ScriptStructure {
+        let generic = ScriptStructure.generic(hooksIn: language)
         switch self {
         case .ad:
             return ScriptStructure(
@@ -41,12 +44,11 @@ nonisolated enum ScriptType: String, Codable, CaseIterable, Identifiable, Sendab
                 tones: [.energetic, .casual, .premium, .funny],
                 tools: [.newHooks, .strongerCTA, .addDisclosure, .fitToTime],
                 hooks: [
-                    String(localized: "Stop buying the version that does this. [pause]"),
-                    String(localized: "I found the only one that actually works."),
-                    String(localized: "A friend made me try this. I owe her."),
-                    String(localized: "POV: it finally looks like the ad."),
-                ],
-                isSerious: false
+                    String(localized: "Stop buying the version that does this. [pause]", writtenIn: language),
+                    String(localized: "I found the only one that actually works.", writtenIn: language),
+                    String(localized: "A friend made me try this.", writtenIn: language),
+                    String(localized: "POV: it finally looks like the ad.", writtenIn: language),
+                ]
             )
         case .review:
             return ScriptStructure(
@@ -54,12 +56,11 @@ nonisolated enum ScriptType: String, Codable, CaseIterable, Identifiable, Sendab
                 blocks: [String(localized: "Hook"), String(localized: "First look"), String(localized: "Pros & cons"), String(localized: "Verdict")],
                 tones: generic.tones, tools: generic.tools,
                 hooks: [
-                    String(localized: "Honest verdict, no sponsor."),
-                    String(localized: "Is this worth the hype? Let's see."),
-                    String(localized: "I didn't expect to like this one. [pause]"),
-                    String(localized: "Don't buy this until you watch this."),
-                ],
-                isSerious: false
+                    String(localized: "Honest verdict, no sponsor.", writtenIn: language),
+                    String(localized: "Is this worth the hype? Let's see.", writtenIn: language),
+                    String(localized: "I didn't expect to like this one. [pause]", writtenIn: language),
+                    String(localized: "Don't buy this until you watch this.", writtenIn: language),
+                ]
             )
         case .tutorial:
             return ScriptStructure(
@@ -67,12 +68,11 @@ nonisolated enum ScriptType: String, Codable, CaseIterable, Identifiable, Sendab
                 blocks: [String(localized: "Hook"), String(localized: "Promise"), String(localized: "Steps"), String(localized: "CTA")],
                 tones: generic.tones, tools: generic.tools,
                 hooks: [
-                    String(localized: "Here's the whole process in under a minute."),
-                    String(localized: "Steal my system. It's simpler than you think."),
-                    String(localized: "You're doing this wrong. Here's the fix. [pause]"),
-                    String(localized: "Save this before you need it."),
-                ],
-                isSerious: false
+                    String(localized: "Here's the whole process in under a minute.", writtenIn: language),
+                    String(localized: "Steal my system. It's simpler than you think.", writtenIn: language),
+                    String(localized: "You're doing this wrong. Here's the fix. [pause]", writtenIn: language),
+                    String(localized: "Save this before you need it.", writtenIn: language),
+                ]
             )
         case .list:
             return ScriptStructure(
@@ -80,12 +80,11 @@ nonisolated enum ScriptType: String, Codable, CaseIterable, Identifiable, Sendab
                 blocks: [String(localized: "Hook"), String(localized: "Tips"), String(localized: "CTA")],
                 tones: generic.tones, tools: generic.tools,
                 hooks: [
-                    String(localized: "Three tiny changes. Totally different results."),
-                    String(localized: "I tried everything. These are the ones that stuck."),
-                    String(localized: "This is hard because you skip this. [pause]"),
-                    String(localized: "If you only change one thing tomorrow, make it this."),
-                ],
-                isSerious: false
+                    String(localized: "Three tiny changes. Totally different results.", writtenIn: language),
+                    String(localized: "I tried everything. These stuck.", writtenIn: language),
+                    String(localized: "This is hard because you skip this. [pause]", writtenIn: language),
+                    String(localized: "Change one thing tomorrow: this.", writtenIn: language),
+                ]
             )
         case .story:
             return ScriptStructure(
@@ -93,12 +92,11 @@ nonisolated enum ScriptType: String, Codable, CaseIterable, Identifiable, Sendab
                 blocks: [String(localized: "Hook"), String(localized: "Setup"), String(localized: "Twist"), String(localized: "Payoff")],
                 tones: generic.tones, tools: generic.tools,
                 hooks: [
-                    String(localized: "This is the most embarrassing thing that's happened to me."),
-                    String(localized: "It went wrong at the worst possible moment."),
-                    String(localized: "I almost didn't post this. [pause]"),
-                    String(localized: "Story time, and yes, it ends well."),
-                ],
-                isSerious: false
+                    String(localized: "My most embarrassing moment yet.", writtenIn: language),
+                    String(localized: "It went wrong at the worst possible moment.", writtenIn: language),
+                    String(localized: "I almost didn't post this. [pause]", writtenIn: language),
+                    String(localized: "Story time, and yes, it ends well.", writtenIn: language),
+                ]
             )
         case .opinion:
             return ScriptStructure(
@@ -114,12 +112,11 @@ nonisolated enum ScriptType: String, Codable, CaseIterable, Identifiable, Sendab
                 ],
                 tones: generic.tones, tools: generic.tools,
                 hooks: [
-                    String(localized: "Unpopular opinion, but hear me out."),
-                    String(localized: "Someone asked this in the comments, so let me answer."),
-                    String(localized: "I'm going to get hate for this. [pause]"),
-                    String(localized: "Can we talk about this for a second?"),
-                ],
-                isSerious: false
+                    String(localized: "Unpopular opinion, but hear me out.", writtenIn: language),
+                    String(localized: "You asked in the comments. Here goes.", writtenIn: language),
+                    String(localized: "I'm going to get hate for this. [pause]", writtenIn: language),
+                    String(localized: "Can we talk about this for a second?", writtenIn: language),
+                ]
             )
         case .launch:
             return ScriptStructure(
@@ -127,12 +124,11 @@ nonisolated enum ScriptType: String, Codable, CaseIterable, Identifiable, Sendab
                 blocks: [String(localized: "Hook"), String(localized: "News"), String(localized: "Details"), String(localized: "CTA")],
                 tones: generic.tones, tools: generic.tools,
                 hooks: [
-                    String(localized: "I've been keeping a secret. [pause]"),
-                    String(localized: "It's finally happening."),
-                    String(localized: "You asked for this. Here it is."),
-                    String(localized: "Big news. Stay till the end."),
-                ],
-                isSerious: false
+                    String(localized: "I've been keeping a secret. [pause]", writtenIn: language),
+                    String(localized: "It's finally happening.", writtenIn: language),
+                    String(localized: "You asked for this. Here it is.", writtenIn: language),
+                    String(localized: "Big news. Stay till the end.", writtenIn: language),
+                ]
             )
         case .apology:
             return ScriptStructure(
@@ -144,10 +140,10 @@ nonisolated enum ScriptType: String, Codable, CaseIterable, Identifiable, Sendab
                 tones: [.sincere, .calm, .direct],
                 tools: [.moreHuman, .lessDefensive, .shorterAndDirect, .fixGrammar],
                 hooks: [
-                    String(localized: "I want to talk about last week, directly."),
-                    String(localized: "Before anything else: I'm sorry."),
-                    String(localized: "I owe you an explanation. [pause]"),
-                    String(localized: "This video is overdue."),
+                    String(localized: "I want to talk about last week, directly.", writtenIn: language),
+                    String(localized: "Before anything else: I'm sorry.", writtenIn: language),
+                    String(localized: "I owe you an explanation. [pause]", writtenIn: language),
+                    String(localized: "This video is overdue.", writtenIn: language),
                 ],
                 isSerious: true
             )
@@ -159,12 +155,11 @@ nonisolated enum ScriptType: String, Codable, CaseIterable, Identifiable, Sendab
                 ],
                 tones: generic.tones, tools: generic.tools,
                 hooks: [
-                    String(localized: "You've been told this your whole life. It's wrong. [pause]"),
-                    String(localized: "Stop believing this one thing."),
-                    String(localized: "Everyone repeats this myth. Here's the truth."),
-                    String(localized: "I believed this for years, until I checked."),
-                ],
-                isSerious: false
+                    String(localized: "You've heard this forever. It's wrong. [pause]", writtenIn: language),
+                    String(localized: "Stop believing this one thing.", writtenIn: language),
+                    String(localized: "Everyone repeats this myth. Here's the truth.", writtenIn: language),
+                    String(localized: "I believed this for years, until I checked.", writtenIn: language),
+                ]
             )
         case .pov:
             return ScriptStructure(
@@ -172,12 +167,11 @@ nonisolated enum ScriptType: String, Codable, CaseIterable, Identifiable, Sendab
                 blocks: [String(localized: "POV line"), String(localized: "Scene"), String(localized: "Twist")],
                 tones: generic.tones, tools: generic.tools,
                 hooks: [
-                    String(localized: "POV: you finally hit record. [pause]"),
-                    String(localized: "POV: it's 7 a.m. and the idea just landed."),
-                    String(localized: "POV: your first video goes better than planned."),
-                    String(localized: "POV: you're the one they all ask for advice."),
-                ],
-                isSerious: false
+                    String(localized: "POV: you finally hit record. [pause]", writtenIn: language),
+                    String(localized: "POV: 7 a.m., and the idea lands.", writtenIn: language),
+                    String(localized: "POV: your first video goes better than planned.", writtenIn: language),
+                    String(localized: "POV: everyone asks you for advice.", writtenIn: language),
+                ]
             )
         }
     }

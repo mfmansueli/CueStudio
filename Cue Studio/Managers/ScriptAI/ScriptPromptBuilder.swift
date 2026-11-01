@@ -112,16 +112,19 @@ nonisolated enum ScriptPromptBuilder {
 
     /// The words the request asks the model for when the script must run `range` seconds: the floor as `askedWords` has it, and a ceiling that is not
     /// raised with it (a Short asked for 150 to 300 words wrote 310, two minutes of a script for a video of one), only kept above the floor.
-    static func askedRange(for range: ClosedRange<TimeInterval>, on route: AIModelRoute = .onDevice) -> (low: Int, high: Int) {
-        let minimum = ReadTime.words(for: range.lowerBound)
+    /// - Parameter language: the script's, whose pace sets how many words the seconds hold (`ReadTime.pace(for:)`).
+    static func askedRange(
+        for range: ClosedRange<TimeInterval>, on route: AIModelRoute = .onDevice, language: CueLanguage? = nil
+    ) -> (low: Int, high: Int) {
+        let minimum = ReadTime.words(for: range.lowerBound, language: language)
         if route == .privateCloud {
             // Owner preference: provide material to edit near the chosen upper duration, at normal
             // reading pace. A small overrun is acceptable; this is not a platform upload limit.
-            let upper = max(minimum, ReadTime.words(for: range.upperBound))
+            let upper = max(minimum, ReadTime.words(for: range.upperBound, language: language))
             return (max(minimum, Int((Double(upper) * 0.9).rounded(.up))), Int((Double(upper) * 1.05).rounded(.up)))
         }
         let low = askedWords(minimum)
-        var high = max(ReadTime.words(for: range.upperBound), Int((Double(low) * 1.25).rounded()))
+        var high = max(ReadTime.words(for: range.upperBound, language: language), Int((Double(low) * 1.25).rounded()))
         // A creator whose videos run one to three minutes asked 225 to 450 words for one line of idea (measured on an iPhone 15 Pro): the model
         // padded it with the same sentences and ran into its limit after 45 to 93 s. A short video is asked for no more than this.
         if low <= shortFormWords { high = min(high, shortFormCeiling) }
@@ -130,7 +133,7 @@ nonisolated enum ScriptPromptBuilder {
 
     static func prompt(for request: ScriptRequest) -> String {
         let structure = request.structure
-        let (low, high) = askedRange(for: request.targetRange, on: request.modelRoute ?? .onDevice)
+        let (low, high) = askedRange(for: request.targetRange, on: request.modelRoute ?? .onDevice, language: request.language)
         var lines: [String] = []
         // On the iPhone 18 Pro Max the model wrote every script in English when the creator's voice (English instructions, an
         // English catchphrase) was on, whatever the instructions said: the language is also asked for in the request itself.
@@ -391,11 +394,22 @@ nonisolated enum ScriptPromptBuilder {
 
     // MARK: - Hooks and ideas
 
+    /// "3 new hooks": three lines that each take the place of the script's hook (`ScriptHook`, its opening sentence, not its whole first paragraph),
+    /// named so the model writes replacements for it, short enough to be said in the hook's few seconds (`ScriptBlocks.hookTarget`, the tip's
+    /// measure), in the script's language.
     static func hooksPrompt(for text: String, context: RewriteContext) -> String {
-        """
-        Write three new opening lines for this script, which will be posted on \(context.platform.promptName). \
-        Each must grab attention in about three seconds and lead into the rest of the script. \
-        Write them in the language the script is written in.
+        let hook = ScriptHook.text(of: text)
+        let words = Int(ScriptBlocks.hookTarget * ReadTime.wordsPerMinute(speed: ReadTime.naturalSpeed, language: context.paceLanguage) / 60)
+        let language = context.sourceLanguage.flatMap(CueLanguage.matching(language:)).map { languageName($0) }
+        let replaces = hook.isEmpty ? "" : "Each takes the place of the opening line the script has now (\"\(CueParser.stripCues(hook))\") and leads "
+            + "into what comes after it. "
+        let written = language.map { $0 == "English" ? "Write them in English." : "Write them in \($0), not in English." }
+            ?? "Write them in the language the script is written in."
+        return """
+        Write five new opening lines for this script, which will be posted on \(context.platform.promptName). \
+        \(replaces)Each must grab attention and be said in about three seconds: at most \(words) words, fewer is better. \
+        The five are different from each other and from the opening line now, and each opens in its own way: no greeting or catchphrase \
+        at the start of more than one. \(written)
 
         Script:
         \(text)
@@ -505,12 +519,20 @@ nonisolated enum ScriptPromptBuilder {
         var leadIn: String?
         /// What its last answer got wrong (`RewriteOutcome.correction`).
         var correction: String?
+        /// Words to write as new sentences that go into the script, the answer being only those ("Fit to time" short of its range, `FitTopUp`).
+        var addition: Int?
     }
 
-    static func rewritePrompt(for text: String, tool: ScriptTool, context: RewriteContext, part: RewritePart = RewritePart()) -> String {
+    /// - Parameter route: the model that answers; "Shorter" is asked with a count of words only on Private Cloud Compute (`shorterInstruction`).
+    static func rewritePrompt(
+        for text: String, tool: ScriptTool, context: RewriteContext, part: RewritePart = RewritePart(), on route: AIModelRoute = .onDevice
+    ) -> String {
+        if let addition = part.addition { return additionPrompt(words: addition, script: text) }
         var lines: [String] = []
         if tool == .fitToTime, let target = part.target {
             lines.append(fitInstruction(for: target, sourceWords: ReadTime.wordCount(in: text)))
+        } else if tool == .shorterAndDirect, route == .privateCloud {
+            lines.append(shorterInstruction(sourceWords: ReadTime.wordCount(in: text)))
         } else {
             lines.append(instruction(for: tool, context: context))
         }
@@ -524,19 +546,60 @@ nonisolated enum ScriptPromptBuilder {
         return lines.joined(separator: "\n\n") + "\n\nScript:\n\(text)"
     }
 
-    /// "Fit to time" for a part: the words it is to have, and how to get there.
+    /// `answer` without the lines of the prompt it repeated: on the iPhone, a translation came back opening with "This is part 1 of 3 of a longer
+    /// script. Edit only this part…" (ScriptToolsQualityDeviceTests, 01/11/2026). A line the script itself has stays.
+    static func withoutEchoedInstructions(_ answer: String, prompt: String, source: String) -> String {
+        func key(_ line: Substring) -> String {
+            line.lowercased().split(whereSeparator: \.isWhitespace).joined(separator: " ")
+        }
+        let script = Set(source.split(separator: "\n").map(key))
+        let asked = Set(prompt.split(separator: "\n").map(key).filter { $0.count > 20 && !script.contains($0) }).union(["script:"])
+        let lines = answer.split(separator: "\n", omittingEmptySubsequences: false)
+        let kept = lines.filter { !asked.contains(key($0)) }
+        guard kept.count < lines.count else { return answer }
+        return kept.joined(separator: "\n").replacing(/\n{3,}/, with: "\n\n").trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    /// What to add to a script that "Fit to time" left short (`FitTopUp`): new sentences only, which go in before its closing line.
+    static func additionPrompt(words: Int, script: String) -> String {
+        "Write what to add to this script so it runs longer: about \(words) more spoken words, as one more point, an example or a moment from the "
+            + "speaker's own day that belongs to what the script already says, to go just before its closing line. Same language and voice. No new "
+            + "facts, names, numbers or studies, and no stage cues in brackets. Answer with only the new sentences, not the script.\n\nScript:\n\(script)"
+    }
+
+    /// "Shorter" with the words it has and the words to answer with, for Private Cloud Compute. Measured on the iPhone (ScriptToolsQualityDeviceTests,
+    /// 01/11/2026), told only "about a third shorter", it gave a passage of 16 to 44 words back with a word or two less (or none) six times in ten,
+    /// and with the count none (10 of 10, whole scripts 10 of 10). The device model did worse with it (whole scripts 9 of 10 → 5 of 10, iOS 27.2) and
+    /// keeps the words alone (`instruction(for:)`).
+    static func shorterInstruction(sourceWords: Int) -> String {
+        "Make it about a third shorter and more direct: it has \(sourceWords) words now, answer with about \(max(1, Int(Double(sourceWords) * 0.65))). "
+            + "Remove filler and repetition, and keep every key point."
+    }
+
+    /// "Fit to time" for a part: the words it is to have, and how to get there. Measured on the iPhone (ScriptToolsQualityDeviceTests, 01/11/2026),
+    /// asked to take a script of 50 to 66 words to 188–263, Private Cloud Compute wrote 129 to 183: a script that must grow to twice its length or
+    /// more is told how many times, and to give every point more sentences, which a model follows better than a count of words.
     static func fitInstruction(for target: ClosedRange<Int>, sourceWords: Int) -> String {
-        let how = sourceWords > target.upperBound
-            ? "Cut what matters least"
-            : "Make it longer with detail, examples and transitions that belong to what is already said, and never new facts, names or numbers"
+        let growth = Double(target.lowerBound + target.upperBound) / 2 / Double(max(1, sourceWords))
+        let how = if target.upperBound * 2 < sourceWords {
+            "That is less than half of it: keep the opening line, the one or two points that matter most and the closing call to action, each in a "
+                + "sentence or two, and leave the rest out"
+        } else if sourceWords > target.upperBound {
+            "Cut what matters least"
+        } else if growth >= 1.8 {
+            "That is about \(Int(growth.rounded())) times as long as it is now: give every point two or three more sentences of detail, an example "
+                + "or what it looks like in practice, all of it belonging to what is already said, and never new facts, names or numbers"
+        } else {
+            "Make it longer with detail, examples and transitions that belong to what is already said, and never new facts, names or numbers"
+        }
         return "Edit the script so it runs between \(target.lowerBound) and \(target.upperBound) spoken words (it has \(sourceWords) now), keeping every key point. \(how)."
     }
 
     static func instruction(for tool: ScriptTool, context: RewriteContext) -> String {
         switch tool {
         case .fitToTime:
-            let low = ReadTime.words(for: context.idealRange.lowerBound)
-            let high = ReadTime.words(for: context.idealRange.upperBound)
+            let low = ReadTime.words(for: context.idealRange.lowerBound, language: context.paceLanguage)
+            let high = ReadTime.words(for: context.idealRange.upperBound, language: context.paceLanguage)
             return "Edit the script so it runs between \(low) and \(high) spoken words, cutting or expanding while keeping every key point."
         case .moreEnergy:
             return "Rewrite with more energy: punchier verbs, shorter sentences, more excitement. Do not add facts."
@@ -547,6 +610,11 @@ nonisolated enum ScriptPromptBuilder {
         case .strongerCTA:
             return "Rewrite the closing below as a clearer, more direct call to action. Do not invent deadlines, discounts or facts that are not in the script."
         case .moreHuman:
+            // The selection's "Rewrite" is this tool on a few sentences. Measured on the iPhone (ScriptToolsQualityDeviceTests, 01/11/2026), told to
+            // sound more human, both models gave a passage that already sounded spoken back as it was (3 of 10): a passage is said another way.
+            if context.isPassage {
+                return "Say it another way, as you would say it out loud: reword every sentence in plain, spoken words, keeping what it means and every point."
+            }
             return "Make it sound more human and less scripted: plain words, no corporate phrasing."
         case .lessDefensive:
             return "Remove defensive language and excuses: delete lines like \"I didn't have a choice\" or \"it's not my fault\", and any \"but\" after " +
@@ -555,7 +623,8 @@ nonisolated enum ScriptPromptBuilder {
             return "Make it about a third shorter and more direct. Remove filler and repetition, and keep every key point."
         case .inMyVoice:
             return "Rewrite the script so it sounds like the creator described in your instructions: their tone, words, style and catchphrases. " +
-                "Put every sentence in their words, so that none stays as it is, and keep every point and about the same number of words as the script has."
+                "Put every sentence in their words, so that none stays as it is, and keep every point and about the same number of words as the script has. " +
+                "Use each catchphrase once at most, a greeting only at the very start, and keep the script's own point of view."
         case .newHooks, .addDisclosure:
             return ""
         }
@@ -568,7 +637,9 @@ nonisolated enum ScriptPromptBuilder {
     /// - Parameters:
     ///   - language: the language of the answer, for the punctuation that replaces a dash; nil reads it from the text.
     ///   - preserving: the creator's words the model had to repeat, left as they are (`ScriptRequest.preservedPhrases`, `preserved(inRewriteOf:)`).
-    static func clean(_ response: String, language: Locale.Language? = nil, preserving: [String] = []) -> String {
+    ///   - source: the creator's text a rewrite started from. A cue it repeats three times in a row ("[pause] [pause] [pause]") is theirs, on
+    ///     purpose, and the answer keeps it (collapsed, the rewrite read as cues lost and the part was left as written).
+    static func clean(_ response: String, language: Locale.Language? = nil, preserving: [String] = [], source: String? = nil) -> String {
         let lines: [String] = response
             .replacingOccurrences(of: "\r\n", with: "\n")
             .components(separatedBy: "\n")
@@ -590,7 +661,9 @@ nonisolated enum ScriptPromptBuilder {
         if text.count > 2, let first = text.first, let last = text.last, "\"“".contains(first), "\"”".contains(last) {
             text = String(text.dropFirst().dropLast())
         }
-        return ScriptTextNormalizer.normalize(DashRewriter.rewrite(collapsingRepeatedCues(text), language: language, preserving: preserving))
+        let keepsRepeats = source.map { collapsingRepeatedCues($0) != $0 } ?? false
+        let cues = keepsRepeats ? text : collapsingRepeatedCues(text)
+        return ScriptTextNormalizer.normalize(DashRewriter.rewrite(cues, language: language, preserving: preserving))
     }
 
     /// A cue repeated three times in a row or more is the model stuck: "[pause]... [pause]... [pause]..." went on for hundreds, until its answer

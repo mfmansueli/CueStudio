@@ -16,22 +16,22 @@ nonisolated struct RewriteNotice: Equatable, Sendable {
     /// couldn't.
     var kind: ToastKind = .cue
 
-    /// The notice for a tool that ran on `before` and gave `result`. `done` is what the tool says when it did its job, and `idealRange` the length
-    /// the platform asks, in seconds.
+    /// The notice for a tool that ran on `before` and gave `result`. `done` is what the tool says when it did its job, `idealRange` the length
+    /// the platform asks, in seconds, and `language` the script's, whose pace times it (`ReadTime.pace(for:)`).
     static func after(
-        _ tool: ScriptTool, before: String, result: RewriteResult, done: String, idealRange: ClosedRange<TimeInterval>
+        _ tool: ScriptTool, before: String, result: RewriteResult, done: String, idealRange: ClosedRange<TimeInterval>, language: CueLanguage? = nil
     ) -> RewriteNotice {
         let words = ReadTime.wordCount(in: before)
         let now = ReadTime.wordCount(in: result.text)
         let same = ScriptTextNormalizer.normalize(result.text) == ScriptTextNormalizer.normalize(before)
         if same || result.isUntouched {
-            let said = nothingChanged(tool, words: words, result: result, idealRange: idealRange)
+            let said = nothingChanged(tool, words: words, result: result, idealRange: idealRange, language: language)
             return RewriteNotice(message: said.message, changesScript: false, kind: said.kind)
         }
         var message = done
         switch tool {
         case .fitToTime:
-            if let length = lengthNote(words: now, idealRange: idealRange) { message = length }
+            if let length = lengthNote(words: now, idealRange: idealRange, language: language) { message = length }
         case .shorterAndDirect:
             message += " · " + String(localized: "\(words) → \(now) words")
         default:
@@ -44,27 +44,26 @@ nonisolated struct RewriteNotice: Equatable, Sendable {
     }
 
     /// How far a script is from the length asked, when it isn't there ("Closer to the 1:00 to 1:30 goal · now 0:48"); nil when it fits.
-    static func lengthNote(words: Int, idealRange: ClosedRange<TimeInterval>) -> String? {
-        guard !fits(words: words, idealRange: idealRange) else { return nil }
+    static func lengthNote(words: Int, idealRange: ClosedRange<TimeInterval>, language: CueLanguage? = nil) -> String? {
+        guard !fits(words: words, idealRange: idealRange, language: language) else { return nil }
         let range = DurationText.range(idealRange)
-        let length = DurationText.clock(Double(words) / (ReadTime.wordsPerMinute(speed: ReadTime.naturalSpeed) / 60))
+        let length = DurationText.clock(Double(words) / (ReadTime.wordsPerMinute(speed: ReadTime.naturalSpeed, language: language) / 60))
         return String(localized: "Closer to the \(range) goal · now \(length)")
     }
 
-    /// Whether `words` is the length asked, within what counting words can tell.
-    static func fits(words: Int, idealRange: ClosedRange<TimeInterval>) -> Bool {
-        let low = Double(ReadTime.words(for: idealRange.lowerBound)) * (1 - RewriteOutcome.slack)
-        let high = Double(ReadTime.words(for: idealRange.upperBound)) * (1 + RewriteOutcome.slack)
-        return (low...high).contains(Double(words))
+    /// Whether `words` is the length asked, the way the length bar under the script tells it (`LengthZone`): a toast that says it fits never sits
+    /// over a bar that says "CUT 9S".
+    static func fits(words: Int, idealRange: ClosedRange<TimeInterval>, language: CueLanguage? = nil) -> Bool {
+        idealRange.contains(Double(words) / (ReadTime.wordsPerMinute(speed: ReadTime.naturalSpeed, language: language) / 60))
     }
 
     private static func nothingChanged(
-        _ tool: ScriptTool, words: Int, result: RewriteResult, idealRange: ClosedRange<TimeInterval>
+        _ tool: ScriptTool, words: Int, result: RewriteResult, idealRange: ClosedRange<TimeInterval>, language: CueLanguage?
     ) -> (message: String, kind: ToastKind) {
         switch tool {
         case .fixGrammar where !result.isUntouched:
             return (String(localized: "No mistakes to fix"), .done)
-        case .fitToTime where fits(words: words, idealRange: idealRange):
+        case .fitToTime where fits(words: words, idealRange: idealRange, language: language):
             let range = DurationText.range(idealRange)
             return (String(localized: "Already within the target length · \(range)"), .done)
         default:

@@ -18,10 +18,10 @@ extension ScriptAIService {
         _ script: GeneratedScript, for request: ScriptRequest, on model: AIModelRoute, language: String?, meter: WritingProgressMeter? = nil
     ) async -> GeneratedScript {
         guard request.durationPolicy == .targeted, model == .onDevice, script.usedLanguageModel, Self.expandsShortScripts else { return script }
-        let minimum = ReadTime.words(for: request.targetRange.lowerBound)
+        let minimum = ReadTime.words(for: request.targetRange.lowerBound, language: request.language)
         // A short-form video is not lengthened: the wait is minutes and the sentences added repeat the ones before (`ScriptPromptBuilder.shortFormWords`).
         guard minimum > ScriptPromptBuilder.shortFormWords else { return script }
-        let maximum = ReadTime.words(for: request.targetRange.upperBound)
+        let maximum = ReadTime.words(for: request.targetRange.upperBound, language: request.language)
         let steps = ScriptExpansion.steps(for: script.text, minimumWords: minimum, maximumWords: maximum)
         guard !steps.isEmpty else { return script }
         let blocks = ScriptExpansion.blocks(of: script.text)
