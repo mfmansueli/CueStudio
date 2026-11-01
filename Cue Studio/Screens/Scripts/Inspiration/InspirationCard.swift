@@ -51,6 +51,24 @@ struct InspirationCard: View {
                 .accessibilityAddTraits(.isHeader)
                 .accessibilityIdentifier("inspiration.card.title")
                 .rises(isRevealed, step: 1)
+            if let why = content.why {
+                // What it came from (a day coming up, a video they posted, a comment they answered): why this idea, today.
+                HStack(alignment: .firstTextBaseline, spacing: 6) {
+                    if let symbol = content.whySymbol {
+                        Image(systemName: symbol)
+                            .cueFont(.footnote, weight: .semibold)
+                            .accessibilityHidden(true)
+                    }
+                    Text(why)
+                        .cueFont(.footnote, weight: .medium)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .foregroundStyle(Palette.aiText)
+                .padding(.top, 8)
+                .accessibilityElement(children: .combine)
+                .accessibilityIdentifier("inspiration.card.why")
+                .rises(isRevealed, step: 1)
+            }
             if let angle = content.angle {
                 // The creator's own way into the subject: what they think, show or have lived that others don't.
                 section(label: "Your point of view", identifier: "inspiration.card.angle") {

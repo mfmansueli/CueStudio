@@ -21,6 +21,8 @@ nonisolated struct ThemeIdea: Hashable, Identifiable, Codable, Sendable {
     /// The whole inspiration (what it is about, the angle, an opening line), for the ones that have one: Find inspiration shows it and
     /// "Start with it" carries it to the composer.
     var brief: IdeaBrief?
+    /// What it is tied to (a day coming up, a video they posted, a comment), what the card says it came from.
+    var tie: IdeaTie?
 
     var id: String { "\(niche.rawValue).\(title)" }
 

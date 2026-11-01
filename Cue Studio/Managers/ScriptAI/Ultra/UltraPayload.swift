@@ -89,6 +89,7 @@ nonisolated struct UltraPayload: Hashable, Sendable {
         guard let brief = request.brief else { return nil }
         var lines = ["Inspiration this idea came from (Find inspiration):"]
         if !brief.subject.isEmpty { lines.append("Subject: \(brief.subject)") }
+        if let topic = ScriptPromptBuilder.briefTopicRule(brief) { lines.append(topic) }
         if let angle = ScriptPromptBuilder.briefAngleRule(brief) { lines.append(angle) }
         if let opening = ScriptPromptBuilder.briefOpeningRule(brief) { lines.append(opening) }
         return lines.count > 1 ? lines.joined(separator: "\n") : nil

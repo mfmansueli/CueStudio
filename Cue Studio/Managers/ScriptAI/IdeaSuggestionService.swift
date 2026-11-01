@@ -84,6 +84,10 @@ final class IdeaSuggestionService {
     private let interfaceLanguage: () -> CueLanguage?
     private let inspiration: () -> [String]
     private let notes: () -> [LogbookEntry]
+    private let signals: () -> IdeaSignals
+    private let region: () -> String?
+    private let now: () -> Date
+    @ObservationIgnored private var occasionCache: (key: String, occasions: [IdeaOccasion])?
     private let defaults: UserDefaults
     /// How often a refill that waits for the model looks again whether it is free.
     var busyRetry: Duration = .milliseconds(600)
@@ -91,15 +95,22 @@ final class IdeaSuggestionService {
     /// - Parameters:
     ///   - inspiration: what the creator wrote lately (the titles of their latest scripts and their notes), the ideas grow from it.
     ///   - notes: the ideas waiting in their Logbook, which come up among the model's.
+    ///   - signals: the videos they shared and the comments their scripts answered, which some ideas follow up (`IdeaSignals`).
+    ///   - region: where they live, for the occasions coming up (`IdeaCalendar`).
     init(
         writer: ScriptWriting, profile: CreatorProfileService, interfaceLanguage: @escaping () -> CueLanguage?,
-        inspiration: @escaping () -> [String] = { [] }, notes: @escaping () -> [LogbookEntry] = { [] }, defaults: UserDefaults = .standard
+        inspiration: @escaping () -> [String] = { [] }, notes: @escaping () -> [LogbookEntry] = { [] },
+        signals: @escaping () -> IdeaSignals = { IdeaSignals() }, region: @escaping () -> String? = { Locale.current.region?.identifier },
+        now: @escaping () -> Date = { .now }, defaults: UserDefaults = .standard
     ) {
         self.writer = writer
         self.profile = profile
         self.interfaceLanguage = interfaceLanguage
         self.inspiration = inspiration
         self.notes = notes
+        self.signals = signals
+        self.region = region
+        self.now = now
         self.defaults = defaults
         signature = currentSignature
         restore()
@@ -125,7 +136,7 @@ final class IdeaSuggestionService {
     }
 
     private var starter: ThemeIdea? {
-        let starters = allTopicsStarters
+        let starters = starters(for: .all)
         guard !starters.isEmpty else { return nil }
         return starters[(starterRotation % starters.count + starters.count) % starters.count]
     }
@@ -280,12 +291,36 @@ final class IdeaSuggestionService {
         return pool[(position + 1)...].filter { $0.brief != nil && filter.includes($0) }
     }
 
-    /// The starters about `filter`: the topic's own (or ones made from its name), or all the creator's topics' in turn.
+    /// The starters about `filter`: the ones tied to what is coming up or what they posted first (`ThemeCatalog.tied`), then the topic's own (or
+    /// ones made from its name), or all the creator's topics' in turn, the angles they use first (`IdeaTaste.ordered`).
     private func starters(for filter: IdeaTopicFilter) -> [ThemeIdea] {
+        let base: [ThemeIdea]
+        let topic: IdeaTopic?
         switch filter {
-        case .all: allTopicsStarters
-        case .topic(let topic): ThemeCatalog.ideas(for: topic)
+        case .all:
+            base = allTopicsStarters
+            topic = profile.profile.ideaTopics.first
+        case .topic(let one):
+            base = ThemeCatalog.ideas(for: one)
+            topic = one
         }
+        return ThemeCatalog.tied(to: currentSignals, topic: topic) + taste.ordered(base)
+    }
+
+    /// What the ideas may be tied to now: the creator's shared videos and answered comments, and the occasions near today where they live
+    /// (worked out once a day: the lunar and Islamic calendars are searched day by day).
+    private var currentSignals: IdeaSignals {
+        var signals = signals()
+        let today = Calendar.current.startOfDay(for: now())
+        let key = "\(today.timeIntervalSince1970)|\(region() ?? "")"
+        if let occasionCache, occasionCache.key == key {
+            signals.occasions = occasionCache.occasions
+        } else {
+            let occasions = IdeaCalendar.occasions(near: today, region: region())
+            occasionCache = (key, occasions)
+            signals.occasions = occasions
+        }
+        return signals
     }
 
     /// The starters of all the creator's topics, made again only when the topics or the language change: each is a handful of localized
@@ -480,7 +515,7 @@ final class IdeaSuggestionService {
         var new: [ThemeIdea] = []
         var failed = false
         for _ in 0..<2 where new.count < 4 {
-            let slots = taste.slots(round: round, among: topics)
+            let slots = currentSignals.tie(taste.slots(round: round, among: topics), round: round)
             round += 1
             let fresh: [ThemeIdea]
             do {

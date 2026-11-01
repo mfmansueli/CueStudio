@@ -227,7 +227,15 @@ struct AppServices {
         ideaSuggestions = IdeaSuggestionService(
             writer: options.writer, profile: profile, interfaceLanguage: { [languages] in languages.interfaceLanguage },
             inspiration: { [library, logbook] in IdeaInspiration.recent(scripts: library.scripts, notes: logbook.waiting) },
-            notes: { [logbook] in logbook.waiting }, defaults: options.defaults
+            notes: { [logbook] in logbook.waiting },
+            signals: { [milestones, takes, library] in
+                IdeaSignals.read(records: milestones.records, takes: takes.takes, scripts: library.scripts)
+            },
+            region: { [isInMemory = options.isInMemory, testRegion = options.occasionsRegion] in
+                isInMemory ? testRegion : Locale.current.region?.identifier
+            },
+            now: { [testToday = options.occasionsToday] in testToday ?? .now },
+            defaults: options.defaults
         )
         starter.briefWritten = { [ideaSuggestions] brief in ideaSuggestions.generated(from: brief) }
         starter.keepsComment = { [logbook] comment in logbook.add(comment.author.map { "\($0): \(comment.text)" } ?? comment.text) }

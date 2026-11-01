@@ -1,0 +1,5 @@
+{"run": "cloud-quality-q1", "date": "2026-11-01", "judge": "owner, blind, in chat",
+ "picks": {"beauty": "A", "filming": "B"},
+ "unblinded": {"beauty": "device", "filming": "device"},
+ "result": "device 2, pcc 0",
+ "decision": "Private Cloud Compute batches (12 → best 6, 2 a day) removed before merging: no quality gain for the owner, only speed (5–6 s vs 9–11 s), and they would spend the per-person PCC quota scripts use. PCC's angles echoed the slot's ask (\"Liste pontos sobre…\") and its opening lines were vague (\"Eu vou mostrar…\")."}

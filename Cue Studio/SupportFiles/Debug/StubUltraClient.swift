@@ -73,6 +73,8 @@ final class StubUltraClient: UltraModelClient {
         case .fit:
             let data = try JSONSerialization.data(withJSONObject: ["script": Self.fittedText])
             return Self.metered(String(bytes: data, encoding: .utf8) ?? "", request.stage)
+        case .ideas:
+            return Self.metered(#"{"ideas":[]}"#, request.stage)
         case .review:
             if reviewFails { throw UltraClientError(failure: .provider) }
             let script = writesLong ? Self.longScriptText : Self.scriptText
@@ -90,6 +92,7 @@ final class StubUltraClient: UltraModelClient {
         case .check: (1_400, 500, 2_500)
         case .review: (1_465, 489, 2_053)
         case .fit: (1_300, 300, 2_000)
+        case .ideas: (900, 9_000, 3_000)
         }
         return UltraModelReply(
             text: text, finishedNormally: true, promptTokens: usage.prompt, outputTokens: usage.output, thinkingTokens: usage.thinking

@@ -66,8 +66,8 @@ nonisolated struct IdeaTaste: Codable, Hashable, Sendable {
             return left == right ? Self.position(of: lhs, round: round) < Self.position(of: rhs, round: round) : left < right
         }.prefix(count - chosen.count)
         let angles = Array(chosen + explored)
-        let order = turns(among: topics, round: round)
-        return angles.enumerated().map { index, angle in IdeaSlot(angle: angle, topic: order[index % order.count]) }
+        let order = turns(among: topics, round: round, count: angles.count)
+        return zip(angles, order).map { angle, topic in IdeaSlot(angle: angle, topic: topic) }
     }
 
     /// The angles the creator has sent most, best first; with nothing sent yet (or too few to say) the angles rotate as they always did.
@@ -80,26 +80,60 @@ nonisolated struct IdeaTaste: Codable, Hashable, Sendable {
         return Array((taken + rotation).prefix(count))
     }
 
+    /// Ideas already written (the starters) in the order the creator's taste reads them: one of an angle they use, then one of the others, in
+    /// turn, so what they like comes first without hiding the rest; the angles they pass go last. Ideas of equal standing keep their order.
+    func ordered(_ ideas: [ThemeIdea]) -> [ThemeIdea] {
+        func score(_ idea: ThemeIdea) -> Double { (idea.angle ?? idea.brief?.angleKind).map { angles[$0, default: 0] } ?? 0 }
+        func ranked(_ part: [(offset: Int, element: ThemeIdea)]) -> [ThemeIdea] {
+            part.sorted { score($0.element) == score($1.element) ? $0.offset < $1.offset : score($0.element) > score($1.element) }.map(\.element)
+        }
+        let numbered = Array(ideas.enumerated()).map { (offset: $0.offset, element: $0.element) }
+        let liked = ranked(numbered.filter { score($0.element) > 0 })
+        let rest = ranked(numbered.filter { score($0.element) <= 0 })
+        var order: [ThemeIdea] = []
+        for index in 0..<max(liked.count, rest.count) {
+            if index < liked.count { order.append(liked[index]) }
+            if index < rest.count { order.append(rest[index]) }
+        }
+        return order
+    }
+
+    /// The most turns a topic takes in a round's order.
+    static let mostTurns = 3
+
+    /// The turns a topic has before the creator sends anything: two when it is in their own words, one when it is a broad first-flight topic.
+    static func firstTurns(of topic: IdeaTopic) -> Int {
+        topic.niche == nil || !topic.subtopics.isEmpty ? 2 : 1
+    }
+
     private static func position(of angle: IdeaAngle, round: Int) -> Int {
         let all = IdeaAngle.allCases
         guard let index = all.firstIndex(of: angle) else { return 0 }
         return (index - (round * IdeaAngle.batchSize) % all.count + all.count) % all.count
     }
 
-    /// The topics in the order the slots take them: each as many times as the creator sends it (one more than it has been sent, at most three),
-    /// starting one further each round.
-    private func turns(among topics: [IdeaTopic], round: Int) -> [IdeaTopic] {
-        let weighted = topics.flatMap { topic -> [IdeaTopic] in
-            let score = self.topics[Self.topicKey(of: topic), default: 0]
-            return Array(repeating: topic, count: 1 + max(0, min(2, Int((score / Self.sendWeight).rounded(.down)))))
+    /// The topics the slots take, in order: each in proportion to its turns, as many as the creator sends it (one more than it has been sent, at
+    /// most three), spread so that no topic runs on while another waits (a smooth weighted round-robin), starting one further each round. A topic
+    /// the creator put in their own words (typed, or a first-flight one narrowed by subtopics) starts with one turn more than a broad one: "Filming
+    /// videos with a phone" says what they make, "Education" and "Tech" next to it only roughly (with equal turns, half the ideas were about
+    /// teaching and AI, 31/10/2026).
+    private func turns(among topics: [IdeaTopic], round: Int, count: Int) -> [IdeaTopic] {
+        guard !topics.isEmpty else { return [] }
+        let shift = round % topics.count
+        let rotated = Array(topics[shift...] + topics[..<shift])
+        let weights = rotated.map { topic in
+            let sent = max(0, Int((self.topics[Self.topicKey(of: topic), default: 0] / Self.sendWeight).rounded(.down)))
+            return min(Self.mostTurns, Self.firstTurns(of: topic) + sent)
         }
-        // Interleaved, so that no topic has three slots in a row: the topic with the most turns first, then the others in turn.
-        var queues = topics.map { topic in weighted.filter { $0 == topic } }.filter { !$0.isEmpty }
+        let total = weights.reduce(0, +)
+        var current = Array(repeating: 0, count: rotated.count)
         var order: [IdeaTopic] = []
-        while queues.contains(where: { !$0.isEmpty }) {
-            for index in queues.indices where !queues[index].isEmpty { order.append(queues[index].removeFirst()) }
+        for _ in 0..<count {
+            for index in current.indices { current[index] += weights[index] }
+            guard let pick = current.indices.max(by: { current[$0] < current[$1] || (current[$0] == current[$1] && $0 > $1) }) else { break }
+            current[pick] -= total
+            order.append(rotated[pick])
         }
-        let shift = round % max(1, order.count)
-        return Array(order[shift...] + order[..<shift])
+        return order
     }
 }

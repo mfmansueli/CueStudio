@@ -38,6 +38,8 @@ final class FakeUltraModelClient: UltraModelClient {
         case .check: check
         case .review: review
         case .fit: fit
+        // The library is written by a developer tool, never through the service.
+        case .ideas: .failure(UltraClientError(failure: .provider))
         }
         let reply = try answer.get()
         progress(ReadTime.wordCount(in: reply.text))

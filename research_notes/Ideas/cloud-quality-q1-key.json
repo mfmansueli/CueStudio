@@ -1,0 +1,4 @@
+{"run": "cloud-quality-q1", "date": "2026-10-31", "device": "iago Lima iphone (15 Pro)",
+ "lists": {"beauty": {"A": "device", "B": "pcc"}, "filming": {"A": "pcc", "B": "device"}},
+ "seconds": {"beauty": {"device": 11.3, "pcc": 6.2}, "filming": {"device": 8.7, "pcc": 5.0}},
+ "note": "device = 6 ideas from the iPhone's model; pcc = 12 from Private Cloud Compute, best 6 kept (IdeaSelection). Owner judges blind in chat."}

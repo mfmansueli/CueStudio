@@ -229,7 +229,9 @@ struct IdeaRouletteTests {
             seen.append(idea.title)
             rig.service.another(in: .topic(finance))
         }
-        #expect(seen.count == 8 && Set(seen).count == 6, "six starters, then again")
+        // The written starters and the library's: eight in a row, none twice (only six without a library, then again).
+        let starters = ThemeCatalog.ideas(for: .finance).count
+        #expect(seen.count == 8 && Set(seen).count == min(8, starters), "\(Set(seen).count) different of \(starters) starters")
         #expect(!rig.service.isWaiting(in: .topic(finance)))
         #expect(rig.writer.suggestionRequests.isEmpty)
     }

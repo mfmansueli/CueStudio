@@ -1262,7 +1262,7 @@ nada de história, resultado, número ou tendência inventados).
   inspiration" para o VoiceOver; dobra com a linha. Sem largura, os chips encurtam (§2) e só por último rolam com a lâmpada fixa. Sem dica de primeiro uso.
 - **A folha** (`Screens/Scripts/Inspiration/`; abre pela lâmpada, por + › Let Cue draft it e pela notificação de ideia): título, "Ideas to start from.",
   chips de tema ("All my topics" e os salvos, escolhido em violeta; "Topics" abre o editor do My Cue Voice), **um cartão** violeta (TEMA ·
-  SUBTEMA · TIPO, título, YOUR POINT OF VIEW, OPENING LINE), e embaixo, fixos, **Another idea** (círculo de vidro ↻ de 54 pt à esquerda; não sobe
+  SUBTEMA · TIPO, título, a **linha do porquê** quando a ideia está ligada a algo do criador, YOUR POINT OF VIEW, OPENING LINE), e embaixo, fixos, **Another idea** (círculo de vidro ↻ de 54 pt à esquerda; não sobe
   e desce com o tamanho da ideia; deslizar no cartão também troca) e **Start with it** em amarelo, a linha que diz que a ideia vai para o campo, e
   "✦ Draft it now" (e "✦ Draft with Ultra AI" onde a Ultra AI é oferecida; com o convite dela em aberto, "✦ Draft with Ultra AI · 3 free", §57). A folha é
   sempre uma página inteira: nenhuma dica ou convite entra entre os chips e a ideia empurrando o cartão para baixo das ações (dono, 30/10/2026). **Arrastar:** o cartão segue o dedo para o lado, inclinando (1° a cada 24 pt); passou de 90 pt, um clique (`Haptics.rigid`) e,
@@ -1280,11 +1280,29 @@ nada de história, resultado, número ou tendência inventados).
   palavra), cursor no fim, mantém formato, rede e voz; se havia texto, toast com **Undo**. Só vai ao modelo a parte do brief que o texto ainda diz
   (`IdeaBrief.standing(in:)`: 70% das palavras do título, 60% do ângulo e da abertura). *Draft it now* escreve sem tocar no campo. Com o brief, o roteiro
   abre com a frase e segue o ângulo (`ScriptPromptBuilder`; a checagem da voz aceita a abertura dada).
+- **Linha do porquê** (`IdeaTie.cardLine`, `inspiration.card.why`): embaixo do título, ícone + texto em `aiText` (o token da linha de categoria, no
+  mesmo cartão): "Coming up: Mother’s Day" (calendário), "Follows up your video “…”" (título cortado em 48 caracteres numa palavra), "From a comment you
+  answered". No ↻ do dock não cabe: o VoiceOver diz o porquê junto com a sugestão.
 - **Motor** (`IdeaSuggestionService`, um pool para a folha e o ↻): o próximo cartão sai do cache sem chamar o modelo; cada filtro reabastece em lotes de 6
-  com 4 restando; temas, idioma ou voz mudados cancelam o pedido; **o roteiro vem primeiro** (`IdeaRequestPriority`). Ideias de partida: 6 por tema do
-  primeiro voo, todas com brief, e 7 modelos para temas digitados ou do My Cue Voice. **Gosto** (`IdeaTaste`, entre sessões, qualquer idioma): passar −0,35,
-  usar +1,5, enviar pelo card +3, roteiro escrito +4 (o ângulo só conta se ainda estava no texto); no máximo metade do lote para os ângulos preferidos, o
-  resto para os menos vistos.
+  com 4 restando; temas, idioma ou voz mudados cancelam o pedido; **o roteiro vem primeiro** (`IdeaRequestPriority`). Sempre o modelo do iPhone: 12 ideias
+  no Private Cloud Compute com as 6 melhores guardadas perderam para as 6 do iPhone na avaliação às cegas do dono (2 a 0, 01/11/2026,
+  `research_notes/Ideas/cloud-quality-q1*`); a nuvem só era mais rápida (5–6 s × 9–11 s) e gastaria a cota dos roteiros. **Temas:** um tema nas palavras
+  do criador (digitado, ou com subtemas) tem duas vezes no lote, um nicho amplo uma, e mais uma a cada envio (no máximo 3), espalhadas por peso. O
+  pedido manda o modelo nomear o assunto exato ("nunca só \"products\""), e o brief leva o tema até o roteiro ("keep the video inside that topic",
+  nos dois roteiristas). **Ligações** (`IdeaSignals`, `IdeaTie`): nas semanas antes de uma data do país do criador (`IdeaCalendar`: 21 datas, Dia das
+  Mães e dos Pais por país, Páscoa, calendários lunar e islâmico do Foundation, 21 dias antes; volta às aulas e Diwali só como "chegando", de 30 dias
+  antes a 7 depois; sem região, nenhuma), uma vaga a cada dois lotes é sobre ela; nos outros, uma continua um dos 3 vídeos compartilhados mais novos; a
+  cada três, uma responde a próxima pergunta depois de um comentário já respondido. Nunca o lote inteiro. **Ideias de partida:** primeiro as ligadas (a
+  data chegando, os 2 vídeos mais novos), depois 6 escritas por tema do primeiro voo e a **biblioteca** (`IdeaLibrary`, ~40 por tema em cada um dos 20
+  idiomas, 7.987 ideias e 2,9 MB dentro do app, escritas uma vez pela Ultra AI nativamente em cada idioma, ~US$ 17 dos créditos do Google em 100
+  chamadas, e filtradas por idioma, ideia fraca, repetida e porcentagem: `IdeaLibraryDeviceTests`, `tools/ideas/collect_library.py`,
+  `IdeaLibraryBuildTests`; como nos roteiros, é um rascunho: cena imaginada em primeira pessoa pode, número, estudo, credencial ou resultado inventado
+  não; amostra em português aprovada pelo dono, 01/11/2026; o cartão mostra a ideia inteira até 300 caracteres e o campo a encaixa em 200, como as do
+  modelo, e o roteirista recebe a ideia do cartão); para temas digitados ou do My Cue Voice, 16 modelos (um por ângulo). O gosto ordena as
+  de partida (as preferidas intercaladas com as outras, as passadas por último). Sem Apple Intelligence é tudo o que a folha e o ↻ mostram, sem custo
+  nenhum depois. **Gosto** (`IdeaTaste`, entre sessões, qualquer idioma): passar −0,35, usar +1,5, enviar pelo card +3, roteiro escrito +4 (o ângulo só
+  conta se ainda estava no texto); no máximo metade do lote para os ângulos preferidos, o resto para os menos vistos. Testes de UI: datas só com
+  `-uiTestOccasions BR@2026-04-25`.
 - **Briefs fracos** (`IdeaSpecificity`): ângulo que só repete o título e título de palavras feitas ("5 tips") — uma fraqueza vai para o fim do lote, as
   duas descartam. O bordão do criador sai do começo da frase de abertura (`CatchphraseTrim`: com a voz, as seis começavam iguais).
 - O ↻ do campo e a lâmpada tiram do mesmo pool (o ↻ troca a sugestão sem abrir nada).

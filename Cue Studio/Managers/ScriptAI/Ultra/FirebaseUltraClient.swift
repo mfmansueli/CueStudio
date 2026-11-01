@@ -20,6 +20,8 @@ final class FirebaseUltraClient: UltraModelClient {
     static let location = "global"
     /// A polished script took 20–25 s in the web lab; one call never waits more than this.
     static let timeout: TimeInterval = 120
+    /// Eighty ideas for the library take longer to write than a script (`UltraStageRequest.Stage.ideas`).
+    static let ideasTimeout: TimeInterval = 300
 
     private let ai: FirebaseAI
 
@@ -50,9 +52,10 @@ final class FirebaseUltraClient: UltraModelClient {
     }
 
     func generate(_ request: UltraStageRequest, progress: @escaping @MainActor (Int) -> Void) async throws -> UltraModelReply {
+        let timeout = request.stage == .ideas ? Self.ideasTimeout : Self.timeout
         let model = ai.generativeModel(
             modelName: Self.modelName, generationConfig: Self.configuration(for: request.stage, thinking: request.thinking),
-            systemInstruction: ModelContent(role: "system", parts: request.instructions), requestOptions: RequestOptions(timeout: Self.timeout)
+            systemInstruction: ModelContent(role: "system", parts: request.instructions), requestOptions: RequestOptions(timeout: timeout)
         )
         var reply = UltraModelReply(text: "", finishedNormally: false)
         do {
@@ -96,6 +99,11 @@ final class FirebaseUltraClient: UltraModelClient {
             GenerationConfig(maxOutputTokens: tokens, responseMIMEType: "application/json", responseSchema: reviewSchema, thinkingConfig: thinkingConfig)
         case .fit:
             GenerationConfig(maxOutputTokens: tokens, responseMIMEType: "application/json", responseSchema: fitSchema, thinkingConfig: thinkingConfig)
+        case .ideas:
+            GenerationConfig(
+                maxOutputTokens: UltraStageRequest.ideaResponseTokens, responseMIMEType: "application/json", responseSchema: ideasSchema,
+                thinkingConfig: thinkingConfig
+            )
         }
     }
 
@@ -107,6 +115,17 @@ final class FirebaseUltraClient: UltraModelClient {
         case .low: ThinkingConfig(thinkingLevel: .low)
         }
     }
+
+    /// The library's ideas (`UltraStageRequest.Stage.ideas`), each with its topic's number and its angle's key.
+    private static let ideasSchema = Schema.object(properties: [
+        "ideas": .array(items: .object(properties: [
+            "topic": .integer(),
+            "angle": .string(),
+            "title": .string(),
+            "pointOfView": .string(),
+            "openingLine": .string(),
+        ])),
+    ])
 
     /// `UltraCheckReply`'s two keys.
     private static let checkSchema = Schema.object(properties: [

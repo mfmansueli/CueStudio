@@ -25,10 +25,13 @@ nonisolated struct IdeaBrief: Hashable, Codable, Sendable {
     var angleKind: String?
     /// Which of the creator's topics it is about, the way `IdeaTaste` keeps topics (a first-flight niche's raw value, else the topic's label).
     var topicKey: String?
+    /// That topic as the writer reads it ("beauty and skincare", "Filming videos with a phone"): a short headline ("How to choose products
+    /// without surprises") left the topic out, and the script went somewhere else (food labels for a beauty creator, 31/10/2026).
+    var topic: String?
 
     init(
         subject: String, angle: String, openingLine: String, subtopic: String? = nil, language: String? = nil, angleKind: String? = nil,
-        topicKey: String? = nil
+        topicKey: String? = nil, topic: String? = nil
     ) {
         self.subject = subject
         self.angle = angle
@@ -37,6 +40,7 @@ nonisolated struct IdeaBrief: Hashable, Codable, Sendable {
         self.language = language
         self.angleKind = angleKind
         self.topicKey = topicKey
+        self.topic = topic
     }
 
     /// What "Start with it" puts in the composer: the whole brief, as text the creator can change. Never longer than the composer takes
