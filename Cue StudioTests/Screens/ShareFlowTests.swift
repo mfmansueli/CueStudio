@@ -305,6 +305,34 @@ struct ShareFlowTests {
         #expect(scenario.toast.message == "Saved · continue anytime")
     }
 
+    /// An iPhone tells the sheet's binding it closed after Cue closed it (Send, Edit first): the queue stays as it was, and only a swipe down
+    /// while a step is up leaves the rest for later.
+    @Test func theSheetLeavingAfterSendOrEditFirstKeepsTheQueue() async throws {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        try await startedWithThree(scenario)
+        await scenario.flow.send(to: .tiktok)
+        scenario.flow.sheetDismissed()
+        #expect(scenario.queues.queue(forTake: scenario.take.id)?.current?.network == .tiktok)
+        #expect(scenario.toast.message != "Saved · continue anytime")
+        let operation = try #require(scenario.queues.queue(forTake: scenario.take.id)?.operationID)
+        let share = ActivityShare(operationID: operation, url: URL(filePath: "/tmp/x.mov"), destination: .tiktok)
+        scenario.review.activityFinished(.completed(activityType: "com.zhiliaoapp.musically.share"), for: share)
+        await Wait.until { scenario.flow.step == .confirm(.tiktok) }
+        #expect(scenario.flow.step == .confirm(.tiktok), "Posted on TikTok? still comes")
+        scenario.flow.confirmLive(.tiktok)
+
+        scenario.flow.editFirst()
+        scenario.flow.sheetDismissed()
+        #expect(scenario.queues.queue(forTake: scenario.take.id)?.current?.network == .reels)
+        #expect(scenario.queues.later(forTake: scenario.take.id).isEmpty)
+
+        scenario.flow.step = .step(.reels)
+        scenario.flow.sheetDismissed()
+        #expect(scenario.queues.later(forTake: scenario.take.id).map(\.network) == [.reels, .linkedin], "a swipe down leaves the rest for later")
+        #expect(scenario.toast.message == "Saved · continue anytime")
+    }
+
     @Test func resumingBringsTheNetworkBackWithItsFile() async throws {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }

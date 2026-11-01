@@ -135,12 +135,30 @@ tr:last-child td { border-bottom: 0; }
       <tr><td><code>B10</code></td><td>Nunca um trecho preto calado: Save e Share conferem os arquivos antes. Se algo sumiu, <b>"Missing media"</b> oferece <b>Open editor</b>, <b>Remove and export</b> e Cancel (só Open editor quando todo clipe toca a gravação que sumiu). O editor diz o mesmo ao abrir, com <b>Remove</b> (um passo de desfazer) ou pedindo o Replace.</td></tr>
       <tr><td><code>A9</code></td><td>Sair do Cue durante a contagem a cancela, e voltar não começa a take. Ligação, outro app, Split View ou calor que tomam a câmera param a contagem e a área da câmera diz por quê ("The camera is in use" / "The camera is paused"). O Record avisa em vez de começar. Um erro da sessão tenta reiniciar uma vez antes de "The camera stopped".</td></tr>
       <tr><td><code>A16</code></td><td>Depois das três tentativas rápidas, aparece "Voice Following paused · Scrolling while you talk" e o Cue tenta de novo a cada 5 s enquanto o modo Voice está ligado. Ao voltar para o Cue, tenta na hora. Antes, desistia pelo resto da sessão.</td></tr>
-      <tr><td><code>A10</code></td><td>A take guarda o formato que a câmera gravou de verdade (o formato ativo), não o pedido. Um 4K60 que a frontal não faz vira "1080p", e o Cue diz isso uma vez por formato na sessão.</td></tr>
+      <tr><td><code>A10</code></td><td>A take guarda o formato que a câmera gravou de verdade (o formato ativo), não o pedido. Um formato que a câmera não faz vira o que ela entregou, e o Cue diz isso uma vez por formato na sessão. No 15 Pro as duas câmeras fazem 4K60 (medido no iPhone).</td></tr>
       <tr><td><code>B9</code></td><td>Uma fila que recomeça para o mesmo vídeo (Edit first, depois Share) segue com a nova exportação. As redes já postadas continuam postadas e não aparecem de novo.</td></tr>
       <tr><td><code>B18</code></td><td>Tocar a notificação da revisão que já está aberta não a abre de novo (antes, ela voltava depois de fechada).</td></tr>
     </tbody>
   </table></div>
   <p><b>Contraste:</b> nenhuma cor nova. O aviso da câmera usa o mesmo bloco das outras mensagens da câmera (<code>Palette.ink2</code> sobre o fundo opaco da câmera, já medido); os demais são alertas do sistema e o toast existente.</p>
+</section>
+
+<section>
+  <h2>Testado no iPhone (iago Lima, 01/11, noite)</h2>
+  <p>Testes automáticos que abrem o Cue no iPhone e tocam como você, em memória: seus roteiros, takes e o Fotos não foram tocados, e a folha de compartilhar é a do teste. No fim, a build normal foi reinstalada.</p>
+  <div class="table"><table>
+    <thead><tr><th>ID</th><th>O que o iPhone fez</th><th>Resultado</th></tr></thead>
+    <tbody>
+      <tr><td><code>A10</code></td><td>Gravou 2 s pedindo 4K60 na frontal e na traseira e comparou com o arquivo.</td><td>Passou: take e arquivo dizem 4K60 (3840×2160, 60 fps) nas duas.</td></tr>
+      <tr><td><code>A9</code></td><td>Começou a contagem, foi para a tela inicial e voltou.</td><td>Passou: nada gravou, a contagem parou.</td></tr>
+      <tr><td><code>B2</code></td><td>Voltou durante uma exportação: Keep exporting, depois Cancel export.</td><td>Passou: perguntou, continuou, cancelou e nada foi entregue.</td></tr>
+      <tr><td><code>B4</code></td><td>Mudou algo, Not yet, Save.</td><td>Passou: "Unfinished edit" com Keep editing e Export original; Cancel não exportou.</td></tr>
+      <tr><td><code>B20 + B9</code></td><td>Rascunho aberto, Share com legendas para TikTok e Reels, postou o TikTok, Edit first no Reels, Done › Share.</td><td>Passou: o rascunho tem as legendas que a exportação ouviu, e o Share seguinte foi para "2 of 2 · Post to Reels".</td></tr>
+    </tbody>
+  </table></div>
+  <p><b>Achado novo, corrigido:</b> no iPhone, tocar <b>Send to TikTok</b> ou <b>Edit first</b> fechava a fila: o resto ia para depois ("Saved · continue anytime") e, depois de postar, vinha a tela de enviado em vez de "Posted on TikTok?". O iPhone avisa que o sheet saiu mesmo quando foi o Cue que o tirou, e o Cue lia isso como o criador fechando. Agora só o ✕ ou puxar para baixo fecham a fila (teste de unidade e o teste no iPhone acima).</p>
+  <p><b>Melhoria junto:</b> quando as legendas foram pedidas e o vídeo saiu sem elas, o passo da fila diz "No captions on this video" e o motivo (antes, só a tela Ready dizia, e a fila mandava o vídeo calada).</p>
+  <p><b>Limites:</b> o seu take de 31/10 não tem fala que o iPhone reconheça, então o B20 rodou num vídeo de teste com duas leituras em inglês (FLEURS), colocado e depois apagado da pasta do Cue. Siri e ligação (A16, parte da A9), notificação (B18) e arquivo sumido (B10) não dão para automatizar: ficam nos testes de unidade e na lista abaixo.</p>
 </section>
 
 <section>
@@ -387,14 +405,14 @@ tr:last-child td { border-bottom: 0; }
     <li><b>A1, A6:</b> mandar uma ideia e fechar o Cue durante a estrela; repetir durante a revelação; tocar Voltar durante a revelação.</li>
     <li><b>A11:</b> mandar uma ideia (Apple Intelligence e Ultra AI), ir para a tela inicial por 20 s e voltar.</li>
     <li><b>B1:</b> editar o take 1, "Not yet", gravar o take 2, abrir por Takes › Edit, por Continue e pela notificação.</li>
-    <li><b>B2:</b> exportar um take longo e, no meio, tocar Voltar, deslizar para fechar e trocar de take: cada um pergunta "Cancel export?"; cancelar não salva nem conta.</li>
-    <li><b>B4:</b> mudar algo, "Not yet", Save: aparece "Unfinished edit"; conferir o vídeo no Fotos.</li>
+    <li><b>B2:</b> o Voltar foi feito no iPhone (acima). Falta deslizar para fechar e trocar de take durante a exportação: cada um pergunta "Cancel export?".</li>
+    <li><b>B4:</b> o alerta foi feito no iPhone (acima). Falta só conferir no Fotos o vídeo de um Export original.</li>
     <li><b>A13:</b> num roteiro, Improve › Shorter e tentar digitar: o texto não muda; Stop no toast para.</li>
     <li><b>B5:</b> com 0 exportações, Share to universe, escolher redes, comprar (StoreKit de teste).</li>
-    <li><b>B9:</b> fila com 2 redes, postar a primeira, "Edit first" na segunda, Done › Share: só a segunda deve aparecer.</li>
-    <li><b>A9:</b> contagem de 10 s e ir para a tela inicial: ao voltar, nada grava. Receber uma ligação com a câmera aberta: a área diz "The camera is in use". No iPad, abrir em Split View: "The camera is paused".</li>
-    <li><b>A10:</b> pedir 4K60 na câmera frontal e gravar: a take diz o formato real (1080p no 15 Pro) e aparece o aviso uma vez.</li>
-    <li><b>B20:</b> editar, "Not yet", ligar legendas na revisão e salvar; Continue: as legendas estão lá.</li>
+    <li><b>B9:</b> feito no iPhone (acima).</li>
+    <li><b>A9:</b> a tela inicial foi feita no iPhone (acima). Falta receber uma ligação com a câmera aberta (a área diz "The camera is in use") e, no iPad, abrir em Split View ("The camera is paused").</li>
+    <li><b>A10:</b> feito no iPhone (acima). No 15 Pro as duas câmeras fazem 4K60, então o aviso não aparece nele.</li>
+    <li><b>B20:</b> feito no iPhone (acima).</li>
     <li><b>A15:</b> rodar o atalho "New script" durante uma gravação.</li>
     <li><b>A16:</b> ler com Voice Following e chamar a Siri duas vezes: volta a seguir as palavras sozinho.</li>
     <li><b>A17:</b> digitar uma ideia longa, escolher rede e formato, e fechar o Cue pelo seletor de apps: ao abrir, tudo volta.</li>

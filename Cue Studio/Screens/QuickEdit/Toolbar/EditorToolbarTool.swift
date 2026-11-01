@@ -133,7 +133,7 @@ enum EditorToolbarTool: CaseIterable, Hashable {
         case .copyLook: "doc.on.doc"
         case .pasteLook: "doc.on.clipboard"
         case .templates: "rectangle.stack"
-        case .brandKit: "paintpalette"
+        case .brandKit: "r.circle"
         case .cover: "photo.artframe"
         case .clip: "film"
         }

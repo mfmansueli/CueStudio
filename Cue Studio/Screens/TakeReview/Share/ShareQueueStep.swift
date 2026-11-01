@@ -13,6 +13,8 @@ struct ShareQueueStep: View {
     let queue: ShareQueue
     let network: ShareDestination
     let hasCaptions: Bool
+    /// Captions were asked for and the video has none: why, so the network isn't sent a video the creator thinks is captioned.
+    var missingCaptions: String?
 
     @Environment(NotificationService.self) private var notifications
     @Environment(ToastService.self) private var toast
@@ -126,6 +128,16 @@ struct ShareQueueStep: View {
                 .accessibilityIdentifier("shareFlow.caption")
             if hasCaptions {
                 row("checkmark", Palette.successText, "Your captions are in the video · keep auto captions off")
+            } else if let missingCaptions {
+                HStack(alignment: .top, spacing: 12) {
+                    Image(systemName: "captions.bubble").cueFont(14, weight: .bold).foregroundStyle(Palette.warnText).frame(width: 20)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("No captions on this video").cueFont(16).foregroundStyle(Palette.ink)
+                        Text(missingCaptions).cueFont(.footnote).foregroundStyle(Palette.ink2).fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+                .accessibilityElement(children: .combine)
+                .accessibilityIdentifier("shareFlow.missingCaptions")
             }
             row("arrow.up.right", Palette.ink2, "In the share sheet, tap \(network.platform.label)")
         }

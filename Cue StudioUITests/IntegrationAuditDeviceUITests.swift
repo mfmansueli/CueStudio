@@ -8,8 +8,12 @@ import XCTest
 /// The integration audit's fixes walked on a real iPhone the way a creator would, in memory (the creator's library, drafts and Photos are
 /// never touched; the share sheet is the test's own): the countdown left for the Home Screen (A9), leaving the review mid-export (B2),
 /// exporting with an edit left open (B4), and captions an export heard while a draft waited, reached through the queue's "Edit first" on
-/// its second network, whose next Share goes on from there (B20 + B9; real speech, on a copy of one of the iPhone's own takes).
-/// Opt-in: `CUE_DEVICE=… TEST_RUNNER_CUE_AUDIT_UI=1 [TEST_RUNNER_CUE_REAL_TAKE=<file in Takes>] scripts/test.sh device-ui IntegrationAuditDeviceUITests`.
+/// its second network, whose next Share goes on from there (B20 + B9: real speech, heard by the iPhone).
+/// Opt-in: `CUE_DEVICE=… TEST_RUNNER_CUE_AUDIT_UI=1 [TEST_RUNNER_CUE_REAL_TAKE=<file>] scripts/test.sh device-ui IntegrationAuditDeviceUITests`.
+/// B20 + B9 needs a take with speech: a file name in Takes, or a video copied to the app's Documents
+/// (`xcrun devicectl device copy to … --domain-identifier com.cuestudioteleprompter --destination Documents/speech.mov`) named
+/// `../../../Documents/speech.mov`. Made with ffmpeg, give it PCM sound (`-c:a pcm_s16le`): an AAC track ffmpeg wrote comes out of the
+/// audio extraction a packet longer than it decodes, and the recognizer stops at that packet ("Couldn’t listen to this take").
 @MainActor
 final class IntegrationAuditDeviceUITests: XCTestCase {
     override func setUpWithError() throws {
@@ -96,7 +100,8 @@ final class IntegrationAuditDeviceUITests: XCTestCase {
         guard let take = ProcessInfo.processInfo.environment["CUE_REAL_TAKE"] else {
             throw XCTSkip("Set TEST_RUNNER_CUE_REAL_TAKE to a take's file name on the iPhone (one with speech)")
         }
-        let app = EditorApp.open(arguments: ["-uiTestRealTake", take, "-uiTestFakeShareSheet"])
+        // Real animations: ending the share sheet hands back to the queue only with them (as in CueUniverseScreenshotTests).
+        let app = EditorApp.open(animations: true, arguments: ["-uiTestRealTake", take, "-uiTestFakeShareSheet"])
         makeAChange(app)
         EditorApp.done(app, answer: "notYet")
 
@@ -135,6 +140,8 @@ final class IntegrationAuditDeviceUITests: XCTestCase {
             usleep(500_000)
         }
         XCTAssertTrue(step.exists, "No first network after the captioned export")
+        let missing = app.descendants(matching: .any)["shareFlow.missingCaptions"]
+        XCTAssertFalse(missing.exists, "The export made no captions: \(missing.exists ? missing.label : "")")
         let first = app.descendants(matching: .any)["shareFlow.position"].label
         attach(app, "B9 first network")
         app.buttons["shareFlow.send"].tap()
