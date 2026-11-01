@@ -28,6 +28,10 @@ final class ScriptDetailViewModel {
     /// What the AI is to write into the page when it opens (an idea sent from the card), and the
     /// same request kept for "Try again".
     var pendingRequest: ScriptRequest?
+    /// The script the AI wrote, whole, while its words are still arriving on the page (saved already: leaving keeps all of it).
+    var arrivedScript: GeneratedScript?
+    /// The time iOS gives Cue in the background while a script is written (`ApplicationGrace`); a test stands in for it.
+    var writingGrace: @MainActor () -> @MainActor () -> Void = { ApplicationGrace.begin(named: "Cue script") }
     /// The words shown to the creator, a few at a time; zero with Reduce Motion.
     let revealPause: Duration
     let ideaDraft: IdeaDraftService?
@@ -365,13 +369,16 @@ final class ScriptDetailViewModel {
                 sayResult(String(localized: "Couldn’t draft it"), kind: .problem, action: retry { await $0.run(.translate, language: language) }, about: title)
                 return
             }
-            // A translation is a new script in the new language; the original stays as written.
+            // A translation is a new script in the new language; the original stays as written. What the AI writes is a draft until the
+            // creator says it is ready (the owner's call, 20/10/2026), and an Ultra AI draft stays one in any language.
             library.create(
                 title: String(localized: "\(script.displayTitle) (\(language.localizedName))"),
                 text: result.text, platform: script.platform, type: script.type, folder: script.folder,
-                factCheck: copiesNeedFactCheck, language: language
+                factCheck: copiesNeedFactCheck, language: language, isFinished: false, draftedBy: script.draftedBy
             )
             sheet = nil
+            // Not written (a full iPhone): the app says so (`RootView`), never that it was saved.
+            guard !library.saveFailed else { return }
             var message = String(localized: "\(language.localizedName) version saved")
             if result.leftAsWritten > 0 {
                 message += " · " + String(localized: "\(result.leftAsWritten) of \(result.parts) parts left as written")
@@ -405,12 +412,14 @@ final class ScriptDetailViewModel {
             context.platform = platform
             let range = rules.preset(for: platform, monetizationGoals: profile.profile.monetizationGoals).idealRange
             context.idealRange = range
-            let result = try await writer.rewriteReported(script.text, with: .fitToTime, context: context)
+            // The words on the page, the last one typed included (saved a second later).
+            let result = try await writer.rewriteReported(workingText, with: .fitToTime, context: context)
             library.create(
                 title: String(localized: "\(script.displayTitle) (\(platform.label))"),
                 text: result.text, platform: platform, type: script.type, folder: script.folder,
-                factCheck: copiesNeedFactCheck, language: script.language
+                factCheck: copiesNeedFactCheck, language: script.language, isFinished: false, draftedBy: script.draftedBy
             )
+            guard !library.saveFailed else { return }
             var message = String(localized: "\(platform.label) version saved")
             // The version is the script as the platform's length asks it, or says how far it got.
             if let length = RewriteNotice.lengthNote(words: ReadTime.wordCount(in: result.text), idealRange: range, language: script.paceLanguage) {
@@ -444,6 +453,8 @@ final class ScriptDetailViewModel {
 
     func duplicate() {
         library.duplicate([scriptID])
+        // Not written (a full iPhone): the app says so (`RootView`), never that it was saved.
+        guard !library.saveFailed else { return }
         toast.show(String(localized: "Duplicated"))
     }
 

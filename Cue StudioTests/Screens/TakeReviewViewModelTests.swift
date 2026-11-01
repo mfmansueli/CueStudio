@@ -487,7 +487,7 @@ struct TakeReviewViewModelTests {
         #expect(scenario.viewModel.stage == .pick)
         scenario.viewModel.toggleBest()
         #expect(scenario.viewModel.stage == .ready)
-        // An edit left open on any take of the video puts it in edit and the main action reads "Continue".
+        // An edit left open on any take of the video puts it in edit; the main action reads "Continue" on that take only.
         #expect(!scenario.viewModel.hasOpenEdit)
         let other = scenario.takes.first { $0.number == 3 }!
         scenario.drafts.drafts[other.id] = QuickEditDraft(
@@ -495,7 +495,15 @@ struct TakeReviewViewModelTests {
             history: EditHistory<EditSnapshot>(), savedAt: TestData.now
         )
         #expect(scenario.viewModel.stage == .edit)
-        #expect(scenario.viewModel.hasOpenEdit)
+        #expect(!scenario.viewModel.hasOpenEdit, "Edit on this take starts its own: its \"Yes, share\" shares this take")
+        let onTheEdit = makeVideoScenario(current: 3)
+        defer { onTheEdit.defaults.tearDown() }
+        let edited = onTheEdit.takes.first { $0.number == 3 }!
+        onTheEdit.drafts.drafts[edited.id] = QuickEditDraft(
+            takeID: edited.id, edit: TakeEdit(sourceDuration: 30, aspect: .portrait), playhead: 0,
+            history: EditHistory<EditSnapshot>(), savedAt: TestData.now
+        )
+        #expect(onTheEdit.viewModel.hasOpenEdit)
     }
 
     @Test func theLengthIsMeasuredAgainstThePlatformsIdealRange() {

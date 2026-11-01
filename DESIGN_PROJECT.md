@@ -381,7 +381,12 @@ ao terminar. **Acabamento (pedido do dono, 20/10/2026):** o título chega primei
 0,45 s depois; a página rola sozinha (0,8 s, a cada ~160 caracteres) para manter as palavras novas à vista; no fim espera as últimas chegarem
 (`ArrivingText.settleTime`, 1,3 s) e passa ao editor num fade cruzado de 0,7 s (as palavras que chegaram somem por cima enquanto o editor aparece por
 baixo), com dois toques suaves; a pílula sai e o Record acorda num movimento só (0,5 s). Parar tira a pergunta da voz. Reduzir Movimento: fade de 0,2 s,
-cursor aceso, pílula parada, sem espera nem fade cruzado. `-uiTestCatalogue writing`. A barra de 3 pt por
+cursor aceso, pílula parada, sem espera nem fade cruzado. `-uiTestCatalogue writing`. **O roteiro vai para a biblioteca assim que o modelo responde**
+(título, texto, aviso de fatos, rascunho): a estrela e as palavras chegando só o mostram, então um Cue que o iOS fecha nesse meio-tempo guarda o roteiro (e a
+Ultra AI já paga). Sair da página enquanto as palavras chegam guarda o roteiro inteiro, sem toque nem toast; **Stop** é escolha do criador e guarda só o
+que chegou. A escrita pede tempo em segundo plano do pedido ao fim (`ApplicationGrace`, "Cue script"). O roteiro criado para a IA escrever fica marcado
+(`Script.awaitsDraft`) até as palavras chegarem: um que uma sessão passada deixou vazio (Cue fechado sob a estrela) some ao abrir a biblioteca, em vez de
+virar um "Untitled script" que ninguém fez; um em branco feito pelo criador é dele, vazio ou não. A barra de 3 pt por
 seção do quadro (`sc10`) não existe (a página não tem seções).
 
 ## 5.3. Onboarding: o roteiro de prática, permissões, tópicos, prática
@@ -394,7 +399,8 @@ seção do quadro (`sc10`) não existe (a página não tem seções).
 - **Tópicos** (`UniverseChapter`): "+ Your own" vira chip escolhido (`customTopics`); solto, continua na lista.
 - **O capítulo fica guardado** depois que a 1.4 guarda o roteiro (`DefaultsKey.onboardingStep`; decisão do dono, 30/10/2026): o app fechado nas permissões
   ou na prática volta ao mesmo capítulo, e o roteiro que o próprio voo guardou não faz o Cue achar que é um criador antigo e pular o voo. Antes disso
-  (1.1–1.4) o voo recomeça. Não há Skip.
+  (1.1–1.4) o voo recomeça. Não há Skip. As escolhas (tópicos, rede) vão para o app na 1.4; terminar um voo retomado não as aplica de novo
+  (`OnboardingService.isResumed`), então a rede escolhida antes fica, nunca volta ao TikTok padrão.
 - **Prática** (`PrompterView` com `isPractice`, `PracticeBottomBar`): câmera em tela cheia (`CameraBackdrop(fillsScreen:)`), sem moldura, grade nem zona
   segura (não grava). Sem seletor de modo: a prática escolhe sozinha (§35) e diz o que move o texto numa cápsula sob a caixa (`PracticeVoiceStatus`);
   embaixo **Explore Cue first** sempre, e **Record my first video** (amarelo) depois do play. Sem microfone: "Turn on the microphone so the text can follow your voice." com
@@ -499,8 +505,9 @@ AI data (**Apple Intelligence** é a chave de todos os recursos de IA: `PrivacyP
 vão ao Analytics; **Delete my Cue data**, `DataEraserService`, apaga do iPhone roteiros e pastas, tomadas com vídeos e edições, vídeos exportados à espera
 e a fila de compartilhamento, Logbook, marcas, My Cue Voice, ideias e o gosto aprendido, meus estilos, o setup, as marcas da
 primeira viagem, os rascunhos, as cópias de uma biblioteca danificada e os lembretes; as pastas de takes, mídias do editor e rascunhos saem
-inteiras, com o que nenhuma take nomeia mais, e as gravações em `tmp/take-*.mov` que a recuperação traria de volta (o único lugar que limpa
-"órfãos", porque o criador pediu tudo; §37); ficam a compra, o contador de exportações grátis e o registro delas
+inteiras, com o que nenhuma take nomeia mais, as gravações em `tmp/take-*.mov` que a recuperação traria de volta (com as notas delas) e tudo o que o Cue
+deixou no tmp com o nome `Cue-` (vídeos exportados, também de takes apagadas antes, e capas) (o único lugar que limpa "órfãos", porque o criador pediu
+tudo; §37); ficam a compra, o contador de exportações grátis e o registro delas
 (só ids), a contagem de vídeos compartilhados do universo, o idioma e o que já está no Fotos), Permissions (`PermissionsService`), Acknowledgements. **Reset Creator Setup fica como está** (decisão pendente, `09` §13).
 **Remote** (`SettingsRemoteView`, redesenho do dono 21/10/2026, conceito "dois aparelhos"): `ScrollView` sobre o céu. No topo a cena
 (`RemoteHero`, posições em `RemoteSceneLayout`, aparelhos em `RemotePhone`, tudo num relógio só): o teleprompter à esquerda (roteiro subindo
@@ -682,6 +689,8 @@ segmentos, legenda copiada e editável, "In the share sheet, tap {app}", "◀ Cu
 Pick a date and time…, No reminder; §27)); "Posted on {rede}?": **só "Yes, it's live" conta** e acende o planeta (`MilestoneService.recordShare`).
 Cada passo tem a altura do próprio conteúdo. Fechar manda o resto para depois ("Saved · continue anytime"); o card **Continue posting**
 (`ContinuePostingCard`, 60 pt, 104 pt acima do fundo) aparece em Scripts, Takes e na revisão. Falta a linha "Cover frame 0:03" (o app não escolhe capa).
+Apagar o take de vez leva a fila dele junto (sem card nem lembrete de um vídeo que não existe). Sem exportações grátis, "Share to n networks" abre "Your
+video is ready"; o Pro comprado dali segue com a fila (uma cópia em Fotos, o passo da primeira rede), nunca um salvamento solto.
 **Fase A:** todas as redes usam a folha do sistema (`ShareIntegrationConfiguration.integrationsEnabled = false`); Share Kit do TikTok e passagem do Instagram
 voltam com uma linha quando validados no aparelho (`SHARING.md`).
 
@@ -768,7 +777,9 @@ mínima (9.2).
   baixo do nome quando não cabe. SF em todo o app (sem serifa).
 - **Import (+ › Import):** campo em cartão `Palette.surface` com borda; "Use this script" desabilitado pelo estado do botão.
 - **Um prompter só:** todo caminho que grava (botão da câmera, Record da página, da linha, Retake, Siri) chama `PresentationService.openPrompter(mode:
-  .selfie)`. Só o item "Studio mode" abre o Studio, e a prática do onboarding é a outra exceção (`PrompterEntryPointsUITests`).
+  .selfie)`. Só o item "Studio mode" abre o Studio, e a prática do onboarding é a outra exceção (`PrompterEntryPointsUITests`). Um atalho da Siri
+  ("Record {script}", "New script") espera como o toque numa notificação: o primeiro voo, o gravador (um take sendo gravado terminaria) e o controle
+  remoto o seguram até fecharem (`RootView.handleIntent`).
 
 ## 20. Skin (Quick edit › Skin)
 
@@ -853,8 +864,10 @@ separadores, o astronauta (§5.0.1).
 ## 22. Página do roteiro, revisão, Quick edit e gravador (pedidos do dono)
 
 **Página do roteiro (o único editor):** Text size pelo botão redondo `textformat.size`; salva enquanto se escreve; ••• tem Script details, Studio mode,
-Remind me… (§27), "Make a version for…" (cópia para outra rede) e Delete (com Undo, como a lista); Improve fica só na página. A versão do roteiro (v2,
-v3…) liga as takes ao texto lido. O texto é **corrido**, sem rótulos de estrutura nem régua de tempo (decisão do dono, 20/10/2026: o criador tem de se
+Remind me… (§27), "Make a version for…" (cópia para outra rede, feita das palavras da página, a última digitada inclusive) e Delete (com Undo, como a
+lista); Improve fica só na página. Cópias da IA (tradução, "Make a version for…") chegam como rascunho e levam a marca da Ultra AI do original. A versão do
+roteiro (v2, v3…) liga as takes ao texto lido: mudar as palavras depois de um take na versão atual cria a próxima versão, e as mudanças até o take seguinte
+são essa mesma versão (também na mesma visita, com o gravador por cima). O texto é **corrido**, sem rótulos de estrutura nem régua de tempo (decisão do dono, 20/10/2026: o criador tem de se
 sentir livre para escrever como quiser). **Sem dicas embaixo do texto** (gancho longo, frase longa, "No CTA yet"): quem quiser mudanças usa o Improve
 (decisão do dono, 20/10/2026).
 - **Rascunho ou pronto (decisão do dono, 20/10/2026):** a faixa sob o título (`ScriptStateStrip`, sem caixa) tem o interruptor **"Ready to record"**
@@ -1040,9 +1053,11 @@ cobre o painel: as ações (`setScrollMode`, `setSpeed`, `togglePlay`, `rewind`)
 VoiceOver (`SelfieControlSheet`); a área de toque da folha é contêiner de acessibilidade (`ControlSheet`). **Nenhuma take se perde:** cada take pede
 tempo em segundo plano do começo até entrar na biblioteca (`ApplicationGrace`), sair do gravador no meio (ou enquanto a câmera ainda começa) guarda a
 take sem a revisão, e uma que o sistema encerrou enquanto o criador parava entra uma vez só; o que ficou em `tmp/take-*.mov` (Cue parou no meio, ou a
-biblioteca não a recebeu) volta na abertura seguinte como "Freestyle recording", e o que não toca é apagado (`TakeRecovery`). Se a lista de takes não
-pode ser gravada (iPhone cheio), a take não entra e o vídeo volta para `tmp/take-*.mov` com o nome da câmera ("The take couldn't be saved"), onde a
-recuperação o acha: nunca um vídeo na biblioteca sem take que aponte para ele.
+biblioteca não a recebeu) volta na abertura seguinte, e o que não toca é apagado (`TakeRecovery`). Se a lista de takes não
+pode ser gravada (iPhone cheio), a take não entra e o vídeo volta para `tmp/take-*.mov` com o nome da câmera ("The take couldn't be saved") e uma nota do
+roteiro e da versão ao lado (`TakeRecoveryNote`), onde a recuperação o acha e o devolve sob aquele roteiro; sem nota (Cue parou no meio) ou com o roteiro
+apagado, volta como "Freestyle recording": nunca um vídeo na biblioteca sem take que aponte para ele. Um Retake aberto da revisão (Takes › Retake) sem
+microfone lê em Steady, como uma sessão nova.
 
 **Logbook** (`LogbookView`, folha em `.large`): título grande do sistema ("Logbook", `navigationSubtitle` "Catch it now. Write it later.") e Done na
 barra (sai durante a seleção). As ideias enchem a página, **por dia** (TODAY, YESTERDAY, o dia da semana, a data; `LogbookDays`, rótulo mono `ink2`),
@@ -1318,7 +1333,8 @@ nada de história, resultado, número ou tendência inventados).
   o botão é **Write it yourself** (§8).
 - **Do cartão ao roteiro:** *Start with it* põe o brief no campo em três linhas (título / "Angle: …" / "Open with: “…”", ≤ 200 caracteres, corta em fim de
   palavra), cursor no fim, mantém formato, rede e voz; se havia texto, toast com **Undo**. Só vai ao modelo a parte do brief que o texto ainda diz
-  (`IdeaBrief.standing(in:)`: 70% das palavras do título, 60% do ângulo e da abertura). *Draft it now* escreve sem tocar no campo. Com o brief, o roteiro
+  (`IdeaBrief.standing(in:)`: 70% das palavras do título, 60% do ângulo e da abertura). *Draft it now* escreve sem tocar no campo; a ideia só é gasta
+(e o gosto aprendido) quando o roteiro chega: cancelada ou com falha, continua entre as ideias. Com o brief, o roteiro
   abre com a frase e segue o ângulo (`ScriptPromptBuilder`; a checagem da voz aceita a abertura dada).
 - **Linha do porquê** (`IdeaTie.cardLine`, `inspiration.card.why`): embaixo do título, ícone + texto em `aiText` (o token da linha de categoria, no
   mesmo cartão): "Coming up: Mother’s Day" (calendário), "Follows up your video “…”" (título cortado em 48 caracteres numa palavra), "From a comment you
@@ -1984,7 +2000,7 @@ de tela e os 25 estados). O relógio é **companion**: grava, encerra, ensaia e 
   relógio ouve "Prepare on your iPhone"), `WatchConnectivityTransport` (mensagem com resposta quando o relógio está ao alcance e o
   application context sempre, para o relógio ler ao abrir). `PrompterViewModel+Watch`: cada comando muda o que mudaria no iPhone e o estado
   diz qual comando já aconteceu (`answering`): **Gravar** começa a contagem ou o take como o botão vermelho (de um take salvo, **Gravar outro**
-  faz o Refazer da revisão e grava); **Encerrar** para e salva sem o aviso de monetização (o criador escolheu no pulso) e a revisão abre no
+  faz o Refazer da revisão e grava; sem microfone, como o botão vermelho apagado, não começa e o relógio ouve que não deu); **Encerrar** para e salva sem o aviso de monetização (o criador escolheu no pulso) e a revisão abre no
   iPhone como depois do Stop dele; **Ensaiar** toca o roteiro sem gravar (pausado continua sendo ensaio); texto (ler/pausar, voltar 3 linhas,
   − e + de velocidade, a coroa com a velocidade exata). **Indisponível** no Studio (teleprompter para outra câmera) e na prática do primeiro voo.
 - **Relógio** (`Cue Studio Watch/`): `WatchSessionModel` (último estado do iPhone, comando à espera, Encerrar armado por 3 s, coroa, página),
@@ -2214,7 +2230,11 @@ InShot, Edits, Descript e Captions (pesquisa de 24/10: os apps põem a limpeza d
   português continua "Subtítulo" × "Legenda".
 - **Concluir:** a folha de Done já separava as quatro saídas (compartilhar, baixar, publicar depois, continuar editando), cada uma com o destino; o de
   Download video dizia "SAVED", que se confundia com o "EDIT SAVED" de cima: agora "IN PHOTOS". A organização dos projetos (Takes: To pick, In edit,
-  Ready, Shared) fica igual.
+  Ready, Shared) fica igual. Uma edição deixada aberta é achada onde ficou: o cartão "In edit", o Edit de Takes e o lembrete de terminar abrem o take
+  dessa edição (a deixada por último, se há mais de uma), nunca uma edição nova no melhor take; na revisão, **Continue** aparece no take da edição
+  aberta, e nos outros takes do vídeo **Edit** começa a edição deles (o que o fim do editor compartilha é sempre o take editado). Um Done cuja edição não pôde ser salva no take volta à revisão como "Not yet" (rascunho), sem compartilhar nem
+  baixar o vídeo como estava. O rascunho que não pôde ser gravado quando o Cue vai para o segundo plano (iPhone cheio) é dito na hora ("Couldn't save
+  the edits · Free up space on this iPhone") e gravado de novo na volta.
 - **De propósito, igual:** apagar um clipe volta às ferramentas principais (escolher o seguinte faria um segundo toque no Excluir fixo apagar outro).
   A fileira de filtros fica onde o dedo a deixa, no vídeo inteiro e num clipe (a suspeita de que voltava ao começo era do teste: o XCUITest chama os
   cartões de "não tocáveis" depois de rolar, enquanto um toque de verdade os escolhe).

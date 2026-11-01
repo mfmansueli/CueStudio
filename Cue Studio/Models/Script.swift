@@ -38,6 +38,9 @@ nonisolated struct Script: Codable, Identifiable, Hashable, Sendable {
     /// The creator finished it (Done), or the AI delivered a complete script. With takes the script is RECORDED
     /// whatever this says (`ScriptState`). Saved before v29: finished when there is text.
     var isFinished: Bool
+    /// Created for the AI to write into, and still waiting for its words: one left empty by a past session (Cue closed before the script
+    /// arrived) is removed when the library is read (`ScriptLibraryService.load`).
+    var awaitsDraft = false
 
     init(
         id: UUID = UUID(), title: String, text: String, platform: Platform, type: ScriptType? = nil,
@@ -85,6 +88,7 @@ nonisolated struct Script: Codable, Identifiable, Hashable, Sendable {
         // Saved before v29: a script with text is finished (READY), an empty one is a draft.
         isFinished = try container.decodeIfPresent(Bool.self, forKey: .isFinished)
             ?? !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        awaitsDraft = try container.decodeIfPresent(Bool.self, forKey: .awaitsDraft) ?? false
     }
 
     var structure: ScriptStructure { type?.structure ?? .generic }

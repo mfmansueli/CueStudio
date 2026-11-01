@@ -403,10 +403,7 @@ struct MainView: View {
     }
 
     private func writeNewScript() {
-        let script = library.create(
-            title: "", text: "", platform: profile.profile.defaultPlatform, language: languages.scriptLanguage, isFinished: false
-        )
-        presentation.openScript(script.id, editing: true)
+        services.starter.newBlank(platform: profile.profile.defaultPlatform)
     }
 }
 

@@ -13,6 +13,7 @@ struct ScriptDetailViewModelTests {
     private struct Scenario {
         let viewModel: ScriptDetailViewModel
         let library: ScriptLibraryService
+        let repository: FakeScriptRepository
         let writer: FakeScriptWriter
         let toast: ToastService
         let defaults: TestDefaults
@@ -20,7 +21,8 @@ struct ScriptDetailViewModelTests {
 
     private func makeScenario(script: Script, takeCount: Int = 0) -> Scenario {
         let defaults = TestDefaults()
-        let library = ScriptLibraryService(repository: FakeScriptRepository(scripts: [script]), now: { TestData.now })
+        let repository = FakeScriptRepository(scripts: [script])
+        let library = ScriptLibraryService(repository: repository, now: { TestData.now })
         library.load()
         let takes = TakeLibraryService(repository: FakeTakeRepository(takes: (0..<takeCount).map {
             TestData.take(scriptID: script.id, number: $0 + 1)
@@ -41,7 +43,7 @@ struct ScriptDetailViewModelTests {
             writer: writer,
             toast: toast
         )
-        return Scenario(viewModel: viewModel, library: library, writer: writer, toast: toast, defaults: defaults)
+        return Scenario(viewModel: viewModel, library: library, repository: repository, writer: writer, toast: toast, defaults: defaults)
     }
 
     @Test func replacingTheHookSavesRightAway() {
@@ -206,6 +208,41 @@ struct ScriptDetailViewModelTests {
         await scenario.viewModel.openHooks()
         #expect(scenario.writer.hooksRequested == 1)
         #expect(scenario.viewModel.sheet == .hooks)
+    }
+
+    /// What the AI writes is a draft until the creator says it is ready (the owner's call, 20/10/2026), copies too; an Ultra AI draft stays
+    /// one (its fact-check reminder says so) in any language or platform.
+    @Test func aTranslationOrAVersionArrivesAsADraftAndKeepsWhoDraftedIt() async {
+        var script = TestData.script(title: "Habits", platform: .tiktok)
+        script.draftedBy = .ultra
+        let scenario = makeScenario(script: script)
+        defer { scenario.defaults.tearDown() }
+        scenario.writer.rewrittenText = "Hola."
+        await scenario.viewModel.run(.translate, language: .spanish)
+        await scenario.viewModel.makeVersion(for: .reels)
+        let copies = scenario.library.scripts.filter { $0.id != script.id }
+        #expect(copies.count == 2)
+        #expect(copies.allSatisfy { !$0.isFinished && $0.draftedBy == .ultra })
+    }
+
+    /// The version is made of the words on the page, the one typed a second ago (not saved yet) included.
+    @Test func aVersionIsMadeOfTheWordsOnThePage() async {
+        let script = TestData.script(title: "Habits", platform: .tiktok)
+        let scenario = makeScenario(script: script)
+        defer { scenario.defaults.tearDown() }
+        scenario.viewModel.page.text = script.text + " And one more line."
+        await scenario.viewModel.makeVersion(for: .reels)
+        #expect(scenario.writer.lastRewrittenSource == script.text + " And one more line.")
+    }
+
+    /// A full iPhone: the copy is only in memory, and the app's own warning says so (`RootView`), never "Duplicated".
+    @Test func aCopyThatCouldntBeWrittenIsNeverCalledDone() {
+        let scenario = makeScenario(script: TestData.script(title: "Habits"))
+        defer { scenario.defaults.tearDown() }
+        scenario.repository.failsToSave = true
+        scenario.viewModel.duplicate()
+        #expect(scenario.library.saveFailed && scenario.library.scripts.count == 2)
+        #expect(scenario.toast.message == nil)
     }
 
     @Test func aVersionForAnotherPlatformIsFittedToItAndSavedAsACopy() async {

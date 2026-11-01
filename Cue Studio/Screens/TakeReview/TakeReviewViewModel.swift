@@ -48,6 +48,8 @@ final class TakeReviewViewModel {
     @ObservationIgnored var queueInterceptor: ((ShareDestination, ActivityResult) -> Bool)?
     /// The queue that edits are made for: re-exporting inside it costs no second export.
     @ObservationIgnored var queueOperation: () -> UUID? = { nil }
+    /// "Share to universe" starts its queue again, once a purchase gave back the export it waited for.
+    @ObservationIgnored var queueResumes: (() async -> Void)?
     /// An export finished (the take, and whether it went to Photos): a notification tells a creator who left Cue meanwhile.
     @ObservationIgnored var onExported: (UUID, Bool) -> Void = { _, _ in }
     /// "Share to".
@@ -167,8 +169,9 @@ final class TakeReviewViewModel {
         TakeStage(takes: siblings, hasDraft: { [drafts] in drafts.hasDraft(for: $0) })
     }
 
-    /// An edit is open on one of its takes: the main action reads "Continue".
-    var hasOpenEdit: Bool { siblings.contains { drafts.hasDraft(for: $0.id) } }
+    /// An edit is open on this take: the main action reads "Continue" and goes on with it. On another take of the video, Edit starts its own
+    /// (Takes, "In edit" and the reminder open the take whose edit is open: `QuickEditDraftStoring.takeInEdit`).
+    var hasOpenEdit: Bool { take.map { drafts.hasDraft(for: $0.id) } ?? false }
 
     /// The take's length against its platform's ideal range: "✓ FITS 1:00–1:30", or how far off.
     var lengthFit: LengthFit? {
@@ -370,10 +373,15 @@ final class TakeReviewViewModel {
         await export(.share(destination))
     }
 
-    /// Continues the export that opened the paywall, now that Pro is on.
+    /// Continues the export that opened the paywall, now that Pro is on. A queue's export goes on as the queue (`ShareFlow.start`): the
+    /// export alone would save to Photos and stop, with the networks still waiting, and the next "Share" would save it again.
     func continueAfterPurchase() async {
         guard let action = pendingAction else { return }
         pendingAction = nil
+        if case .prepare = action, let queueResumes {
+            await queueResumes()
+            return
+        }
         await export(action)
     }
 
@@ -740,6 +748,8 @@ final class TakeReviewViewModel {
         }
         let url = URL.temporaryDirectory.appending(path: "Cue-cover-\(UUID().uuidString.prefix(8)).jpg")
         try data.write(to: url, options: .atomic)
+        // Photos keeps its own copy.
+        defer { try? FileManager.default.removeItem(at: url) }
         try await photos.saveImage(at: url)
         return true
     }

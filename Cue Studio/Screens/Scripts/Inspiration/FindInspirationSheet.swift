@@ -26,7 +26,6 @@ struct FindInspirationSheet: View {
     @Environment(IdeaTransitionService.self) private var transition
     @Environment(PresentationService.self) private var presentation
     @Environment(CreatorProfileService.self) private var profile
-    @Environment(ScriptLibraryService.self) private var library
     @Environment(LanguageService.self) private var languages
     @Environment(UltraScriptService.self) private var ultra
     @Environment(\.dismiss) private var dismiss
@@ -535,22 +534,21 @@ struct FindInspirationSheet: View {
     /// - Parameter engine: Apple Intelligence ("Draft it now") or Ultra ("Draft with Ultra AI").
     private func writeNow(_ idea: ThemeIdea, engine: ScriptEngine = .apple) {
         notifications.recordUse(.ideas)
-        viewModel.willWrite(idea)
         dismiss()
         guard engine == .ultra || canDraft else {
+            viewModel.willWrite(idea)
             // Not `starter.writeByHand`, which empties the composer: the creator's own draft stays where it was.
-            let script = library.create(
-                title: idea.title, text: "", platform: starter.platform, type: ideaDraft.format, language: languages.scriptLanguage, isFinished: false
-            )
-            presentation.openScript(script.id, editing: true)
+            starter.newBlank(title: idea.title, platform: starter.platform, format: ideaDraft.format)
             return
         }
         HapticPatterns.playTakeoff()
         let note = idea.logbookID
+        // The idea is used (and taught) when its script arrives: cancelled or failed, it is still among the ideas.
         starter.write(
             idea: FindInspirationViewModel.writingText(of: idea), length: idea.brief == nil ? idea.length : nil, brief: idea.brief,
             engine: engine, from: writeCenter
-        ) { [logbook] scriptID in
+        ) { [logbook, viewModel] scriptID in
+            viewModel.willWrite(idea)
             if let note { logbook.markShaped(note, as: scriptID) }
         }
     }

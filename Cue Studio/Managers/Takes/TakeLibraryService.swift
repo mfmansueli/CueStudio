@@ -26,6 +26,9 @@ final class TakeLibraryService {
     @ObservationIgnored private var canSave = true
     /// Takes deleted whose Undo may still be on screen: their videos wait here (`awaitPurge`) until it is out of reach.
     @ObservationIgnored private var awaiting: [UUID: RemovedTake] = [:]
+    /// A take is gone for good (deleted, or its Undo out of reach): what other services keep for it goes too (its exported files, a share
+    /// queue left halfway). Set once by `AppServices`.
+    @ObservationIgnored var takeGone: ((Take) -> Void)?
     /// The last write failed (the iPhone full): what changed is only in memory until a save works, the next change's or
     /// `saveAgainIfFailed` when Cue comes back to the front. The app says so (`RootView`).
     private(set) var saveFailed = false
@@ -127,6 +130,8 @@ final class TakeLibraryService {
             takes.removeAll { $0.id == take.id }
             do {
                 try repository.returnVideo(named: fileName, to: url)
+                // It comes back under its script (`TakeRecovery`), not as a freestyle recording.
+                if let script { TakeRecoveryNote(scriptID: script.id, scriptVersion: script.version).write(for: url) }
             } catch {
                 logger.error("Could not put the unsaved take's video back: \(error.localizedDescription)")
             }
@@ -272,8 +277,9 @@ final class TakeLibraryService {
     }
 
     /// What Quick edit added belongs to this take alone: the saved edit's media, and the draft with the media only it names
-    /// (B-roll added since the last Done).
+    /// (B-roll added since the last Done); and what other services keep for it (`takeGone`).
     private func removeEditFiles(of take: Take) {
+        takeGone?(take)
         var names = take.edit?.mediaFileNames ?? []
         if let drafts {
             names.formUnion(drafts.draft(for: take.id)?.edit.mediaFileNames ?? [])

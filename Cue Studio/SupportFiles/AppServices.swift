@@ -165,6 +165,11 @@ struct AppServices {
         )
         store = StoreManager()
         ledger = ExportLedgerService(store: options.exportLedger, quota: quota)
+        // A deleted take leaves nothing behind: its exported videos waiting in tmp, and a "Continue posting" for a video that is gone.
+        takes.takeGone = { [ledger, shareQueue] take in
+            ledger.releaseFiles(forTake: take.id)
+            shareQueue.discard(takeID: take.id)
+        }
         presentation = PresentationService()
         toast = ToastService()
         panelNotes = PanelNoteMemory(defaults: options.defaults)
@@ -329,9 +334,11 @@ struct AppServices {
             await fonts.sweepRemoved(defaults: defaults)
         }
         // A take a past session never filed (Cue stopped mid-take, or the library couldn't take it in) comes back (`TakeRecovery`).
-        Task { [takes, preferences] in
+        Task { [takes, preferences, library] in
             try? await Task.sleep(for: .seconds(3))
-            await TakeRecovery.recover(into: takes, camera: preferences.camera, launchedAt: launchedAt)
+            await TakeRecovery.recover(
+                into: takes, camera: preferences.camera, launchedAt: launchedAt, script: { library.script(id: $0) }
+            )
         }
     }
 

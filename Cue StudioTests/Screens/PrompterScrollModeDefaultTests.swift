@@ -22,11 +22,12 @@ struct PrompterScrollModeDefaultTests {
     }
 
     private func makeScenario(
-        mode: PrompterMode = .selfie, microphoneDenied: Bool = false, saved: ScrollMode? = nil,
+        mode: PrompterMode = .selfie, microphoneDenied: Bool = false, saved: ScrollMode? = nil, onReview: Bool = false,
         prepare: (FakeSpeechTranscriber) -> Void = { _ in }
     ) -> Scenario {
         let defaults = TestDefaults()
         let script = TestData.script(text: "One two three four.\nFive six seven eight.")
+        let take = TestData.take(scriptID: script.id)
         let library = ScriptLibraryService(repository: FakeScriptRepository(scripts: [script]))
         library.load()
         let preferences = PreferencesService(defaults: defaults.defaults)
@@ -37,9 +38,11 @@ struct PrompterScrollModeDefaultTests {
         let speech = FakeSpeechTranscriber()
         prepare(speech)
         let toast = ToastService()
+        let takes = TakeLibraryService(repository: FakeTakeRepository(takes: onReview ? [take] : []))
+        takes.load()
         let viewModel = PrompterViewModel(
-            launch: PrompterLaunch(scriptID: script.id, mode: mode),
-            library: library, takes: TakeLibraryService(repository: FakeTakeRepository()), preferences: preferences,
+            launch: PrompterLaunch(scriptID: script.id, mode: mode, reviewTakeID: onReview ? take.id : nil),
+            library: library, takes: takes, preferences: preferences,
             profile: CreatorProfileService(defaults: defaults.defaults), rules: TestData.rulesService(),
             camera: camera, audio: FakeAudioMeter(), microphones: FakeMicrophones(), speech: speech,
             languages: TestData.languages(defaults: defaults.defaults), remote: RemoteControlService(transport: FakeRemoteTransport()),
@@ -91,6 +94,32 @@ struct PrompterScrollModeDefaultTests {
         #expect(!scenario.viewModel.followsSpeech)
         await scenario.viewModel.disappear()
         #expect(scenario.preferences.prompter.scrollMode == .voice)
+    }
+
+    /// Retake from a take's review (Takes › Retake, the review's Retake) without the microphone: the new take reads Steady too, never a
+    /// Voice Following that waits for a voice it can't hear.
+    @Test func aRetakeFromTheReviewWithoutTheMicrophoneReadsSteady() async {
+        let scenario = makeScenario(microphoneDenied: true, onReview: true)
+        defer { scenario.defaults.tearDown() }
+        await scenario.viewModel.appear()
+        #expect(scenario.viewModel.reviewingTake != nil)
+        await scenario.viewModel.retake()
+        #expect(scenario.viewModel.session.prompter.scrollMode == .steady)
+        await scenario.viewModel.disappear()
+        #expect(scenario.preferences.prompter.scrollMode == .voice)
+    }
+
+    /// The watch's Record without the microphone: no take starts (the iPhone's red button is off), and the wrist hears it couldn't.
+    @Test func theWatchCantStartATakeWithoutTheMicrophone() async {
+        let scenario = makeScenario(microphoneDenied: true)
+        defer { scenario.defaults.tearDown() }
+        await scenario.viewModel.appear()
+        let command = WatchCommand(action: .record)
+        scenario.viewModel.handle(watchCommand: command)
+        await Wait.until { scenario.viewModel.watchAnswer == command.id }
+        #expect(!scenario.viewModel.isRecording && scenario.viewModel.countdown == nil)
+        #expect(scenario.viewModel.watchOutcome == .failedStart)
+        await scenario.viewModel.disappear()
     }
 
     @Test func aSteadyTheCreatorPicksIsRemembered() async {

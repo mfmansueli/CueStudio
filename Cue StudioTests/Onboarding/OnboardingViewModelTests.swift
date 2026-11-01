@@ -141,6 +141,28 @@ struct OnboardingViewModelTests {
         #expect(scenario.presentation.selectedTab == .scripts)
     }
 
+    /// A flight closed at the permissions or the practice comes back where it was, with only its chapter kept: finishing it keeps the platform
+    /// picked before (applied at 1.4), never TikTok, the default of a picker that wasn't on screen this time.
+    @Test func finishingAResumedFlightKeepsThePlatformPickedBefore() {
+        let scenario = make()
+        defer { scenario.defaults.tearDown() }
+        scenario.onboarding.platform = .youtube
+        scenario.model.applyChoices()
+        scenario.onboarding.step = .practice
+        #expect(scenario.profile.profile.defaultPlatform == .youtube)
+        // Cue closed and opened again: the chapter came back, the picks didn't.
+        let resumed = OnboardingService(defaults: scenario.defaults.defaults)
+        resumed.resolve(hasExistingContent: true)
+        #expect(resumed.isResumed && resumed.step == .practice && resumed.platform == .tiktok)
+        let model = OnboardingViewModel(
+            onboarding: resumed, permissions: scenario.permissions, library: scenario.library, profile: scenario.profile,
+            ideaDraft: scenario.ideaDraft, presentation: scenario.presentation
+        )
+        model.finish()
+        #expect(resumed.isCompleted)
+        #expect(scenario.profile.profile.defaultPlatform == .youtube)
+    }
+
     @Test func profilesSavedBeforeCustomTopicsStillOpen() throws {
         let json = #"{"name":"Ana","niches":["food"]}"#
         let profile = try JSONDecoder().decode(CreatorProfile.self, from: Data(json.utf8))

@@ -76,6 +76,33 @@ tr:last-child td { border-bottom: 0; }
 </header>
 
 <section>
+  <h2>Já corrigido (01/11, sem decisão sua)</h2>
+  <p>Na branch <code>audit/integration-flows</code>, só os itens que não mudam tela nem texto e não dependem do iPhone. Cada um tem teste de unidade.</p>
+  <div class="table"><table>
+    <thead><tr><th>ID</th><th>O que mudou</th></tr></thead>
+    <tbody>
+      <tr><td><code>A1 · A6 · A11</code></td><td>O roteiro vai para a biblioteca assim que a IA responde; sair durante a revelação guarda o texto inteiro (Stop continua guardando só o que chegou); a escrita pede tempo de segundo plano; um roteiro vazio deixado por um Cue fechado sob a estrela some na abertura seguinte.</td></tr>
+      <tr><td><code>A2</code></td><td>Editar depois de um take na versão atual cria a próxima versão, também na mesma visita.</td></tr>
+      <tr><td><code>A3</code></td><td>A ideia do Find inspiration só é gasta quando o roteiro chega.</td></tr>
+      <tr><td><code>A5</code></td><td>"Write it myself" num comentário e Write no Logbook não apagam o texto do dock.</td></tr>
+      <tr><td><code>A7 · A22</code></td><td>Tradução e "Make a version for…" chegam como rascunho, com a marca da Ultra AI do original, e usam as palavras da página.</td></tr>
+      <tr><td><code>A8</code></td><td>Um take que a biblioteca não aceitou volta sob o roteiro dele (nota ao lado do vídeo), não como freestyle.</td></tr>
+      <tr><td><code>A12</code></td><td>Terminar um onboarding retomado não troca a rede por TikTok.</td></tr>
+      <tr><td><code>A14 · A24</code></td><td>Retake aberto da revisão sem microfone lê em Steady; o Watch não começa um take sem microfone.</td></tr>
+      <tr><td><code>A15</code></td><td>Atalhos da Siri esperam o onboarding, o gravador e o controle remoto fecharem.</td></tr>
+      <tr><td><code>A21</code></td><td>Um só <code>ScriptStarter.newBlank</code> para todo roteiro em branco.</td></tr>
+      <tr><td><code>B1</code></td><td>Takes (cartão e Edit) e o lembrete abrem o take da edição aberta; na revisão, "Continue" aparece nesse take.</td></tr>
+      <tr><td><code>B5</code></td><td>Comprar o Pro a partir das redes continua a fila (uma cópia em Fotos).</td></tr>
+      <tr><td><code>B6</code></td><td>O rascunho que não grava ao ir para o segundo plano é avisado e gravado de novo na volta.</td></tr>
+      <tr><td><code>B7 · B8</code></td><td>Apagar um take leva a fila e os vídeos exportados dele; "Delete my Cue data" apaga os arquivos <code>Cue-*</code> do tmp; a capa temporária sai depois de salva.</td></tr>
+      <tr><td><code>B11</code></td><td>Um Done que não salvou volta à revisão como "Not yet", sem compartilhar nem baixar.</td></tr>
+      <tr><td>22/10</td><td>"Duplicated" e "version saved" não aparecem quando o salvamento falhou; importar documento roda fora da thread principal (HTML continua na principal, exigência do WebKit); SHARING.md corrigido (3 exportações grátis, sem <code>QuickEditExportModel</code>).</td></tr>
+    </tbody>
+  </table></div>
+  <p><b>Ficaram para você:</b> B2, B3, B4, A4, A13, A17, A19, A20, B12, B13, B15, B17 e A23 (os chips do dock valem para roteiros de qualquer origem, então zerá-los depois de um roteiro do Logbook é decisão de desenho). <b>Dependem do iPhone:</b> A9, A10, A16, B9, B10, B18, B20.</p>
+</section>
+
+<section>
   <h2>Como as partes se ligam</h2>
   <ol class="flow">
     <li><b>Ideia → pedido.</b> Dock, Find inspiration, Logbook, responder um comentário e o briefing de marca passam por <code>ScriptStarter.write</code>, que monta o <code>ScriptRequest</code> e escolhe o motor (Ultra só se escolhida, permitida e com roteiros sobrando; senão Apple Intelligence).</li>

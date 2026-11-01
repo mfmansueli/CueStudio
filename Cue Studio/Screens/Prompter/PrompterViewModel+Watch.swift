@@ -106,6 +106,11 @@ extension PrompterViewModel {
             for _ in 0..<30 where camera.status != .running { try? await Task.sleep(for: .milliseconds(100)) }
         }
         guard countdown == nil, !isRecording else { return }
+        // No microphone, no take: the red button on the iPhone is off and its card says why; the wrist hears it couldn't start.
+        guard !microphone.isDenied() else {
+            watchOutcome = .failedStart
+            return
+        }
         if isPlaying { pause() }
         await recordButtonTapped()
         if countdown == nil, !isRecording, watchOutcome == nil { watchOutcome = .failedStart }

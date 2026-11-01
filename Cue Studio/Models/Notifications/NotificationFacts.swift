@@ -37,6 +37,8 @@ nonisolated struct NotificationFacts: Sendable {
         var cleanUpAnalyzed: Bool
         /// The tools its edit shows were used (`FeatureAdoption.tools(in:)`).
         var toolsUsed: Set<FeatureID>
+        /// When its open edit was last kept; nil without one.
+        var draftSavedAt: Date?
     }
 
     struct QueueFact: Hashable, Sendable {

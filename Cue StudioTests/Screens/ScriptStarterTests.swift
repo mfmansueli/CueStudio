@@ -154,6 +154,34 @@ struct ScriptStarterTests {
         #expect(scenario.ideaDraft.text == "My own idea in the dock")
     }
 
+    /// "Write it myself" on a comment, or Write on an idea of the Logbook without Apple Intelligence: the draft opens named after it, and what
+    /// the creator was typing in the dock (and its chips) stays. The dock's own idea written by hand leaves it, as before.
+    @Test func writingAnotherIdeaByHandLeavesTheDockAlone() {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        scenario.ideaDraft.text = "My own idea in the dock"
+        scenario.ideaDraft.platform = .youtube
+        let id = scenario.starter.writeByHand(idea: "A comment to answer")
+        #expect(scenario.library.script(id: id)?.title == "A comment to answer")
+        #expect(scenario.library.script(id: id)?.isFinished == false)
+        #expect(scenario.ideaDraft.text == "My own idea in the dock" && scenario.ideaDraft.platform == .youtube)
+        scenario.starter.writeByHand()
+        #expect(scenario.library.scripts.first?.title == "My own idea in the dock")
+        #expect(scenario.ideaDraft.isEmpty && scenario.ideaDraft.platform == nil)
+    }
+
+    /// The script made for the AI to write into says so until its words arrive: a Cue closed under the star leaves no empty "Untitled".
+    @Test func theScriptMadeForTheAIWaitsForItsWords() {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        scenario.ideaDraft.text = "Carnival in Salvador"
+        scenario.starter.write()
+        #expect(scenario.library.scripts.first?.awaitsDraft == true)
+        // A blank draft the creator opens is theirs from the start.
+        scenario.starter.newBlank(platform: .reels)
+        #expect(scenario.library.scripts.first?.awaitsDraft == false && scenario.library.scripts.first?.platform == .reels)
+    }
+
     /// Every cause is told the same way, before the star, with its own words.
     @Test(arguments: [AIPlanFailure.deviceNotSupported, .turnedOff, .modelPreparing])
     func whatAppleIntelligenceCantDoIsToldBeforeTheStar(_ failure: AIPlanFailure) {

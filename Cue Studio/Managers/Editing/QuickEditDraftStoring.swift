@@ -25,5 +25,12 @@ protocol QuickEditDraftStoring: AnyObject {
 extension QuickEditDraftStoring {
     func hasDraft(for takeID: UUID) -> Bool { draft(for: takeID) != nil }
 
+    /// The take of `takes` whose edit was left open last, if one has an open edit: what "In edit", "Continue" and the reminder to finish
+    /// open, so the creator finds the edit where they left it (reads the drafts: for a tap, not for every frame).
+    func takeInEdit(among takes: [Take]) -> Take? {
+        takes.compactMap { take in hasDraft(for: take.id) ? (take, draft(for: take.id)?.savedAt ?? .distantPast) : nil }
+            .max { $0.1 < $1.1 }?.0
+    }
+
     func saveSoon(_ draft: QuickEditDraft) { try? save(draft) }
 }

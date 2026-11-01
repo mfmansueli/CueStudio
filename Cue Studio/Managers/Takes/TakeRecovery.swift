@@ -38,8 +38,9 @@ nonisolated enum TakeRecovery {
         return .recover(duration: duration)
     }
 
-    /// Files each leftover as a freestyle take (the script it was read from isn't known) with the creator's camera
-    /// settings, and removes the ones that can't be played. Returns how many came back.
+    /// Files each leftover with the creator's camera settings: under the script its note names (`TakeRecoveryNote`, a take the library
+    /// couldn't take in), as it was then; as a freestyle take when that isn't known (Cue stopped mid-take) or the script is gone. Removes the
+    /// ones that can't be played. Returns how many came back.
     @MainActor
     @discardableResult
     static func recover(
@@ -47,7 +48,8 @@ nonisolated enum TakeRecovery {
         camera: CameraSettings,
         launchedAt: Date,
         folder: URL = .temporaryDirectory,
-        inspect: (URL) async -> Verdict = { await TakeRecovery.verdict(for: $0) }
+        inspect: (URL) async -> Verdict = { await TakeRecovery.verdict(for: $0) },
+        script: (UUID) -> Script? = { _ in nil }
     ) async -> Int {
         let files = await listing(of: folder)
         var recovered = 0
@@ -55,10 +57,21 @@ nonisolated enum TakeRecovery {
             let url = folder.appending(path: name)
             switch await inspect(url) {
             case .recover(let duration):
+                let readFrom = TakeRecoveryNote.read(for: url).flatMap { note in
+                    script(note.scriptID).map { current -> Script in
+                        var then = current
+                        then.version = note.scriptVersion
+                        return then
+                    }
+                }
                 // A library that can't take it in now leaves the file where it is, for the next launch.
-                if (try? takes.addTake(fileAt: url, duration: duration, script: nil, camera: camera)) != nil { recovered += 1 }
+                if (try? takes.addTake(fileAt: url, duration: duration, script: readFrom, camera: camera)) != nil {
+                    recovered += 1
+                    TakeRecoveryNote.remove(for: url)
+                }
             case .remove:
                 try? FileManager.default.removeItem(at: url)
+                TakeRecoveryNote.remove(for: url)
             case .leave:
                 break
             }
@@ -70,7 +83,7 @@ nonisolated enum TakeRecovery {
     /// Never during a recording (the eraser is in Settings).
     static func removeLeftovers(folder: URL = .temporaryDirectory) {
         let names = (try? FileManager.default.contentsOfDirectory(atPath: folder.path(percentEncoded: false))) ?? []
-        for name in names where name.hasPrefix(prefix) && name.hasSuffix(".mov") {
+        for name in names where name.hasPrefix(prefix) && (name.hasSuffix(".mov") || name.hasSuffix(TakeRecoveryNote.suffix)) {
             try? FileManager.default.removeItem(at: folder.appending(path: name))
         }
     }

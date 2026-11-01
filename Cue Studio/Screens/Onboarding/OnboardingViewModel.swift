@@ -137,7 +137,8 @@ final class OnboardingViewModel {
 
     /// Wraps the flight up: the choices are kept and the app opens on Scripts.
     func finish() {
-        applyChoices()
+        // A resumed flight applied its choices at 1.4 (`useScript`), in the session that made them: here they would be the defaults (TikTok).
+        if !onboarding.isResumed { applyChoices() }
         onboarding.complete()
         presentation.selectedTab = .scripts
     }

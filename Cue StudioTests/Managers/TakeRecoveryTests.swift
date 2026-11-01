@@ -78,6 +78,34 @@ struct TakeRecoveryTests {
         #expect(FileManager.default.fileExists(atPath: folder.appending(path: "take-good.mov").path(percentEncoded: false)))
     }
 
+    /// A take the library couldn't take in left a note of its script: it comes back under that script, at the version it was read from,
+    /// not as a freestyle recording; and the note goes with it. A note of a script deleted since leaves it freestyle.
+    @Test func aLeftoverWithANoteComesBackUnderItsScript() async throws {
+        let folder = URL.temporaryDirectory.appending(path: "recovery-\(UUID().uuidString)", directoryHint: .isDirectory)
+        try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: folder) }
+        var script = TestData.script(title: "Morning habits")
+        script.version = 4
+        let known = folder.appending(path: "take-known.mov"), gone = folder.appending(path: "take-gone.mov")
+        for url in [known, gone] { try Data("frames".utf8).write(to: url) }
+        TakeRecoveryNote(scriptID: script.id, scriptVersion: 3).write(for: known)
+        TakeRecoveryNote(scriptID: UUID(), scriptVersion: 1).write(for: gone)
+        let takes = TakeLibraryService(repository: FakeTakeRepository())
+        let recovered = await TakeRecovery.recover(
+            into: takes, camera: CameraSettings(), launchedAt: Date().addingTimeInterval(60), folder: folder,
+            inspect: { _ in .recover(duration: 4) }, script: { $0 == script.id ? script : nil }
+        )
+        #expect(recovered == 2)
+        let underScript = try #require(takes.takes.first { $0.scriptID == script.id })
+        #expect(underScript.scriptTitle == "Morning habits" && underScript.scriptVersion == 3)
+        #expect(takes.takes.filter(\.isFreestyle).count == 1)
+        #expect(TakeRecoveryNote.read(for: known) == nil && TakeRecoveryNote.read(for: gone) == nil)
+        // "Delete my Cue data" takes the notes with the recordings.
+        TakeRecoveryNote(scriptID: script.id, scriptVersion: 3).write(for: known)
+        TakeRecovery.removeLeftovers(folder: folder)
+        #expect(TakeRecoveryNote.read(for: known) == nil)
+    }
+
     @Test func aRealMovieIsMeasuredAndAFileThatIsntOneIsRemoved() async throws {
         let movie = try await TestClip.make(seconds: 1)
         defer { try? FileManager.default.removeItem(at: movie) }

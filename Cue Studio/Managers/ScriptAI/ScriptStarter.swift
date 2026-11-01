@@ -165,15 +165,16 @@ final class ScriptStarter {
             toast.show(cause.reason, kind: .problem, action: ToastAction(title: String(localized: "Write it")) { [weak self] in
                 guard let self else { return }
                 // The dock's own idea leaves the dock as it becomes the draft; an idea from elsewhere leaves the creator's draft alone.
-                let id = idea == nil ? writeByHand(idea: text, format: request.format, comment: comment)
-                    : openBlankDraft(title: text, format: request.format, comment: comment)
-                if let id { whenWritten?(id) }
+                let id = openBlankDraft(title: text, format: request.format, comment: comment)
+                if idea == nil { ideaDraft.clear() }
+                whenWritten?(id)
             })
             return nil
         }
         let script = IdeaSendTimeline.measure("Script created") {
             library.create(
-                title: "", text: "", platform: request.platform, type: request.format, language: languages.scriptLanguage, comment: comment
+                title: "", text: "", platform: request.platform, type: request.format, language: languages.scriptLanguage, comment: comment,
+                awaitsDraft: true
             )
         }
         let scriptID = script.id
@@ -214,30 +215,33 @@ final class ScriptStarter {
         toast.showResult(failure.reason, kind: .problem, action: retry ? ToastAction(title: String(localized: "Try again"), perform: again) : nil)
     }
 
-    /// With no Apple Intelligence, "Write it": the idea becomes the title of a blank draft, opened to write in (04 · F2).
+    /// With no Apple Intelligence, "Write it": the idea becomes the title of a blank draft, opened to write in (04 · F2). The dock's own idea
+    /// (no `idea`) leaves the dock with it; one from elsewhere (a comment answered by hand, the Logbook) leaves what the creator was typing there.
     @discardableResult
     func writeByHand(idea: String? = nil, format: ScriptType? = nil, comment: ScriptComment? = nil) -> UUID? {
         let id = openBlankDraft(title: idea ?? ideaDraft.submission ?? "", format: format, comment: comment)
-        ideaDraft.clear()
+        if idea == nil { ideaDraft.clear() }
         return id
     }
 
     /// A blank draft named `title`, opened to write in; the dock's own draft stays.
     @discardableResult
     private func openBlankDraft(title: String, format: ScriptType?, comment: ScriptComment?) -> UUID {
-        let script = library.create(
-            title: title.trimmingCharacters(in: .whitespacesAndNewlines), text: "", platform: comment?.platform ?? platform,
-            type: format ?? ideaDraft.format, language: languages.scriptLanguage, comment: comment, isFinished: false
-        )
-        presentation.openScript(script.id, editing: true)
-        return script.id
+        newBlank(title: title, platform: comment?.platform ?? platform, format: format ?? ideaDraft.format, comment: comment)
     }
 
     /// "Start from a format": a blank draft with the format's sections, to write in.
     @discardableResult
     func startFromFormat(_ choice: FormatChoice) -> UUID {
+        newBlank(platform: platform, format: choice.scriptType)
+    }
+
+    /// Every blank draft the creator writes in: in the Script Language, a draft (not ready to record), opened with the keyboard.
+    @discardableResult
+    func newBlank(title: String = "", platform: Platform, format: ScriptType? = nil, comment: ScriptComment? = nil) -> UUID {
         let script = library.create(
-            title: "", text: "", platform: platform, type: choice.scriptType, language: languages.scriptLanguage, isFinished: false
+            title: title.trimmingCharacters(in: .whitespacesAndNewlines), text: "", platform: platform, type: format,
+            language: languages.scriptLanguage, comment: comment, isFinished: false
         )
         presentation.openScript(script.id, editing: true)
         return script.id

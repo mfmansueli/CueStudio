@@ -158,9 +158,11 @@ final class TakesViewModel {
         filter.stage = filter.stage == stage ? nil : stage
     }
 
+    /// A video "In edit" (and its Edit) opens on the take whose edit is open, not on the best one, where a new edit would start.
     func open(_ video: TakeVideo, then action: ReviewLaunchAction? = nil) {
-        guard let best = video.best else { return }
-        presentation.openReview(of: best, then: action)
+        let inEdit = action == .edit || video.stage == .edit ? drafts.takeInEdit(among: video.takes) : nil
+        guard let take = inEdit ?? video.best else { return }
+        presentation.openReview(of: take, then: action)
     }
 
     func retake(_ video: TakeVideo) {

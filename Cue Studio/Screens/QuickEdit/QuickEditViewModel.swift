@@ -105,6 +105,8 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     var showsBlurCheck = false
     /// The creator went on despite it: not asked again until the edit changes.
     @ObservationIgnored var blurCheckAccepted = false
+    /// The draft kept as Cue went to the background couldn't be written (a full iPhone): tried again on the way back.
+    @ObservationIgnored private var draftNotKept = false
     /// The creator's handle, for the "@handle" graphic and the cover's series (set by the screen).
     var creatorHandle: String {
         get { session.creatorHandle }
@@ -460,6 +462,10 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     /// Cue is in front again: a preview that failed meanwhile (iOS resets its media services in the background) is built
     /// again on its own.
     func becameActive() {
+        if draftNotKept {
+            draftNotKept = !saveDraft()
+            if draftNotKept { toast.show(Self.notSaved, kind: .problem) }
+        }
         guard source == .ready, player.state == .failed else { return }
         player.retry()
     }
@@ -511,7 +517,9 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     // MARK: - Leaving
 
     /// Saves the edit on the take (its new length, marked Edited) when anything changed.
-    func done() {
+    /// - Returns: false when the edit couldn't be saved on the take (it stays a draft).
+    @discardableResult
+    func done() -> Bool {
         endAllChanges()
         audio.stopRecordingIfNeeded()
         // Reversed videos nothing plays any more (a clip reversed and put back) were kept for undo; they go now.
@@ -528,12 +536,13 @@ final class QuickEditViewModel: EditorHost, EditorPart {
                 let kept = saveDraft(forced: true)
                 close(keepingDraft: true)
                 toast.show(kept ? String(localized: "Couldn't save the edits · Kept as a draft") : Self.notSaved, kind: .problem)
-                return
+                return false
             }
             toast.show(String(localized: "Edits saved to this take"))
         }
         removeUnusedImports(keeping: saved.mediaFileNames)
         close(keepingDraft: false)
+        return true
     }
 
     /// The edit couldn't be written anywhere: a full iPhone is the likely reason.
@@ -562,13 +571,16 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     /// Leaves the editor the way the creator answered: the edit is saved on the take (share, download,
     /// ready later), kept as a draft the video stays in edit with (not yet), or kept as a draft
     /// without asking (back).
-    func finish(_ outcome: EditorOutcome) {
+    /// - Returns: what the review carries on with: an edit that couldn't be saved on the take is a draft, never shared or saved as it was.
+    @discardableResult
+    func finish(_ outcome: EditorOutcome) -> EditorOutcome {
         sheet = nil
         switch outcome {
-        case .share, .download, .ready: done()
+        case .share, .download, .ready: return done() ? outcome : .notYet
         case .notYet: keepForLater()
         case .back: cancel()
         }
+        return outcome
     }
 
     /// "Not yet, I'll come back": the draft stays even if nothing changed, so the video is in edit.
@@ -601,7 +613,10 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     func pauseAndKeepDraft() {
         audio.stopRecordingIfNeeded()
         player.pause()
-        saveDraft()
+        // Not written: said now (an edit iOS may end in the background shouldn't go unnoticed) and tried again on the way back.
+        guard !saveDraft() else { return }
+        draftNotKept = true
+        toast.show(Self.notSaved, kind: .problem)
     }
 
     /// Files copied in during this visit that nothing kept names: the take's saved edit (and the

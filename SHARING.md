@@ -26,13 +26,17 @@ Uma exportação grátis é descontada **uma vez por operação** (um arquivo ex
   **na mesma operação** quando o criador compartilha de novo a partir de "Ready to travel".
 - **Uma operação já contada nunca pede a cota de novo:** com 0 exportações grátis sobrando, ainda dá para compartilhar o vídeo que acabou de
   ser salvo; uma edição diferente abre o paywall.
-- O contador no Keychain (5 grátis) não foi tocado: o uso existente vale, e reinstalar não devolve exportações.
+- O contador no Keychain (3 grátis, `UsagePolicy.freeExports`) não foi tocado: o uso existente vale, e reinstalar não devolve exportações.
 - **Limpeza:** `leave()` (ao fechar a revisão sem nada em andamento) apaga o arquivo temporário; ao abrir o app, arquivos com mais de 24 h somem
   e registros com mais de 7 dias também. O arquivo fica enquanto a folha de compartilhamento, a celebração ou uma exportação precisam dele.
+  Um take apagado de vez (pela revisão, depois do Undo, ou pela aba Takes) leva os arquivos exportados dele e a fila de "Share to universe"
+  (`TakeLibraryService.takeGone`); "Delete my Cue data" apaga tudo o que o Cue deixou no tmp com o nome `Cue-` (`DataEraserService.removeTemporaryFiles`).
+  A capa salva em Fotos não fica no tmp: o arquivo sai assim que o Fotos tem a cópia dele.
 
 Caminhos de exportação (todos passam pelo razão): **Take Review** (`TakeReviewViewModel`: Save video, tiles de plataforma, More, "Ready to
-travel" › Share to / Other apps, "On its way" › Share again, e o "download" do fim do editor), **Quick edit** (`QuickEditExportModel`:
-Export video, Share). `saveCoverIfChosen` salva só uma imagem e nunca conta. O compartilhamento de roteiros (texto) e do universo (imagem) não é
+travel" › Share to / Other apps, "On its way" › Share again, e o "download" do fim do editor). O editor não exporta: as respostas do fim dele
+("Yes, share", "Download video") voltam à revisão, que exporta; um Done cuja edição não foi salva no take volta como "Not yet" (a edição fica
+rascunho), nunca exporta o vídeo como estava. `saveCoverIfChosen` salva só uma imagem e nunca conta. O compartilhamento de roteiros (texto) e do universo (imagem) não é
 exportação de vídeo.
 
 ## 1.1. "Share to universe" (fase A): uma exportação por envio, uma rede por vez
@@ -41,6 +45,8 @@ O botão amarelo da revisão renderiza o arquivo uma vez (`ExportAction.render`:
 (`ShareIntegrationConfiguration.integrationsEnabled = false`: `ShareRouteResolver` devolve `.activitySheet` para todos). Conta **uma** exportação: quando o arquivo sai (salvo em Fotos pela opção "Also save to Photos", ou a primeira atividade
 concluída), nunca por rede; editar e reexportar dentro da fila herda a contagem (`ExportLedgerService.begin(inheritingCountFrom:)`). Uma atividade concluída pergunta "Posted on {rede}?": só **Yes, it's live** marca a rede como postada,
 grava o `ShareRecord` (plataforma, data, tema) e acende o planeta; **Not yet** volta ao passo; cancelar a folha também. O Cue nunca afirma que algo foi publicado sem a resposta do criador.
+Sem exportações grátis, "Share to N networks" abre "Your video is ready"; o Pro comprado dali segue com a fila (`TakeReviewViewModel.queueResumes` chama
+`ShareFlow.start` de novo: uma cópia em Fotos, o passo da primeira rede), nunca um salvamento solto que deixaria as redes esperando.
 
 ## 2. Estados (`ExportPhase`) e mensagens
 

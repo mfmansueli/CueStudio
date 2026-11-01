@@ -33,7 +33,9 @@ struct ShareFlowTests {
         var networks: [ShareDestination]?
     }
 
-    private func makeScenario(usedExports: Int = 0, platform: Platform? = .tiktok) -> Scenario {
+    private func makeScenario(
+        usedExports: Int = 0, platform: Platform? = .tiktok, tier: @escaping @MainActor () -> MembershipTier = { .free }
+    ) -> Scenario {
         let defaults = TestDefaults()
         let script = TestData.script(text: "Okay, real talk.")
         var take = TestData.take(scriptID: script.id)
@@ -48,7 +50,7 @@ struct ShareFlowTests {
         let ledger = ExportLedgerService(store: FakeExportLedgerStore(), quota: quota)
         let toast = ToastService()
         let review = TakeReviewViewModel(
-            takeID: take.id, takes: takes, quota: quota, tier: { .free },
+            takeID: take.id, takes: takes, quota: quota, tier: tier,
             exporter: exporter, photos: photos, sharing: FakeVideoSharing(), ledger: ledger, editing: FakeTakeEditor(), library: library,
             rules: TestData.rulesService(), profile: CreatorProfileService(defaults: defaults.defaults),
             preferences: PreferencesService(defaults: defaults.defaults), drafts: FakeDraftStore(), toast: toast
@@ -166,6 +168,23 @@ struct ShareFlowTests {
         #expect(scenario.queues.queue(forTake: scenario.take.id) == nil)
         #expect(scenario.photos.savedURLs.isEmpty)
         #expect(scenario.flow.costLine?.isWarning == true)
+    }
+
+    /// Pro bought from "Your video is ready" over the networks: the queue goes on (one save to Photos, the first network's step), never a
+    /// lone save that leaves the networks waiting and saves again at the next "Share".
+    @Test func buyingProFromTheNetworksGoesOnWithTheQueue() async throws {
+        final class Tier { var value = MembershipTier.free }
+        let tier = Tier()
+        let scenario = makeScenario(usedExports: UsagePolicy.freeExports) { tier.value }
+        defer { scenario.defaults.tearDown() }
+        scenario.flow.openPicker(with: try #require(await rendered(scenario)))
+        await scenario.flow.start()
+        #expect(scenario.review.showsExportReady && scenario.queues.queue(forTake: scenario.take.id) == nil)
+        tier.value = .subscriber
+        await scenario.review.continueAfterPurchase()
+        #expect(scenario.queues.queue(forTake: scenario.take.id)?.current != nil)
+        #expect(scenario.photos.savedURLs.count == 1)
+        #expect(scenario.flow.step != nil && scenario.flow.step != .picker)
     }
 
     @Test func aVideoAlreadyCountedCostsNothingMoreToShare() async throws {

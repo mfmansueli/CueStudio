@@ -727,6 +727,8 @@ final class PrompterViewModel {
         engine.rewind()
         resumeSpeech(at: 0)
         mode = .selfie
+        // A session opened on a take's review never settled how the text scrolls (`appear`): with the microphone refused, Steady.
+        prepareScrollMode()
         await enter(.selfie)
     }
 

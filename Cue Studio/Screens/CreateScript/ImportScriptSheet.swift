@@ -224,19 +224,22 @@ struct ImportScriptSheet: View {
     }
 
     private func importFile(at url: URL) {
-        do {
-            take(try importer.importDocument(at: url))
-        } catch DocumentImportError.noText where url.pathExtension.lowercased() == "pdf" {
-            // A scanned PDF has no text layer: read its pages like photos.
-            isReading = true
-            Task {
+        isReading = true
+        Task {
+            do {
+                let document = try await importer.importDocument(at: url)
+                isReading = false
+                take(document)
+            } catch DocumentImportError.noText where url.pathExtension.lowercased() == "pdf" {
+                // A scanned PDF has no text layer: read its pages like photos.
                 let pages = await importer.pageImages(ofPDFAt: url, maxPages: 10)
                 isReading = false
                 recognize(pages.images)
                 pagesNote = pages.unreadNote
+            } catch {
+                isReading = false
+                errorMessage = error.localizedDescription
             }
-        } catch {
-            errorMessage = error.localizedDescription
         }
     }
 

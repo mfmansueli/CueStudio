@@ -58,6 +58,7 @@ final class ShareFlow {
         self.toast = toast
         review.queueInterceptor = { [weak self] destination, result in self?.sheetEnded(for: destination, result: result) ?? false }
         review.queueOperation = { [weak self] in self?.queue?.operationID }
+        review.queueResumes = { [weak self] in await self?.start() }
     }
 
     // MARK: - Reading

@@ -23,6 +23,8 @@ final class FakeScriptWriter: ScriptWriting {
     var languagesNotWritten: Set<String> = []
     private(set) var lastRequest: ScriptRequest?
     private(set) var lastRewrite: (tool: ScriptTool, context: RewriteContext)?
+    /// The words the last rewrite was asked of.
+    private(set) var lastRewrittenSource: String?
     private(set) var hooksRequested = 0
     /// A request the creator is waiting for is under way (topic filing stands aside).
     var isBusyForeground = false
@@ -94,6 +96,7 @@ final class FakeScriptWriter: ScriptWriting {
         if let error { throw error }
         guard availability.isAvailable else { throw ScriptAIError.modelUnavailable(availability.reason ?? "") }
         lastRewrite = (tool, context)
+        lastRewrittenSource = text
         return rewrittenText
     }
 

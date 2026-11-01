@@ -52,6 +52,7 @@ final class DataEraserService {
         eraseLooseFiles: @escaping () -> Void = {
             EditMediaFiles.removeAll()
             TakeRecovery.removeLeftovers()
+            DataEraserService.removeTemporaryFiles(in: .temporaryDirectory)
         }
     ) {
         self.library = library
@@ -74,6 +75,14 @@ final class DataEraserService {
         self.mediaLibrary = mediaLibrary
         self.brandKits = brandKits
         self.eraseLooseFiles = eraseLooseFiles
+    }
+
+    /// Everything Cue left in `folder` under its own prefix: exported videos (of takes deleted before too), covers, sounds being made.
+    nonisolated static func removeTemporaryFiles(in folder: URL) {
+        let names = (try? FileManager.default.contentsOfDirectory(atPath: folder.path(percentEncoded: false))) ?? []
+        for name in names where name.hasPrefix("Cue-") {
+            try? FileManager.default.removeItem(at: folder.appending(path: name))
+        }
     }
 
     func eraseEverything() {

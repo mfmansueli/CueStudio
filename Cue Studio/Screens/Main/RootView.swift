@@ -72,8 +72,15 @@ struct RootView: View {
             }
             // A notification tapped (also the one that launched Cue): taken once the first flight is over and nothing is being recorded.
             .onChange(of: NotificationRouter.shared.pending.count, initial: true) { handleNotificationTaps() }
-            .onChange(of: services.onboarding.isActive) { handleNotificationTaps() }
-            .onChange(of: services.presentation.prompter == nil) { handleNotificationTaps() }
+            .onChange(of: services.onboarding.isActive) {
+                handleNotificationTaps()
+                handleIntent()
+            }
+            .onChange(of: services.presentation.prompter == nil) {
+                handleNotificationTaps()
+                handleIntent()
+            }
+            .onChange(of: services.presentation.showsRemoteController) { handleIntent() }
             .modifier(NotificationTriggers(services: services, onActive: handleNotificationTaps))
             // A remote pairing code scanned with the Camera on this device.
             .onOpenURL { url in
@@ -137,15 +144,18 @@ struct RootView: View {
         }
     }
 
+    /// A Siri shortcut waits like a notification tap: the first flight, the camera (a take being recorded would end) and the remote keep it
+    /// until they close.
     private func handleIntent() {
-        guard let route = IntentRouter.shared.take() else { return }
+        let presentation = services.presentation
+        guard !services.onboarding.isActive, presentation.prompter == nil, !presentation.showsRemoteController,
+              let route = IntentRouter.shared.take() else { return }
         switch route {
         case .record(let id):
             guard services.library.script(id: id) != nil else { return }
-            services.presentation.openPrompter(scriptID: id, mode: .selfie)
+            presentation.openPrompter(scriptID: id, mode: .selfie)
         case .newScript:
-            services.presentation.closePrompter()
-            services.presentation.present(.newScript)
+            presentation.present(.newScript)
         }
     }
 }
