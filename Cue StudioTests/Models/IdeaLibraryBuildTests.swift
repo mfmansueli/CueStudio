@@ -109,8 +109,8 @@ struct IdeaLibraryBuildTests {
     private static func encoded(_ pack: IdeaLibraryPack) throws -> String {
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
-        let ideas = try pack.ideas.map { String(decoding: try encoder.encode($0), as: UTF8.self) }
-        let language = String(decoding: try encoder.encode(pack.language), as: UTF8.self)
+        let ideas = try pack.ideas.map { String(bytes: try encoder.encode($0), encoding: .utf8) ?? "" }
+        let language = String(bytes: try encoder.encode(pack.language), encoding: .utf8) ?? "\"\(pack.language)\""
         return "{\"version\":\(pack.version),\"language\":\(language),\"ideas\":[\n" + ideas.joined(separator: ",\n") + "\n]}\n"
     }
 }
