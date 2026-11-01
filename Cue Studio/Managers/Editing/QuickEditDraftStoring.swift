@@ -40,6 +40,8 @@ extension QuickEditDraftStoring {
         start.timeline = start.timeline.fitted(toSourceDuration: draft.edit.timeline.sourceDuration)
         var left = draft.edit
         left.captions = left.captions.map(CaptionRevision.withoutContinuation)
+        // Captions an export heard while the draft waited aren't the creator's change: the editor takes them in (`EditDocument.open`).
+        if let edit = take.edit { left = left.withCaptionsHeardMeanwhile(from: edit) }
         // A new edit names its pieces anew each time it is made: the same untouched recording, named otherwise, is no change.
         if take.edit == nil, Self.sameCuts(start.timeline, left.timeline) { start.timeline = left.timeline }
         return left == start ? nil : draft

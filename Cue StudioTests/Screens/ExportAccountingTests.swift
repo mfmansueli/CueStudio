@@ -38,12 +38,14 @@ struct ExportAccountingTests {
 
     /// `restarting` builds the app again on the same disk: the export count, the ledger and the take library.
     private func makeScenario(
-        tier: MembershipTier = .free, used: Int = 0, restarting previous: Scenario? = nil, type: ScriptType? = nil, withCover: Bool = false
+        tier: MembershipTier = .free, used: Int = 0, restarting previous: Scenario? = nil, type: ScriptType? = nil, withCover: Bool = false,
+        edit: TakeEdit? = nil
     ) -> Scenario {
         let defaults = previous?.defaults ?? TestDefaults()
         let script = TestData.script(text: "Okay, real talk.", type: type)
         let take = previous?.take ?? {
             var take = TestData.take(scriptID: script.id)
+            take.edit = edit
             if withCover {
                 var edit = TakeEdit(sourceDuration: 20, aspect: .portrait)
                 edit.cover = VideoCover(source: .frame(1.5))
@@ -82,6 +84,22 @@ struct ExportAccountingTests {
     private let airDrop = "com.apple.UIKit.activity.AirDrop"
 
     // MARK: - Saving to Photos
+
+    /// A photo the edit shows is gone from the iPhone (B10): Save and Share ask first, and "Remove and export" keeps the edit without it,
+    /// so the video never goes out with a gap nobody chose.
+    @Test func mediaThatIsGoneIsFoundBeforeExportingAndRemovedOnlyWhenAsked() {
+        var edit = TakeEdit(sourceDuration: 20, aspect: .portrait)
+        let gone = "gone-\(UUID().uuidString).jpg"
+        edit.media = [MediaOverlay(kind: .photo, fileName: gone, aspect: 1, mediaDuration: nil, span: TimeSpan(start: 0, end: 2))]
+        let scenario = makeScenario(edit: edit)
+        defer { scenario.defaults.tearDown() }
+        #expect(scenario.viewModel.missingMedia == [gone])
+        #expect(scenario.viewModel.canRemoveMissingMedia)
+        #expect(scenario.viewModel.removeMissingMedia())
+        #expect(scenario.viewModel.missingMedia.isEmpty)
+        #expect(scenario.takes.take(id: scenario.take.id)?.edit?.media.isEmpty == true)
+        #expect(scenario.exporter.exports.isEmpty, "removing exports nothing by itself")
+    }
 
     /// The video saved, its cover not (B15): it says so, and Try again saves the cover alone, with no new video and nothing counted.
     @Test func aCoverThatCouldntBeSavedIsSaidAndTriedAgainAlone() async {

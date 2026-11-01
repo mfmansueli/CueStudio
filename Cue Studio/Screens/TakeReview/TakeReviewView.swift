@@ -64,6 +64,8 @@ struct TakeReviewView: View {
     @State private var exitDuringExport: ReviewExit?
     /// Save or Share, asked for with an edit left open: it waits for "Keep editing" or the finished video's export.
     @State private var exportPastUnfinishedEdit: ReviewExport?
+    /// Save or Share, asked for while files the edit names are gone: it waits for "Open editor" or "Remove and export".
+    @State private var exportPastMissingMedia: ReviewExport?
     @State private var awaitsSavedCheck = false
     /// "Take 2 of 3" under the bar, after a swipe.
     @State private var showsPlace = false
@@ -124,6 +126,24 @@ struct TakeReviewView: View {
                 if let take = viewModel.take {
                     video(for: take)
                     chrome(for: take)
+                        // Here, not on the stack: one alert per view, and this one can follow "Unfinished edit".
+                        .alert(
+                            "Missing media",
+                            isPresented: Binding(get: { exportPastMissingMedia != nil }, set: { if !$0 { exportPastMissingMedia = nil } }),
+                            presenting: exportPastMissingMedia
+                        ) { request in
+                            Button("Open editor") { editingTake = viewModel.take }
+                            if viewModel.canRemoveMissingMedia {
+                                Button("Remove and export") { if viewModel.removeMissingMedia() { perform(request) } }
+                            }
+                            Button("Cancel", role: .cancel) {}
+                        } message: { _ in
+                            if viewModel.canRemoveMissingMedia {
+                                Text("Some photos, videos or sounds in this edit are no longer on this iPhone. Fix them in the editor, or remove them and export.")
+                            } else {
+                                Text("A clip in this edit is no longer on this iPhone. Replace it in the editor to export.")
+                            }
+                        }
                 } else {
                     ContentUnavailableView("This take was deleted", systemImage: "film")
                 }
@@ -479,7 +499,17 @@ struct TakeReviewView: View {
         exportPastUnfinishedEdit = request
     }
 
+    /// The export asked for, once nothing it names is gone: "Missing media" asks first, never a black stretch nobody chose.
     private func run(_ request: ReviewExport) {
+        guard viewModel.missingMedia.isEmpty else {
+            playback.pause()
+            exportPastMissingMedia = request
+            return
+        }
+        perform(request)
+    }
+
+    private func perform(_ request: ReviewExport) {
         switch request {
         case .save: Task { await viewModel.save() }
         case .share: shareToUniverse()

@@ -54,6 +54,12 @@ struct TakesOpenEditTests {
         // That change finished (Done), then the editor opened again and left as it was.
         take.edit = changed
         #expect(drafts.unfinishedEdit(of: take) == nil)
+        // Captions an export heard meanwhile, kept on the take: still no change of the creator's (B20).
+        var heard = changed
+        heard.captions = [CaptionCue(text: "Okay, real talk.", start: 0, end: 1.5)]
+        heard.captionTranscript = CaptionTranscript(words: [], languageCode: "en")
+        take.edit = heard
+        #expect(drafts.unfinishedEdit(of: take) == nil)
     }
 
     @Test func editAndTheInEditCardOpenTheTakeWhoseEditIsOpen() throws {

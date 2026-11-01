@@ -2157,7 +2157,9 @@ O editor por dentro, para milhares de criadores: nada se perde, nada some, nada 
   **Try again**, e o Cue tenta sozinho ao voltar para a frente.
 - **Sair do editor** cancela tudo que ele começou (`startJob`, prévias curtas, comparação, tradução); o que termina depois é descartado.
 - **Rascunho:** gravado 600 ms depois de cada mudança numa fila em segundo plano, com os passos de desfazer finos (legendas e traduções iguais às do passo
-  seguinte ficam de fora; ~5× menor num vídeo longo). Leituras, descartes e o rascunho guardado ao sair esperam a fila.
+  seguinte ficam de fora; ~5× menor num vídeo longo). Leituras, descartes e o rascunho guardado ao sair esperam a fila. As legendas que uma exportação
+  ouviu enquanto o rascunho esperava (guardadas no take) entram no rascunho ao reabrir, se ele nunca teve legendas próprias, e os passos de desfazer
+  não as tiram; legendas que o criador apagou continuam apagadas (`TakeEdit.withCaptionsHeardMeanwhile`). Elas não contam como edição inacabada.
 - **Falhas que o criador vê** (exportar, salvar, rascunho, prévia, importar, congelar, inverter, extrair, legendas, Clean Up, Track, traduzir, voice-over)
   vão ao Crashlytics como non-fatal `Editor.<operação>.<motivo>` com contagens e o estado do aparelho, nunca conteúdo (`EditorFailureReport`).
 - **Robustez:** mídia de edição que nada cita há 7 dias é apagada no lançamento (busca do nome em todo JSON do app; um arquivo ilegível cancela a
@@ -2273,7 +2275,13 @@ InShot, Edits, Descript e Captions (pesquisa de 24/10: os apps põem a limpeza d
   finished version." com **Keep editing** (abre o editor), **Export last finished version** e Cancel; num take que nunca teve uma edição
   concluída, a mensagem termina em "export the original video." e o botão é **Export original**. Só pergunta quando o rascunho difere do que o
   editor abriria (`QuickEditDraftStoring.unfinishedEdit`): abrir o editor e sair sem mexer ("Not yet" guarda o rascunho mesmo assim) não pergunta.
-  A exportação nunca usa o rascunho. Um Done cuja edição não pôde ser salva no take volta à revisão como "Not yet" (rascunho), sem compartilhar nem
+  A exportação nunca usa o rascunho. Um arquivo que a edição usa e não está mais no iPhone (foto, vídeo por cima, voice-over, música, som,
+  foto de fundo ou de capa, clipe da montagem) nunca vira trecho preto ou silêncio sem aviso (decisão do dono, 01/11): Save e Share
+  perguntam antes com **"Missing media"** ("Some photos, videos or sounds in this edit are no longer on this iPhone. Fix them in the editor,
+  or remove them and export."), **Open editor**, **Remove and export** (a edição concluída fica sem o que sumiu; o fundo volta ao original e a
+  capa a um quadro do vídeo) e Cancel; quando todo clipe toca uma gravação que sumiu, só **Open editor** ("Replace it in the editor to
+  export."). O editor diz o mesmo ao abrir, num toast com **Remove** (um passo de desfazer) ou pedindo o Replace (`TakeEdit+MissingMedia`).
+  Um Done cuja edição não pôde ser salva no take volta à revisão como "Not yet" (rascunho), sem compartilhar nem
   baixar o vídeo como estava. O rascunho que não pôde ser gravado quando o Cue vai para o segundo plano (iPhone cheio) é dito na hora ("Couldn't save
   the edits · Free up space on this iPhone") e gravado de novo na volta.
 - **De propósito, igual:** apagar um clipe volta às ferramentas principais (escolher o seguinte faria um segundo toque no Excluir fixo apagar outro).

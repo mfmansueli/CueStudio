@@ -186,6 +186,28 @@ final class TakeReviewViewModel {
     /// The take has a finished edit: without one, an export is the recording as it was ("Export original").
     var hasFinishedEdit: Bool { take?.edit != nil }
 
+    /// Files the take's edit names that are gone from the iPhone (a photo, a sound, a montage's clip): Save and Share ask first ("Missing
+    /// media"), so a video never goes out with a black stretch or a silent gap nobody chose (owner, 01/11/2026). Read on a tap, not per frame.
+    var missingMedia: Set<String> { take?.edit?.missingMedia() ?? [] }
+
+    /// Removing what's gone fixes the edit: not when every clip plays a recording that's gone (then only the editor's Replace helps).
+    var canRemoveMissingMedia: Bool { take?.edit.map { $0.canDropMedia(missingMedia) } ?? false }
+
+    /// "Remove and export": the take's edit without what's gone, kept as its finished edit (the files can't come back). False, with the
+    /// reason said, when the library couldn't be written: nothing is exported then.
+    func removeMissingMedia() -> Bool {
+        guard let take, let edit = take.edit else { return false }
+        let missing = edit.missingMedia()
+        guard edit.canDropMedia(missing) else { return false }
+        do {
+            try takes.applyEdit(edit.withoutMedia(missing), to: take.id)
+            return true
+        } catch {
+            toast.show(String(localized: "Couldn't save · Try again"), kind: .problem)
+            return false
+        }
+    }
+
     /// An edit is open on this take: the main action reads "Continue" and goes on with it. On another take of the video, Edit starts its own
     /// (Takes, "In edit" and the reminder open the take whose edit is open: `QuickEditDraftStoring.takeInEdit`).
     var hasOpenEdit: Bool { take.map { drafts.hasDraft(for: $0.id) } ?? false }

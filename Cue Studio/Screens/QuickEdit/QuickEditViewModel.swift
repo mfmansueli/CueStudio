@@ -244,6 +244,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
             playhead = draft.playhead
             toast.show(String(localized: "Draft restored"))
         }
+        sayMissingMedia()
         clips.opened()
         source = .ready
         player.show(edit)
@@ -255,6 +256,25 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         // Stabilize opens (an hour of video is a lot to analyze for nothing).
         look.requestMotionAnalysisIfNeeded()
         audio.findBeatsIfNeeded()
+    }
+
+    /// Files the edit names that are gone from the iPhone, said as it opens (never a silent black stretch), with Remove as one undo step
+    /// when that fixes it; else Replace on the clip does (the review won't export it as it is).
+    private func sayMissingMedia() {
+        let missing = edit.missingMedia()
+        guard !missing.isEmpty else { return }
+        guard edit.canDropMedia(missing) else {
+            toast.show(String(localized: "A clip in this edit is no longer on this iPhone. Replace it to export."), kind: .problem)
+            return
+        }
+        toast.show(
+            String(localized: "Some photos, videos or sounds in this edit are no longer on this iPhone."), kind: .problem,
+            action: ToastAction(title: String(localized: "Remove")) { [weak self] in self?.removeMissingMedia(missing) }
+        )
+    }
+
+    func removeMissingMedia(_ missing: Set<String>) {
+        document.changeEdit { $0 = $0.withoutMedia(missing) }
     }
 
     /// The edit changed: what was picked and is gone is let go, and the preview, the draft and the cover follow.

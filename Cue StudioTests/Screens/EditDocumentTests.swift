@@ -18,6 +18,37 @@ struct EditDocumentTests {
         return text
     }
 
+    /// B20: a draft left open while an export heard the take keeps those captions when it is picked up again (and its undo steps don't take
+    /// them away); a draft whose captions the creator removed keeps them removed.
+    @Test func aDraftPickedUpAgainTakesInTheCaptionsAnExportHeard() {
+        var finished = EditFixtures.blank()
+        finished.captions = [CaptionCue(text: "Okay, real talk.", start: 0, end: 1.5)]
+        finished.captionTranscript = CaptionTranscript(words: [], languageCode: "en")
+        var left = EditFixtures.blank()
+        left.texts.append(Self.text("Mine"))
+        var history = EditHistory<EditSnapshot>()
+        var before = EditSnapshot(EditFixtures.blank())
+        before.captions = []
+        history.record(before)
+        let draft = QuickEditDraft(takeID: UUID(), edit: left, playhead: 0, history: history, savedAt: .now)
+        let document = EditDocument(finished)
+        #expect(document.open(sourceDuration: finished.timeline.sourceDuration, draft: draft))
+        #expect(document.edit.captions.map(\.text) == ["Okay, real talk."])
+        #expect(document.edit.captionTranscript != nil)
+        #expect(document.edit.texts.map(\.text) == ["Mine"])
+        #expect(document.undo())
+        #expect(document.edit.captions.map(\.text) == ["Okay, real talk."], "undoing the draft's steps never takes them away")
+
+        var removed = left
+        removed.captionTranscript = CaptionTranscript(words: [], languageCode: "en")
+        let theirs = EditDocument(finished)
+        theirs.open(
+            sourceDuration: finished.timeline.sourceDuration,
+            draft: QuickEditDraft(takeID: UUID(), edit: removed, playhead: 0, history: EditHistory<EditSnapshot>(), savedAt: .now)
+        )
+        #expect(theirs.edit.captions.isEmpty, "lines the creator removed stay removed")
+    }
+
     @Test func eachDecisionIsAStepAndTheEditorHearsIt() {
         let document = EditDocument(EditFixtures.blank())
         var heard: [Int] = []

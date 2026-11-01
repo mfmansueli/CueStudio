@@ -3347,6 +3347,244 @@
         }
       }
     },
+    "A clip in this edit is no longer on this iPhone. Replace it to export." : {
+      "comment" : "Toast in the video editor when it opens and a video clip it uses is gone from the iPhone; Replace clip fixes it",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مقطع في هذا التعديل لم يعد على هذا الـ iPhone. استبدله للتصدير."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Et klip i denne redigering er ikke længere på denne iPhone. Erstat det for at eksportere."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Clip dieser Bearbeitung ist nicht mehr auf diesem iPhone. Ersetze ihn, um zu exportieren."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un clip de esta edición ya no está en este iPhone. Reemplázalo para exportar."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un clip de ce montage n’est plus sur cet iPhone. Remplacez-le pour exporter."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "इस एडिट की एक क्लिप अब इस iPhone पर नहीं है। एक्सपोर्ट करने के लिए उसे बदलें।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Satu klip di editan ini sudah tidak ada di iPhone ini. Ganti untuk mengekspor."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una clip di questo montaggio non è più su questo iPhone. Sostituiscila per esportare."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この編集のクリップがこの iPhone にありません。書き出すには置き換えてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 편집의 클립이 이 iPhone에 더 이상 없어요. 내보내려면 바꾸세요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Et klipp i denne redigeringen er ikke lenger på denne iPhonen. Erstatt det for å eksportere."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Een clip in deze bewerking staat niet meer op deze iPhone. Vervang hem om te exporteren."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um clipe desta edição não está mais neste iPhone. Substitua para exportar."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ett klipp i den här redigeringen finns inte längre på den här iPhonen. Ersätt det för att exportera."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "คลิปหนึ่งในงานตัดต่อนี้ไม่อยู่ใน iPhone เครื่องนี้แล้ว แทนที่เพื่อส่งออก"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu düzenlemedeki bir klip artık bu iPhone’da değil. Dışa aktarmak için değiştirin."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Một clip trong bản chỉnh sửa này không còn trên iPhone này. Hãy thay thế để xuất."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此编辑中的一个片段已不在这台 iPhone 上。请替换后导出。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此編輯中的一個片段已不在這部 iPhone 上。請取代後輸出。"
+          }
+        }
+      }
+    },
+    "A clip in this edit is no longer on this iPhone. Replace it in the editor to export." : {
+      "comment" : "Message of the Missing media alert when the missing file is a video clip that can't simply be removed (every clip plays it)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مقطع في هذا التعديل لم يعد على هذا الـ iPhone. استبدله في المحرر للتصدير."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Et klip i denne redigering er ikke længere på denne iPhone. Erstat det i redigeringen for at eksportere."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Clip dieser Bearbeitung ist nicht mehr auf diesem iPhone. Ersetze ihn im Editor, um zu exportieren."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un clip de esta edición ya no está en este iPhone. Reemplázalo en el editor para exportar."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un clip de ce montage n’est plus sur cet iPhone. Remplacez-le dans l’éditeur pour exporter."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "इस एडिट की एक क्लिप अब इस iPhone पर नहीं है। एक्सपोर्ट करने के लिए उसे एडिटर में बदलें।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Satu klip di editan ini sudah tidak ada di iPhone ini. Ganti di editor untuk mengekspor."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una clip di questo montaggio non è più su questo iPhone. Sostituiscila nell’editor per esportare."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この編集のクリップがこの iPhone にありません。書き出すにはエディタで置き換えてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 편집의 클립이 이 iPhone에 더 이상 없어요. 내보내려면 편집기에서 바꾸세요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Et klipp i denne redigeringen er ikke lenger på denne iPhonen. Erstatt det i redigeringen for å eksportere."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Een clip in deze bewerking staat niet meer op deze iPhone. Vervang hem in de editor om te exporteren."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um clipe desta edição não está mais neste iPhone. Substitua no editor para exportar."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ett klipp i den här redigeringen finns inte längre på den här iPhonen. Ersätt det i redigeraren för att exportera."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "คลิปหนึ่งในงานตัดต่อนี้ไม่อยู่ใน iPhone เครื่องนี้แล้ว แทนที่ในตัวแก้ไขเพื่อส่งออก"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu düzenlemedeki bir klip artık bu iPhone’da değil. Dışa aktarmak için düzenleyicide değiştirin."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Một clip trong bản chỉnh sửa này không còn trên iPhone này. Hãy thay thế trong trình chỉnh sửa để xuất."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此编辑中的一个片段已不在这台 iPhone 上。请在编辑器中替换后导出。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此編輯中的一個片段已不在這部 iPhone 上。請在編輯器中取代後輸出。"
+          }
+        }
+      }
+    },
     "A friend made me try this." : {
       "comment" : "A ready-made opening line or tone of a script format, shown as an example the creator can pick and read to camera. No dashes in any language.",
       "localizations" : {
@@ -15262,6 +15500,125 @@
         }
       }
     },
+    "Missing media" : {
+      "comment" : "Alert title in the take review before Save or Share, when files the edit uses (photos, videos, sounds) are no longer on the iPhone",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "وسائط مفقودة"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manglende medier"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fehlende Medien"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Falta multimedia"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Médias manquants"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "मीडिया गायब है"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Media hilang"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contenuti mancanti"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メディアが見つかりません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "미디어가 없어요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manglende medier"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ontbrekende media"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mídia ausente"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Media saknas"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "สื่อหายไป"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eksik medya"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thiếu nội dung đa phương tiện"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "缺少媒体"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "缺少媒體"
+          }
+        }
+      }
+    },
     "Mother’s Day" : {
       "comment" : "An occasion ideas can be tied to: shown on Find inspiration's card as “Coming up: %@” and in a starter's title",
       "localizations" : {
@@ -16686,6 +17043,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "僅當第 3 步的腳本遠超平台時長時：該腳本、時長，以及你的說話方式。"
+          }
+        }
+      }
+    },
+    "Open editor" : {
+      "comment" : "Button in the Missing media alert: opens the video editor on this take to fix or replace what is missing",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فتح المحرر"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Åbn redigering"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editor öffnen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir editor"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir l’éditeur"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "एडिटर खोलें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buka editor"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apri editor"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "エディタを開く"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "편집기 열기"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Åpne redigering"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editor openen"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir editor"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öppna redigeraren"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เปิดตัวแก้ไข"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Düzenleyiciyi aç"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mở trình chỉnh sửa"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开编辑器"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打開編輯器"
           }
         }
       }
@@ -18590,6 +19066,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "準備你的第一個腳本"
+          }
+        }
+      }
+    },
+    "Remove and export" : {
+      "comment" : "Button in the Missing media alert: removes the missing photos, videos or sounds from the edit and goes on with Save or Share",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إزالة ثم تصدير"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fjern og eksportér"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entfernen und exportieren"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quitar y exportar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retirer et exporter"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "हटाएँ और एक्सपोर्ट करें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hapus dan ekspor"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rimuovi ed esporta"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "削除して書き出す"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "삭제하고 내보내기"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fjern og eksporter"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verwijderen en exporteren"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remover e exportar"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ta bort och exportera"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ลบแล้วส่งออก"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaldır ve dışa aktar"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Xóa và xuất"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移除并导出"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移除並輸出"
           }
         }
       }
@@ -20863,6 +21458,244 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "雙十一"
+          }
+        }
+      }
+    },
+    "Some photos, videos or sounds in this edit are no longer on this iPhone." : {
+      "comment" : "Toast (with Remove) in the video editor when it opens and files the edit uses are gone from the iPhone",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بعض الصور أو الفيديوهات أو الأصوات في هذا التعديل لم تعد على هذا الـ iPhone."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nogle fotos, videoer eller lyde i denne redigering er ikke længere på denne iPhone."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einige Fotos, Videos oder Sounds dieser Bearbeitung sind nicht mehr auf diesem iPhone."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Algunas fotos, videos o sonidos de esta edición ya no están en este iPhone."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Des photos, vidéos ou sons de ce montage ne sont plus sur cet iPhone."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "इस एडिट की कुछ फ़ोटो, वीडियो या साउंड अब इस iPhone पर नहीं हैं।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beberapa foto, video, atau suara di editan ini sudah tidak ada di iPhone ini."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alcune foto, video o suoni di questo montaggio non sono più su questo iPhone."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この編集の写真、ビデオ、サウンドの一部がこの iPhone にありません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 편집의 사진, 동영상 또는 사운드 일부가 이 iPhone에 더 이상 없어요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noen bilder, videoer eller lyder i denne redigeringen er ikke lenger på denne iPhonen."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sommige foto’s, video’s of geluiden in deze bewerking staan niet meer op deze iPhone."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Algumas fotos, vídeos ou sons desta edição não estão mais neste iPhone."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Några bilder, videor eller ljud i den här redigeringen finns inte längre på den här iPhonen."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "รูปภาพ วิดีโอ หรือเสียงบางส่วนในงานตัดต่อนี้ไม่อยู่ใน iPhone เครื่องนี้แล้ว"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu düzenlemedeki bazı fotoğraflar, videolar veya sesler artık bu iPhone’da değil."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Một số ảnh, video hoặc âm thanh trong bản chỉnh sửa này không còn trên iPhone này."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此编辑中的部分照片、视频或声音已不在这台 iPhone 上。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此編輯中的部分照片、影片或聲音已不在這部 iPhone 上。"
+          }
+        }
+      }
+    },
+    "Some photos, videos or sounds in this edit are no longer on this iPhone. Fix them in the editor, or remove them and export." : {
+      "comment" : "Message of the Missing media alert before Save or Share",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بعض الصور أو الفيديوهات أو الأصوات في هذا التعديل لم تعد على هذا الـ iPhone. أصلحها في المحرر، أو أزلها ثم صدّر."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nogle fotos, videoer eller lyde i denne redigering er ikke længere på denne iPhone. Ret dem i redigeringen, eller fjern dem og eksportér."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einige Fotos, Videos oder Sounds dieser Bearbeitung sind nicht mehr auf diesem iPhone. Korrigiere sie im Editor oder entferne sie und exportiere."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Algunas fotos, videos o sonidos de esta edición ya no están en este iPhone. Corrígelos en el editor o quítalos y exporta."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Des photos, vidéos ou sons de ce montage ne sont plus sur cet iPhone. Corrigez-les dans l’éditeur, ou retirez-les et exportez."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "इस एडिट की कुछ फ़ोटो, वीडियो या साउंड अब इस iPhone पर नहीं हैं। उन्हें एडिटर में ठीक करें, या हटाकर एक्सपोर्ट करें।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beberapa foto, video, atau suara di editan ini sudah tidak ada di iPhone ini. Perbaiki di editor, atau hapus lalu ekspor."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alcune foto, video o suoni di questo montaggio non sono più su questo iPhone. Correggili nell’editor, oppure rimuovili ed esporta."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この編集の写真、ビデオ、サウンドの一部がこの iPhone にありません。エディタで直すか、削除して書き出してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 편집의 사진, 동영상 또는 사운드 일부가 이 iPhone에 더 이상 없어요. 편집기에서 고치거나, 삭제하고 내보내세요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noen bilder, videoer eller lyder i denne redigeringen er ikke lenger på denne iPhonen. Rett dem i redigeringen, eller fjern dem og eksporter."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sommige foto’s, video’s of geluiden in deze bewerking staan niet meer op deze iPhone. Herstel ze in de editor, of verwijder ze en exporteer."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Algumas fotos, vídeos ou sons desta edição não estão mais neste iPhone. Corrija no editor ou remova e exporte."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Några bilder, videor eller ljud i den här redigeringen finns inte längre på den här iPhonen. Åtgärda dem i redigeraren, eller ta bort dem och exportera."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "รูปภาพ วิดีโอ หรือเสียงบางส่วนในงานตัดต่อนี้ไม่อยู่ใน iPhone เครื่องนี้แล้ว แก้ไขในตัวแก้ไข หรือลบออกแล้วส่งออก"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu düzenlemedeki bazı fotoğraflar, videolar veya sesler artık bu iPhone’da değil. Düzenleyicide düzeltin ya da kaldırıp dışa aktarın."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Một số ảnh, video hoặc âm thanh trong bản chỉnh sửa này không còn trên iPhone này. Hãy sửa trong trình chỉnh sửa, hoặc xóa rồi xuất."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此编辑中的部分照片、视频或声音已不在这台 iPhone 上。请在编辑器中修复，或移除后导出。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此編輯中的部分照片、影片或聲音已不在這部 iPhone 上。請在編輯器中修正，或移除後輸出。"
           }
         }
       }

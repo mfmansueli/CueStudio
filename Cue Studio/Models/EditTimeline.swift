@@ -767,6 +767,13 @@ nonisolated extension EditTimeline {
         withLooks { $0.removeSkin() }
     }
 
+    /// The same pieces, a clip's own background photo gone when its file is (`missing`): the clip shows the edit's background again.
+    func withoutBackgroundPhotos(_ missing: Set<String>) -> EditTimeline {
+        withLooks { look in
+            if let name = look.background?.imageFileName, missing.contains(name) { look.background = nil }
+        }
+    }
+
     /// The same pieces, each clip's own look changed by `change`.
     private func withLooks(_ change: (inout ClipLook) -> Void) -> EditTimeline {
         var plain = self
