@@ -192,6 +192,17 @@ struct ScriptPromptBuilderTests {
     }
 
     /// "Shorter" says how many words there are and how many to answer with; a big cut says what to keep.
+    @Test func aSelectionsRewriteSaysItAnotherWayAndAnAdditionIsOnlyTheNewSentences() {
+        var context = RewriteContext(structure: .generic, platform: .tiktok, idealRange: 60...90)
+        #expect(ScriptPromptBuilder.rewritePrompt(for: "I tried it.", tool: .moreHuman, context: context).contains("more human"))
+        context.isPassage = true
+        #expect(ScriptPromptBuilder.rewritePrompt(for: "I tried it.", tool: .moreHuman, context: context).contains("Say it another way"))
+        let addition = ScriptPromptBuilder.rewritePrompt(
+            for: "I tried it.", tool: .fitToTime, context: context, part: ScriptPromptBuilder.RewritePart(target: 40...60, addition: 30)
+        )
+        #expect(addition.contains("about 30 more spoken words") && addition.contains("only the new sentences") && addition.hasSuffix("Script:\nI tried it."))
+    }
+
     @Test func shorterAndBigCutsSayWhatToAimFor() {
         let context = RewriteContext(structure: .generic, platform: .tiktok, idealRange: 60...90)
         let shorter = ScriptPromptBuilder.rewritePrompt(for: Self.words(40), tool: .shorterAndDirect, context: context, on: .privateCloud)

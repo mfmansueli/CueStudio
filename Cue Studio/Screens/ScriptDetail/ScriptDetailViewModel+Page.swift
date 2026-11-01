@@ -264,7 +264,9 @@ extension ScriptDetailViewModel {
         page.isRewriting = true
         defer { page.isRewriting = false }
         do {
-            let result = try await writer.rewriteReported(selected, with: tool, context: rewriteContext)
+            var context = rewriteContext
+            context.isPassage = true
+            let result = try await writer.rewriteReported(selected, with: tool, context: context)
             // The tool couldn't do what it says to these words: they stay, and the creator is told, instead of a "change" that changes nothing.
             guard !result.isUntouched, result.text != selected else {
                 sayResult(

@@ -100,7 +100,7 @@ nonisolated enum RewriteOutcome: Equatable, Sendable {
         switch tool {
         case .inMyVoice: "use the creator's own words, phrases and rhythm, and change the wording of most sentences, keeping every point."
         case .moreEnergy: "make the sentences punchier and more excited."
-        case .moreHuman: "use plain, spoken words instead of the scripted ones."
+        case .moreHuman: "say every sentence in other, plainer spoken words, keeping what it means."
         case .lessDefensive: "take out the excuses and the defensive lines."
         case .strongerCTA: "make the call to action clearer and more direct."
         case .translate: "translate every sentence."

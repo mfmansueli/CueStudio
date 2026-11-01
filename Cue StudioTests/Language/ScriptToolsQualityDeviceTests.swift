@@ -127,7 +127,8 @@ struct ScriptToolsQualityDeviceTests {
         let target: CueLanguage = script.language.hasPrefix("en") ? .portugueseBrazil : .english
         let context = RewriteContext(
             structure: .generic, platform: platform, idealRange: range, language: item.tool == .translate ? target : nil,
-            sourceLanguage: language, voice: profile?.voice(inLanguage: language.languageCode?.identifier, idea: script.text)
+            sourceLanguage: language, voice: profile?.voice(inLanguage: language.languageCode?.identifier, idea: script.text),
+            isPassage: item.kind == .selection
         )
 
         var record = Record(

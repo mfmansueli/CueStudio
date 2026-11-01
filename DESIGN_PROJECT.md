@@ -1090,9 +1090,12 @@ promessa por teste) e `ScriptToolsDeviceTests` no iPhone. **Falsos alarmes do ra
 - O pedido diz a meta em números: *Shorter* no PCC "it has 44 words now, answer with about 28" (o modelo do aparelho cortou menos com a conta e fica
   com "about a third shorter"); *Fit to time* a faixa da parte (mirando a metade de baixo ao
   cortar e a de cima ao alongar, porque o modelo erra para o lado de onde partiu), "about 4 times as long" quando precisa dobrar ou mais, e no corte
-  para menos da metade: manter a abertura, um ou dois pontos e o fecho.
+  para menos da metade: manter a abertura, um ou dois pontos e o fecho. O *Rewrite* da barra da seleção pede "diga de outro jeito" (com "more human",
+  um trecho que já soava falado voltava igual 3 vezes em 10).
 - `RewriteRunner`: uma segunda pergunta dizendo o erro em números; quem erra duas vezes **fica como o criador escreveu** (a não ser que tenha feito parte do
-  pedido); Fit to time faz até mais duas rodadas enquanto fica fora da faixa da barra e cada uma chega mais perto; uma parte recusada não leva as outras;
+  pedido); Fit to time faz até mais duas rodadas enquanto fica fora da faixa da barra e cada uma chega mais perto, e o alongamento que ainda fica curto
+  ganha só o que falta, escrito à parte (um ponto, um exemplo, um momento do dia de quem fala) e posto antes do fecho, com as palavras do criador como
+  estavam e sem número que o roteiro não tenha (`FitTopUp`; reescrever tudo de novo tirava parte do que a rodada anterior pôs); uma parte recusada não leva as outras;
   resposta limitada à janela do modelo. Roteiro já no tamanho não chama o modelo.
 - Grades de proteção para texto do próprio criador (`permissiveContentTransformations`); recusa vira "Apple Intelligence won’t work on this text. Try
   rewording it, or use another tool." (`ScriptAIError.declined`).

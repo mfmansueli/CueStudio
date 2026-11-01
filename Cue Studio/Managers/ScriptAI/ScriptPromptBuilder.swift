@@ -519,12 +519,15 @@ nonisolated enum ScriptPromptBuilder {
         var leadIn: String?
         /// What its last answer got wrong (`RewriteOutcome.correction`).
         var correction: String?
+        /// Words to write as new sentences that go into the script, the answer being only those ("Fit to time" short of its range, `FitTopUp`).
+        var addition: Int?
     }
 
     /// - Parameter route: the model that answers; "Shorter" is asked with a count of words only on Private Cloud Compute (`shorterInstruction`).
     static func rewritePrompt(
         for text: String, tool: ScriptTool, context: RewriteContext, part: RewritePart = RewritePart(), on route: AIModelRoute = .onDevice
     ) -> String {
+        if let addition = part.addition { return additionPrompt(words: addition, script: text) }
         var lines: [String] = []
         if tool == .fitToTime, let target = part.target {
             lines.append(fitInstruction(for: target, sourceWords: ReadTime.wordCount(in: text)))
@@ -555,6 +558,13 @@ nonisolated enum ScriptPromptBuilder {
         let kept = lines.filter { !asked.contains(key($0)) }
         guard kept.count < lines.count else { return answer }
         return kept.joined(separator: "\n").replacing(/\n{3,}/, with: "\n\n").trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    /// What to add to a script that "Fit to time" left short (`FitTopUp`): new sentences only, which go in before its closing line.
+    static func additionPrompt(words: Int, script: String) -> String {
+        "Write what to add to this script so it runs longer: about \(words) more spoken words, as one more point, an example or a moment from the "
+            + "speaker's own day that belongs to what the script already says, to go just before its closing line. Same language and voice. No new "
+            + "facts, names, numbers or studies, and no stage cues in brackets. Answer with only the new sentences, not the script.\n\nScript:\n\(script)"
     }
 
     /// "Shorter" with the words it has and the words to answer with, for Private Cloud Compute. Measured on the iPhone (ScriptToolsQualityDeviceTests,
@@ -600,6 +610,11 @@ nonisolated enum ScriptPromptBuilder {
         case .strongerCTA:
             return "Rewrite the closing below as a clearer, more direct call to action. Do not invent deadlines, discounts or facts that are not in the script."
         case .moreHuman:
+            // The selection's "Rewrite" is this tool on a few sentences. Measured on the iPhone (ScriptToolsQualityDeviceTests, 01/11/2026), told to
+            // sound more human, both models gave a passage that already sounded spoken back as it was (3 of 10): a passage is said another way.
+            if context.isPassage {
+                return "Say it another way, as you would say it out loud: reword every sentence in plain, spoken words, keeping what it means and every point."
+            }
             return "Make it sound more human and less scripted: plain words, no corporate phrasing."
         case .lessDefensive:
             return "Remove defensive language and excuses: delete lines like \"I didn't have a choice\" or \"it's not my fault\", and any \"but\" after " +

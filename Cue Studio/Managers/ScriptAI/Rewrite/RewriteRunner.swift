@@ -26,7 +26,27 @@ nonisolated enum RewriteRunner {
             guard !next.isUntouched, distance(of: ReadTime.wordCount(in: next.text), from: goal) < distance(of: words, from: goal) else { break }
             current = RewriteResult(text: next.text, parts: first.parts, leftAsWritten: first.leftAsWritten)
         }
-        return current
+        return try await toppedUp(current, goal: goal, ask: ask)
+    }
+
+    /// A lengthening still short of the goal after its rounds gets what is missing written as an addition before its closing (`FitTopUp`), kept only
+    /// when it comes nearer; if the model can't, the rounds' result stands.
+    private static func toppedUp(_ result: RewriteResult, goal: ClosedRange<Int>, ask: Ask) async throws -> RewriteResult {
+        let words = ReadTime.wordCount(in: result.text)
+        guard words < goal.lowerBound else { return result }
+        let asked = FitTopUp.wordsToAsk(from: words, toward: aim(within: goal, from: words))
+        let answer: String
+        do {
+            answer = try await ask(result.text, ScriptPromptBuilder.RewritePart(addition: asked))
+        } catch let error as CancellationError {
+            throw error
+        } catch {
+            return result
+        }
+        guard let addition = FitTopUp.accepted(answer, into: result.text, asked: asked) else { return result }
+        let text = FitTopUp.inserting(addition, into: result.text)
+        guard distance(of: ReadTime.wordCount(in: text), from: goal) < distance(of: words, from: goal) else { return result }
+        return RewriteResult(text: text, parts: result.parts, leftAsWritten: result.leftAsWritten)
     }
 
     /// How many words `words` is outside `goal` (0 inside it).

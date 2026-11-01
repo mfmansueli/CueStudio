@@ -195,6 +195,26 @@ struct RewriteRunnerTests {
         #expect((ReadTime.words(for: 60)...ReadTime.words(for: 90)).contains(count), "\(count) words")
     }
 
+    /// Rounds that each add only a little stop short; what is missing is then written as an addition, which goes in before the close.
+    @Test func aLengtheningStillShortGetsAnAdditionBeforeItsClose() async throws {
+        let text = Self.script(paragraphs: 2, words: 40)
+        let model = Model { text, _ in text + " more" }
+        let topUp = Model { _, _ in "" }
+        let ask: RewriteRunner.Ask = { part, details in
+            if let words = details.addition {
+                _ = try await topUp.ask(part, details)
+                return Array(repeating: "fresh", count: words).joined(separator: " ") + "."
+            }
+            return try await model.ask(part, details)
+        }
+        let result = try await RewriteRunner.run(text, tool: .fitToTime, context: Self.context, ask: ask)
+        let count = ReadTime.wordCount(in: result.text)
+        #expect((ReadTime.words(for: 60)...ReadTime.words(for: 90)).contains(count), "\(count) words")
+        #expect(topUp.asked.count == 1)
+        let paragraphs = result.text.components(separatedBy: "\n\n")
+        #expect(paragraphs.count == 3 && paragraphs[1].hasPrefix("fresh") && paragraphs[2].hasPrefix("word1x0"), "the addition goes before the close")
+    }
+
     @Test func aPartTheModelWontTouchIsLeftAndTheOthersAreDone() async throws {
         let text = Self.script(paragraphs: 8, words: 70)
         let first = String(text.prefix(40))
