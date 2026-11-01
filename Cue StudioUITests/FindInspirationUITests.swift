@@ -218,10 +218,11 @@ final class FindInspirationUITests: XCTestCase {
         XCTAssertTrue(app.buttons["ideaCard.inspirationButton"].exists(within: 15))
         app.buttons["ideaCard.inspirationButton"].tap()
         app.buttons["inspiration.filter.custom.daily-routine"].tap()
-        // Through the starters about the topic, to where only the model's ideas could come: they fail, and the sheet says so.
+        // Through the starters about the topic (16 templates and the ties to posted videos), to where only the model's ideas could come: they
+        // fail, and the sheet says so.
         let failed = element(app, "inspiration.failed")
         let note = element(app, "inspiration.couldNotFindMore")
-        for _ in 0..<12 where !failed.exists && !note.exists {
+        for _ in 0..<30 where !failed.exists && !note.exists {
             let another = app.buttons["inspiration.another"]
             if another.isEnabled { another.tap() } else { sleep(1) }
         }
@@ -238,20 +239,21 @@ final class FindInspirationUITests: XCTestCase {
         app.buttons["ideaCard.inspirationButton"].tap()
         app.buttons["inspiration.filter.custom.daily-routine"].tap()
         let title = element(app, "inspiration.card.title")
-        // The first six take 12 s (`-uiTestIdeasSlow`): longer than tapping through them, so the end of what is ready is always reached.
+        // The first six take 12 s and the next 48 s (`-uiTestIdeasSlow`): past the starters (16 templates and the ties to posted videos) and the
+        // first six, the end of what is ready is always reached.
         XCTAssertTrue(title.exists(within: 30), "The first ideas never came")
         let first = title.label
         // Tapping on reaches the end of what is ready: the button waits ("Finding more ideas…") and the card stays.
         let another = app.buttons["inspiration.another"]
         var sawWait = false
-        for _ in 0..<10 {
+        for _ in 0..<40 {
             if !another.isEnabled || another.label.contains("Finding") { sawWait = true; break }
             another.tap()
         }
         XCTAssertTrue(sawWait, "The wait for the next ideas was never shown")
         XCTAssertTrue(title.exists, "The card went while the next ideas were on their way")
         try shoot(app, "11-finding-more")
-        XCTAssertTrue(another.matches(NSPredicate(format: "enabled == true AND NOT (label CONTAINS 'Finding')"), within: 30), "The next ideas never came")
+        XCTAssertTrue(another.matches(NSPredicate(format: "enabled == true AND NOT (label CONTAINS 'Finding')"), within: 60), "The next ideas never came")
         another.tap()
         XCTAssertNotEqual(title.label, first)
     }

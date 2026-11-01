@@ -77,7 +77,7 @@ import Foundation
 /// - `-uiTestTopicBirthAt <seconds>`: on 1.2, three topics are picked and the last one's birth stands still at that second after the pick.
 /// - `-uiTestPlatformAt <seconds>`: on 1.3, TikTok is picked and the light of the pick stands still at that second after the pick.
 /// - `-uiTestWriterStalls`: with `-uiTestStubAI`, the model never answers (the star transition's slow states).
-/// - `-uiTestIdeasSlow`: with `-uiTestStubAI`, every batch of ideas takes 12 s (Find inspiration waiting for the next ones: longer than tapping through six).
+/// - `-uiTestIdeasSlow`: with `-uiTestStubAI`, the first batch of ideas takes 12 s and the later ones 48 s (Find inspiration waiting for the next ones).
 /// - `-uiTestIdeasFail`: with `-uiTestStubAI`, every batch of ideas fails (Find inspiration's "Try again").
 /// - `-uiTestAIUnavailable <language|device|off|preparing|cue>`: with `-uiTestStubAI`, Apple Intelligence can't draft, and why: Thai,
 ///   Hindi, Indonesian and Arabic aren't drafted (`language`), the iPhone can't run it, it is off in iOS, the model is getting ready, or

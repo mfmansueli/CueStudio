@@ -20,7 +20,8 @@ final class StubScriptWriter: ScriptWriting {
     ]
     /// The model never answers (until the request is cancelled): the slow states of the first message are photographed with it.
     let stalls: Bool
-    /// How long a batch of ideas takes (`-uiTestIdeasSlow`): Find inspiration's waiting states are seen with it.
+    /// How long the first batch of ideas takes (`-uiTestIdeasSlow`), the later ones four times as long: Find inspiration's waiting states are seen
+    /// with it, past however many starters come before (a typed topic has 16 and the ties), at any pace of taps.
     let ideasDelay: Duration?
     /// Every batch of ideas fails (`-uiTestIdeasFail`): "Couldn't get new ideas · Try again".
     let ideasFail: Bool
@@ -123,7 +124,7 @@ final class StubScriptWriter: ScriptWriting {
     /// opening line) that says its slot's topic, so Find inspiration's cards read like the model's.
     func suggestIdeas(slots: [IdeaSlot], language: CueLanguage?, voice: CreatorVoice?, inspiration: [String]) async throws -> [ThemeIdea] {
         guard availability.isAvailable else { throw ScriptAIError.modelUnavailable(availability.reason ?? "") }
-        if let ideasDelay { try await Task.sleep(for: ideasDelay) }
+        if let ideasDelay { try await Task.sleep(for: suggestionCount == 0 ? ideasDelay : ideasDelay * 4) }
         if ideasFail { throw ScriptAIError.emptyResponse }
         suggestionCount += 1
         let words = Self.stubWords
