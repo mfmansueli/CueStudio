@@ -1046,6 +1046,22 @@ modelo do aparelho porque o PCC negou por limite do iPhone):
 **Não medido:** o PCC (limite do aparelho nos dois iPhones hoje) e o A10 no aparelho (concordância em pt/es com o modelo real); os dois ficam para
 uma rodada da bateria (`CreatorInputsDeviceTests`).
 
+### 11.13 Decisões de UI do dono (02/11, pelo canvas "My Cue Voice: decisões de UI")
+
+| Item | Decisão |
+|---|---|
+| 1, 2, 4, 5, 6, 7, 10, 11, 13, 14, 15, B3 | Sim, como recomendado (o 2 depois de cada linha dizer a verdade) |
+| 3 · medidor | Sim, com a D1: a prova (exemplos, texto importado, aprovados) passa a ir também ao Private Cloud Compute, e o medidor conta só o que chega |
+| 8 · cartões só quando servem | Sim, sem seletor de idioma no My Cue Voice: "Write me as" e "Speak to viewers" seguem o Script language de Ajustes › Language & Region |
+| 9 · histórias e fatos | Sim. O cartão diz ao criador que as respostas são situações reais, usadas como exemplo de como ele fala e escreve nos roteiros |
+| 12 · retorno leve | Não. A faixa "Does it sound like you?" fica como está |
+| B4 · idioma das ideias | Não |
+| B6 · duração por roteiro | Não |
+| B7 · tópicos viram mundos | Não, fica como está |
+| Regra para todos | Textos de ajuda curtos, que dizem o que fazer onde se preenche algo |
+
+B2 (os ganchos seguem o interruptor da voz) e B5 (contagens no Analytics) continuam abertos; não são de UI.
+
 ---
 
 # Anexos
