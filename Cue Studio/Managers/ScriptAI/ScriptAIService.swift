@@ -407,7 +407,8 @@ final class ScriptAIService: ScriptWriting {
         let ask: RewriteRunner.Ask = { [self] part, details in
             @MainActor func attempt(on model: AIModelRoute) async throws -> String {
                 let instructions = ScriptPromptBuilder.rewriteInstructions(
-                    voice: AIRequestPolicy.voice(voice, on: model), language: expected, brand: context.brand
+                    voice: AIRequestPolicy.voice(voice, on: model), rules: context.rules, register: PlatformRegister(context.platform),
+                    language: expected, translatingTo: tool == .translate ? context.language?.englishName : nil, brand: context.brand
                 )
                 let session = self.session(on: model, instructions: instructions, transformsText: true)
                 let prompt = ScriptPromptBuilder.rewritePrompt(for: part, tool: tool, context: context, part: details, on: model)

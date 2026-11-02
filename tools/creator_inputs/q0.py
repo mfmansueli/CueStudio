@@ -95,6 +95,12 @@ LABEL_COLUMNS = {
 }
 
 
+def run_key(file):
+    """A label's run and file ("run2-mansuelli/creator-inputs-….json"): two runs ask the same file names."""
+    path = Path(file)
+    return f"{path.parent.name}/{path.name}"
+
+
 def wilson(hits, total):
     if total == 0:
         return (0.0, 0.0)
@@ -122,12 +128,12 @@ def main():
     if args.labels:
         with open(args.labels, encoding="utf-8") as handle:
             for row in csv.DictReader(handle):
-                labels[Path(row["file"]).name] = row
+                labels[run_key(row["file"])] = row
     q1 = {}
     if args.q1:
         with open(args.q1, encoding="utf-8") as handle:
             for row in csv.DictReader(handle):
-                q1[Path(row["file"]).name] = row["all_three"].strip().lower() == "sim"
+                q1[run_key(row["file"])] = row["all_three"].strip().lower() == "sim"
 
     for run in args.run:
         folder, _, routes = run.rpartition(":")
@@ -135,6 +141,8 @@ def main():
         for route in [r for r in routes.split(",") if r]:
             asked = executed = written = held = editorial = constrained = 0
             preferences, broken, models = {}, {}, {}
+            # Constraints by the model that wrote each script: a route asked for Private Cloud Compute falls back to the iPhone's model.
+            by_model = {}
             for case_id, case in spec.items():
                 for idea in range(IDEAS_PER_CASE):
                     asked += 1
@@ -150,7 +158,7 @@ def main():
                     if not (sample.get("text") or "").strip():
                         continue
                     written += 1
-                    label = labels.get(name, {})
+                    label = labels.get(f"{folder.name}/{name}", {})
 
                     def verdict(check):
                         column = LABEL_COLUMNS.get(check)
@@ -161,19 +169,24 @@ def main():
                     results = {check: verdict(check) for check in case["constraints"]}
                     if results and all(results.values()):
                         held += 1
+                    if results:
+                        hits, count = by_model.get(model, (0, 0))
+                        by_model[model] = (hits + (1 if all(results.values()) else 0), count + 1)
                     for check, ok in results.items():
                         if not ok:
                             broken[check] = broken.get(check, 0) + 1
                     for check in case["preferences"]:
                         seen, count = preferences.get(check, (0, 0))
                         preferences[check] = (seen + (1 if verdict(check) else 0), count + 1)
-                    if q1.get(name):
+                    if q1.get(f"{folder.name}/{name}"):
                         editorial += 1
             # The model that wrote it: a route asked for Private Cloud Compute may have been written on the iPhone.
             print(f"== {folder.name} · {route} · written by {models or 'nothing'}")
             print(f"  1. executed     {share(executed, asked)}")
             print(f"  2. written      {share(written, asked)}")
             print(f"  3. constraints  {share(held, constrained)} of the cases that have one" + (f"   broken: {broken}" if broken else ""))
+            if len(by_model) > 1:
+                print("     constraints by model: " + ", ".join(f"{model} {hits}/{count}" for model, (hits, count) in sorted(by_model.items())))
             print(f"  4. editorial    {share(editorial, asked)}" + ("" if q1 else "   (no --q1: not read)"))
             for check, (seen, count) in sorted(preferences.items()):
                 print(f"     preference {check}: {seen}/{count} of the written")

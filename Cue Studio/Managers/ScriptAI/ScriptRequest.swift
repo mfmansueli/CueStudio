@@ -16,9 +16,19 @@ nonisolated struct ScriptRequest: Hashable, Sendable {
     }
 
     var source: Source
+    /// What the creator wrote for this video, as they wrote it.
+    var creatorText: String {
+        switch source {
+        case .prompt(let text): text
+        }
+    }
+
     var platform: Platform
     /// Nil when "Write in my voice" is off, and always for serious formats.
     var voice: CreatorVoice?
+    /// The voice's rules alone (`CreatorVoice.restrictionsOnly`) for a serious statement, which takes no style: what they avoid and who is
+    /// talking still hold (the owner's B9; §11, A4). Nil otherwise, and when "Write in my voice" is off.
+    var rules: CreatorVoice?
     /// Seconds the script should run.
     var targetRange: ClosedRange<TimeInterval>
     var durationPolicy: ScriptDurationPolicy = .targeted

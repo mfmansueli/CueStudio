@@ -117,7 +117,7 @@ final class DataEraserService {
         preferences.customCues = []
         preferences.showsCuesOnPage = true
         for key in [
-            DefaultsKey.voiceQuestionState, DefaultsKey.myTextStyle,
+            DefaultsKey.voiceQuestionState, DefaultsKey.myTextStyle, DefaultsKey.catchphraseTurn,
             // "Your stars", which earlier versions kept and nothing shows any more.
             DefaultsKey.skyMemory, DefaultsKey.skyMemoryAdded, DefaultsKey.myCoverStyle, DefaultsKey.myCoverStudioStyle,
             // Every saved style, and the single caption style saved before them.

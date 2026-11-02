@@ -18,6 +18,9 @@ nonisolated struct RewriteContext: Hashable, Sendable {
     var sourceLanguage: Locale.Language?
     /// The creator's voice, for "In my voice" and hooks.
     var voice: CreatorVoice?
+    /// The voice's rules alone (`CreatorVoice.restrictionsOnly`) when "Write in my voice" is on: every other tool keeps them (the owner's B9;
+    /// §11, A2). Nil when it is off.
+    var rules: CreatorVoice?
     /// A passage the creator selected, not the whole script: its "Rewrite" says it another way (`ScriptPromptBuilder.instruction(for:context:)`).
     var isPassage = false
     /// The brief a sponsored ad was written from (`Script.brand`): every tool keeps what it must and must never say.

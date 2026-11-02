@@ -118,11 +118,15 @@ extension CreatorProfileService {
     /// "Describe them in your words": text the creator typed, checked first. An empty text clears the note.
     @discardableResult
     func setAudienceNote(_ raw: String) -> VoiceEditResult {
-        setTyped(raw, clear: { $0.audienceNote = nil }, store: {
+        let result = setTyped(raw, clear: { $0.audienceNote = nil }, store: {
             $0.audienceNote = $1
             $0.audienceGroup = nil
             $0.confirm(.audience)
         })
+        if case .added = result {
+            reportTypedAnswer(VoiceTypedAnswerEvent(question: .audience, raw: raw, options: AudienceGroup.allCases.map(\.label)))
+        }
+        return result
     }
 
     /// Taps why they watch. Up to `WatchReason.limit`.
@@ -167,7 +171,9 @@ extension CreatorProfileService {
     /// answer still counts and still suggests "I" or "we"; an empty text goes back to the eight.
     @discardableResult
     func setCustomRole(_ raw: String) -> VoiceEditResult {
-        setTyped(raw, clear: { $0.customRole = nil }, store: { $0.customRole = $1 })
+        let result = setTyped(raw, clear: { $0.customRole = nil }, store: { $0.customRole = $1 })
+        if case .added = result { reportTypedAnswer(VoiceTypedAnswerEvent(question: .role, raw: raw, options: CreatorRole.allCases.map(\.label))) }
+        return result
     }
 
     /// A short credential ("Registered nurse"): the AI says it only when it is true of them. An empty text clears it.

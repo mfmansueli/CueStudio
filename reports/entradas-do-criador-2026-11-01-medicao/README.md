@@ -111,3 +111,25 @@ tools/q0.py --run run1-iago-lima:app,device --run run2-mansuelli:cloud --labels 
 - **Ressalvas do Q1:** o masculino nos casos "woman" contou como não natural (o app não informa o gênero; sem esse critério, só fr device-1 muda),
   e o decalque "Salva/Sauve este momento" também (sem ele, es cloud-0 e it cloud-0 passam nos três).
 
+
+## Rodada 3: PCC no iago Lima iphone (02/11, 10:44–10:51, branch `fix/creator-inputs` com os consertos da trilha A)
+
+`run3-iago-lima-pcc/`, rota `cloud`, os 6 casos. **O PCC escreveu só 4 dos 18:** os 3 de `en-no-cta` e o primeiro de `pt-fitness-woman`. Depois,
+cada pedido foi negado em 0,1 s com `PrivateCloudComputeError: deniedDueToUserDeviceRateLimit` (o app registra `cloud.quotaLimitReached`) e o app
+escreveu no modelo do iPhone. É um limite de pedidos por aparelho num intervalo, não a cota do dia: às 10:44 havia cota, às 10:48 já não.
+
+- **O que o PCC escreveu:** os 3 de `en-no-cta` sem CTA no fim. Nenhum com o bordão ("Here's the thing", opcional no PCC) e nenhum abrindo com
+  pergunta. Os três começam com "I used to…", a mesma moldura. `needsFactCheck` marcado nos 4, porque o PCC sempre pede a conferência.
+- **Os 14 do modelo do iPhone** valem como mais uma rodada do aparelho, com os consertos da trilha A.
+- `tools/q0.py` separa as restrições pelo modelo que escreveu (`constraints by model`).
+
+## Rodada 4: Mansuelli iPhone 18 Pro Max (02/11, 11:32–11:37, depois do A8, A2/A4 e A11b)
+
+`run4-mansuelli-18pm-a8/`, rotas `device` e `cloud`, 3 casos (`en-no-cta`, `pt-follow-cta`, `pt-fitness-woman`). O PCC negou os pedidos por limite
+do aparelho (`deniedDueToUserDeviceRateLimit` 3×, `cloud.quotaLimitReached`): **os 18 roteiros são do modelo do iPhone.**
+
+- **"No call to action" (hábito):** 6 de 6 terminam sem pedir nada (antes: CTA de engajamento em 5 de 9). Dois leram a instrução em voz alta
+  ("Nothing to do.", "the takeaway is this:"): o texto do bloco Close mudou depois desta rodada, sem "nothing" nem "takeaway".
+- **"Follow for more":** 6 de 6 pedem para seguir e nenhum pede outra ação (antes: outra ação em 8 de 9).
+- **Resultado inventado (B12):** nenhum em `pt-fitness-woman` (0 de 6); só números de rotina ("10 minutos", "três vezes por semana").
+- Q0: restrições 6/6 nas duas rotas pedidas (todas escritas no aparelho).

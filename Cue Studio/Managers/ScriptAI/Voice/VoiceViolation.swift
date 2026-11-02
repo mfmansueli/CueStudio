@@ -27,13 +27,15 @@ nonisolated struct VoiceViolation: Hashable, Sendable {
         case sentenceLength
         /// Exclamation marks in the script of a creator who almost never uses them. Only counted.
         case exclamation
+        /// A result of the creator's that nobody gave ("Eu perdi 2 quilos em 7 dias", `AttributedResultDetector`; the owner's B12).
+        case inventedResult
 
         /// How much breaking it costs the creator when two drafts are compared (`RevisionChoice`): words they asked never to say are the worst, a
         /// wrong "I" or "we", an emoji they refused or a style's name read out loud are plainly wrong, a catchphrase too early is a slip. What is only
         /// counted (the habits measured from their writing) weighs nothing, and the length is judged apart (`DraftAssessment.spokenWords`).
         var severity: Int {
             switch self {
-            case .avoided, .requiredPhrase: 3
+            case .avoided, .requiredPhrase, .inventedResult: 3
             case .pronoun, .emoji, .styleName: 2
             case .catchphraseFirst: 1
             case .tooShort, .sentenceLength, .exclamation: 0

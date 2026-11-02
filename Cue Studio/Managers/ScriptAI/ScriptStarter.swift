@@ -120,6 +120,14 @@ final class ScriptStarter {
         return UltraPayload(request)
     }
 
+    /// "Cue followed your idea over “Calls to action” in Avoid": what Cue offers by its label in the interface's language, what they typed as typed.
+    static func followedIdea(over lifted: [String]) -> String {
+        let names = lifted.map { stored in
+            VoiceAvoidRule.rule(for: stored) == nil ? stored : String(localized: String.LocalizationValue(stored))
+        }
+        return String(localized: "Cue followed your idea over “\(names.formatted(.list(type: .and)))” in Avoid")
+    }
+
     /// Whether `text` (an answered comment, the dock's idea) can be drafted, before it is sent: in the language it would be drafted in when
     /// that is already known (the Script Language, or the text's own); otherwise only what doesn't depend on a language.
     func drafting(before text: String?) -> DraftingAvailability {
@@ -191,6 +199,10 @@ final class ScriptStarter {
             })
             return nil
         }
+        // A "never" of their voice that this idea asks for in so many words: the idea wins, and the creator is told once the script is there.
+        let lifted = VoiceConstraintChecker.lifted(by: request)
+        // These catchphrases had their turn: the next script is offered the others (`CatchphraseRotation`).
+        if request.voice.map({ !$0.phrases.isEmpty }) == true { factory.profile.advanceCatchphraseTurn() }
         let script = IdeaSendTimeline.measure("Script created") {
             library.create(
                 title: "", text: "", platform: request.platform, type: request.format, language: languages.scriptLanguage, comment: comment,
@@ -217,6 +229,7 @@ final class ScriptStarter {
                 if let kept { self?.commentAnswered?(kept, scriptID) }
                 // Saved by now (the page keeps the script before the star lets go): the dock it came from starts over.
                 if let sentDock { self?.clearDock(sent: sentDock, ownText: idea == nil) }
+                if !lifted.isEmpty { self?.toast.showResult(Self.followedIdea(over: lifted)) }
                 whenWritten?(scriptID)
             }
         )

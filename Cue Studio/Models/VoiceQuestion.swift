@@ -99,7 +99,8 @@ nonisolated enum VoiceQuestion: String, CaseIterable, Identifiable, Sendable {
         switch self {
         case .role: CreatorRole.allCases.map { VoiceOption(id: $0.rawValue, label: $0.label, detail: $0.examples) }
         case .topics: Self.topicOptions
-        case .audience: Vocabulary.allCases.map { VoiceOption(id: $0.rawValue, label: $0.audienceLabel) }
+        // The editor's eight groups, one list for the tip and the page (the owner's B13, 02/11/2026; §11): a group sets its vocabulary too.
+        case .audience: AudienceGroup.allCases.map { VoiceOption(id: $0.rawValue, label: $0.label) }
         case .tone: VoiceSound.allCases.map { VoiceOption(id: $0.rawValue, label: $0.label, detail: $0.example) }
         case .endings: VoicePersonalityItem.endings.options.map { VoiceOption(id: $0, label: $0) }
         case .openings: VoicePersonalityItem.openings.options.map { VoiceOption(id: $0, label: $0) }
@@ -178,6 +179,7 @@ nonisolated enum VoiceQuestion: String, CaseIterable, Identifiable, Sendable {
             VoiceOption(id: "Exaggerated promises", label: String(localized: "Exaggerated promises")),
             VoiceOption(id: "False urgency", label: String(localized: "False urgency")),
             VoiceOption(id: "Naming competitors", label: String(localized: "Naming competitors")),
+            VoiceOption(id: VoiceAvoidRule.callsToActionID, label: String(localized: "Calls to action")),
             VoiceOption(id: nothingToAvoidID, label: String(localized: "Nothing to avoid")),
         ]
     }

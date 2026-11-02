@@ -1,0 +1,11 @@
+{
+ "caseID": "it-food-woman",
+ "idea": "Il giorno in cui ho bruciato la cena davanti ai miei suoceri",
+ "ideaIndex": 2,
+ "model": "onDevice",
+ "needsFactCheck": false,
+ "route": "cloud",
+ "seconds": 4.083755583,
+ "text": "Ho bruciato la cena davanti ai miei suoceri [sorriso]. [attenzione]\n\nHo perso il tempo con gli ingredienti. [pensieri] Ho aperto troppo il forno. [errore]\n\nCommenta la tua cena sbagliata. [guardati allo schermo]",
+ "title": "Cena rovinata davanti ai miei suoceri"
+}

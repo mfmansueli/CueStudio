@@ -196,6 +196,8 @@ final class ScriptDetailViewModel {
             idealRange: preset.idealRange,
             sourceLanguage: textLanguage,
             voice: profile.profile.voice(inLanguage: textLanguage?.languageCode?.identifier, idea: workingText),
+            // What every tool keeps, as the draft did: only while "Write in my voice" is on, as for a draft (§11, A2).
+            rules: profile.writesInMyVoice ? profile.profile.voice.restrictionsOnly : nil,
             // A script that is no longer an ad (its format changed) is rewritten as what it is now.
             brand: script?.type == .ad ? script?.brand : nil
         )

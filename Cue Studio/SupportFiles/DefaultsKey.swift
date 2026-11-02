@@ -18,6 +18,8 @@ nonisolated enum DefaultsKey {
     /// The Selfie reading line's first-time tip was dismissed. The tip is gone; removed at launch.
     static let legacyReadingLineTipSeen = "readingLineTipSeen"
     static let creatorProfile = "creatorProfile"
+    /// How many scripts have been written with the creator's catchphrases: whose turn it is (`CatchphraseRotation`).
+    static let catchphraseTurn = "catchphraseTurn"
     /// Who writes the Scripts dock's next idea (`ScriptEngine` raw value): the creator's last pick on the writer chip; absent = Apple Intelligence.
     static let dockWriter = "dockWriter"
     /// The dock's idea, its brief and the card's choices (`DockDraft`), as the creator left them.

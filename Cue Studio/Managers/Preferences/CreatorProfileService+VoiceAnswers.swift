@@ -16,7 +16,7 @@ extension CreatorProfileService {
         switch question {
         case .role: return held.role?.rawValue == option.id
         case .topics: return held.niches.contains { $0.rawValue == option.id } || held.voiceTopics.contains { $0.rawValue == option.id }
-        case .audience: return held.isChosen(.audience) && held.vocabulary.rawValue == option.id
+        case .audience: return held.isChosen(.audience) && held.audienceGroup?.rawValue == option.id
         case .tone: return held.isChosen(.tone) && held.sounds.contains { $0.rawValue == option.id }
         case .endings: return Self.holds(option.id, in: held.endings)
         case .openings: return Self.holds(option.id, in: held.openings)
@@ -88,8 +88,11 @@ extension CreatorProfileService {
             if case .limit = toggled { return toggled }
             result = toggled
         case .audience:
-            guard let vocabulary = Vocabulary(rawValue: option.id) else { return .alreadyThere }
-            updated.vocabulary = vocabulary
+            // As the editor picks it (`setAudienceGroup`): the group, the vocabulary it implies, and no typed note left over.
+            guard let group = AudienceGroup(rawValue: option.id) else { return .alreadyThere }
+            updated.audienceGroup = group
+            updated.audienceNote = nil
+            updated.vocabulary = group.vocabulary
             updated.confirm(.audience)
             result = .added
         default:
@@ -165,6 +168,18 @@ extension CreatorProfileService {
     /// has no list for it (kind of creator, tone, audience), it is kept as something true of them.
     @discardableResult
     func addSomethingElse(_ raw: String, for question: VoiceQuestion, keepingTyped: Bool = false) -> VoiceEditResult {
+        let result = addTyped(raw, for: question, keepingTyped: keepingTyped)
+        // Counted once, when it was typed (not again on "Keep mine"), and only when it went in or was close to an option (B14).
+        switch result {
+        case .added where !keepingTyped, .suggest:
+            reportTypedAnswer(VoiceTypedAnswerEvent(question: question, raw: raw, options: question.options.map(\.label)))
+        default:
+            break
+        }
+        return result
+    }
+
+    private func addTyped(_ raw: String, for question: VoiceQuestion, keepingTyped: Bool) -> VoiceEditResult {
         switch question {
         case .endings, .openings, .phrases:
             guard let item = Self.personalityItem(for: question) else { return .alreadyThere }

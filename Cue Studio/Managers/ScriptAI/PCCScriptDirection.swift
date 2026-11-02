@@ -65,7 +65,7 @@ nonisolated enum PCCScriptDirection {
                 "Replace abstract advice with an observable action and why it helps. For a tutorial, explain what to adjust, what to look or listen for, and what to change if it fails. For a comparison, use the same relevant criterion for both choices and explain the tradeoff. For an opinion, support the viewpoint with a reason rather than repeating it. Do not invent measurements or sources to sound specific.",
                 "Make the takeaway useful to this audience with concrete explanation, a practical step or a clearly hypothetical example when appropriate. Prefer a fresh, relevant angle over generic motivation, exaggerated hooks or filler. Do not force a surprise twist or an example where the request does not call for one.",
                 "When the request asks for a number of steps or points, give that many genuinely distinct actions or ideas. Do not split one action into near-duplicates to fill the count. Open on the subject itself rather than announcing that you are about to explain it.",
-                "Honor an explicitly requested ending, including no call to action. Otherwise use the creator's ending preference only when it fits this video; avoid a generic follow, like or subscribe sign-off. An opening promise must be fulfilled before any invitation.",
+                "Honor an explicitly requested ending, including no call to action. Otherwise use the creator's ending preference only when it fits this video, and ask for nothing beyond it; without an ending preference, avoid a generic follow, like or subscribe sign-off. An opening promise must be fulfilled before any invitation.",
             ]
         }
         if request.brand != nil {

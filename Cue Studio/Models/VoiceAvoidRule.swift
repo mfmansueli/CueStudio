@@ -17,13 +17,19 @@ nonisolated struct VoiceAvoidRule: Hashable, Sendable {
     let terms: [String]
     /// The rule is broken by any emoji.
     let forbidsEmoji: Bool
+    /// The rule is broken by an ending that asks the viewer to do something (`WritingOpeningReader.endings`, in the script's language).
+    let forbidsCallToAction: Bool
 
-    private init(_ id: String, _ instruction: String, terms: [String] = [], forbidsEmoji: Bool = false) {
+    private init(_ id: String, _ instruction: String, terms: [String] = [], forbidsEmoji: Bool = false, forbidsCallToAction: Bool = false) {
         self.id = id
         self.instruction = instruction
         self.terms = terms
         self.forbidsEmoji = forbidsEmoji
+        self.forbidsCallToAction = forbidsCallToAction
     }
+
+    /// The "never" of an ending (the owner's B11, 02/11/2026): "How you usually end" is a habit, this is a rule.
+    static let callsToActionID = "Calls to action"
 
     static let known: [VoiceAvoidRule] = [
         VoiceAvoidRule(
@@ -55,6 +61,11 @@ nonisolated struct VoiceAvoidRule: Hashable, Sendable {
             terms: ["last chance", "act now", "only today", "limited time", "don't miss out", "don’t miss out", "hurry"]
         ),
         VoiceAvoidRule("Naming competitors", "never name competitors or rival brands"),
+        VoiceAvoidRule(
+            callsToActionID,
+            "no calls to action: never ask viewers to follow, like, comment, subscribe, save, share or go to a link; end on the point itself",
+            forbidsCallToAction: true
+        ),
     ]
 
     /// The rule for something the creator picked (its English id), nil for what they typed.

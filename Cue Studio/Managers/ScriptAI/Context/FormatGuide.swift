@@ -24,6 +24,29 @@ nonisolated struct FormatGuide: Hashable, Sendable {
         zip(blocks, purposes).map { "\($0): \($1)" }.joined(separator: " ")
     }
 
+    /// The name of the closing block of a script that asks the viewer for nothing.
+    static let closeBlock = "Close"
+
+    /// The shape with its "CTA" block as the creator ends (the owner's B1 and B11, 02/11/2026): a "Close" that asks for nothing when they never
+    /// ask, or usually don't; the action they usually ask for, and no other, when they have one. Without an ending of theirs it stays as it is.
+    func ending(for voice: CreatorVoice?) -> FormatGuide {
+        guard let voice, voice.decidesTheEnding, let index = blocks.firstIndex(of: "CTA") else { return self }
+        var blocks = blocks
+        var purposes = purposes
+        let theirs = voice.endingActions.joined(separator: " or ")
+        if voice.endsWithoutAsking {
+            blocks[index] = Self.closeBlock
+            // Measured on an iPhone 18 Pro Max (02/11/2026): "ask the viewer to do nothing" came back as "Nothing to do." and "the takeaway
+            // is this:", the instruction's own words read out. Neither word is in it now.
+            purposes[index] = theirs.isEmpty
+                ? "finish on the point itself, in a line worth remembering, with no request to the viewer."
+                : "finish on the point itself, \(theirs), with no request to the viewer."
+        } else {
+            purposes[index] = "the creator's own ending: \(theirs). Ask for nothing else."
+        }
+        return FormatGuide(name: name, blocks: blocks, purposes: purposes)
+    }
+
     static let generic = FormatGuide(
         name: "talking video", blocks: ["Hook", "Body", "CTA"],
         purposes: [

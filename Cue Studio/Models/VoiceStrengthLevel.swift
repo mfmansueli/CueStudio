@@ -43,7 +43,7 @@ nonisolated extension CreatorProfile {
         if let role { parts.append(role.label) }
         if hasAnswered(.niche) { parts.append(niches.map(\.label).joined(separator: ", ")) }
         if isChosen(.tone) { parts.append(sounds.map(\.label).joined(separator: ", ")) }
-        if isChosen(.audience) { parts.append(vocabulary.audienceLabel) }
+        if isChosen(.audience) { parts.append(audienceNote ?? audienceGroup?.label ?? vocabulary.audienceLabel) }
         return parts.joined(separator: " · ")
     }
 }

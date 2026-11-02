@@ -1,0 +1,11 @@
+{
+ "caseID": "it-food-woman",
+ "idea": "Cosa ho imparato quando ho smesso di comprare cibo pronto",
+ "ideaIndex": 1,
+ "model": "onDevice",
+ "needsFactCheck": true,
+ "route": "cloud",
+ "seconds": 4.192916959,
+ "text": "Ho scoperto che cucinare fa bene alla mente [smile]. [pause]\n\nHo iniziato con ricette semplici. Ho usato pochi ingredienti freschi. Ho controllato i livelli di zucchero [look at camera]. [pause]\n\nProva a lasciare un commento qui sotto [pause]",
+ "title": "Cosa ho imparato quando ho smesso di comprare cibo pronto"
+}

@@ -108,7 +108,7 @@ struct CreatorProfileServiceVoiceDetailsTests {
         #expect(VoiceQuestion.formats.options.count == 11)
         #expect(VoiceQuestion.openings.options.count == 7)
         #expect(VoiceQuestion.endings.options.count == 6)
-        #expect(VoiceQuestion.avoid.options.count == 9)
+        #expect(VoiceQuestion.avoid.options.count == 10, "Calls to action joined on 02/11 (B11)")
         let ids = VoiceQuestion.formats.options.map(\.id)
         #expect(ids.contains(VoiceQuestion.dayInTheLifeID) && ids.contains(ScriptType.mythFact.rawValue))
         #expect(ids.contains(VoiceQuestion.questionsID) && ids.contains(VoiceQuestion.behindTheScenesID) && ids.contains(VoiceQuestion.beforeAfterID))

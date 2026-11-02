@@ -5846,6 +5846,125 @@
         }
       }
     },
+    "Calls to action" : {
+      "comment" : "Avoid option (My Cue Voice): the creator never asks viewers to follow, like, comment, save or share",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "دعوات اتخاذ إجراء"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opfordringer til handling"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calls-to-Action"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Llamadas a la acción"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appels à l’action"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कॉल टू एक्शन"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajakan bertindak"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Call to action"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "行動の呼びかけ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "행동 유도"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oppfordringer til handling"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Call-to-actions"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chamadas para ação"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uppmaningar till handling"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "คำเชิญชวน"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eylem çağrıları"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kêu gọi hành động"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "行动号召"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "行動呼籲"
+          }
+        }
+      }
+    },
     "Cancel export" : {
       "comment" : "Destructive button of the Cancel export? alert: stops the export and leaves the review",
       "localizations" : {
@@ -8345,6 +8464,125 @@
         }
       }
     },
+    "Cue followed your idea over “%@” in Avoid" : {
+      "comment" : "Toast when a script arrives: the idea asked in so many words for something the creator's Avoid list forbids, and Cue followed the idea. %@ is the Avoid item(s)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اتّبع Cue فكرتك بدلًا من «%@» في «تجنّب»"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue fulgte din idé frem for “%@” under Undgå"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue ist deiner Idee gefolgt statt „%@“ unter Vermeiden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue siguió tu idea por encima de «%@» en Evitar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue a suivi votre idée plutôt que « %@ » dans Éviter"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue ने बचें में “%@” की जगह आपका आइडिया माना"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue mengikuti idemu, bukan “%@” di Hindari"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue ha seguito la tua idea invece di “%@” in Evita"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cueは「避ける」の「%@」よりアイデアを優先しました"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue가 피하기의 “%@”보다 아이디어를 따랐어요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue fulgte ideen din fremfor «%@» under Unngå"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue volgde je idee boven ‘%@’ bij Vermijden"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Cue seguiu sua ideia acima de “%@” em Evitar"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue följde din idé före ”%@” under Undvik"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue ทำตามไอเดียของคุณแทน “%@” ใน เลี่ยง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue, Kaçınılacaklar’daki “%@” yerine fikrine uydu"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue đã làm theo ý tưởng của bạn thay vì “%@” trong Tránh"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue 按你的想法写了，优先于“避免”中的“%@”"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue 依你的想法寫了，優先於「避免」中的「%@」"
+          }
+        }
+      }
+    },
     "Cue won’t suggest these tools. Show again lets it, some day." : {
       "comment" : "Footer of Settings › Personalize › Hidden suggestions",
       "localizations" : {
@@ -9955,6 +10193,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "草稿"
+          }
+        }
+      }
+    },
+    "Each script gets up to 3 of your phrases, taking turns. These are the next script’s." : {
+      "comment" : "My Cue Voice › What Cue sends: note under the voice when the creator has 4 or 5 phrases they always say; the text above shows the next script's three",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يحصل كل نص على 3 من عباراتك كحد أقصى، بالتناوب. هذه عبارات النص التالي."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hvert manuskript får op til 3 af dine vendinger, på skift. Disse er til det næste manuskript."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jedes Skript bekommt bis zu 3 deiner Redewendungen, abwechselnd. Das sind die fürs nächste Skript."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada guion recibe hasta 3 de tus frases, por turnos. Estas son las del próximo guion."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chaque script reçoit jusqu’à 3 de vos expressions, à tour de rôle. Voici celles du prochain script."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "हर स्क्रिप्ट को बारी-बारी से आपके ज़्यादा से ज़्यादा 3 वाक्यांश मिलते हैं। ये अगली स्क्रिप्ट के हैं।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Setiap naskah mendapat hingga 3 frasamu, bergiliran. Ini untuk naskah berikutnya."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ogni script riceve fino a 3 delle tue frasi, a turno. Queste sono quelle del prossimo script."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "台本ごとにフレーズを最大3つ、順番に使います。これは次の台本の分です。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "대본마다 문구를 최대 3개씩 돌아가며 넣어요. 다음 대본에는 이것들이 들어가요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hvert manus får opptil 3 av frasene dine, etter tur. Disse er til neste manus."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elk script krijgt om de beurt maximaal 3 van je uitspraken. Dit zijn die van het volgende script."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada roteiro recebe até 3 das suas frases, em rodízio. Estas são as do próximo roteiro."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Varje manus får upp till 3 av dina fraser, i tur och ordning. De här är nästa manus."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "แต่ละสคริปต์จะได้วลีของคุณไม่เกิน 3 วลี สลับกันไป นี่คือของสคริปต์ถัดไป"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Her senaryo sırayla en fazla 3 ifadeni alır. Bunlar bir sonraki senaryonun."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mỗi kịch bản nhận tối đa 3 cụm từ của bạn, lần lượt. Đây là của kịch bản tiếp theo."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每个脚本最多轮流使用 3 句你的常用语。这几句给下一个脚本。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每個腳本最多輪流使用 3 句你的常用語。這幾句給下一個腳本。"
           }
         }
       }
@@ -31179,6 +31536,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Google 如何處理"
+          }
+        }
+      }
+    },
+    "What you usually do. To never ask viewers for anything, pick Calls to action under Avoid." : {
+      "comment" : "Note under How you usually end (My Cue Voice editor): endings are a habit; the rule lives in Avoid",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ما تفعله عادةً. لكي لا تطلب من المشاهدين أي شيء أبدًا، اختر «دعوات اتخاذ إجراء» في «تجنّب»."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Det, du plejer at gøre. Vælg Opfordringer til handling under Undgå, hvis du aldrig vil bede seerne om noget."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Was du meist machst. Wenn du Zuschauer nie um etwas bitten willst, wähle Calls-to-Action unter Vermeiden."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lo que sueles hacer. Para no pedir nunca nada a quien te ve, elige Llamadas a la acción en Evitar."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce que vous faites d’habitude. Pour ne jamais rien demander aux spectateurs, choisissez Appels à l’action dans Éviter."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "जो आप आमतौर पर करते हैं। दर्शकों से कभी कुछ न माँगने के लिए, बचें में कॉल टू एक्शन चुनें।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yang biasa kamu lakukan. Agar tidak pernah meminta apa pun dari penonton, pilih Ajakan bertindak di Hindari."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quello che fai di solito. Per non chiedere mai nulla a chi guarda, scegli Call to action in Evita."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "いつもの締め方です。視聴者に何も求めないなら、「避ける」で「行動の呼びかけ」を選んでください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "평소 하는 방식이에요. 시청자에게 아무것도 요청하지 않으려면 피하기에서 행동 유도를 고르세요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Det du vanligvis gjør. Velg Oppfordringer til handling under Unngå hvis du aldri vil be seerne om noe."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wat je meestal doet. Wil je kijkers nooit iets vragen, kies dan Call-to-actions bij Vermijden."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O que você costuma fazer. Para nunca pedir nada a quem assiste, escolha Chamadas para ação em Evitar."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Det du brukar göra. Välj Uppmaningar till handling under Undvik om du aldrig vill be tittarna om något."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "สิ่งที่คุณทำเป็นประจำ ถ้าไม่อยากขออะไรจากผู้ชมเลย ให้เลือก คำเชิญชวน ใน เลี่ยง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Genelde yaptığın şey. İzleyiciden asla bir şey istememek için Kaçınılacaklar’da Eylem çağrıları’nı seç."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Điều bạn thường làm. Để không bao giờ yêu cầu người xem làm gì, hãy chọn Kêu gọi hành động trong Tránh."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这是你通常的做法。如果从不想让观众做任何事，请在“避免”中选择“行动号召”。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "這是你通常的做法。若從不想請觀眾做任何事，請在「避免」中選擇「行動呼籲」。"
           }
         }
       }

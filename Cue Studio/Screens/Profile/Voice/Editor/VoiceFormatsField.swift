@@ -17,14 +17,18 @@ struct VoiceFormatsField: View {
         VStack(alignment: .leading, spacing: 22) {
             group(.formats, label: String(localized: "What you film most"), limit: VoiceLimits.formats)
             group(.openings, label: String(localized: "How you like to open"), limit: VoiceLimits.openings)
-            group(.endings, label: String(localized: "How you usually end"), limit: VoiceLimits.endings)
+            // A habit, not a rule (the owner's B11, 02/11/2026): "never" is Avoid's.
+            group(
+                .endings, label: String(localized: "How you usually end"), limit: VoiceLimits.endings,
+                note: String(localized: "What you usually do. To never ask viewers for anything, pick Calls to action under Avoid.")
+            )
             goals
         }
     }
 
     // MARK: - A question of the bank
 
-    private func group(_ question: VoiceQuestion, label: String, limit: Int) -> some View {
+    private func group(_ question: VoiceQuestion, label: String, limit: Int, note: String? = nil) -> some View {
         let options = question.options
         let extras = typed(for: question, among: options)
         return VStack(alignment: .leading, spacing: 8) {
@@ -50,6 +54,13 @@ struct VoiceFormatsField: View {
                 submit: { text, keeping in profile.addSomethingElse(text, for: question, keepingTyped: keeping) },
                 identifier: "voice.\(question.rawValue).field"
             )
+            if let note {
+                Text(note)
+                    .cueFont(.footnote)
+                    .foregroundStyle(Palette.ink2)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .accessibilityIdentifier("voice.\(question.rawValue).note")
+            }
         }
     }
 

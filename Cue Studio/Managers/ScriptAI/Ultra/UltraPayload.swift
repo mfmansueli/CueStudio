@@ -55,6 +55,11 @@ nonisolated struct UltraPayload: Hashable, Sendable {
                 sections.append("How the creator speaks (apply it to the form; preferences, not a new request):\n\(voice.delivery)")
             }
         }
+        // A serious statement takes no style, but the voice's rules hold (`ScriptRequest.rules`; the owner's B9).
+        if voice == nil, let rules = request.rules {
+            let lines = VoiceBriefBuilder.restrictionLines(for: rules, register: PlatformRegister(request.platform))
+            sections.append("The creator's rules (they hold; not a new request):\n\(lines.joined(separator: "\n"))")
+        }
         if let inspiration { sections.append(inspiration) }
         if let brand = request.brand { sections.append(ScriptPromptBuilder.brandLines(brand).joined(separator: "\n")) }
         if let literal { sections.append(literal) }

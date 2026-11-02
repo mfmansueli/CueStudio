@@ -68,6 +68,9 @@ struct VoiceCheckedWriting {
     }
 
     private func checked(_ script: GeneratedScript, for request: ScriptRequest) throws -> GeneratedScript {
+        var script = script
+        // A result nobody gave that is still there after the second attempt: the creator is asked to check before they say it.
+        if script.voiceViolations.contains(.inventedResult) { script.needsFactCheck = true }
         guard !ScriptVerbatimSlots(phrases: request.requiredPhrases).hasUnresolvedMarker(in: script.text),
               request.requiredPhrases.allSatisfy({ ScriptVerbatimRequirements.contains($0, in: script.text) }) else {
             throw ScriptAIError.requiredWording
@@ -76,10 +79,11 @@ struct VoiceCheckedWriting {
     }
 
     func violations(in script: GeneratedScript, for request: ScriptRequest) -> [VoiceViolation] {
+        // A serious statement is checked against the voice's rules alone (`ScriptRequest.rules`).
         let voice = VoiceConstraintChecker.violations(
-            in: script.text, voice: request.voice, language: request.language,
+            in: script.text, voice: request.voice ?? request.rules, language: request.language,
             minimumWords: request.durationPolicy == .targeted ? ReadTime.words(for: request.targetRange.lowerBound, language: request.language) : 0,
-            openingLine: request.brief?.openingLine
+            openingLine: request.brief?.openingLine, request: request.creatorText
         )
         let required = request.requiredPhrases.filter { !ScriptVerbatimRequirements.contains($0, in: script.text) }.map {
             VoiceViolation(kind: .requiredPhrase, detail: "Include this exact text unchanged in a spoken block, including capitalization and punctuation: “\($0)”")
@@ -89,6 +93,18 @@ struct VoiceCheckedWriting {
         let unresolved = ScriptVerbatimSlots(phrases: request.requiredPhrases).hasUnresolvedMarker(in: script.text)
             ? [VoiceViolation(kind: .requiredPhrase, detail: "Replace any incomplete exact-wording marker with its complete assigned phrase, unchanged.")] : []
         let applicable = voice.filter { !(request.modelRoute == .privateCloud && $0.kind == .pronoun) }
-        return applicable + required + unresolved
+        return applicable + required + unresolved + inventedResults(in: script, for: request)
+    }
+
+    /// A result put in the creator's mouth that their idea doesn't give, with or without a voice (the owner's B12; §11, A11b): written once
+    /// more, and the page asks to check the facts if it stays (`checked`).
+    private func inventedResults(in script: GeneratedScript, for request: ScriptRequest) -> [VoiceViolation] {
+        AttributedResultDetector.findings(in: script.text, language: request.language?.locale.identifier, request: request.creatorText).map {
+            VoiceViolation(
+                kind: .inventedResult,
+                detail: "It says “\($0)”, a result the idea doesn't give: never invent a result (weight, money, percentages, gains, cures), "
+                    + "a statistic, a price or a credential for the creator."
+            )
+        }
     }
 }

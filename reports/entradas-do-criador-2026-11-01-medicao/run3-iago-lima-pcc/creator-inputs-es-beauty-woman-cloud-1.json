@@ -1,0 +1,11 @@
+{
+ "caseID": "es-beauty-woman",
+ "idea": "Mi primera vez probando una rutina coreana de skincare",
+ "ideaIndex": 1,
+ "model": "onDevice",
+ "needsFactCheck": true,
+ "route": "cloud",
+ "seconds": 4.070883209,
+ "text": "He probado por primera vez una rutina coreana de skincare. [smile]\n\nPrimero: limpiar con un producto suave. Luego: hidratar con un sérum ligero. Finalmente: proteger con crema protectora. [pause]\n\nComenta qué productos usarías tú. [look at camera]",
+ "title": "Mi primera rutina coreana de skincare"
+}
