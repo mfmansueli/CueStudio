@@ -37,7 +37,11 @@ struct VoiceFormatsField: View {
                 },
                 extras: extras,
                 onTapExtra: { value in
-                    if let item = item(for: question) { profile.toggle(value, for: item) }
+                    if let item = item(for: question) {
+                        profile.toggle(value, for: item)
+                    } else if question == .formats {
+                        profile.removeTypedFormat(value)
+                    }
                 },
                 identifier: "voice.\(question.rawValue)"
             )
@@ -57,7 +61,8 @@ struct VoiceFormatsField: View {
         }
     }
 
-    /// What the creator typed for a question that isn't one of its options (an opening or an ending, or a tag for a format).
+    /// What the creator typed for a question that isn't one of its options (an opening or an ending, or a format: the ones this build keeps, then
+    /// the tags an older one kept under it).
     private func typed(for question: VoiceQuestion, among options: [VoiceOption]) -> [String] {
         let known = Set(options.flatMap { [VoiceTextValidator.key($0.label), VoiceTextValidator.key($0.id)] })
         switch question {
@@ -65,7 +70,8 @@ struct VoiceFormatsField: View {
         case .endings: return current.endings.filter { !known.contains(VoiceTextValidator.key($0)) && !isStyleName($0, among: options) }
         case .formats:
             let formatTags = Set(VoiceQuestion.formatTags.values.map(VoiceTextValidator.key))
-            return current.customTags.filter { !formatTags.contains(VoiceTextValidator.key($0)) && !known.contains(VoiceTextValidator.key($0)) }
+            let legacy = current.customTags.filter { !formatTags.contains(VoiceTextValidator.key($0)) && !known.contains(VoiceTextValidator.key($0)) }
+            return current.customFormats + legacy
         default: return []
         }
     }

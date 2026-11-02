@@ -35,6 +35,13 @@ struct VoiceSendsSheet: View {
                     Text("Apple Intelligence can use this iPhone or Private Cloud Compute. Your request and voice preferences may be sent to Apple. Writing examples and imported excerpts stay on this iPhone.")
                         .cueFont(.footnote)
                         .foregroundStyle(Palette.ink2)
+                    // The switch off sends nothing: the voice below is what it would send (§11, A6).
+                    if !profile.profile.usesVoiceInAI {
+                        Text("“Use my voice in drafts” is off: none of this is sent.")
+                            .cueFont(.footnote, weight: .semibold)
+                            .foregroundStyle(Palette.warnText)
+                            .accessibilityIdentifier("voice.sends.off")
+                    }
                     Text("On this iPhone").cueFont(.subheadline, weight: .semibold).foregroundStyle(Palette.ink)
                     briefCard(brief.text, identifier: "voice.sends.brief")
                     meter
@@ -46,6 +53,14 @@ struct VoiceSendsSheet: View {
                         .cueFont(.footnote)
                         .foregroundStyle(Palette.ink2)
                         .padding(.horizontal, 4)
+                    // A request carries a topic only when its idea is about it (`IdeaFocus`): the card shows them all.
+                    if profile.profile.topicCount > 0 {
+                        Text("Your topics go only when your idea is about one of them.")
+                            .cueFont(.footnote)
+                            .foregroundStyle(Palette.ink2)
+                            .padding(.horizontal, 4)
+                            .accessibilityIdentifier("voice.sends.topics")
+                    }
                     if ultra.isAvailable { ultraSection }
                     Button {
                         dismiss()

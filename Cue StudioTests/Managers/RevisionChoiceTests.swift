@@ -15,7 +15,7 @@ struct RevisionChoiceTests {
 
     private static func request(brief: IdeaBrief? = nil, idea: String = "A warm-up for home workouts") -> ScriptRequest {
         ScriptRequest(
-            source: .prompt(idea), platform: .tiktok, tone: nil, voice: nil, targetRange: 30...45, language: .english, brief: brief
+            source: .prompt(idea), platform: .tiktok, voice: nil, targetRange: 30...45, language: .english, brief: brief
         )
     }
 

@@ -104,9 +104,9 @@ struct VoiceBriefBuilderTests {
 
     @Test func theChoiceOfShortOrLongSentencesBeatsTheBaseRule() {
         func instructions(_ sentences: SentenceLength?) -> String {
-            var voice = CreatorVoice(sounds: [], phrases: [], vocabulary: nil, styles: [], niches: [])
+            var voice = CreatorVoice(sounds: [], phrases: [], vocabulary: nil, styles: [])
             voice.style.sentences = sentences
-            let request = ScriptRequest(source: .prompt("x"), platform: .tiktok, tone: nil, voice: voice, targetRange: 30...45)
+            let request = ScriptRequest(source: .prompt("x"), platform: .tiktok, voice: voice, targetRange: 30...45)
             return ScriptPromptBuilder.instructions(for: request)
         }
         #expect(instructions(nil).contains("natural spoken language with short sentences."))
@@ -164,20 +164,20 @@ struct VoiceBriefBuilderTests {
 
     @Test func theRulesAreSaidAgainAtTheEndOfTheRequest() {
         let request = ScriptRequest(
-            source: .prompt("Why we killed a feature"), platform: .tiktok, tone: nil, voice: VoicePersonas.saasFounder.profile.voice, targetRange: 30...45
+            source: .prompt("Why we killed a feature"), platform: .tiktok, voice: VoicePersonas.saasFounder.profile.voice, targetRange: 30...45
         )
         let prompt = ScriptPromptBuilder.prompt(for: request)
         let last = prompt.components(separatedBy: "\n").last ?? ""
         #expect(last.hasPrefix("Remember: Say “we”, never “I”."))
         #expect(last.contains("Avoid: hype words, clickbait."))
         #expect(last.contains("Never write the name of an opening style or open with a catchphrase."))
-        let plain = ScriptRequest(source: .prompt("x"), platform: .tiktok, tone: nil, voice: nil, targetRange: 30...45)
+        let plain = ScriptRequest(source: .prompt("x"), platform: .tiktok, voice: nil, targetRange: 30...45)
         #expect(!ScriptPromptBuilder.prompt(for: plain).contains("Remember:"))
     }
 
     @Test func aSeriousFormatNeverGetsTheVoice() {
         let request = ScriptRequest(
-            source: .prompt("I'm sorry"), platform: .tiktok, tone: nil, voice: yoga, targetRange: 30...45, format: .apology
+            source: .prompt("I'm sorry"), platform: .tiktok, voice: yoga, targetRange: 30...45, format: .apology
         )
         let instructions = ScriptPromptBuilder.instructions(for: request)
         #expect(!instructions.contains("creator's own voice") && !instructions.contains("Topics:"))
@@ -221,8 +221,11 @@ struct VoiceBriefBuilderTests {
     }
 
     @Test func theBudgetHoldsTheWholeOfAFullVoice() {
-        let brief = VoiceBriefBuilder.brief(for: crowded())
-        #expect(brief.trimmed.isEmpty && !brief.isLong, "a creator with everything filled in loses none of it")
+        // As a script's request sends it: never with the usual length, which sets the range instead (`AIRequestPolicy.prepare`, §11, A15).
+        var voice = crowded()
+        voice.reach.length = nil
+        let brief = VoiceBriefBuilder.brief(for: voice)
+        #expect(brief.trimmed.isEmpty && !brief.isLong, "a creator with everything filled in loses none of it · \(brief.fullCost) of \(VoiceBrief.budget)")
         #expect(brief.cost <= VoiceBrief.budget)
     }
 

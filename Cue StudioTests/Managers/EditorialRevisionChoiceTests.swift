@@ -7,7 +7,7 @@ struct EditorialRevisionChoiceTests {
 
     private static func assess(_ text: String, violations: [VoiceViolation] = [], brief: IdeaBrief? = nil) -> DraftAssessment {
         let request = ScriptRequest(
-            source: .prompt("Check the camera preview and shadows"), platform: .reels, tone: nil, voice: nil,
+            source: .prompt("Check the camera preview and shadows"), platform: .reels, voice: nil,
             targetRange: 60...90, language: .english, brief: brief
         )
         return DraftAssessment(text: text, violations: violations, request: request)

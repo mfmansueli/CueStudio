@@ -220,7 +220,6 @@ struct CreatorProfileVoiceV2Tests {
             VoiceTopicEntry(topic: .extra(.cars)),
             VoiceTopicEntry(topic: .custom("Van life")),
         ])
-        #expect(voice.niches == [.travel])
         #expect(voice.speaksAs == .i)
         #expect(voice.audienceGroup == .youngAdults && voice.audienceNote == "Gap-year people")
         #expect(voice.watchReasons == [.solveProblem] && voice.contentGoals == [.sell])

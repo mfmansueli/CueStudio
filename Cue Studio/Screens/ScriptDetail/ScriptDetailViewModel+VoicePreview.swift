@@ -53,7 +53,8 @@ extension ScriptDetailViewModel {
         profile.recordApproval(of: page.text)
         page.voicePreview = nil
         // The creator's own choice that went well: ✓ (★ is for what Cue did), the same words as the voice preview's sheet.
-        toast.show(String(localized: "Saved · Cue learns from it"))
+        // Kept as how they write, which only what Cue writes on this iPhone reads (Private Cloud Compute and Ultra AI never get it; §11, A6).
+        toast.show(String(localized: "Saved · Cue uses it on this iPhone"))
     }
 
     func openVoiceAdjust() {

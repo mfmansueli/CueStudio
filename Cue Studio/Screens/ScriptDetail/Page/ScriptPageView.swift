@@ -446,7 +446,7 @@ struct ScriptPageView: View {
     private var draftTip: some View {
         VoyageTipCard(
             step: voyage.progress.current ?? .practice, title: String(localized: "A first draft. Yours to change."),
-            message: String(localized: "Rewrite freely. Tap Sounds like me and Cue learns from it."),
+            message: String(localized: "Rewrite freely. Tap Sounds like me and Cue uses it on this iPhone."),
             primary: (String(localized: "Edit"), {
                 withAnimation(.smooth(duration: 0.25)) { voyage.finishDraftTip(acted: true) }
                 focus = .text

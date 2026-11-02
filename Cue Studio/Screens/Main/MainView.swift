@@ -208,9 +208,9 @@ struct MainView: View {
             let idea = services.ideaDraft.submission ?? String(localized: "A sponsored ad for \(brief.product) by \(brief.name)")
             services.starter.write(idea: idea, fromDock: true)
         case .writeFromCard:
-            services.starter.startFromFormat(.type(.ad), platform: services.starter.platform)
+            services.starter.startFromFormat(.type(.ad), platform: services.starter.platform, brand: brief)
         case .draft:
-            services.starter.startFromFormat(.type(.ad))
+            services.starter.startFromFormat(.type(.ad), brand: brief)
         }
     }
 

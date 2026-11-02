@@ -11,7 +11,7 @@ import Testing
 @Suite("Import my writing · measured habits")
 struct VoiceFingerprintRulesTests {
     private func voice(from texts: [String], answeringSentences: SentenceLength? = nil) -> CreatorVoice {
-        var voice = CreatorVoice(sounds: [], phrases: [], vocabulary: nil, styles: [], niches: [], role: nil)
+        var voice = CreatorVoice(sounds: [], phrases: [], vocabulary: nil, styles: [], role: nil)
         voice.fingerprint = WritingAnalyzer.analyze(texts.map { WritingPiece(text: $0) }).fingerprint
         voice.style.sentences = answeringSentences
         return voice
@@ -32,7 +32,7 @@ struct VoiceFingerprintRulesTests {
 
     @Test func tooLittleWritingSaysNothing() {
         #expect(VoiceFingerprintRules.lines(for: voice(from: Array(WritingSamples.daniel.prefix(1)))).isEmpty)
-        #expect(VoiceFingerprintRules.lines(for: CreatorVoice(sounds: [], phrases: [], vocabulary: nil, styles: [], niches: [], role: nil)).isEmpty)
+        #expect(VoiceFingerprintRules.lines(for: CreatorVoice(sounds: [], phrases: [], vocabulary: nil, styles: [], role: nil)).isEmpty)
     }
 
     @Test func aScriptThatShoutsInChoppySentencesDriftsFromACalmCreator() {

@@ -20,6 +20,8 @@ nonisolated struct RewriteContext: Hashable, Sendable {
     var voice: CreatorVoice?
     /// A passage the creator selected, not the whole script: its "Rewrite" says it another way (`ScriptPromptBuilder.instruction(for:context:)`).
     var isPassage = false
+    /// The brief a sponsored ad was written from (`Script.brand`): every tool keeps what it must and must never say.
+    var brand: BrandBrief?
 
     /// The script's language as Cue offers it, whose pace sets how many words the platform's seconds hold (`ReadTime.pace(for:)`).
     var paceLanguage: CueLanguage? { sourceLanguage.flatMap(CueLanguage.matching(language:)) }

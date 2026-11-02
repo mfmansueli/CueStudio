@@ -44,7 +44,15 @@ nonisolated extension CreatorProfile {
     /// all or nothing before: without the tone nothing of the voice was sent). Defaults a new profile starts with never count as answers, and
     /// neither do the values an older build saved that can't be told from defaults until the creator confirms them.
     var canWriteInMyVoice: Bool {
-        hasMinimumVoice || hasAnswered(.role) || topicCount > 0 || hasAnswered(.audience) || hasAnswered(.tone)
+        hasMinimumVoice || hasAnswered(.role) || topicCount > 0 || hasAnswered(.audience) || hasAnswered(.tone) || holdsPersonalityOrProof
+    }
+
+    /// Something of Personality or Proof the brief tells the model, without any Essential: an opening, an ending, a catchphrase, a format, a
+    /// rule, the delivery, where and how long they post, a note typed under "Something else", an example, imported writing or a script they
+    /// approved (§11, A5). What a route then leaves out (Private Cloud Compute takes no writing) simply isn't in that route's request.
+    var holdsPersonalityOrProof: Bool {
+        !openings.isEmpty || !endings.isEmpty || !phrases.isEmpty || !avoid.isEmpty || heldFormats > 0 || !customTags.isEmpty
+            || style != VoiceDelivery() || reach != VoiceReach() || !examples.isEmpty || !excerpts.isEmpty || !approvedSamples.isEmpty
     }
 
     // MARK: - Strength (v30 · 08 §1)
@@ -82,7 +90,7 @@ nonisolated extension CreatorProfile {
         case .audience: isChosen(.audience) && audienceLevel != nil
         case .tone: isChosen(.tone) && (1...VoiceLimits.tones).contains(sounds.count)
         case .style: style.isComplete
-        case .formats: !formats.isEmpty || !formatTags.isEmpty
+        case .formats: !formats.isEmpty || !formatTags.isEmpty || !customFormats.isEmpty
         case .openings: !openings.isEmpty
         case .endings: !endings.isEmpty
         case .phrases: !phrases.isEmpty
@@ -100,6 +108,9 @@ nonisolated extension CreatorProfile {
         let known = Set(VoiceQuestion.formatTags.values.map(VoiceTextValidator.key))
         return customTags.filter { known.contains(VoiceTextValidator.key($0)) }
     }
+
+    /// Every format they hold: the ones Cue writes, the tags of the list and the ones they typed (`VoiceLimits.formats` at most).
+    var heldFormats: Int { formats.count + formatTags.count + customFormats.count }
 
     /// Whether this one question has been answered (a field with several questions, like style and reach, is filled by all of them).
     func isAnswered(_ question: VoiceQuestion) -> Bool {
@@ -121,7 +132,7 @@ nonisolated extension CreatorProfile {
         switch item {
         case .endings: !endings.isEmpty
         case .openings: !openings.isEmpty
-        case .formats: !formats.isEmpty
+        case .formats: !formats.isEmpty || !customFormats.isEmpty
         case .swearing: style.swearing != nil
         case .phrases: !phrases.isEmpty
         }

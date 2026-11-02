@@ -51,10 +51,11 @@ struct VoiceTypedValuesTests {
         #expect(!sent(idea: "why my cat sleeps on the keyboard").contains("Sourdough"), "the idea is about something else: the subject is the idea's")
     }
 
-    @Test func aCatchphraseTheyTypedIsNotLostBeyondTheThreeUsed() {
+    @Test func everyCatchphraseTheyKeptIsOfferedOnce() {
         var profile = Self.typed()
         profile.phrases = ["One", "Two", "Three", "Four", "Five"]
         let text = VoiceBriefBuilder.brief(for: profile.voice).text
-        #expect(text.contains("“One”, “Two”, “Three”") && !text.contains("“Four”"), "three are told, so that none is said in every video")
+        #expect(text.contains("They often say: “One”, “Two”, “Three”, “Four”, “Five”. Use one"), "all five, of which one is used: \(text)")
+        #expect(text.contains("Also true of them, in their own words: Night owl, Reaction videos."), "and none again among the tags")
     }
 }

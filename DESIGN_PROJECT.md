@@ -162,8 +162,14 @@ não mostra número. Teste: `-uiTestWriterStalls`.
 - **Dados** (`CreatorProfile`, tudo opcional, `decodeIfPresent`, `currentVoiceSchema = 2`): papel (8 + `customRole`), `credential`, `speaksAs` (I / We),
   temas (`Niche` + `voiceTopics`, os 15 só do My Cue Voice, fora de `Niche` para não virarem mundos no universo; `topicDetails` até 3 por tema),
   público (`audienceGroup` ou `audienceNote`, `audienceLevel`), `watchReasons` e `contentGoals` (até 2), 8 tons, `style` (energia, frases, palavras,
-  palavrão), `avoid`/`avoidNone`, `reach`, `approvedSamples` (até 3), `customTags`, e da importação (§4.2) `excerpts` e `fingerprint`. O que o criador
-  digitou nunca é reescrito.
+  palavrão), `avoid`/`avoidNone`, `reach`, `approvedSamples` (até 3), `customTags`, `customFormats`, e da importação (§4.2) `excerpts` e `fingerprint`.
+  O que o criador digitou nunca é reescrito. Uma abertura, um fecho ou um bordão digitado fica só no próprio campo (vai uma vez ao modelo e sai quando é
+  tirado); `customTags` são as notas de "+ Something else" das perguntas sem lista, e um perfil salvo antes de 02/11 perde, ao abrir, as cópias de
+  abertura, fecho e bordão que estavam ali (o que não bate com nada fica, porque pode ser uma nota). Um formato digitado ("ASMR") fica em
+  `customFormats` e vai em "They film mostly", a linha que o orçamento não corta; tocar nele no editor o tira.
+- **O que vai ao modelo:** os bordões guardados (até 5) numa linha só ("Use one…"); os tons com as palavras do rótulo ("conversational",
+  "straight to the point", "playful"); as plataformas pelo nome em inglês. A voz vale com qualquer resposta que o briefing conte, não só com os
+  Essentials (`canWriteInMyVoice`); cada rota manda o que a política dela aceita, e com o interruptor desligado nada vai.
 - **Força** (`voiceStrength`): Essentials 40 · Personality 40 · Proof 20, pesos por campo em `VoiceField`; duas aprovações = um exemplo; 4/8/12 trechos
   importados = 1/2/3 exemplos.
 - **Um editor só** (`VoiceEditorSheet` + `Screens/Profile/Voice/Editor/*`): a página, as 4 perguntas, a dica do dock e Settings abrem o mesmo campo; toda
@@ -172,8 +178,11 @@ não mostra número. Teste: `-uiTestWriterStalls`.
   já tem.
 - **Página 9.3** (`MyCueVoicePage`): um cartão (✦ WHAT CUE USES com a chave, medidor, "Next: …" com Answer), depois ESSENTIALS (I am · Topics ·
   Audience · They watch to · Voice), PERSONALITY (Style · Usual formats · Opens with · Ends with · Videos are for · My phrases · Avoid · Reach) e
-  PROOF (Examples), linhas de 52 pt (rótulo cinza, valor à direita ou "+ Add · 1 tap" em amarelo). Rodapé: **Preview** (`VoicePreviewSheet`: "✦ LIVE
-  PREVIEW", My voice | Without, "Sounds like me", interruptor "Write in my voice") e **What Cue sends** (`VoiceSendsSheet`, mostra o custo do prompt).
+  PROOF (Examples, com a nota de que exemplos, texto importado e roteiros aprovados guiam o que o Cue escreve neste iPhone, ideias incluídas, e nunca
+  vão ao Private Cloud Compute nem à Ultra AI), linhas de 52 pt (rótulo cinza, valor à direita ou "+ Add · 1 tap" em amarelo). Rodapé: **Preview** (`VoicePreviewSheet`: "✦ LIVE
+  PREVIEW", My voice | Without, "Sounds like me", interruptor "Write in my voice") e **What Cue sends** (`VoiceSendsSheet`, mostra o custo do prompt;
+  a voz como o pedido de um roteiro a lê, sem a duração habitual; com o interruptor desligado diz em laranja que nada disso vai; com temas, diz que
+  eles só vão quando a ideia é sobre um deles).
   Não há botão de zerar a voz; "Delete my Cue data" apaga o perfil e zera as perguntas (`VoiceQuestionScheduler.reset()`), como numa instalação nova.
 - **Quando perguntar** (`VoiceQuestion`, 17 perguntas; `VoiceQuestionScheduler` com relógio injetável, `VoiceQuestionState`): depois de 2 dias de uso e
   1 roteiro, 1 dica por dia e 3 por semana; "Not now" adia 3 dias, 2 dispensas mandam a pergunta para o fim, 3 seguidas pausam 14 dias, "None of
@@ -197,7 +206,7 @@ não mostra número. Teste: `-uiTestWriterStalls`.
   Build de desenvolvimento assinado conferido: entitlement presente tanto no perfil explícito do app quanto na assinatura do binário.
   PCC instalado e executado no iago Lima iphone com autorização do dono. Os fixtures de qualidade preservam controles reais de duração, desenvolvimento, proteção literal, perspectiva e ablações de voz/prosa; a última continuação acrescentou 59 solicitações PCC medidas, com relatórios por fase. A rota foi confirmada como privateCloud. Frases exatas PT/EN/ES passaram na versão protegida (PT precisou de duas tentativas); qualidade editorial geral ainda não aprovada: há formulações artificiais, pontos pouco distintos e detalhes sem suporte no brief transmitido. Os demais idiomas continuam sem validação física. Ver reports/PCC_HANDOFF_2026-10-28.md.
   **Pedidos por rota:** o fallback prepara de novo o pedido original. No PCC, a voz usa até 6000 unidades, sem exemplos colados, trechos importados
-  ou roteiros aprovados; preferências e medidas de estilo seguem no prompt. No Automático, a duração é informativa: não impõe mínimo de palavras, duração habitual da voz nem expansão automática. O PCC recebe espaço de até 4096 tokens para desenvolver o pedido, independentemente da faixa da rede. Uma duração explicitamente escolhida no card ou reconhecida no prompt mantém a política dirigida (90–105% das palavras do teto, 150 palavras/minuto; teto de resposta 8192 tokens). Não é limite de upload da rede. Rascunho e correções dividem até duas chamadas PCC. Planejamento separado fica opt-in apenas em Debug, com teto de três chamadas; não demonstrou ganho editorial consistente nos controles.
+  ou roteiros aprovados; preferências e medidas de estilo seguem no prompt. A duração habitual da voz nunca vai no texto do pedido de um roteiro nem das ferramentas: no Automático ela só ajusta a faixa, e uma duração escolhida é a única que o pedido diz. No Automático, a duração é informativa: não impõe mínimo de palavras nem expansão automática. O PCC recebe espaço de até 4096 tokens para desenvolver o pedido, independentemente da faixa da rede. Uma duração explicitamente escolhida no card ou reconhecida no prompt mantém a política dirigida (90–105% das palavras do teto, 150 palavras/minuto; teto de resposta 8192 tokens). Não é limite de upload da rede. Rascunho e correções dividem até duas chamadas PCC. Planejamento separado fica opt-in apenas em Debug, com teto de três chamadas; não demonstrou ganho editorial consistente nos controles.
   **Desenvolvimento guiado no PCC:** `PCCScriptDraft` separa abertura, pontos e fecho. Cada ponto tem enunciado, explicação e aplicação/verificação, reunidos em um parágrafo falado sem expor os campos. Um experimento Debug (`PCCScriptPlan`, `CUE_QUALITY_PLANNING=1`) testa planejamento antes da redação, mas está desativado no app normal e ausente em Release. O número de pontos segue o pedido. `PCCScriptIntent` distingue desenvolvimento de aviso/correção curta no próprio esquema; em conciseStatement, o renderer omite explicações, aplicações e fecho extras. Os campos podem ficar vazios quando não se aplicam. O texto é um rascunho autoral: o motor pode propor opiniões, preferências, analogias e exemplos em primeira pessoa para o criador editar, com explicações desenvolvidas. Não exige neutralidade nem trata toda frase em primeira pessoa como biografia. Credenciais, clientes, resultados medidos, depoimentos e acontecimentos passados continuam exigindo suporte. A voz orienta o estilo; a perspectiva e os fatos do pedido prevalecem. No PCC, o narrador do perfil aparece como padrão condicional nas instruções e no lembrete final; não há mais uma regra final absoluta que contradiga um pedido de equipe ou segunda pessoa. O modelo local mantém suas instruções já medidas. Essa prioridade do prompt não garante cumprimento perfeito pelo modelo em todas as gerações. Uma resposta incompleta desse esquema não é recuperada como roteiro terminado. Validação editorial no aparelho registrada no handoff. Exemplos editoriais sintéticos ficam desligados por padrão (`PCCEditorialExamples.isEnabled=false`). Uma revisão editorial adicional está disponível somente como experimento Debug (`CUE_QUALITY_EDITORIAL_REVIEW=1`), usando a chamada restante do teto de duas e preservando o rascunho se falhar. Não é verificação factual externa nem está ativada no app normal ou em Release; a matriz PT/EN/ES não demonstrou ganho editorial consistente. Duas ablações adicionais existem somente em Debug e ficam desligadas: primeira redação em prosa livre (`CUE_QUALITY_FREE_PROSE`) e voz sem contexto habitual de tema/biografia/estrutura (`CUE_QUALITY_DELIVERY_VOICE`). A matriz física de 32 solicitações manteve o orçamento atual, mas não demonstrou ganho editorial consistente; houve perda de desenvolvimento e uma troca indevida de agência. O perfil completo e o esquema normal permanecem no app. A correção condicional de perspectiva foi medida separadamente em 10 solicitações, com melhora parcial de adesão e mistura de pessoa ainda presente em espanhol. Ver relatórios `PCC_PHASE3_EVALUATION_2026-10-28.md` e `PCC_PHASE4_PERSPECTIVE_2026-10-28.md` em `reports/`.
   No aparelho, continuam o orçamento de 2100, teto de 1800 tokens e ajuste pela contagem real perto da janela.
   **Direção editorial no PCC** (`PCCScriptDirection`): pedido atual define assunto, resultado desejado e exigências explícitas; temas, aberturas e
@@ -476,7 +485,9 @@ ajuda um idioma, então o idioma vem antes). Escrever à mão, importar, telepro
   e o toast diz "Saved to Logbook" (na falha, depois do motivo), só quando ele está mesmo lá; tentar de novo o mesmo comentário é a mesma nota,
   nunca uma cópia; escrita a resposta, a nota feita para ela sai (o comentário fica no roteiro) e uma que já esperava no Logbook vira "shaped".
 - **Sponsored ad:** no idioma da ideia do dock, quando conhecido; se o modelo não escreve, o botão é **Open the draft** e a nota de baixo dá o motivo +
-  "Open the draft to write it yourself."
+  "Open the draft to write it yourself.". O roteiro guarda uma cópia do briefing da marca (`Script.brand`), também no rascunho aberto à mão e no Start
+  from a format, salvo a marca ou não; Improve, ganchos, a versão para outra plataforma, a tradução e o ajuste de tamanho da Ultra AI recebem o #ad, o
+  que a marca pediu e proibiu, o link e o cupom (estes dois ficam como estão). Um roteiro que deixou de ser anúncio é reescrito como o que é agora.
 - **Ferramentas da página:** no idioma do roteiro, o subtítulo do Improve diz o motivo e as ferramentas que precisam do modelo **não aparecem** (nem
   esmaecidas; dono, 01/11/2026): ficam Add disclosure e a dica do gancho, e o Improve some quando não sobra nada; Shape e o Hook (ganchos do formato)
   ficam, porque são regras; a barra da seleção não aparece; o Fit to time da barra de duração e o Shorter do aviso somem; "Make a version for…" diz o motivo antes do "Drafting…". Hooks caem nos do formato. Os
@@ -1461,11 +1472,12 @@ A IA é **o ponto de partida**: quem cria e melhora é o criador; o Cue dá a pa
   `LOCALIZATION.md` §2.
 - Exemplos em uso: "Drafting in your voice", "Couldn’t draft it", "+ › Let Cue draft it", "Start with it", "Draft it now", Improve script
   ("Cue suggests. You decide."; "New version", "In your voice · …", "Shorter · 132 → 53 words"; vazio: "Write a few lines. Cue builds on them."), "Saved · Cue
-  learns from it", "Use my voice in drafts", "Cue drafts the lines. Fix any word."
+  uses it on this iPhone", "Use my voice in drafts", "Cue drafts the lines. Fix any word."
 - **Aprende de verdade** (`DraftLearningService`, `DraftEdits`, `CueDraft`): cada rascunho do Cue guarda as palavras como chegaram (até 30,
-  `DefaultsKey.cueDrafts`). Quando o roteiro é **gravado** com pelo menos 20% e 8 palavras mudadas (sem cues, caixa, pontuação), o começo da versão gravada
-  vira exemplo (fonte "Your edits", os últimos três; não conta como aprovação) e o toast "Cue learned from this" tem **Undo**. Rascunho gravado como veio
-  espera; cada um ensina uma vez; "Delete my Cue data" apaga. Testes: `DraftLearningTests`.
+  `DefaultsKey.cueDrafts`). Quando o roteiro é **gravado** com pelo menos 20% e 8 palavras mudadas (sem cues, caixa, pontuação), e o começo que seria
+  guardado também mudou por essa medida, o começo da versão gravada vira exemplo (fonte "Your edits", os últimos três; não conta como aprovação) e o
+  toast "Saved as your writing · used on this iPhone" tem **Undo**. Rascunho gravado como veio, ou mudado só depois do começo, espera; cada um ensina
+  uma vez; "Delete my Cue data" apaga. Testes: `DraftLearningTests`.
 
 ## 34. Direção de movimento (pedido do dono, não está no quadro)
 
@@ -3201,7 +3213,8 @@ A metade reativa da revisão de comunicação (`reports/comunicacao-revisao-2026
 - **Checked** (decisão 9): o botão do lembrete de fatos diz "I checked" (VoiceOver: "I reviewed the claims") e grava a revisão daquela versão com a data
   (`FactReview`: um resumo do texto, a versão, a data); o toast é "Claims reviewed for this version". Uma reescrita da IA que muda as palavras traz o lembrete
   de volta, e o Undo para as palavras revisadas o tira. Esconder não é revisar: só o botão grava.
-- **"Sounds like me"** diz "Saved · Cue learns from it" com ✓ na página e na folha da prévia (a ★ é do que o Cue fez).
+- **"Sounds like me"** diz "Saved · Cue uses it on this iPhone" com ✓ na página (o roteiro vira exemplo) e "Saved · counts toward your voice" na
+  folha da prévia (a amostra não é guardada; conta no medidor). A ★ é do que o Cue fez.
 
 ## 59. Fontes para outras escritas (31 de outubro de 2026; pedido do dono)
 

@@ -67,7 +67,7 @@ struct UltraDeviceTests {
 
     /// A made-up creator: a pt-BR personal-finance and habits creator with every kind of preference, and writing samples that must never be sent.
     private static var voice: CreatorVoice {
-        var voice = CreatorVoice(sounds: [.casual, .confident], phrases: ["Bora lá"], vocabulary: .simple, styles: [], niches: [.finance, .lifestyle])
+        var voice = CreatorVoice(sounds: [.casual, .confident], phrases: ["Bora lá"], vocabulary: .simple, styles: [])
         voice.role = .educator
         voice.audienceNote = "jovens adultos começando a organizar a rotina e o dinheiro"
         voice.style.sentences = .short

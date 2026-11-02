@@ -151,9 +151,6 @@ nonisolated enum ScriptPromptBuilder {
                 "What each block does: \(guide.purpose)",
             ]
         }
-        if let tone = request.tone {
-            lines.append("Tone: \(tone.promptWord).")
-        }
         if request.durationPolicy == .targeted {
             lines.append("Length: between \(low) and \(high) spoken words in total.")
             lines.append(lengthRule(
@@ -343,10 +340,13 @@ nonisolated enum ScriptPromptBuilder {
         ).lines
     }
 
-    /// "What Cue sends" (My Cue Voice): the voice as the model reads it, and what was cut to fit. Empty when nothing of the voice can be used yet.
+    /// "What Cue sends" (My Cue Voice): the voice as a script's request reads it (no usual length: `AIRequestPolicy.prepare`), and what was cut to
+    /// fit. Empty when nothing of the voice can be used yet.
     static func brief(for profile: CreatorProfile) -> VoiceBrief {
         guard profile.canWriteInMyVoice else { return .empty }
-        return VoiceBriefBuilder.brief(for: profile.voice)
+        var voice = profile.voice
+        voice.reach.length = nil
+        return VoiceBriefBuilder.brief(for: voice)
     }
 
     // MARK: - Sponsored ads
@@ -392,7 +392,7 @@ nonisolated enum ScriptPromptBuilder {
         Write five new opening lines for this script, which will be posted on \(context.platform.promptName). \
         \(replaces)Each must grab attention and be said in about three seconds: at most \(words) words, fewer is better. \
         The five are different from each other and from the opening line now, and each opens in its own way: no greeting or catchphrase \
-        at the start of more than one. \(written)
+        at the start of more than one. \(written)\(context.brand.map { "\n" + adHookRule($0) } ?? "")
 
         Script:
         \(text)
@@ -471,7 +471,8 @@ nonisolated enum ScriptPromptBuilder {
 
     /// - Parameter language: the language the result must be in (the script's, or a translation's target), named
     ///   outright for any language but English: the instructions are in English, and so may be a catchphrase.
-    static func rewriteInstructions(voice: CreatorVoice? = nil, language: Locale.Language? = nil) -> String {
+    /// - Parameter brand: the brief of the sponsored ad being edited (`RewriteContext.brand`): what every tool keeps (`brandKeepLines`).
+    static func rewriteInstructions(voice: CreatorVoice? = nil, language: Locale.Language? = nil, brand: BrandBrief? = nil) -> String {
         var lines = [
             "You edit teleprompter scripts for video creators.",
             "Keep the creator's voice and first person. Keep the stage cues that are in square brackets where they are.",
@@ -485,10 +486,33 @@ nonisolated enum ScriptPromptBuilder {
             let name = Locale(identifier: "en").localizedString(forIdentifier: language.minimalIdentifier) ?? language.minimalIdentifier
             lines.append("The result is in \(name), not in English: write it in \(name) even though these instructions are in English. Only the creator's catchphrases stay as they are.")
         }
-        if let voice {
+        if var voice {
+            // A tool keeps the script's length or is told one ("Fit to time", "Shorter"): the usual one would be a second (§11, A15).
+            voice.reach.length = nil
             lines += voiceLines(voice)
         }
+        if let brand { lines += brandKeepLines(brand) }
         return lines.joined(separator: "\n")
+    }
+
+    /// What a tool that edits a sponsored ad (rewrites, hooks, a version for another platform, a translation) is told, so the brand's brief
+    /// survives the edit as it did the draft (`brandLines`): the disclosure, what it must and must never say, the link and the code.
+    static func brandKeepLines(_ brand: BrandBrief) -> [String] {
+        var lines = [
+            "This script is a sponsored ad for \(brand.name) (\(brand.product)). Keep the paid partnership disclosure (#ad). Never add claims, "
+                + "results, prices, discounts or guarantees the script doesn't already make.",
+        ]
+        if !brand.mustSay.isEmpty { lines.append("Keep what the brand asked the ad to say, with the same meaning: \(brand.mustSay)") }
+        if !brand.neverSay.isEmpty { lines.append("Never say or mention: \(brand.neverSay)") }
+        let exact = [brand.link, brand.code].filter { !$0.isEmpty }
+        if !exact.isEmpty { lines.append("Keep exactly as written: \(exact.joined(separator: ", ")).") }
+        return lines
+    }
+
+    /// An ad's new opening line promises nothing the brand didn't approve (`BrandBrief`).
+    static func adHookRule(_ brand: BrandBrief) -> String {
+        "This script is a sponsored ad for \(brand.name) (\(brand.product)): no opening line claims a result, price, discount or guarantee the script "
+            + "doesn't make" + (brand.neverSay.isEmpty ? "." : ", and none says or mentions: \(brand.neverSay)")
     }
 
     /// What a part of a longer script is told about itself, and what it was told the last time it missed.
@@ -688,9 +712,10 @@ nonisolated enum ScriptPromptBuilder {
 
     /// What a tool that edits the creator's script must leave as it is: the sentences of theirs that hold a dash (one the model kept word for
     /// word keeps it; one it rewrote comes back without) and their catchphrases. A translation is all the model's, so nothing.
-    static func preserved(inRewriteOf source: String, tool: ScriptTool, voice: CreatorVoice?) -> [String] {
-        guard tool != .translate else { return [] }
-        return DashRewriter.sentencesWithDashes(in: source) + (voice?.phrases ?? [])
+    static func preserved(inRewriteOf source: String, tool: ScriptTool, voice: CreatorVoice?, brand: BrandBrief? = nil) -> [String] {
+        let exact = [brand?.link ?? "", brand?.code ?? ""].filter { !$0.isEmpty }
+        guard tool != .translate else { return exact }
+        return DashRewriter.sentencesWithDashes(in: source) + (voice?.phrases ?? []) + exact
     }
 
     /// Block names the model tends to echo as "Hook: …".

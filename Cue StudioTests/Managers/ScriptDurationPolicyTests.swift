@@ -8,7 +8,7 @@ struct ScriptDurationPolicyTests {
     private func request() -> ScriptRequest {
         ScriptRequest(
             source: .prompt("Explain three window lighting adjustments. No follow CTA."), platform: .shorts,
-            tone: nil, voice: QualityProfiles.english.full.voice, targetRange: 60...90, language: .english
+            voice: QualityProfiles.english.full.voice, targetRange: 60...90, language: .english
         )
     }
 
@@ -26,7 +26,8 @@ struct ScriptDurationPolicyTests {
         #expect(!prompt.contains("within the requested length"))
         #expect(!instructions.contains("within the chosen duration"))
         #expect(informative.voice?.reach.length == nil)
-        #expect(targeted.voice?.reach.length != nil)
+        #expect(targeted.voice?.reach.length == nil, "a chosen length is the only length the request says")
+        #expect(!ScriptPromptBuilder.instructions(for: targeted).lowercased().contains("videos are usually"))
         #expect(informative.voice?.style == targeted.voice?.style)
         #expect(informative.voice?.avoid == targeted.voice?.avoid)
         #expect(informative.source == targeted.source)

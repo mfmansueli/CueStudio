@@ -50,7 +50,7 @@ struct ScriptPageViewModelTests {
     }
 
     private func request(voice: CreatorVoice? = nil) -> ScriptRequest {
-        ScriptRequest(source: .prompt("Carnival in Salvador"), platform: .reels, tone: nil, voice: voice, targetRange: 30...60)
+        ScriptRequest(source: .prompt("Carnival in Salvador"), platform: .reels, voice: voice, targetRange: 30...60)
     }
 
     // MARK: - Opening
@@ -656,7 +656,7 @@ struct ScriptPageViewModelTests {
 
     @Test func aFactualIdeaAsksForACheck() async {
         let factual = ScriptRequest(
-            source: .prompt("2 minutes on how the electric shower was invented in Brazil"), platform: .tiktok, tone: nil, voice: nil,
+            source: .prompt("2 minutes on how the electric shower was invented in Brazil"), platform: .tiktok, voice: nil,
             targetRange: 60...90
         )
         let scenario = makeScenario(script: TestData.script(title: "", text: ""), writing: factual)

@@ -21,7 +21,7 @@ nonisolated extension CreatorProfile {
             return [style.energy?.label, style.sentences?.label, style.words?.label, style.swearing?.label]
                 .compactMap { $0 }.joined(separator: separator)
         case .formats:
-            return (formatTags.map(VoiceQuestion.formatTagLabel) + formats.map(\.label)).joined(separator: separator)
+            return (formatTags.map(VoiceQuestion.formatTagLabel) + formats.map(\.label) + customFormats).joined(separator: separator)
         case .openings: return openings.joined(separator: separator)
         case .endings: return endings.joined(separator: separator)
         case .phrases: return phrases.joined(separator: separator)

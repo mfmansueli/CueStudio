@@ -288,12 +288,14 @@ nonisolated enum VoiceBriefBuilder {
                     ? "Usual ending preference, only if this request permits it and it serves the takeaway: \(list(choices, joiner: " or ")). It is optional, never an automatic sign-off."
                     : "End by \(list(choices, joiner: " or ")).")
             }
-            let formats = voice.formats.map(\.promptName) + voice.customTags.filter(isFormatTag)
+            let formats = voice.formats.map(\.promptName) + voice.customTags.filter(isFormatTag) + voice.customFormats
             if !formats.isEmpty {
                 lines.append("They film mostly: \(formats.joined(separator: ", ")).")
             }
             if !voice.phrases.isEmpty {
-                let said = voice.phrases.prefix(3).map { "“\($0)”" }.joined(separator: ", ")
+                // Every catchphrase kept (at most `VoiceLimits.phrases`), once: the 4th and 5th used to reach the model only as a copy among the
+                // tags (§11, A1, until the owner's B10). "Use one" keeps any of them from being said in every video.
+                let said = voice.phrases.prefix(VoiceLimits.phrases).map { "“\($0)”" }.joined(separator: ", ")
                 lines.append(
                     contextualPreferences
                         ? "Optional familiar expressions: \(said). Use at most one only if natural here; omission is better than forced repetition."
@@ -309,7 +311,8 @@ nonisolated enum VoiceBriefBuilder {
 
         private static func reach(_ voice: CreatorVoice) -> [String] {
             var parts: [String] = []
-            if !voice.reach.platforms.isEmpty { parts.append("they post on \(voice.reach.platforms.map(\.label).joined(separator: ", "))") }
+            // The English names: the label is in the interface's language, inside instructions in English.
+            if !voice.reach.platforms.isEmpty { parts.append("they post on \(voice.reach.platforms.map(\.promptName).joined(separator: ", "))") }
             if let length = voice.reach.length { parts.append("videos are usually \(length.promptName)") }
             guard !parts.isEmpty else { return [] }
             let sentence = parts.joined(separator: "; ")

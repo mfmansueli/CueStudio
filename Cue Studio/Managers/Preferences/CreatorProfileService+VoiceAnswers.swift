@@ -161,8 +161,8 @@ extension CreatorProfileService {
         profile.audienceLevel = level
     }
 
-    /// "+ Something else": text the creator typed, checked first (04 §F9). Where the app has no list for it (kind of creator, tone,
-    /// audience, formats), it is kept as something true of them.
+    /// "+ Something else": text the creator typed, checked first (04 §F9). A format is kept with the formats (`customFormats`); where the app
+    /// has no list for it (kind of creator, tone, audience), it is kept as something true of them.
     @discardableResult
     func addSomethingElse(_ raw: String, for question: VoiceQuestion, keepingTyped: Bool = false) -> VoiceEditResult {
         switch question {
@@ -183,9 +183,26 @@ extension CreatorProfileService {
                 raw, vocabulary: keepingTyped ? [] : Niche.allCases.map(\.chipLabel) + VoiceTopic.allCases.map(\.label), existing: existing,
                 held: profile.topicCount, limit: (VoiceLimits.topics, String(localized: "topics"))
             ) { $0.customTopics.append($1) }
+        case .formats:
+            return addText(
+                raw, vocabulary: [], existing: profile.customFormats, held: profile.heldFormats,
+                limit: (VoiceLimits.formats, String(localized: "formats"))
+            ) {
+                $0.customFormats.append($1)
+                $0.declinedVoiceItems.remove(.formats)
+            }
         default:
             return addText(raw, vocabulary: [], existing: profile.customTags, limit: (Int.max, "")) { $0.customTags.append($1) }
         }
+    }
+
+    /// A format they typed, tapped again in the editor: it goes, whether this build kept it (`customFormats`) or an older one did (`customTags`).
+    func removeTypedFormat(_ value: String) {
+        let key = VoiceTextValidator.key(value)
+        var updated = profile
+        updated.customFormats.removeAll { VoiceTextValidator.key($0) == key }
+        updated.customTags.removeAll { VoiceTextValidator.key($0) == key }
+        profile = updated
     }
 
     /// Checks `raw` and, when it is good, lets `insert` add it to a copy of the profile.
@@ -217,7 +234,7 @@ extension CreatorProfileService {
                 profile = updated
                 return .removed
             }
-            guard updated.formats.count + updated.formatTags.count < VoiceLimits.formats else {
+            guard updated.heldFormats < VoiceLimits.formats else {
                 return .limit(VoiceLimits.message(max: VoiceLimits.formats, noun: String(localized: "formats")))
             }
             updated.customTags.append(tag)

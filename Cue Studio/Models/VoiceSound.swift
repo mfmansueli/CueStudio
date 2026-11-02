@@ -26,17 +26,17 @@ nonisolated enum VoiceSound: String, Codable, CaseIterable, Identifiable, Sendab
         }
     }
 
-    /// The word the AI reads in its instructions (English, whatever the interface language says): it stays what it was
-    /// when a label is renamed ("Casual" is now "Conversational").
+    /// The words the AI reads in its instructions (English, whatever the interface language says): the label the creator picked, as it
+    /// reads in English, never an older name ("professional" for "Straight to the point" asked for a register they didn't choose; §11, A14).
     var promptWord: String {
         switch self {
-        case .casual: "casual"
-        case .professional: "professional"
+        case .casual: "conversational"
+        case .professional: "straight to the point"
         case .educational: "educational"
         case .confident: "confident"
         case .warmCalm: "warm and calm"
         case .energetic: "energetic"
-        case .funny: "funny"
+        case .funny: "playful"
         case .dry: "dry and sarcastic"
         }
     }
@@ -52,17 +52,6 @@ nonisolated enum VoiceSound: String, Codable, CaseIterable, Identifiable, Sendab
         case .energetic: String(localized: "“Okay, quick one today…”")
         case .funny: String(localized: "“My alarm and I are not friends.”")
         case .dry: String(localized: "“Great. Another life hack.”")
-        }
-    }
-
-    /// The format tone this sound leans toward, used to preselect a tone in a brief.
-    var tone: Tone? {
-        switch self {
-        case .casual: .casual
-        case .energetic: .energetic
-        case .funny: .funny
-        case .professional, .educational: .expert
-        case .confident, .warmCalm, .dry: nil
         }
     }
 }

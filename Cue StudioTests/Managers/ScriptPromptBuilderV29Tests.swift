@@ -16,7 +16,7 @@ struct ScriptPromptBuilderV29Tests {
 
     private func adRequest(brand: BrandBrief?) -> ScriptRequest {
         ScriptRequest(
-            source: .prompt("A morning coffee routine"), platform: .tiktok, tone: nil, voice: nil, targetRange: 30...45,
+            source: .prompt("A morning coffee routine"), platform: .tiktok, voice: nil, targetRange: 30...45,
             language: nil, format: .ad, brand: brand
         )
     }

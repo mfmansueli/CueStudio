@@ -17,8 +17,6 @@ nonisolated struct ScriptRequest: Hashable, Sendable {
 
     var source: Source
     var platform: Platform
-    /// Nil for prompts: the voice sets the tone.
-    var tone: Tone?
     /// Nil when "Write in my voice" is off, and always for serious formats.
     var voice: CreatorVoice?
     /// Seconds the script should run.

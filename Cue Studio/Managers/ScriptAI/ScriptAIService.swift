@@ -406,7 +406,9 @@ final class ScriptAIService: ScriptWriting {
         let voice = tool == .inMyVoice ? context.voice : nil
         let ask: RewriteRunner.Ask = { [self] part, details in
             @MainActor func attempt(on model: AIModelRoute) async throws -> String {
-                let instructions = ScriptPromptBuilder.rewriteInstructions(voice: AIRequestPolicy.voice(voice, on: model), language: expected)
+                let instructions = ScriptPromptBuilder.rewriteInstructions(
+                    voice: AIRequestPolicy.voice(voice, on: model), language: expected, brand: context.brand
+                )
                 let session = self.session(on: model, instructions: instructions, transformsText: true)
                 let prompt = ScriptPromptBuilder.rewritePrompt(for: part, tool: tool, context: context, part: details, on: model)
                 // A bound on what a part may answer: a part that goes on and on (measured on an iPhone 15 Pro, a script lengthened for YouTube) ran into the
@@ -415,7 +417,7 @@ final class ScriptAIService: ScriptWriting {
                 let answer = try await self.answering { try await session.respond(to: prompt, options: options).content }
                 let response = ScriptPromptBuilder.withoutEchoedInstructions(answer, prompt: prompt, source: part)
                 // The creator's own sentences the model kept as they were keep their dashes; what it wrote has none.
-                let preserved = ScriptPromptBuilder.preserved(inRewriteOf: part, tool: tool, voice: context.voice)
+                let preserved = ScriptPromptBuilder.preserved(inRewriteOf: part, tool: tool, voice: context.voice, brand: context.brand)
                 let rewritten = ScriptPromptBuilder.clean(response, language: expected, preserving: preserved, source: part)
                 guard !rewritten.isEmpty else { throw ScriptAIError.emptyResponse }
                 try Self.requireLanguage(expected, in: rewritten)

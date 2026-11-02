@@ -59,7 +59,7 @@ struct ScriptExpansionTests {
     }
 
     @Test func aStepAsksInSentencesAndKnowsWhatTheBlockIsFor() {
-        let request = ScriptRequest(source: .prompt("Why I quit coffee"), platform: .tiktok, tone: nil, voice: nil, targetRange: 60...90)
+        let request = ScriptRequest(source: .prompt("Why I quit coffee"), platform: .tiktok, voice: nil, targetRange: 60...90)
         let blocks = ["I quit coffee.", "It was hard."]
         let step = ScriptExpansion.Step(index: 0, words: 3, target: 36, isShorter: false)
         let prompt = ScriptExpansionPrompt.prompt(for: step, of: blocks, request: request, purpose: "grab attention in 3 seconds")

@@ -118,7 +118,7 @@ final class VoiceV29UITests: XCTestCase {
         element(app, "voice.preview.done").tap()
         XCTAssertTrue(element(app, "voice.preview.soundsLikeMe").exists(within: 5))
         element(app, "voice.preview.soundsLikeMe").tap()
-        XCTAssertTrue(app.staticTexts["Saved · Cue learns from it"].exists(within: 5))
+        XCTAssertTrue(app.staticTexts["Saved · counts toward your voice"].exists(within: 5))
     }
 
     /// F9: a typo asks "Did you mean…", a blocked word is refused, a repeat says "Already added.".

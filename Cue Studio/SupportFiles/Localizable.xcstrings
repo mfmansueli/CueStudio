@@ -238,6 +238,125 @@
         }
       }
     },
+    "“Use my voice in drafts” is off: none of this is sent." : {
+      "comment" : "What Cue sends, when the switch is off: the voice shown is what it would send",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "«استخدم صوتي في المسودات» متوقف: لا يُرسل شيء من هذا."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Brug min stemme i udkast” er slået fra: intet af dette sendes."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„Meine Stimme in Entwürfen nutzen“ ist aus: Nichts davon wird gesendet."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "«Usar mi voz en los borradores» está desactivado: no se envía nada de esto."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "« Utiliser ma voix dans les brouillons » est désactivé : rien de tout cela n’est envoyé."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“ड्राफ़्ट में मेरी आवाज़ इस्तेमाल करें” बंद है: इसमें से कुछ भी नहीं भेजा जाता।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Pakai suaraku di draf” mati: tidak ada yang dikirim."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "«Usa la mia voce nelle bozze» è disattivato: niente di tutto questo viene inviato."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「下書きに自分のボイスを使う」がオフです。ここにあるものは何も送信されません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "‘초안에 내 목소리 사용’이 꺼져 있어요. 이 내용은 전송되지 않아요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "«Bruk stemmen min i utkast» er av: ingenting av dette sendes."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "‘Mijn stem gebruiken in concepten’ staat uit: niets hiervan wordt verstuurd."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Usar minha voz nos rascunhos” está desligado: nada disso é enviado."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "”Använd min röst i utkast” är av: inget av det här skickas."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“ใช้ My Cue Voice ในฉบับร่าง” ปิดอยู่: จะไม่มีการส่งข้อมูลนี้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Taslaklarda sesimi kullan” kapalı: bunların hiçbiri gönderilmez."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Dùng giọng tôi trong bản nháp” đang tắt: không có gì ở đây được gửi đi."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“在草稿中使用我的口吻”已关闭：以下内容都不会发送。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「在草稿中使用我的口吻」已關閉：以下內容都不會傳送。"
+          }
+        }
+      }
+    },
     "[its word count]" : {
       "comment" : "What Cue sends for Ultra AI: placeholder for the script's word count inside the Fit to time call",
       "localizations" : {
@@ -10078,6 +10197,125 @@
         }
       }
     },
+    "Examples, imported writing and approved scripts guide what Cue writes on this iPhone, ideas included. They’re never sent to Private Cloud Compute or Ultra AI." : {
+      "comment" : "My Cue Voice, under Proof: where the proof is used and where it never goes",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الأمثلة والكتابات المستوردة والنصوص التي وافقتَ عليها توجّه ما يكتبه Cue على هذا الـ iPhone، بما في ذلك الأفكار. لا تُرسل أبدًا إلى Private Cloud Compute أو Ultra AI."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eksempler, importerede tekster og godkendte manuskripter styrer det, Cue skriver på denne iPhone, også idéer. De sendes aldrig til Private Cloud Compute eller Ultra AI."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beispiele, importierte Texte und bestätigte Skripte leiten, was Cue auf diesem iPhone schreibt, Ideen eingeschlossen. Sie werden nie an Private Cloud Compute oder Ultra AI gesendet."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los ejemplos, los textos importados y los guiones aprobados guían lo que Cue escribe en este iPhone, ideas incluidas. Nunca se envían a Private Cloud Compute ni a Ultra AI."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les exemples, les textes importés et les scripts approuvés guident ce que Cue écrit sur cet iPhone, idées comprises. Ils ne sont jamais envoyés à Private Cloud Compute ni à Ultra AI."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "उदाहरण, आयात किया गया लेखन और मंज़ूर की गई स्क्रिप्ट इस iPhone पर Cue जो भी लिखता है, उसे दिशा देते हैं, आइडिया भी। इन्हें कभी Private Cloud Compute या Ultra AI को नहीं भेजा जाता।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contoh, tulisan yang diimpor, dan naskah yang disetujui memandu apa yang ditulis Cue di iPhone ini, termasuk ide. Semuanya tidak pernah dikirim ke Private Cloud Compute atau Ultra AI."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esempi, testi importati e copioni approvati guidano ciò che Cue scrive su questo iPhone, idee comprese. Non vengono mai inviati a Private Cloud Compute né a Ultra AI."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サンプル、読み込んだ文章、承認した台本は、このiPhoneでCueが書くもの（アイデアも含む）の手本になります。Private Cloud ComputeやUltra AIには一切送信されません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "예시, 가져온 글, 승인한 대본은 이 iPhone에서 Cue가 쓰는 글의 기준이 돼요. 아이디어도 포함돼요. Private Cloud Compute나 Ultra AI로는 절대 전송되지 않아요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eksempler, importerte tekster og godkjente manus styrer det Cue skriver på denne iPhonen, også ideer. De sendes aldri til Private Cloud Compute eller Ultra AI."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voorbeelden, geïmporteerde teksten en goedgekeurde scripts sturen wat Cue op deze iPhone schrijft, ideeën inbegrepen. Ze worden nooit naar Private Cloud Compute of Ultra AI gestuurd."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exemplos, textos importados e roteiros aprovados guiam o que o Cue escreve neste iPhone, ideias incluídas. Nunca são enviados ao Private Cloud Compute nem ao Ultra AI."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exempel, importerade texter och godkända manus styr det Cue skriver på den här iPhonen, idéer inräknade. De skickas aldrig till Private Cloud Compute eller Ultra AI."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ตัวอย่าง งานเขียนที่นำเข้า และสคริปต์ที่คุณอนุมัติ เป็นแนวทางให้สิ่งที่ Cue เขียนบน iPhone เครื่องนี้ รวมถึงไอเดีย และจะไม่ถูกส่งไปยัง Private Cloud Compute หรือ Ultra AI เลย"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Örnekler, içe aktarılan yazılar ve onayladığın senaryolar, Cue’nun bu iPhone’da yazdıklarına, fikirler dahil, yön verir. Asla Private Cloud Compute’a veya Ultra AI’a gönderilmez."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ví dụ, bài viết đã nhập và kịch bản bạn đã duyệt định hướng những gì Cue viết trên iPhone này, kể cả ý tưởng. Chúng không bao giờ được gửi tới Private Cloud Compute hay Ultra AI."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "示例、导入的文字和你认可的脚本会指导 Cue 在这台 iPhone 上写的内容，包括点子。它们绝不会发送到 Private Cloud Compute 或 Ultra AI。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "範例、輸入的文字和你認可的腳本會引導 Cue 在這部 iPhone 上寫的內容，包括點子。它們絕不會傳送到 Private Cloud Compute 或 Ultra AI。"
+          }
+        }
+      }
+    },
     "Export original" : {
       "comment" : "Unfinished edit alert button when no edit was ever finished: exports the recording as it was",
       "localizations" : {
@@ -19665,6 +19903,125 @@
         }
       }
     },
+    "Rewrite freely. Tap Sounds like me and Cue uses it on this iPhone." : {
+      "comment" : "First-draft tip over Record: the draft is the creator's to change; Sounds like me keeps it for what Cue writes on this iPhone",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أعد الكتابة بحرية. اضغط «يشبهني» ويستخدمها Cue على هذا الـ iPhone."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Omskriv frit. Tryk på Lyder som mig, så bruger Cue det på denne iPhone."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schreib frei um. Tipp auf „Klingt nach mir“ und Cue nutzt es auf diesem iPhone."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reescribe a tu gusto. Toca Suena como yo y Cue lo usa en este iPhone."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réécrivez librement. Touchez Me ressemble et Cue l’utilise sur cet iPhone."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "खुलकर दोबारा लिखें। “मेरे जैसा लगता है” दबाएँ, Cue इसे इसी iPhone पर इस्तेमाल करेगा।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tulis ulang sesukamu. Ketuk Mirip aku dan Cue memakainya di iPhone ini."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Riscrivi liberamente. Tocca Mi somiglia e Cue lo usa su questo iPhone."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自由に書き直しましょう。「自分らしい」をタップすると、このiPhoneでCueが使います。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "자유롭게 고쳐 쓰세요. ‘나다워요’를 누르면 이 iPhone에서 Cue가 사용해요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skriv om fritt. Trykk på Høres ut som meg, så bruker Cue det på denne iPhonen."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Herschrijf vrij. Tik op Klinkt als ik en Cue gebruikt het op deze iPhone."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reescreva à vontade. Toque em Soa como eu e o Cue usa isso neste iPhone."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skriv om fritt. Tryck på Låter som jag så använder Cue det på den här iPhonen."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เขียนใหม่ได้ตามใจ แตะ “เหมือนฉัน” แล้ว Cue จะใช้สิ่งนี้บน iPhone เครื่องนี้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dilediğin gibi yeniden yaz. Bana benziyor’a dokun, Cue bunu bu iPhone’da kullansın."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cứ viết lại thoải mái. Chạm Giống tôi để Cue dùng nó trên iPhone này."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "随意改写。轻点“很像我”，Cue 就会在这台 iPhone 上使用。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "隨意改寫。點「聽起來像我」，Cue 就會在這部 iPhone 上使用。"
+          }
+        }
+      }
+    },
     "Rewriting the script…" : {
       "comment" : "Working toast (with Stop) while an Improve tool or Fit to time rewrites the whole script; the page is locked meanwhile",
       "localizations" : {
@@ -19780,6 +20137,363 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "正在重寫腳本…"
+          }
+        }
+      }
+    },
+    "Saved as your writing · used on this iPhone" : {
+      "comment" : "Toast after recording a Cue draft the creator made their own: its opening is kept as how they write, read only on this iPhone",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "حُفظ كنموذج لكتابتك · يُستخدم على هذا الـ iPhone"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gemt som din skrivestil · bruges på denne iPhone"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Als dein Schreibstil gesichert · genutzt auf diesem iPhone"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardado como tu forma de escribir · se usa en este iPhone"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enregistré comme votre façon d’écrire · utilisé sur cet iPhone"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपके लिखने के ढंग के रूप में सेव हुआ · इसी iPhone पर इस्तेमाल होगा"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disimpan sebagai gaya tulisanmu · dipakai di iPhone ini"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salvato come tuo modo di scrivere · usato su questo iPhone"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "あなたの書き方として保存 · このiPhoneで使います"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "내 글쓰기로 저장됨 · 이 iPhone에서 사용돼요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lagret som skrivemåten din · brukes på denne iPhonen"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bewaard als jouw schrijfstijl · gebruikt op deze iPhone"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salvo como seu jeito de escrever · usado neste iPhone"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sparat som ditt sätt att skriva · används på den här iPhonen"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "บันทึกเป็นสไตล์การเขียนของคุณ · ใช้บน iPhone เครื่องนี้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yazış tarzın olarak kaydedildi · bu iPhone’da kullanılır"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đã lưu làm cách viết của bạn · dùng trên iPhone này"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已存为你的写作方式 · 在这台 iPhone 上使用"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已存為你的寫作方式 · 在這部 iPhone 上使用"
+          }
+        }
+      }
+    },
+    "Saved · counts toward your voice" : {
+      "comment" : "Toast after Sounds like me in the voice preview: an approval on the voice meter (the sample itself isn't kept)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تم الحفظ · يُحتسب ضمن صوتك"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gemt · tæller med i din stemme"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gesichert · zählt für deine Stimme"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardado · cuenta para tu voz"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enregistré · compte pour votre voix"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "सेव हो गया · आपकी आवाज़ में गिना जाएगा"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tersimpan · dihitung untuk suaramu"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salvato · conta per la tua voce"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存しました · あなたのボイスに加算されます"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "저장됨 · 내 목소리에 반영돼요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lagret · teller for stemmen din"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bewaard · telt mee voor je stem"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salvo · conta para a sua voz"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sparat · räknas till din röst"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "บันทึกแล้ว · นับรวมในเสียงของคุณ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaydedildi · sesine sayılır"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đã lưu · được tính vào giọng của bạn"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已存储 · 计入你的口吻"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已儲存 · 計入你的口吻"
+          }
+        }
+      }
+    },
+    "Saved · Cue uses it on this iPhone" : {
+      "comment" : "Toast after Sounds like me on a script: the script is kept as how the creator writes, read only by what Cue writes on this iPhone",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تم الحفظ · يستخدمه Cue على هذا الـ iPhone"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gemt · Cue bruger det på denne iPhone"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gesichert · Cue nutzt es auf diesem iPhone"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardado · Cue lo usa en este iPhone"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enregistré · Cue l’utilise sur cet iPhone"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "सेव हो गया · Cue इसे इसी iPhone पर इस्तेमाल करता है"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tersimpan · Cue memakainya di iPhone ini"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salvato · Cue lo usa su questo iPhone"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存しました · このiPhoneでCueが使います"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "저장됨 · 이 iPhone에서 Cue가 사용해요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lagret · Cue bruker det på denne iPhonen"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bewaard · Cue gebruikt het op deze iPhone"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salvo · O Cue usa isso neste iPhone"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sparat · Cue använder det på den här iPhonen"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "บันทึกแล้ว · Cue ใช้สิ่งนี้บน iPhone เครื่องนี้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaydedildi · Cue bunu bu iPhone’da kullanır"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đã lưu · Cue dùng nó trên iPhone này"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已存储 · Cue 会在这台 iPhone 上使用"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已儲存 · Cue 會在這部 iPhone 上使用"
           }
         }
       }
@@ -32726,6 +33440,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "你的 My Cue Voice 偏好：你是誰、你的觀眾以及你的說話方式"
+          }
+        }
+      }
+    },
+    "Your topics go only when your idea is about one of them." : {
+      "comment" : "What Cue sends: a request carries a topic only when its idea is about it",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تُرسل مواضيعك فقط عندما تكون فكرتك عن أحدها."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dine emner sendes kun, når din idé handler om et af dem."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Themen gehen nur mit, wenn deine Idee von einem davon handelt."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus temas solo se envían cuando tu idea trata de uno de ellos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vos sujets ne partent que si votre idée porte sur l’un d’eux."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपके विषय तभी भेजे जाते हैं जब आपका आइडिया उनमें से किसी के बारे में हो।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Topikmu hanya dikirim saat idemu membahas salah satunya."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I tuoi argomenti vengono inviati solo quando la tua idea parla di uno di essi."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "トピックは、アイデアがそのどれかに関するときだけ送信されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "주제는 아이디어가 그중 하나에 관한 것일 때만 전송돼요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Emnene dine sendes bare når ideen din handler om et av dem."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je onderwerpen gaan alleen mee als je idee over een ervan gaat."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seus temas só vão quando a sua ideia é sobre um deles."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dina ämnen skickas bara när din idé handlar om något av dem."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "หัวข้อของคุณจะถูกส่งก็ต่อเมื่อไอเดียเกี่ยวกับหัวข้อใดหัวข้อหนึ่งเท่านั้น"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konuların yalnızca fikrin bunlardan biriyle ilgiliyse gönderilir."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chủ đề của bạn chỉ được gửi khi ý tưởng nói về một trong số đó."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "只有当你的点子与其中某个主题有关时，才会发送你的主题。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "只有當你的點子與其中某個主題有關時，才會傳送你的主題。"
           }
         }
       }
@@ -152796,125 +153629,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cue 沒有伺服器。你的腳本、鏡頭與 My Cue Voice 都儲存在這部裝置與裝置備份中。使用 Apple 登入為選用功能，只會把你的 Apple ID 保存在這部 iPhone 上。"
-          }
-        }
-      }
-    },
-    "Cue learned from this" : {
-      "comment" : "Toast after a script Cue drafted and the creator rewrote is recorded: its opening becomes an example of how they write. Has Undo",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تعلّم Cue من هذا"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue har lært af det her"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue hat daraus gelernt"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue aprendió de esto"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue a appris de ce texte"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue ने इससे सीखा"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue belajar dari ini"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue ha imparato da questo"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cueがこの内容から学びました"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue가 이걸로 배웠어요"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue lærte av dette"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue heeft hiervan geleerd"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O Cue aprendeu com isso"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue lärde sig av det här"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue เรียนรู้จากสิ่งนี้แล้ว"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue bundan öğrendi"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue đã học từ đây"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue 已从中学习"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue 已從中學習"
           }
         }
       }
@@ -363821,125 +364535,6 @@
         }
       }
     },
-    "Rewrite freely. Tap Sounds like me and Cue learns from it." : {
-      "comment" : "First voyage draft tip line. 'Sounds like me' is the button's name; use its translation",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "أعد الكتابة بحرية. اضغط «يشبهني» ويتعلّم Cue منها."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Omskriv frit. Tryk på Lyder som mig, så lærer Cue af det."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Schreib frei um. Tipp auf „Klingt nach mir“ und Cue lernt daraus."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reescribe a tu gusto. Toca Suena como yo y Cue aprende de ello."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Réécrivez librement. Touchez Me ressemble et Cue en apprend."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "खुलकर दोबारा लिखें। “मेरे जैसा लगता है” दबाएँ, Cue उससे सीखेगा।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tulis ulang sesukamu. Ketuk Mirip aku dan Cue belajar darinya."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Riscrivi liberamente. Tocca Mi somiglia e Cue impara."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自由に書き直しましょう。「自分らしい」をタップするとCueが学びます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "자유롭게 고쳐 쓰세요. ‘나다워요’를 누르면 Cue가 배워요."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Skriv om fritt. Trykk på Høres ut som meg, så lærer Cue av det."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Herschrijf vrij. Tik op Klinkt als ik en Cue leert ervan."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reescreva à vontade. Toque em Soa como eu e o Cue aprende com isso."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Skriv om fritt. Tryck på Låter som jag så lär sig Cue av det."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "เขียนใหม่ได้ตามใจ แตะ “เหมือนฉัน” แล้ว Cue จะเรียนรู้"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dilediğin gibi yeniden yaz. Bana benziyor’a dokun, Cue ondan öğrensin."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cứ viết lại thoải mái. Chạm Giống tôi để Cue học theo."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "随意改写。轻点“很像我”，Cue 就会学习。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "隨意改寫。點「聽起來像我」，Cue 就會學。"
-          }
-        }
-      }
-    },
     "Right" : {
       "localizations" : {
         "ar" : {
@@ -369873,125 +370468,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "已儲存 · 隨時繼續"
-          }
-        }
-      }
-    },
-    "Saved · Cue learns from it" : {
-      "comment" : "Toast after 'Sounds like me': the script's opening becomes an example of the creator's voice",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تم الحفظ · يتعلّم Cue منه"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gemt · Cue lærer af det"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gesichert · Cue lernt daraus"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Guardado · Cue aprende de ello"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Enregistré · Cue en apprend"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "सेव हो गया · Cue इससे सीखता है"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tersimpan · Cue belajar darinya"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Salvato · Cue impara da qui"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "保存しました · Cueが学びます"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "저장됨 · Cue가 배워요"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lagret · Cue lærer av det"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bewaard · Cue leert ervan"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Salvo · O Cue aprende com isso"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sparat · Cue lär sig av det"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "บันทึกแล้ว · Cue เรียนรู้จากสิ่งนี้"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kaydedildi · Cue bundan öğrenir"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Đã lưu · Cue học từ đây"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已存储 · Cue 会从中学习"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已儲存 · Cue 會從中學習"
           }
         }
       }

@@ -48,13 +48,16 @@ final class DraftLearningService {
     }
 
     /// A take of `script` was recorded: when the creator made Cue's draft their own, its opening becomes an example of how they write.
-    /// A draft recorded as Cue wrote it waits (they may change it and record again).
+    /// A draft recorded as Cue wrote it waits (they may change it and record again), and so does one whose opening is still Cue's: what
+    /// would be kept is that opening, Cue's words and not theirs.
     func tookTake(of script: Script?) {
-        guard let script, let draft = drafts[script.id], DraftEdits.isTheirs(draft: draft.text, final: script.text) else { return }
+        guard let script, let draft = drafts[script.id], DraftEdits.isTheirs(draft: draft.text, final: script.text),
+              DraftEdits.openingIsTheirs(draft: draft.text, final: script.text) else { return }
         drafts[script.id] = nil
         persist()
         guard let example = profile.learnFromRecordedScript(script.text) else { return }
-        toast.show(String(localized: "Cue learned from this"), kind: .cue, action: ToastAction(title: String(localized: "Undo")) { [profile] in
+        // What it learned is read only when Cue writes on this iPhone (§11, A6).
+        toast.show(String(localized: "Saved as your writing · used on this iPhone"), kind: .cue, action: ToastAction(title: String(localized: "Undo")) { [profile] in
             profile.removeApprovedSample(example.id)
         })
     }

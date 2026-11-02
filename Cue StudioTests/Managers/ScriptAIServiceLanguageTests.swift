@@ -27,7 +27,7 @@ struct ScriptAIServiceLanguageTests {
 
     private func request(_ idea: String = "Why I quit coffee", language: CueLanguage?, format: ScriptType? = nil) -> ScriptRequest {
         ScriptRequest(
-            source: .prompt(idea), platform: .tiktok, tone: nil, voice: nil, targetRange: 30...45, language: language, format: format
+            source: .prompt(idea), platform: .tiktok, voice: nil, targetRange: 30...45, language: language, format: format
         )
     }
 
@@ -285,7 +285,7 @@ struct ScriptAIServiceFallbackTests {
 @MainActor
 struct ScriptAIServiceRunawayTests {
     private func request(_ range: ClosedRange<TimeInterval>) -> ScriptRequest {
-        ScriptRequest(source: .prompt("Why I quit coffee"), platform: .tiktok, tone: nil, voice: nil, targetRange: range, language: .english)
+        ScriptRequest(source: .prompt("Why I quit coffee"), platform: .tiktok, voice: nil, targetRange: range, language: .english)
     }
 
     @Test func theBoundGrowsWithTheLengthAskedFor() {

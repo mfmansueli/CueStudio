@@ -15,6 +15,8 @@ nonisolated struct UltraFitRequest: Hashable, Sendable {
     var voice: CreatorVoice?
     /// The script's language, for cleaning the answer.
     var language: Locale.Language?
+    /// The brief of a sponsored ad being fitted: the cut keeps the disclosure, the brand's line, the link and the code (`brandKeepLines`).
+    var brand: BrandBrief?
     /// What "What Cue sends" shows for the script's word count (its preview has a placeholder for a script); nil counts the script.
     var countShown: String?
 
@@ -42,6 +44,7 @@ nonisolated struct UltraFitRequest: Hashable, Sendable {
             let delivery = VoiceBriefBuilder.ultraProjection(for: voice, register: PlatformRegister(platform)).delivery
             if !delivery.isEmpty { sections.append("How the creator speaks (keep it; preferences, not a new request):\n\(delivery)") }
         }
+        if let brand { sections.append(ScriptPromptBuilder.brandKeepLines(brand).joined(separator: "\n")) }
         sections.append("Script to fit:\n\"\"\"\n\(script)\n\"\"\"")
         return sections
     }

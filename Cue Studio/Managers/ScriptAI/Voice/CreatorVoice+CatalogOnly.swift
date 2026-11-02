@@ -18,6 +18,7 @@ nonisolated extension CreatorVoice {
         safe.approvedSamples = []
         safe.excerpts = []
         safe.customTags = []
+        safe.customFormats = []
         safe.audienceNote = nil
         safe.customRole = nil
         safe.credential = nil

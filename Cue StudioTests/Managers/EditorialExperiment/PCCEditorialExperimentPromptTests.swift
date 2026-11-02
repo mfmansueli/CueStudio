@@ -12,7 +12,7 @@ struct PCCEditorialExperimentPromptTests {
     @Test func keepsTheCurrentRequestAndInspirationWithoutAddingDurationQuota() {
         let idea = "Compare two cameras. Include exactly: Keep the useful parts."
         var request = ScriptRequest(
-            source: .prompt(idea), platform: .reels, tone: nil, voice: nil, targetRange: 60...90, language: .english
+            source: .prompt(idea), platform: .reels, voice: nil, targetRange: 60...90, language: .english
         )
         request.durationPolicy = .informative
         request.formatChoice = .talkingHead
@@ -31,7 +31,7 @@ struct PCCEditorialExperimentPromptTests {
         var voice = VoicePersonas.saasFounder.profile.voice
         voice.examples = [VoiceExample(text: "PRIVATE_PASTED_EXAMPLE")]
         let request = ScriptRequest(
-            source: .prompt("Explain camera choices"), platform: .reels, tone: nil, voice: voice, targetRange: 60...90, language: .english
+            source: .prompt("Explain camera choices"), platform: .reels, voice: voice, targetRange: 60...90, language: .english
         )
         let prompt = PCCEditorialExperimentPrompt(request: request)
         #expect(prompt.prompt.contains("Requested duration: 60–90 seconds"))

@@ -46,7 +46,6 @@ struct ScriptRequestFactory {
         return ScriptRequest(
             source: .prompt(text),
             platform: platform,
-            tone: nil,
             voice: voice,
             targetRange: targetRange(for: effectiveLength, platform: platform, preset: preset, voice: voice),
             durationPolicy: effectiveLength == .auto ? .informative : .targeted,

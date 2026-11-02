@@ -76,7 +76,7 @@ struct LanguageModelDeviceTests {
     func aFreePromptComesBackInItsLanguageOrIsRefusedAtOnce(language: CueLanguage) async throws {
         let service = try service(language)
         let request = ScriptRequest(
-            source: .prompt(try #require(Self.ideas[language])), platform: .tiktok, tone: nil, voice: nil,
+            source: .prompt(try #require(Self.ideas[language])), platform: .tiktok, voice: nil,
             targetRange: 20...30, language: language
         )
         let supported = SystemLanguageModel.default.supportsLocale(language.locale)
@@ -151,7 +151,7 @@ struct LanguageModelDeviceTests {
 
     /// The creator's voice, as the card's "Write in my voice" sends it: a catchphrase, how they sound, their style.
     private static let voice = CreatorVoice(
-        sounds: [.casual, .confident], phrases: ["Hey fam"], vocabulary: .simple, styles: [.storytelling], niches: [.lifestyle]
+        sounds: [.casual, .confident], phrases: ["Hey fam"], vocabulary: .simple, styles: [.storytelling]
     )
 
     /// What the card on the main screen does when "Write in my voice" is on: the request carries the voice, the
@@ -192,7 +192,7 @@ struct LanguageModelDeviceTests {
     func aVoiceDoesNotMakeAnUnsupportedLanguageWork(language: CueLanguage) async throws {
         let service = try service(language)
         var request = ScriptRequest(
-            source: .prompt(try #require(Self.ideas[language])), platform: .tiktok, tone: nil, voice: Self.voice,
+            source: .prompt(try #require(Self.ideas[language])), platform: .tiktok, voice: Self.voice,
             targetRange: 20...30, language: language
         )
         request.voice = Self.voice

@@ -41,6 +41,9 @@ nonisolated struct Script: Codable, Identifiable, Hashable, Sendable {
     /// Created for the AI to write into, and still waiting for its words: one left empty by a past session (Cue closed before the script
     /// arrived) is removed when the library is read (`ScriptLibraryService.load`).
     var awaitsDraft = false
+    /// The brand brief a sponsored ad was asked with, as it was then: what the rewrite tools keep (the paid partnership, what it must and must
+    /// never say, the link and the code). A copy, so editing the saved brand later never changes an ad already written.
+    var brand: BrandBrief?
 
     init(
         id: UUID = UUID(), title: String, text: String, platform: Platform, type: ScriptType? = nil,
@@ -89,6 +92,7 @@ nonisolated struct Script: Codable, Identifiable, Hashable, Sendable {
         isFinished = try container.decodeIfPresent(Bool.self, forKey: .isFinished)
             ?? !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
         awaitsDraft = try container.decodeIfPresent(Bool.self, forKey: .awaitsDraft) ?? false
+        brand = (try? container.decodeIfPresent(BrandBrief.self, forKey: .brand)) ?? nil
     }
 
     var structure: ScriptStructure { type?.structure ?? .generic }

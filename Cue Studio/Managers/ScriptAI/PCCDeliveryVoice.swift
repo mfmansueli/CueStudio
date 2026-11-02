@@ -11,7 +11,6 @@ nonisolated enum PCCDeliveryVoice {
         voice.role = nil
         voice.customRole = nil
         voice.credential = nil
-        voice.niches = []
         voice.topics = []
         voice.audienceGroup = nil
         voice.audienceNote = nil
@@ -20,6 +19,7 @@ nonisolated enum PCCDeliveryVoice {
         voice.openings = []
         voice.endings = []
         voice.formats = []
+        voice.customFormats = []
         voice.reach.platforms = []
         voice.reach.length = nil
         // Sounds, delivery, humor, vocabulary, knowledge level, avoid rules, typed style tags,

@@ -35,7 +35,7 @@ struct UltraScriptServiceTests {
     }
 
     private var request: ScriptRequest {
-        var request = ScriptRequest(source: .prompt("Why I stopped buying bottled water"), platform: .tiktok, tone: nil, voice: nil, targetRange: 60...90)
+        var request = ScriptRequest(source: .prompt("Why I stopped buying bottled water"), platform: .tiktok, voice: nil, targetRange: 60...90)
         request.engine = .ultra
         return request
     }

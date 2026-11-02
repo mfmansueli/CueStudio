@@ -121,7 +121,7 @@ struct IdeaBriefPromptTests {
 
     private func request(brief: IdeaBrief?, voice: CreatorVoice? = nil) -> ScriptRequest {
         ScriptRequest(
-            source: .prompt(brief?.composerText ?? "Why saving feels harder than spending"), platform: .tiktok, tone: nil, voice: voice,
+            source: .prompt(brief?.composerText ?? "Why saving feels harder than spending"), platform: .tiktok, voice: voice,
             targetRange: 60...90, brief: brief
         )
     }

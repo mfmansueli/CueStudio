@@ -19,7 +19,7 @@ struct AIRequestPolicyTests {
             language: "en", pieces: 3, words: 500, wordsPerSentence: 12, questionShare: 0.1, exclamationShare: 0.01,
             emojiPer100Words: 0, averageWordLength: 5, singularWords: 20, pluralWords: 0, medianWords: 100, measuredAt: .now
         )
-        return ScriptRequest(source: .prompt("Explain morning routines"), platform: .youtube, tone: nil, voice: voice,
+        return ScriptRequest(source: .prompt("Explain morning routines"), platform: .youtube, voice: voice,
                              targetRange: 240...300, language: .english)
     }
 

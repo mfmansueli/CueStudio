@@ -29,7 +29,7 @@ struct ScriptPageUltraTests {
         let takes = TakeLibraryService(repository: FakeTakeRepository(takes: []))
         takes.load()
         let writer = FakeScriptWriter()
-        var request = ScriptRequest(source: .prompt("Carnival in Salvador"), platform: .reels, tone: nil, voice: nil, targetRange: 30...60)
+        var request = ScriptRequest(source: .prompt("Carnival in Salvador"), platform: .reels, voice: nil, targetRange: 30...60)
         request.engine = .ultra
         let toast = ToastService()
         let viewModel = ScriptDetailViewModel(
