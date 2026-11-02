@@ -31,21 +31,28 @@ nonisolated enum ScriptPromptBuilder {
         ]
         if structure.isSerious {
             lines.append(seriousRule)
+            // A serious statement has no style, but the voice's rules still hold (the owner's B9; §11, A4).
+            if let rules = request.rules { lines += VoiceBriefBuilder.restrictionLines(for: rules, register: PlatformRegister(request.platform)) }
         } else {
             // Where it is posted shapes the hook, the pace and the ending; a serious statement has none of those.
             lines.append(request.modelRoute == .privateCloud
                 ? PCCScriptDirection.platformLine(for: request.platform, durationPolicy: request.durationPolicy)
-                : PlatformGuide.line(for: request.platform, durationPolicy: request.durationPolicy))
-            lines.append(request.modelRoute == .privateCloud ? PCCScriptDirection.draftLicense : honestyRule)
+                : PlatformGuide.line(for: request.platform, durationPolicy: request.durationPolicy, creatorEnds: voice?.decidesTheEnding ?? false))
+            lines.append(request.modelRoute == .privateCloud ? PCCScriptDirection.draftLicense : honestyRule(for: request))
+            if request.modelRoute == .privateCloud { lines.append(resultRule) }
         }
         lines.append(accuracyRule)
         if let voice {
             lines += voiceLines(voice, platform: request.platform, budget: request.voiceBudget, contextualPreferences: request.modelRoute == .privateCloud)
+            lines.append(requestWinsRule)
         }
         if let language = request.language {
             lines.append(languageRule(language, variant: request.languageVariant))
             if insistsOnLanguage || language != .english { lines.append(languageInsistence(language, variant: request.languageVariant)) }
         }
+        // Gender agreement and the form of address, in the languages that mark them (the owner's B8; §11.7).
+        let theirs = request.voice ?? request.rules
+        lines += AgreementGuide.lines(for: theirs?.agreement, speaksAs: theirs?.resolvedSpeaksAs ?? .i, language: AgreementGuide.code(of: request))
         lines += PCCScriptDirection.instructions(for: request)
         return lines.joined(separator: "\n")
     }
@@ -151,9 +158,6 @@ nonisolated enum ScriptPromptBuilder {
                 "What each block does: \(guide.purpose)",
             ]
         }
-        if let tone = request.tone {
-            lines.append("Tone: \(tone.promptWord).")
-        }
         if request.durationPolicy == .targeted {
             lines.append("Length: between \(low) and \(high) spoken words in total.")
             lines.append(lengthRule(
@@ -209,11 +213,13 @@ nonisolated enum ScriptPromptBuilder {
     }
 
     /// The shape of the script: the chosen format, else the one a free idea asks for (or the creator films most), else the generic one.
+    /// Its closing block ends as the creator does (`FormatGuide.ending(for:)`); a serious statement has no voice, so its shape stays.
     static func formatGuide(for request: ScriptRequest) -> FormatGuide {
-        if let type = request.type { return .guide(for: type) }
-        if request.formatChoice == .talkingHead { return .talkingHead }
-        guard case .prompt(let idea) = request.source else { return .generic }
-        return .guide(for: FormatGuess.format(for: idea, usual: request.voice?.formats ?? []))
+        let voice = request.structure.isSerious ? nil : request.voice
+        if let type = request.type { return FormatGuide.guide(for: type).ending(for: voice) }
+        if request.formatChoice == .talkingHead { return FormatGuide.talkingHead.ending(for: voice) }
+        guard case .prompt(let idea) = request.source else { return FormatGuide.generic.ending(for: voice) }
+        return FormatGuide.guide(for: FormatGuess.format(for: idea, usual: request.voice?.formats ?? [])).ending(for: voice)
     }
 
     /// What the video is about, as the creator's text says it: for an idea from Find inspiration, without the lines of its angle and its opening line,
@@ -343,10 +349,15 @@ nonisolated enum ScriptPromptBuilder {
         ).lines
     }
 
-    /// "What Cue sends" (My Cue Voice): the voice as the model reads it, and what was cut to fit. Empty when nothing of the voice can be used yet.
-    static func brief(for profile: CreatorProfile) -> VoiceBrief {
+    /// "What Cue sends" (My Cue Voice): the voice as a script's request reads it (no usual length: `AIRequestPolicy.prepare`), and what was cut to
+    /// fit. Empty when nothing of the voice can be used yet.
+    /// - Parameter phrases: the catchphrases the next script is offered (`CreatorProfileService.nextCatchphrases`); nil keeps them all.
+    static func brief(for profile: CreatorProfile, phrases: [String]? = nil) -> VoiceBrief {
         guard profile.canWriteInMyVoice else { return .empty }
-        return VoiceBriefBuilder.brief(for: profile.voice)
+        var voice = profile.voice
+        voice.reach.length = nil
+        if let phrases { voice.phrases = phrases }
+        return VoiceBriefBuilder.brief(for: voice)
     }
 
     // MARK: - Sponsored ads
@@ -373,6 +384,41 @@ nonisolated enum ScriptPromptBuilder {
     static let honestyRule = "Never invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless "
         + "the idea gives the details. Never say the creator did, tried, discovered or was saved by something unless the idea says so."
 
+    /// A story the creator tells in the first person ("O dia em que eu desisti da dieta", or the storytime format): its scene may be imagined
+    /// with the numbers of a routine, never with a result (the owner's B12, 02/11/2026; §11, A11b). Measured on an iPhone 15 Pro (01/11/2026):
+    /// "Eu perdi 2 quilos em 7 dias" for that idea.
+    static let storyHonestyRule = "This is the creator's own story: imagine the everyday details of the scene, and routine numbers (how many times "
+        + "a week, minutes, days) may describe it. Never invent a result (weight, money, percentages, gains, cures), a statistic, a price, a client "
+        + "or a credential that the idea doesn't give."
+
+    /// What Private Cloud Compute's license to imagine never covers (B12).
+    static let resultRule = "Never put a result (weight, money, percentages, gains, cures), a statistic or a price that the request doesn't give "
+        + "in the creator's mouth; routine numbers may describe an imagined scene."
+
+    /// The owner's order (B1, 02/11/2026; §11, A8): this video's request, then the creator's rules, then their habits, then the platform. Said once,
+    /// outside the voice's brief, whose budget was measured on an iPhone (`VoiceBrief.budget`).
+    static let requestWinsRule = "If this video's request asks in so many words for something the creator's rules or habits leave out "
+        + "(an ending, a word, a call to action), the request wins."
+
+    static func honestyRule(for request: ScriptRequest) -> String {
+        isFirstPersonStory(request) ? storyHonestyRule : honestyRule
+    }
+
+    /// The storytime format (chosen, or the one `formatGuide(for:)` guesses), or a talking video that says "I" in its own language: a list or a
+    /// tutorial in the first person ("Minha rotina de manhã") is advice, not a story.
+    static func isFirstPersonStory(_ request: ScriptRequest) -> Bool {
+        let format = request.type ?? FormatGuess.format(for: request.creatorText, usual: request.voice?.formats ?? [])
+        if format == .story { return true }
+        guard format == nil else { return false }
+        let code = request.language?.locale.language.languageCode?.identifier ?? "en"
+        guard let lexicon = WritingLexicon.lexicon(for: code) else { return false }
+        let tokens = request.creatorText.lowercased().split { !($0.isLetter || $0 == "'" || $0 == "’") }.map(String.init)
+        return tokens.contains(where: lexicon.singular.contains)
+    }
+
+    /// Every edit, with or without a voice (the owner's B12, 02/11/2026): a number can describe a scene, never a result the creator didn't give.
+    static let editHonestyRule = "Never add a personal result, statistic, price, client or credential that the script doesn't already state."
+
     static let accuracyRule = "Be accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it."
 
     // MARK: - Hooks and ideas
@@ -392,7 +438,7 @@ nonisolated enum ScriptPromptBuilder {
         Write five new opening lines for this script, which will be posted on \(context.platform.promptName). \
         \(replaces)Each must grab attention and be said in about three seconds: at most \(words) words, fewer is better. \
         The five are different from each other and from the opening line now, and each opens in its own way: no greeting or catchphrase \
-        at the start of more than one. \(written)
+        at the start of more than one. \(written)\(context.brand.map { "\n" + adHookRule($0) } ?? "")
 
         Script:
         \(text)
@@ -471,7 +517,14 @@ nonisolated enum ScriptPromptBuilder {
 
     /// - Parameter language: the language the result must be in (the script's, or a translation's target), named
     ///   outright for any language but English: the instructions are in English, and so may be a catchphrase.
-    static func rewriteInstructions(voice: CreatorVoice? = nil, language: Locale.Language? = nil) -> String {
+    /// - Parameter brand: the brief of the sponsored ad being edited (`RewriteContext.brand`): what every tool keeps (`brandKeepLines`).
+    /// - Parameter rules: the voice's rules (`RewriteContext.rules`) for a tool that doesn't take the whole voice: what they avoid and who is
+    ///   talking hold through every edit (the owner's B9; §11, A2).
+    /// - Parameter translatingTo: the language a translation goes into, in English: what they avoid is avoided in it too.
+    static func rewriteInstructions(
+        voice: CreatorVoice? = nil, rules: CreatorVoice? = nil, register: PlatformRegister = .casual, language: Locale.Language? = nil,
+        translatingTo: String? = nil, brand: BrandBrief? = nil
+    ) -> String {
         var lines = [
             "You edit teleprompter scripts for video creators.",
             "Keep the creator's voice and first person. Keep the stage cues that are in square brackets where they are.",
@@ -485,10 +538,41 @@ nonisolated enum ScriptPromptBuilder {
             let name = Locale(identifier: "en").localizedString(forIdentifier: language.minimalIdentifier) ?? language.minimalIdentifier
             lines.append("The result is in \(name), not in English: write it in \(name) even though these instructions are in English. Only the creator's catchphrases stay as they are.")
         }
-        if let voice {
+        if var voice {
+            // A tool keeps the script's length or is told one ("Fit to time", "Shorter"): the usual one would be a second (§11, A15).
+            voice.reach.length = nil
             lines += voiceLines(voice)
+        } else if let rules {
+            lines += VoiceBriefBuilder.restrictionLines(for: rules, register: register, translatingTo: translatingTo)
         }
+        if let theirs = voice ?? rules {
+            lines += AgreementGuide.lines(
+                for: theirs.agreement, speaksAs: theirs.resolvedSpeaksAs, language: AgreementGuide.code(of: language), chosenOnly: true
+            )
+        }
+        lines.append(editHonestyRule)
+        if let brand { lines += brandKeepLines(brand) }
         return lines.joined(separator: "\n")
+    }
+
+    /// What a tool that edits a sponsored ad (rewrites, hooks, a version for another platform, a translation) is told, so the brand's brief
+    /// survives the edit as it did the draft (`brandLines`): the disclosure, what it must and must never say, the link and the code.
+    static func brandKeepLines(_ brand: BrandBrief) -> [String] {
+        var lines = [
+            "This script is a sponsored ad for \(brand.name) (\(brand.product)). Keep the paid partnership disclosure (#ad). Never add claims, "
+                + "results, prices, discounts or guarantees the script doesn't already make.",
+        ]
+        if !brand.mustSay.isEmpty { lines.append("Keep what the brand asked the ad to say, with the same meaning: \(brand.mustSay)") }
+        if !brand.neverSay.isEmpty { lines.append("Never say or mention: \(brand.neverSay)") }
+        let exact = [brand.link, brand.code].filter { !$0.isEmpty }
+        if !exact.isEmpty { lines.append("Keep exactly as written: \(exact.joined(separator: ", ")).") }
+        return lines
+    }
+
+    /// An ad's new opening line promises nothing the brand didn't approve (`BrandBrief`).
+    static func adHookRule(_ brand: BrandBrief) -> String {
+        "This script is a sponsored ad for \(brand.name) (\(brand.product)): no opening line claims a result, price, discount or guarantee the script "
+            + "doesn't make" + (brand.neverSay.isEmpty ? "." : ", and none says or mentions: \(brand.neverSay)")
     }
 
     /// What a part of a longer script is told about itself, and what it was told the last time it missed.
@@ -688,14 +772,15 @@ nonisolated enum ScriptPromptBuilder {
 
     /// What a tool that edits the creator's script must leave as it is: the sentences of theirs that hold a dash (one the model kept word for
     /// word keeps it; one it rewrote comes back without) and their catchphrases. A translation is all the model's, so nothing.
-    static func preserved(inRewriteOf source: String, tool: ScriptTool, voice: CreatorVoice?) -> [String] {
-        guard tool != .translate else { return [] }
-        return DashRewriter.sentencesWithDashes(in: source) + (voice?.phrases ?? [])
+    static func preserved(inRewriteOf source: String, tool: ScriptTool, voice: CreatorVoice?, brand: BrandBrief? = nil) -> [String] {
+        let exact = [brand?.link ?? "", brand?.code ?? ""].filter { !$0.isEmpty }
+        guard tool != .translate else { return exact }
+        return DashRewriter.sentencesWithDashes(in: source) + (voice?.phrases ?? []) + exact
     }
 
     /// Block names the model tends to echo as "Hook: …".
     private static func isBlockLabel(_ label: String) -> Bool {
-        let known = Set(ScriptType.allCases.flatMap { $0.structure.blocks } + ScriptStructure.generic.blocks)
+        let known = Set(ScriptType.allCases.flatMap { $0.structure.blocks } + ScriptStructure.generic.blocks + [FormatGuide.closeBlock])
         return known.contains { $0.caseInsensitiveCompare(label) == .orderedSame }
     }
 }

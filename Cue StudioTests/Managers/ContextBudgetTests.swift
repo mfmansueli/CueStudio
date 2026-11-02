@@ -41,7 +41,7 @@ struct ContextBudgetTests {
         profile.examples = [VoiceExample(text: String(repeating: "朝は水を一杯飲んでから、五分だけ体を動かします。", count: 6))]
         let voice = profile.voice(inLanguage: "ja")
         return ScriptRequest(
-            source: .prompt(brief.composerText), platform: .youtube, tone: nil, voice: voice, targetRange: 240...300, language: language, brief: brief
+            source: .prompt(brief.composerText), platform: .youtube, voice: voice, targetRange: 240...300, language: language, brief: brief
         )
     }
 

@@ -1,0 +1,239 @@
+[
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Default",
+        "deviceId" : "00008160-0014398611100036",
+        "deviceName" : "Mansuelli iPhone 18 Pro Max",
+        "exportedFileName" : "4CBE6A4A-7C69-4211-868A-81E0B173A788.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "term-of-address_0_302BA84F-482C-4BD9-9CA2-44637B1C3613.txt",
+        "timestamp" : 1793574219.741
+      }
+    ],
+    "testIdentifier" : "CreatorInputsDeviceTests/recordsTheTermOfAddress()",
+    "testIdentifierURL" : "test://com.apple.xcode/Cue%20Studio/Cue%20StudioTests/CreatorInputsDeviceTests/recordsTheTermOfAddress()"
+  },
+  {
+    "attachments" : [
+      {
+        "arguments" : [
+          "pt-fitness-woman·cloud"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008160-0014398611100036",
+        "deviceName" : "Mansuelli iPhone 18 Pro Max",
+        "exportedFileName" : "7B8CF575-3386-4446-AE24-0C66E7093321.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-pt-fitness-woman-cloud-2_0_1C7EE855-F0D4-4258-9EB8-1C1F10F5C02D.json",
+        "timestamp" : 1793574241.63
+      },
+      {
+        "arguments" : [
+          "pt-fitness-woman·cloud"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008160-0014398611100036",
+        "deviceName" : "Mansuelli iPhone 18 Pro Max",
+        "exportedFileName" : "FC4F07AC-8ABA-49E5-81F3-1483A8E1974A.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-pt-fitness-woman-cloud-1_0_F2AEE7FE-93ED-4F01-AF17-1294B312E48F.json",
+        "timestamp" : 1793574232.278
+      },
+      {
+        "arguments" : [
+          "pt-fitness-woman·cloud"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008160-0014398611100036",
+        "deviceName" : "Mansuelli iPhone 18 Pro Max",
+        "exportedFileName" : "EF4E286B-910C-4CCF-A861-CBAD0EC0F26D.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-pt-fitness-woman-cloud-0_0_9179B3D4-3A7E-43F1-A131-03E23970A6D0.json",
+        "timestamp" : 1793574224.083
+      },
+      {
+        "arguments" : [
+          "es-beauty-woman·cloud"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008160-0014398611100036",
+        "deviceName" : "Mansuelli iPhone 18 Pro Max",
+        "exportedFileName" : "80A10D62-CEB6-4F3A-A189-B05A5B68270C.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-es-beauty-woman-cloud-2_0_44857AF2-EF65-4DB2-955A-DB9DB7C87091.json",
+        "timestamp" : 1793574262.526
+      },
+      {
+        "arguments" : [
+          "es-beauty-woman·cloud"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008160-0014398611100036",
+        "deviceName" : "Mansuelli iPhone 18 Pro Max",
+        "exportedFileName" : "7D9E831D-1AC0-4A7C-829D-3899FBDAAD0F.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-es-beauty-woman-cloud-1_0_1C5AA81D-E4EB-42F3-93A4-63B4F2FFA776.json",
+        "timestamp" : 1793574255.569
+      },
+      {
+        "arguments" : [
+          "es-beauty-woman·cloud"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008160-0014398611100036",
+        "deviceName" : "Mansuelli iPhone 18 Pro Max",
+        "exportedFileName" : "77B1516B-EB33-4AC0-81C4-4C5CE20A79DE.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-es-beauty-woman-cloud-0_0_ED933500-E8C9-428C-8BDF-1640EAED2AC3.json",
+        "timestamp" : 1793574248.967
+      },
+      {
+        "arguments" : [
+          "it-food-woman·cloud"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008160-0014398611100036",
+        "deviceName" : "Mansuelli iPhone 18 Pro Max",
+        "exportedFileName" : "80916BE3-6EFC-433D-84D9-86706F906B9E.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-it-food-woman-cloud-2_0_6884B969-0756-48E0-A274-5E46AC5BA2DB.json",
+        "timestamp" : 1793574284.954
+      },
+      {
+        "arguments" : [
+          "it-food-woman·cloud"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008160-0014398611100036",
+        "deviceName" : "Mansuelli iPhone 18 Pro Max",
+        "exportedFileName" : "D67F17C3-A340-4B10-B136-7D27250879EA.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-it-food-woman-cloud-1_0_26D84DCB-5CED-4EBC-ADEF-5B96E4546304.json",
+        "timestamp" : 1793574276.692
+      },
+      {
+        "arguments" : [
+          "it-food-woman·cloud"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008160-0014398611100036",
+        "deviceName" : "Mansuelli iPhone 18 Pro Max",
+        "exportedFileName" : "F9A459DA-1BAD-43F4-9723-D1159D665B59.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-it-food-woman-cloud-0_0_4F4FE059-9DD8-4A67-902C-AA7A7818CEC4.json",
+        "timestamp" : 1793574269.706
+      },
+      {
+        "arguments" : [
+          "fr-travel-woman·cloud"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008160-0014398611100036",
+        "deviceName" : "Mansuelli iPhone 18 Pro Max",
+        "exportedFileName" : "3C5337F2-1624-4D14-ABD6-9A4E81D813A6.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-fr-travel-woman-cloud-2_0_D966E915-11CA-4192-B3D7-AA24AA2530B9.json",
+        "timestamp" : 1793574305.963
+      },
+      {
+        "arguments" : [
+          "fr-travel-woman·cloud"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008160-0014398611100036",
+        "deviceName" : "Mansuelli iPhone 18 Pro Max",
+        "exportedFileName" : "0A33D670-EFC1-45BD-AEAA-B10E90B56DE5.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-fr-travel-woman-cloud-1_0_ADBD0959-362C-4DBB-951D-DF780DD931AF.json",
+        "timestamp" : 1793574299.596
+      },
+      {
+        "arguments" : [
+          "fr-travel-woman·cloud"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008160-0014398611100036",
+        "deviceName" : "Mansuelli iPhone 18 Pro Max",
+        "exportedFileName" : "AC17DEDB-B1C7-4215-B080-AA5DAAC16228.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-fr-travel-woman-cloud-0_0_84F38DB0-0B4D-46A5-96F5-F4CD305D07F8.json",
+        "timestamp" : 1793574292.714
+      },
+      {
+        "arguments" : [
+          "en-no-cta·cloud"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008160-0014398611100036",
+        "deviceName" : "Mansuelli iPhone 18 Pro Max",
+        "exportedFileName" : "93EB60DF-75F3-4D31-B00C-526AE7AD9E28.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-en-no-cta-cloud-2_0_0323D850-E0C3-40A2-BF27-E1F65DAD2F9E.json",
+        "timestamp" : 1793574330.498
+      },
+      {
+        "arguments" : [
+          "en-no-cta·cloud"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008160-0014398611100036",
+        "deviceName" : "Mansuelli iPhone 18 Pro Max",
+        "exportedFileName" : "AAF6DA3D-74A3-4D68-966D-4ABE0C2BC1B4.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-en-no-cta-cloud-1_0_F4341751-E222-4B72-8ADC-2290CE745D99.json",
+        "timestamp" : 1793574322.588
+      },
+      {
+        "arguments" : [
+          "en-no-cta·cloud"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008160-0014398611100036",
+        "deviceName" : "Mansuelli iPhone 18 Pro Max",
+        "exportedFileName" : "302D9EB3-7AF8-498E-A292-77CEC200EC26.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-en-no-cta-cloud-0_0_28B68042-4113-4AAB-B6C5-CF77D5CCF995.json",
+        "timestamp" : 1793574315.18
+      },
+      {
+        "arguments" : [
+          "pt-follow-cta·cloud"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008160-0014398611100036",
+        "deviceName" : "Mansuelli iPhone 18 Pro Max",
+        "exportedFileName" : "20233047-6A7E-461D-B383-FCFB96B8A357.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-pt-follow-cta-cloud-2_0_2B3AB364-1902-4720-80BA-12A1C7E3106D.json",
+        "timestamp" : 1793574356.878
+      },
+      {
+        "arguments" : [
+          "pt-follow-cta·cloud"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008160-0014398611100036",
+        "deviceName" : "Mansuelli iPhone 18 Pro Max",
+        "exportedFileName" : "B2B1D71B-8BF6-49BD-BFA3-EF4FEB2BB2E8.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-pt-follow-cta-cloud-1_0_32B68492-CC70-4165-876E-C694C141F7AA.json",
+        "timestamp" : 1793574346.637
+      },
+      {
+        "arguments" : [
+          "pt-follow-cta·cloud"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008160-0014398611100036",
+        "deviceName" : "Mansuelli iPhone 18 Pro Max",
+        "exportedFileName" : "2B8A7134-87CB-4D56-B84F-9C5824963DE7.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-pt-follow-cta-cloud-0_0_A4E3529B-1704-46F0-965C-A17AD3B4E289.json",
+        "timestamp" : 1793574339.084
+      }
+    ],
+    "testIdentifier" : "CreatorInputsDeviceTests/writesTheCase(_:)",
+    "testIdentifierURL" : "test://com.apple.xcode/Cue%20Studio/Cue%20StudioTests/CreatorInputsDeviceTests/writesTheCase(_:)"
+  }
+]

@@ -83,7 +83,7 @@ final class ScriptLibraryService {
     func create(
         title: String, text: String, platform: Platform, type: ScriptType? = nil, folder: String? = nil,
         factCheck: Bool = false, language: CueLanguage? = nil, comment: ScriptComment? = nil, isFinished: Bool? = nil,
-        awaitsDraft: Bool = false, draftedBy: ScriptEngine? = nil
+        awaitsDraft: Bool = false, draftedBy: ScriptEngine? = nil, brand: BrandBrief? = nil
     ) -> Script {
         let date = now()
         var script = Script(
@@ -93,6 +93,7 @@ final class ScriptLibraryService {
         )
         script.awaitsDraft = awaitsDraft
         script.draftedBy = draftedBy
+        script.brand = brand
         scripts.insert(script, at: 0)
         persist()
         return script

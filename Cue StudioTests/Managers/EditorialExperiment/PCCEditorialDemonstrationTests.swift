@@ -33,7 +33,7 @@ struct PCCEditorialDemonstrationTests {
 
     @Test func editorialFrameChangesOnlyInstructionsAndKeepsTheCreatorsInputs() {
         var request = ScriptRequest(
-            source: .prompt("Explain this idea in my voice"), platform: .reels, tone: nil, voice: nil,
+            source: .prompt("Explain this idea in my voice"), platform: .reels, voice: nil,
             targetRange: 60...90, language: .english
         )
         request.durationPolicy = .informative

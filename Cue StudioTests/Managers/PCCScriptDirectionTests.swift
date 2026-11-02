@@ -12,7 +12,7 @@ struct PCCScriptDirectionTests {
     private func request() -> ScriptRequest {
         ScriptRequest(
             source: .prompt("Explique três passos para iniciantes, cite o projeto Aurora 27 e termine sem pedir para seguir."),
-            platform: .youtube, tone: nil, voice: QualityProfiles.english.full.voice(inLanguage: "pt"),
+            platform: .youtube, voice: QualityProfiles.english.full.voice(inLanguage: "pt"),
             targetRange: 120...180, language: .portugueseBrazil
         )
     }

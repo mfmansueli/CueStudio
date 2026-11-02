@@ -260,9 +260,7 @@ struct AppServices {
         privacy = PrivacyPreferencesService(defaults: options.defaults, writer: options.writer)
         draftLearning = DraftLearningService(profile: profile, toast: toast, defaults: options.defaults)
         takes.onTakeAdded = { [draftLearning] take in draftLearning.tookTake(of: take.scriptReference) }
-        voyage.report = { [privacy] event in
-            if privacy.helpsImproveCue { TelemetryManager.record(event) }
-        }
+        Self.reportWhenHelpingImprove(privacy: privacy, voyage: voyage, profile: profile)
         voiceQuestions = VoiceQuestionScheduler(profile: profile, defaults: options.defaults, skipsGates: options.voiceTipSkipsGates)
         notifications = Self.makeNotifications(options: options, services: NotificationWiring(
             library: library, takes: takes, shareQueue: shareQueue, logbook: logbook, ideas: ideaSuggestions, profile: profile,
@@ -390,6 +388,16 @@ extension AppServices {
         let presentation: PresentationService
         let remote: RemoteControlService
         let transition: IdeaTransitionService
+    }
+
+    /// What only "Help improve Cue" sends: the first voyage's tips and the "+ Something else" counts of My Cue Voice (B14), never text.
+    private static func reportWhenHelpingImprove(privacy: PrivacyPreferencesService, voyage: FirstVoyageService, profile: CreatorProfileService) {
+        voyage.report = { [privacy] event in
+            if privacy.helpsImproveCue { TelemetryManager.record(event) }
+        }
+        profile.reportTypedAnswer = { [privacy] event in
+            if privacy.helpsImproveCue { TelemetryManager.record(event) }
+        }
     }
 
     private static func makeNotifications(options: LaunchOptions, services wiring: NotificationWiring) -> NotificationService {

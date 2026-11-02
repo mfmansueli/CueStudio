@@ -64,6 +64,29 @@ nonisolated enum VoiceBriefBuilder {
         return (content.joined(separator: "\n"), delivery.joined(separator: "\n"))
     }
 
+    /// The voice's rules alone (`CreatorVoice.restrictionsOnly`, the owner's B9), as a tool, a serious statement or Ultra's fit reads them: who
+    /// is talking, what they avoid (in a translation, its equivalents in the target language too), never swearing, and a professional platform's
+    /// register. A request that asks for one of these in so many words wins (B1).
+    /// - Parameter language: the language a translation goes into, in English ("Spanish").
+    static func restrictionLines(for voice: CreatorVoice, register: PlatformRegister = .casual, translatingTo language: String? = nil) -> [String] {
+        var lines = [
+            voice.resolvedSpeaksAs == .we
+                ? "The creator speaks as a team: keep “we” and “our”, never “I”."
+                : "The creator speaks as one person: keep “I” and “my”.",
+        ]
+        if !voice.avoid.isEmpty {
+            let rules = voice.avoid.map(VoiceAvoidRule.instruction(for:)).joined(separator: "; ")
+            let translated = language.map { " In \($0), what they avoid includes the same things said in \($0)." } ?? ""
+            lines.append("Their rules, unless the request asks otherwise in so many words: \(rules).\(translated)")
+        }
+        if register == .professional {
+            lines.append("Keep it professional: no slang, no swearing, no emojis.")
+        } else if (voice.style.swearing ?? voice.swearing) == .never {
+            lines.append("Never swear.")
+        }
+        return lines
+    }
+
     /// The rules the request says again at its end.
     static func closingRules(
         for voice: CreatorVoice, register: PlatformRegister = .casual, contextualPreferences: Bool = false
@@ -284,16 +307,20 @@ nonisolated enum VoiceBriefBuilder {
             }
             if !voice.endings.isEmpty {
                 let choices = voice.endings.map(VoiceChoiceCatalog.endingAction)
-                lines.append(contextualPreferences
-                    ? "Usual ending preference, only if this request permits it and it serves the takeaway: \(list(choices, joiner: " or ")). It is optional, never an automatic sign-off."
-                    : "End by \(list(choices, joiner: " or ")).")
+                if contextualPreferences {
+                    lines.append("Usual ending preference, only if this request permits it and it serves the takeaway: \(list(choices, joiner: " or ")). It is optional, never an automatic sign-off.")
+                } else if let line = endingLine(voice) {
+                    lines.append(line)
+                }
             }
-            let formats = voice.formats.map(\.promptName) + voice.customTags.filter(isFormatTag)
+            let formats = voice.formats.map(\.promptName) + voice.customTags.filter(isFormatTag) + voice.customFormats
             if !formats.isEmpty {
                 lines.append("They film mostly: \(formats.joined(separator: ", ")).")
             }
             if !voice.phrases.isEmpty {
-                let said = voice.phrases.prefix(3).map { "“\($0)”" }.joined(separator: ", ")
+                // Every catchphrase kept (at most `VoiceLimits.phrases`), once: the 4th and 5th used to reach the model only as a copy among the
+                // tags (§11, A1, until the owner's B10). "Use one" keeps any of them from being said in every video.
+                let said = voice.phrases.prefix(VoiceLimits.phrases).map { "“\($0)”" }.joined(separator: ", ")
                 lines.append(
                     contextualPreferences
                         ? "Optional familiar expressions: \(said). Use at most one only if natural here; omission is better than forced repetition."
@@ -305,11 +332,24 @@ nonisolated enum VoiceBriefBuilder {
             return lines
         }
 
+        /// The ending they usually use, under what this video's request asks (the owner's B1, 02/11/2026), and alone: the platform adds no action
+        /// of its own (`PlatformGuide`). Nil when they never ask for anything and typed no sign-off: the rules say it.
+        private static func endingLine(_ voice: CreatorVoice) -> String? {
+            let actions = voice.endingActions
+            if voice.endsWithoutAsking {
+                if voice.forbidsCallsToAction && actions.isEmpty { return nil }
+                let how = actions.isEmpty ? "on the point itself" : list(actions, joiner: " or ")
+                return "End \(how), with no request to the viewer."
+            }
+            return "End by \(list(actions, joiner: " or "))."
+        }
+
         // MARK: Where, tags, rules, examples
 
         private static func reach(_ voice: CreatorVoice) -> [String] {
             var parts: [String] = []
-            if !voice.reach.platforms.isEmpty { parts.append("they post on \(voice.reach.platforms.map(\.label).joined(separator: ", "))") }
+            // The English names: the label is in the interface's language, inside instructions in English.
+            if !voice.reach.platforms.isEmpty { parts.append("they post on \(voice.reach.platforms.map(\.promptName).joined(separator: ", "))") }
             if let length = voice.reach.length { parts.append("videos are usually \(length.promptName)") }
             guard !parts.isEmpty else { return [] }
             let sentence = parts.joined(separator: "; ")
@@ -323,6 +363,7 @@ nonisolated enum VoiceBriefBuilder {
 
         private static func rules(_ voice: CreatorVoice) -> [String] {
             guard !voice.avoid.isEmpty else { return [] }
+            // A request that asks for one of these in so many words wins (the owner's B1, 02/11/2026; `VoiceConstraintChecker.lifted`).
             return ["Rules: \(voice.avoid.map(VoiceAvoidRule.instruction(for:)).joined(separator: "; "))."]
         }
 

@@ -13,7 +13,7 @@ import Testing
 struct ScriptPromptBuilderLanguageTests {
     private func request(_ language: CueLanguage?, variant: Locale? = nil) -> ScriptRequest {
         ScriptRequest(
-            source: .prompt("Why I quit coffee"), platform: .tiktok, tone: nil, voice: nil, targetRange: 60...90,
+            source: .prompt("Why I quit coffee"), platform: .tiktok, voice: nil, targetRange: 60...90,
             language: language, languageVariant: variant
         )
     }
@@ -68,7 +68,7 @@ struct ScriptPromptBuilderLanguageTests {
 
     @Test func theSentencesAskedForFollowHowLongTheCreatorsSentencesRun() {
         #expect(ScriptPromptBuilder.sentenceWords(for: nil) == 12)
-        var voice = CreatorVoice(sounds: [], phrases: [], vocabulary: nil, styles: [], niches: [], role: nil)
+        var voice = CreatorVoice(sounds: [], phrases: [], vocabulary: nil, styles: [], role: nil)
         voice.style.sentences = .short
         #expect(ScriptPromptBuilder.sentenceWords(for: voice) == 9)
         voice.style.sentences = .long

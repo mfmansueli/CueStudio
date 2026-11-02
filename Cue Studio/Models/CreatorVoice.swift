@@ -13,7 +13,6 @@ nonisolated struct CreatorVoice: Hashable, Sendable {
     /// Nil when the creator hasn't picked one.
     var vocabulary: Vocabulary?
     var styles: [VoiceStyle]
-    var niches: [Niche]
     /// Who is talking; nil when the creator didn't say.
     var role: CreatorRole?
     // The Personality and Proof layers (v29).
@@ -28,9 +27,11 @@ nonisolated struct CreatorVoice: Hashable, Sendable {
     var audienceLevel: AudienceLevel?
     var examples: [VoiceExample] = []
     var customTags: [String] = []
+    /// Formats they typed (`CreatorProfile.customFormats`).
+    var customFormats: [String] = []
     // My Cue Voice for Apple Intelligence (v2).
     /// Every topic, in the order the creator holds them, with its subtopics: the ten of the first flight, the ones only the voice offers
-    /// and the ones they typed (`niches` is the first kind alone).
+    /// and the ones they typed.
     var topics: [VoiceTopicEntry] = []
     var audienceGroup: AudienceGroup?
     var audienceNote: String?
@@ -40,6 +41,8 @@ nonisolated struct CreatorVoice: Hashable, Sendable {
     var credential: String?
     /// "I" or "we" as the creator chose; nil when they didn't (`resolvedSpeaksAs`).
     var speaksAs: SpeaksAs?
+    /// Gender agreement and the form of address (`VoiceAgreement`, B8): a rule, kept by `restrictionsOnly`.
+    var agreement = VoiceAgreement()
     /// Scripts the creator approved with "Sounds like me", oldest first.
     var approvedSamples: [VoiceExample] = []
     // What the creator imported ("Import my writing").

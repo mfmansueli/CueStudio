@@ -1,0 +1,11 @@
+{
+ "caseID": "pt-follow-cta",
+ "idea": "O erro que eu cometia toda vez que tentava acordar cedo",
+ "ideaIndex": 2,
+ "model": "onDevice",
+ "needsFactCheck": false,
+ "route": "cloud",
+ "seconds": 4.345265875,
+ "text": "Eu acordava cedo todos os dias e nada funcionava. Bora lá.\n\nEu deixava a cama ficar muito quente. Eu não tomava água. Eu assistia TV antes de levantar.\n\nComente qual o seu erro matinal. Seguindo.",
+ "title": "Erro matinal: acordar cedo"
+}

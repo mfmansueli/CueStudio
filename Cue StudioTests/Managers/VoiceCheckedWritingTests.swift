@@ -52,7 +52,7 @@ struct VoiceCheckedWritingTests {
     }
 
     private func request(voice: CreatorVoice? = nil) -> ScriptRequest {
-        ScriptRequest(source: .prompt("Why mornings are hard"), platform: .tiktok, tone: nil, voice: voice, targetRange: 30...45)
+        ScriptRequest(source: .prompt("Why mornings are hard"), platform: .tiktok, voice: voice, targetRange: 30...45)
     }
 
     private var avoidsHype: CreatorVoice {

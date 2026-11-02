@@ -34,12 +34,12 @@ struct CreatorRoleTests {
     }
 
     @Test func theAIIsToldWhoIsTalkingAndTeamsSayWe() {
-        let team = CreatorVoice(sounds: [.casual], phrases: [], vocabulary: nil, styles: [], niches: [], role: .business)
+        let team = CreatorVoice(sounds: [.casual], phrases: [], vocabulary: nil, styles: [], role: .business)
         let lines = ScriptPromptBuilder.voiceLines(team).joined(separator: "\n")
         #expect(lines.contains("the owner of a business") && lines.contains("say “we” and “our”, never “I”"))
-        let solo = CreatorVoice(sounds: [.casual], phrases: [], vocabulary: nil, styles: [], niches: [], role: .personal)
+        let solo = CreatorVoice(sounds: [.casual], phrases: [], vocabulary: nil, styles: [], role: .personal)
         #expect(!ScriptPromptBuilder.voiceLines(solo).joined(separator: "\n").contains("say “we”"))
-        #expect(!ScriptPromptBuilder.voiceLines(CreatorVoice(sounds: [], phrases: [], vocabulary: nil, styles: [], niches: [])).joined().contains("kind"))
+        #expect(!ScriptPromptBuilder.voiceLines(CreatorVoice(sounds: [], phrases: [], vocabulary: nil, styles: [])).joined().contains("kind"))
     }
 
     @MainActor

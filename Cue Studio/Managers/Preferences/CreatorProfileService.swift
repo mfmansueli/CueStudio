@@ -18,8 +18,26 @@ final class CreatorProfileService {
 
     private let defaults: UserDefaults
 
+    /// A "+ Something else" answer was typed (`VoiceTypedAnswerEvent`, never the text): `AppServices` sends it only with "Help improve Cue" on.
+    @ObservationIgnored var reportTypedAnswer: (VoiceTypedAnswerEvent) -> Void = { _ in }
+
+    /// Whose turn it is among the catchphrases (`CatchphraseRotation`): the scripts written with them so far.
+    private(set) var catchphraseTurn: Int {
+        didSet { defaults.set(catchphraseTurn, forKey: DefaultsKey.catchphraseTurn) }
+    }
+
+    /// A script was sent with the current turn's catchphrases: the next one gets the others.
+    func advanceCatchphraseTurn() {
+        guard CatchphraseRotation.rotates(profile.phrases) else { return }
+        catchphraseTurn &+= 1
+    }
+
+    /// The catchphrases the next script is offered.
+    var nextCatchphrases: [String] { CatchphraseRotation.phrases(profile.phrases, at: catchphraseTurn) }
+
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
+        catchphraseTurn = defaults.integer(forKey: DefaultsKey.catchphraseTurn)
         if let data = defaults.data(forKey: DefaultsKey.creatorProfile),
            let stored = try? JSONDecoder().decode(CreatorProfile.self, from: data) {
             profile = stored

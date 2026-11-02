@@ -60,7 +60,7 @@ struct VoiceQuestionSheetModelTests {
         model.save()
         model.askMore()
         // The third answer (the audience, then its level).
-        model.choose(option(.audience, "simple"))
+        model.choose(option(.audience, "parents"))
         #expect(model.asksAudienceLevel)
         model.choose(VoiceOption(id: AudienceLevel.some.rawValue, label: "Some basics"))
         #expect(model.savedStrength != nil)
@@ -85,7 +85,11 @@ struct VoiceQuestionSheetModelTests {
         defer { rig.defaults.tearDown() }
         let model = rig.model(.audience)
         #expect(!model.asksAudienceLevel)
-        model.choose(option(.audience, "genZ"))
+        // The editor's eight groups, one list (the owner's B13): the group is kept, with the vocabulary it implies.
+        #expect(VoiceQuestion.audience.options.map(\.id) == AudienceGroup.allCases.map(\.rawValue))
+        model.choose(option(.audience, "teens"))
+        #expect(rig.profile.profile.audienceGroup == .teens && rig.profile.profile.vocabulary == AudienceGroup.teens.vocabulary)
+        #expect(rig.profile.isSelected(option(.audience, "teens"), for: .audience))
         #expect(model.asksAudienceLevel && model.savedStrength == nil)
         model.choose(VoiceOption(id: AudienceLevel.experienced.rawValue, label: "Experienced"))
         #expect(rig.profile.profile.audienceLevel == .experienced)

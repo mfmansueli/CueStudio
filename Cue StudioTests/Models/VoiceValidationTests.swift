@@ -90,7 +90,7 @@ struct VoiceEditTests {
         #expect(service.addCustom("Hey fam", for: .phrases) == .added)
         #expect(service.addCustom("hey FAM", for: .phrases) == .alreadyThere)
         #expect(service.profile.phrases == ["Hey fam"])
-        #expect(service.profile.customTags == ["Hey fam"])
+        #expect(service.profile.customTags.isEmpty, "a catchphrase lives in its own field only, so it is told once (§11, A1)")
     }
 
     @Test func aTypoOfAnOptionAsksFirstAndKeepMineSavesWhatWasTyped() {

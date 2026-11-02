@@ -64,6 +64,13 @@ enum TelemetryManager {
         Analytics.logEvent("cue_notification", parameters: event.parameters)
     }
 
+    /// A "+ Something else" answer in My Cue Voice, as an Analytics event: the question and whether it matched one of its options, never the
+    /// text. Only called with "Help improve Cue" on (`AppServices`); nothing when Firebase isn't running.
+    static func record(_ event: VoiceTypedAnswerEvent) {
+        guard FirebaseApp.app() != nil else { return }
+        Analytics.logEvent("cue_voice_typed", parameters: event.parameters)
+    }
+
     /// A first voyage tip shown, acted on or closed, or a step done, as an Analytics event: the step, the place and the outcome, nothing
     /// else. Only called with "Help improve Cue" on (`AppServices`); nothing when Firebase isn't running.
     static func record(_ event: VoyageTelemetryEvent) {

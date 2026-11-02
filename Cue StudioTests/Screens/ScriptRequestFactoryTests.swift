@@ -47,8 +47,14 @@ struct ScriptRequestFactoryTests {
     @Test func theVoiceIsNeverAppliedFromTheDefaultsOfANewProfileOrWhenOff() {
         let defaults = TestDefaults()
         defer { defaults.tearDown() }
-        let (fresh, _) = makeFactory(voiceSetUp: false, defaults: defaults)
-        #expect(fresh.request(idea: "x", platform: nil, format: nil).voice == nil)
+        let untouched = ScriptRequestFactory(
+            rules: TestData.rulesService(), profile: CreatorProfileService(defaults: defaults.defaults), scriptLanguage: nil,
+            interfaceLanguage: .english
+        )
+        #expect(untouched.request(idea: "x", platform: nil, format: nil).voice == nil)
+        // A catchphrase is an answer, not a default: on its own it already writes in the creator's voice (§11, A5).
+        let (onlyAPhrase, _) = makeFactory(voiceSetUp: false, defaults: defaults)
+        #expect(onlyAPhrase.request(idea: "x", platform: nil, format: nil).voice?.phrases == ["Hey fam"])
         let (set, profile) = makeFactory(defaults: defaults)
         profile.setWritesInMyVoice(false)
         #expect(set.request(idea: "x", platform: nil, format: nil).voice == nil)

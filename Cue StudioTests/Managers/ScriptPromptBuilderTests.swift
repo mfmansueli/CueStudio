@@ -11,18 +11,18 @@ import Testing
 struct ScriptPromptBuilderTests {
     private let voice = CreatorVoice(
         sounds: [.casual, .confident], phrases: ["Hey fam"], vocabulary: .genZ,
-        styles: [.shortSentences, .storytelling], niches: [.wellness], topics: [VoiceTopicEntry(topic: .niche(.wellness))]
+        styles: [.shortSentences, .storytelling], topics: [VoiceTopicEntry(topic: .niche(.wellness))]
     )
 
     /// An idea with the format the creator picked on the card.
     private func formatRequest(type: ScriptType = .list, voice: CreatorVoice? = nil) -> ScriptRequest {
-        var request = ScriptRequest(source: .prompt("Morning habits"), platform: .tiktok, tone: .casual, voice: voice, targetRange: 60...90)
+        var request = ScriptRequest(source: .prompt("Morning habits"), platform: .tiktok, voice: voice, targetRange: 60...90)
         request.format = type
         return request
     }
 
     private func promptRequest(_ text: String, voice: CreatorVoice? = nil) -> ScriptRequest {
-        ScriptRequest(source: .prompt(text), platform: .youtube, tone: nil, voice: voice, targetRange: 108...132)
+        ScriptRequest(source: .prompt(text), platform: .youtube, voice: voice, targetRange: 108...132)
     }
 
     /// The model is told the language by its English name, whatever the interface is in.
@@ -68,7 +68,7 @@ struct ScriptPromptBuilderTests {
     @Test func instructionsCarryTheCreatorsVoice() {
         let instructions = ScriptPromptBuilder.instructions(for: formatRequest(voice: voice))
         #expect(instructions.contains("“Hey fam”"))
-        #expect(instructions.contains("They sound casual and confident."))
+        #expect(instructions.contains("They sound conversational and confident."))
         #expect(instructions.contains("casual slang"))
         #expect(instructions.contains("Their audience is young"))
         #expect(instructions.contains("Style: storytelling."), "short sentences is what every profile holds: it is not told")
@@ -88,7 +88,7 @@ struct ScriptPromptBuilderTests {
 
     @Test func inMyVoiceRewritesWithTheVoiceInTheInstructions() {
         let instructions = ScriptPromptBuilder.rewriteInstructions(voice: voice)
-        #expect(instructions.contains("They sound casual and confident."))
+        #expect(instructions.contains("They sound conversational and confident."))
         let context = RewriteContext(structure: .generic, platform: .tiktok, idealRange: 60...90, voice: voice)
         #expect(ScriptPromptBuilder.instruction(for: .inMyVoice, context: context).contains("sounds like the creator"))
     }

@@ -120,6 +120,14 @@ final class ScriptStarter {
         return UltraPayload(request)
     }
 
+    /// "Cue followed your idea over “Calls to action” in Avoid": what Cue offers by its label in the interface's language, what they typed as typed.
+    static func followedIdea(over lifted: [String]) -> String {
+        let names = lifted.map { stored in
+            VoiceAvoidRule.rule(for: stored) == nil ? stored : String(localized: String.LocalizationValue(stored))
+        }
+        return String(localized: "Cue followed your idea over “\(names.formatted(.list(type: .and)))” in Avoid")
+    }
+
     /// Whether `text` (an answered comment, the dock's idea) can be drafted, before it is sent: in the language it would be drafted in when
     /// that is already known (the Script Language, or the text's own); otherwise only what doesn't depend on a language.
     func drafting(before text: String?) -> DraftingAvailability {
@@ -184,17 +192,21 @@ final class ScriptStarter {
             toast.show(reason, kind: .problem, action: ToastAction(title: String(localized: "Write it")) { [weak self] in
                 guard let self else { return }
                 // The dock's own idea leaves the dock as it becomes the draft; an idea from elsewhere leaves the creator's draft alone.
-                let id = openBlankDraft(title: text, format: request.format, comment: comment, fromDock: fromDock)
+                let id = openBlankDraft(title: text, format: request.format, comment: comment, fromDock: fromDock, brand: request.brand)
                 if let sentDock { clearDock(sent: sentDock, ownText: idea == nil) }
                 if let kept { commentAnswered?(kept, id) }
                 whenWritten?(id)
             })
             return nil
         }
+        // A "never" of their voice that this idea asks for in so many words: the idea wins, and the creator is told once the script is there.
+        let lifted = VoiceConstraintChecker.lifted(by: request)
+        // These catchphrases had their turn: the next script is offered the others (`CatchphraseRotation`).
+        if request.voice.map({ !$0.phrases.isEmpty }) == true { factory.profile.advanceCatchphraseTurn() }
         let script = IdeaSendTimeline.measure("Script created") {
             library.create(
                 title: "", text: "", platform: request.platform, type: request.format, language: languages.scriptLanguage, comment: comment,
-                awaitsDraft: true
+                awaitsDraft: true, brand: request.brand
             )
         }
         let scriptID = script.id
@@ -217,6 +229,7 @@ final class ScriptStarter {
                 if let kept { self?.commentAnswered?(kept, scriptID) }
                 // Saved by now (the page keeps the script before the star lets go): the dock it came from starts over.
                 if let sentDock { self?.clearDock(sent: sentDock, ownText: idea == nil) }
+                if !lifted.isEmpty { self?.toast.showResult(Self.followedIdea(over: lifted)) }
                 whenWritten?(scriptID)
             }
         )
@@ -261,25 +274,28 @@ final class ScriptStarter {
 
     /// A blank draft named `title`, opened to write in; the dock's own draft stays. The card's choices only for the dock's own idea.
     @discardableResult
-    private func openBlankDraft(title: String, format: ScriptType?, comment: ScriptComment?, fromDock: Bool) -> UUID {
+    private func openBlankDraft(title: String, format: ScriptType?, comment: ScriptComment?, fromDock: Bool, brand: BrandBrief? = nil) -> UUID {
         newBlank(
             title: title, platform: comment?.platform ?? (fromDock ? platform : defaultPlatform),
-            format: format ?? (fromDock ? ideaDraft.format : nil), comment: comment
+            format: format ?? (fromDock ? ideaDraft.format : nil), comment: comment, brand: brand
         )
     }
 
     /// "Start from a format" (the + menu, not the dock): a blank draft with the format's sections, for the creator's own platform.
     @discardableResult
-    func startFromFormat(_ choice: FormatChoice, platform: Platform? = nil) -> UUID {
-        newBlank(platform: platform ?? defaultPlatform, format: choice.scriptType)
+    /// - Parameter brand: the brief of a sponsored ad, kept with the draft for the tools that rewrite it later.
+    func startFromFormat(_ choice: FormatChoice, platform: Platform? = nil, brand: BrandBrief? = nil) -> UUID {
+        newBlank(platform: platform ?? defaultPlatform, format: choice.scriptType, brand: choice.scriptType == .ad ? brand : nil)
     }
 
     /// Every blank draft the creator writes in: in the Script Language, a draft (not ready to record), opened with the keyboard.
     @discardableResult
-    func newBlank(title: String = "", platform: Platform, format: ScriptType? = nil, comment: ScriptComment? = nil) -> UUID {
+    func newBlank(
+        title: String = "", platform: Platform, format: ScriptType? = nil, comment: ScriptComment? = nil, brand: BrandBrief? = nil
+    ) -> UUID {
         let script = library.create(
             title: title.trimmingCharacters(in: .whitespacesAndNewlines), text: "", platform: platform, type: format,
-            language: languages.scriptLanguage, comment: comment, isFinished: false
+            language: languages.scriptLanguage, comment: comment, isFinished: false, brand: format == .ad ? brand : nil
         )
         presentation.openScript(script.id, editing: true)
         return script.id

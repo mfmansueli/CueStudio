@@ -1,0 +1,11 @@
+{
+ "caseID": "it-food-woman",
+ "idea": "La prima volta che ho cucinato per venti persone",
+ "ideaIndex": 0,
+ "model": "onDevice",
+ "needsFactCheck": true,
+ "route": "cloud",
+ "seconds": 3.890534166,
+ "text": "Cucinare per venti persone è diverso [sorpresa]!\n\nOrganizzare lo spazio è la prima cosa [attenzione]... scegliere ricette semplici [sicurezza]... controllare gli ingredienti [metodo]\n\nCommenta la tua esperienza!",
+ "title": "La prima volta per venti persone"
+}

@@ -6,7 +6,8 @@
 import SwiftUI
 
 /// "What kind of creator are you?" (My Cue Voice · Essentials 1): the eight kinds as cards, "+ Something else" for their own words, a short
-/// credential, and "Scripts say I / We". The same field in the guided questions and in the editor.
+/// credential, "Scripts say I / We" and, under it, how the words about them agree and how viewers are addressed (`VoiceAgreementField`). The
+/// same field in the guided questions and in the editor.
 struct VoiceRoleField: View {
     @Environment(CreatorProfileService.self) private var profile
 
@@ -30,6 +31,7 @@ struct VoiceRoleField: View {
                 .cueFont(.footnote)
                 .foregroundStyle(Palette.ink2)
                 .padding(.horizontal, 4)
+            VoiceAgreementField()
             if showsCredential { credential }
         }
     }

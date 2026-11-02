@@ -85,7 +85,7 @@ struct DraftLearningTests {
         #expect(example?.source == "Your edits")
         #expect(example?.text.hasPrefix("Real talk, I'm not a morning person.") == true)
         #expect(profile.profile.approvals == 0, "it isn't an approval of Cue's words")
-        #expect(toast.message == "Cue learned from this")
+        #expect(toast.message == "Saved as your writing · used on this iPhone")
         #expect(toast.action?.title == "Undo")
         #expect(!service.isCueDraft(id), "each draft teaches once")
         toast.action?.perform()
@@ -101,6 +101,32 @@ struct DraftLearningTests {
         #expect(profile.profile.approvedSamples.isEmpty)
         #expect(toast.message == nil)
         #expect(service.isCueDraft(id), "they may change it and record again")
+    }
+
+    @Test func editsOnlyBelowTheOpeningTeachNothingAndTheDraftWaits() {
+        let (service, profile, toast, defaults) = makeService()
+        defer { defaults.tearDown() }
+        // An opening longer than the example kept (`VoiceExample.sentCharacters`), then a body rewritten from top to bottom.
+        let opening = String(repeating: "Okay, real talk, mornings are hard for everybody and I used to fight mine. ", count: 4)
+        let body = "Here is the one change that made my mornings easier: I put my phone in another room before bed."
+        let rewrittenBody = "What finally worked was boring and cheap: the charger lives in the kitchen now, far from my pillow. "
+            + "No scrolling at midnight, no alarm buried under twenty notifications, just a real clock I bought for four dollars. "
+            + "Seriously, try it for one week and come back to tell me."
+        let draftText = opening + "\n\n" + body
+        let final = opening + "\n\n" + rewrittenBody
+        #expect(DraftEdits.isTheirs(draft: draftText, final: final), "the script as a whole is changed enough")
+        #expect(!DraftEdits.openingIsTheirs(draft: draftText, final: final), "but what would be kept is Cue's opening")
+        let id = UUID()
+        service.noteDraft(draftText, for: id)
+        service.tookTake(of: script(id: id, text: final))
+        #expect(profile.profile.approvedSamples.isEmpty && toast.message == nil)
+        #expect(service.isCueDraft(id), "they may still rewrite the opening and record again")
+    }
+
+    @Test func aSentenceOfTheirsPutFirstMakesTheOpeningTheirs() {
+        let mine = "Real talk, I'm not a morning person and I hit snooze four times a day."
+        #expect(DraftEdits.openingIsTheirs(draft: draft, final: mine + "\n\n" + draft))
+        #expect(DraftEdits.openingIsTheirs(draft: draft, final: theirs))
     }
 
     @Test func aScriptCueNeverDraftedTeachesNothing() {

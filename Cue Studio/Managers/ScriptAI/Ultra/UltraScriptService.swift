@@ -163,7 +163,8 @@ final class UltraScriptService: UltraScriptWriting {
         // that fails or may not go out leaves the polished script.
         if case .ideal(let range) = payload.length, let limit = payload.length.overflowWords(in: request.language), ReadTime.wordCount(in: script.text) > limit,
            let shorter = try? await fitted(UltraFitRequest(
-               script: script.text, platform: request.platform, range: range, voice: request.voice, language: request.language?.locale.language
+               script: script.text, platform: request.platform, range: range, voice: request.voice ?? request.rules,
+               language: request.language?.locale.language, brand: request.brand
            ), cost: &cost), !shorter.isEmpty {
             script.text = shorter
         }

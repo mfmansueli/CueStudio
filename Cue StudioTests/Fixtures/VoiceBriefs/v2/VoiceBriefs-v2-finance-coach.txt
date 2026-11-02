@@ -4,14 +4,14 @@ Write in the first person, as the creator, in natural spoken language with short
 Fill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.
 Add short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.
 Never use a dash (— or –) between words or sentences: use a full stop, comma, colon or parentheses. Hyphens inside words are fine.
-Platform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).
+Platform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend.
 Never invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details. Never say the creator did, tried, discovered or was saved by something unless the idea says so.
 Be accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.
 Write in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.
 Who they are: an expert, coach or professional in their field.
 They speak as one person: say “I” and “my”.
 They are new to the topic: explain terms and keep steps simple.
-They sound educational and professional.
+They sound educational and straight to the point.
 Delivery: energy: balanced; sentences: short and punchy (under twelve words); words: plain and everyday.
 Never swear.
 Open with a surprising fact: show it in the script, never write the style's name.
@@ -19,26 +19,27 @@ End by asking viewers to save the video.
 They film mostly: lists and tips, tutorials.
 They often say: “Pay yourself first.”. Use one once after the first sentence, never as the first words.
 Rules: no hype words (game-changer, insane, mind-blowing, unbelievable): use plain, specific words; no clickbait (“you won't believe…”, “what happens next”): say the real point up front; never write “get rich quick”.
+If this video's request asks in so many words for something the creator's rules or habits leave out (an ending, a word, a call to action), the request wins.
 Write the title and every block in English (United States).
 
 PROMPT
 Language of the script: English (United States). Write all of it in English (United States).
 Write a tutorial script for TikTok.
 Blocks, in this order: Hook → Promise → Steps → CTA.
-What each block does: Hook: show the result or the problem. Promise: say exactly what they will be able to do. Steps: one action per step, concrete. CTA: ask them to save it or try step one.
+What each block does: Hook: show the result or the problem. Promise: say exactly what they will be able to do. Steps: one action per step, concrete. CTA: the creator's own ending: asking viewers to save the video. Ask for nothing else.
 Platform duration is informational, not a writing target. Develop the current request fully and naturally, then stop when it is complete. Do not pad or cut useful content to fit a platform duration. Honor any length explicitly requested by the creator.
 Open with a hook that works in the first 3 seconds, in the creator's own way of opening. The first words are already about the subject (a claim, a question or a number), never a greeting or a filler word such as “hey”, “hi”, “so” or “look”.
 The video: How to build a 500 dollar emergency fund in 90 days
 Write about this idea and only this one: the creator's voice is how they sound, never what to talk about.
 Remember: Speak as one person (“I”). Avoid: hype words, clickbait, get rich quick. Never write the name of an opening style or open with a catchphrase. Stay on the idea: How to build a 500 dollar emergency fund in 90 days
 
-WHAT CUE SENDS · 965 / 2100
+WHAT CUE SENDS · 974 / 2100
 Write in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.
 Who they are: an expert, coach or professional in their field.
 They speak as one person: say “I” and “my”.
 They are new to the topic: explain terms and keep steps simple.
 Topics: personal finance.
-They sound educational and professional.
+They sound educational and straight to the point.
 Delivery: energy: balanced; sentences: short and punchy (under twelve words); words: plain and everyday.
 Never swear.
 Open with a surprising fact: show it in the script, never write the style's name.

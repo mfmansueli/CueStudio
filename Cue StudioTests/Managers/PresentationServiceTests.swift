@@ -53,7 +53,7 @@ struct PresentationServiceTests {
         let presentation = PresentationService()
         presentation.present(.ideas)
         let id = UUID()
-        let request = ScriptRequest(source: .prompt("Carnival"), platform: .reels, tone: nil, voice: nil, targetRange: 30...60)
+        let request = ScriptRequest(source: .prompt("Carnival"), platform: .reels, voice: nil, targetRange: 30...60)
         presentation.openScript(id, writing: request)
         #expect(presentation.sheet == nil)
         #expect(presentation.scriptsPath == [ScriptRoute(scriptID: id, startsEditing: true, writing: request)])

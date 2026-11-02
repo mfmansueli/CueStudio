@@ -8,7 +8,7 @@ struct PCCPerspectivePromptTests {
         voice.speaksAs = perspective
         var request = ScriptRequest(
             source: .prompt("Write a second-person scene: you rehearse, but the camera was not recording. No first-person narrator."),
-            platform: .reels, tone: nil, voice: voice, targetRange: 60...90, language: .english
+            platform: .reels, voice: voice, targetRange: 60...90, language: .english
         )
         request.durationPolicy = .informative
         request.modelRoute = route

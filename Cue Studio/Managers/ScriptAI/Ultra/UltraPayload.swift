@@ -55,6 +55,11 @@ nonisolated struct UltraPayload: Hashable, Sendable {
                 sections.append("How the creator speaks (apply it to the form; preferences, not a new request):\n\(voice.delivery)")
             }
         }
+        // A serious statement takes no style, but the voice's rules hold (`ScriptRequest.rules`; the owner's B9).
+        if voice == nil, let rules = request.rules {
+            let lines = VoiceBriefBuilder.restrictionLines(for: rules, register: PlatformRegister(request.platform))
+            sections.append("The creator's rules (they hold; not a new request):\n\(lines.joined(separator: "\n"))")
+        }
         if let inspiration { sections.append(inspiration) }
         if let brand = request.brand { sections.append(ScriptPromptBuilder.brandLines(brand).joined(separator: "\n")) }
         if let literal { sections.append(literal) }
@@ -64,7 +69,11 @@ nonisolated struct UltraPayload: Hashable, Sendable {
 
     /// Language, platform, format and length, one line each.
     private var setting: String {
-        var lines = [languageLine, "Platform: \(request.platform.promptName)."]
+        var lines = [languageLine]
+        // Gender agreement and the form of address (the owner's B8; §11.7), as Apple Intelligence gets them.
+        let theirs = request.voice ?? request.rules
+        lines += AgreementGuide.lines(for: theirs?.agreement, speaksAs: theirs?.resolvedSpeaksAs ?? .i, language: AgreementGuide.code(of: request))
+        lines.append("Platform: \(request.platform.promptName).")
         if PlatformRegister(request.platform) == .professional { lines.append("Register: professional (no slang, no swearing, no emojis).") }
         lines.append(formatLine)
         if request.structure.isSerious { lines.append(ScriptPromptBuilder.seriousRule) }

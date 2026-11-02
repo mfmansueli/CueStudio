@@ -1,0 +1,55 @@
+file,run,caseID,language,ideaIndex,words,assunto,concreto,natural,all_three,reason
+run1-iago-lima/creator-inputs-en-no-cta-app-0.json,run1-iago-lima,en-no-cta,en,0,38,não,sim,sim,não,"assunto: a ideia pede por que listas atrapalham; o roteiro não explica e dá passos genéricos, até 'review your list weekly'"
+run1-iago-lima/creator-inputs-en-no-cta-app-1.json,run1-iago-lima,en-no-cta,en,1,45,não,sim,sim,não,assunto: promete 'one tiny change' (um hábito) e lista três passos
+run1-iago-lima/creator-inputs-en-no-cta-app-2.json,run1-iago-lima,en-no-cta,en,2,39,sim,sim,sim,sim,
+run1-iago-lima/creator-inputs-en-no-cta-device-0.json,run1-iago-lima,en-no-cta,en,0,36,sim,sim,sim,sim,
+run1-iago-lima/creator-inputs-en-no-cta-device-1.json,run1-iago-lima,en-no-cta,en,1,50,sim,sim,não,não,natural: 'It's sorting my thoughts and setting boundaries' não soa nativo
+run1-iago-lima/creator-inputs-en-no-cta-device-2.json,run1-iago-lima,en-no-cta,en,2,35,sim,sim,sim,sim,
+run1-iago-lima/creator-inputs-es-beauty-woman-app-0.json,run1-iago-lima,es-beauty-woman,es,0,50,sim,sim,sim,sim,
+run1-iago-lima/creator-inputs-es-beauty-woman-app-1.json,run1-iago-lima,es-beauty-woman,es,1,30,sim,sim,sim,sim,
+run1-iago-lima/creator-inputs-es-beauty-woman-app-2.json,run1-iago-lima,es-beauty-woman,es,2,36,sim,sim,sim,sim,
+run1-iago-lima/creator-inputs-es-beauty-woman-device-0.json,run1-iago-lima,es-beauty-woman,es,0,48,sim,sim,não,não,natural: 'percibí una mayor confianza en mí misma' e 'me ocultaba mi verdadera expresión' rígidos
+run1-iago-lima/creator-inputs-es-beauty-woman-device-1.json,run1-iago-lima,es-beauty-woman,es,1,23,não,não,sim,não,assunto: some a rotina coreana e a primeira vez ('la piel se limpia con pasos específicos'); concreto: só 'limpiar suavemente. Luego: hidratar bien'
+run1-iago-lima/creator-inputs-es-beauty-woman-device-2.json,run1-iago-lima,es-beauty-woman,es,2,40,sim,sim,sim,sim,
+run1-iago-lima/creator-inputs-fr-travel-woman-app-0.json,run1-iago-lima,fr-travel-woman,fr,0,26,não,não,não,não,"assunto: vira 'le secret d'un voyage réussi', sem o primeiro mochilão nem o que aprendeu; concreto: 'Choisir une bonne tenue. Planifier son itinéraire. Vivre l'instant.'; natural: 'Je montre les étapes clés'"
+run1-iago-lima/creator-inputs-fr-travel-woman-app-1.json,run1-iago-lima,fr-travel-woman,fr,1,32,sim,sim,não,não,natural: 'Je suis parti trop tôt' (masculino e ilógico para quem perdeu o avião)
+run1-iago-lima/creator-inputs-fr-travel-woman-app-2.json,run1-iago-lima,fr-travel-woman,fr,2,24,sim,não,não,não,concreto: só 'Je réduis les options. Je me fie à l'instant présent.'; natural: 'J'aime vos conseils. Savez-vous comment ça marche ?' sem sentido
+run1-iago-lima/creator-inputs-fr-travel-woman-device-0.json,run1-iago-lima,fr-travel-woman,fr,0,31,não,sim,sim,não,"assunto: vira rotina de preparação ('Quel est l'impact d'un voyage en sac à dos ?'), sem o primeiro mochilão nem o que aprendeu"
+run1-iago-lima/creator-inputs-fr-travel-woman-device-1.json,run1-iago-lima,fr-travel-woman,fr,1,30,sim,sim,não,não,"natural: 'Je me suis réveillé tard' (masculino, criadora)"
+run1-iago-lima/creator-inputs-fr-travel-woman-device-2.json,run1-iago-lima,fr-travel-woman,fr,2,48,sim,não,não,não,"concreto: generalidades ('J'ai laissé l'imprévu guider mes décisions'); natural: 'pourquoi vous voyagez autrement ?', 'J'ai confiance dans ma curiosité', 'Je suis passé' (masculino)"
+run1-iago-lima/creator-inputs-it-food-woman-app-0.json,run1-iago-lima,it-food-woman,it,0,29,não,sim,não,não,assunto: troca a primeira vez para vinte pessoas por 'Ventisette piatti in un'ora' e uma receita genérica; natural: 'Prova a commentare la tua esperienza'
+run1-iago-lima/creator-inputs-it-food-woman-app-1.json,run1-iago-lima,it-food-woman,it,1,29,sim,não,não,não,concreto: 'Preparo pasti strutturati. Uso tecniche pratiche.' genérico; natural: 'Preparo pasti strutturati'
+run1-iago-lima/creator-inputs-it-food-woman-app-2.json,run1-iago-lima,it-food-woman,it,2,26,sim,sim,não,não,"natural: 'Ho fatto un disastro alla cena', sequência sem nexo ('Ho aperto la pentola. Ho cucinato troppo velocemente')"
+run1-iago-lima/creator-inputs-it-food-woman-device-0.json,run1-iago-lima,it-food-woman,it,0,22,sim,não,sim,não,concreto: só 'pochi piatti semplici poi ho aggiunto sapori nuovi'
+run1-iago-lima/creator-inputs-it-food-woman-device-1.json,run1-iago-lima,it-food-woman,it,1,30,não,sim,não,não,"assunto: 'Ho scoperto che mangiare fuori cambia tutto' (comer fora, não parar de comprar pronto); natural: 'Ho sentito meglio'"
+run1-iago-lima/creator-inputs-it-food-woman-device-2.json,run1-iago-lima,it-food-woman,it,2,26,sim,não,não,não,concreto: só 'Ho sbagliato una cosa semplice... come usare il forno'; natural: 'io ho creato disastro'
+run1-iago-lima/creator-inputs-pt-fitness-woman-app-0.json,run1-iago-lima,pt-fitness-woman,pt,0,33,sim,sim,não,não,natural: 'Depois passei por exercícios de força básicos'
+run1-iago-lima/creator-inputs-pt-fitness-woman-app-1.json,run1-iago-lima,pt-fitness-woman,pt,1,23,não,não,não,não,assunto: a ideia é desistir da dieta; o roteiro diz 'Eu perdi 2 quilos em 7 dias' e 'reforcei minhas escolhas'; concreto: nada do que aprendeu; natural: 'Comente seu dia e siga'
+run1-iago-lima/creator-inputs-pt-fitness-woman-app-2.json,run1-iago-lima,pt-fitness-woman,pt,2,35,não,não,não,não,assunto: troca treinar menos vezes por 'troquei exercícios intensos por movimentos mais naturais'; concreto: 'fortalece o corpo de forma diferente'; natural: 'agora tenho mais potência'
+run1-iago-lima/creator-inputs-pt-fitness-woman-device-0.json,run1-iago-lima,pt-fitness-woman,pt,0,26,sim,sim,sim,sim,
+run1-iago-lima/creator-inputs-pt-fitness-woman-device-1.json,run1-iago-lima,pt-fitness-woman,pt,1,36,não,sim,não,não,"assunto: a ideia é desistir da dieta; o roteiro é sobre mantê-la ('cortei os doces e mudei meu corpo'); natural: 'Eu dei um passo:', 'Concentrei minha energia em hábitos sustentáveis'"
+run1-iago-lima/creator-inputs-pt-fitness-woman-device-2.json,run1-iago-lima,pt-fitness-woman,pt,2,43,sim,sim,não,não,"natural: 'Isso liberou energia para foco', 'Eu observei melhor recuperação'"
+run1-iago-lima/creator-inputs-pt-follow-cta-app-0.json,run1-iago-lima,pt-follow-cta,pt,0,28,sim,não,sim,não,"concreto: 'organizei o meu espaço. Depois, troquei minha rotina' genérico e circular"
+run1-iago-lima/creator-inputs-pt-follow-cta-app-1.json,run1-iago-lima,pt-follow-cta,pt,1,36,sim,não,não,não,"concreto: 'escolho o planejamento. Depois, organizo os dias' genérico; natural: 'escolho o planejamento'"
+run1-iago-lima/creator-inputs-pt-follow-cta-app-2.json,run1-iago-lima,pt-follow-cta,pt,2,27,sim,sim,não,não,natural: 'Eu troco minha tela pela luz natural e meu sono muda totalmente'
+run1-iago-lima/creator-inputs-pt-follow-cta-device-0.json,run1-iago-lima,pt-follow-cta,pt,0,41,sim,sim,não,não,"natural: 'Seguam para mais dicas', 'O tempo da manhã mudou completamente para mim'"
+run1-iago-lima/creator-inputs-pt-follow-cta-device-1.json,run1-iago-lima,pt-follow-cta,pt,1,29,sim,sim,sim,sim,
+run1-iago-lima/creator-inputs-pt-follow-cta-device-2.json,run1-iago-lima,pt-follow-cta,pt,2,39,sim,não,não,não,"concreto: o erro nunca fica claro; natural: 'Eu deixava meu sono se tornar um hábito', 'Eu movia meu corpo sem energia'"
+run2-mansuelli/creator-inputs-en-no-cta-cloud-0.json,run2-mansuelli,en-no-cta,en,0,80,sim,sim,sim,sim,
+run2-mansuelli/creator-inputs-en-no-cta-cloud-1.json,run2-mansuelli,en-no-cta,en,1,75,não,sim,sim,não,assunto: diz 'a single action' e lista três passos (First/then/finally)
+run2-mansuelli/creator-inputs-en-no-cta-cloud-2.json,run2-mansuelli,en-no-cta,en,2,74,sim,sim,não,não,"natural: 'This is possible.' solto, frase que um nativo não diria na câmera"
+run2-mansuelli/creator-inputs-es-beauty-woman-cloud-0.json,run2-mansuelli,es-beauty-woman,es,0,63,sim,sim,não,não,natural: 'Guarda este momento' (decalque de 'save this')
+run2-mansuelli/creator-inputs-es-beauty-woman-cloud-1.json,run2-mansuelli,es-beauty-woman,es,1,39,sim,sim,sim,sim,
+run2-mansuelli/creator-inputs-es-beauty-woman-cloud-2.json,run2-mansuelli,es-beauty-woman,es,2,44,sim,não,não,não,"concreto: 'encontré un pequeño cambio que importaba' sem dizer qual; natural: 'me sentí perdido' (masculino, criadora), 'Guarda este momento'"
+run2-mansuelli/creator-inputs-fr-travel-woman-cloud-0.json,run2-mansuelli,fr-travel-woman,fr,0,60,sim,não,não,não,concreto: não diz o que aprendeu ('chaque jour était une nouvelle découverte'); natural: 'quand on part avec rien sauf son sac'
+run2-mansuelli/creator-inputs-fr-travel-woman-cloud-1.json,run2-mansuelli,fr-travel-woman,fr,1,50,sim,sim,não,não,"natural: 'Sauve ce moment', 'j'ai trouvé une autre porte', 'je suis arrivé' (masculino)"
+run2-mansuelli/creator-inputs-fr-travel-woman-cloud-2.json,run2-mansuelli,fr-travel-woman,fr,2,52,sim,não,não,não,"concreto: só 'j'écoute le moment, je regarde autour de moi'; natural: 'Essaie ça pour toi', 'j'écoute le moment'"
+run2-mansuelli/creator-inputs-it-food-woman-cloud-0.json,run2-mansuelli,it-food-woman,it,0,59,sim,sim,não,não,natural: 'Salva questo momento' (decalque de 'save this')
+run2-mansuelli/creator-inputs-it-food-woman-cloud-1.json,run2-mansuelli,it-food-woman,it,1,70,sim,não,não,não,"concreto: a 'cosa' nunca aparece, só 'gestire il tempo con più precisione'; natural: 'mi sono reso conto' (masculino), 'una verità scomoda ma vera'"
+run2-mansuelli/creator-inputs-it-food-woman-cloud-2.json,run2-mansuelli,it-food-woman,it,2,76,sim,sim,não,não,"natural: 'la cena è diventata carbonizzata', 'il fuoco è diventato rosso intenso'"
+run2-mansuelli/creator-inputs-pt-fitness-woman-cloud-0.json,run2-mansuelli,pt-fitness-woman,pt,0,22,não,não,não,não,"assunto: vira 'não preciso ir ao ginásio', sem o primeiro mês nem como se sentiu; concreto: só a promessa; natural: 'ginásio' (pt-PT) e '”,' solto no fim"
+run2-mansuelli/creator-inputs-pt-fitness-woman-cloud-1.json,run2-mansuelli,pt-fitness-woman,pt,1,69,sim,sim,sim,sim,
+run2-mansuelli/creator-inputs-pt-fitness-woman-cloud-2.json,run2-mansuelli,pt-fitness-woman,pt,2,90,sim,sim,não,não,"natural: 'eu escutei o sinal de descanso', 'o descanso também é poder', 'Agora eu convido você a salvar'"
+run2-mansuelli/creator-inputs-pt-follow-cta-cloud-0.json,run2-mansuelli,pt-follow-cta,pt,0,84,sim,sim,não,não,"natural: 'eu troco o celular no começo do dia' (troca por quê?), 'comece por um simples save'"
+run2-mansuelli/creator-inputs-pt-follow-cta-cloud-1.json,run2-mansuelli,pt-follow-cta,pt,1,68,sim,sim,não,não,natural: 'Você já se pergunta como organizar' (tempo errado)
+run2-mansuelli/creator-inputs-pt-follow-cta-cloud-2.json,run2-mansuelli,pt-follow-cta,pt,2,88,sim,sim,não,não,"natural: 'eu viajava todo dia tentando', 'isso é o erro', 'eu salvo esse momento no meu celular'"

@@ -32,7 +32,8 @@ struct UltraPayloadView: View {
                 detail: "Only when the script from step 3 runs well past the platform’s length: that script, the length and how you speak.",
                 request: UltraFitRequest(
                     script: String(localized: "[the script polished in step 3]"), platform: payload.request.platform,
-                    range: payload.request.targetRange, voice: payload.request.voice, countShown: String(localized: "[its word count]")
+                    range: payload.request.targetRange, voice: payload.request.voice, brand: payload.request.brand,
+                    countShown: String(localized: "[its word count]")
                 ).stage,
                 identifier: "ultra.payload.fit"
             )

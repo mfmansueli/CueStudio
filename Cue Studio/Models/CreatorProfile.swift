@@ -58,6 +58,9 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
     var examples: [VoiceExample]
     /// Free tags added with "+ Something else" (2–40 characters each).
     var customTags: [String]
+    /// What they film most in their own words ("ASMR", typed under that question): told with the formats, not among the tags that go first when
+    /// the brief runs long (§11, A13). A tag an older build kept for one stays a tag: nothing tells it from the others.
+    var customFormats: [String] = []
     /// Personality questions the creator answered "None of these" to: they are not asked again (and don't count as filled).
     var declinedVoiceItems: Set<VoicePersonalityItem>
     /// The photo (a small JPEG) the creator chose in Edit Profile; the avatar shows their initial without one. Stays on this iPhone.
@@ -81,6 +84,8 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
     var credential: String?
     /// "I" or "we" in their scripts. Nil: the kind of creator decides (`CreatorRole.suggestedSpeaksAs`).
     var speaksAs: SpeaksAs?
+    /// How the words about them agree and how the viewer is addressed, where a language asks (`VoiceAgreement`, B8).
+    var agreement = VoiceAgreement()
     /// Scripts the creator approved with "Sounds like me" (up to `VoiceLimits.approvedSamples`, the oldest goes first): examples of their voice.
     var approvedSamples: [VoiceExample]
     /// A few sentences of what the creator imported ("Import my writing"), up to `VoiceExcerpt.limit`: the library each request picks examples from.
@@ -155,16 +160,18 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
 
     var voice: CreatorVoice {
         // Only what the creator answered: the tones and the vocabulary a new profile starts with (or an older build saved unverified) are not theirs yet.
-        CreatorVoice(
+        var voice = CreatorVoice(
             sounds: hasAnswered(.tone) ? sounds : [], phrases: phrases, vocabulary: hasAnswered(.audience) ? vocabulary : nil,
-            styles: styles, niches: niches, role: role,
+            styles: styles, role: role,
             openings: openings, endings: endings, formats: formats, swearing: swearing, style: style, avoid: avoid, reach: reach,
-            audienceLevel: audienceLevel, examples: examples, customTags: customTags,
+            audienceLevel: audienceLevel, examples: examples, customTags: customTags, customFormats: customFormats,
             topics: topics.map { VoiceTopicEntry(topic: $0, subtopics: subtopics(of: $0)) },
             audienceGroup: audienceGroup, audienceNote: audienceNote, watchReasons: watchReasons, contentGoals: contentGoals,
             customRole: customRole, credential: credential, speaksAs: speaksAs, approvedSamples: approvedSamples,
             excerpts: ExcerptRetriever.pick(from: excerpts, limit: VoiceExample.limit), fingerprint: fingerprint
         )
+        voice.agreement = agreement
+        return voice
     }
 
     /// The voice for something written in `language` (a code like "en" or "pt-BR"; nil is not known): the topics only when `idea` is about them (it says
@@ -208,9 +215,9 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
     private enum CodingKeys: String, CodingKey {
         case name, handle, niches, customTopics, phrases, role, voiceApproved, sounds, vocabulary, styles, usesVoiceInAI, defaultPlatform, monetizationGoals
         case confirmedVoiceSteps, unverifiedVoiceSteps
-        case openings, endings, formats, swearing, examples, customTags, declinedVoiceItems
+        case openings, endings, formats, swearing, examples, customTags, customFormats, declinedVoiceItems
         case style, avoid, avoidNone, reach, audienceLevel, approvals
-        case voiceTopics, topicDetails, audienceGroup, audienceNote, watchReasons, contentGoals, customRole, credential, speaksAs
+        case voiceTopics, topicDetails, audienceGroup, audienceNote, watchReasons, contentGoals, customRole, credential, speaksAs, agreement
         case approvedSamples, excerpts, fingerprint, voiceSchemaVersion
         case photoData = "photo"
         /// v1 kept a single tone; it becomes the first "How I sound".
@@ -261,7 +268,12 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         audienceLevel = (try? container.decodeIfPresent(AudienceLevel.self, forKey: .audienceLevel)) ?? nil
         approvals = try container.decodeIfPresent(Int.self, forKey: .approvals) ?? defaults.approvals
         examples = Array(((try? container.decodeIfPresent([VoiceExample].self, forKey: .examples)) ?? []).prefix(VoiceExample.limit))
-        customTags = try container.decodeIfPresent([String].self, forKey: .customTags) ?? defaults.customTags
+        // Builds before 02/11/2026 also copied every typed opening, ending and catchphrase here, so the model was told them twice and kept being told
+        // after they were removed. A copy of something still in its own field goes; a tag that matches nothing could be the creator's own note and stays.
+        customTags = Self.withoutTypedCopies(
+            try container.decodeIfPresent([String].self, forKey: .customTags) ?? defaults.customTags, of: openings + endings + phrases
+        )
+        customFormats = (try? container.decodeIfPresent([String].self, forKey: .customFormats)) ?? []
         declinedVoiceItems = (try? container.decodeIfPresent(Set<VoicePersonalityItem>.self, forKey: .declinedVoiceItems)) ?? []
         photoData = try container.decodeIfPresent(Data.self, forKey: .photoData)
         // A value a newer build added (a topic, a group) reads as absent, so the rest of the profile still opens.
@@ -280,6 +292,7 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         customRole = Self.trimmed(try? container.decodeIfPresent(String.self, forKey: .customRole))
         credential = Self.trimmed(try? container.decodeIfPresent(String.self, forKey: .credential))
         speaksAs = (try? container.decodeIfPresent(SpeaksAs.self, forKey: .speaksAs)) ?? nil
+        agreement = (try? container.decodeIfPresent(VoiceAgreement.self, forKey: .agreement)) ?? VoiceAgreement()
         approvedSamples = Array(
             ((try? container.decodeIfPresent([VoiceExample].self, forKey: .approvedSamples)) ?? []).suffix(VoiceLimits.approvedSamples)
         )
@@ -327,6 +340,7 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         try container.encode(approvals, forKey: .approvals)
         try container.encode(examples, forKey: .examples)
         try container.encode(customTags, forKey: .customTags)
+        try container.encode(customFormats, forKey: .customFormats)
         try container.encode(declinedVoiceItems, forKey: .declinedVoiceItems)
         try container.encodeIfPresent(photoData, forKey: .photoData)
         try container.encode(voiceTopics.map(\.rawValue), forKey: .voiceTopics)
@@ -338,6 +352,7 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         try container.encodeIfPresent(customRole, forKey: .customRole)
         try container.encodeIfPresent(credential, forKey: .credential)
         try container.encodeIfPresent(speaksAs, forKey: .speaksAs)
+        if !agreement.isEmpty { try container.encode(agreement, forKey: .agreement) }
         try container.encode(approvedSamples, forKey: .approvedSamples)
         try container.encode(excerpts, forKey: .excerpts)
         try container.encodeIfPresent(fingerprint, forKey: .fingerprint)
@@ -346,6 +361,12 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
     }
 
     /// Text typed by the creator: trimmed, and nil when nothing is left.
+    /// `tags` without the ones that repeat a value kept in its own field (`values`), compared as the editor compares them (`VoiceTextValidator.key`).
+    static func withoutTypedCopies(_ tags: [String], of values: [String]) -> [String] {
+        let kept = Set(values.map(VoiceTextValidator.key))
+        return tags.filter { !kept.contains(VoiceTextValidator.key($0)) }
+    }
+
     private static func trimmed(_ text: String?) -> String? {
         guard let text else { return nil }
         let value = text.trimmingCharacters(in: .whitespacesAndNewlines)

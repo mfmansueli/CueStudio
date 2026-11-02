@@ -13,7 +13,7 @@ struct VoiceConstraintCheckerTests {
     private func voice(
         avoid: [String] = [], speaksAs: SpeaksAs = .i, openings: [String] = [], phrases: [String] = []
     ) -> CreatorVoice {
-        var voice = CreatorVoice(sounds: [], phrases: phrases, vocabulary: nil, styles: [], niches: [])
+        var voice = CreatorVoice(sounds: [], phrases: phrases, vocabulary: nil, styles: [])
         voice.avoid = avoid
         voice.speaksAs = speaksAs
         voice.openings = openings

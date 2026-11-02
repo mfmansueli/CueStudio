@@ -39,14 +39,16 @@ struct ScriptRequestFactory {
         let preset = rules.preset(for: platform, monetizationGoals: profile.profile.monetizationGoals)
         let isSerious = format?.structure.isSerious ?? false
         let language = writingLanguage(for: languageText ?? text)
-        let voice = profile.writesInMyVoice && !isSerious
+        var theirs = profile.writesInMyVoice
             ? profile.profile.voice(
                 inLanguage: language?.locale.language.languageCode?.identifier, idea: text, professional: PlatformRegister(platform) == .professional
             ) : nil
-        return ScriptRequest(
+        // At most three catchphrases, taking turns (the owner's B10; §11, A9): the starter moves the turn on once the script is sent.
+        theirs?.phrases = profile.nextCatchphrases
+        let voice = isSerious ? nil : theirs
+        var request = ScriptRequest(
             source: .prompt(text),
             platform: platform,
-            tone: nil,
             voice: voice,
             targetRange: targetRange(for: effectiveLength, platform: platform, preset: preset, voice: voice),
             durationPolicy: effectiveLength == .auto ? .informative : .targeted,
@@ -59,6 +61,8 @@ struct ScriptRequestFactory {
             brief: brief?.standing(in: text),
             formatChoice: formatChoice
         )
+        if isSerious { request.rules = theirs?.restrictionsOnly }
+        return request
     }
 
     /// The least a spoken video can run and still say something (a hook, a point and a call to action, about 60 words at 150 a minute): what the creator's

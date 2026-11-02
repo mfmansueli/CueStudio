@@ -45,7 +45,7 @@ struct ScriptVerbatimRequirementsTests {
 
     @Test func anAbsentRequiredPhraseTriggersOneBoundedCorrectionEvenWithoutMyCueVoice() async throws {
         let request = ScriptRequest(
-            source: .prompt("Explain planning and include exactly: Less rush, more intention."), platform: .reels, tone: nil,
+            source: .prompt("Explain planning and include exactly: Less rush, more intention."), platform: .reels,
             voice: nil, targetRange: 15...30, language: .english
         )
         var attempts = 0
@@ -63,7 +63,7 @@ struct ScriptVerbatimRequirementsTests {
     }
 
     @Test func aFailedCorrectionDoesNotDeliverChangedRequiredWording() async {
-        let request = ScriptRequest(source: .prompt("Include exactly: Keep this sentence."), platform: .reels, tone: nil,
+        let request = ScriptRequest(source: .prompt("Include exactly: Keep this sentence."), platform: .reels,
                                     voice: nil, targetRange: 15...30, language: .english)
         var attempts = 0
         let writer = VoiceCheckedWriting(draft: { _, _ in

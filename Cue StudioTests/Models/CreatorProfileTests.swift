@@ -42,7 +42,7 @@ struct CreatorProfileTests {
         let voice = profile.voice
         #expect(voice.sounds == [.funny])
         #expect(voice.phrases == ["Bora"])
-        #expect(voice.niches == [.tech])
+        #expect(voice.topics.map(\.topic) == profile.topics, "the topics, the first flight's included")
         #expect(voice.vocabulary == .genZ)
         #expect(voice.styles == [.storytelling])
     }

@@ -16,7 +16,7 @@ struct ScriptContextTests {
         _ idea: String = "Why mornings are hard", platform: Platform = .tiktok, format: ScriptType? = nil, voice: CreatorVoice? = nil,
         range: ClosedRange<TimeInterval> = 60...90
     ) -> ScriptRequest {
-        ScriptRequest(source: .prompt(idea), platform: platform, tone: nil, voice: voice, targetRange: range, format: format)
+        ScriptRequest(source: .prompt(idea), platform: platform, voice: voice, targetRange: range, format: format)
     }
 
     // MARK: - Platform

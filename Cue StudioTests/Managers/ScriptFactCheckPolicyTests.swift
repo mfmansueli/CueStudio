@@ -4,7 +4,7 @@ import Testing
 @Suite("Cloud draft factual review")
 struct ScriptFactCheckPolicyTests {
     private var request: ScriptRequest {
-        ScriptRequest(source: .prompt("An idea"), platform: .reels, tone: nil, voice: nil, targetRange: 30...60)
+        ScriptRequest(source: .prompt("An idea"), platform: .reels, voice: nil, targetRange: 30...60)
     }
 
     @Test func aCloudDraftStillNeedsReviewWhenTheModelClaimsItContainsNoFacts() {

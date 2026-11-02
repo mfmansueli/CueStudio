@@ -24,7 +24,9 @@ nonisolated enum AIRequestPolicy {
         var request = original
         request.modelRoute = route
         request.voice = voice(original.voice, on: route)
-        if request.durationPolicy == .informative { request.voice?.reach.length = nil }
+        // The usual length has already set the range on Auto (`ScriptRequestFactory.targetRange`); said in the brief as well it is a second
+        // length beside a chosen one ("usually under 30 seconds" for a 3-minute video) or a target on Auto, where the duration is informative.
+        request.voice?.reach.length = nil
         request.voiceBudget = route == .privateCloud ? cloudVoiceBudget : nil
         return request
     }

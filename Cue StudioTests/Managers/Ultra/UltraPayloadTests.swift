@@ -17,7 +17,7 @@ struct UltraPayloadTests {
     private static let approvedMarker = "PRIVATE-APPROVED-SCRIPT"
 
     private var voice: CreatorVoice {
-        var voice = CreatorVoice(sounds: [.casual, .confident], phrases: ["Bora lá"], vocabulary: nil, styles: [], niches: [.finance])
+        var voice = CreatorVoice(sounds: [.casual, .confident], phrases: ["Bora lá"], vocabulary: nil, styles: [])
         voice.audienceNote = "people starting their first budget"
         voice.style.sentences = .short
         voice.reach.length = .under30
@@ -29,7 +29,7 @@ struct UltraPayloadTests {
     }
 
     private func request(_ idea: String, voice: CreatorVoice? = nil) -> ScriptRequest {
-        var request = ScriptRequest(source: .prompt(idea), platform: .tiktok, tone: nil, voice: voice, targetRange: 60...90)
+        var request = ScriptRequest(source: .prompt(idea), platform: .tiktok, voice: voice, targetRange: 60...90)
         request.engine = .ultra
         return request
     }

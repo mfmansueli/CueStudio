@@ -33,6 +33,24 @@ nonisolated enum DraftEdits {
         return changed >= minimumChangedWords && Double(changed) / Double(total) >= learningShare
     }
 
+    /// The part a recorded script teaches (its opening, `CreatorProfileService.approvedSample`) is the creator's too, by the same measure as the
+    /// whole: edits further down only would keep Cue's own opening as an example of how they write. The draft's opening is taken as many words
+    /// long as theirs, so a sentence they put first counts once.
+    static func openingIsTheirs(draft: String, final: String) -> Bool {
+        let after = words(in: opening(of: final))
+        guard !after.isEmpty else { return false }
+        let before = Array(words(in: draft).prefix(after.count))
+        let changed = after.count - commonLength(before, after)
+        return changed >= minimumChangedWords && Double(changed) / Double(after.count) >= learningShare
+    }
+
+    /// The first `VoiceExample.sentCharacters` characters of the spoken text, on one line: what is kept as the example.
+    static func opening(of text: String) -> String {
+        let spoken = CueParser.stripCues(text).split(whereSeparator: \.isNewline).map { $0.trimmingCharacters(in: .whitespaces) }
+            .filter { !$0.isEmpty }.joined(separator: " ")
+        return String(spoken.prefix(VoiceExample.sentCharacters))
+    }
+
     /// Spoken words only, folded (case, accents) and without the punctuation around them.
     static func words(in text: String) -> [String] {
         let spoken = CueParser.stripCues(text).folding(options: [.caseInsensitive, .diacriticInsensitive], locale: nil)

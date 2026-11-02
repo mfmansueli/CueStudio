@@ -17,14 +17,18 @@ struct VoiceFormatsField: View {
         VStack(alignment: .leading, spacing: 22) {
             group(.formats, label: String(localized: "What you film most"), limit: VoiceLimits.formats)
             group(.openings, label: String(localized: "How you like to open"), limit: VoiceLimits.openings)
-            group(.endings, label: String(localized: "How you usually end"), limit: VoiceLimits.endings)
+            // A habit, not a rule (the owner's B11, 02/11/2026): "never" is Avoid's.
+            group(
+                .endings, label: String(localized: "How you usually end"), limit: VoiceLimits.endings,
+                note: String(localized: "What you usually do. To never ask viewers for anything, pick Calls to action under Avoid.")
+            )
             goals
         }
     }
 
     // MARK: - A question of the bank
 
-    private func group(_ question: VoiceQuestion, label: String, limit: Int) -> some View {
+    private func group(_ question: VoiceQuestion, label: String, limit: Int, note: String? = nil) -> some View {
         let options = question.options
         let extras = typed(for: question, among: options)
         return VStack(alignment: .leading, spacing: 8) {
@@ -37,7 +41,11 @@ struct VoiceFormatsField: View {
                 },
                 extras: extras,
                 onTapExtra: { value in
-                    if let item = item(for: question) { profile.toggle(value, for: item) }
+                    if let item = item(for: question) {
+                        profile.toggle(value, for: item)
+                    } else if question == .formats {
+                        profile.removeTypedFormat(value)
+                    }
                 },
                 identifier: "voice.\(question.rawValue)"
             )
@@ -46,6 +54,13 @@ struct VoiceFormatsField: View {
                 submit: { text, keeping in profile.addSomethingElse(text, for: question, keepingTyped: keeping) },
                 identifier: "voice.\(question.rawValue).field"
             )
+            if let note {
+                Text(note)
+                    .cueFont(.footnote)
+                    .foregroundStyle(Palette.ink2)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .accessibilityIdentifier("voice.\(question.rawValue).note")
+            }
         }
     }
 
@@ -57,7 +72,8 @@ struct VoiceFormatsField: View {
         }
     }
 
-    /// What the creator typed for a question that isn't one of its options (an opening or an ending, or a tag for a format).
+    /// What the creator typed for a question that isn't one of its options (an opening or an ending, or a format: the ones this build keeps, then
+    /// the tags an older one kept under it).
     private func typed(for question: VoiceQuestion, among options: [VoiceOption]) -> [String] {
         let known = Set(options.flatMap { [VoiceTextValidator.key($0.label), VoiceTextValidator.key($0.id)] })
         switch question {
@@ -65,7 +81,8 @@ struct VoiceFormatsField: View {
         case .endings: return current.endings.filter { !known.contains(VoiceTextValidator.key($0)) && !isStyleName($0, among: options) }
         case .formats:
             let formatTags = Set(VoiceQuestion.formatTags.values.map(VoiceTextValidator.key))
-            return current.customTags.filter { !formatTags.contains(VoiceTextValidator.key($0)) && !known.contains(VoiceTextValidator.key($0)) }
+            let legacy = current.customTags.filter { !formatTags.contains(VoiceTextValidator.key($0)) && !known.contains(VoiceTextValidator.key($0)) }
+            return current.customFormats + legacy
         default: return []
         }
     }

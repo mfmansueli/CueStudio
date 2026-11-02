@@ -90,7 +90,7 @@ struct UltraCostDeviceTests {
 
     /// A made-up creator: personal finance and habits, every kind of voice preference, no private samples.
     private static var voice: CreatorVoice {
-        var voice = CreatorVoice(sounds: [.casual, .confident], phrases: [], vocabulary: .simple, styles: [], niches: [.finance, .lifestyle])
+        var voice = CreatorVoice(sounds: [.casual, .confident], phrases: [], vocabulary: .simple, styles: [])
         voice.role = .educator
         voice.style.sentences = .short
         voice.style.energy = .high

@@ -47,7 +47,7 @@ struct LocalContextTests {
             openingLine: "Your workout starts before the first squat."
         )
         let request = ScriptRequest(
-            source: .prompt(brief.composerText + "\nKeep it light."), platform: .tiktok, tone: nil, voice: nil, targetRange: 30...45, language: .english,
+            source: .prompt(brief.composerText + "\nKeep it light."), platform: .tiktok, voice: nil, targetRange: 30...45, language: .english,
             brief: brief
         )
         #expect(ScriptPromptBuilder.videoText(for: request) == "The warm-up most people skip\nKeep it light.", "what the creator added stays")

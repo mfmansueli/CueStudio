@@ -12,7 +12,7 @@ import Testing
 @Suite("Writing progress meter")
 struct WritingProgressMeterTests {
     @Test func itExpectsTheFewestWordsTheCreatorAskedFor() {
-        let request = ScriptRequest(source: .prompt("Why I quit coffee"), platform: .tiktok, tone: nil, voice: nil, targetRange: 60...90)
+        let request = ScriptRequest(source: .prompt("Why I quit coffee"), platform: .tiktok, voice: nil, targetRange: 60...90)
         let meter = WritingProgressMeter(for: request)
         #expect(meter.estimate.expectedWords == ReadTime.words(for: 60))
     }

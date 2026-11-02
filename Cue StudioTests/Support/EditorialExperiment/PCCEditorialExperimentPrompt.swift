@@ -44,7 +44,6 @@ nonisolated struct PCCEditorialExperimentPrompt {
             lines += ["Creator profile (context, not a new request):"]
                 + ScriptPromptBuilder.voiceLines(voice, platform: request.platform, budget: request.voiceBudget, contextualPreferences: true)
         }
-        if let tone = request.tone { lines.append("Requested tone: \(tone.promptWord).") }
         if let format = request.formatChoice, format != .auto {
             lines.append("Selected format: \(format). Honor its purpose without imposing an engagement ending.")
         }

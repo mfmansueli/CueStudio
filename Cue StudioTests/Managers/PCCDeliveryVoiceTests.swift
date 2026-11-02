@@ -11,7 +11,7 @@ struct PCCDeliveryVoiceTests {
         voice.customTags = ["Keep a dry tone."]
         var request = ScriptRequest(
             source: .prompt("Explain camera choices and include exactly: Keep the useful parts."),
-            platform: .reels, tone: nil, voice: voice, targetRange: 60...90, language: .english
+            platform: .reels, voice: voice, targetRange: 60...90, language: .english
         )
         request.durationPolicy = .informative
         request.formatChoice = .talkingHead
@@ -25,9 +25,9 @@ struct PCCDeliveryVoiceTests {
         let projected = PCCDeliveryVoice.prepare(original, on: .privateCloud)
         let after = try #require(projected.voice)
         #expect(after.role == nil && after.customRole == nil && after.credential == nil)
-        #expect(after.niches.isEmpty && after.topics.isEmpty)
+        #expect(after.topics.isEmpty)
         #expect(after.audienceGroup == nil && after.audienceNote == nil)
-        #expect(after.openings.isEmpty && after.endings.isEmpty && after.formats.isEmpty)
+        #expect(after.openings.isEmpty && after.endings.isEmpty && after.formats.isEmpty && after.customFormats.isEmpty)
         #expect(after.watchReasons.isEmpty && after.contentGoals.isEmpty)
         #expect(after.reach.platforms.isEmpty && after.reach.length == nil)
         #expect(after.resolvedSpeaksAs == before.resolvedSpeaksAs)

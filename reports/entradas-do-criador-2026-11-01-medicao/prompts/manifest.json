@@ -1,0 +1,440 @@
+[
+  {
+    "attachments" : [
+      {
+        "arguments" : [
+          "pt-fitness-woman"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "DFF114F5-47D9-4528-B86E-FAF1351F6338",
+        "deviceName" : "iPhone 17",
+        "exportedFileName" : "A79BD775-4FD0-48A7-B1BA-88D1055261A9.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-prompt-pt-fitness-woman-privateCloud-2_0_3B581E45-6B37-4046-8334-DFB84E77664E.txt",
+        "timestamp" : 1793575050.725
+      },
+      {
+        "arguments" : [
+          "pt-fitness-woman"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "DFF114F5-47D9-4528-B86E-FAF1351F6338",
+        "deviceName" : "iPhone 17",
+        "exportedFileName" : "B1770424-E812-47BB-8FCF-56F444D02296.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-prompt-pt-fitness-woman-privateCloud-1_0_FC4D176F-EA54-45F9-8C83-6A098A5E8071.txt",
+        "timestamp" : 1793575050.713
+      },
+      {
+        "arguments" : [
+          "pt-fitness-woman"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "DFF114F5-47D9-4528-B86E-FAF1351F6338",
+        "deviceName" : "iPhone 17",
+        "exportedFileName" : "331308A3-C0D8-4D7C-9C1D-A0103C13CA80.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-prompt-pt-fitness-woman-privateCloud-0_0_8266F779-534C-470F-80B8-D243B5A34C39.txt",
+        "timestamp" : 1793575050.689
+      },
+      {
+        "arguments" : [
+          "pt-fitness-woman"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "DFF114F5-47D9-4528-B86E-FAF1351F6338",
+        "deviceName" : "iPhone 17",
+        "exportedFileName" : "1C0CDA98-6090-49D0-9403-B89067C07C41.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-prompt-pt-fitness-woman-onDevice-2_0_7F86BD61-3301-4E8C-9486-E6826A289498.txt",
+        "timestamp" : 1793575050.676
+      },
+      {
+        "arguments" : [
+          "pt-fitness-woman"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "DFF114F5-47D9-4528-B86E-FAF1351F6338",
+        "deviceName" : "iPhone 17",
+        "exportedFileName" : "68CF40A7-72D9-4CA9-9C20-67EEFE1C2AC5.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-prompt-pt-fitness-woman-onDevice-1_0_01C17CB7-A11E-4DA6-AE9D-FCFE5DF811FB.txt",
+        "timestamp" : 1793575050.664
+      },
+      {
+        "arguments" : [
+          "pt-fitness-woman"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "DFF114F5-47D9-4528-B86E-FAF1351F6338",
+        "deviceName" : "iPhone 17",
+        "exportedFileName" : "CE367A73-03B4-4139-8438-3BA1D099D010.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-prompt-pt-fitness-woman-onDevice-0_0_BFD535D5-D397-4B1E-9B6C-D95F9DF3FD67.txt",
+        "timestamp" : 1793575050.651
+      },
+      {
+        "arguments" : [
+          "es-beauty-woman"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "DFF114F5-47D9-4528-B86E-FAF1351F6338",
+        "deviceName" : "iPhone 17",
+        "exportedFileName" : "2D4CB8A1-761D-4B1F-B82B-CD620499F58E.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-prompt-es-beauty-woman-privateCloud-2_0_8885D8A2-B028-4C31-B47B-EA6FD739322E.txt",
+        "timestamp" : 1793575050.786
+      },
+      {
+        "arguments" : [
+          "es-beauty-woman"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "DFF114F5-47D9-4528-B86E-FAF1351F6338",
+        "deviceName" : "iPhone 17",
+        "exportedFileName" : "4DFEE15D-10D8-4C6E-86B2-3C614F35121C.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-prompt-es-beauty-woman-privateCloud-1_0_57EA9445-55DF-466E-BE1B-8DDDB4B9BA77.txt",
+        "timestamp" : 1793575050.776
+      },
+      {
+        "arguments" : [
+          "es-beauty-woman"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "DFF114F5-47D9-4528-B86E-FAF1351F6338",
+        "deviceName" : "iPhone 17",
+        "exportedFileName" : "0AB69505-1222-4606-BC2E-AEB355C17E8A.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-prompt-es-beauty-woman-privateCloud-0_0_377B58B3-96F4-4561-99BB-D42B416409C1.txt",
+        "timestamp" : 1793575050.768
+      },
+      {
+        "arguments" : [
+          "es-beauty-woman"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "DFF114F5-47D9-4528-B86E-FAF1351F6338",
+        "deviceName" : "iPhone 17",
+        "exportedFileName" : "8DB81ECE-62E4-48EF-8F40-E098A2E55D5C.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-prompt-es-beauty-woman-onDevice-2_0_E6A4D0B5-20CE-48D3-9280-BBA7AD11AF4E.txt",
+        "timestamp" : 1793575050.759
+      },
+      {
+        "arguments" : [
+          "es-beauty-woman"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "DFF114F5-47D9-4528-B86E-FAF1351F6338",
+        "deviceName" : "iPhone 17",
+        "exportedFileName" : "20B09BCD-CC9B-4DB7-8675-8F1D0947F791.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-prompt-es-beauty-woman-onDevice-1_0_352FA8A1-8835-4490-8B4D-40977DABF35B.txt",
+        "timestamp" : 1793575050.749
+      },
+      {
+        "arguments" : [
+          "es-beauty-woman"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "DFF114F5-47D9-4528-B86E-FAF1351F6338",
+        "deviceName" : "iPhone 17",
+        "exportedFileName" : "B24113C1-C1A1-414F-B899-3A2C0ACD9166.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-prompt-es-beauty-woman-onDevice-0_0_24F62D55-E4DC-4F75-A183-B7DC01826A06.txt",
+        "timestamp" : 1793575050.737
+      },
+      {
+        "arguments" : [
+          "it-food-woman"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "DFF114F5-47D9-4528-B86E-FAF1351F6338",
+        "deviceName" : "iPhone 17",
+        "exportedFileName" : "2E8E9A1D-5AD7-4FEA-82DC-B46D59872863.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-prompt-it-food-woman-privateCloud-2_0_8673BEDE-C6FE-4CDF-9AD3-6E4CFC77E9A0.txt",
+        "timestamp" : 1793575050.846
+      },
+      {
+        "arguments" : [
+          "it-food-woman"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "DFF114F5-47D9-4528-B86E-FAF1351F6338",
+        "deviceName" : "iPhone 17",
+        "exportedFileName" : "26CAC9FA-57E0-48E0-8E6C-B4661B51A592.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-prompt-it-food-woman-privateCloud-1_0_17E694C6-CC92-4957-AF00-211BEF316ED7.txt",
+        "timestamp" : 1793575050.835
+      },
+      {
+        "arguments" : [
+          "it-food-woman"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "DFF114F5-47D9-4528-B86E-FAF1351F6338",
+        "deviceName" : "iPhone 17",
+        "exportedFileName" : "D4BE342A-D586-450A-9BAB-33CBB64DF677.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-prompt-it-food-woman-privateCloud-0_0_A8307088-8EAC-4B13-9F6E-E6AB7C1A7639.txt",
+        "timestamp" : 1793575050.825
+      },
+      {
+        "arguments" : [
+          "it-food-woman"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "DFF114F5-47D9-4528-B86E-FAF1351F6338",
+        "deviceName" : "iPhone 17",
+        "exportedFileName" : "A145B653-3BF4-4082-92DC-2D778C77A92C.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-prompt-it-food-woman-onDevice-2_0_75FC99A9-C1F9-4C8C-B2DC-D86F56F09EAD.txt",
+        "timestamp" : 1793575050.816
+      },
+      {
+        "arguments" : [
+          "it-food-woman"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "DFF114F5-47D9-4528-B86E-FAF1351F6338",
+        "deviceName" : "iPhone 17",
+        "exportedFileName" : "73B3AC8D-A8DF-4541-BBDE-E0567D740841.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-prompt-it-food-woman-onDevice-1_0_FAB44A27-5B27-4B9C-A9B3-FE89A5BB931E.txt",
+        "timestamp" : 1793575050.806
+      },
+      {
+        "arguments" : [
+          "it-food-woman"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "DFF114F5-47D9-4528-B86E-FAF1351F6338",
+        "deviceName" : "iPhone 17",
+        "exportedFileName" : "09D3B914-2272-43B7-9D67-F43FC081C57B.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-prompt-it-food-woman-onDevice-0_0_AF0E7C3A-EAEA-4705-A1C2-68B57B0BE805.txt",
+        "timestamp" : 1793575050.796
+      },
+      {
+        "arguments" : [
+          "fr-travel-woman"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "DFF114F5-47D9-4528-B86E-FAF1351F6338",
+        "deviceName" : "iPhone 17",
+        "exportedFileName" : "B1F33D85-1BBC-4D67-8F90-091044CFFC1E.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-prompt-fr-travel-woman-privateCloud-2_0_87453298-9D08-49C3-8212-C109955EA554.txt",
+        "timestamp" : 1793575050.911
+      },
+      {
+        "arguments" : [
+          "fr-travel-woman"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "DFF114F5-47D9-4528-B86E-FAF1351F6338",
+        "deviceName" : "iPhone 17",
+        "exportedFileName" : "6F78F399-86EF-43D2-A57F-EC116EC7A9AB.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-prompt-fr-travel-woman-privateCloud-1_0_B799A4C1-0BEC-458A-91AA-DB6FE1686D19.txt",
+        "timestamp" : 1793575050.9
+      },
+      {
+        "arguments" : [
+          "fr-travel-woman"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "DFF114F5-47D9-4528-B86E-FAF1351F6338",
+        "deviceName" : "iPhone 17",
+        "exportedFileName" : "B86902ED-B7BD-4850-80D0-750D8B4D6D52.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-prompt-fr-travel-woman-privateCloud-0_0_FD8DFBC7-A595-4040-8615-D919B899C219.txt",
+        "timestamp" : 1793575050.89
+      },
+      {
+        "arguments" : [
+          "fr-travel-woman"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "DFF114F5-47D9-4528-B86E-FAF1351F6338",
+        "deviceName" : "iPhone 17",
+        "exportedFileName" : "C4281857-4AF4-4695-83BD-C2BF167811FA.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-prompt-fr-travel-woman-onDevice-2_0_3A919D83-CFCA-4F26-988E-10F7A56EBB9C.txt",
+        "timestamp" : 1793575050.879
+      },
+      {
+        "arguments" : [
+          "fr-travel-woman"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "DFF114F5-47D9-4528-B86E-FAF1351F6338",
+        "deviceName" : "iPhone 17",
+        "exportedFileName" : "DD287C40-76FF-4D3B-A552-7E5B4D82E666.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-prompt-fr-travel-woman-onDevice-1_0_1554973C-7333-4E02-84D4-D1D0F579CD61.txt",
+        "timestamp" : 1793575050.868
+      },
+      {
+        "arguments" : [
+          "fr-travel-woman"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "DFF114F5-47D9-4528-B86E-FAF1351F6338",
+        "deviceName" : "iPhone 17",
+        "exportedFileName" : "C18BCE5F-F8F8-4685-84C5-41378C5FBA9B.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-prompt-fr-travel-woman-onDevice-0_0_AF19844D-5BE5-42BC-A2A8-BBD39CCD8D80.txt",
+        "timestamp" : 1793575050.857
+      },
+      {
+        "arguments" : [
+          "pt-follow-cta"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "DFF114F5-47D9-4528-B86E-FAF1351F6338",
+        "deviceName" : "iPhone 17",
+        "exportedFileName" : "D522DC0A-4045-4569-B99C-C6DFC25A4430.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-prompt-pt-follow-cta-privateCloud-2_0_CFCF1D66-70B2-4CE8-B184-13ECC2275CF2.txt",
+        "timestamp" : 1793575051.118
+      },
+      {
+        "arguments" : [
+          "pt-follow-cta"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "DFF114F5-47D9-4528-B86E-FAF1351F6338",
+        "deviceName" : "iPhone 17",
+        "exportedFileName" : "36E62EAF-E279-4B2F-BEB8-0B8292C89689.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-prompt-pt-follow-cta-privateCloud-1_0_7AA3249D-D1DC-499D-B75E-BB66F182E9DA.txt",
+        "timestamp" : 1793575051.107
+      },
+      {
+        "arguments" : [
+          "pt-follow-cta"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "DFF114F5-47D9-4528-B86E-FAF1351F6338",
+        "deviceName" : "iPhone 17",
+        "exportedFileName" : "E6F0D727-852A-4E52-8279-3A8773B04DFB.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-prompt-pt-follow-cta-privateCloud-0_0_700EE72F-2EF1-4557-9F82-7A745AAD8E8E.txt",
+        "timestamp" : 1793575051.096
+      },
+      {
+        "arguments" : [
+          "pt-follow-cta"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "DFF114F5-47D9-4528-B86E-FAF1351F6338",
+        "deviceName" : "iPhone 17",
+        "exportedFileName" : "114BC80B-8DDF-476A-9610-CC8AF142FBE1.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-prompt-pt-follow-cta-onDevice-2_0_C4C51675-DBC7-4669-8EDB-EDC01F18901D.txt",
+        "timestamp" : 1793575051.086
+      },
+      {
+        "arguments" : [
+          "pt-follow-cta"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "DFF114F5-47D9-4528-B86E-FAF1351F6338",
+        "deviceName" : "iPhone 17",
+        "exportedFileName" : "52EC2D97-C768-4C05-8C1F-1DE2A24FBD6D.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-prompt-pt-follow-cta-onDevice-1_0_9E5E3DCA-37F3-477A-9609-5727A314B598.txt",
+        "timestamp" : 1793575051.076
+      },
+      {
+        "arguments" : [
+          "pt-follow-cta"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "DFF114F5-47D9-4528-B86E-FAF1351F6338",
+        "deviceName" : "iPhone 17",
+        "exportedFileName" : "D36E071F-81ED-40BE-A1EF-10B94EFEBFCD.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-prompt-pt-follow-cta-onDevice-0_0_E84CDC14-37C1-448A-877F-3225CD1E3AEF.txt",
+        "timestamp" : 1793575051.065
+      },
+      {
+        "arguments" : [
+          "en-no-cta"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "DFF114F5-47D9-4528-B86E-FAF1351F6338",
+        "deviceName" : "iPhone 17",
+        "exportedFileName" : "7A64B1D5-BA38-4AF8-B113-20DED6F8ABAC.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-prompt-en-no-cta-privateCloud-2_0_A5A9CD06-C3FF-4F65-9DEA-06DBDF4A54A7.txt",
+        "timestamp" : 1793575051.418
+      },
+      {
+        "arguments" : [
+          "en-no-cta"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "DFF114F5-47D9-4528-B86E-FAF1351F6338",
+        "deviceName" : "iPhone 17",
+        "exportedFileName" : "DB1D4E6B-14F9-4A20-9096-97D384E83F2E.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-prompt-en-no-cta-privateCloud-1_0_10C3ECAE-EA50-45D9-84F8-851F208E0B94.txt",
+        "timestamp" : 1793575051.411
+      },
+      {
+        "arguments" : [
+          "en-no-cta"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "DFF114F5-47D9-4528-B86E-FAF1351F6338",
+        "deviceName" : "iPhone 17",
+        "exportedFileName" : "C03AA2E4-9721-4008-B01B-72F98F85C4A7.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-prompt-en-no-cta-privateCloud-0_0_B07CA6DB-A026-41B8-955D-9992DF193D60.txt",
+        "timestamp" : 1793575051.404
+      },
+      {
+        "arguments" : [
+          "en-no-cta"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "DFF114F5-47D9-4528-B86E-FAF1351F6338",
+        "deviceName" : "iPhone 17",
+        "exportedFileName" : "5D052AA6-8F4E-4C7C-8227-766C254A5E47.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-prompt-en-no-cta-onDevice-2_0_987A7FD3-1C61-443B-A627-7333E09BA60F.txt",
+        "timestamp" : 1793575051.397
+      },
+      {
+        "arguments" : [
+          "en-no-cta"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "DFF114F5-47D9-4528-B86E-FAF1351F6338",
+        "deviceName" : "iPhone 17",
+        "exportedFileName" : "8BC24593-DCF1-403C-B43F-04E8E36472B5.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-prompt-en-no-cta-onDevice-1_0_A218713A-E91D-4134-8575-2409C6AE0CB4.txt",
+        "timestamp" : 1793575051.39
+      },
+      {
+        "arguments" : [
+          "en-no-cta"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "DFF114F5-47D9-4528-B86E-FAF1351F6338",
+        "deviceName" : "iPhone 17",
+        "exportedFileName" : "9D7B56B0-97A4-4BD7-8C02-545E51BDE500.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-prompt-en-no-cta-onDevice-0_0_04ED9CFC-5F06-463A-ACB4-FAFDC4AF9307.txt",
+        "timestamp" : 1793575051.382
+      }
+    ],
+    "testIdentifier" : "CreatorInputsPromptCaptureTests/recordsWhatEachCaseSends(_:)",
+    "testIdentifierURL" : "test://com.apple.xcode/Cue%20Studio/Cue%20StudioTests/CreatorInputsPromptCaptureTests/recordsWhatEachCaseSends(_:)"
+  }
+]

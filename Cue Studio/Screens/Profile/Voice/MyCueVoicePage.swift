@@ -133,6 +133,15 @@ struct MyCueVoicePage: View {
             ForEach(VoicePageRow.rows(of: layer)) { row in
                 VoicePageRowView(row: row, profile: current) { editing = VoiceEditorField(row) }
             }
+            // Where the proof goes, said where it is given: only what Cue writes on this iPhone reads it (`AIRequestPolicy`, §11, A6).
+            if layer == .proof {
+                Text("Examples, imported writing and approved scripts guide what Cue writes on this iPhone, ideas included. They’re never sent to Private Cloud Compute or Ultra AI.")
+                    .cueFont(.footnote)
+                    .foregroundStyle(Palette.ink2)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(EdgeInsets(top: 8, leading: 16, bottom: 12, trailing: 16))
+                    .accessibilityIdentifier("voicePage.proofNote")
+            }
         }
     }
 

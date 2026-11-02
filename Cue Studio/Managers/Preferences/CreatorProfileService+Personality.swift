@@ -62,10 +62,6 @@ extension CreatorProfileService {
             var list = existing
             list.append(text)
             set(list, for: item, in: &updated)
-            if !item.options.contains(where: { VoiceTextValidator.key($0) == VoiceTextValidator.key(text) }),
-               !updated.customTags.contains(where: { VoiceTextValidator.key($0) == VoiceTextValidator.key(text) }) {
-                updated.customTags.append(text)
-            }
             updated.declinedVoiceItems.remove(item)
             profile = updated
             return .added
@@ -82,7 +78,7 @@ extension CreatorProfileService {
             profile = updated
             return .removed
         }
-        guard updated.formats.count + updated.formatTags.count < VoiceLimits.formats else { return .limit(VoicePersonalityItem.formats.limitMessage) }
+        guard updated.heldFormats < VoiceLimits.formats else { return .limit(VoicePersonalityItem.formats.limitMessage) }
         updated.formats.append(format)
         updated.declinedVoiceItems.remove(.formats)
         profile = updated

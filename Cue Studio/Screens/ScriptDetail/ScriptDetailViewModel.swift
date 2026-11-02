@@ -195,7 +195,11 @@ final class ScriptDetailViewModel {
             platform: script?.platform ?? .tiktok,
             idealRange: preset.idealRange,
             sourceLanguage: textLanguage,
-            voice: profile.profile.voice(inLanguage: textLanguage?.languageCode?.identifier, idea: workingText)
+            voice: profile.profile.voice(inLanguage: textLanguage?.languageCode?.identifier, idea: workingText),
+            // What every tool keeps, as the draft did: only while "Write in my voice" is on, as for a draft (§11, A2).
+            rules: profile.writesInMyVoice ? profile.profile.voice.restrictionsOnly : nil,
+            // A script that is no longer an ad (its format changed) is rewritten as what it is now.
+            brand: script?.type == .ad ? script?.brand : nil
         )
     }
 
@@ -417,7 +421,7 @@ final class ScriptDetailViewModel {
             library.create(
                 title: String(localized: "\(script.displayTitle) (\(language.localizedName))"),
                 text: result.text, platform: script.platform, type: script.type, folder: script.folder,
-                factCheck: copiesNeedFactCheck, language: language, isFinished: false, draftedBy: script.draftedBy
+                factCheck: copiesNeedFactCheck, language: language, isFinished: false, draftedBy: script.draftedBy, brand: script.brand
             )
             sheet = nil
             // Not written (a full iPhone): the app says so (`RootView`), never that it was saved.
@@ -460,7 +464,7 @@ final class ScriptDetailViewModel {
             library.create(
                 title: String(localized: "\(script.displayTitle) (\(platform.label))"),
                 text: result.text, platform: platform, type: script.type, folder: script.folder,
-                factCheck: copiesNeedFactCheck, language: script.language, isFinished: false, draftedBy: script.draftedBy
+                factCheck: copiesNeedFactCheck, language: script.language, isFinished: false, draftedBy: script.draftedBy, brand: script.brand
             )
             guard !library.saveFailed else { return }
             var message = String(localized: "\(platform.label) version saved")

@@ -16,7 +16,8 @@ struct VoiceSendsSheet: View {
     @Environment(ScriptStarter.self) private var starter
     @Environment(\.dismiss) private var dismiss
 
-    private var brief: VoiceBrief { ScriptPromptBuilder.brief(for: profile.profile) }
+    /// The next script's catchphrases, as it will carry them (`CatchphraseRotation`).
+    private var brief: VoiceBrief { ScriptPromptBuilder.brief(for: profile.profile, phrases: profile.nextCatchphrases) }
 
     var body: some View {
         NavigationStack {
@@ -35,6 +36,13 @@ struct VoiceSendsSheet: View {
                     Text("Apple Intelligence can use this iPhone or Private Cloud Compute. Your request and voice preferences may be sent to Apple. Writing examples and imported excerpts stay on this iPhone.")
                         .cueFont(.footnote)
                         .foregroundStyle(Palette.ink2)
+                    // The switch off sends nothing: the voice below is what it would send (§11, A6).
+                    if !profile.profile.usesVoiceInAI {
+                        Text("“Use my voice in drafts” is off: none of this is sent.")
+                            .cueFont(.footnote, weight: .semibold)
+                            .foregroundStyle(Palette.warnText)
+                            .accessibilityIdentifier("voice.sends.off")
+                    }
                     Text("On this iPhone").cueFont(.subheadline, weight: .semibold).foregroundStyle(Palette.ink)
                     briefCard(brief.text, identifier: "voice.sends.brief")
                     meter
@@ -46,6 +54,22 @@ struct VoiceSendsSheet: View {
                         .cueFont(.footnote)
                         .foregroundStyle(Palette.ink2)
                         .padding(.horizontal, 4)
+                    // A request carries a topic only when its idea is about it (`IdeaFocus`): the card shows them all.
+                    if profile.profile.topicCount > 0 {
+                        Text("Your topics go only when your idea is about one of them.")
+                            .cueFont(.footnote)
+                            .foregroundStyle(Palette.ink2)
+                            .padding(.horizontal, 4)
+                            .accessibilityIdentifier("voice.sends.topics")
+                    }
+                    // Up to three catchphrases a script, taking turns (the owner's B10; §11, A9).
+                    if CatchphraseRotation.rotates(profile.profile.phrases) {
+                        Text("Each script gets up to 3 of your phrases, taking turns. These are the next script’s.")
+                            .cueFont(.footnote)
+                            .foregroundStyle(Palette.ink2)
+                            .padding(.horizontal, 4)
+                            .accessibilityIdentifier("voice.sends.catchphrases")
+                    }
                     if ultra.isAvailable { ultraSection }
                     Button {
                         dismiss()
@@ -90,7 +114,9 @@ struct VoiceSendsSheet: View {
     }
 
     private var cloudBrief: VoiceBrief {
-        guard let voice = AIRequestPolicy.voice(profile.profile.voice, on: .privateCloud) else { return .empty }
+        var next = profile.profile.voice
+        next.phrases = profile.nextCatchphrases
+        guard let voice = AIRequestPolicy.voice(next, on: .privateCloud) else { return .empty }
         return VoiceBriefBuilder.brief(for: voice, budget: AIRequestPolicy.cloudVoiceBudget, contextualPreferences: true)
     }
 
