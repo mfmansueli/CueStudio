@@ -22,27 +22,27 @@ struct PrivacySheet: View {
             List {
                 item(
                     title: "Scripts and takes stay on this iPhone",
-                    detail: "Cue has no server. Your scripts, takes and My Cue Voice are stored on this device and in your device backups. Sign in with Apple is optional and only keeps your Apple ID on this iPhone.",
+                    detail: String(localized: "Cue has no server. Your scripts, takes and My Cue Voice are stored on this device and in your device backups. Sign in with Apple is optional and only keeps your Apple ID on this iPhone."),
                     systemImage: "iphone"
                 )
                 if ultra.isAvailable {
                     item(
                         title: "Apple Intelligence, and Ultra AI if you allow it",
-                        detail: "Apple Intelligence writes by default. Ultra AI sends your request and voice preferences to Google, which runs its model, only when you allow it and pick it for a script. Writing examples and imported excerpts stay on this iPhone.",
+                        detail: AIDisclosure.ultraPrivacy,
                         systemImage: "cpu"
                     )
                 } else {
                     item(
                         title: "Apple Intelligence, nothing else",
                         detail: usesPrivateCloudCompute
-                            ? "Apple Intelligence can use this iPhone or Private Cloud Compute. Your request and voice preferences may be sent to Apple. Writing examples and imported excerpts stay on this iPhone."
-                            : "Scripts, rewrites, hooks and theme ideas are all written on this iPhone. No other AI service is involved.",
+                            ? AIDisclosure.privateCloud
+                            : String(localized: "Scripts, rewrites, hooks and theme ideas are all written on this iPhone. No other AI service is involved."),
                         systemImage: "cpu"
                     )
                 }
                 item(
                     title: "You decide what leaves",
-                    detail: "Videos leave Cue only when you save them to Photos or share them. Camera and microphone are used only while the camera is open.",
+                    detail: String(localized: "Videos leave Cue only when you save them to Photos or share them. Camera and microphone are used only while the camera is open."),
                     systemImage: "hand.raised"
                 )
                 if let url = AppLinks.privacyPolicy {
@@ -75,7 +75,7 @@ struct PrivacySheet: View {
         }
     }
 
-    private func item(title: LocalizedStringKey, detail: LocalizedStringKey, systemImage: String) -> some View {
+    private func item(title: LocalizedStringKey, detail: String, systemImage: String) -> some View {
         Label {
             VStack(alignment: .leading, spacing: 4) {
                 Text(title).cueFont(.headline, weight: .semibold)

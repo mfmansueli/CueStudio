@@ -30,7 +30,7 @@ struct PCCScriptDirectionTests {
         #expect(instructions.contains("usual topics, openings, endings and style are defaults"))
         #expect(instructions.contains("including no call to action"))
         #expect(prompt.hasSuffix(PCCScriptDirection.finalCheck), "literal requirements are checked after voice/style defaults")
-        #expect(!instructions.contains("Here is how they write"), "PCC does not receive local writing examples")
+        #expect(instructions.contains("Here is how they write"), "PCC gets the examples the way the device does (D1)")
     }
 
     @Test func cloudGhostwritesAnEditableViewpointWithoutFabricatedCredentials() {

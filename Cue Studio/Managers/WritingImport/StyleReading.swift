@@ -12,9 +12,10 @@ import FoundationModels
 nonisolated struct StyleReading {
     @Guide(
         description: "How the writer sounds, the one or two that fit best: casual is conversational, professional is straight to the point, "
-            + "warmCalm is warm and calm, funny is playful, dry is dry and sarcastic.",
+            + "educational explains, confident is sure and direct, dry is dry and sarcastic.",
         .maximumCount(2),
-        .element(.anyOf(["casual", "professional", "educational", "confident", "warmCalm", "energetic", "funny", "dry"]))
+        // The five tones the editor offers (the owner's item 4): energy is measured and humor is its own answer.
+        .element(.anyOf(VoiceSound.offered.map(\.rawValue)))
     )
     var tones: [String]
 

@@ -68,5 +68,62 @@ struct VoiceAdjustmentTests {
         for adjustment in VoiceAdjustment.allCases {
             #expect(!adjustment.label.isEmpty && !adjustment.change.isEmpty)
         }
+        for cause in TooLongCause.allCases {
+            #expect(!cause.label.isEmpty && !VoiceAdjustment.tooLong.change(cause: cause).isEmpty)
+        }
+        // Each answer says its own change; the others don't change with it.
+        #expect(Set(TooLongCause.allCases.map { VoiceAdjustment.tooLong.change(cause: $0) }).count == TooLongCause.allCases.count)
+        #expect(VoiceAdjustment.tooLong.change(cause: .sentences) == VoiceAdjustment.tooLong.change)
+        #expect(VoiceAdjustment.tooFormal.change(cause: .video) == VoiceAdjustment.tooFormal.change)
+    }
+
+    // MARK: - What was too long
+
+    private var voiced: CreatorProfile {
+        var voiced = profile
+        voiced.style = VoiceDelivery(energy: .calm, sentences: .long, words: .plain, swearing: .never)
+        voiced.reach = VoiceReach(platforms: [.tiktok], length: .oneToThree, humor: .little)
+        return voiced
+    }
+
+    @Test func longSentencesMakeTheSentencesShortAndNothingElse() {
+        let adjusted = VoiceAdjustment.tooLong.applied(to: voiced, cause: .sentences, scriptSeconds: 90)
+        #expect(adjusted.style.sentences == .short && adjusted.styles.contains(.shortSentences))
+        #expect(adjusted.reach == voiced.reach && !adjusted.style.oneIdea)
+    }
+
+    @Test func aLongVideoMakesTheUsualLengthOneStepShorterAndNothingElse() {
+        let adjusted = VoiceAdjustment.tooLong.applied(to: voiced, cause: .video, scriptSeconds: 90)
+        #expect(adjusted.reach.length == .thirtyToSixty)
+        #expect(adjusted.style == voiced.style && adjusted.styles == voiced.styles)
+        // One step each time, never below the shortest.
+        #expect(VideoLength.longer.shorter == .oneToThree && VideoLength.thirtyToSixty.shorter == .under30 && VideoLength.under30.shorter == .under30)
+        // A usual length never answered steps down from how long this script runs.
+        var unanswered = voiced
+        unanswered.reach.length = nil
+        #expect(VoiceAdjustment.tooLong.applied(to: unanswered, cause: .video, scriptSeconds: 75).reach.length == .thirtyToSixty)
+        #expect(VoiceAdjustment.tooLong.applied(to: unanswered, cause: .video, scriptSeconds: 45).reach.length == .under30)
+        #expect(VoiceAdjustment.tooLong.applied(to: unanswered, cause: .video, scriptSeconds: 240).reach.length == .oneToThree)
+        #expect(VoiceAdjustment.tooLong.applied(to: unanswered, cause: .video).reach.length == nil)
+    }
+
+    @Test func aLongVideoMeansAShorterRangeOnAuto() {
+        // What the factory aims Auto at (`ScriptRequestFactory.targetRange`): the usual length's range, above the spoken floor.
+        #expect(VideoLength.oneToThree.targetRange == 60...180)
+        #expect(VideoLength.thirtyToSixty.targetRange == 30...60)
+    }
+
+    @Test func tooManyIdeasKeepsOneIdeaPerVideoAndNothingElse() {
+        let adjusted = VoiceAdjustment.tooLong.applied(to: voiced, cause: .ideas, scriptSeconds: 90)
+        #expect(adjusted.style.oneIdea)
+        var expected = voiced
+        expected.style.oneIdea = true
+        #expect(adjusted == expected)
+    }
+
+    @Test func theAnswerOnlyChangesTooLong() {
+        #expect(VoiceAdjustment.tooFormal.applied(to: voiced, cause: .ideas) == VoiceAdjustment.tooFormal.applied(to: voiced))
+        let both = VoiceAdjustment.applying([.tooMuchSlang, .tooLong], to: voiced, cause: .video, scriptSeconds: 90)
+        #expect(both.reach.length == .thirtyToSixty && both.style.sentences == .long)
     }
 }

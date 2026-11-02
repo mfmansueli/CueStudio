@@ -5,9 +5,9 @@
 
 import SwiftUI
 
-/// 9.3 · My Cue Voice, the full page: what Cue uses with its switch, the meter and the next question, the three layers — Essentials (kind of creator,
-/// topics, audience, why they watch, tone), Personality (style, formats, openings, endings, what the videos are for, phrases, what to avoid, reach) and
-/// Proof (examples) — each row opening the one editor on its field, and, under them, **✦ Preview my voice** and **What Cue sends**. Without Apple
+/// 9.3 · My Cue Voice, the full page: what Cue uses with its switch, the meter and the next question, the sections in the creator's order
+/// (`VoicePageSection`, the owner's item 10) — each row opening the one editor on its field and saying where it is used — and, under them,
+/// **✦ Preview my voice** and **What Cue sends**. Without Apple
 /// Intelligence the data stays saved and editable, and the page says the voice needs it. Where Ultra AI is offered and its invitation is due, a card
 /// under the voice offers it for the next idea.
 struct MyCueVoicePage: View {
@@ -73,12 +73,13 @@ struct MyCueVoicePage: View {
 
     // MARK: - The card
 
-    /// One material card, as in the Profile list (9.1): what Cue uses with its switch, the meter and the next question, then the layers as
+    /// One material card, as in the Profile list (9.1): what Cue uses with its switch, the meter and the next question, then the sections as
     /// uppercase headers over rows of 52 pt or more.
     private var mainCard: some View {
         VStack(alignment: .leading, spacing: 0) {
             header.padding(EdgeInsets(top: 14, leading: 16, bottom: 12, trailing: 16))
-            ForEach(VoiceLayer.allCases, id: \.self) { layerView($0) }
+            VoiceNoticedCard { editing = $0 }
+            ForEach(VoicePageSection.allCases) { sectionView($0) }
         }
         .profileBlock()
     }
@@ -119,37 +120,29 @@ struct MyCueVoicePage: View {
         .accessibilityIdentifier("voicePage.needsAI")
     }
 
-    // MARK: - Layers
+    // MARK: - Sections
 
-    private func layerView(_ layer: VoiceLayer) -> some View {
+    private func sectionView(_ section: VoicePageSection) -> some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text(layerTitle(layer))
+            Text(section.title)
                 .cueFont(12, weight: .semibold)
                 .textCase(.uppercase)
                 .tracking(0.6)
                 .foregroundStyle(Palette.ink2)
                 .padding(EdgeInsets(top: 14, leading: 16, bottom: 6, trailing: 16))
                 .accessibilityAddTraits(.isHeader)
-            ForEach(VoicePageRow.rows(of: layer)) { row in
-                VoicePageRowView(row: row, profile: current) { editing = VoiceEditorField(row) }
+            ForEach(section.rows) { row in
+                VoicePageRowView(row: row, profile: current, showsUse: current.usesVoiceInAI) { editing = VoiceEditorField(row) }
             }
-            // Where the proof goes, said where it is given: only what Cue writes on this iPhone reads it (`AIRequestPolicy`, §11, A6).
-            if layer == .proof {
-                Text("Examples, imported writing and approved scripts guide what Cue writes on this iPhone, ideas included. They’re never sent to Private Cloud Compute or Ultra AI.")
+            // Where the proof goes, said where it is given: both Apple Intelligence routes, never Ultra AI (the owner's D1; `AIDisclosure`).
+            if section == .proof {
+                Text(AIDisclosure.proof)
                     .cueFont(.footnote)
                     .foregroundStyle(Palette.ink2)
                     .fixedSize(horizontal: false, vertical: true)
                     .padding(EdgeInsets(top: 8, leading: 16, bottom: 12, trailing: 16))
                     .accessibilityIdentifier("voicePage.proofNote")
             }
-        }
-    }
-
-    private func layerTitle(_ layer: VoiceLayer) -> String {
-        switch layer {
-        case .essentials: String(localized: "Essentials")
-        case .personality: String(localized: "Personality")
-        case .proof: String(localized: "Proof")
         }
     }
 

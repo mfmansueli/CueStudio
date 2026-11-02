@@ -23,7 +23,7 @@ nonisolated enum PCCDeliveryVoice {
         voice.reach.platforms = []
         voice.reach.length = nil
         // Sounds, delivery, humor, vocabulary, knowledge level, avoid rules, typed style tags,
-        // catchphrases and the measured fingerprint stay. Existing cloud privacy filtering stays upstream.
+        // catchphrases, the measured fingerprint and the proof (examples, excerpts, approved scripts) stay.
         var prepared = request
         prepared.voice = voice
         return prepared

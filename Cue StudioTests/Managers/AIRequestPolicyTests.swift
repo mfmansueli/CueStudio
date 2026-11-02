@@ -23,18 +23,18 @@ struct AIRequestPolicyTests {
                              targetRange: 240...300, language: .english)
     }
 
-    @Test func cloudKeepsStyleWithoutSendingRawWritingSamples() {
+    /// The owner's D1 (02/11/2026): Private Cloud Compute gets the proof the way the device does.
+    @Test func cloudKeepsTheStyleAndTheProof() {
         let original = request()
         let cloud = AIRequestPolicy.prepare(original, on: .privateCloud)
         let prompt = ScriptPromptBuilder.instructions(for: cloud)
         #expect(cloud.voice?.style == original.voice?.style)
         #expect(cloud.voice?.fingerprint == original.voice?.fingerprint)
-        #expect(cloud.voice?.examples.isEmpty == true)
-        #expect(cloud.voice?.approvedSamples.isEmpty == true)
-        #expect(cloud.voice?.excerpts.isEmpty == true)
-        #expect(!prompt.contains("PRIVATE_PASTED_SAMPLE") && !prompt.contains("PRIVATE_APPROVED_SAMPLE"))
-        #expect(!prompt.contains("PRIVATE_IMPORTED_SAMPLE"))
-        #expect(original.voice?.examples.isEmpty == false, "preparing the cloud must not erase the local library")
+        #expect(cloud.voice?.examples == original.voice?.examples)
+        #expect(cloud.voice?.approvedSamples == original.voice?.approvedSamples)
+        #expect(cloud.voice?.excerpts == original.voice?.excerpts)
+        #expect(prompt.contains("PRIVATE_PASTED_SAMPLE") && prompt.contains("PRIVATE_APPROVED_SAMPLE"))
+        #expect(prompt.contains("PRIVATE_IMPORTED_SAMPLE"))
     }
 
     @Test func eachRouteIsPreparedFromTheOriginalAfterFallback() async {
@@ -44,7 +44,7 @@ struct AIRequestPolicyTests {
         let cloud = await service.fitted(original, on: .privateCloud)
         let localAgain = await service.fitted(original, on: .onDevice)
         #expect(local.voiceBudget != nil)
-        #expect(cloud.voice?.examples.isEmpty == true)
+        #expect(cloud.voice?.examples == original.voice?.examples)
         #expect(localAgain.voice?.examples == original.voice?.examples)
         #expect(cloud.voiceBudget != local.voiceBudget)
     }

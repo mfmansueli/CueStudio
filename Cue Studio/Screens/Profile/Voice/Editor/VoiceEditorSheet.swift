@@ -68,7 +68,10 @@ struct VoiceEditorSheet: View {
         case .formats: VoiceFormatsField()
         case .phrases: VoicePhrasesField()
         case .reach: VoiceReachField()
+        case .notes: VoiceNotesField()
+        case .stories: VoiceStoriesField()
         case .examples: VoiceExamplesField()
+        case .learned: VoiceLearnedField()
         }
     }
 }

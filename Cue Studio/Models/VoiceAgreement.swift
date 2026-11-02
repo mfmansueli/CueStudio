@@ -13,7 +13,7 @@ nonisolated struct VoiceAgreement: Codable, Hashable, Sendable {
     var speaker: WordGender?
     /// "We": nil is not chosen.
     var group: WordGender?
-    /// Nil is informal, the default.
+    /// Nil is not chosen: scripts speak informally, the default.
     var address: AddressForm?
 
     var isEmpty: Bool { speaker == nil && group == nil && address == nil }

@@ -93,6 +93,21 @@ struct ScriptPromptBuilderTests {
         #expect(ScriptPromptBuilder.instruction(for: .inMyVoice, context: context).contains("sounds like the creator"))
     }
 
+    @Test func adjustTooLongTellsInMyVoiceWhatToMakeShorter() {
+        var context = RewriteContext(structure: .generic, platform: .tiktok, idealRange: 60...90, voice: voice)
+        let plain = ScriptPromptBuilder.instruction(for: .inMyVoice, context: context)
+        #expect(plain.contains("about the same number of words"))
+        context.shortening = .sentences
+        #expect(ScriptPromptBuilder.instruction(for: .inMyVoice, context: context).contains("in shorter sentences"))
+        context.shortening = .video
+        #expect(ScriptPromptBuilder.instruction(for: .inMyVoice, context: context).contains("a third fewer words"))
+        context.shortening = .ideas
+        let ideas = ScriptPromptBuilder.instruction(for: .inMyVoice, context: context)
+        #expect(ideas.contains("one main idea") && ideas.contains("cut the side points") && !ideas.contains("keep every point"))
+        // A third shorter is inside what "In my voice" may answer.
+        #expect(RewriteOutcome.allowedWords(for: .inMyVoice, sourceWords: 150)?.contains(100) == true)
+    }
+
     @Test func cleanRemovesMarkdownAndBlockLabels() {
         let response = """
         Title: Morning habits

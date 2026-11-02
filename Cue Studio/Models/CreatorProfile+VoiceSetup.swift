@@ -49,7 +49,7 @@ nonisolated extension CreatorProfile {
 
     /// Something of Personality or Proof the brief tells the model, without any Essential: an opening, an ending, a catchphrase, a format, a
     /// rule, the delivery, where and how long they post, a note typed under "Something else", an example, imported writing or a script they
-    /// approved (§11, A5). What a route then leaves out (Private Cloud Compute takes no writing) simply isn't in that route's request.
+    /// approved (§11, A5). What a route then leaves out (Ultra AI takes no writing) simply isn't in that route's request.
     var holdsPersonalityOrProof: Bool {
         !openings.isEmpty || !endings.isEmpty || !phrases.isEmpty || !avoid.isEmpty || heldFormats > 0 || !customTags.isEmpty
             || style != VoiceDelivery() || reach != VoiceReach() || !examples.isEmpty || !excerpts.isEmpty || !approvedSamples.isEmpty
@@ -60,7 +60,9 @@ nonisolated extension CreatorProfile {
     /// How much of the creator Cue knows, 0–100: the weights of `VoiceField` for every field filled — Essentials 40 (kind of creator,
     /// topics, audience with its level, tone), Personality 40 (style, formats, openings, endings, phrases, what to avoid, reach) and
     /// Proof 20 (one example 8, two 14, three 20; every two "Sounds like me" count as one example). Computed, so it follows
-    /// every change to the profile.
+    /// every change to the profile. It is "What Cue knows" (`VoiceMeter`) and counts what reaches the model: since the owner's D1 (02/11/2026) both
+    /// Apple Intelligence routes get all of it, the proof too (`AIRequestPolicy`), so the number is one; Ultra AI gets everything but the proof,
+    /// which the page says in words (`AIDisclosure`) instead of a second number.
     var voiceStrength: Int {
         min(100, VoiceField.allCases.reduce(0) { $0 + points(for: $1) })
     }
@@ -112,9 +114,13 @@ nonisolated extension CreatorProfile {
     /// Every format they hold: the ones Cue writes, the tags of the list and the ones they typed (`VoiceLimits.formats` at most).
     var heldFormats: Int { formats.count + formatTags.count + customFormats.count }
 
-    /// Whether this one question has been answered (a field with several questions, like style and reach, is filled by all of them).
+    /// Whether this one question has been answered (a field with several questions, like style and reach, is filled by all of them). The
+    /// grammar counts wherever it was chosen: the editor, the tip or its sheet.
     func isAnswered(_ question: VoiceQuestion) -> Bool {
         switch question {
+        case .speakerGender: agreement.speaker != nil
+        case .groupGender: agreement.group != nil
+        case .address: agreement.address != nil
         case .energy: style.energy != nil
         case .sentences: style.sentences != nil
         case .words: style.words != nil

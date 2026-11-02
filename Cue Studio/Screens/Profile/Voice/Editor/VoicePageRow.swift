@@ -5,25 +5,26 @@
 
 import Foundation
 
-/// A row of the My Cue Voice page (screen 3), in the order the page shows them. Most are one `VoiceField`; "They watch to", the style and what the videos
-/// are for are answers that sit inside another field, shown as rows of their own because they are what the creator looks for.
+/// A row of the My Cue Voice page (screen 3); `VoicePageSection` puts them in the page's order. Most are one `VoiceField`; "They watch to", the style
+/// and what the videos are for are answers that sit inside another field, shown as rows of their own because they are what the creator looks for.
 enum VoicePageRow: String, CaseIterable, Identifiable {
     case role, topics, audience, watch, tone
-    case style, formats, openings, endings, goals, phrases, avoid, reach
-    case examples
+    case style, formats, openings, endings, goals, phrases, avoid, reach, notes, stories
+    case examples, learned
 
     var id: String { rawValue }
 
-    var layer: VoiceLayer {
+    /// Where the answer is used (the owner's item 2, 02/11/2026), as `VoicePageUseTests` checks against what the prompts really carry: a topic
+    /// reaches a script only when the idea is about it, the phrases take turns, what to avoid reaches every tool, and the examples never go to
+    /// Ultra AI.
+    var use: String {
         switch self {
-        case .role, .topics, .audience, .watch, .tone: .essentials
-        case .examples: .proof
-        default: .personality
+        case .topics: String(localized: "Ideas, and scripts about them")
+        case .phrases: String(localized: "Up to \(CatchphraseRotation.perScript) per script, taking turns")
+        case .avoid: String(localized: "Scripts, ideas and every tool")
+        case .examples, .stories: String(localized: "Scripts and ideas, never Ultra AI")
+        default: String(localized: "Scripts and ideas")
         }
-    }
-
-    static func rows(of layer: VoiceLayer) -> [VoicePageRow] {
-        allCases.filter { $0.layer == layer }
     }
 
     var title: String {
@@ -41,13 +42,26 @@ enum VoicePageRow: String, CaseIterable, Identifiable {
         case .phrases: String(localized: "My phrases")
         case .avoid: String(localized: "Avoid")
         case .reach: String(localized: "Reach")
+        case .notes: String(localized: "Also true")
+        case .stories: String(localized: "Stories and facts")
         case .examples: String(localized: "Examples")
+        case .learned: String(localized: "What Cue learned")
         }
     }
 
     /// What Cue knows for the row, as readable values; empty when nothing yet.
     func value(in profile: CreatorProfile) -> String {
-        let separator = " · "
+        switch self {
+        case .role, .topics, .audience, .watch, .tone, .style: whoValue(in: profile)
+        default: habitValue(in: profile)
+        }
+    }
+
+    private static let separator = " · "
+
+    /// Who they are, who they talk to and how they sound.
+    private func whoValue(in profile: CreatorProfile) -> String {
+        let separator = Self.separator
         switch self {
         case .role:
             return ([profile.customRole ?? profile.role?.label, profile.credential].compactMap { $0 }).joined(separator: separator)
@@ -64,8 +78,18 @@ enum VoicePageRow: String, CaseIterable, Identifiable {
         case .tone: return profile.isChosen(.tone) ? profile.sounds.map(\.label).joined(separator: separator) : ""
         case .style:
             let style = profile.style
-            return [style.energy?.label, style.sentences?.label, style.words?.label, style.swearing?.label, profile.reach.humor?.label]
-                .compactMap { $0 }.joined(separator: separator)
+            return [
+                style.energy?.label, style.sentences?.label, style.words?.label, style.swearing?.label, profile.reach.humor?.label,
+                style.oneIdea ? VoiceDelivery.oneIdeaLabel : nil,
+            ].compactMap { $0 }.joined(separator: separator)
+        default: return habitValue(in: profile)
+        }
+    }
+
+    /// What their videos do, what they avoid, what else is true and the proof.
+    private func habitValue(in profile: CreatorProfile) -> String {
+        let separator = Self.separator
+        switch self {
         case .formats: return profile.value(for: .formats)
         case .openings: return profile.openings.joined(separator: separator)
         case .endings: return profile.endings.joined(separator: separator)
@@ -74,7 +98,19 @@ enum VoicePageRow: String, CaseIterable, Identifiable {
         case .avoid: return profile.value(for: .avoid)
         case .reach:
             return (profile.reach.platforms.map(\.label) + [profile.reach.length?.label].compactMap { $0 }).joined(separator: separator)
-        case .examples: return profile.examplesPageValue
+        case .notes: return profile.notes.joined(separator: separator)
+        case .stories: return profile.stories.isEmpty ? "" : String(localized: "\(profile.stories.count) of \(VoiceStory.limit)")
+        case .examples: return profile.value(for: .examples)
+        case .learned: return Self.learnedValue(in: profile, separator: separator)
+        default: return ""
         }
+    }
+
+    /// The newest change kept from "Adjust", else where the approved scripts came from.
+    private static func learnedValue(in profile: CreatorProfile, separator: String) -> String {
+        if let change = profile.learned.last?.change { return change }
+        var sources: [String] = []
+        for source in profile.approvedSamples.reversed().compactMap(\.source) where !sources.contains(source) { sources.append(source) }
+        return sources.joined(separator: separator)
     }
 }

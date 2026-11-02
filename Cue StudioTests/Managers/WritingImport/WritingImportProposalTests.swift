@@ -57,9 +57,12 @@ struct WritingImportProposalTests {
     }
 
     @Test func whatTheModelSaysIsKeptOnlyWhenItIsOnCuesLists() {
-        let reading = StyleReading(tones: ["warmCalm", "made-up", "warmCalm"], topics: ["finance", "bogus", "tech"], audience: "professionals", humor: "little")
+        // A tone the editor no longer offers (warm and calm is energy now) is dropped like a made-up one.
+        let reading = StyleReading(
+            tones: ["dry", "made-up", "warmCalm", "dry"], topics: ["finance", "bogus", "tech"], audience: "professionals", humor: "little"
+        )
         let proposal = WritingImportProposalBuilder.build(analysis: analysis(), reading: reading, profile: CreatorProfile())
-        #expect(finding(.tones, in: proposal)?.value == .tones([.warmCalm]))
+        #expect(finding(.tones, in: proposal)?.value == .tones([.dry]))
         #expect(finding(.topics, in: proposal)?.value == .topics(["finance", "tech"]))
         #expect(finding(.audience, in: proposal)?.value == .audience(.professionals))
         #expect(finding(.humor, in: proposal)?.value == .humor(.little))
@@ -81,7 +84,7 @@ struct WritingImportProposalTests {
     @Test func acceptingSavesWhatIsOnAndLeavesWhatIsOff() {
         let (service, defaults) = service()
         defer { defaults.tearDown() }
-        let reading = StyleReading(tones: ["energetic"], topics: ["fitness"], audience: "youngAdults", humor: "lot")
+        let reading = StyleReading(tones: ["confident"], topics: ["fitness"], audience: "youngAdults", humor: "lot")
         var proposal = WritingImportProposalBuilder.build(analysis: analysis(), reading: reading, profile: service.profile)
         let energy = proposal.findings.firstIndex { $0.id == .energy }!
         proposal.findings[energy].isOn = false
@@ -89,7 +92,7 @@ struct WritingImportProposalTests {
         #expect(applied == proposal.findings.count - 1)
         let profile = service.profile
         #expect(profile.style.sentences == .short && profile.style.energy == nil)
-        #expect(profile.sounds == [.energetic] && profile.hasAnswered(.tone))
+        #expect(profile.sounds == [.confident] && profile.hasAnswered(.tone))
         #expect(profile.audienceGroup == .youngAdults && profile.hasAnswered(.audience))
         #expect(profile.niches == [.fitness])
         #expect(profile.reach.humor == .lot && profile.reach.length == .under30)

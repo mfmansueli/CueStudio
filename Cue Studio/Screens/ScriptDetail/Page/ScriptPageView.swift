@@ -146,8 +146,8 @@ struct ScriptPageView: View {
         .toolbar { toolbarItems }
         .sheet(isPresented: $viewModel.page.showsLengthNudge) { nudge }
         .sheet(isPresented: $viewModel.page.showsVoiceAdjust) {
-            VoiceAdjustSheet { adjustments, keepsInProfile in
-                Task { await viewModel.rewriteVoice(adjustments: adjustments, keepsInProfile: keepsInProfile) }
+            VoiceAdjustSheet { adjustments, keepsInProfile, cause in
+                Task { await viewModel.rewriteVoice(adjustments: adjustments, keepsInProfile: keepsInProfile, cause: cause) }
             }
         }
         .alert("New cue", isPresented: $isAddingCue) {
@@ -446,7 +446,7 @@ struct ScriptPageView: View {
     private var draftTip: some View {
         VoyageTipCard(
             step: voyage.progress.current ?? .practice, title: String(localized: "A first draft. Yours to change."),
-            message: String(localized: "Rewrite freely. Tap Sounds like me and Cue uses it on this iPhone."),
+            message: String(localized: "Rewrite freely. Tap Sounds like me and Cue learns from it."),
             primary: (String(localized: "Edit"), {
                 withAnimation(.smooth(duration: 0.25)) { voyage.finishDraftTip(acted: true) }
                 focus = .text

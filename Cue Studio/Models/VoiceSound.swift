@@ -13,6 +13,10 @@ nonisolated enum VoiceSound: String, Codable, CaseIterable, Identifiable, Sendab
 
     var id: String { rawValue }
 
+    /// The five tones the voice asks about (the owner's item 4, 02/11/2026). The other three say what Energy and Humor already say: an answer an
+    /// older build kept becomes those (`CreatorProfile.foldTones`).
+    static let offered: [VoiceSound] = [.casual, .professional, .educational, .confident, .dry]
+
     var label: String {
         switch self {
         case .casual: String(localized: "Conversational")

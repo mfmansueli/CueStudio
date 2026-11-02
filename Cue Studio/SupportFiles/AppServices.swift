@@ -261,7 +261,8 @@ struct AppServices {
         draftLearning = DraftLearningService(profile: profile, toast: toast, defaults: options.defaults)
         takes.onTakeAdded = { [draftLearning] take in draftLearning.tookTake(of: take.scriptReference) }
         Self.reportWhenHelpingImprove(privacy: privacy, voyage: voyage, profile: profile)
-        voiceQuestions = VoiceQuestionScheduler(profile: profile, defaults: options.defaults, skipsGates: options.voiceTipSkipsGates)
+        voiceQuestions = VoiceQuestionScheduler(profile: profile, defaults: options.defaults, skipsGates: options.voiceTipSkipsGates,
+                                                scriptLanguage: { [languages] in (languages.scriptLanguage ?? languages.interfaceLanguage).rawValue })
         notifications = Self.makeNotifications(options: options, services: NotificationWiring(
             library: library, takes: takes, shareQueue: shareQueue, logbook: logbook, ideas: ideaSuggestions, profile: profile,
             preferences: preferences, capabilities: capabilities, languages: languages, milestones: milestones, writer: options.writer,
@@ -441,6 +442,7 @@ extension View {
     func environment(_ services: AppServices) -> some View {
         environment(services.library)
             .environment(services.takes)
+            .environment(services.ledger)
             .environment(services.preferences)
             .environment(services.profile)
             .environment(services.session)

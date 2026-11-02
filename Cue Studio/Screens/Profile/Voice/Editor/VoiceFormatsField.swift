@@ -11,6 +11,9 @@ struct VoiceFormatsField: View {
     @Environment(CreatorProfileService.self) private var profile
     @Environment(ToastService.self) private var toast
 
+    /// The opening or ending tapped last, for its live example.
+    @State private var lastTapped: [VoiceQuestion: String] = [:]
+
     private var current: CreatorProfile { profile.profile }
 
     var body: some View {
@@ -33,22 +36,38 @@ struct VoiceFormatsField: View {
         let extras = typed(for: question, among: options)
         return VStack(alignment: .leading, spacing: 8) {
             VoiceFieldLabel(label, detail: String(localized: "up to \(limit)"))
-            VoiceOptionChips(
-                options: options,
-                isSelected: { profile.isSelected($0, for: question) },
-                onTap: { option in
-                    if case .limit(let message) = profile.answer(question, with: option) { toast.show(message, kind: .problem) }
-                },
-                extras: extras,
-                onTapExtra: { value in
-                    if let item = item(for: question) {
-                        profile.toggle(value, for: item)
-                    } else if question == .formats {
-                        profile.removeTypedFormat(value)
-                    }
-                },
-                identifier: "voice.\(question.rawValue)"
-            )
+            if let item = item(for: question) {
+                // Openings and endings: "I use" and "I never use" (the owner's item 5).
+                VoiceUseNeverChips(
+                    question: question, options: options, extras: extras,
+                    onTapExtra: { profile.toggle($0, for: item) },
+                    onUse: { lastTapped[question] = $0.id }
+                )
+                Text(question == .endings && current.endings.count > 1
+                    ? "Tap again for “I never use”. Touch and hold an ending to make it the main one."
+                    : "Tap again for “I never use”.")
+                    .cueFont(.footnote)
+                    .foregroundStyle(Palette.ink2)
+                    .fixedSize(horizontal: false, vertical: true)
+            } else {
+                VoiceOptionChips(
+                    options: options,
+                    isSelected: { profile.isSelected($0, for: question) },
+                    onTap: { option in
+                        if case .limit(let message) = profile.answer(question, with: option) { toast.show(message, kind: .problem) }
+                    },
+                    extras: extras,
+                    onTapExtra: { profile.removeTypedFormat($0) },
+                    identifier: "voice.\(question.rawValue)"
+                )
+            }
+            if let line = example(for: question) {
+                VoiceLiveExample(
+                    caption: question == .openings
+                        ? String(localized: "Example · your scripts open like this") : String(localized: "Example · your scripts end like this"),
+                    line: line, identifier: "voice.\(question.rawValue).example"
+                )
+            }
             VoiceTypedField(
                 placeholder: String(localized: "Type yours"),
                 submit: { text, keeping in profile.addSomethingElse(text, for: question, keepingTyped: keeping) },
@@ -64,6 +83,19 @@ struct VoiceFormatsField: View {
         }
     }
 
+    /// The live example of the openings or the endings (the owner's item 1): the one tapped last, else the last one held.
+    private func example(for question: VoiceQuestion) -> String? {
+        let held: [String]
+        switch question {
+        case .openings: held = current.openings
+        case .endings: held = current.endings
+        default: return nil
+        }
+        let tapped = lastTapped[question].map(VoiceTextValidator.key)
+        guard let stored = held.first(where: { VoiceTextValidator.key($0) == tapped }) ?? held.last else { return nil }
+        return question == .openings ? VoiceSampleBuilder.openingExample(stored) : VoiceSampleBuilder.endingExample(stored)
+    }
+
     private func item(for question: VoiceQuestion) -> VoicePersonalityItem? {
         switch question {
         case .openings: .openings
@@ -72,17 +104,14 @@ struct VoiceFormatsField: View {
         }
     }
 
-    /// What the creator typed for a question that isn't one of its options (an opening or an ending, or a format: the ones this build keeps, then
-    /// the tags an older one kept under it).
+    /// What the creator typed for a question that isn't one of its options: an opening, an ending or a format (what an older build kept as a
+    /// tag shows in "Also true about me").
     private func typed(for question: VoiceQuestion, among options: [VoiceOption]) -> [String] {
         let known = Set(options.flatMap { [VoiceTextValidator.key($0.label), VoiceTextValidator.key($0.id)] })
         switch question {
         case .openings: return current.openings.filter { !known.contains(VoiceTextValidator.key($0)) && !isStyleName($0, among: options) }
         case .endings: return current.endings.filter { !known.contains(VoiceTextValidator.key($0)) && !isStyleName($0, among: options) }
-        case .formats:
-            let formatTags = Set(VoiceQuestion.formatTags.values.map(VoiceTextValidator.key))
-            let legacy = current.customTags.filter { !formatTags.contains(VoiceTextValidator.key($0)) && !known.contains(VoiceTextValidator.key($0)) }
-            return current.customFormats + legacy
+        case .formats: return current.customFormats
         default: return []
         }
     }

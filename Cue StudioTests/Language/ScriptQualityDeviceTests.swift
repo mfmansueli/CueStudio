@@ -385,9 +385,8 @@ struct ScriptQualityDeviceTests {
             }
             sample.model = service.lastIdeaModel?.rawValue
             sample.requestedModel = ProcessInfo.processInfo.environment["CUE_QUALITY_MODEL"] ?? "automatic"
-            let preparedVoice = AIRequestPolicy.voice(voice, on: service.lastIdeaModel ?? .onDevice)
             let instructions = ScriptPromptBuilder.themesInstructions(
-                voice: preparedVoice, voiceBudget: service.lastIdeaModel == .privateCloud ? AIRequestPolicy.cloudVoiceBudget : nil
+                voice: voice, voiceBudget: service.lastIdeaModel == .privateCloud ? AIRequestPolicy.cloudVoiceBudget : nil
             )
             sample.instructions = instructions
             if service.lastIdeaModel == .onDevice {

@@ -23,6 +23,8 @@ nonisolated struct RewriteContext: Hashable, Sendable {
     var rules: CreatorVoice?
     /// A passage the creator selected, not the whole script: its "Rewrite" says it another way (`ScriptPromptBuilder.instruction(for:context:)`).
     var isPassage = false
+    /// "Adjust" › Too long, kept in the profile: what "In my voice" makes shorter (`ScriptPromptBuilder.instruction(for:context:)`).
+    var shortening: TooLongCause?
     /// The brief a sponsored ad was written from (`Script.brand`): every tool keeps what it must and must never say.
     var brand: BrandBrief?
 

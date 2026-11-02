@@ -5,17 +5,37 @@
 
 import Foundation
 
-/// The question bank of My Cue Voice (08 §2), in queue order: the Essentials (E1–E4), Personality (P1–P12) and Proof (X1). The tip
-/// asks them one at a time, the full page (9.3) opens any of them.
+/// The question bank of My Cue Voice (08 §2): the grammar of the script language (how the words about the creator agree, how viewers are
+/// addressed), the Essentials (E1–E4), Personality (P1–P12) and Proof (X1). The tip asks them one at a time in `askingOrder`, the full page
+/// (9.3) opens any of them.
 nonisolated enum VoiceQuestion: String, CaseIterable, Identifiable, Sendable {
+    case speakerGender, groupGender, address
     case role, topics, audience, tone
     case endings, openings, formats, length, humor, platforms, energy, sentences, words, swearing, phrases, avoid
     case example
 
     var id: String { rawValue }
 
+    /// The order the tip asks in, by how much an answer changes the scripts (the owner's item 13, 02/11/2026): first how the words about the
+    /// creator (or their team) agree and how scripts speak to viewers, asked only where the script language needs them
+    /// (`VoiceQuestionScheduler`); then the audience; then the other Essentials, the Personality details and, last, the example.
+    static let askingOrder: [VoiceQuestion] = [
+        .speakerGender, .groupGender, .address,
+        .audience, .role, .topics, .tone,
+        .endings, .openings, .formats, .length, .humor, .platforms, .energy, .sentences, .words, .swearing, .phrases, .avoid,
+        .example,
+    ]
+
+    /// Answered with one tap on the tip itself: a single answer from a closed list (no "+ Something else" to type, no second part).
+    var answersInTip: Bool {
+        guard case .single = kind else { return false }
+        return !allowsSomethingElse
+    }
+
     var field: VoiceField {
         switch self {
+        // "Write me as" and "Speak to viewers" live under "Scripts say I / We", in the editor of who the creator is.
+        case .speakerGender, .groupGender, .address: .role
         case .role: .role
         case .topics: .topics
         case .audience: .audience
@@ -33,6 +53,9 @@ nonisolated enum VoiceQuestion: String, CaseIterable, Identifiable, Sendable {
 
     var title: String {
         switch self {
+        case .speakerGender: String(localized: "How should scripts write you?")
+        case .groupGender: String(localized: "How should scripts write your team?")
+        case .address: String(localized: "How should scripts speak to viewers?")
         case .role: String(localized: "What kind of creator are you?")
         case .topics: String(localized: "What do you talk about?")
         case .audience: String(localized: "Who’s watching?")
@@ -81,15 +104,16 @@ nonisolated enum VoiceQuestion: String, CaseIterable, Identifiable, Sendable {
     /// have none.
     var allowsSomethingElse: Bool {
         switch self {
-        case .length, .humor, .platforms, .energy, .sentences, .words, .swearing, .example: false
+        case .speakerGender, .groupGender, .address, .length, .humor, .platforms, .energy, .sentences, .words, .swearing, .example: false
         default: true
         }
     }
 
-    /// "None of these": the question is skipped for good (it can still be answered in 9.3). Swearing has none.
+    /// "None of these": the question is skipped for good (it can still be answered in 9.3). Swearing and the grammar have none ("No gender"
+    /// and "Informal" are answers of their own).
     var allowsNone: Bool {
         switch self {
-        case .swearing, .example: false
+        case .speakerGender, .groupGender, .address, .swearing, .example: false
         default: true
         }
     }
@@ -97,11 +121,14 @@ nonisolated enum VoiceQuestion: String, CaseIterable, Identifiable, Sendable {
     /// The answers in the order shown, without "+ Something else" and "None of these".
     var options: [VoiceOption] {
         switch self {
+        case .speakerGender, .groupGender: WordGender.allCases.map { VoiceOption(id: $0.rawValue, label: $0.label) }
+        case .address: AddressForm.allCases.map { VoiceOption(id: $0.rawValue, label: $0.label) }
         case .role: CreatorRole.allCases.map { VoiceOption(id: $0.rawValue, label: $0.label, detail: $0.examples) }
         case .topics: Self.topicOptions
         // The editor's eight groups, one list for the tip and the page (the owner's B13, 02/11/2026; §11): a group sets its vocabulary too.
         case .audience: AudienceGroup.allCases.map { VoiceOption(id: $0.rawValue, label: $0.label) }
-        case .tone: VoiceSound.allCases.map { VoiceOption(id: $0.rawValue, label: $0.label, detail: $0.example) }
+        // The five tones (the owner's item 4): calm, energetic and funny are said in "Your style" and "Humor".
+        case .tone: VoiceSound.offered.map { VoiceOption(id: $0.rawValue, label: $0.label, detail: $0.example) }
         case .endings: VoicePersonalityItem.endings.options.map { VoiceOption(id: $0, label: $0) }
         case .openings: VoicePersonalityItem.openings.options.map { VoiceOption(id: $0, label: $0) }
         case .formats: Self.formatOptions

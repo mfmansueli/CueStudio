@@ -85,7 +85,7 @@ struct DraftLearningTests {
         #expect(example?.source == "Your edits")
         #expect(example?.text.hasPrefix("Real talk, I'm not a morning person.") == true)
         #expect(profile.profile.approvals == 0, "it isn't an approval of Cue's words")
-        #expect(toast.message == "Saved as your writing · used on this iPhone")
+        #expect(toast.message == "Saved as your writing · Cue learns from it")
         #expect(toast.action?.title == "Undo")
         #expect(!service.isCueDraft(id), "each draft teaches once")
         toast.action?.perform()

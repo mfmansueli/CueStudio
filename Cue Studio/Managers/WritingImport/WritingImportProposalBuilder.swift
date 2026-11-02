@@ -26,7 +26,7 @@ nonisolated enum WritingImportProposalBuilder {
 
         // What Apple Intelligence read.
         if let reading {
-            let tones = unique(reading.tones.compactMap(VoiceSound.init(rawValue:))).prefix(VoiceLimits.tones).map { $0 }
+            let tones = unique(reading.tones.compactMap(VoiceSound.init(rawValue:)).filter(VoiceSound.offered.contains)).prefix(VoiceLimits.tones).map { $0 }
             if !tones.isEmpty {
                 single(.tones(tones), held: profile.hasAnswered(.tone), same: profile.hasAnswered(.tone) && Set(profile.sounds) == Set(tones))
             }

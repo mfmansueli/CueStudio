@@ -18,8 +18,10 @@ nonisolated extension CreatorProfile {
             return ([who] + [audienceLevel?.label].compactMap { $0 }).joined(separator: separator)
         case .tone: return isChosen(.tone) ? sounds.map(\.label).joined(separator: separator) : ""
         case .style:
-            return [style.energy?.label, style.sentences?.label, style.words?.label, style.swearing?.label]
-                .compactMap { $0 }.joined(separator: separator)
+            return [
+                style.energy?.label, style.sentences?.label, style.words?.label, style.swearing?.label,
+                style.oneIdea ? VoiceDelivery.oneIdeaLabel : nil,
+            ].compactMap { $0 }.joined(separator: separator)
         case .formats:
             return (formatTags.map(VoiceQuestion.formatTagLabel) + formats.map(\.label) + customFormats).joined(separator: separator)
         case .openings: return openings.joined(separator: separator)
@@ -32,14 +34,9 @@ nonisolated extension CreatorProfile {
         }
     }
 
-    /// "2 of 3 · Imported: 12": what they wrote or imported as proof of how they talk.
+    /// "2 of 3 · Imported: 12": what they wrote or imported as proof of how they talk (the scripts they approved show in "What Cue learned").
     private var examplesValue: String {
         examplesSummary(own: examples.count, of: VoiceExample.limit)
-    }
-
-    /// The same for the page's row, which also counts the scripts they approved (`approvedSamples`) among what they gave.
-    var examplesPageValue: String {
-        examplesSummary(own: examples.count + approvedSamples.count, of: VoiceExample.limit + VoiceLimits.approvedSamples)
     }
 
     private func examplesSummary(own: Int, of limit: Int) -> String {

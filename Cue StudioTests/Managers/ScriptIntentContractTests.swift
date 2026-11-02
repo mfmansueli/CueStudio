@@ -35,8 +35,9 @@ struct ScriptIntentContractTests {
                 for literal in item.requiredLiterals { #expect(prompt.contains(literal)) }
                 if route == .privateCloud {
                     #expect(PCCScriptDirection.usesAutomaticFormat(prepared) == (item.format == "auto"))
-                    #expect(prepared.voice?.examples.isEmpty != false && prepared.voice?.excerpts.isEmpty != false)
-                    #expect(prepared.voice?.approvedSamples.isEmpty != false)
+                    // The proof goes the way the device gets it (the owner's D1).
+                    #expect(prepared.voice?.examples == request.voice?.examples && prepared.voice?.excerpts == request.voice?.excerpts)
+                    #expect(prepared.voice?.approvedSamples == request.voice?.approvedSamples)
                 }
             }
         }

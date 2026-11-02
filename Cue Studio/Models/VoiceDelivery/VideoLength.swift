@@ -30,6 +30,25 @@ nonisolated enum VideoLength: String, Codable, CaseIterable, Identifiable, Senda
         }
     }
 
+    /// One step shorter ("Too long" › Long video); under 30 s stays.
+    var shorter: VideoLength {
+        switch self {
+        case .longer: .oneToThree
+        case .oneToThree: .thirtyToSixty
+        case .thirtyToSixty, .under30: .under30
+        }
+    }
+
+    /// The length a video of `seconds` is, as the creator would answer.
+    init(containing seconds: TimeInterval) {
+        switch seconds {
+        case ..<30: self = .under30
+        case ...60: self = .thirtyToSixty
+        case ...180: self = .oneToThree
+        default: self = .longer
+        }
+    }
+
     /// What the AI reads (English, whatever the interface language is).
     var promptName: String {
         switch self {

@@ -54,10 +54,11 @@ struct VoiceQuestionSchedulerTests {
 
     // MARK: - The queue
 
-    @Test func missingEssentialsComeFirstThenPersonalityInTableOrder() {
+    @Test func theAudienceThenTheOtherEssentialsThenPersonalityInTableOrder() {
         let rig = make(essentials: false)
         defer { rig.defaults.tearDown() }
-        #expect(Array(rig.scheduler.remaining.prefix(5)) == [.role, .topics, .audience, .tone, .endings])
+        // No script language: no grammar to ask.
+        #expect(Array(rig.scheduler.remaining.prefix(5)) == [.audience, .role, .topics, .tone, .endings])
         let essentialsAndProof: Set<VoiceQuestion> = [.role, .topics, .audience, .tone, .example]
         let order = rig.scheduler.remaining.filter { !essentialsAndProof.contains($0) }
         #expect(order == [.endings, .openings, .formats, .length, .humor, .platforms, .energy, .sentences, .words, .swearing, .phrases, .avoid])
@@ -246,7 +247,7 @@ struct VoiceQuestionSchedulerTests {
         defer { defaults.tearDown() }
         let profile = CreatorProfileService(defaults: defaults.defaults)
         let scheduler = VoiceQuestionScheduler(profile: profile, defaults: defaults.defaults, skipsGates: true)
-        #expect(scheduler.tipQuestion(isAIAvailable: true, scriptCount: 0) == .role)
+        #expect(scheduler.tipQuestion(isAIAvailable: true, scriptCount: 0) == .audience)
     }
 
     // MARK: - Helpers

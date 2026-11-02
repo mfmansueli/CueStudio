@@ -14,6 +14,9 @@ extension CreatorProfileService {
     func isSelected(_ option: VoiceOption, for question: VoiceQuestion) -> Bool {
         let held = profile
         switch question {
+        case .speakerGender: return held.agreement.speaker?.rawValue == option.id
+        case .groupGender: return held.agreement.group?.rawValue == option.id
+        case .address: return held.agreement.address?.rawValue == option.id
         case .role: return held.role?.rawValue == option.id
         case .topics: return held.niches.contains { $0.rawValue == option.id } || held.voiceTopics.contains { $0.rawValue == option.id }
         case .audience: return held.isChosen(.audience) && held.audienceGroup?.rawValue == option.id
@@ -62,6 +65,7 @@ extension CreatorProfileService {
     @discardableResult
     func answer(_ question: VoiceQuestion, with option: VoiceOption) -> VoiceEditResult {
         switch question {
+        case .speakerGender, .groupGender, .address: return answerAgreement(question, with: option)
         case .role, .topics, .audience, .tone: return answerEssential(question, with: option)
         case .endings, .openings, .phrases:
             guard let item = Self.personalityItem(for: question) else { return .alreadyThere }
@@ -71,6 +75,22 @@ extension CreatorProfileService {
         case .avoid: return answerAvoid(option)
         case .example: return .alreadyThere
         }
+    }
+
+    /// The grammar, as the editor's "Write me as" / "Write us as" and "Speak to viewers" set it.
+    private func answerAgreement(_ question: VoiceQuestion, with option: VoiceOption) -> VoiceEditResult {
+        switch question {
+        case .speakerGender:
+            guard let gender = WordGender(rawValue: option.id) else { return .alreadyThere }
+            setSpeakerGender(gender)
+        case .groupGender:
+            guard let gender = WordGender(rawValue: option.id) else { return .alreadyThere }
+            setGroupGender(gender)
+        default:
+            guard let form = AddressForm(rawValue: option.id) else { return .alreadyThere }
+            setAddressForm(form)
+        }
+        return .added
     }
 
     private func answerEssential(_ question: VoiceQuestion, with option: VoiceOption) -> VoiceEditResult {
@@ -159,15 +179,27 @@ extension CreatorProfileService {
         return result
     }
 
+    /// "One idea per video" in the delivery editor: what "Adjust" › Too long › Too many ideas turned on.
+    func setOneIdea(_ isOn: Bool) {
+        profile.style.oneIdea = isOn
+    }
+
     /// The second part of "Who's watching?": how much the audience already knows.
     func answerAudienceLevel(_ level: AudienceLevel) {
         profile.audienceLevel = level
     }
 
-    /// "+ Something else": text the creator typed, checked first (04 §F9). A format is kept with the formats (`customFormats`); where the app
-    /// has no list for it (kind of creator, tone, audience), it is kept as something true of them.
+    /// "+ Something else": text the creator typed, checked first (04 §F9). It goes where the editor keeps the same answer (the owner's item 7,
+    /// 02/11/2026): a kind of creator as theirs (`customRole`), an audience in their words (`audienceNote`), a format with the formats
+    /// (`customFormats`); with no place of its own (a tone, a platform), it is a note of "Also true about me".
     @discardableResult
     func addSomethingElse(_ raw: String, for question: VoiceQuestion, keepingTyped: Bool = false) -> VoiceEditResult {
+        // These report their own typed answer (B14).
+        switch question {
+        case .role: return setCustomRole(raw)
+        case .audience: return setAudienceNote(raw)
+        default: break
+        }
         let result = addTyped(raw, for: question, keepingTyped: keepingTyped)
         // Counted once, when it was typed (not again on "Keep mine"), and only when it went in or was close to an option (B14).
         switch result {

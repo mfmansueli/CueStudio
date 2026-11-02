@@ -26,7 +26,7 @@ struct WritingImportCollectView: View {
                 .buttonStyle(.cuePrimary(.large))
                 .disabled(!model.canRead)
                 .accessibilityIdentifier("import.read")
-            Text("Apple Intelligence can use this iPhone or Private Cloud Compute. Your request and voice preferences may be sent to Apple. Writing examples and imported excerpts stay on this iPhone.")
+            Text(AIDisclosure.privateCloud)
                 .cueFont(.footnote)
                 .foregroundStyle(Palette.ink2)
                 .padding(.horizontal, 4)

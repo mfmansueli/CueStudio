@@ -6,7 +6,8 @@
 import XCTest
 
 /// The My Cue Voice tip above the Scripts dock (04 §F9, 08 §6): it comes with its question, opens the sheet, says "Saved · voice nn%" and
-/// offers one more; its ✕ is a dismissal. `-uiTestVoiceTip` opens the tip's gates (a second day, a script, the wait and the caps).
+/// offers one more; a closed single answer is given with one tap on the tip; its ✕ is a dismissal. `-uiTestVoiceTip` opens the tip's gates
+/// (a second day, a script, the wait and the caps).
 @MainActor
 final class VoiceTipUITests: XCTestCase {
     override func setUp() {
@@ -41,17 +42,18 @@ final class VoiceTipUITests: XCTestCase {
         try capture(app, "voice_tip")
         openTip(app)
 
-        // The first question of an empty voice is the kind of creator.
-        try capture(app, "voice_question_role")
-        XCTAssertTrue(element(app, "voice.sheet.role").exists(within: 5))
-        element(app, "voice.option.personal").tap()
+        // The first question of an empty voice in English is who's watching (no grammar to ask), then how much they know.
+        try capture(app, "voice_question_audience")
+        XCTAssertTrue(element(app, "voice.sheet.audience").exists(within: 5))
+        element(app, "voice.option.parents").tap()
+        element(app, "voice.option.some").tap()
         let saved = element(app, "voice.saved")
         XCTAssertTrue(saved.exists(within: 5))
         XCTAssertTrue(saved.label.contains("10%"), saved.label)
         try capture(app, "voice_saved")
 
         element(app, "voice.more").tap()
-        XCTAssertTrue(element(app, "voice.sheet.topics").exists(within: 5))
+        XCTAssertTrue(element(app, "voice.sheet.role").exists(within: 5))
         app.buttons["sheet.closeButton"].tap()
         XCTAssertTrue(app.buttons["scripts.newButton"].exists(within: 5))
     }
@@ -70,6 +72,9 @@ final class VoiceTipUITests: XCTestCase {
         let app = CueApp.launch(seeded: false, animations: true, extraArguments: ["-uiTestVoiceTip"])
         XCTAssertTrue(element(app, "voice.tip").exists(within: 15))
         openTip(app)
+        element(app, "voice.option.parents").tap()
+        element(app, "voice.option.some").tap()
+        element(app, "voice.more").tap()
         element(app, "voice.option.personal").tap()
         element(app, "voice.more").tap()
         XCTAssertTrue(element(app, "voice.sheet.topics").exists(within: 5))
@@ -81,5 +86,37 @@ final class VoiceTipUITests: XCTestCase {
         XCTAssertTrue(element(app, "voice.somethingElse").exists)
         app.buttons["voice.sheet.save"].tap()
         XCTAssertTrue(element(app, "voice.saved").exists(within: 5))
+    }
+
+    /// The owner's item 13: where the script language marks it, the first tip asks how scripts write the creator, answered with one tap on
+    /// the tip; the tip goes, and I am › Write me as shows the choice.
+    func testTheGrammarIsAnsweredWithOneTapOnTheTip() throws {
+        let app = CueApp.launch(seeded: false, extraArguments: ["-uiTestVoiceTip", "-uiTestScriptLanguage", "pt-BR"])
+        // TipKit names every control inside a tip "TipView": the answers are found by their words, inside the tip.
+        let tip = element(app, "voice.tip")
+        let feminine = tip.buttons["Feminine"]
+        XCTAssertTrue(feminine.exists(within: 15), "No one-tap tip")
+        // The tip's body is one button that says the question and its line.
+        let question = app.buttons.matching(NSPredicate(format: "label CONTAINS 'How should scripts write you?'")).firstMatch
+        XCTAssertTrue(question.exists)
+        XCTAssertTrue(question.label.contains("One tap"), question.label)
+        XCTAssertTrue(tip.buttons["Masculine"].exists)
+        XCTAssertTrue(tip.buttons["No gender"].exists)
+        try capture(app, "voice_tip_one_tap")
+        feminine.tap()
+
+        let gone = NSPredicate(format: "exists == false")
+        XCTAssertTrue(feminine.matches(gone, within: 5), "The tip stays after the answer")
+        XCTAssertFalse(question.exists)
+        // No sheet opened.
+        XCTAssertFalse(element(app, "voice.sheet.speakerGender").exists)
+
+        let tab = app.cueTabBar.buttons["Profile"]
+        tab.tap()
+        app.buttons["profile.setUpVoiceButton"].tap()
+        let chosen = app.buttons["voice.speakerGender.feminine"]
+        app.scroll(to: chosen)
+        XCTAssertTrue(chosen.exists)
+        XCTAssertTrue(chosen.isSelected, "Write me as doesn't show Feminine")
     }
 }
