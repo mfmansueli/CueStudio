@@ -9,7 +9,7 @@ import Testing
 
 /// The case of "Eu perdi 2 quilos em 7 dias" (iPhone 15 Pro, on this iPhone, 01/11/2026: `reports/entradas-do-criador-2026-11-01-medicao`,
 /// pt-fitness-woman, idea 1), kept as what the code does with it (§11, A11a): the rule against invented results was in what the model read, and
-/// nothing after it would have caught the number. Only the model's own `statesFacts` could ask for a fact check on this iPhone, and the run
+/// nothing after it would have caught the number (now `AttributedResultDetector` does, A11b). Only the model's own `statesFacts` could ask for a fact check on this iPhone, and the run
 /// didn't record it.
 @MainActor
 struct InventedResultCaseTests {
@@ -20,9 +20,12 @@ struct InventedResultCaseTests {
         return AIRequestPolicy.prepare(CreatorInputsDeviceTests.request(for: Self.idea, item: item), on: .onDevice)
     }
 
-    @Test func theRuleAgainstInventedResultsWasInWhatTheModelRead() {
+    /// The idea is the creator's own story, so since B12 its scene may be imagined, and the rule that says no result may be invented is the
+    /// story's (`storyHonestyRule`).
+    @Test func theRuleAgainstInventedResultsIsInWhatTheModelReads() {
         let instructions = ScriptPromptBuilder.instructions(for: request)
-        #expect(instructions.contains("Never invent personal stories, clients, results, numbers or credentials for the creator"))
+        #expect(instructions.contains(ScriptPromptBuilder.storyHonestyRule))
+        #expect(instructions.contains("Never invent a result (weight, money, percentages, gains, cures)"))
     }
 
     @Test func onThisIPhoneOnlyTheModelsOwnFlagAsksForAFactCheck() {
