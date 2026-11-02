@@ -12,7 +12,7 @@ final class StubStyleReader: WritingStyleReading {
     func canRead(language: String?) -> Bool { true }
 
     func read(_ samples: [String], language: String?) async -> StyleReading? {
-        StyleReading(tones: ["casual", "energetic"], topics: ["fitness"], audience: "youngAdults", humor: "little")
+        StyleReading(tones: ["casual", "confident"], topics: ["fitness"], audience: "youngAdults", humor: "little")
     }
 }
 #endif

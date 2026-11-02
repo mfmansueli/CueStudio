@@ -29,7 +29,8 @@ struct CreatorProfileVoiceV2Tests {
         let profile = try CreatorProfileFixtures.decode(CreatorProfileFixtures.v30)
         #expect(profile.niches == [.fitness])
         #expect(profile.role == .expert)
-        #expect(profile.sounds == [.warmCalm, .educational])
+        // Warm and calm is no longer a tone (the owner's item 4): the calm energy below already says it.
+        #expect(profile.sounds == [.educational])
         #expect(profile.style == VoiceDelivery(energy: .calm, sentences: .mixed, words: .plain, swearing: .never))
         #expect(profile.avoid == ["Medical claims", "Hype words"])
         #expect(profile.reach == VoiceReach(platforms: [.tiktok], length: .thirtyToSixty, humor: .little))

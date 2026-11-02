@@ -83,6 +83,18 @@ struct VoiceAgreementTests {
         #expect(ScriptPromptBuilder.instructions(for: asked).contains("In Italian, every word about the creator agrees in the feminine"))
     }
 
+    /// Where the editor asks each one (the owner's item 8): the languages whose words change with it, with that language's own example.
+    @Test func theEditorAsksOnlyWhereTheScriptLanguageNeedsIt() {
+        #expect(AgreementGuide.genderExample(in: "pt-BR", team: false)! == ("cansada", "cansado"))
+        #expect(AgreementGuide.genderExample(in: "es-ES", team: true)! == ("nosotras", "nosotros"))
+        #expect(AgreementGuide.genderExample(in: "en-US", team: false) == nil)
+        #expect(AgreementGuide.genderExample(in: "de-DE", team: false) == nil)
+        #expect(AgreementGuide.addressExample(in: "pt-PT")! == ("tu", "você / o senhor / a senhora"))
+        #expect(AgreementGuide.addressExample(in: "de-DE")! == ("du", "Sie"))
+        #expect(AgreementGuide.addressExample(in: "en-US") == nil)
+        #expect(AgreementGuide.addressExample(in: nil) == nil)
+    }
+
     // MARK: - The check after writing
 
     @Test func theWrongGenderIsCaughtAfterTheVerbThatCarriesIt() {
@@ -149,7 +161,7 @@ struct VoiceAgreementTests {
         service.setAddressForm(.formal)
         #expect(service.profile.agreement == VoiceAgreement(speaker: .feminine, group: .masculine, address: .formal))
         service.setAddressForm(.informal)
-        #expect(service.profile.agreement.address == nil, "informal is the default, kept as nothing")
+        #expect(service.profile.agreement.address == .informal, "a choice is kept as chosen, so the tip doesn't ask it again")
         service.setSpeakerGender(nil)
         #expect(service.profile.agreement.speaker == nil)
     }

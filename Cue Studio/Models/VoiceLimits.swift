@@ -11,6 +11,8 @@ nonisolated enum VoiceLimits {
     static let tones = 2
     static let openings = 2
     static let endings = 2
+    /// "I never use": openings, and endings, each (the owner's item 5).
+    static let never = 3
     static let phrases = 5
     /// Characters of one catchphrase.
     static let phraseLength = 40

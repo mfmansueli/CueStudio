@@ -6,7 +6,7 @@
 import Foundation
 import FoundationModels
 
-/// Reads the creator's writing with the model on the iPhone, and only that one: what they imported never goes to Private Cloud Compute. One short
+/// Reads the creator's writing with the model on the iPhone, and only that one: this reading never goes to Private Cloud Compute. One short
 /// request, given up on after `limit`, that stands aside when a script is being written (`isBusy`).
 @MainActor
 final class AppleWritingStyleReader: WritingStyleReading {

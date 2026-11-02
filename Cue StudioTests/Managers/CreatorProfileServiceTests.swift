@@ -53,6 +53,40 @@ struct CreatorProfileServiceTests {
         #expect(!service.profile.usesVoiceInAI)
     }
 
+    @Test func oneIdeaPerVideoIsKeptAndAnOlderProfileReadsItAsOff() throws {
+        var profile = CreatorProfile(name: "Maya")
+        profile.style = VoiceDelivery(energy: .calm, sentences: .short, oneIdea: true)
+        let saved = try JSONEncoder().encode(profile)
+        let read = try JSONDecoder().decode(CreatorProfile.self, from: saved)
+        #expect(read.style.oneIdea && read == profile)
+        // Off, it isn't written: a profile saves as it did before.
+        profile.style.oneIdea = false
+        #expect(String(bytes: try JSONEncoder().encode(profile), encoding: .utf8)?.contains("oneIdea") == false)
+        let old = #"{"name":"Maya","style":{"energy":"calm","sentences":"short"}}"#
+        let older = try JSONDecoder().decode(CreatorProfile.self, from: Data(old.utf8))
+        #expect(!older.style.oneIdea && older.style.energy == .calm && older.style.sentences == .short)
+        // A value it can't read is off too, and the rest of the style still opens.
+        let odd = #"{"name":"Maya","style":{"energy":"calm","oneIdea":"yes"}}"#
+        let lenient = try JSONDecoder().decode(CreatorProfile.self, from: Data(odd.utf8))
+        #expect(!lenient.style.oneIdea && lenient.style.energy == .calm)
+    }
+
+    @Test func oneIdeaPerVideoShowsInTheStyleAndTurnsOff() {
+        let store = TestDefaults()
+        defer { store.tearDown() }
+        let service = CreatorProfileService(defaults: store.defaults)
+        service.profile.style.energy = .calm
+        #expect(!service.profile.value(for: .style).contains(VoiceDelivery.oneIdeaLabel))
+        service.profile = VoiceAdjustment.tooLong.applied(to: service.profile, cause: .ideas)
+        #expect(service.profile.value(for: .style).hasSuffix(VoiceDelivery.oneIdeaLabel))
+        #expect(VoicePageRow.style.value(in: service.profile).contains(VoiceDelivery.oneIdeaLabel))
+        service.setOneIdea(false)
+        #expect(!service.profile.style.oneIdea && !service.profile.value(for: .style).contains(VoiceDelivery.oneIdeaLabel))
+        // Kept on this iPhone like the rest of the profile.
+        service.setOneIdea(true)
+        #expect(CreatorProfileService(defaults: store.defaults).profile.style.oneIdea)
+    }
+
     @Test func aProfileSavedBeforeThisSetupDecodesWithNothingConfirmed() throws {
         let old = #"{"name":"Maya","niches":["wellness"],"sounds":["funny"],"vocabulary":"technical"}"#
         let profile = try JSONDecoder().decode(CreatorProfile.self, from: Data(old.utf8))
@@ -60,7 +94,8 @@ struct CreatorProfileServiceTests {
         // with what is saved kept and shown as the current values.
         #expect(profile.missingVoiceSteps == [.audience, .tone])
         #expect(profile.unverifiedVoiceSteps == [.audience, .tone])
-        #expect(profile.sounds == [.funny] && profile.vocabulary == .technical)
+        // Funny is no longer a tone (the owner's item 4): it is kept as a little humor.
+        #expect(profile.sounds.isEmpty && profile.reach.humor == .little && profile.vocabulary == .technical)
         #expect(profile.isChosen(.audience) && profile.isChosen(.tone))
     }
 
@@ -87,6 +122,8 @@ struct CreatorProfileServiceTests {
         let reloaded = CreatorProfileService(defaults: store.defaults)
         #expect(reloaded.profile.unverifiedVoiceSteps.isEmpty)
         #expect(reloaded.profile.missingVoiceSteps.isEmpty && reloaded.writesInMyVoice)
-        #expect(reloaded.profile.sounds == [.funny, .energetic] && reloaded.profile.vocabulary == .genZ)
+        // Funny and energetic are no longer tones (the owner's item 4): they come back as humor and energy.
+        #expect(reloaded.profile.sounds.isEmpty && reloaded.profile.reach.humor == .little && reloaded.profile.style.energy == .high)
+        #expect(reloaded.profile.vocabulary == .genZ)
     }
 }

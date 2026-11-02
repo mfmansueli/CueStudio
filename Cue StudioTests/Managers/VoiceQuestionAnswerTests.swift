@@ -16,17 +16,21 @@ struct VoiceQuestionAnswerTests {
         return (CreatorProfileService(defaults: defaults.defaults), defaults)
     }
 
-    @Test func theBankHasSeventeenQuestionsInQueueOrder() {
-        #expect(VoiceQuestion.allCases.count == 17)
-        #expect(VoiceQuestion.allCases.map(\.rawValue).prefix(4) == ["role", "topics", "audience", "tone"])
-        #expect(VoiceQuestion.allCases.last == .example)
+    @Test func theBankHasTwentyQuestionsAskedByImpact() {
+        #expect(VoiceQuestion.allCases.count == 20)
+        // Every question once, the grammar first, then the audience, the other Essentials, the details and, last, the example.
+        #expect(Set(VoiceQuestion.askingOrder) == Set(VoiceQuestion.allCases))
+        #expect(VoiceQuestion.askingOrder.count == VoiceQuestion.allCases.count)
+        #expect(VoiceQuestion.askingOrder.map(\.rawValue).prefix(7) == [
+            "speakerGender", "groupGender", "address", "audience", "role", "topics", "tone",
+        ])
+        #expect(VoiceQuestion.askingOrder.last == .example)
     }
 
-    @Test func theAppsEightRolesAndEightTonesAreTheOptions() {
+    @Test func theAppsEightRolesAndFiveTonesAreTheOptions() {
         #expect(VoiceQuestion.role.options.count == 8)
-        #expect(VoiceQuestion.tone.options.map(\.label) == [
-            "Conversational", "Straight to the point", "Educational", "Confident", "Warm & calm", "Energetic", "Playful", "Dry & sarcastic",
-        ])
+        // Warm & calm, Energetic and Playful are said in the style and the humor (the owner's item 4).
+        #expect(VoiceQuestion.tone.options.map(\.label) == ["Conversational", "Straight to the point", "Educational", "Confident", "Dry & sarcastic"])
         // The ten of the first flight and the fifteen only My Cue Voice offers.
         #expect(VoiceQuestion.topics.options.count == 25)
         #expect(VoiceQuestion.topics.options.prefix(10).map(\.id) == Niche.offered.map(\.rawValue))

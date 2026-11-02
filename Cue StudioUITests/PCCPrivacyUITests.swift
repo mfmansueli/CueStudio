@@ -7,7 +7,7 @@ import XCTest
 
 @MainActor
 final class PCCPrivacyUITests: XCTestCase {
-    func testPrivacyExplainsCloudProcessingAndLocalWritingExamples() throws {
+    func testPrivacySaysTheVoiceAndItsExamplesMayGoToPrivateCloudCompute() throws {
         continueAfterFailure = false
         let app = CueApp.launch(seeded: true)
         let settings = app.cueTabBar.buttons["Settings"]
@@ -16,11 +16,11 @@ final class PCCPrivacyUITests: XCTestCase {
         let privacy = app.descendants(matching: .any)["settings.privacy"].firstMatch
         app.scroll(to: privacy)
         privacy.tap()
-        let predicate = NSPredicate(format: "label CONTAINS %@", "Your request and voice preferences may be sent to Apple")
+        let predicate = NSPredicate(format: "label CONTAINS %@", "Your request and My Cue Voice, examples included, may be sent to Apple")
         let disclosure = app.staticTexts.matching(predicate).firstMatch
         app.scroll(to: disclosure)
         XCTAssertTrue(disclosure.isHittable)
-        XCTAssertTrue(disclosure.label.contains("Writing examples and imported excerpts stay on this iPhone"))
+        XCTAssertFalse(disclosure.label.contains("stay on this iPhone"))
         if let path = ProcessInfo.processInfo.environment["CUE_SCREENSHOT_DIR"] {
             let directory = URL(fileURLWithPath: path, isDirectory: true)
             try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)

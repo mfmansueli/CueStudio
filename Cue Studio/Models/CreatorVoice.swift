@@ -18,6 +18,11 @@ nonisolated struct CreatorVoice: Hashable, Sendable {
     // The Personality and Proof layers (v29).
     var openings: [String] = []
     var endings: [String] = []
+    /// Cue's openings and endings they never use (the owner's item 5): "Never open with…", "Never end by…".
+    var neverOpenings: [String] = []
+    var neverEndings: [String] = []
+    /// True moments they told (`VoiceStory`; the owner's item 9): the first `VoiceStory.perRequest` are read.
+    var stories: [VoiceStory] = []
     var formats: [ScriptType] = []
     var swearing: Swearing?
     // What the question bank added (v30 · 08): how they come across, what to avoid, where and how long they post.

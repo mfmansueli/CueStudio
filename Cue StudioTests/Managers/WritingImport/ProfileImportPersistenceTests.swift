@@ -56,12 +56,12 @@ struct ProfileImportPersistenceTests {
 
     @Test func theExamplesRowOfThePageCountsWhatWasImported() {
         var profile = CreatorProfile()
-        #expect(profile.examplesPageValue.isEmpty)
+        #expect(profile.value(for: .examples).isEmpty)
         profile.excerpts = (1...3).map { VoiceExcerpt(text: "Excerpt \($0) has enough words in it to count as something the creator wrote on their own.") }
-        #expect(profile.examplesPageValue == "Imported: 3")
+        #expect(profile.value(for: .examples) == "Imported: 3")
         profile.examples = [VoiceExample(text: "One I pasted myself, long enough to be sent to the model as it is.")]
-        #expect(profile.examplesPageValue == "1 of 6 · Imported: 3")
+        #expect(profile.value(for: .examples) == "1 of 3 · Imported: 3")
         profile.excerpts = []
-        #expect(profile.examplesPageValue == "1 of 6")
+        #expect(profile.value(for: .examples) == "1 of 3")
     }
 }

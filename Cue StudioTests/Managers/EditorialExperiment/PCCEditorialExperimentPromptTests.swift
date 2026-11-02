@@ -27,7 +27,7 @@ struct PCCEditorialExperimentPromptTests {
         #expect(prompt.instructions.contains("English"))
     }
 
-    @Test func keepsExplicitDurationAndFiltersPrivateVoiceSamples() {
+    @Test func keepsExplicitDurationAndTheVoiceSamplesTheAppSends() {
         var voice = VoicePersonas.saasFounder.profile.voice
         voice.examples = [VoiceExample(text: "PRIVATE_PASTED_EXAMPLE")]
         let request = ScriptRequest(
@@ -35,7 +35,7 @@ struct PCCEditorialExperimentPromptTests {
         )
         let prompt = PCCEditorialExperimentPrompt(request: request)
         #expect(prompt.prompt.contains("Requested duration: 60–90 seconds"))
-        #expect(!prompt.prompt.contains("PRIVATE_PASTED_EXAMPLE"))
+        #expect(prompt.prompt.contains("PRIVATE_PASTED_EXAMPLE"), "Private Cloud Compute gets the examples (D1)")
         #expect(prompt.prompt.contains("Creator profile"))
         #expect(request.voice?.examples.first?.text == "PRIVATE_PASTED_EXAMPLE", "Never mutate the saved voice")
     }

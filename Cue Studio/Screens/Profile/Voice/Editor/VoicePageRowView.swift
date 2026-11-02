@@ -5,11 +5,13 @@
 
 import SwiftUI
 
-/// A row of the My Cue Voice page: the field on the left in grey, what Cue knows on the right (or "+ Add · 1 tap" in yellow), a chevron, and a hairline
-/// above. Topics show the bar of the world they are in the universe (3 × 14 pt) before each name; the ones only the voice offers have no world and no bar.
+/// A row of the My Cue Voice page: the field on the left in grey, what Cue knows on the right (or "+ Add · 1 tap" in yellow) with where it is used
+/// under it while the voice is on (the owner's item 2), a chevron, and a hairline above. Topics show the bar of the world they are in the universe
+/// (3 × 14 pt) before each name; the ones only the voice offers have no world and no bar.
 struct VoicePageRowView: View {
     let row: VoicePageRow
     let profile: CreatorProfile
+    var showsUse = true
     let action: () -> Void
 
     var body: some View {
@@ -20,13 +22,18 @@ struct VoicePageRowView: View {
                     .cueFont(.subheadline)
                     .foregroundStyle(Palette.ink2)
                     .frame(width: 96, alignment: .leading)
-                Group {
-                    if value.isEmpty {
+                VStack(alignment: .leading, spacing: 3) {
+                    if value.isEmpty, row == .learned {
+                        Text("Nothing yet").cueFont(16).foregroundStyle(Palette.ink2)
+                    } else if value.isEmpty {
                         Text("+ Add · 1 tap").cueFont(16, weight: .semibold).foregroundStyle(Palette.accText)
                     } else if row == .topics {
                         topics
                     } else {
                         Text(value).cueFont(16).foregroundStyle(Palette.ink)
+                    }
+                    if showsUse {
+                        Text(verbatim: "✦ \(row.use)").cueFont(12, weight: .semibold).foregroundStyle(Palette.aiText)
                     }
                 }
                 .multilineTextAlignment(.leading)
@@ -45,6 +52,7 @@ struct VoicePageRowView: View {
         .buttonStyle(.plain)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(Text("\(row.title), \(value.isEmpty ? String(localized: "Add") : value)"))
+        .accessibilityHint(showsUse ? Text(row.use) : Text(verbatim: ""))
         .accessibilityIdentifier("voicePage.row.\(row.rawValue)")
     }
 

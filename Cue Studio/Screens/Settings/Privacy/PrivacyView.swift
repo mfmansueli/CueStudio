@@ -31,7 +31,7 @@ struct PrivacyView: View {
                 SettingsEntryRows(entries: [.onDeviceAI, .helpImprove], bindings: bindings)
             } footer: {
                 Text(ScriptAIService.hasPrivateCloudComputeEntitlement
-                    ? String(localized: "Apple Intelligence can use this iPhone or Private Cloud Compute. Your request and voice preferences may be sent to Apple. Writing examples and imported excerpts stay on this iPhone.")
+                    ? AIDisclosure.privateCloud
                     : String(localized: "Nothing is sold or shared."))
                     .foregroundStyle(Palette.ink2)
             }

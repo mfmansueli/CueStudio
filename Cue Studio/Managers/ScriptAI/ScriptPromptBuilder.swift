@@ -541,6 +541,8 @@ nonisolated enum ScriptPromptBuilder {
         if var voice {
             // A tool keeps the script's length or is told one ("Fit to time", "Shorter"): the usual one would be a second (§11, A15).
             voice.reach.length = nil
+            // A tool keeps the script's points; "Adjust" › Too many ideas says so in its own instruction (`inMyVoiceLength`).
+            voice.style.oneIdea = false
             lines += voiceLines(voice)
         } else if let rules {
             lines += VoiceBriefBuilder.restrictionLines(for: rules, register: register, translatingTo: translatingTo)
@@ -662,6 +664,21 @@ nonisolated enum ScriptPromptBuilder {
         return "Edit the script so it runs between \(target.lowerBound) and \(target.upperBound) spoken words (it has \(sourceWords) now), keeping every key point. \(how)."
     }
 
+    /// How much of the script "In my voice" keeps: all of it, or what "Adjust" › Too long said was too long (`RewriteContext.shortening`). A third
+    /// fewer words stays inside what the tool may answer (`RewriteOutcome.allowedWords`).
+    static func inMyVoiceLength(_ shortening: TooLongCause?) -> String {
+        switch shortening {
+        case .video?:
+            "keep every key point in about a third fewer words than the script has: cut filler and repetition."
+        case .ideas?:
+            "keep its one main idea and cut the side points, so it comes out about a third shorter."
+        case .sentences?:
+            "keep every point and about the same number of words as the script has, in shorter sentences."
+        case nil:
+            "keep every point and about the same number of words as the script has."
+        }
+    }
+
     static func instruction(for tool: ScriptTool, context: RewriteContext) -> String {
         switch tool {
         case .fitToTime:
@@ -690,7 +707,7 @@ nonisolated enum ScriptPromptBuilder {
             return "Make it about a third shorter and more direct. Remove filler and repetition, and keep every key point."
         case .inMyVoice:
             return "Rewrite the script so it sounds like the creator described in your instructions: their tone, words, style and catchphrases. " +
-                "Put every sentence in their words, so that none stays as it is, and keep every point and about the same number of words as the script has. " +
+                "Put every sentence in their words, so that none stays as it is, and \(inMyVoiceLength(context.shortening)) " +
                 "Use each catchphrase once at most, a greeting only at the very start, and keep the script's own point of view."
         case .newHooks, .addDisclosure:
             return ""

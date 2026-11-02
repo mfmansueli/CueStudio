@@ -8,7 +8,7 @@ import Foundation
 /// What the one voice editor can show (My Cue Voice · screen 2): every row of the page opens it on the field that holds its answer. The first four are the
 /// four guided questions; the rest are the Personality and Proof layers.
 enum VoiceEditorField: String, CaseIterable, Identifiable {
-    case role, topics, audience, tone, formats, phrases, reach, examples
+    case role, topics, audience, tone, formats, phrases, reach, notes, stories, examples, learned
 
     var id: String { rawValue }
 
@@ -22,7 +22,10 @@ enum VoiceEditorField: String, CaseIterable, Identifiable {
         case .formats, .openings, .endings, .goals: self = .formats
         case .phrases, .avoid: self = .phrases
         case .reach: self = .reach
+        case .notes: self = .notes
+        case .stories: self = .stories
         case .examples: self = .examples
+        case .learned: self = .learned
         }
     }
 
@@ -49,7 +52,10 @@ enum VoiceEditorField: String, CaseIterable, Identifiable {
         case .formats: String(localized: "Formats, openings, endings")
         case .phrases: String(localized: "Phrases & limits")
         case .reach: String(localized: "Platforms & length")
+        case .notes: String(localized: "Also true about me")
+        case .stories: String(localized: "Stories and facts")
         case .examples: String(localized: "How you really talk")
+        case .learned: String(localized: "What Cue learned")
         }
     }
 
@@ -63,7 +69,10 @@ enum VoiceEditorField: String, CaseIterable, Identifiable {
         case .formats: String(localized: "Personality · how your videos work")
         case .phrases: String(localized: "Personality · your words")
         case .reach: String(localized: "Personality · where it goes")
+        case .notes: String(localized: "Personality · in your words")
+        case .stories: String(localized: "Personality · \(profile.stories.count) of \(VoiceStory.limit) moments")
         case .examples: String(localized: "Proof · \(profile.examples.count) of \(VoiceExample.limit) examples")
+        case .learned: String(localized: "Proof · from your changes and approvals")
         }
     }
 }

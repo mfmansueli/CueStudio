@@ -95,6 +95,26 @@ nonisolated enum AgreementGuide {
         }
     }
 
+    /// The feminine and masculine of a word about the creator in `code` ("pt-BR"), or about a team: the languages "Write me as" is asked in
+    /// (nil where words don't change with it).
+    static func genderExample(in code: String?, team: Bool) -> (feminine: String, masculine: String)? {
+        guard let code, let words = agreements[String(code.prefix(2)).lowercased()] else { return nil }
+        let pair = team ? (words.groupFeminine, words.groupMasculine) : (words.feminine, words.masculine)
+        return (first(of: pair.0), first(of: pair.1))
+    }
+
+    /// The informal and formal "you" in `code` ("pt-PT"): the languages "Speak to viewers" is asked in (nil where it has one "you").
+    static func addressExample(in code: String?) -> (informal: String, formal: String)? {
+        guard let code else { return nil }
+        let base = String(code.prefix(2)).lowercased()
+        guard let address = addresses[code.replacingOccurrences(of: "_", with: "-")] ?? addresses[base] else { return nil }
+        return (address.informal, address.formal)
+    }
+
+    private static func first(of list: String) -> String {
+        String(list.split(separator: ",").first ?? Substring(list)).trimmingCharacters(in: .whitespaces)
+    }
+
     /// "pt-PT" for a request: the variant when there is one, else its language.
     static func code(of request: ScriptRequest) -> String? {
         request.languageVariant.map { $0.identifier.replacingOccurrences(of: "_", with: "-") } ?? request.language?.rawValue

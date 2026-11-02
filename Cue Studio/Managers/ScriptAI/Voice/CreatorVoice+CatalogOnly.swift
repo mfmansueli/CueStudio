@@ -16,6 +16,7 @@ nonisolated extension CreatorVoice {
         safe.avoid = avoid.filter { VoiceAvoidRule.rule(for: $0) != nil }
         safe.examples = []
         safe.approvedSamples = []
+        safe.stories = []
         safe.excerpts = []
         safe.customTags = []
         safe.customFormats = []

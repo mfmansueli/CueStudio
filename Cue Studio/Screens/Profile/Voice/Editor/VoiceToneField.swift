@@ -12,9 +12,15 @@ struct VoiceToneField: View {
     @Environment(ToastService.self) private var toast
 
     private var current: CreatorProfile { profile.profile }
+    @State private var showsOneIdea = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
+            // One card for how they sound (the owner's item 4): the example on top changes with every tap below it.
+            VoiceLiveExample(
+                caption: String(localized: "Example · changes as you tap"), line: VoiceSampleBuilder.soundExample(for: current),
+                identifier: "voice.sound.example"
+            )
             tones
             style
         }
@@ -25,7 +31,7 @@ struct VoiceToneField: View {
     private var tones: some View {
         VStack(alignment: .leading, spacing: 10) {
             GroupedCard(background: Palette.surface2, radius: 16, dividerInset: 16) {
-                ForEach(VoiceSound.allCases) { sound in
+                ForEach(VoiceSound.offered) { sound in
                     let picked = current.isChosen(.tone) && current.sounds.contains(sound)
                     VoiceChoiceRow(
                         title: sound.label, detail: sound.example,
@@ -86,7 +92,16 @@ struct VoiceToneField: View {
                     .foregroundStyle(Palette.ink2)
                     .padding(.horizontal, 4)
             }
+            // Not a question: "Adjust" › Too long › Too many ideas turns it on. Shown while it is on, and until the field closes once turned off.
+            if showsOneIdea {
+                Toggle(VoiceDelivery.oneIdeaLabel, isOn: Binding(get: { current.style.oneIdea }, set: { profile.setOneIdea($0) }))
+                    .cueFont(.subheadline, weight: .semibold)
+                    .foregroundStyle(Palette.ink)
+                    .tint(Palette.successText)
+                    .accessibilityIdentifier("voice.oneIdea")
+            }
         }
+        .onAppear { showsOneIdea = showsOneIdea || current.style.oneIdea }
     }
 
     private func group<Content: View>(_ title: String, @ViewBuilder content: () -> Content) -> some View {

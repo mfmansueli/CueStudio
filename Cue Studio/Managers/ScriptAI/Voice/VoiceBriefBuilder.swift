@@ -42,16 +42,21 @@ nonisolated enum VoiceBriefBuilder {
         return VoiceBrief(text: best.text, fullText: full, trimmed: trimmed, closingRules: closing)
     }
 
+    /// What a brief says before the true moments the creator told ("Stories and facts", the owner's item 9).
+    static let storiesHeader = "True moments they told, in their own words. Use one only when it fits this idea, with its facts and numbers "
+        + "as given; never invent others:"
+
     /// Ultra's two stages (`UltraPayload`): who the creator is, who they speak to and what they won't say (`content`, from which the draft develops
     /// the request), and how they speak (`delivery`, which only the polishing stage applies). The web lab's content-first variant split the formatted
     /// brief by its line prefixes; here the same split is made from the profile's values. A sentence-length preference reads as rhythm, never as a
     /// limit on how much the script develops, and the usual video length is left out (the request's own length policy decides). Examples, imported
-    /// excerpts and approved scripts are never part of either: they stay on this iPhone.
+    /// excerpts and approved scripts are never part of either: Ultra AI never gets them (Apple Intelligence does, on both routes).
     static func ultraProjection(for voice: CreatorVoice, register: PlatformRegister) -> (content: String, delivery: String) {
         var voice = voice
         voice.examples = []
         voice.excerpts = []
         voice.approvedSamples = []
+        voice.stories = []
         voice.reach.length = nil
         let parts = Parts(voice, register: register, contextualPreferences: true)
         let sound = Sound(voice, register: register, sentenceName: { length in
@@ -59,7 +64,8 @@ nonisolated enum VoiceBriefBuilder {
                 ? "short and punchy, with varied lengths (a rhythm preference, never a limit on how much the script develops)"
                 : length.promptName
         })
-        let content = parts.identity + parts.audience + parts.topics + parts.tags + parts.rules + sound.rules
+        // How many ideas a video holds is what the draft develops, not how it is said.
+        let content = parts.identity + parts.audience + parts.topics + parts.focus + parts.tags + parts.rules + sound.rules
         let delivery = sound.delivery + parts.structure + parts.reach
         return (content.joined(separator: "\n"), delivery.joined(separator: "\n"))
     }
@@ -170,6 +176,8 @@ nonisolated enum VoiceBriefBuilder {
     private struct Parts {
         /// Measured on the baseline run: a script took a pasted example's first sentence word for word.
         static let examplesHeader = "Here is how they write. Match the voice; never reuse these sentences, facts or stories:"
+        /// "Adjust" › Too long › Too many ideas, kept in the profile.
+        static let oneIdeaLine = "One idea per video: cut side points."
         /// An example shorter than this says too little to be worth the room.
         static let shortestExample = 70
 
@@ -178,6 +186,8 @@ nonisolated enum VoiceBriefBuilder {
         let topics: [String]
         let voice: [String]
         let structure: [String]
+        /// "One idea per video" (`VoiceDelivery.oneIdea`).
+        let focus: [String]
         let reach: [String]
         let tags: [String]
         let rules: [String]
@@ -189,6 +199,7 @@ nonisolated enum VoiceBriefBuilder {
             topics = Self.topics(voice)
             self.voice = Self.sound(voice, register: register)
             structure = Self.structure(voice, contextualPreferences: contextualPreferences)
+            focus = voice.style.oneIdea ? [Self.oneIdeaLine] : []
             reach = Self.reach(voice)
             tags = Self.tags(voice)
             rules = Self.rules(voice)
@@ -197,7 +208,7 @@ nonisolated enum VoiceBriefBuilder {
 
         /// Anything beyond the two lines every voice starts with.
         var hasContent: Bool {
-            !(audience + topics + voice + structure + reach + tags + rules + examples).isEmpty || identity.count > 2
+            !(audience + topics + voice + structure + focus + reach + tags + rules + examples).isEmpty || identity.count > 2
         }
 
         func has(_ step: VoiceBrief.Trimmed) -> Bool {
@@ -209,7 +220,7 @@ nonisolated enum VoiceBriefBuilder {
         }
 
         func text(examples shown: [String], tags includeTags: Bool, reach includeReach: Bool) -> String {
-            var lines = identity + audience + topics + voice + structure
+            var lines = identity + audience + topics + voice + structure + focus
             if includeReach { lines += reach }
             if includeTags { lines += tags }
             if !shown.isEmpty { lines += [Self.examplesHeader] + shown.map { "- “\($0)”" } }
@@ -305,6 +316,10 @@ nonisolated enum VoiceBriefBuilder {
                     ? "Usual opening preference, only when supported by this request: \(list(choices, joiner: " or ")). A story opening requires an experience supplied in the request; otherwise open directly on the subject."
                     : "Open with \(list(choices, joiner: " or ")): show it in the script, never write the style's name.")
             }
+            if !voice.neverOpenings.isEmpty {
+                let never = voice.neverOpenings.map { VoiceChoiceCatalog.opening($0).guidance }
+                lines.append("Never open with \(list(never, joiner: " or ")).")
+            }
             if !voice.endings.isEmpty {
                 let choices = voice.endings.map(VoiceChoiceCatalog.endingAction)
                 if contextualPreferences {
@@ -312,6 +327,9 @@ nonisolated enum VoiceBriefBuilder {
                 } else if let line = endingLine(voice) {
                     lines.append(line)
                 }
+            }
+            if !voice.neverEndings.isEmpty {
+                lines.append("Never end by \(list(voice.neverEndings.map(VoiceChoiceCatalog.endingAction), joiner: " or ")).")
             }
             let formats = voice.formats.map(\.promptName) + voice.customTags.filter(isFormatTag) + voice.customFormats
             if !formats.isEmpty {
@@ -356,9 +374,19 @@ nonisolated enum VoiceBriefBuilder {
             return [sentence.prefix(1).uppercased() + sentence.dropFirst() + "."]
         }
 
+        /// What they typed under "+ Something else", and the true moments they told (the owner's item 9): the last thing the budget cuts.
         private static func tags(_ voice: CreatorVoice) -> [String] {
             let tags = voice.customTags.filter { !isFormatTag($0) }
-            return tags.isEmpty ? [] : ["Also true of them, in their own words: \(tags.joined(separator: ", "))."]
+            var lines = tags.isEmpty ? [] : ["Also true of them, in their own words: \(tags.joined(separator: ", "))."]
+            let stories = voice.stories.prefix(VoiceStory.perRequest)
+            if !stories.isEmpty {
+                lines.append(VoiceBriefBuilder.storiesHeader)
+                lines += stories.map { story in
+                    let name = story.kind == .clientResult && !story.mayName ? " (never name the person)" : ""
+                    return "- \(story.kind.promptName)\(name): “\(story.text)”"
+                }
+            }
+            return lines
         }
 
         private static func rules(_ voice: CreatorVoice) -> [String] {

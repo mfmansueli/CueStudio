@@ -18,7 +18,8 @@ struct CreatorProfileTests {
         #expect(profile.name == "Maya Reyes")
         #expect(profile.niches == [.wellness])
         #expect(profile.phrases == ["Hey fam"])
-        #expect(profile.sounds == [.energetic])
+        // Energetic is no longer a tone (the owner's item 4): it is kept as high energy.
+        #expect(profile.sounds.isEmpty && profile.style.energy == .high)
         #expect(profile.vocabulary == .simple)
         #expect(profile.usesVoiceInAI)
         #expect(profile.defaultPlatform == .reels)
@@ -26,7 +27,7 @@ struct CreatorProfileTests {
     }
 
     @Test func roundTripsTheVoice() throws {
-        let profile = CreatorProfile(sounds: [.funny], vocabulary: .technical, styles: [.opinionDriven], usesVoiceInAI: false)
+        let profile = CreatorProfile(sounds: [.dry], vocabulary: .technical, styles: [.opinionDriven], usesVoiceInAI: false)
         let decoded = try JSONDecoder().decode(CreatorProfile.self, from: JSONEncoder().encode(profile))
         #expect(decoded == profile)
     }

@@ -88,6 +88,13 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
     var agreement = VoiceAgreement()
     /// Scripts the creator approved with "Sounds like me" (up to `VoiceLimits.approvedSamples`, the oldest goes first): examples of their voice.
     var approvedSamples: [VoiceExample]
+    /// What "Adjust" changed in the voice, newest last (up to `VoiceLearning.limit`): "What Cue learned" lists it and can take it back.
+    var learned: [VoiceLearning] = []
+    /// The openings and endings of Cue's lists they never use (ids, up to `VoiceLimits.never` each; the owner's item 5): "I never use".
+    var neverOpenings: [String] = []
+    var neverEndings: [String] = []
+    /// True moments they told (up to `VoiceStory.limit`; the owner's item 9).
+    var stories: [VoiceStory] = []
     /// A few sentences of what the creator imported ("Import my writing"), up to `VoiceExcerpt.limit`: the library each request picks examples from.
     var excerpts: [VoiceExcerpt]
     /// What was measured of that writing; nil when nothing was imported.
@@ -171,6 +178,10 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
             excerpts: ExcerptRetriever.pick(from: excerpts, limit: VoiceExample.limit), fingerprint: fingerprint
         )
         voice.agreement = agreement
+        // What they use wins over a "never" an older answer left.
+        voice.neverOpenings = neverOpenings.filter { id in !openings.contains { VoiceTextValidator.key($0) == VoiceTextValidator.key(id) } }
+        voice.neverEndings = neverEndings.filter { id in !endings.contains { VoiceTextValidator.key($0) == VoiceTextValidator.key(id) } }
+        voice.stories = stories
         return voice
     }
 
@@ -189,6 +200,9 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
             voice.examples = voice.examples.filter { !isAbout($0) } + voice.examples.filter(isAbout)
             // Approved scripts are read newest last: the ones about the idea go to the front, the oldest end.
             voice.approvedSamples = voice.approvedSamples.filter(isAbout) + voice.approvedSamples.filter { !isAbout($0) }
+            // A story about the idea is the one a script may use: those go first.
+            let storyIsAbout = { (story: VoiceStory) in ExcerptRetriever.isAbout(ExcerptRetriever.contentWords(story.text), wanted) }
+            voice.stories = voice.stories.filter(storyIsAbout) + voice.stories.filter { !storyIsAbout($0) }
         }
         if let fingerprint, !fingerprint.applies(toLanguage: language) { voice.fingerprint = nil }
         return voice
@@ -218,7 +232,7 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         case openings, endings, formats, swearing, examples, customTags, customFormats, declinedVoiceItems
         case style, avoid, avoidNone, reach, audienceLevel, approvals
         case voiceTopics, topicDetails, audienceGroup, audienceNote, watchReasons, contentGoals, customRole, credential, speaksAs, agreement
-        case approvedSamples, excerpts, fingerprint, voiceSchemaVersion
+        case approvedSamples, learned, neverOpenings, neverEndings, stories, excerpts, fingerprint, voiceSchemaVersion
         case photoData = "photo"
         /// v1 kept a single tone; it becomes the first "How I sound".
         case legacyTone = "tone"
@@ -296,6 +310,10 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         approvedSamples = Array(
             ((try? container.decodeIfPresent([VoiceExample].self, forKey: .approvedSamples)) ?? []).suffix(VoiceLimits.approvedSamples)
         )
+        learned = Array(((try? container.decodeIfPresent([VoiceLearning].self, forKey: .learned)) ?? []).suffix(VoiceLearning.limit))
+        neverOpenings = Array(((try? container.decodeIfPresent([String].self, forKey: .neverOpenings)) ?? []).prefix(VoiceLimits.never))
+        neverEndings = Array(((try? container.decodeIfPresent([String].self, forKey: .neverEndings)) ?? []).prefix(VoiceLimits.never))
+        stories = Array(((try? container.decodeIfPresent([VoiceStory].self, forKey: .stories)) ?? []).prefix(VoiceStory.limit))
         excerpts = Array(((try? container.decodeIfPresent([VoiceExcerpt].self, forKey: .excerpts)) ?? []).prefix(VoiceExcerpt.limit))
         fingerprint = (try? container.decodeIfPresent(VoiceFingerprint.self, forKey: .fingerprint)) ?? nil
         voiceSchemaVersion = try container.decodeIfPresent(Int.self, forKey: .voiceSchemaVersion) ?? 1
@@ -310,6 +328,21 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
             if container.contains(.sounds) || container.contains(.legacyTone) { legacy.insert(.tone) }
             unverifiedVoiceSteps = legacy
         }
+        foldTones()
+    }
+
+    /// The tones the voice no longer asks about become what Energy and Humor say, where those weren't answered (the owner's item 4): warm and
+    /// calm is calm energy, energetic is high energy, playful is a little humor.
+    mutating func foldTones() {
+        for sound in sounds where !VoiceSound.offered.contains(sound) {
+            switch sound {
+            case .warmCalm: if style.energy == nil { style.energy = .calm }
+            case .energetic: if style.energy == nil { style.energy = .high }
+            case .funny: if reach.humor == nil { reach.humor = .little }
+            default: break
+            }
+        }
+        sounds.removeAll { !VoiceSound.offered.contains($0) }
     }
 
     func encode(to encoder: Encoder) throws {
@@ -354,6 +387,10 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         try container.encodeIfPresent(speaksAs, forKey: .speaksAs)
         if !agreement.isEmpty { try container.encode(agreement, forKey: .agreement) }
         try container.encode(approvedSamples, forKey: .approvedSamples)
+        if !learned.isEmpty { try container.encode(learned, forKey: .learned) }
+        if !neverOpenings.isEmpty { try container.encode(neverOpenings, forKey: .neverOpenings) }
+        if !neverEndings.isEmpty { try container.encode(neverEndings, forKey: .neverEndings) }
+        if !stories.isEmpty { try container.encode(stories, forKey: .stories) }
         try container.encode(excerpts, forKey: .excerpts)
         try container.encodeIfPresent(fingerprint, forKey: .fingerprint)
         // Anything this build writes is of the current version, whatever it was read as.

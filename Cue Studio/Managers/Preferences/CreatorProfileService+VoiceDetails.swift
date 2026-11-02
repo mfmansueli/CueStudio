@@ -197,9 +197,10 @@ extension CreatorProfileService {
         profile.agreement.group = gender
     }
 
-    /// Informal (the default) or formal "you", where the language has both (B8).
+    /// Informal or formal "you", where the language has both (B8). Kept as chosen, informal too: a choice is an answer, and the tip doesn't ask
+    /// it again.
     func setAddressForm(_ form: AddressForm) {
-        profile.agreement.address = form == .informal ? nil : form
+        profile.agreement.address = form
     }
 
     // MARK: - Helpers

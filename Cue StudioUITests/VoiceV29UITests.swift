@@ -61,11 +61,13 @@ final class VoiceV29UITests: XCTestCase {
         capture(app, "9.1_profile_voice")
     }
 
-    func testTheFullPageListsTheThreeLayersAndTwoButtons() {
+    func testTheFullPageListsTheSectionsAndTwoButtons() {
         let app = setUpVoice()
         openVoicePage(app)
+        capture(app, "9.3_my_cue_voice_top")
         for row in [
-            "role", "topics", "audience", "watch", "tone", "style", "formats", "openings", "endings", "goals", "phrases", "avoid", "reach", "examples",
+            "role", "audience", "watch", "reach", "topics", "formats", "goals", "tone", "style", "phrases", "openings", "endings", "notes", "avoid",
+            "examples", "learned",
         ] {
             let element = element(app, "voicePage.row.\(row)")
             app.scroll(to: element)
@@ -80,6 +82,66 @@ final class VoiceV29UITests: XCTestCase {
         XCTAssertTrue(preview.exists)
         XCTAssertTrue(element(app, "voicePage.sends").exists)
         capture(app, "9.3_my_cue_voice")
+    }
+
+    /// "Also true about me" (the owner's item 7): a note added here shows on the page, and a tap on its ✕ takes it away.
+    func testAlsoTrueAboutMeKeepsTheCreatorsOwnNotes() {
+        let app = setUpVoice()
+        openVoicePage(app)
+        let row = element(app, "voicePage.row.notes")
+        app.scroll(to: row)
+        row.tap()
+        let field = app.textFields["voice.notes.field"]
+        XCTAssertTrue(field.exists(within: 5))
+        field.tap()
+        field.typeText("I film in my car\n")
+        XCTAssertTrue(app.buttons["voice.note"].exists(within: 3))
+        app.buttons["voice.editor.done"].tap()
+        XCTAssertTrue(element(app, "voicePage.row.notes").label.contains("I film in my car"))
+        element(app, "voicePage.row.notes").tap()
+        app.buttons["voice.note.remove"].tap()
+        XCTAssertFalse(app.buttons["voice.note"].exists)
+    }
+
+    /// "Stories and facts" (the owner's item 9): a moment said with the microphone lands in the field to read, Save keeps it, and the page counts it.
+    func testAStorySaidWithTheMicrophoneIsKept() {
+        let story = "I started filming in my car because it was the only quiet place"
+        let app = setUpVoice(extraArguments: ["-uiTestDictation", "speech", "-uiTestDictationText", story])
+        openVoicePage(app)
+        let row = element(app, "voicePage.row.stories")
+        app.scroll(to: row)
+        row.tap()
+        XCTAssertTrue(element(app, "voice.stories.intro").exists(within: 5))
+        let microphone = app.buttons["voice.story.field.dictate"]
+        microphone.tap()
+        let field = element(app, "voice.story.field")
+        XCTAssertTrue(field.matches(NSPredicate(format: "value CONTAINS 'quiet place'"), within: 10), "Nothing was heard")
+        microphone.tap()
+        let save = app.buttons["voice.story.field.save"]
+        XCTAssertTrue(save.exists(within: 5))
+        save.tap()
+        XCTAssertTrue(app.staticTexts[story].exists(within: 3), "The story was not kept")
+        capture(app, "voice_stories")
+        app.buttons["voice.editor.done"].tap()
+        XCTAssertTrue(element(app, "voicePage.row.stories").label.contains("1 of 5"))
+    }
+
+    /// The live example (the owner's item 1): picking an opening shows its line, and the next pick changes it.
+    func testAnOpeningShowsItsLiveExample() {
+        let app = setUpVoice()
+        openVoicePage(app)
+        let row = element(app, "voicePage.row.openings")
+        app.scroll(to: row)
+        row.tap()
+        let question = app.buttons["voice.openings.Question"]
+        app.scroll(to: question)
+        question.tap()
+        let example = element(app, "voice.openings.example")
+        XCTAssertTrue(example.exists(within: 3))
+        XCTAssertTrue(example.label.contains("Why do some mornings feel like a fight?"))
+        app.buttons["voice.openings.POV"].tap()
+        XCTAssertTrue(element(app, "voice.openings.example").label.contains("POV: you finally stopped losing your mornings."))
+        capture(app, "voice_openings_example")
     }
 
     /// "What Cue sends": the voice as Apple Intelligence reads it, how much of the 1200 characters it takes, and the way back to the four questions.
@@ -156,13 +218,15 @@ final class VoiceV29UITests: XCTestCase {
     /// F9 · the tip on Scripts asks one question at a time (the sample takes were exported, so "Where do you post most?" is pulled to the
     /// front), says "Saved" and offers one more.
     /// "I am" asks how the words about the creator agree and how viewers are addressed (the owner's B8, 02/11/2026): both optional, the chosen
-    /// gender lets go on a second tap (not chosen, never the masculine), informal is the default.
+    /// gender lets go on a second tap (not chosen, never the masculine), informal is the default. In English they wait under "More questions"
+    /// (the owner's item 8): they change nothing there.
     func testIAmAsksHowTheWordsAboutTheCreatorAgree() {
         let app = CueApp.launch(seeded: true, ai: .stub)
-        let tab = app.cueTabBar.buttons["Profile"]
-        XCTAssertTrue(tab.exists(within: 15))
-        tab.tap()
-        app.buttons["profile.setUpVoiceButton"].tap()
+        openIAm(app)
+        let more = app.buttons["voice.agreement.more"]
+        app.scroll(to: more)
+        XCTAssertFalse(app.buttons["voice.speakerGender.feminine"].exists, "English: folded")
+        more.tap()
         let feminine = app.buttons["voice.speakerGender.feminine"]
         app.scroll(to: feminine)
         XCTAssertFalse(feminine.isSelected, "not chosen until the creator picks")
@@ -179,21 +243,38 @@ final class VoiceV29UITests: XCTestCase {
         capture(app, "voice-i-am-agreement")
     }
 
+    /// Scripts in Portuguese (Settings › Language & Region): both are asked in the open, with the language's own words as the example.
+    func testIAmAsksAgreementOpenlyWhereTheScriptLanguageNeedsIt() {
+        let app = CueApp.launch(seeded: true, ai: .stub, extraArguments: ["-uiTestScriptLanguage", "pt-BR"])
+        openIAm(app)
+        let feminine = app.buttons["voice.speakerGender.feminine"]
+        app.scroll(to: feminine)
+        XCTAssertTrue(feminine.exists)
+        XCTAssertTrue(app.staticTexts.containing(NSPredicate(format: "label CONTAINS %@", "“cansada”")).firstMatch.exists)
+        XCTAssertTrue(app.buttons["voice.addressForm.formal"].exists)
+        XCTAssertFalse(app.buttons["voice.agreement.more"].exists, "nothing folded in Portuguese")
+    }
+
+    private func openIAm(_ app: XCUIApplication) {
+        let tab = app.cueTabBar.buttons["Profile"]
+        XCTAssertTrue(tab.exists(within: 15))
+        tab.tap()
+        app.buttons["profile.setUpVoiceButton"].tap()
+    }
+
     func testTheTipOnScriptsAsksOneQuestionAtATime() {
         let app = setUpVoice(extraArguments: ["-uiTestVoiceTip"])
         app.cueTabBar.buttons["Scripts"].tap()
-        let open = app.buttons.matching(NSPredicate(format: "label CONTAINS 'One quick question'")).firstMatch
-        XCTAssertTrue(open.exists(within: 15))
+        // The first export pulled where they post forward: a closed list, answered with one tap on the tip.
+        // TipKit names every control inside a tip "TipView": the answer is found by its words, inside the tip.
+        let tiktok = element(app, "voice.tip").buttons["TikTok"]
+        XCTAssertTrue(tiktok.exists(within: 15))
+        XCTAssertTrue(app.buttons.matching(NSPredicate(format: "label CONTAINS 'Where do you post most?'")).firstMatch.exists)
         capture(app, "9.1_tip")
-        open.tap()
-        XCTAssertTrue(app.staticTexts["Where do you post most?"].exists(within: 5))
-        element(app, "voice.option.tiktok").tap()
-        XCTAssertTrue(element(app, "voice.saved").exists(within: 5))
-        element(app, "voice.more").tap()
-        // The next question replaces it.
-        let old = app.staticTexts["Where do you post most?"]
-        XCTAssertTrue(old.matches(NSPredicate(format: "exists == false"), within: 5))
-        XCTAssertTrue(app.buttons["sheet.closeButton"].exists)
+        tiktok.tap()
+        let gone = NSPredicate(format: "exists == false")
+        XCTAssertTrue(tiktok.matches(gone, within: 5))
+        XCTAssertFalse(app.buttons["sheet.closeButton"].exists, "no sheet for a one-tap answer")
     }
 
     /// F9 · no AI: the page says it needs Apple Intelligence and the data stays editable; no tips.

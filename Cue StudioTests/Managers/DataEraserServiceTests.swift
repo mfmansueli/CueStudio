@@ -39,6 +39,7 @@ struct DataEraserServiceTests {
         profile.apply(WritingImportProposalBuilder.build(analysis: imported, reading: nil, profile: profile.profile))
         profile.recordApproval(of: "Okay, real talk. " + String(repeating: "Mornings are hard for everybody and that is fine. ", count: 6))
         #expect(!profile.profile.excerpts.isEmpty && profile.profile.fingerprint != nil && !profile.profile.approvedSamples.isEmpty)
+        profile.setOneIdea(true)
         let preferences = PreferencesService(defaults: defaults.defaults)
         preferences.customCues = ["laugh"]
         let quota = UsageQuotaService(counter: FakeExportCountStore(count: 1), defaults: defaults.defaults)
@@ -58,6 +59,7 @@ struct DataEraserServiceTests {
         #expect(defaults.defaults.object(forKey: DefaultsKey.skyMemory) == nil, "the stars earlier versions kept")
         #expect(profile.profile == CreatorProfile())
         #expect(profile.profile.excerpts.isEmpty && profile.profile.fingerprint == nil && profile.profile.approvedSamples.isEmpty)
+        #expect(!profile.profile.style.oneIdea)
         #expect(preferences.customCues.isEmpty)
         #expect(PreferencesService(defaults: defaults.defaults).customCues.isEmpty)
         // The export used is still used: deleting data can't hand back free exports.

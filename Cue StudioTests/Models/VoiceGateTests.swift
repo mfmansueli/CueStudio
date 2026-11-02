@@ -39,7 +39,8 @@ struct VoiceGateTests {
         #expect(instructions(request, on: .privateCloud).contains("See you Sunday"))
     }
 
-    @Test func onlyExamplesGoOnTheIPhoneAndNothingGoesToPrivateCloudCompute() {
+    /// Private Cloud Compute gets the examples too (the owner's D1, 02/11/2026).
+    @Test func onlyExamplesGoOnBothRoutes() {
         var profile = CreatorProfile()
         profile.examples = [VoiceExample(text: "Okay, real talk: bread is patience you can eat, and your starter is not dead, it is sleeping.")]
         let (factory, service, defaults) = factory(profile)
@@ -48,7 +49,7 @@ struct VoiceGateTests {
         let request = factory.request(idea: "Why my sourdough starter isn't dead", platform: .tiktok, format: nil)
         #expect(instructions(request, on: .onDevice).contains("your starter is not dead"))
         let cloud = instructions(request, on: .privateCloud)
-        #expect(!cloud.contains("your starter is not dead") && !cloud.contains("Write in the creator's own voice"), "\(cloud)")
+        #expect(cloud.contains("your starter is not dead") && cloud.contains("Write in the creator's own voice"), "\(cloud)")
     }
 
     @Test func theSwitchOffSendsNothing() {

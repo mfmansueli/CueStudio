@@ -71,7 +71,7 @@ struct WritingImportReviewView: View {
             }
             .tint(Palette.ink2)
             .accessibilityIdentifier("import.kept")
-            Text("Teaches how you talk. Never reused for stories, opinions or results. Stays on this iPhone.")
+            Text(AIDisclosure.example)
                 .cueFont(.footnote)
                 .foregroundStyle(Palette.ink2)
                 .padding(.horizontal, 4)

@@ -33,7 +33,7 @@ struct VoiceSendsSheet: View {
                             .foregroundStyle(Palette.ink)
                             .accessibilityAddTraits(.isHeader)
                     }
-                    Text("Apple Intelligence can use this iPhone or Private Cloud Compute. Your request and voice preferences may be sent to Apple. Writing examples and imported excerpts stay on this iPhone.")
+                    Text(AIDisclosure.privateCloud)
                         .cueFont(.footnote)
                         .foregroundStyle(Palette.ink2)
                     // The switch off sends nothing: the voice below is what it would send (§11, A6).
@@ -103,8 +103,8 @@ struct VoiceSendsSheet: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Ultra AI · sent to Google").cueFont(.subheadline, weight: .semibold).foregroundStyle(Palette.ink)
             Text(ultra.consent.isGranted
-                ? "Sent only for the scripts you pick Ultra AI for. Writing examples, imported excerpts and approved scripts are never part of it."
-                : "Not allowed: nothing goes to Google. If you allow it, this is what a script you pick Ultra AI for sends.")
+                ? AIDisclosure.ultraSends
+                : String(localized: "Not allowed: nothing goes to Google. If you allow it, this is what a script you pick Ultra AI for sends."))
                 .cueFont(.footnote)
                 .foregroundStyle(Palette.ink2)
             UltraPayloadView(payload: starter.ultraPreview())
@@ -116,8 +116,9 @@ struct VoiceSendsSheet: View {
     private var cloudBrief: VoiceBrief {
         var next = profile.profile.voice
         next.phrases = profile.nextCatchphrases
-        guard let voice = AIRequestPolicy.voice(next, on: .privateCloud) else { return .empty }
-        return VoiceBriefBuilder.brief(for: voice, budget: AIRequestPolicy.cloudVoiceBudget, contextualPreferences: true)
+        next.reach.length = nil
+        // Private Cloud Compute gets the whole voice, the proof too (the owner's D1), in its own budget and with its preferences read as defaults.
+        return VoiceBriefBuilder.brief(for: next, budget: AIRequestPolicy.cloudVoiceBudget, contextualPreferences: true)
     }
 
     private func briefCard(_ text: String, identifier: String) -> some View {

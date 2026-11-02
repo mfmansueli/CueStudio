@@ -229,6 +229,39 @@ struct VoiceBriefBuilderTests {
         #expect(brief.cost <= VoiceBrief.budget)
     }
 
+    @Test func oneIdeaPerVideoIsOneLineOnlyWhenSetAndTheFullVoiceStillFits() throws {
+        #expect(!brief(yoga).contains("One idea per video"))
+        var focused = yoga
+        focused.style.oneIdea = true
+        let text = brief(focused)
+        #expect(text.components(separatedBy: "\n").filter { $0 == "One idea per video: cut side points." }.count == 1)
+        // With how they open and close, before the rules.
+        let line = try #require(text.range(of: "One idea per video")?.lowerBound)
+        let opening = try #require(text.range(of: "Open with")?.lowerBound)
+        let rules = try #require(text.range(of: "Rules:")?.lowerBound)
+        #expect(opening < line && line < rules)
+        // Private Cloud Compute reads the same brief, and Ultra AI's draft gets it with what the video says.
+        #expect(VoiceBriefBuilder.brief(for: focused, contextualPreferences: true).text.contains("One idea per video: cut side points."))
+        #expect(VoiceBriefBuilder.ultraProjection(for: focused, register: .casual).content.contains("One idea per video"))
+        // The fullest voice keeps the line within the budget: what is cut to fit is the examples, never the line.
+        var crowded = crowded()
+        crowded.reach.length = nil
+        crowded.style.oneIdea = true
+        let full = VoiceBriefBuilder.brief(for: crowded)
+        #expect(full.text.contains("One idea per video") && full.cost <= VoiceBrief.budget, "\(full.cost) of \(VoiceBrief.budget)")
+        #expect(full.trimmed.allSatisfy { $0 == .examples }, "\(full.trimmed) · \(full.fullCost) of \(VoiceBrief.budget)")
+        // Alone, it is still a voice to send.
+        var alone = CreatorProfile()
+        alone.style.oneIdea = true
+        #expect(brief(alone.voice).contains("One idea per video"))
+    }
+
+    @Test func aRewriteKeepsTheScriptsPointsWhateverTheOneIdeaFlag() {
+        var focused = yoga
+        focused.style.oneIdea = true
+        #expect(!ScriptPromptBuilder.rewriteInstructions(voice: focused).contains("One idea per video"))
+    }
+
     @Test func theReachGoesAfterTheExamplesAndTheTagsTheCreatorTypedAreTheLastToGo() {
         var voice = crowded()
         let squeezed = VoiceBriefBuilder.brief(for: voice, budget: 700)

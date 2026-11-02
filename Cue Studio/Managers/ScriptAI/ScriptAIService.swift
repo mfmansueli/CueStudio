@@ -407,7 +407,7 @@ final class ScriptAIService: ScriptWriting {
         let ask: RewriteRunner.Ask = { [self] part, details in
             @MainActor func attempt(on model: AIModelRoute) async throws -> String {
                 let instructions = ScriptPromptBuilder.rewriteInstructions(
-                    voice: AIRequestPolicy.voice(voice, on: model), rules: context.rules, register: PlatformRegister(context.platform),
+                    voice: voice, rules: context.rules, register: PlatformRegister(context.platform),
                     language: expected, translatingTo: tool == .translate ? context.language?.englishName : nil, brand: context.brand
                 )
                 let session = self.session(on: model, instructions: instructions, transformsText: true)
@@ -450,7 +450,7 @@ final class ScriptAIService: ScriptWriting {
         defer { endForeground() }
         let plan = try await plan(for: .hooks, languages: context.sourceLanguage.map { [$0] } ?? [])
         return try await withFallback(plan, operation: "hooks", language: context.sourceLanguage?.minimalIdentifier) { model in
-            let session = self.session(on: model, instructions: ScriptPromptBuilder.rewriteInstructions(voice: AIRequestPolicy.voice(context.voice, on: model)))
+            let session = self.session(on: model, instructions: ScriptPromptBuilder.rewriteInstructions(voice: context.voice))
             let prompt = ScriptPromptBuilder.hooksPrompt(for: text, context: context)
             let ideas = try await self.answering { try await session.respond(to: prompt, generating: HookIdeas.self).content }
             let hooks = ideas.hooks.map {
@@ -498,7 +498,7 @@ final class ScriptAIService: ScriptWriting {
         let languageCode = language?.locale.language.minimalIdentifier
         return try await withFallback(plan, operation: "themes", language: language?.locale.identifier) { model in
             let instructions = ScriptPromptBuilder.themesInstructions(
-                voice: AIRequestPolicy.voice(voice, on: model), voiceBudget: model == .privateCloud ? AIRequestPolicy.cloudVoiceBudget : nil
+                voice: voice, voiceBudget: model == .privateCloud ? AIRequestPolicy.cloudVoiceBudget : nil
             )
             let session = self.session(on: model, instructions: instructions)
             let prompt = ScriptPromptBuilder.themesPrompt(slots: slots, language: language, inspiration: inspiration, asBriefs: asBriefs)
@@ -542,7 +542,7 @@ final class ScriptAIService: ScriptWriting {
         let known = niches.isEmpty ? [Niche.lifestyle] : niches
         return try await withFallback(plan, operation: "themes", language: language?.locale.identifier) { model in
             let instructions = ScriptPromptBuilder.themesInstructions(
-                voice: AIRequestPolicy.voice(voice, on: model), voiceBudget: model == .privateCloud ? AIRequestPolicy.cloudVoiceBudget : nil
+                voice: voice, voiceBudget: model == .privateCloud ? AIRequestPolicy.cloudVoiceBudget : nil
             )
             let session = self.session(on: model, instructions: instructions)
             let prompt = ScriptPromptBuilder.themesPrompt(for: known, voice: voice, language: language)

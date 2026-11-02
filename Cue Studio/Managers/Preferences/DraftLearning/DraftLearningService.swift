@@ -56,8 +56,8 @@ final class DraftLearningService {
         drafts[script.id] = nil
         persist()
         guard let example = profile.learnFromRecordedScript(script.text) else { return }
-        // What it learned is read only when Cue writes on this iPhone (§11, A6).
-        toast.show(String(localized: "Saved as your writing · used on this iPhone"), kind: .cue, action: ToastAction(title: String(localized: "Undo")) { [profile] in
+        // What it learned is read by Apple Intelligence on both routes, never by Ultra AI (the owner's D1).
+        toast.show(String(localized: "Saved as your writing · Cue learns from it"), kind: .cue, action: ToastAction(title: String(localized: "Undo")) { [profile] in
             profile.removeApprovedSample(example.id)
         })
     }

@@ -5,11 +5,18 @@
 
 import SwiftUI
 
-/// "VOICE 65% · GOOD START" and a bar: how much of the creator Cue knows (9.1 and 9.3). The number is the computed
-/// `voiceStrength`, so it moves with every answer.
+/// "WHAT CUE KNOWS 65% · GOOD START" and a bar: how much of the creator Cue knows (9.1 and 9.3), never how good a script is (the owner's item 3,
+/// 02/11/2026). The number is the computed `voiceStrength`, so it moves with every answer, and it counts what reaches the model: both Apple
+/// Intelligence routes get all of it.
 struct VoiceMeter: View {
     let strength: Int
     let level: VoiceStrengthLevel
+
+    /// The meter's name, as VoiceOver reads it.
+    static var title: String { String(localized: "What Cue knows") }
+
+    /// The label over the bar: "WHAT CUE KNOWS 65%".
+    static func caption(_ strength: Int) -> String { String(localized: "WHAT CUE KNOWS \(strength)%") }
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
@@ -37,13 +44,13 @@ struct VoiceMeter: View {
             .frame(height: 4)
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text("Voice strength"))
+        .accessibilityLabel(Text(Self.title))
         .accessibilityValue(Text("\(strength) percent, \(level.label)"))
         .accessibilityIdentifier("voice.meter")
     }
 
     private var strengthLabel: some View {
-        Text("VOICE STRENGTH \(strength)%")
+        Text(Self.caption(strength))
             .monoFont(size: 10.5, weight: .semibold)
             .interfaceTracking(1)
             .foregroundStyle(Palette.ink)

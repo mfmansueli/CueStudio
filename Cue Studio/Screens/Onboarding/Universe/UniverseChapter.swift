@@ -75,7 +75,7 @@ struct UniverseChapter: View {
         return VStack(alignment: .leading, spacing: 0) {
             OnboardingHeading(
                 label: OnboardingStep.universe.chapterLabel, title: String(localized: "What do you usually talk about?"),
-                subtitle: String(localized: "Pick up to 3. Cue uses them for your video ideas, and each one becomes a world."),
+                subtitle: String(localized: "Pick up to 3. Cue uses them for your ideas and scripts, and each one becomes a world."),
                 poses: ["L1", "L2", "L3"].map { Self.clip.pose(of: $0, at: clock) }
             )
             .padding(.horizontal, 20)

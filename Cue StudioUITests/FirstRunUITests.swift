@@ -146,8 +146,8 @@ final class FirstRunUITests: XCTestCase {
         app.buttons["voiceSetup.audience.youngAdults"].tap()
         app.buttons["voiceSetup.level.experienced"].tap()
         next.tap()
-        XCTAssertTrue(app.buttons["voiceSetup.tone.funny"].exists(within: 5))
-        app.buttons["voiceSetup.tone.funny"].tap()
+        XCTAssertTrue(app.buttons["voiceSetup.tone.dry"].exists(within: 5))
+        app.buttons["voiceSetup.tone.dry"].tap()
         // With an idea on the card, the last question writes it.
         XCTAssertEqual(next.label, "✦ Draft my script")
         next.tap()
@@ -162,6 +162,54 @@ final class FirstRunUITests: XCTestCase {
         // The chip shows how much of the creator Cue knows now: kind of creator, topics, audience (with its level) and tone at 10% each,
         // and one approval is not yet an example.
         XCTAssertEqual(app.buttons["ideaCard.voiceChip"].value as? String, "40%")
+    }
+
+    /// "Adjust" › Too long kept in the profile asks what was too long (for this script only it doesn't), and Rewrite waits for the answer.
+    func testAdjustTooLongInTheProfileAsksWhatWasTooLong() {
+        let app = CueApp.launch(seeded: false)
+        let field = element(app, "ideaCard.field")
+        XCTAssertTrue(field.exists(within: 15))
+        field.tap()
+        field.typeText("Carnival in Salvador")
+        app.buttons["ideaCard.voiceChip"].tap()
+        XCTAssertTrue(app.buttons["voiceSetup.skipRole"].exists(within: 5))
+        app.buttons["voiceSetup.skipRole"].tap()
+        XCTAssertTrue(app.buttons["voiceSetup.niche.lifestyle"].exists(within: 5))
+        app.buttons["voiceSetup.niche.lifestyle"].tap()
+        app.buttons["voiceSetup.saveButton"].tap()
+        XCTAssertTrue(app.buttons["voiceSetup.audience.youngAdults"].exists(within: 5))
+        app.buttons["voiceSetup.audience.youngAdults"].tap()
+        app.buttons["voiceSetup.level.experienced"].tap()
+        app.buttons["voiceSetup.saveButton"].tap()
+        XCTAssertTrue(app.buttons["voiceSetup.tone.casual"].exists(within: 5))
+        app.buttons["voiceSetup.tone.casual"].tap()
+        app.buttons["voiceSetup.saveButton"].tap()
+        XCTAssertTrue(element(app, "page.voicePreview").exists(within: 15))
+
+        XCTAssertTrue(app.buttons["page.voice.adjust"].exists(within: 5))
+        app.buttons["page.voice.adjust"].tap()
+        XCTAssertTrue(element(app, "voiceAdjust.sheet").exists(within: 5))
+        app.buttons["voiceAdjust.tooLong"].tap()
+        // For this script only, nothing more is asked.
+        XCTAssertFalse(app.buttons["voiceAdjust.cause.video"].exists)
+        app.segmentedControls["voiceAdjust.scope"].buttons["Also my profile"].tap()
+        for cause in ["sentences", "video", "ideas"] {
+            XCTAssertTrue(app.buttons["voiceAdjust.cause.\(cause)"].exists(within: 5), cause)
+        }
+        let rewrite = app.buttons["voiceAdjust.rewrite"]
+        XCTAssertFalse(rewrite.isEnabled, "Rewrite waits for what was too long")
+        app.buttons["voiceAdjust.cause.video"].tap()
+        XCTAssertTrue(app.buttons["voiceAdjust.cause.video"].isSelected)
+        XCTAssertFalse(app.buttons["voiceAdjust.cause.ideas"].isSelected)
+        XCTAssertTrue(element(app, "voiceAdjust.sheet").staticTexts["Video length · Shorter"].exists)
+        XCTAssertTrue(rewrite.isEnabled)
+        // Back to this script only, the question goes.
+        app.segmentedControls["voiceAdjust.scope"].buttons["This script only"].tap()
+        XCTAssertTrue(app.buttons["voiceAdjust.cause.video"].isGone(within: 3))
+        app.segmentedControls["voiceAdjust.scope"].buttons["Also my profile"].tap()
+        XCTAssertTrue(app.buttons["voiceAdjust.cause.video"].exists(within: 5))
+        rewrite.tap()
+        XCTAssertTrue(element(app, "voiceAdjust.sheet").isGone(within: 5))
     }
 
     /// Set up, the chip shows the voice's strength and opens the questions again, filled in. (The voice's on/off switch is

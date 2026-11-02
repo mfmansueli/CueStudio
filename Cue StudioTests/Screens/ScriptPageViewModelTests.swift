@@ -781,4 +781,48 @@ struct ScriptPageViewModelTests {
         await scenario.viewModel.rewriteVoice(adjustments: [.notMyPhrase], keepsInProfile: true)
         #expect(scenario.profile.profile.phrases.isEmpty)
     }
+
+    @Test func tooLongKeptInTheProfileWritesWhatWasTooLongAndTheRewriteFollowsIt() async {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        _ = voice(scenario)
+        scenario.profile.profile.style = VoiceDelivery(energy: .calm, sentences: .long)
+        scenario.profile.profile.reach.length = .oneToThree
+        let start = scenario.profile.profile
+
+        await scenario.viewModel.rewriteVoice(adjustments: [.tooLong], keepsInProfile: true, cause: .video)
+        #expect(scenario.profile.profile.reach.length == .thirtyToSixty)
+        #expect(scenario.profile.profile.style == start.style)
+        #expect(scenario.writer.lastRewrite?.context.shortening == .video)
+
+        scenario.profile.profile = start
+        await scenario.viewModel.rewriteVoice(adjustments: [.tooLong], keepsInProfile: true, cause: .ideas)
+        #expect(scenario.profile.profile.style.oneIdea && scenario.profile.profile.reach == start.reach)
+        #expect(scenario.profile.profile.style.sentences == .long)
+        #expect(scenario.writer.lastRewrite?.context.shortening == .ideas)
+
+        scenario.profile.profile = start
+        await scenario.viewModel.rewriteVoice(adjustments: [.tooLong], keepsInProfile: true, cause: .sentences)
+        #expect(scenario.profile.profile.style.sentences == .short && !scenario.profile.profile.style.oneIdea)
+        #expect(scenario.profile.profile.reach == start.reach)
+    }
+
+    @Test func tooLongForThisScriptOnlyWritesNothingWhateverWasAnswered() async {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        _ = voice(scenario)
+        scenario.profile.profile.style = VoiceDelivery(energy: .calm, sentences: .long)
+        scenario.profile.profile.reach.length = .oneToThree
+        let start = scenario.profile.profile
+        for cause in [nil] + TooLongCause.allCases.map(Optional.some) {
+            await scenario.viewModel.rewriteVoice(adjustments: [.tooLong], keepsInProfile: false, cause: cause)
+            #expect(scenario.profile.profile == start)
+            // As it always was: this script's rewrite in shorter sentences, and no answer reaches it.
+            #expect(scenario.writer.lastRewrite?.context.voice?.style.sentences == .short)
+            #expect(scenario.writer.lastRewrite?.context.shortening == nil)
+        }
+        // An answer means nothing without "Too long".
+        await scenario.viewModel.rewriteVoice(adjustments: [.tooFormal], keepsInProfile: true, cause: .ideas)
+        #expect(!scenario.profile.profile.style.oneIdea && scenario.writer.lastRewrite?.context.shortening == nil)
+    }
 }

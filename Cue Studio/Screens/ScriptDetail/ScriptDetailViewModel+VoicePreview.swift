@@ -47,28 +47,34 @@ extension ScriptDetailViewModel {
         page.voicePreview = current
     }
 
-    /// "Sounds like me": the voice is kept, the script's opening is learned from (kept on this iPhone, removable in Examples), and the strip goes.
+    /// "Sounds like me": the voice is kept, the script's opening is learned from (kept with My Cue Voice, removable in Examples), and the strip goes.
     func approveVoice() {
         profile.profile.voiceApproved = true
         profile.recordApproval(of: page.text)
         page.voicePreview = nil
         // The creator's own choice that went well: ✓ (★ is for what Cue did), the same words as the voice preview's sheet.
-        // Kept as how they write, which only what Cue writes on this iPhone reads (Private Cloud Compute and Ultra AI never get it; §11, A6).
-        toast.show(String(localized: "Saved · Cue uses it on this iPhone"))
+        // Kept as how they write, which Apple Intelligence reads on both routes (Ultra AI never gets it; the owner's D1).
+        toast.show(String(localized: "Saved · Cue learns from it"))
     }
 
     func openVoiceAdjust() {
         page.showsVoiceAdjust = true
     }
 
-    /// "Rewrite": the script in the voice with `adjustments` made, for this script only or kept in the profile.
-    func rewriteVoice(adjustments: [VoiceAdjustment], keepsInProfile: Bool) async {
+    /// "Rewrite": the script in the voice with `adjustments` made, for this script only or kept in the profile. `cause` is what was too long
+    /// ("Too long" kept in the profile): the field it changes, and what the rewrite makes shorter.
+    func rewriteVoice(adjustments: [VoiceAdjustment], keepsInProfile: Bool, cause: TooLongCause? = nil) async {
         page.showsVoiceAdjust = false
         guard !adjustments.isEmpty, writer.isLanguageModelAvailable else { return }
-        let adjusted = VoiceAdjustment.applying(adjustments, to: profile.profile)
-        if keepsInProfile { profile.profile = adjusted }
         var context = rewriteContext
+        let cause = keepsInProfile && adjustments.contains(.tooLong) ? cause : nil
+        let seconds = ReadTime.seconds(for: page.text, language: context.paceLanguage)
+        // Kept in the profile, each change is listed in "What Cue learned", where the creator can take it back (the owner's item 11).
+        let adjusted = keepsInProfile
+            ? profile.keepAdjustments(adjustments, cause: cause, scriptSeconds: seconds)
+            : VoiceAdjustment.applying(adjustments, to: profile.profile, cause: cause, scriptSeconds: seconds)
         context.voice = adjusted.voice
+        context.shortening = cause
         page.isRewriting = true
         defer { page.isRewriting = false }
         do {

@@ -47,7 +47,8 @@ struct VoiceQuestionSheetModelTests {
         #expect(model.savedStrength == 10)
         #expect(model.canAskMore)
         model.askMore()
-        #expect(model.question == .topics && model.savedStrength == nil)
+        // The audience comes before the other Essentials (`VoiceQuestion.askingOrder`).
+        #expect(model.question == .audience && model.savedStrength == nil)
     }
 
     @Test func threeAnswersInARowAreTheMostAndThenTheSheetCloses() {
@@ -56,13 +57,15 @@ struct VoiceQuestionSheetModelTests {
         let model = rig.model(.role)
         model.choose(option(.role, "personal"))
         model.askMore()
-        model.choose(option(.topics, "food"))
-        model.save()
-        model.askMore()
-        // The third answer (the audience, then its level).
+        // The second answer (the audience, then its level).
         model.choose(option(.audience, "parents"))
         #expect(model.asksAudienceLevel)
         model.choose(VoiceOption(id: AudienceLevel.some.rawValue, label: "Some basics"))
+        model.askMore()
+        // The third.
+        #expect(model.question == .topics)
+        model.choose(option(.topics, "food"))
+        model.save()
         #expect(model.savedStrength != nil)
         #expect(!model.canAskMore, "three in a row")
         #expect(model.shouldClose)

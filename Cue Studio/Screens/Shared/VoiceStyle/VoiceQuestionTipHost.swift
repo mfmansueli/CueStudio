@@ -8,8 +8,9 @@ import TipKit
 
 /// Where the My Cue Voice tip shows (Scripts above the dock, Takes above the tab bar): it waits 1.2 s after the screen settles and
 /// shows only when nothing else is going on (`isQuiet`) and nothing else has the place (`GuidanceGate`), then the scheduler's question
-/// comes as a tip. It counts as shown only once TipKit makes it visible (`.available`), and VoiceOver hears it arrive. Tapping it opens
-/// the question sheet; its ✕ is a dismissal (the question waits three days, and nothing else comes on this screen this session). It
+/// comes as a tip. It counts as shown only once TipKit makes it visible (`.available`), and VoiceOver hears it arrive. A question of one
+/// tap from a closed list (`VoiceQuestion.answersInTip`) is answered on the tip, through the sheet's own path (`VoiceTipAnswer`); tapping
+/// the tip opens the question sheet; its ✕ is a dismissal (the question waits three days, and nothing else comes on this screen this session). It
 /// enters in 0.40 s (opacity, 10 pt up, 0.97 → 1) and leaves in 0.20 s; with Reduce Motion it only fades.
 struct VoiceQuestionTipHost: View {
     let place: GuidancePlace
@@ -38,7 +39,7 @@ struct VoiceQuestionTipHost: View {
             Color.clear.frame(height: 0)
             if let tip, shown != nil {
                 TipView(tip)
-                    .tipViewStyle(VoiceTipViewStyle(onOpen: open))
+                    .tipViewStyle(VoiceTipViewStyle(onOpen: open, choices: choices, onChoose: answer))
                     .transition(reduceMotion ? .opacity : .asymmetric(
                         insertion: .opacity.combined(with: .offset(y: 10)).combined(with: .scale(scale: 0.97)),
                         removal: .opacity
@@ -116,6 +117,21 @@ struct VoiceQuestionTipHost: View {
                 continue
             }
         }
+    }
+
+    /// The answers on the tip: those of a one-tap question, none for the others.
+    private var choices: [TipChoice] {
+        guard let shown, shown.answersInTip else { return [] }
+        return shown.options.map { TipChoice(id: $0.id, label: $0.label) }
+    }
+
+    /// One tap on an answer: saved and counted as the sheet does, and the tip goes.
+    private func answer(_ choice: TipChoice) {
+        guard let question = shown, let tip, let option = question.options.first(where: { $0.id == choice.id }) else { return }
+        VoiceTipAnswer.choose(option, for: question, profile: profile, scheduler: scheduler, toast: toast)
+        tip.invalidate(reason: .actionPerformed)
+        shown = nil
+        guidance.left(.voiceTip, at: place)
     }
 
     private func open() {

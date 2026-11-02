@@ -169,6 +169,16 @@ struct ScriptContextTests {
         #expect(factory.request(idea: "x", platform: .reels, format: nil).targetRange == 60...120)
     }
 
+    @Test func adjustTooLongAsALongVideoShortensTheNextScriptOnAuto() {
+        let (factory, defaults) = factory { var profile = $0; profile.reach.length = .oneToThree; return profile }
+        defer { defaults.tearDown() }
+        #expect(factory.request(idea: "x", platform: .reels, format: nil).targetRange == 60...120)
+        factory.profile.profile = VoiceAdjustment.tooLong.applied(to: factory.profile.profile, cause: .video)
+        #expect(factory.request(idea: "x", platform: .reels, format: nil).targetRange == 30...60)
+        factory.profile.profile = VoiceAdjustment.tooLong.applied(to: factory.profile.profile, cause: .video)
+        #expect(factory.request(idea: "x", platform: .reels, format: nil).targetRange == 25...30)
+    }
+
     @Test func theUsualLengthIsPartOfTheVoiceSoWithTheVoiceOffItIsIgnored() {
         let (factory, defaults) = factory { var profile = $0; profile.reach.length = .under30; profile.usesVoiceInAI = false; return profile }
         defer { defaults.tearDown() }

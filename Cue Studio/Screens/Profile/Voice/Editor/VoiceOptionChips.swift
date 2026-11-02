@@ -25,7 +25,8 @@ struct VoiceOptionChips: View {
                     Haptics.selection()
                     onTap(option)
                 } label: {
-                    FilterChip(label: option.label, isSelected: isOn)
+                    // The state in shape too, not only in color (the owner's item 15).
+                    FilterChip(label: option.label, isSelected: isOn, systemImage: isOn ? "checkmark" : nil)
                         .frame(minHeight: Metrics.hitTarget)
                         .fixedSize()
                 }
@@ -37,7 +38,7 @@ struct VoiceOptionChips: View {
                     Haptics.selection()
                     onTapExtra(value)
                 } label: {
-                    FilterChip(label: value, isSelected: true)
+                    FilterChip(label: value, isSelected: true, systemImage: "checkmark")
                         .frame(minHeight: Metrics.hitTarget)
                         .fixedSize()
                 }

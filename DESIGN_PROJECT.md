@@ -161,8 +161,9 @@ não mostra número. Teste: `-uiTestWriterStalls`.
 
 - **Dados** (`CreatorProfile`, tudo opcional, `decodeIfPresent`, `currentVoiceSchema = 2`): papel (8 + `customRole`), `credential`, `speaksAs` (I / We),
   temas (`Niche` + `voiceTopics`, os 15 só do My Cue Voice, fora de `Niche` para não virarem mundos no universo; `topicDetails` até 3 por tema),
-  público (`audienceGroup` ou `audienceNote`, `audienceLevel`), `watchReasons` e `contentGoals` (até 2), 8 tons, `style` (energia, frases, palavras,
-  palavrão), `avoid`/`avoidNone`, `reach`, `approvedSamples` (até 3), `customTags`, `customFormats`, `agreement` (`VoiceAgreement`: gênero de quem
+  público (`audienceGroup` ou `audienceNote`, `audienceLevel`), `watchReasons` e `contentGoals` (até 2), 5 tons (`VoiceSound.offered`: Conversational,
+  Straight to the point, Educational, Confident, Dry & sarcastic; um Warm & calm, Energetic ou Playful salvo antes vira, ao abrir, energia calma, alta
+  ou um pouco de humor, onde não havia resposta: `foldTones`; a dica e "Import my writing" também só oferecem os 5), `style` (energia, frases, palavras, palavrão), `avoid`/`avoidNone`, `reach`, `approvedSamples` (até 3), `customTags`, `customFormats`, `agreement` (`VoiceAgreement`: gênero de quem
   fala, do "nós" e o tratamento do espectador, tudo opcional), e da importação (§4.2) `excerpts` e `fingerprint`.
   O que o criador digitou nunca é reescrito. Uma abertura, um fecho ou um bordão digitado fica só no próprio campo (vai uma vez ao modelo e sai quando é
   tirado); `customTags` são as notas de "+ Something else" das perguntas sem lista, e um perfil salvo antes de 02/11 perde, ao abrir, as cópias de
@@ -181,31 +182,79 @@ não mostra número. Teste: `-uiTestWriterStalls`.
 - **Concordância e tratamento** (`AgreementGuide`, `GenderAgreementChecker`): o gênero escolhido vai na língua do roteiro em pt, es, fr, it, hi e ar;
   sem escolha, "never assume the masculine"; "No gender" pede frases sem marca, nunca formas inventadas; o "nós" concorda com o grupo. O tratamento é
   informal por padrão em pt (você; tu em pt-PT), es, fr, de, it, nl, tr e id, e só vai em hi, ko e ja quando escolhido. Ferramentas dizem só o escolhido.
+  Informal escolhido fica guardado como escolha (`setAddressForm`), e a dica não pergunta de novo.
 - **Nenhum resultado inventado** (`AttributedResultDetector`, pt/en/es/fr/it): uma cena imaginada pode ter número de rotina ("três vezes por
   semana"), nunca quilos, dinheiro, porcentagem ou seguidores na boca do criador que o pedido não deu; se ficar depois da segunda tentativa, o roteiro
   pede conferência (`needsFactCheck`).
-- **Força** (`voiceStrength`): Essentials 40 · Personality 40 · Proof 20, pesos por campo em `VoiceField`; duas aprovações = um exemplo; 4/8/12 trechos
-  importados = 1/2/3 exemplos.
+- **What Cue knows** (`voiceStrength`, `VoiceMeter`: "WHAT CUE KNOWS nn%" e o nível; nunca "qualidade"): Essentials 40 · Personality 40 · Proof 20,
+  pesos por campo em `VoiceField`; duas aprovações = um exemplo; 4/8/12 trechos importados = 1/2/3 exemplos. Conta só o que chega ao modelo: o
+  aparelho e o PCC recebem tudo, a prova também (D1), e o número é um só; a Ultra AI recebe tudo menos a prova, e o texto diz isso numa linha (a nota
+  de PROOF, What Cue sends), sem segundo número.
 - **Um editor só** (`VoiceEditorSheet` + `Screens/Profile/Voice/Editor/*`): a página, as 4 perguntas, a dica do dock e Settings abrem o mesmo campo; toda
   escrita passa por `CreatorProfileService+VoiceAnswers/+VoiceDetails/+Personality`. 25 temas, 7 subtemas sugeridos por tema, 11 formatos, 7 aberturas,
-  6 fechos (nota: "nunca pedir nada" é o "Calls to action" do Avoid), 10 itens de Avoid (com "Calls to action"). As listas de escolha usam os 10 temas do primeiro voo (`Niche.offered`, `chipLabel`) e mantêm um tema antigo que a pessoa
+  6 fechos (nota: "nunca pedir nada" é o "Calls to action" do Avoid), 10 itens de Avoid (com "Calls to action"). Um formato digitado fica só em
+  `customFormats`. Aberturas e fechos têm três estados (`VoiceUseNeverChips`, o item 5): um toque é "I use" (✓), o segundo "I never use" (✕,
+  `neverOpenings`/`neverEndings`, até 3 cada, que vão ao modelo como "Never open with…" / "Never end by…"), o terceiro tira; "No call to action" não
+  tem "never" (é o "Calls to action" do Avoid). Tocar e segurar dá as mesmas escolhas e, com dois fechos, "Make it the main one": o primeiro é o
+  principal ("· Main"). As listas de escolha usam os 10 temas do primeiro voo (`Niche.offered`, `chipLabel`) e mantêm um tema antigo que a pessoa
   já tem.
 - **I am** (`VoiceRoleField`): os 8 tipos em cartões, "+ Something else", "Scripts say" I / We com a nota, e embaixo (`VoiceAgreementField`) "Write
   me as" / "Write us as" · optional (Feminine · Masculine · No gender; tocar de novo solta; "Use “…” from your iPhone" quando o iOS tem o termo de
-  tratamento) e "Speak to viewers" (Informal · Formal), cada um com uma nota de onde vale; a credencial para Expert e Educator.
-- **Página 9.3** (`MyCueVoicePage`): um cartão (✦ WHAT CUE USES com a chave, medidor, "Next: …" com Answer), depois ESSENTIALS (I am · Topics ·
-  Audience · They watch to · Voice), PERSONALITY (Style · Usual formats · Opens with · Ends with · Videos are for · My phrases · Avoid · Reach) e
-  PROOF (Examples, com a nota de que exemplos, texto importado e roteiros aprovados guiam o que o Cue escreve neste iPhone, ideias incluídas, e nunca
-  vão ao Private Cloud Compute nem à Ultra AI), linhas de 52 pt (rótulo cinza, valor à direita ou "+ Add · 1 tap" em amarelo). Rodapé: **Preview** (`VoicePreviewSheet`: "✦ LIVE
+  tratamento) e "Speak to viewers" (Informal · Formal), cada um com uma nota curta que diz o que escolher, com as palavras do idioma ("cansada" ou
+  "cansado", "tú" ou "usted"); a credencial para Expert e Educator. Os dois aparecem abertos só onde mudam os roteiros: no Script language de
+  Ajustes › Language & Region (sem ele, o idioma do app). Nos outros idiomas ficam em "More questions" (`DisclosureGroup`), e um já escolhido fica à
+  vista.
+- **Exemplo ao vivo** (`VoiceLiveExample`): sob as aberturas e os fechos, e no topo de How you sound, uma linha "EXAMPLE · …" da amostra das
+  manhãs (`VoiceSampleBuilder`) muda a cada toque (a abertura ou o fecho tocado por último); o VoiceOver lê a linha nova. Os chips de escolha marcam o
+  estado com ✓, não só com a cor.
+- **How you sound** (`VoiceToneField`, o item 4): um cartão só, com o exemplo no topo ("EXAMPLE · CHANGES AS YOU TAP",
+  `VoiceSampleBuilder.soundExample`: a energia, uma linha do tom e os três passos com as palavras, o tamanho das frases e o humor escolhidos), os 5 tons
+  (até 2) e Energy · Sentences · Words · Humor · Swearing em controles segmentados.
+- **Cue noticed · right?** (`VoiceNoticedCard` + `VoiceInference`, o item 6): no cartão do topo, o que o Cue percebe do uso, para confirmar em vez de
+  perguntar: o formato de 3 dos últimos 6 roteiros com tipo ("From your recent scripts"), a plataforma de 2 das últimas 10 exportações entregues com a
+  duração mediana delas ("From your recent exports"; a evidência da entrega diz a plataforma: Share Kit do TikTok, Instagram, YouTube, LinkedIn; salvar
+  no Fotos não diz) e o "Write me as" do termo de tratamento do iOS, só onde o idioma do roteiro concorda com o gênero ("From your iPhone"). **Yes** vira
+  a resposta; **Change** abre o campo. Nada vai ao modelo antes do Yes; só aparece o que ainda não foi respondido.
+- **Also true about me** (`VoiceNotesField`, linha "Also true" em PERSONALITY): as notas nas palavras do criador que nenhuma pergunta guarda
+  (`CreatorProfile.notes`, as `customTags` sem as tags de formato), cada uma com tocar para mudar e ✕, e um campo para adicionar. O "+ Something
+  else" da dica vai para o lugar do editor: um tipo de criador vira o dele (`customRole`), um público vira a descrição (`audienceNote`); o que não tem
+  lugar (um tom, uma plataforma) vira nota.
+- **Stories and facts** (`VoiceStoriesField`, linha da seção WHAT’S TRUE ABOUT YOU; o item 9): "Tell real moments from your work. Cue uses them as
+  examples of how you talk and write, and never invents others." Um menu escolhe a pergunta (How did you start? · A mistake that taught you · A
+  client’s result · A true number from your work · Something else true) e o campo aceita digitar ou falar (`VoiceDictationField`, o microfone do
+  cartão de ideia, no idioma do roteiro); Save guarda (`VoiceStory`, até 5, 280 caracteres, "SAID" quando falado). O resultado de um cliente tem
+  "I may name this person" (desligado, o roteiro nunca diz o nome). Vão ao Apple Intelligence (aparelho e PCC) como "True moments they told…: use one
+  only when it fits this idea, with its facts and numbers as given; never invent others" (duas por pedido, a que é sobre a ideia primeiro); a Ultra AI e
+  a nova tentativa só com o catálogo não as recebem.
+- **Página 9.3** (`MyCueVoicePage`): um cartão (✦ WHAT CUE USES com a chave, medidor, "Next: …" com Answer), depois as seções na ordem do criador
+  (`VoicePageSection`): WHO YOU ARE (I am) · WHO YOU TALK TO (Audience · They watch to · Reach) · WHAT ABOUT (Topics · Usual formats · Videos are
+  for) · HOW YOU SOUND (Voice · Style · My phrases) · HOW YOU OPEN AND CLOSE (Opens with · Ends with) · WHAT’S TRUE ABOUT YOU (Also true · Stories and facts) · WHAT CUE
+  NEVER WRITES (Avoid) · EXAMPLES AND WHAT CUE LEARNED (Examples · What Cue learned). Com a voz ligada, cada linha diz em violeta onde a resposta é
+  usada (`VoicePageRow.use`, conferido nos prompts por `VoicePageUseTests`): "Scripts and ideas"; Topics "Ideas, and scripts about them"; My phrases
+  "Up to 3 per script, taking turns"; Avoid "Scripts, ideas and every tool"; Examples e Stories and facts "Scripts and ideas, never Ultra AI". **What Cue learned**
+  (`VoiceLearnedField`): as mudanças que o Adjust guardou no perfil (`CreatorProfile.learned`, `VoiceLearning` com a voz antes e depois, até 12),
+  com "ADJUST · <motivo> · data", e os roteiros aprovados ou gravados ("SOUNDS LIKE ME" / "YOUR EDITS"), do mais novo ao mais velho; o ✕ desfaz
+  (cada valor volta ao que era, a não ser que o criador o tenha mudado depois) e os próximos roteiros não o usam; vazio, a linha diz "Nothing yet".
+  A seção de exemplos tem a nota "Apple Intelligence writes like these, ideas included, on this iPhone or in Private Cloud Compute. Ultra AI never
+  gets them." (`AIDisclosure.proof`), linhas de 52 pt (rótulo cinza, valor à direita ou "+ Add · 1 tap" em amarelo). Rodapé: **Preview** (`VoicePreviewSheet`: "✦ LIVE
   PREVIEW", My voice | Without, "Sounds like me", interruptor "Write in my voice") e **What Cue sends** (`VoiceSendsSheet`, mostra o custo do prompt;
-  a voz como o pedido de um roteiro a lê, sem a duração habitual; com o interruptor desligado diz em laranja que nada disso vai; com temas, diz que
+  a voz como o pedido de um roteiro a lê, sem a duração habitual, no aparelho e no Private Cloud Compute, os dois com os exemplos; na Ultra AI,
+  "It gets everything but your examples"; com o interruptor desligado diz em laranja que nada disso vai; com temas, diz que
   eles só vão quando a ideia é sobre um deles; com bordões, mostra os 3 da próxima vez e diz que cada roteiro leva até 3, em rodízio).
   Não há botão de zerar a voz; "Delete my Cue data" apaga o perfil e zera as perguntas (`VoiceQuestionScheduler.reset()`), como numa instalação nova.
-- **Quando perguntar** (`VoiceQuestion`, 17 perguntas; `VoiceQuestionScheduler` com relógio injetável, `VoiceQuestionState`): depois de 2 dias de uso e
+- **Quando perguntar** (`VoiceQuestion`, 20 perguntas; `VoiceQuestionScheduler` com relógio injetável, `VoiceQuestionState`): depois de 2 dias de uso e
   1 roteiro, 1 dica por dia e 3 por semana; "Not now" adia 3 dias, 2 dispensas mandam a pergunta para o fim, 3 seguidas pausam 14 dias, "None of
-  these" pula para sempre, para em 100% (toast). Gatilhos: 1ª exportação, 2ª edição de um roteiro na voz, 3º roteiro gravado. A dica (`VoiceQuestionTip`
-  no TipKit, `VoiceTipViewStyle` sobre `TipCard`, compacta: a própria pergunta como título e "One quick question · voice nn%", disco ✦ violeta, ✕) fica
-  10 pt acima do dock ou da tab bar; quem decide entre ela e as outras sugestões é o `GuidanceGate` (§27). Só conta como vista quando o TipKit a mostra
+  these" pula para sempre, para em 100% (toast). Ordem por impacto (`VoiceQuestion.askingOrder`): primeiro a gramática, só onde o Script language
+  (sem ele, o idioma do app) a marca, com a mesma regra de `VoiceAgreementField`: "How should scripts write you?" (para equipe, "…write your team?";
+  Feminine · Masculine · No gender) em pt, es, fr, it, hi e ar, e "How should scripts speak to viewers?" (Informal · Formal) onde há dois "você"
+  (pt, es, fr, de, it, nl, tr, id, hi, ko, ja); depois o público, os outros Essentials, os detalhes de Personality e, por último, o exemplo. Respondida
+  no editor, na dica ou na folha, a gramática não volta a ser perguntada. Gatilhos (vêm antes da ordem): 1ª exportação, 2ª edição de um roteiro na voz,
+  3º roteiro gravado. A dica (`VoiceQuestionTip` no TipKit, `VoiceTipViewStyle` sobre `TipCard`, compacta: a própria pergunta como título e "One quick
+  question · voice nn%", disco ✦ violeta, ✕) fica 10 pt acima do dock ou da tab bar. Uma pergunta de resposta única numa lista fechada
+  (`answersInTip`: a gramática, duração, humor, plataforma e o estilo) é respondida na própria dica, com um toque: "One tap · voice nn%" e as opções
+  como botões (`TipChoice`, `.cueSecondary(.compact)`) numa linha que quebra para a seguinte com o Dynamic Type; o toque segue o caminho da folha
+  (`VoiceTipAnswer` → `VoiceQuestionSheetModel.choose`: o serviço grava, o agendador conta a resposta) e o toast diz "Saved · voice nn%" (ou "Cue
+  Voice complete"). As outras abrem a folha ao tocar; quem decide entre ela e as outras sugestões é o `GuidanceGate` (§27). Só conta como vista quando o TipKit a mostra
   (`.available`), e o VoiceOver ouve "Tip: {pergunta}". Cada dica de uma pergunta tem um id novo (`tipID`: geração · pergunta · rodada), e "Delete my
   Cue data" começa uma geração nova (o TipKit guarda os ids que invalidou). Fechar a folha só é dispensa quando ela fechou intocada: um exemplo
   colado ou importado, ou uma resposta escolhida, é resposta; abrir "+ Something else" sem Add, ou marcar e desmarcar, não é nem uma coisa nem outra. `VoiceQuestionSheet`:
@@ -223,8 +272,10 @@ não mostra número. Teste: `-uiTestWriterStalls`.
   Capability habilitada e conferida no App ID `com.cuestudioteleprompter` da equipe `X5392U638Q` no portal Apple Developer.
   Build de desenvolvimento assinado conferido: entitlement presente tanto no perfil explícito do app quanto na assinatura do binário.
   PCC instalado e executado no iago Lima iphone com autorização do dono. Os fixtures de qualidade preservam controles reais de duração, desenvolvimento, proteção literal, perspectiva e ablações de voz/prosa; a última continuação acrescentou 59 solicitações PCC medidas, com relatórios por fase. A rota foi confirmada como privateCloud. Frases exatas PT/EN/ES passaram na versão protegida (PT precisou de duas tentativas); qualidade editorial geral ainda não aprovada: há formulações artificiais, pontos pouco distintos e detalhes sem suporte no brief transmitido. Os demais idiomas continuam sem validação física. Ver reports/PCC_HANDOFF_2026-10-28.md.
-  **Pedidos por rota:** o fallback prepara de novo o pedido original. No PCC, a voz usa até 6000 unidades, sem exemplos colados, trechos importados
-  ou roteiros aprovados; preferências e medidas de estilo seguem no prompt. A duração habitual da voz nunca vai no texto do pedido de um roteiro nem das ferramentas: no Automático ela só ajusta a faixa, e uma duração escolhida é a única que o pedido diz. No Automático, a duração é informativa: não impõe mínimo de palavras nem expansão automática. O PCC recebe espaço de até 4096 tokens para desenvolver o pedido, independentemente da faixa da rede. Uma duração explicitamente escolhida no card ou reconhecida no prompt mantém a política dirigida (90–105% das palavras do teto, 150 palavras/minuto; teto de resposta 8192 tokens). Não é limite de upload da rede. Rascunho e correções dividem até duas chamadas PCC. Planejamento separado fica opt-in apenas em Debug, com teto de três chamadas; não demonstrou ganho editorial consistente nos controles.
+  **Pedidos por rota:** o fallback prepara de novo o pedido original. No PCC, a voz usa até 6000 unidades (`cloudVoiceBudget`) com a prova, como no
+  aparelho (decisão do dono D1, 02/11/2026): até 3 exemplos (o aprovado mais novo, os trechos importados, os colados), 300 caracteres cada, com as
+  preferências e as medidas de estilo; a voz mais longa com a prova inteira cabe sem corte (`VoiceProofRouteTests`). A Ultra AI nunca recebe a prova.
+  Pedido do PCC, antes → depois da prova (`Fixtures/VoiceBriefs/pcc`, estimativa com os pesos do aparelho, não a contagem do PCC): voz 1615 → 2240 (en), 1419 → 2018 (pt), 1413 → 2047 (es) de 6000 unidades; pedido inteiro ≈ 3255 → 3442, 3345 → 3525, 3291 → 3481 tokens (+≈ 190 por roteiro). A duração habitual da voz nunca vai no texto do pedido de um roteiro nem das ferramentas: no Automático ela só ajusta a faixa, e uma duração escolhida é a única que o pedido diz. No Automático, a duração é informativa: não impõe mínimo de palavras nem expansão automática. O PCC recebe espaço de até 4096 tokens para desenvolver o pedido, independentemente da faixa da rede. Uma duração explicitamente escolhida no card ou reconhecida no prompt mantém a política dirigida (90–105% das palavras do teto, 150 palavras/minuto; teto de resposta 8192 tokens). Não é limite de upload da rede. Rascunho e correções dividem até duas chamadas PCC. Planejamento separado fica opt-in apenas em Debug, com teto de três chamadas; não demonstrou ganho editorial consistente nos controles.
   **Desenvolvimento guiado no PCC:** `PCCScriptDraft` separa abertura, pontos e fecho. Cada ponto tem enunciado, explicação e aplicação/verificação, reunidos em um parágrafo falado sem expor os campos. Um experimento Debug (`PCCScriptPlan`, `CUE_QUALITY_PLANNING=1`) testa planejamento antes da redação, mas está desativado no app normal e ausente em Release. O número de pontos segue o pedido. `PCCScriptIntent` distingue desenvolvimento de aviso/correção curta no próprio esquema; em conciseStatement, o renderer omite explicações, aplicações e fecho extras. Os campos podem ficar vazios quando não se aplicam. O texto é um rascunho autoral: o motor pode propor opiniões, preferências, analogias e exemplos em primeira pessoa para o criador editar, com explicações desenvolvidas. Não exige neutralidade nem trata toda frase em primeira pessoa como biografia. Credenciais, clientes, resultados medidos, depoimentos e acontecimentos passados continuam exigindo suporte. A voz orienta o estilo; a perspectiva e os fatos do pedido prevalecem. No PCC, o narrador do perfil aparece como padrão condicional nas instruções e no lembrete final; não há mais uma regra final absoluta que contradiga um pedido de equipe ou segunda pessoa. O modelo local mantém suas instruções já medidas. Essa prioridade do prompt não garante cumprimento perfeito pelo modelo em todas as gerações. Uma resposta incompleta desse esquema não é recuperada como roteiro terminado. Validação editorial no aparelho registrada no handoff. Exemplos editoriais sintéticos ficam desligados por padrão (`PCCEditorialExamples.isEnabled=false`). Uma revisão editorial adicional está disponível somente como experimento Debug (`CUE_QUALITY_EDITORIAL_REVIEW=1`), usando a chamada restante do teto de duas e preservando o rascunho se falhar. Não é verificação factual externa nem está ativada no app normal ou em Release; a matriz PT/EN/ES não demonstrou ganho editorial consistente. Duas ablações adicionais existem somente em Debug e ficam desligadas: primeira redação em prosa livre (`CUE_QUALITY_FREE_PROSE`) e voz sem contexto habitual de tema/biografia/estrutura (`CUE_QUALITY_DELIVERY_VOICE`). A matriz física de 32 solicitações manteve o orçamento atual, mas não demonstrou ganho editorial consistente; houve perda de desenvolvimento e uma troca indevida de agência. O perfil completo e o esquema normal permanecem no app. A correção condicional de perspectiva foi medida separadamente em 10 solicitações, com melhora parcial de adesão e mistura de pessoa ainda presente em espanhol. Ver relatórios `PCC_PHASE3_EVALUATION_2026-10-28.md` e `PCC_PHASE4_PERSPECTIVE_2026-10-28.md` em `reports/`.
   No aparelho, continuam o orçamento de 2100, teto de 1800 tokens e ajuste pela contagem real perto da janela.
   **Direção editorial no PCC** (`PCCScriptDirection`): pedido atual define assunto, resultado desejado e exigências explícitas; temas, aberturas e
@@ -254,7 +305,8 @@ não mostra número. Teste: `-uiTestWriterStalls`.
   **Find inspiration:** mantém preferência local; filtra respostas no idioma errado antes de guardar o pool, e mudanças do perfil invalidam as
   sugestões antigas por uma assinatura estável. O gosto aprendido continua salvo.
   **Privacidade e interface:** o controle mestre se chama Apple Intelligence e também bloqueia novos pedidos no Service. Settings, importação e
-  What Cue sends explicam o PCC; esta última mostra dois briefs, do aparelho e da nuvem. O preview da voz é identificado como amostra das preferências.
+  What Cue sends dizem que o pedido e o My Cue Voice, exemplos incluídos, podem ir à Apple (`AIDisclosure`); What Cue sends mostra dois briefs, do
+  aparelho e da nuvem, os dois com os exemplos. O editor de exemplos e a importação dizem "Never sent to Ultra AI". O preview da voz é identificado como amostra das preferências.
   **Medições:** `ScriptQualityDeviceTests` aceita `TEST_RUNNER_CUE_QUALITY_MODEL=onDevice|privateCloud` (sem variável: automático), registra o modelo
   que respondeu e acusa fallback inesperado em uma medição de rota fixa. Contagem de tokens local nunca é apresentada como contagem do PCC;
   amostras antigas são marcadas como legacy no relatório. Execução e latências iniciais foram medidas no iPhone; qualidade geral e consumo da cota continuam sem aprovação.
@@ -268,8 +320,8 @@ não mostra número. Teste: `-uiTestWriterStalls`.
   como soa → como abre e fecha → exemplos → regras, e repete no fim as que não podem falhar ("Remember: …"; o modelo pequeno atende mais ao fim).
   `FormatGuide` diz para que serve cada bloco, `PlatformGuide` dá o registro (LinkedIn sem gíria). Regra de honestidade: nada de história, número, cliente
   ou credencial inventados. Qualquer resposta de Essentials já liga a voz (`canWriteInMyVoice`). As preferências digitadas chegam ao modelo
-  (`VoiceTypedValuesTests`; bordões três por vez; o resto em "Also true of them, in their own words"); exemplos de escrita e trechos importados
-  só entram nos pedidos do aparelho, nunca nos do PCC.
+  (`VoiceTypedValuesTests`; bordões três por vez; o resto em "Also true of them, in their own words"); exemplos de escrita, trechos importados e
+  roteiros aprovados entram nos pedidos do aparelho e do PCC (ideias e reescritas na voz também), nunca nos da Ultra AI.
 - **A ideia manda no assunto, a voz só no jeito** (`IdeaFocus`, `CreatorProfile.voice(inLanguage:idea:)`): temas só vão ao modelo quando a ideia fala
   deles (mesma palavra ou mesmo começo de 5 letras), subtemas só quando a ideia os nomeia; ideia de menos de duas palavras leva todos. O prompt diz "Write
   about this idea and only this one" e termina em "Stay on the idea: …". (Antes um subtema do perfil virava o assunto do roteiro.)
@@ -321,6 +373,17 @@ não mostra número. Teste: `-uiTestWriterStalls`.
   (Private Cloud Compute, já previsto em `AIModelRoute` e `PromptMeasuring`).
 - **Aprendizado:** "Sounds like me" (`recordApproval`) guarda o começo do roteiro como exemplo (3, o mais antigo sai); edições gravadas também ensinam
   (§33). "Delete my Cue data" apaga tudo.
+- **Adjust** (`VoiceAdjustSheet`, `VoiceAdjustment`, na faixa da prévia da voz na página do roteiro): "What didn’t sound like you?" / "Cue suggests.
+  You decide.", chips Too formal · Too much slang · Too over the top · "I don’t say that" · Too long (mais de um), uma linha do que muda por escolha,
+  "This script only | Also my profile" (Picker segmentado) e "✦ Rewrite" ("In my voice" com a voz ajustada). **Too long com Also my profile** pergunta
+  "What was too long?" com chips de uma escolha (`TooLongCause`): **Long sentences** (Sentences → Short, como antes) · **Long video** (a duração
+  habitual, `reach.length`, um passo abaixo; sem duração respondida, um passo abaixo da duração deste roteiro; é o alvo do Auto em
+  `ScriptRequestFactory.targetRange`) · **Too many ideas** (`style.oneIdea`, uma linha "One idea per video: cut side points." no brief, também no Private
+  Cloud Compute e na etapa de rascunho da Ultra AI; as ferramentas de reescrita não a recebem). A folha sobe para a altura cheia quando a pergunta aparece,
+  e o Rewrite espera a resposta. A reescrita segue a resposta (`RewriteContext.shortening`): frases mais curtas, um terço a menos de palavras, ou só a ideia
+  principal. **This script only** não grava nada e reescreve este roteiro em frases curtas. "One idea per video" aparece no valor de Style e como
+  interruptor no editor de Voice (Energy · Sentences · Words · Humor · Swearing), visível enquanto está ligado; "Delete my Cue data" o apaga com o perfil.
+  A duração habitual não vale quando o criador escolhe ou escreve uma duração, nos Stories, no YouTube longo e com "Write in my voice" desligado.
 - **Qualidade medida** (iPhone 15 Pro, `ScriptQualityDeviceTests`: 3 criadores PT/EN/ES com voz completa, meia e sem, 27 roteiros e 18 lotes de ideias
   por rodada; textos em `Fixtures/ScriptQuality/`, números com `tools/quality/report.py`, lógica pura reaplicada aos textos em `QualityReplayTests`):
   nas 10 segundas tentativas lidas a escolha nunca ficou com o rascunho pior (a regra antiga trocou 3 de 3 na linha de base por um igual ou pior); aberturas de
@@ -1599,7 +1662,8 @@ O dono revisou no iPhone, tela a tela, o primeiro voo, a primeira estrela, o Pro
   CAPTIONS, ✦ AI SCRIPTS) vira uma cápsula **amarela sólida** com letras pretas (`accInk` sobre `acc`) e fica assim. Título "A teleprompter made for your
   creative universe."; **Get started** é o único botão, 82 pt acima da borda: **não há "I already use Cue" nem Skip** em nenhum capítulo (todo criador novo
   faz o primeiro voo).
-- **1.2:** "What do you usually talk about?"; o tema de estilo de vida é **Daily routines** (o que a IA lê: "daily routines and daily life").
+- **1.2:** "What do you usually talk about?", com o subtítulo "Pick up to 3. Cue uses them for your ideas and scripts, and each one becomes a world."
+  (os temas também ligam a voz nos roteiros); o tema de estilo de vida é **Daily routines** (o que a IA lê: "daily routines and daily life").
 - **1.3:** as galáxias são desenhadas no quadro, mas encaixadas na faixa entre o título e "CHOOSE ONE PLATFORM" (`VoyageFit`: 14 pt de folga, de ×0,8 a
   ×1,12 conforme cabe, nunca sob as palavras); cada galáxia das redes é ×1,25 do quadro e a do criador ×1,12, sobre o próprio centro (nomes e anéis se
   afastam junto). Os chips ficam 36 pt acima do botão.

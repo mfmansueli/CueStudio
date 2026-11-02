@@ -32,8 +32,7 @@ struct VoiceExamplesField: View {
                     .cueFont(.footnote)
                     .foregroundStyle(Palette.ink2)
             }
-            if !current.approvedSamples.isEmpty { approved }
-            Text("Teaches how you talk. Never reused for stories, opinions or results. Stays on this iPhone.")
+            Text(AIDisclosure.example)
                 .cueFont(.footnote)
                 .foregroundStyle(Palette.ink2)
                 .padding(.horizontal, 4)
@@ -182,17 +181,6 @@ struct VoiceExamplesField: View {
             toast.show(message, kind: .problem)
         default:
             break
-        }
-    }
-
-    // MARK: - What Cue learned
-
-    private var approved: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            VoiceFieldLabel(String(localized: "✦ Cue also learned from"), detail: String(localized: "scripts you approved"))
-            ForEach(current.approvedSamples.reversed()) { sample in
-                row(sample, remove: { profile.removeApprovedSample(sample.id) }, identifier: "voice.approved.remove")
-            }
         }
     }
 }

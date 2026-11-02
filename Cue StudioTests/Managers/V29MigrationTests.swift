@@ -101,7 +101,8 @@ struct V29MigrationTests {
         #expect(profile.customTopics == ["Slow mornings"])
         #expect(profile.phrases == ["Hey fam"])
         #expect(profile.role == .personal)
-        #expect(profile.sounds == [.casual, .funny])
+        // Funny is no longer a tone (the owner's item 4): it comes back as a little humor.
+        #expect(profile.sounds == [.casual] && profile.reach.humor == .little)
         #expect(profile.vocabulary == .genZ)
         #expect(profile.defaultPlatform == .reels)
         #expect(profile.openings.isEmpty && profile.endings.isEmpty && profile.formats.isEmpty)

@@ -30,6 +30,8 @@ final class VoiceQuestionScheduler {
     private let calendar: Calendar
     /// Debug: every gate but the queue is open (`-uiTestVoiceTip`).
     private let skipsGates: Bool
+    /// The script language ("pt-BR"): Settings › Language & Region's Script Language, else the app's. It says which grammar is asked.
+    private let scriptLanguage: () -> String?
     private(set) var state: VoiceQuestionState
     /// Goes up with each "Delete my Cue data", and is part of every tip's id: TipKit's own store outlives the erase, and a tip it had
     /// invalidated would come back invisible yet still use up the day (D1).
@@ -42,9 +44,10 @@ final class VoiceQuestionScheduler {
 
     init(
         profile: CreatorProfileService, defaults: UserDefaults = .standard, now: @escaping () -> Date = { .now },
-        calendar: Calendar = .current, skipsGates: Bool = false
+        calendar: Calendar = .current, skipsGates: Bool = false, scriptLanguage: @escaping () -> String? = { nil }
     ) {
         self.profile = profile
+        self.scriptLanguage = scriptLanguage
         self.defaults = defaults
         self.now = now
         self.calendar = calendar
@@ -60,13 +63,14 @@ final class VoiceQuestionScheduler {
 
     // MARK: - The queue
 
-    /// Every question still worth asking, in order: the moments that pulled one forward, the missing Essentials, the Personality
-    /// questions in table order, then the example. Skipped questions are out; a question dismissed twice goes to the end; the example
-    /// waits for two scripts written in the creator's voice. Snoozes are not counted here (the full page lists all of them).
+    /// Every question still worth asking, in order: the moments that pulled one forward, then `VoiceQuestion.askingOrder` (the grammar the
+    /// script language needs, the audience, the other Essentials, the Personality details, the example). Answered and skipped questions are
+    /// out, and so is grammar the script language doesn't mark; a question dismissed twice goes to the end; the example waits for two scripts
+    /// written in the creator's voice. Snoozes are not counted here (the full page lists all of them).
     var remaining: [VoiceQuestion] {
         let held = profile.profile
-        var open = VoiceQuestion.allCases.filter { question in
-            !held.isAnswered(question) && !state.skipped.contains(question.rawValue)
+        var open = VoiceQuestion.askingOrder.filter { question in
+            !held.isAnswered(question) && !state.skipped.contains(question.rawValue) && applies(question, to: held)
                 && (question != .example || state.voiceScriptIDs.count >= Self.voiceScriptsBeforeExample || pulled(question))
         }
         let pulledFirst = state.pulledForward.compactMap(VoiceTrigger.init(rawValue:)).map(\.question)
@@ -76,12 +80,24 @@ final class VoiceQuestionScheduler {
         return open
     }
 
-    /// Where a question stands: pulled forward first, then in order, with the twice-dismissed ones last. Stable (`allCases` order breaks ties).
+    /// Where a question stands: pulled forward first, then in order, with the twice-dismissed ones last. Stable (`askingOrder` breaks ties).
     private func rank(_ question: VoiceQuestion, pulledFirst: [VoiceQuestion]) -> Int {
-        let position = VoiceQuestion.allCases.firstIndex(of: question) ?? 0
+        let position = VoiceQuestion.askingOrder.firstIndex(of: question) ?? 0
         if let index = pulledFirst.firstIndex(of: question) { return index - 1_000 }
         if state.dismissCount[question.rawValue, default: 0] >= Self.dismissalsBeforeLast { return 1_000 + position }
         return position
+    }
+
+    /// The grammar is asked only where the script language marks it, as "Scripts say I / We" shows it (`VoiceAgreementField`): "Write me
+    /// as" for one creator and "Write us as" for a team where words about them agree, "Speak to viewers" where there are two "you"s.
+    private func applies(_ question: VoiceQuestion, to held: CreatorProfile) -> Bool {
+        let isTeam = held.resolvedSpeaksAs == .we
+        switch question {
+        case .speakerGender: return !isTeam && AgreementGuide.genderExample(in: scriptLanguage(), team: false) != nil
+        case .groupGender: return isTeam && AgreementGuide.genderExample(in: scriptLanguage(), team: true) != nil
+        case .address: return AgreementGuide.addressExample(in: scriptLanguage()) != nil
+        default: return true
+        }
     }
 
     private func pulled(_ question: VoiceQuestion) -> Bool {
