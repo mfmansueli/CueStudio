@@ -1,0 +1,497 @@
+<title>Entradas do criador</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one reading column; the pipeline as a numbered strip; findings as cards with a priority chip; the inventory as rows with a verdict chip. */
+:root {
+  --bg: #f5f4f0; --surface: #ffffff; --ink: #17181c; --ink-soft: #4a4c55; --line: #dcd9d0;
+  --accent: #5a45c4; --accent-soft: #ebe7fa;
+  --p1: #a3261b; --p1-bg: #fbe5e2; --p2: #8a5300; --p2-bg: #fbf0dc; --p3: #3d5a80; --p3-bg: #e5edf7;
+  --ok: #1f7a4a; --ok-bg: #e3f3ea; --na: #55575f; --na-bg: #ecebe7;
+  --body: "Instrument Sans", "Segoe UI", system-ui, sans-serif; --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0f1016; --surface: #181a23; --ink: #f1f1f4; --ink-soft: #b4b6c2; --line: #2c2f3b;
+  --accent: #b6a6ff; --accent-soft: #262141;
+  --p1: #ff9b8f; --p1-bg: #3a1714; --p2: #f2b95b; --p2-bg: #2d2312; --p3: #9cc0ee; --p3-bg: #172333;
+  --ok: #6fd39c; --ok-bg: #15291f; --na: #c3c5cf; --na-bg: #23252e; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0f1016; --surface: #181a23; --ink: #f1f1f4; --ink-soft: #b4b6c2; --line: #2c2f3b;
+  --accent: #b6a6ff; --accent-soft: #262141;
+  --p1: #ff9b8f; --p1-bg: #3a1714; --p2: #f2b95b; --p2-bg: #2d2312; --p3: #9cc0ee; --p3-bg: #172333;
+  --ok: #6fd39c; --ok-bg: #15291f; --na: #c3c5cf; --na-bg: #23252e; color-scheme: dark }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.55; }
+.wrap { max-width: 920px; margin: 0 auto; padding-block: 32px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 44px; }
+header, section { display: grid; gap: 14px; }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); }
+h1 { font-size: clamp(30px, 6vw, 44px); line-height: 1.1; margin: 0; text-wrap: balance; }
+h2 { font-size: 23px; margin: 0; text-wrap: balance; }
+h3 { font-size: 17px; margin: 0; line-height: 1.35; text-wrap: balance; }
+p { margin: 0; max-width: 70ch; }
+.lede { font-size: 18px; color: var(--ink-soft); }
+ul, ol { margin: 0; padding-left: 22px; display: grid; gap: 6px; max-width: 72ch; }
+code, .ev { font-family: var(--mono); font-size: .82em; overflow-wrap: anywhere; }
+.ev { color: var(--ink-soft); }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.stat { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; display: grid; gap: 2px; }
+.stat b { font-family: var(--mono); font-size: 28px; font-variant-numeric: tabular-nums; }
+.stat span { color: var(--ink-soft); font-size: 14px; }
+.flow { list-style: none; padding: 0; display: grid; gap: 8px; counter-reset: f; max-width: none; }
+.flow li { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px 10px 46px; position: relative; }
+.flow li::before { counter-increment: f; content: counter(f); position: absolute; left: 12px; top: 11px; width: 24px; height: 24px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); font-family: var(--mono); font-size: 12px; font-weight: 600; display: grid; place-items: center; }
+.cards { display: grid; gap: 10px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; display: grid; gap: 8px; min-width: 0; }
+.card .top { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.chip { font-family: var(--mono); font-size: 11.5px; font-weight: 600; letter-spacing: .04em; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+.c-p1 { color: var(--p1); background: var(--p1-bg); } .c-p2 { color: var(--p2); background: var(--p2-bg); } .c-p3 { color: var(--p3); background: var(--p3-bg); }
+.c-ok { color: var(--ok); background: var(--ok-bg); } .c-na { color: var(--na); background: var(--na-bg); }
+.c-part { color: var(--p2); background: var(--p2-bg); } .c-weak { color: var(--p3); background: var(--p3-bg); } .c-no { color: var(--p1); background: var(--p1-bg); }
+.group { display: grid; gap: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.group h3 { padding: 12px 16px; border-bottom: 1px solid var(--line); background: var(--accent-soft); color: var(--ink); }
+.row { display: grid; grid-template-columns: minmax(0, 15rem) minmax(0, 1fr) auto; gap: 6px 14px; padding: 10px 16px; border-bottom: 1px solid var(--line); align-items: start; }
+.row:last-child { border-bottom: 0; }
+.row .what { font-weight: 600; }
+.row .what small { display: block; font-weight: 400; color: var(--ink-soft); font-size: 13.5px; }
+.row .how { color: var(--ink); font-size: 15px; }
+@media (max-width: 640px) { .row { grid-template-columns: minmax(0, 1fr) auto; } .row .how { grid-column: 1 / -1; } }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; font-size: 14px; color: var(--ink-soft); }
+.note { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; display: grid; gap: 8px; }
+.q { display: grid; gap: 4px; }
+h3.part { font-size: 18px; margin-top: 10px; }
+</style>
+
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Auditoria · main ed350580 · 01/11/2026</div>
+  <h1>O que o criador preenche, e o que chega ao roteiro</h1>
+  <p class="lede">Levantamento de tudo o que o Cue pede para o criador escolher, digitar ou responder (onboarding, My Cue Voice, perfil, criação do roteiro, ideias, ferramentas e retorno para nós): onde cada resposta é usada no app, o que vale manter, o que pode sair e o que falta.</p>
+  <p>Feito lendo o código do <code>main</code> e pesquisando na web (relatórios do mercado de criadores, concorrentes, fóruns, documentação da Apple, Google e Microsoft). Nada rodou no iPhone e nada foi alterado no app. Tudo, com arquivo e linha de cada afirmação e as fontes da pesquisa, está num arquivo só: <code>reports/entradas-do-criador-2026-11-01-completo.md</code>.</p>
+</header>
+
+<section aria-labelledby="h-nums">
+  <h2 id="h-nums">Em números</h2>
+  <div class="stats">
+    <div class="stat"><b>61</b><span>entradas levantadas</span></div>
+    <div class="stat"><b>33</b><span>chegam bem à IA</span></div>
+    <div class="stat"><b>15</b><span>chegam pela metade ou fracas</span></div>
+    <div class="stat"><b>2</b><span>pedidas e nunca usadas</span></div>
+    <div class="stat"><b>11</b><span>não são para a IA (ou são retorno)</span></div>
+  </div>
+</section>
+
+<section aria-labelledby="h-rev2">
+  <h2 id="h-rev2">Revisões 2 e 3: depois do Codex e do iPhone</h2>
+  <p>O Codex revisou a auditoria duas vezes no mesmo commit; a segunda análise foi favorável ao plano, com ajustes, e eles estão no arquivo completo (§11). Lá estão a resposta a cada argumento, o plano com o que depende de quê e a tabela que dá destino a cada achado original. Os testes, os 54 roteiros, os pedidos enviados ao modelo e a classificação à mão estão em <code>reports/entradas-do-criador-2026-11-01-medicao/</code>.</p>
+  <div class="cards">
+    <div class="card"><h3>Medido no iPhone</h3>
+      <ul>
+        <li><b>Gênero:</b> nas 7 vezes em que uma frase marcou o gênero de quem fala, em roteiros para criadoras, saiu masculino 6 vezes e feminino 1 ("Je suis parti", "me sentí perdido", "mi sono reso conto"). O pedido não dizia que eram mulheres, porque o app não tem esse campo: sem saber, o modelo tende ao masculino.</li>
+        <li><b>"No call to action":</b> desobedecido em 5 de 9 roteiros ("Comment below.", "Save this.").</li>
+        <li><b>"Follow for more":</b> em 5 de 9, e em 8 de 9 junto com "comente" ou "salve", que vêm da plataforma. O pedido do iPhone tem três linhas pedindo ação contra uma pedindo "sem ação".</li>
+        <li><b>Abertura e bordão:</b> bem seguidos no modelo do iPhone (6 a 9 de 9).</li>
+        <li><b>Tags digitadas</b> (simulador): o bordão vai duas vezes e a abertura apagada continua indo.</li>
+        <li><b>Números:</b> dos 10 que não vinham da ideia, só um é resultado inventado ("Eu perdi 2 quilos em 7 dias"); os outros são lista, gancho, conselho ou detalhe de rotina.</li>
+        <li><b>Forma de tratamento do iOS:</b> lida sem problema, mas nenhum dos dois iPhones tem uma escolhida.</li>
+        <li><b>PCC ainda não medido:</b> os dois iPhones estavam sem cota ("Usage quota reached"). Repito quando a cota voltar.</li>
+      </ul>
+    </div>
+    <div class="card"><h3>O que eu errei</h3>
+      <ul>
+        <li>O ritmo já tem fator por idioma; falta só o ajuste por pessoa.</li>
+        <li>O PCC não impõe CTA. O conflito lá é outro: manda evitar "follow" genérico, contra quem escolheu "Follow for more".</li>
+        <li>Os bordões 4 e 5 chegam por causa do próprio bug das tags; consertar só as tags os faria sumir.</li>
+        <li>"Hot take / reply" já existe; não é formato novo.</li>
+        <li>Rótulo de privacidade: o que conta é coleta, vínculo e finalidade, não só "identificável".</li>
+        <li>Abertura e bordão flexíveis no PCC, e exemplos fora do PCC, são decisões registradas, não defeitos. Viram experimentos.</li>
+      </ul>
+    </div>
+    <div class="card"><h3>Achados novos</h3>
+      <ul>
+        <li>Shorter, Translate, Stronger CTA e as outras ferramentas reescrevem sem o "Never say" e sem o Avoid. Só "In my voice" leva a voz.</li>
+        <li>O Cue aprende a abertura de um roteiro gravado mesmo quando a edição foi só no meio, e esse aprendizado nem vai ao PCC.</li>
+      </ul>
+    </div>
+    <div class="card"><h3>Onde discordo do Codex</h3>
+      <p>Na ordem de prioridade. Um pedido que revoga de forma explícita ("neste vídeo, peça para seguir") pode passar por cima de um "nunca" do perfil, com um aviso. Um pedido que só contradiz sem querer ("faça um anúncio convincente") não pode ("nunca prometa resultados"). O Codex concordou com essa nuance; a política é sua (B1).</p>
+    </div>
+  </div>
+  <h3 class="part">Plano em quatro trilhas</h3>
+  <ol class="flow">
+    <li><b>A · Falhas comprovadas, já:</b> tags digitadas, cópia do briefing no roteiro, toda informação aplicável no pedido, promessas verdadeiras por rota, aprender só a abertura editada, formato digitado, palavras fiéis ao rótulo, duração sem contradição, restos de código, investigar o "perdi 2 quilos".</li>
+    <li><b>A · Falhas comprovadas, depois de uma decisão sua:</b> restrições em todas as ferramentas e no formato sério (o que é restrição), o final escolhido contra a plataforma (prioridade e sentido de "No call to action"), bordões (rodízio ou relevância), gênero gramatical (a especificação), prevenir resultado inventado (que números uma cena pode ter).</li>
+    <li><b>B · Decisões suas:</b> seis destravam consertos (prioridade, especificação do gênero, o que é restrição, bordões, sentido dos finais, números em cenas). As outras não bloqueiam nada: ganchos e interruptor, "Too long", idioma das ideias, Analytics, seletor de duração, tópicos no universo, lista de público, como saber o que falta nas listas.</li>
+    <li><b>C · Experimentos antes:</b> exemplos no PCC (três versões), abertura e bordões firmes no PCC, aprender com edições, ritmo por pessoa, banco de histórias e oferta.</li>
+    <li><b>D · Esperam sinal de uso:</b> listas e formatos novos, ponto de vista, país, regras do nicho, cartões novos (cada um compensa um tirado), aprender pela fala. "Comédia" também é decisão sua, não defeito: existe o tópico próprio.</li>
+  </ol>
+</section>
+
+<section aria-labelledby="h-impl">
+  <h2 id="h-impl">Implementação dos consertos sem decisão (02/11)</h2>
+  <p>Na branch <code>fix/creator-inputs</code>, sem commit, cada item com seu teste (§11.11 do arquivo completo). Os itens que dependem das suas decisões B1, B8 a B12 continuam esperando.</p>
+  <div class="group">
+    <div class="row"><div class="what">A1 · Tags digitadas</div><div class="how">Abertura, fecho e bordão digitados ficam só no próprio campo: vão uma vez e saem quando tirados. Perfis antigos perdem as cópias ao abrir. Os bordões guardados (até 5) vão na mesma linha, com "Use one".</div><span class="chip c-ok">FEITO</span></div>
+    <div class="row"><div class="what">A3 · Briefing do anúncio</div><div class="how">O roteiro guarda a marca. Improve, ganchos, outra plataforma, tradução e o ajuste da Ultra recebem o #ad, o pedido e o proibido da marca, link e cupom (intactos).</div><span class="chip c-ok">FEITO</span></div>
+    <div class="row"><div class="what">A5 · Voz com qualquer resposta</div><div class="how">Um fecho, um bordão ou só exemplos já ligam a voz; cada rota manda o que aceita; o interruptor desligado não manda nada.</div><span class="chip c-ok">FEITO</span></div>
+    <div class="row"><div class="what">A6 · Textos verdadeiros</div><div class="how">"Saved · Cue uses it on this iPhone", "Saved · counts toward your voice", "Saved as your writing · used on this iPhone", nota em PROOF (não vai ao PCC nem à Ultra), avisos no What Cue sends. 7 textos novos nos 20 idiomas.</div><span class="chip c-ok">FEITO</span></div>
+    <div class="row"><div class="what">A7 · Aprender a abertura</div><div class="how">Só quando a própria abertura mudou; editado só no meio, o rascunho espera.</div><span class="chip c-ok">FEITO</span></div>
+    <div class="row"><div class="what">A11a · "Perdi 2 quilos"</div><div class="how">A regra contra resultado inventado estava no pedido; o assunto não é factual, então só a marcação do próprio modelo pediria conferência. O teste de aparelho agora grava essa marcação.</div><span class="chip c-ok">FEITO</span></div>
+    <div class="row"><div class="what">A13 · Formato digitado</div><div class="how">"ASMR" fica em formatos, numa linha que o orçamento não corta, e conta no limite de 3.</div><span class="chip c-ok">FEITO</span></div>
+    <div class="row"><div class="what">A14 · Palavras do rótulo</div><div class="how">Tons como "straight to the point" e plataformas pelo nome.</div><span class="chip c-ok">FEITO</span></div>
+    <div class="row"><div class="what">A15 · Duração sem contradição</div><div class="how">A duração habitual nunca vai no texto do pedido; só ajusta a faixa no Automático.</div><span class="chip c-ok">FEITO</span></div>
+    <div class="row"><div class="what">A16 · Restos de código</div><div class="how">Saíram o tom solto do pedido e a cópia dos nichos. Estilos antigos ficam até a decisão B9.</div><span class="chip c-ok">FEITO</span></div>
+  </div>
+  <h3 class="part">Bases para medir o depois</h3>
+  <div class="stats">
+    <div class="stat"><b>54/54</b><span>roteiros escritos (todos no modelo do iPhone)</span></div>
+    <div class="stat"><b>13/18</b><span>restrições cumpridas ("No call to action" ignorado em 5 de 9)</span></div>
+    <div class="stat"><b>12/54</b><span>passam nas três perguntas editoriais (22%)</span></div>
+    <div class="stat"><b>19/54</b><span>soam naturais; italiano e francês 1 de 9</span></div>
+  </div>
+  <p>Q0 conta tudo sobre o que foi pedido, com as falhas no denominador (<code>tools/creator_inputs/q0.py</code>). Q1 foi lido por um agente sem ver a classificação anterior; ele contou o masculino nas criadoras como não natural, embora o app não informe o gênero (B8). A medição no iPhone depois dos consertos fica para depois das decisões, com o PCC quando houver cota.</p>
+</section>
+
+<section aria-labelledby="h-map">
+  <h2 id="h-map">O mapa em três partes</h2>
+  <p>Cada informação foi julgada pelo que ela melhora em todo o app (roteiro, ideias, universo, gravação, capa, notificações), não só no roteiro.</p>
+
+  <h3 class="part">Vale manter: melhora uma função de verdade</h3>
+  <div class="group">
+    <div class="row"><div class="what">Tópicos e subtópicos</div><div class="how">Ideias (todos), universo, tags automáticas, biblioteca de ideias, notificações, e o roteiro quando a ideia fala deles. Os 15 tópicos extras do My Cue Voice não viram mundo nem tag e ocupam uma das 3 vagas.</div><span class="chip c-ok">MANTER</span></div>
+    <div class="row"><div class="what">Plataforma<small>onboarding, perfil, "Create for"</small></div><div class="how">Regra da plataforma, registro profissional, meta de duração, teleprompter.</div><span class="chip c-ok">MANTER</span></div>
+    <div class="row"><div class="what">Tipo de criador e credencial</div><div class="how">Roteiro e ideias; ordena os grupos de público, sugere o tom e o eu/nós.</div><span class="chip c-ok">MANTER</span></div>
+    <div class="row"><div class="what">Eu / Nós</div><div class="how">Roteiro, com conferência no iPhone.</div><span class="chip c-ok">MANTER</span></div>
+    <div class="row"><div class="what">Público<small>grupo ou descrição, nível, por que assistem</small></div><div class="how">Roteiro e ideias: profundidade, exemplos, promessa do vídeo.</div><span class="chip c-ok">MANTER</span></div>
+    <div class="row"><div class="what">"My videos are for"</div><div class="how">Roteiro e ideias: para onde o vídeo leva.</div><span class="chip c-ok">MANTER</span></div>
+    <div class="row"><div class="what">Sentences, Words, Energy, Humor, Swearing</div><div class="how">Roteiro, ideias, ferramentas. "Sentences" também acerta o tamanho.</div><span class="chip c-ok">MANTER</span></div>
+    <div class="row"><div class="what">Abertura, final, bordões</div><div class="how">Alto valor, hoje fracos ou contraditos: consertar (P1 abaixo).</div><span class="chip c-part">CONSERTAR</span></div>
+    <div class="row"><div class="what">"Cue never writes"</div><div class="how">Regra dura, conferida e reescrita no Apple Intelligence.</div><span class="chip c-ok">MANTER</span></div>
+    <div class="row"><div class="what">Exemplos, Import my writing, Sounds like me, Your edits</div><div class="how">O que mais aproxima o roteiro da voz real. Hoje perdido no PCC: decisão 1.</div><span class="chip c-part">CONSERTAR</span></div>
+    <div class="row"><div class="what">Na criação<small>ideia, formato, Create for, marca, comentário, Logbook, inspiração</small></div><div class="how">Todos usados. Consertar o briefing da marca.</div><span class="chip c-ok">MANTER</span></div>
+    <div class="row"><div class="what">Toques nas ideias e filtro de tópico</div><div class="how">Aprendem o gosto do criador.</div><span class="chip c-ok">MANTER</span></div>
+    <div class="row"><div class="what">@, nome e foto</div><div class="how">@: sugestões da capa, "Follow @… made with Cue Studio", cartão do universo. Nome e foto: o perfil.</div><span class="chip c-ok">MANTER</span></div>
+    <div class="row"><div class="what">Metas de monetização</div><div class="how">Meta de duração no teleprompter, na revisão e na barra de tamanho; Ultra. Deixar num lugar só.</div><span class="chip c-ok">MANTER</span></div>
+    <div class="row"><div class="what">Idioma do roteiro</div><div class="how">Roteiro e ferramentas. Consertar as ideias, que usam o idioma da interface.</div><span class="chip c-ok">MANTER</span></div>
+  </div>
+
+  <h3 class="part">Pode sair ou virar dedução</h3>
+  <div class="group">
+    <div class="row"><div class="what">"Who's watching?" da dica<small>4 opções e o campo de vocabulário</small></div><div class="how">Repete o "Who is watching?" do editor com outra lista, e o campo quase nunca vai. Usar os mesmos 8 grupos; o vocabulário vira consequência do grupo.</div><span class="chip c-no">TIRAR</span></div>
+    <div class="row"><div class="what">"How do you talk on camera?"<small>8 tons</small></div><div class="how">Energetic, Conversational e Straight to the point repetem Energy, Words e Sentences, e podem contradizê-los. Ficar só com o que só o tom diz (Educational, Confident, Warm &amp; calm, Playful, Dry &amp; sarcastic).</div><span class="chip c-part">ENXUGAR</span></div>
+    <div class="row"><div class="what">"Where you post"</div><div class="how">Só vai no polimento da Ultra e é o 2º corte; não muda a plataforma padrão nem o compartilhar. Deduzir de onde o criador compartilha (o app já registra) e usar para pré-escolher as redes.</div><span class="chip c-part">DEDUZIR</span></div>
+    <div class="row"><div class="what">"Usual length"</div><div class="how">No Apple Intelligence quase não muda nada. Deduzir da duração real das gravações e oferecer duração por roteiro.</div><span class="chip c-part">DEDUZIR</span></div>
+    <div class="row"><div class="what">"What you film most"</div><div class="how">O app já sabe o formato de cada roteiro. Deduzir do histórico e deixar a pergunta só para corrigir.</div><span class="chip c-part">DEDUZIR</span></div>
+    <div class="row"><div class="what">Metas de monetização em 3 folhas</div><div class="how">Um lugar só, com o efeito visível na barra de tamanho.</div><span class="chip c-part">ENXUGAR</span></div>
+    <div class="row"><div class="what">"Sounds like me" uma vez na vida e o contador</div><div class="how">Trocar por um retorno curto a cada roteiro (lacuna 5).</div><span class="chip c-part">TROCAR</span></div>
+    <div class="row"><div class="what">Restos no código</div><div class="how">Estilos antigos, versão do esquema, cópia dos nichos, linha "Tone:" do pedido, medidas do texto nunca lidas, e as tags livres como depósito de tudo (cada texto no seu campo).</div><span class="chip c-no">TIRAR</span></div>
+  </div>
+
+  <h3 class="part">Lacunas: falta e melhoraria muito</h3>
+  <div class="group">
+    <div class="row"><div class="what">1. Gênero gramatical<small>de quem fala e do "nós"</small></div><div class="how">Em pt, es, fr, it, ar, hi, th e ja o roteiro em primeira pessoa muda com o gênero ("cansado/cansada"). Nada no app pergunta ou usa. Proposta na próxima seção.</div><span class="chip c-p1">ALTA</span></div>
+    <div class="row"><div class="what">2. Histórias e fatos verdadeiros</div><div class="how">O PCC só abre com uma história quando ela vem no pedido, e a IA não pode inventar números nem credenciais. Um banco de 3 a 5 fatos reais ("atendo há 8 anos em Curitiba") dá prova sem inventar.</div><span class="chip c-p1">ALTA</span></div>
+    <div class="row"><div class="what">3. O negócio do criador</div><div class="how">Para "My own business", "Sell something" e "Win clients": nome, o que vende, para quem, link ou como agendar, cupom fixo. Hoje só existe por anúncio.</div><span class="chip c-p1">ALTA</span></div>
+    <div class="row"><div class="what">4. Ritmo de fala real</div><div class="how">O tamanho usa cerca de 150 palavras por minuto, fixo. As gravações já dizem quanto tempo o criador leva: sem pergunta nenhuma.</div><span class="chip c-p1">ALTA</span></div>
+    <div class="row"><div class="what">5. Retorno a cada roteiro</div><div class="how">"Ficou bom / o que mudar" em todo roteiro, e a contagem (sem texto) para você.</div><span class="chip c-p1">ALTA</span></div>
+    <div class="row"><div class="what">6. Duração por roteiro</div><div class="how">Um seletor (30 s, 1 min, 2 min…), em vez de só ler do texto.</div><span class="chip c-p2">MÉDIA</span></div>
+    <div class="row"><div class="what">7. Como trata quem assiste</div><div class="how">tu/você, tú/usted, tu/vous, du/Sie, e o gênero do público quando ele é de um gênero ("Mães"). A biblioteca de ideias mistura hoje ("tu es perdu", "se você fica perdida").</div><span class="chip c-p2">MÉDIA</span></div>
+    <div class="row"><div class="what">8. Cidade ou região</div><div class="how">Criador local, imóveis, finanças (moeda, regras), eventos.</div><span class="chip c-p2">MÉDIA</span></div>
+    <div class="row"><div class="what">9. Como foram os vídeos</div><div class="how">"Foi bem?" depois de postar, para as ideias aprenderem com o resultado e não só com toques.</div><span class="chip c-p2">MÉDIA</span></div>
+    <div class="row"><div class="what">10. Como se apresenta</div><div class="how">"Oi, eu sou a Maya": o nome existe, mas nunca vai para a IA.</div><span class="chip c-p3">BAIXA</span></div>
+  </div>
+</section>
+
+<section aria-labelledby="h-gender">
+  <h2 id="h-gender">Gênero gramatical: proposta</h2>
+  <div class="note">
+    <div class="q"><h3>Onde pesa</h3><p><b>Forte:</b> português, espanhol, francês e italiano (adjetivos e particípios: cansado/cansada, stanco/stanca, fatigué/fatiguée), árabe (adjetivos), hindi (o verbo muda: करता/करती), tailandês (partícula ครับ/ค่ะ). <b>Médio:</b> japonês (pronome de primeira pessoa). <b>Fraco:</b> alemão, holandês e nórdicos, só em profissões ("Ärztin"). <b>Nada:</b> inglês, coreano, chinês, indonésio, turco, vietnamita.</p></div>
+    <div class="q"><h3>Como está hoje</h3><p>Nenhuma pergunta, nenhuma regra no pedido: a IA escolhe sozinha, em geral no masculino. Os textos fixos também erram: a biblioteca de ideias em italiano abre com "Ho iniziato a bere acqua tiepida appena sveglio" (masculino, primeira pessoa) e trata o público ora no masculino ("tu es perdu"), ora no feminino ("se você fica perdida"). O <code>LOCALIZATION.md</code> só pede para evitar primeira pessoa com gênero em hindi.</p></div>
+    <div class="q"><h3>Como perguntar bem</h3>
+      <ul>
+        <li><b>Onde:</b> no cartão "I am" do My Cue Voice, logo abaixo de "Scripts say I / We" (é a mesma decisão: como o roteiro fala de quem fala). Opcional, nunca no onboarding obrigatório.</li>
+        <li><b>Quando aparece:</b> só se o idioma do roteiro ou da interface marca gênero. Em inglês a pergunta não existe.</li>
+        <li><b>Como:</b> falar de gramática, não de pessoa. Ex. pt: "Nos roteiros, as palavras sobre você ficam no…" Feminino ("cansada") · Masculino ("cansado") · Neutro (evita palavras com gênero). Com "We": o grupo, Feminino · Masculino · Misto. Um exemplo vivo no idioma mostra o efeito.</li>
+        <li><b>Padrão:</b> a "Forma de tratamento" do iOS (Ajustes › Geral › Idioma e Região), se o criador já escolheu; o SDK tem <code>TermOfAddress</code> e <code>.currentUser</code> (iOS 18), mas ler o valor ainda precisa ser testado no iPhone. Sem escolha: neutro, nunca masculino por padrão.</li>
+        <li><b>O que vai para a IA:</b> uma regra de gramática ("use feminine forms for the speaker"), não "a criadora é mulher". Vai para iPhone, PCC e Ultra (a Ultra é o Google: decisão sua).</li>
+        <li><b>Textos fixos:</b> biblioteca de ideias, ideias prontas, amostra do "Preview my voice" e roteiro de treino reescritos neutros nos idiomas com gênero (ou com uma variante por gênero).</li>
+        <li><b>Conferência:</b> no iPhone, procurar as palavras mais comuns no gênero errado, como já se faz com eu/nós.</li>
+        <li><b>Interface:</b> o iOS tem concordância automática com a forma de tratamento, que corrige também "Bem-vindo/Bem-vinda" nas telas.</li>
+        <li><b>Privacidade:</b> fica no iPhone, sai com "Delete my Cue data", não entra no medidor da voz.</li>
+      </ul></div>
+  </div>
+</section>
+
+<section aria-labelledby="h-uses">
+  <h2 id="h-uses">Onde mais cada informação é usada</h2>
+  <div class="group">
+    <div class="row"><div class="what">Tópicos</div><div class="how">Mundos e cores do universo, Year in review, tags automáticas dos roteiros, biblioteca de ideias sem IA (só os 10 do onboarding; os outros ganham modelos), notificações de descoberta.</div><span class="chip c-na">FORA DA IA</span></div>
+    <div class="row"><div class="what">Plataforma padrão</div><div class="how">Barra de criação, roteiro em branco, teleprompter, prévia da voz.</div><span class="chip c-na">FORA DA IA</span></div>
+    <div class="row"><div class="what">Metas de monetização</div><div class="how">Meta de duração no teleprompter, na revisão da gravação e na barra de tamanho do roteiro.</div><span class="chip c-na">FORA DA IA</span></div>
+    <div class="row"><div class="what">Tipo de criador</div><div class="how">Ordem dos grupos de público, "Common for…" no tom, linha no perfil.</div><span class="chip c-na">FORA DA IA</span></div>
+    <div class="row"><div class="what">@</div><div class="how">Sugestões da capa, texto de compartilhar o perfil, cartão do universo.</div><span class="chip c-na">FORA DA IA</span></div>
+    <div class="row"><div class="what">Voz configurada, textos importados, tópicos</div><div class="how">Quais notificações de descoberta aparecem (ex.: sugerir "Import my writing" a quem já configurou a voz).</div><span class="chip c-na">FORA DA IA</span></div>
+    <div class="row"><div class="what">"Use my voice in drafts" e o medidor</div><div class="how">Se e quando as perguntas da voz aparecem.</div><span class="chip c-na">FORA DA IA</span></div>
+    <div class="row"><div class="what">Personalidade e público</div><div class="how">A amostra do "Preview my voice", montada sem IA.</div><span class="chip c-na">FORA DA IA</span></div>
+    <div class="row"><div class="what">Logbook e títulos dos roteiros</div><div class="how">Inspiram as ideias.</div><span class="chip c-na">FORA DA IA</span></div>
+    <div class="row"><div class="what">"Where you post"</div><div class="how">Só a voz. Nem o compartilhar usa.</div><span class="chip c-no">SÓ A VOZ</span></div>
+  </div>
+</section>
+
+<section aria-labelledby="h-flow">
+  <h2 id="h-flow">Como uma resposta chega ao roteiro</h2>
+  <ol class="flow">
+    <li><b>Perfil → voz.</b> O perfil vira a voz que a IA lê. Tom e vocabulário só entram depois que o criador os respondeu. Tópicos só entram quando a ideia digitada repete uma palavra deles. <span class="ev">CreatorProfile.swift:156-188 · IdeaFocus.swift:17-28</span></li>
+    <li><b>Três portões.</b> A voz só vai com "Use my voice in drafts" ligado, se o criador respondeu tipo de criador, tópico, público ou tom, e se o formato não é sério (Apology). <span class="ev">ScriptRequestFactory.swift:42 · CreatorProfile+VoiceSetup.swift:46-48</span></li>
+    <li><b>Qual IA escreve.</b> Roteiros, reescritas e ganchos vão primeiro ao Private Cloud Compute (PCC). Ideias vão primeiro ao modelo do iPhone. A Ultra AI hoje só existe em Debug. <span class="ev">AIModelRoute.swift:28 · LaunchOptions.swift:288-291</span></li>
+    <li><b>O que cada rota corta.</b> PCC e Ultra recebem sem os exemplos, os textos importados e os roteiros aprovados: isso só chega quando o iPhone escreve. No Auto, a duração habitual sai do pedido em todas as rotas. <span class="ev">AIRequestPolicy.swift:15-27 · VoiceBriefBuilder.swift:50-55</span></li>
+    <li><b>Limite de tamanho.</b> Se a voz não cabe, sai primeiro o exemplo, depois "onde posta / duração", depois as tags livres. O resto nunca é cortado. <span class="ev">VoiceBriefBuilder.swift:26-38</span></li>
+    <li><b>Conferência depois.</b> No Apple Intelligence o roteiro é conferido (evitar, eu/nós, bordão no início, nome do estilo) e reescrito uma vez se falhar. Na Ultra não há conferência. <span class="ev">VoiceCheckedWriting.swift · ScriptAIService.swift:145</span></li>
+  </ol>
+</section>
+
+<section aria-labelledby="h-find">
+  <h2 id="h-find">O que não está chegando</h2>
+  <p>Em ordem de peso no roteiro. <span class="chip c-p1">P1</span> afeta quase todo criador · <span class="chip c-p2">P2</span> chega pela metade · <span class="chip c-p3">P3</span> detalhe.</p>
+  <div class="cards">
+
+    <div class="card"><div class="top"><span class="chip c-p1">P1</span><h3>A "prova" quase nunca chega ao roteiro</h3></div>
+      <p>Exemplos colados, "Import my writing", "Sounds like me" e "Your edits" são tirados do pedido no PCC (a rota principal dos roteiros) e na Ultra. Só chegam quando o iPhone escreve como reserva, e nas ideias. Mesmo assim valem 20% do medidor da voz, e o aviso diz "Cue learns from it". É uma escolha de privacidade escrita no código ("Raw writing samples stay on the iPhone"), mas contradiz o que a tela promete. Do texto importado, só passam a média de palavras por frase e um hábito de "!" ou "?".</p>
+      <p class="ev">AIRequestPolicy.swift:8-21 · AIModelRoute.swift:28 · VoiceField.swift:21 · VoiceFingerprintRules.swift:18-30</p></div>
+
+    <div class="card"><div class="top"><span class="chip c-p1">P1</span><h3>O jeito de terminar escolhido não é respeitado</h3></div>
+      <p>Quem escolheu "No call to action" recebe, junto, a regra do TikTok "end with one easy action (comment, follow or save)" (Reels e Stories têm o mesmo). No sentido contrário, "Follow for more", "Comment your answer", "Save this" e "Link in bio" são desfeitos: o PCC manda evitar despedida genérica de seguir, e a Ultra só põe chamada quando o pedido pede.</p>
+      <p class="ev">PlatformGuide.swift:15-17 · PCCScriptDirection.swift:68 · UltraInstructions.swift:26-27, 123</p></div>
+
+    <div class="card"><div class="top"><span class="chip c-p1">P1</span><h3>Abertura e bordões ficam opcionais na rota principal</h3></div>
+      <p>No iPhone a regra é firme ("Open with a question…", "They often say…"). No PCC e na Ultra vira "só quando o pedido sustentar" e "omitir é melhor que forçar". Como o PCC escreve a maioria dos roteiros, a abertura e o bordão do criador saem fracos por padrão.</p>
+      <p class="ev">VoiceBriefBuilder.swift:277-305</p></div>
+
+    <div class="card"><div class="top"><span class="chip c-p1">P1</span><h3>Texto apagado continua indo para a IA</h3></div>
+      <p>Toda abertura, final ou bordão digitado é copiado também para as tags livres. Apagar tira só da lista, não da tag. A IA recebe o bordão duas vezes ("They often say: Hey fam" e "Also true of them: Hey fam") e continua recebendo depois que o criador o apagou. Essas mesmas tags aparecem como "formato digitado" no campo de formatos. Confirmado no código; não vi na tela do iPhone.</p>
+      <p class="ev">CreatorProfileService+Personality.swift:27-36, 64-68 · VoiceFormatsField.swift:60-68</p></div>
+
+    <div class="card"><div class="top"><span class="chip c-p1">P1</span><h3>O briefing da marca se perde</h3></div>
+      <p>Em "Start from a format → Sponsored ad", e quando o Apple Intelligence não pode escrever o anúncio, o que o criador digitou (marca, produto, "Must say", "Never say", link, cupom) não é usado: abre um rascunho em branco, e o briefing só sobrevive se "Save brand" estava ligado. Depois de escrito, o roteiro não guarda o briefing, então "Stronger CTA", "Shorter" e "In my voice" reescrevem o anúncio sem "Never say", link e cupom.</p>
+      <p class="ev">MainView.swift:202-214, 295-299 · RewriteContext.swift:9-25 · ScriptRequestFactory.swift:57</p></div>
+
+    <div class="card"><div class="top"><span class="chip c-p2">P2</span><h3>Tópicos e subtópicos só vão quando a ideia repete a palavra</h3></div>
+      <p>Um tópico só chega ao roteiro se a ideia tiver uma palavra igual à dele; sinônimo não conta. Subtópicos, só se a ideia citar o próprio subtópico. É de propósito (em 07/10 a IA mudou de assunto por causa de um subtópico), mas na prática os subtópicos quase nunca chegam ao roteiro. As ideias recebem todos.</p>
+      <p class="ev">IdeaFocus.swift:6-28</p></div>
+
+    <div class="card"><div class="top"><span class="chip c-p2">P2</span><h3>"Sounds like me" só pergunta uma vez na vida</h3></div>
+      <p>Depois da primeira aprovação, a faixa "Does it sound like you?" some de todos os roteiros seguintes. O único aprendizado que sobra é "Your edits", que, pelo item acima, também não chega ao PCC.</p>
+      <p class="ev">ScriptDetailViewModel+VoicePreview.swift:12-25</p></div>
+
+    <div class="card"><div class="top"><span class="chip c-p2">P2</span><h3>Duração habitual e metas de monetização quase não mudam o roteiro</h3></div>
+      <p>No Auto, o Apple Intelligence trata a duração como informativa e a duração habitual sai do pedido; só a Ultra usa as duas para a faixa de tamanho. Quando o criador pede uma duração no texto ("2 minutos sobre…"), o pedido diz ao mesmo tempo "Videos are usually under 30 seconds" e a duração pedida. Não existe seletor de duração: ela só é lida do texto da ideia.</p>
+      <p class="ev">AIRequestPolicy.swift:27 · ScriptPromptBuilder.swift:157-164 · UltraLength.swift:23-31</p></div>
+
+    <div class="card"><div class="top"><span class="chip c-p2">P2</span><h3>"Quem assiste" tem duas listas, e uma quase nunca vai</h3></div>
+      <p>A pergunta da dica ("Who's watching?") oferece 4 opções e grava num campo que só é enviado se não houver grupo, descrição nem "Words". O editor oferece 8 grupos, que vão. O mesmo criador pode dar respostas diferentes nos dois. Os ajustes "Too much slang" e "Too formal" mexem nesse campo quase morto, e "Too long" não faz nada se "Sentences" não foi respondida.</p>
+      <p class="ev">VoiceQuestion.swift:102 · VoiceBriefBuilder.swift:225-228 · VoiceAdjustment.swift:45-58</p></div>
+
+    <div class="card"><div class="top"><span class="chip c-p2">P2</span><h3>Respostas que não ligam a voz, e formato sério sem nada</h3></div>
+      <p>Quem respondeu só a personalidade (abertura, bordões, "Cue never writes"), só colou exemplos ou só importou textos não manda nada: a voz só liga com tipo de criador, tópico, público ou tom. E no formato sério (Apology) nenhuma parte da voz vai, nem "Cue never writes", a credencial ou o eu/nós.</p>
+      <p class="ev">CreatorProfile+VoiceSetup.swift:46-48 · ScriptRequestFactory.swift:40-45</p></div>
+
+    <div class="card"><div class="top"><span class="chip c-p2">P2</span><h3>Ganchos e "In my voice" ignoram o interruptor</h3></div>
+      <p>"3 new hooks" e "In my voice" usam a voz mesmo com "Use my voice in drafts" desligado. "In my voice" também não aplica a regra de plataforma profissional (sem gíria nem palavrão no LinkedIn).</p>
+      <p class="ev">ScriptDetailViewModel.swift:192-199 · ScriptAIService.swift:450 · ScriptPromptBuilder.swift:488-490</p></div>
+
+    <div class="card"><div class="top"><span class="chip c-p2">P2</span><h3>Ideias ignoram o idioma do roteiro e a plataforma</h3></div>
+      <p>As ideias saem no idioma da interface e sem plataforma. Interface em inglês e roteiros em português dão ideias em inglês e roteiros em português.</p>
+      <p class="ev">AppServices.swift:237 · IdeaSuggestionService.swift:506 · ScriptPromptBuilder.swift:416-440</p></div>
+
+    <div class="card"><div class="top"><span class="chip c-p2">P2</span><h3>A mesma pergunta em vários lugares, guardada em campos diferentes</h3></div>
+      <ul>
+        <li><b>Plataforma:</b> 5 lugares, 3 campos. A plataforma padrão e "Where you post" não conversam: quem posta só no Instagram e deixou TikTok como padrão recebe roteiro de TikTok. Na dica, "Where you post" vira resposta única e apaga a lista.</li>
+        <li><b>Tipo de criador:</b> 4 lugares. O texto próprio vai para o campo certo no editor e no perfil, mas vira tag livre na dica (a tag é a 3ª coisa cortada).</li>
+        <li><b>Metas de monetização:</b> o mesmo interruptor em 3 folhas.</li>
+        <li><b>Tom e estilo:</b> "How do you talk on camera?" (Energetic, Warm &amp; calm…) se sobrepõe a Energy e Words, e respostas contraditórias vão juntas para a IA (tom "Playful" com humor "None").</li>
+      </ul>
+      <p class="ev">VoiceAnswers.swift:128, 187 · VoiceBriefBuilder.swift:120-129</p></div>
+
+    <div class="card"><div class="top"><span class="chip c-p2">P2</span><h3>Nenhum retorno do criador chega a você</h3></div>
+      <p>"Sounds like me" e os 5 motivos do "Adjust" ficam só no iPhone, sem nem uma contagem. "Help improve Cue" vem desligado. Não há formulário, relato de problema, pedido de avaliação nem "por que não funcionou": depois de uma falha, só "Try again". Ideias não têm "não quero isso"; pular ("Another idea") é o único sinal negativo, e pesa pouco.</p>
+      <p class="ev">PrivacyPreferencesService.swift:34 · IdeaTaste.swift:14-37</p></div>
+
+    <div class="card"><div class="top"><span class="chip c-p3">P3</span><h3>Detalhes</h3></div>
+      <ul>
+        <li>O criador guarda 5 bordões, mas só os 3 primeiros vão. <span class="ev">VoiceBriefBuilder.swift:296</span></li>
+        <li>Palavras trocadas no pedido: "Straight to the point" vai como "professional", "Playful" como "funny", "Conversational" como "casual"; plataformas vão com o nome traduzido num pedido em inglês. <span class="ev">VoiceSound.swift:18-40 · VoiceBriefBuilder.swift:312</span></li>
+        <li>Um formato digitado ("ASMR") cai na linha genérica "Also true of them" em vez de "They film mostly", e essa linha é cortada quando falta espaço. <span class="ev">VoiceBriefBuilder.swift:291, 320</span></li>
+        <li>Medidas do texto importado: emoji, tamanho das palavras e eu/nós só sugerem respostas na hora de importar; a média de palavras por frase some se "Sentences" foi respondida. <span class="ev">WritingAnalyzer.swift:113-142</span></li>
+        <li>Ultra (só Debug hoje): sem conferência depois de escrever, e o ajuste de tempo não leva "Cue never writes" nem a regra de palavrão. <span class="ev">UltraFitRequest.swift:41-44</span></li>
+        <li>"What Cue sends" mostra todos os tópicos e não mostra que a duração habitual sai no Auto: mostra mais do que vai. <span class="ev">VoiceSendsSheet.swift:19</span></li>
+        <li>Sem uso: a linha "Tone:" do pedido nunca sai (o campo é sempre vazio), versão do esquema, estilos antigos, a cópia dos nichos. Nome, @ e foto não vão para a IA, provavelmente de propósito. <span class="ev">ScriptRequestFactory.swift:49 · ScriptPromptBuilder.swift:154</span></li>
+      </ul></div>
+  </div>
+</section>
+
+<section aria-labelledby="h-inv">
+  <h2 id="h-inv">Inventário completo</h2>
+  <div class="legend">
+    <span><span class="chip c-ok">CHEGA</span> vai à IA e é usado</span>
+    <span><span class="chip c-part">METADE</span> só em algumas rotas ou casos</span>
+    <span><span class="chip c-weak">FRACO</span> vai como sugestão opcional</span>
+    <span><span class="chip c-no">NÃO VAI</span> pedido e nunca usado</span>
+    <span><span class="chip c-na">NÃO É P/ IA</span></span>
+  </div>
+
+  <div class="group"><h3>Onboarding</h3>
+    <div class="row"><div class="what">"What do you usually talk about?"<small>10 tópicos, até 3, + "your own"</small></div><div class="how">Vira os tópicos da voz. Ideias: sempre. Roteiro: só quando a ideia repete a palavra. Escolher um tópico já liga a voz.</div><span class="chip c-part">METADE</span></div>
+    <div class="row"><div class="what">"Where will you share your videos?"<small>5 plataformas</small></div><div class="how">Plataforma padrão de todo roteiro.</div><span class="chip c-ok">CHEGA</span></div>
+    <div class="row"><div class="what">Permissões, roteiro de treino<small>texto fixo, sem IA</small></div><div class="how">Não alimentam a IA.</div><span class="chip c-na">NÃO É P/ IA</span></div>
+  </div>
+
+  <div class="group"><h3>My Cue Voice · essenciais</h3>
+    <div class="row"><div class="what">"What kind of creator are you?"<small>8 + texto próprio</small></div><div class="how">"Who they are: …" nas três IAs. Na dica, o texto próprio vira tag livre.</div><span class="chip c-ok">CHEGA</span></div>
+    <div class="row"><div class="what">"Your credential"<small>texto</small></div><div class="how">"Mention it only where it fits; never invent another."</div><span class="chip c-ok">CHEGA</span></div>
+    <div class="row"><div class="what">"Scripts say" I / We<small>2 opções</small></div><div class="how">Regra de pessoa + conferência no iPhone (o PCC tolera desvio).</div><span class="chip c-ok">CHEGA</span></div>
+    <div class="row"><div class="what">"What do you talk about?"<small>25 tópicos, até 3, + próprio</small></div><div class="how">Roteiro: só se a ideia repete a palavra. Ideias: sempre.</div><span class="chip c-part">METADE</span></div>
+    <div class="row"><div class="what">"More specific in …"<small>~7 por tópico, até 3, + próprio</small></div><div class="how">Roteiro: só o subtópico que a ideia cita. Ideias: todos.</div><span class="chip c-part">METADE</span></div>
+    <div class="row"><div class="what">"Who is watching?" + "Describe them"<small>8 grupos ou texto</small></div><div class="how">"Their audience: …" nas três IAs; o texto vence o grupo.</div><span class="chip c-ok">CHEGA</span></div>
+    <div class="row"><div class="what">"Who's watching?" (dica)<small>4 opções diferentes</small></div><div class="how">Grava o vocabulário, que só vai se não houver grupo, descrição nem "Words".</div><span class="chip c-no">NÃO VAI</span></div>
+    <div class="row"><div class="what">"How much do they already know?"<small>3 opções</small></div><div class="how">Regra de nível (explicar termos / ir mais fundo).</div><span class="chip c-ok">CHEGA</span></div>
+    <div class="row"><div class="what">"Why do they watch you?"<small>6, até 2</small></div><div class="how">"They watch to …" nas três IAs.</div><span class="chip c-ok">CHEGA</span></div>
+    <div class="row"><div class="what">"How do you talk on camera?"<small>8, até 2</small></div><div class="how">"They sound …", com palavras trocadas; na Ultra só no polimento.</div><span class="chip c-ok">CHEGA</span></div>
+  </div>
+
+  <div class="group"><h3>My Cue Voice · personalidade</h3>
+    <div class="row"><div class="what">Energy · Sentences · Words · Humor<small>3 opções cada</small></div><div class="how">Linha "Delivery"; "Sentences" também muda a regra de frases e o tamanho. Na Ultra, só no polimento.</div><span class="chip c-ok">CHEGA</span></div>
+    <div class="row"><div class="what">Swearing<small>Never / Mild only</small></div><div class="how">Regra de palavrão nas três IAs; plataforma profissional força "Never".</div><span class="chip c-ok">CHEGA</span></div>
+    <div class="row"><div class="what">"What you film most"<small>11, até 3, + próprio</small></div><div class="how">"They film mostly: …" e desempate do formato no Auto. Formato digitado cai em "Also true of them".</div><span class="chip c-ok">CHEGA</span></div>
+    <div class="row"><div class="what">"How you like to open"<small>7, até 2, + próprio</small></div><div class="how">Firme no iPhone; opcional no PCC e na Ultra.</div><span class="chip c-weak">FRACO</span></div>
+    <div class="row"><div class="what">"How you usually end"<small>6, até 2, + próprio</small></div><div class="how">Contradiz a regra da plataforma; desfeito no PCC e na Ultra quando é chamada para ação.</div><span class="chip c-weak">FRACO</span></div>
+    <div class="row"><div class="what">"My videos are for"<small>7, até 2</small></div><div class="how">"Their videos aim to …" nas três IAs.</div><span class="chip c-ok">CHEGA</span></div>
+    <div class="row"><div class="what">"Phrases you actually say"<small>até 5</small></div><div class="how">Só 3 vão; opcional no PCC e na Ultra; duplicado nas tags e não sai ao apagar.</div><span class="chip c-weak">FRACO</span></div>
+    <div class="row"><div class="what">"Cue never writes"<small>8, até 3, + próprio</small></div><div class="how">Regras + conferência e reescrita no Apple; Ultra sem conferência; formato sério não leva.</div><span class="chip c-ok">CHEGA</span></div>
+    <div class="row"><div class="what">"Where you post"<small>6 plataformas</small></div><div class="how">Só no polimento da Ultra e 2º item cortado por espaço; não muda a plataforma padrão.</div><span class="chip c-weak">FRACO</span></div>
+    <div class="row"><div class="what">"Usual length"<small>4 opções</small></div><div class="how">No Auto sai do pedido no Apple; a Ultra usa como faixa; com duração pedida, contradiz.</div><span class="chip c-part">METADE</span></div>
+    <div class="row"><div class="what">"Use my voice in drafts"<small>interruptor</small></div><div class="how">Desliga a voz em roteiros e ideias, mas não nos ganchos nem em "In my voice".</div><span class="chip c-ok">CHEGA</span></div>
+  </div>
+
+  <div class="group"><h3>Prova e aprendizado</h3>
+    <div class="row"><div class="what">"Add an example"<small>até 3, 2–4 frases</small></div><div class="how">Só quando o iPhone escreve, e nas ideias. Fica de fora se já houver 1 aprovado e 2 trechos importados.</div><span class="chip c-part">METADE</span></div>
+    <div class="row"><div class="what">"Import my writing"<small>texto colado</small></div><div class="how">Trechos: só no iPhone. Medidas: média de palavras por frase e um hábito de pontuação.</div><span class="chip c-part">METADE</span></div>
+    <div class="row"><div class="what">"Sounds like me"<small>botão, uma vez na vida</small></div><div class="how">Guarda o roteiro como exemplo (só iPhone) e esconde a pergunta para sempre.</div><span class="chip c-part">METADE</span></div>
+    <div class="row"><div class="what">"Your edits"<small>automático</small></div><div class="how">Igual ao "Sounds like me": só no iPhone.</div><span class="chip c-part">METADE</span></div>
+    <div class="row"><div class="what">"Adjust"<small>5 motivos · "This script only" / "Also my profile"</small></div><div class="how">A reescrita usa os motivos. No perfil, "Too much slang", "Too formal" e "Too long" muitas vezes não mudam nada.</div><span class="chip c-part">METADE</span></div>
+    <div class="row"><div class="what">"None of these" (dica)<small>botão</small></div><div class="how">Só decide quando perguntar de novo.</div><span class="chip c-na">NÃO É P/ IA</span></div>
+  </div>
+
+  <div class="group"><h3>Perfil e ajustes</h3>
+    <div class="row"><div class="what">Nome, @, foto</div><div class="how">Nunca vão para a IA (perfil, capa, compartilhar).</div><span class="chip c-no">NÃO VAI</span></div>
+    <div class="row"><div class="what">Tipo de criador (Edit Profile)</div><div class="how">O mesmo campo do My Cue Voice.</div><span class="chip c-ok">CHEGA</span></div>
+    <div class="row"><div class="what">"New scripts are made for"<small>6 plataformas</small></div><div class="how">Plataforma e registro (profissional) de todo roteiro sem escolha.</div><span class="chip c-ok">CHEGA</span></div>
+    <div class="row"><div class="what">Monetization goals<small>interruptor em 3 folhas</small></div><div class="how">Só a Ultra usa na faixa de tamanho; no Apple quase nada no Auto.</div><span class="chip c-part">METADE</span></div>
+    <div class="row"><div class="what">Script language</div><div class="how">Idioma do roteiro e das ferramentas; ideias ignoram.</div><span class="chip c-ok">CHEGA</span></div>
+    <div class="row"><div class="what">App language</div><div class="how">Decide o idioma das ideias e o padrão do roteiro.</div><span class="chip c-ok">CHEGA</span></div>
+    <div class="row"><div class="what">Apple Intelligence · Ultra AI<small>interruptores</small></div><div class="how">Ligam ou desligam as IAs.</div><span class="chip c-na">NÃO É P/ IA</span></div>
+    <div class="row"><div class="what">Notificações, rotina, lembretes, tags automáticas</div><div class="how">Não alimentam a IA.</div><span class="chip c-na">NÃO É P/ IA</span></div>
+  </div>
+
+  <div class="group"><h3>Criar um roteiro</h3>
+    <div class="row"><div class="what">A ideia<small>até 200 caracteres</small></div><div class="how">Nas três IAs, nas palavras do criador.</div><span class="chip c-ok">CHEGA</span></div>
+    <div class="row"><div class="what">Format<small>9 + 3</small></div><div class="how">Guia de formato nas três IAs (só nas ideias mandadas da barra).</div><span class="chip c-ok">CHEGA</span></div>
+    <div class="row"><div class="what">Create for<small>6 plataformas</small></div><div class="how">Regra da plataforma nas três IAs e nas ferramentas; ideias não.</div><span class="chip c-ok">CHEGA</span></div>
+    <div class="row"><div class="what">Brand brief<small>6 campos</small></div><div class="how">Só no anúncio; perdido em dois caminhos; as ferramentas não o veem.</div><span class="chip c-part">METADE</span></div>
+    <div class="row"><div class="what">Answer a comment<small>print, @, texto, plataforma</small></div><div class="how">Apple Intelligence (nunca Ultra, de propósito).</div><span class="chip c-ok">CHEGA</span></div>
+    <div class="row"><div class="what">Logbook</div><div class="how">Vira roteiro e inspira ideias.</div><span class="chip c-ok">CHEGA</span></div>
+    <div class="row"><div class="what">Duração<small>sem seletor</small></div><div class="how">Lida só do texto ("2 minutes on…") e das ideias prontas.</div><span class="chip c-ok">CHEGA</span></div>
+    <div class="row"><div class="what">Import a script</div><div class="how">Só texto, sem IA.</div><span class="chip c-na">NÃO É P/ IA</span></div>
+  </div>
+
+  <div class="group"><h3>Ideias</h3>
+    <div class="row"><div class="what">Filtro de tópico</div><div class="how">Limita os tópicos pedidos.</div><span class="chip c-ok">CHEGA</span></div>
+    <div class="row"><div class="what">Another idea · Start with it · Draft it now</div><div class="how">Gosto aprendido (pesos), só nas ideias. Sem "não quero isso".</div><span class="chip c-ok">CHEGA</span></div>
+    <div class="row"><div class="what">Ângulo e primeira frase da inspiração</div><div class="how">Nas três IAs, só o que o texto ainda diz.</div><span class="chip c-ok">CHEGA</span></div>
+  </div>
+
+  <div class="group"><h3>Ferramentas do roteiro</h3>
+    <div class="row"><div class="what">Improve<small>um toque por ferramenta</small></div><div class="how">Sem campo para o criador escrever o que quer.</div><span class="chip c-ok">CHEGA</span></div>
+    <div class="row"><div class="what">3 new hooks</div><div class="how">Usa a voz mesmo com o interruptor desligado.</div><span class="chip c-ok">CHEGA</span></div>
+    <div class="row"><div class="what">Tipo, plataforma e idioma depois de escrito</div><div class="how">Mudam as ferramentas, não reescrevem.</div><span class="chip c-ok">CHEGA</span></div>
+    <div class="row"><div class="what">Fact check "I checked"</div><div class="how">Só esconde o lembrete.</div><span class="chip c-na">NÃO É P/ IA</span></div>
+  </div>
+
+  <div class="group"><h3>Retorno para nós</h3>
+    <div class="row"><div class="what">Sounds like me · Adjust</div><div class="how">Só no iPhone; nenhuma contagem sai.</div><span class="chip c-na">SÓ NO IPHONE</span></div>
+    <div class="row"><div class="what">"Don't suggest this" · dicas da primeira viagem</div><div class="how">Contagem no Analytics, só com "Help improve Cue" ligado (vem desligado).</div><span class="chip c-na">CONTAGEM</span></div>
+    <div class="row"><div class="what">Dica da voz · convite e permissão da Ultra</div><div class="how">Só no iPhone.</div><span class="chip c-na">SÓ NO IPHONE</span></div>
+    <div class="row"><div class="what">Falhas da IA e do editor</div><div class="how">Automático no Crashlytics (contagens, nunca texto).</div><span class="chip c-na">AUTOMÁTICO</span></div>
+    <div class="row"><div class="what">Formulário, relato de problema, avaliação</div><div class="how">Não existem.</div><span class="chip c-no">NÃO EXISTE</span></div>
+  </div>
+</section>
+
+<section aria-labelledby="h-res">
+  <h2 id="h-res">O que a pesquisa externa mostrou</h2>
+  <div class="cards">
+    <div class="card"><h3>Nichos que faltam</h3><p>Comédia e esquetes (45% dos espectadores indianos, BCG 2025), saúde mental e autodesenvolvimento (52 dos 100 principais vídeos de #mentalhealthtips com desinformação, Guardian 2025), ciência e história, cultura pop e fandom (K-pop, anime), direito, natureza e ar livre (maior engajamento no Instagram, HypeAuditor 2025), artesanato e hobbies, sustentabilidade. "Budget travel" deveria ser "Travel". "My own business" mistura negócio local (salão, clínica) e negócio online.</p></div>
+    <div class="card"><h3>O que define uma voz e o Cue não pergunta</h3><p>Ponto de vista (opiniões que os outros do nicho não dizem), um banco de histórias verdadeiras, provas e resultados que a IA pode citar sem inventar, a oferta (o que vende, link, palavra-chave de DM), séries recorrentes. Coaches preferem "aberturas que você nunca usa" a "aberturas favoritas", e uma chamada para ação por vídeo.</p></div>
+    <div class="card"><h3>O que os criadores reclamam de roteiros de IA</h3><p>Soa genérico e formal; todo mundo com os mesmos ganchos; tamanho errado; dialeto errado (voseo argentino para quem não é argentino; pt-PT recebendo pt-BR); trata o público no informal por padrão; usa masculino quando não sabe quem fala. Conteúdo que parece IA é visto como 48% menos confiável (Raptive 2025).</p></div>
+    <div class="card"><h3>Concorrentes e retorno</h3><p>O Cue pergunta mais que todos. Faltam: testar antes de salvar (Writer, Jasper), mostrar e editar o que foi aprendido (Grammarly, ChatGPT, Notion), banco de fatos e ofertas (Jasper, Copy.ai), aprender com transcrições do próprio canal. Botões de avaliação recebem resposta em 1 a 3% das vezes; o sinal está no que a pessoa edita e fala. O Voice Following já sabe o que o criador falou de verdade: é retorno de graça.</p></div>
+    <div class="card"><h3>Gênero e forma de tratamento</h3><p>O iOS tem "Forma de tratamento" (Feminino, Masculino, Neutro) em espanhol, francês, italiano, português e alemão, e o app pode ler a escolha (<code>Morphology.user</code>, confirmado no SDK; falta testar no iPhone). Perguntar sempre em es, pt, fr, it, ar, hi, th; no japonês, qual "eu" a pessoa usa. "Neutro" significa reescrever sem marcar gênero, não "todes" nem "elu". Forma de tratamento: tu/você, tú/usted/vos, tu/vous, du/Sie; informal por padrão, formal para finanças, direito, saúde e B2B.</p></div>
+  </div>
+</section>
+
+<section aria-labelledby="h-plan">
+  <h2 id="h-plan">Plano por etapas</h2>
+  <ol class="flow">
+    <li><b>Medir antes.</b> Personas novas (criadoras pt, es, it, um criador fr, dona de salão, consultora financeira, dupla "we" mista) no iPhone: erros de gênero, final e abertura respeitados, bordão, tamanho, forma de tratamento.</li>
+    <li><b>Consertos sem decisão.</b> Texto apagado que continua indo, formato digitado, os 5 bordões, briefing da marca guardado e levado às ferramentas, ganchos respeitando o interruptor, duração contraditória, "Who's watching?" com os 8 grupos, "Adjust" gravando nos campos certos, palavras fiéis ao rótulo, ideias no idioma do roteiro, formato sério com o essencial, qualquer resposta liga a voz, "What Cue sends" verdadeiro, restos de código, dialeto vazando dos nossos exemplos.</li>
+    <li><b>Gênero gramatical e forma de tratamento.</b> Campos novos, pré-preenchidos do iOS, no cartão "I am"; regra de gramática nas três IAs; conferência no iPhone; biblioteca de ideias e textos fixos reescritos neutros; concordância automática na interface.</li>
+    <li><b>Rota e promessa</b> (depois das decisões 1 a 5): prova ao PCC, final vence a plataforma, abertura e bordões firmes, aprender com o que foi gravado, contagens no Analytics.</li>
+    <li><b>Fatos verdadeiros e oferta.</b> "My stories &amp; proof" (a IA só usa números e histórias que estão ali), "My offer", ponto de vista, país e regras do nicho.</li>
+    <li><b>Deduzir em vez de perguntar.</b> Ritmo de fala real das gravações, formatos e redes do histórico, transcrições das próprias gravações como exemplo, "Foi bem?" depois de postar.</li>
+    <li><b>Listas.</b> Tópicos, tipos, públicos, metas, formatos, aberturas e finais novos, nos 20 idiomas.</li>
+    <li><b>Medir depois e documentar.</b> Personas e 10 pares às cegas para você; documentos, testes completos, zero warnings, contraste.</li>
+  </ol>
+</section>
+
+<section aria-labelledby="h-ux">
+  <h2 id="h-ux">Sugestões de UI/UX para os cartões de perguntas</h2>
+  <div class="note">
+    <ul>
+      <li><b>Exemplo vivo em cada cartão:</b> escolher "Question" mostra "Seus roteiros abrem assim: 'Você já reparou que…?'". O mesmo para gênero, forma de tratamento, frases e palavras.</li>
+      <li><b>Dizer onde a resposta é usada:</b> "✦ Usado em roteiros e ideias", "Só nas ideias", "No universo".</li>
+      <li><b>Medidor honesto:</b> só conta o que de fato chega aos roteiros.</li>
+      <li><b>Um cartão "Como você soa":</b> 5 tons que só o tom diz, mais energia, frases, palavras e humor em controles segmentados, com uma frase de exemplo que muda a cada toque.</li>
+      <li><b>Chips ✓ "uso" e ✕ "nunca uso"</b> nas aberturas e nos finais; um final principal.</li>
+      <li><b>Confirmar em vez de perguntar:</b> "Detectado: Tutorial (6 roteiros) · Está certo?"; gênero vindo do iOS para confirmar.</li>
+      <li><b>"+ Something else" vira chip no próprio cartão;</b> um cartão "Também é verdade sobre mim" mostra as notas livres, com apagar.</li>
+      <li><b>Cartões condicionais:</b> gênero e forma de tratamento só nos idiomas que precisam; "My offer" só para negócio ou venda; regras do nicho só em saúde, finanças, direito e UGC.</li>
+      <li><b>Histórias com perguntas guiadas e microfone</b> em todo campo de texto livre.</li>
+      <li><b>Nova ordem da página:</b> Quem você é · Com quem fala · Sobre o quê · Como soa · Como abre e fecha · O que é verdade sobre você · O que nunca dizer · Exemplos e o que o Cue aprendeu.</li>
+      <li><b>Cartão "What Cue learned"</b> com o que foi aprendido do "Adjust" e das gravações, cada linha com apagar.</li>
+      <li><b>Retorno leve por roteiro:</b> dois chips depois de gravar, "Soa como eu" e "Ajustar", sem nota de 1 a 5.</li>
+      <li><b>A dica diária pela ordem de impacto,</b> e perguntas de escolha única respondidas na própria dica com um toque.</li>
+      <li><b>Onboarding honesto:</b> os tópicos servem "para suas ideias e roteiros".</li>
+      <li><b>Acessibilidade:</b> estado em forma (✓/✕) e não só em cor, contraste medido, Dynamic Type nos exemplos, VoiceOver lendo o exemplo.</li>
+    </ul>
+    <p>Tudo isso mantém o editor único e os componentes nativos, e passa antes por um desenho para você aprovar.</p>
+  </div>
+</section>
+
+<section aria-labelledby="h-dec">
+  <h2 id="h-dec">Decisões que são suas</h2>
+  <div class="group">
+    <div class="row"><div class="what">D1 · Prova ao PCC</div><div class="how">Exemplos, textos importados e roteiros aprovados passam a chegar à rota principal. Recomendo sim; senão, mudar o medidor e o aviso.</div><span class="chip c-p1">ALTA</span></div>
+    <div class="row"><div class="what">D2 · Final vence a plataforma</div><div class="how">Com uma chamada por vídeo. Recomendo sim.</div><span class="chip c-p1">ALTA</span></div>
+    <div class="row"><div class="what">D3 · Abertura e bordões firmes no PCC</div><div class="how">Firmes, rodando entre os escolhidos. Recomendo sim.</div><span class="chip c-p2">MÉDIA</span></div>
+    <div class="row"><div class="what">D4 · Aprender a cada roteiro</div><div class="how">Do que foi gravado e do "Adjust", com a lista "What Cue learned". Recomendo sim.</div><span class="chip c-p1">ALTA</span></div>
+    <div class="row"><div class="what">D5 · Contagens no Analytics</div><div class="how">Aprovações e motivos, sem texto, só com "Help improve Cue". Recomendo sim.</div><span class="chip c-p2">MÉDIA</span></div>
+    <div class="row"><div class="what">D6 · Gênero gramatical</div><div class="how">Onde, opções, neutro como padrão, pré-preencher do iOS, mandar à Ultra. Recomendo a proposta inteira.</div><span class="chip c-p1">ALTA</span></div>
+    <div class="row"><div class="what">D7 · Forma de tratamento</div><div class="how">Pergunta opcional; informal por padrão; formal para finanças, direito, saúde e B2B. Recomendo sim.</div><span class="chip c-p1">ALTA</span></div>
+    <div class="row"><div class="what">D8 · Campos novos</div><div class="how">Histórias e fatos, oferta, ponto de vista, país, regras do nicho. Recomendo histórias e oferta primeiro.</div><span class="chip c-p1">ALTA</span></div>
+    <div class="row"><div class="what">D9 · Tirar ou deduzir</div><div class="how">"Where you post", "Usual length", "What you film most", tons repetidos, a dica "Who's watching?". Recomendo deduzir e tirar.</div><span class="chip c-p2">MÉDIA</span></div>
+    <div class="row"><div class="what">D10 · Seletor de duração por roteiro</div><div class="how">Hoje a duração vem do texto e do ritmo natural. Sua escolha.</div><span class="chip c-p3">SUA</span></div>
+    <div class="row"><div class="what">D11 · Listas</div><div class="how">+8 tópicos, renomes, "Daily routines" (onboarding e universo), dividir "My own business", fundir Expert e Teacher, novos públicos, metas, formatos, aberturas e finais.</div><span class="chip c-p2">MÉDIA</span></div>
+    <div class="row"><div class="what">D12 · Tópicos do My Cue Voice no universo</div><div class="how">Em 06/10 você decidiu que não viram mundos. Manter?</div><span class="chip c-p3">SUA</span></div>
+    <div class="row"><div class="what">D13 · Aprender com o que o criador falou</div><div class="how">Voice Following comparando o dito com o roteiro, no iPhone, com a lista editável. Recomendo sim.</div><span class="chip c-p1">ALTA</span></div>
+    <div class="row"><div class="what">D14 · UI/UX dos cartões</div><div class="how">As sugestões acima, começando por um desenho para você aprovar, junto com os consertos e o gênero gramatical.</div><span class="chip c-p2">MÉDIA</span></div>
+  </div>
+</section>
+
+</div>

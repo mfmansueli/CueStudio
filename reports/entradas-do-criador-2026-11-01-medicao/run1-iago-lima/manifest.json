@@ -1,0 +1,455 @@
+[
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Default",
+        "deviceId" : "00008130-001274381451001C",
+        "deviceName" : "iago Lima iphone",
+        "exportedFileName" : "A30CE4A4-398B-4DF9-95A4-9220097CEE61.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "term-of-address_0_BA75F2CB-58FE-43DF-8D44-53EC2B41FDD2.txt",
+        "timestamp" : 1793573739.719
+      }
+    ],
+    "testIdentifier" : "CreatorInputsDeviceTests/recordsTheTermOfAddress()",
+    "testIdentifierURL" : "test://com.apple.xcode/Cue%20Studio/Cue%20StudioTests/CreatorInputsDeviceTests/recordsTheTermOfAddress()"
+  },
+  {
+    "attachments" : [
+      {
+        "arguments" : [
+          "pt-fitness-woman·app"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008130-001274381451001C",
+        "deviceName" : "iago Lima iphone",
+        "exportedFileName" : "F3BA8D02-2765-4AF7-9D55-FD50A56D043F.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-pt-fitness-woman-app-2_0_74C7F69B-D7F6-438D-91FB-1E15A89F909E.json",
+        "timestamp" : 1793573768.081
+      },
+      {
+        "arguments" : [
+          "pt-fitness-woman·app"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008130-001274381451001C",
+        "deviceName" : "iago Lima iphone",
+        "exportedFileName" : "D81B9ABF-9D93-4434-8C71-9E6C57022F40.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-pt-fitness-woman-app-1_0_91E0BDF6-5BB6-4FE7-8CE2-7AA44A080C6C.json",
+        "timestamp" : 1793573758.225
+      },
+      {
+        "arguments" : [
+          "pt-fitness-woman·app"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008130-001274381451001C",
+        "deviceName" : "iago Lima iphone",
+        "exportedFileName" : "EB070FBD-565D-47D4-9A6C-A3B47C10B196.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-pt-fitness-woman-app-0_0_5FEE3239-BDA4-4073-A173-EC78A1E59263.json",
+        "timestamp" : 1793573748.564
+      },
+      {
+        "arguments" : [
+          "pt-fitness-woman·device"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008130-001274381451001C",
+        "deviceName" : "iago Lima iphone",
+        "exportedFileName" : "C237F8F1-CED5-4272-A9F1-5C4DFAF2B184.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-pt-fitness-woman-device-2_0_8D2AB18F-A0A8-4DD8-9C9B-36102BAAE9FC.json",
+        "timestamp" : 1793573799.131
+      },
+      {
+        "arguments" : [
+          "pt-fitness-woman·device"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008130-001274381451001C",
+        "deviceName" : "iago Lima iphone",
+        "exportedFileName" : "525356E5-F0C0-473F-BA60-F59CC5096722.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-pt-fitness-woman-device-1_0_B18532FC-D3DE-4635-B53E-9D5317F75660.json",
+        "timestamp" : 1793573788.436
+      },
+      {
+        "arguments" : [
+          "pt-fitness-woman·device"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008130-001274381451001C",
+        "deviceName" : "iago Lima iphone",
+        "exportedFileName" : "12B32D4B-4CFD-4E33-891D-2583FC6D873E.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-pt-fitness-woman-device-0_0_30C34FFB-4539-4447-B853-9FD05B42D593.json",
+        "timestamp" : 1793573777.134
+      },
+      {
+        "arguments" : [
+          "es-beauty-woman·app"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008130-001274381451001C",
+        "deviceName" : "iago Lima iphone",
+        "exportedFileName" : "47A7B37F-7E61-40A8-A047-621C672D9EA1.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-es-beauty-woman-app-2_0_05157996-B804-44DD-9EFC-202B85BBEAA2.json",
+        "timestamp" : 1793573828.725
+      },
+      {
+        "arguments" : [
+          "es-beauty-woman·app"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008130-001274381451001C",
+        "deviceName" : "iago Lima iphone",
+        "exportedFileName" : "0AF7467F-B420-4854-8519-19EF9FC1EAB1.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-es-beauty-woman-app-1_0_3375A40B-0EAC-403E-BBD5-758859F2B0B7.json",
+        "timestamp" : 1793573819.156
+      },
+      {
+        "arguments" : [
+          "es-beauty-woman·app"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008130-001274381451001C",
+        "deviceName" : "iago Lima iphone",
+        "exportedFileName" : "0B45F217-2DFC-456F-95AF-870F85805E1A.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-es-beauty-woman-app-0_0_C8CA9694-732A-4D6B-B8BB-321DF2519EA8.json",
+        "timestamp" : 1793573810.008
+      },
+      {
+        "arguments" : [
+          "es-beauty-woman·device"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008130-001274381451001C",
+        "deviceName" : "iago Lima iphone",
+        "exportedFileName" : "317812E1-208B-413A-9092-BA96FA802DC6.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-es-beauty-woman-device-2_0_1C67220C-2042-4E41-B1D2-3978BCEB7053.json",
+        "timestamp" : 1793573858.227
+      },
+      {
+        "arguments" : [
+          "es-beauty-woman·device"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008130-001274381451001C",
+        "deviceName" : "iago Lima iphone",
+        "exportedFileName" : "61C3B844-E7E8-4E35-80E7-3DA011584A7A.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-es-beauty-woman-device-1_0_7B3830AF-414C-48BF-A7CE-0210DE900BCA.json",
+        "timestamp" : 1793573848.016
+      },
+      {
+        "arguments" : [
+          "es-beauty-woman·device"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008130-001274381451001C",
+        "deviceName" : "iago Lima iphone",
+        "exportedFileName" : "2239C2AB-DAE1-4F98-A69B-49E397071811.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-es-beauty-woman-device-0_0_A54E7BA6-9F40-4F02-A727-FF03DEE8EF61.json",
+        "timestamp" : 1793573839.639
+      },
+      {
+        "arguments" : [
+          "it-food-woman·app"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008130-001274381451001C",
+        "deviceName" : "iago Lima iphone",
+        "exportedFileName" : "E19950C1-FE2A-4D55-9C68-31850DE6E984.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-it-food-woman-app-2_0_AD0D7C99-6C87-47DC-BD1D-7EBB14E59DA0.json",
+        "timestamp" : 1793573885.146
+      },
+      {
+        "arguments" : [
+          "it-food-woman·app"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008130-001274381451001C",
+        "deviceName" : "iago Lima iphone",
+        "exportedFileName" : "E11AB41F-220D-4AAF-B31E-C7EF5B4D2F2D.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-it-food-woman-app-1_0_F74314A0-7C7D-43FA-B120-7354F432AF2C.json",
+        "timestamp" : 1793573876.193
+      },
+      {
+        "arguments" : [
+          "it-food-woman·app"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008130-001274381451001C",
+        "deviceName" : "iago Lima iphone",
+        "exportedFileName" : "00056B2E-F436-4F9B-87F1-C74804A31783.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-it-food-woman-app-0_0_B182892B-F60B-42B8-802E-06E3E939D313.json",
+        "timestamp" : 1793573867.012
+      },
+      {
+        "arguments" : [
+          "it-food-woman·device"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008130-001274381451001C",
+        "deviceName" : "iago Lima iphone",
+        "exportedFileName" : "B738548D-746C-4FC8-B6F6-C156BA926F6D.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-it-food-woman-device-2_0_7F47F3A0-5D3D-42F8-82ED-FA88A9FEB91F.json",
+        "timestamp" : 1793573910.702
+      },
+      {
+        "arguments" : [
+          "it-food-woman·device"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008130-001274381451001C",
+        "deviceName" : "iago Lima iphone",
+        "exportedFileName" : "B7500EE8-716A-4365-B520-960863A05FB0.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-it-food-woman-device-1_0_FA43B483-4A22-4C47-9F8B-174833DB108C.json",
+        "timestamp" : 1793573901.731
+      },
+      {
+        "arguments" : [
+          "it-food-woman·device"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008130-001274381451001C",
+        "deviceName" : "iago Lima iphone",
+        "exportedFileName" : "C645DB18-0922-4B09-9B8F-C935B694AEF2.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-it-food-woman-device-0_0_5875B5D0-51DF-49BE-BA90-845D69D813F0.json",
+        "timestamp" : 1793573893.206
+      },
+      {
+        "arguments" : [
+          "fr-travel-woman·app"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008130-001274381451001C",
+        "deviceName" : "iago Lima iphone",
+        "exportedFileName" : "B6CE2C0F-C13A-4EF1-AF08-1B5C8397997F.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-fr-travel-woman-app-2_0_65386A2A-454C-4F41-B9EC-3CF63CE976D4.json",
+        "timestamp" : 1793573936.807
+      },
+      {
+        "arguments" : [
+          "fr-travel-woman·app"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008130-001274381451001C",
+        "deviceName" : "iago Lima iphone",
+        "exportedFileName" : "2B6959C8-1D72-46B4-96DE-BDCC1396551F.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-fr-travel-woman-app-1_0_2E1920D8-A9FB-4AE6-B3E5-DE99D8DE7E1E.json",
+        "timestamp" : 1793573928.446
+      },
+      {
+        "arguments" : [
+          "fr-travel-woman·app"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008130-001274381451001C",
+        "deviceName" : "iago Lima iphone",
+        "exportedFileName" : "0EBAA3BA-4FDF-4F8B-A14C-4A0A08E9AAAE.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-fr-travel-woman-app-0_0_CB66C2E6-AE0A-43B1-B891-7B0C8F1B615A.json",
+        "timestamp" : 1793573919.682
+      },
+      {
+        "arguments" : [
+          "fr-travel-woman·device"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008130-001274381451001C",
+        "deviceName" : "iago Lima iphone",
+        "exportedFileName" : "0B87CF3D-87C4-4D5D-8E1E-08C92F5A8BAB.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-fr-travel-woman-device-2_0_2B02B362-1722-4FA3-8B77-3B34FAA5A47F.json",
+        "timestamp" : 1793573964.926
+      },
+      {
+        "arguments" : [
+          "fr-travel-woman·device"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008130-001274381451001C",
+        "deviceName" : "iago Lima iphone",
+        "exportedFileName" : "DE01E307-58C3-4235-8858-CB3FFBD816FF.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-fr-travel-woman-device-1_0_8323079E-0B17-49EF-914B-3703709F9F5C.json",
+        "timestamp" : 1793573954.492
+      },
+      {
+        "arguments" : [
+          "fr-travel-woman·device"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008130-001274381451001C",
+        "deviceName" : "iago Lima iphone",
+        "exportedFileName" : "3743E2C3-5CDA-4A9E-81E5-EAC585B20DC6.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-fr-travel-woman-device-0_0_AD5371B9-70F1-484A-80CF-50ECD36A0E97.json",
+        "timestamp" : 1793573945.408
+      },
+      {
+        "arguments" : [
+          "en-no-cta·app"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008130-001274381451001C",
+        "deviceName" : "iago Lima iphone",
+        "exportedFileName" : "24867C48-C858-4F6A-AC9B-9FDE9CA7A969.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-en-no-cta-app-2_0_E8DB1650-99A7-419C-9A1C-CFC5057B8DF5.json",
+        "timestamp" : 1793573992.358
+      },
+      {
+        "arguments" : [
+          "en-no-cta·app"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008130-001274381451001C",
+        "deviceName" : "iago Lima iphone",
+        "exportedFileName" : "1883A3C9-E0C1-48DE-A7EB-E2B89A0E42F6.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-en-no-cta-app-1_0_A6844EB5-6149-4DE9-8510-A9158F9417E0.json",
+        "timestamp" : 1793573983.114
+      },
+      {
+        "arguments" : [
+          "en-no-cta·app"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008130-001274381451001C",
+        "deviceName" : "iago Lima iphone",
+        "exportedFileName" : "93A343DB-7F9B-4012-AE46-4028DEDB2149.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-en-no-cta-app-0_0_A1E1FA6C-95A0-4D7B-A3D1-D9B922BE9464.json",
+        "timestamp" : 1793573974.665
+      },
+      {
+        "arguments" : [
+          "en-no-cta·device"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008130-001274381451001C",
+        "deviceName" : "iago Lima iphone",
+        "exportedFileName" : "3BE32CD2-76B0-4F32-9E3E-C35AC7341A9E.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-en-no-cta-device-2_0_A8E99355-0203-446D-BFBB-DAAACEA54A2A.json",
+        "timestamp" : 1793574020.319
+      },
+      {
+        "arguments" : [
+          "en-no-cta·device"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008130-001274381451001C",
+        "deviceName" : "iago Lima iphone",
+        "exportedFileName" : "E9B85843-3AB1-45DF-B4C1-BAA3EC2ECDB1.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-en-no-cta-device-1_0_84EB76B6-6223-4783-A12A-1C8554314170.json",
+        "timestamp" : 1793574010.977
+      },
+      {
+        "arguments" : [
+          "en-no-cta·device"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008130-001274381451001C",
+        "deviceName" : "iago Lima iphone",
+        "exportedFileName" : "F728E5ED-0E98-453F-AB96-0EA785C5DC17.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-en-no-cta-device-0_0_F4824566-2A69-4878-93C5-ADB91108F8A2.json",
+        "timestamp" : 1793574001.03
+      },
+      {
+        "arguments" : [
+          "pt-follow-cta·app"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008130-001274381451001C",
+        "deviceName" : "iago Lima iphone",
+        "exportedFileName" : "6A2673DE-6156-4BE2-82B3-D2136ED9FE5E.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-pt-follow-cta-app-2_0_FF10CA70-D08E-4102-8E11-5D6BEBEBEFFD.json",
+        "timestamp" : 1793574056.122
+      },
+      {
+        "arguments" : [
+          "pt-follow-cta·app"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008130-001274381451001C",
+        "deviceName" : "iago Lima iphone",
+        "exportedFileName" : "40F9B0FC-B4B5-4DAB-BFFA-7A693A818E11.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-pt-follow-cta-app-1_0_12286CF6-ECDA-44A0-AE25-F7DA221EBDAB.json",
+        "timestamp" : 1793574038.376
+      },
+      {
+        "arguments" : [
+          "pt-follow-cta·app"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008130-001274381451001C",
+        "deviceName" : "iago Lima iphone",
+        "exportedFileName" : "4CD68C62-E09C-412F-B937-B60D7396ACB4.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-pt-follow-cta-app-0_0_CEEA147A-EDB2-4ABD-A9FF-6F4F585A2E92.json",
+        "timestamp" : 1793574029.061
+      },
+      {
+        "arguments" : [
+          "pt-follow-cta·device"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008130-001274381451001C",
+        "deviceName" : "iago Lima iphone",
+        "exportedFileName" : "5A89609B-D71D-4A67-8A82-1C83849CA2A8.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-pt-follow-cta-device-2_0_C9737296-2BFE-482A-893C-E3ED8ADD5D10.json",
+        "timestamp" : 1793574083.707
+      },
+      {
+        "arguments" : [
+          "pt-follow-cta·device"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008130-001274381451001C",
+        "deviceName" : "iago Lima iphone",
+        "exportedFileName" : "8FF4FEA4-0EDC-4C31-BE4C-B2EB0E3F5BFC.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-pt-follow-cta-device-1_0_710D6968-746C-4B22-A48D-72CD745620D2.json",
+        "timestamp" : 1793574074.225
+      },
+      {
+        "arguments" : [
+          "pt-follow-cta·device"
+        ],
+        "configurationName" : "Default",
+        "deviceId" : "00008130-001274381451001C",
+        "deviceName" : "iago Lima iphone",
+        "exportedFileName" : "2E81C7A6-D410-496A-8F2C-E09C36CEF053.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "creator-inputs-pt-follow-cta-device-0_0_C93CAB2D-6DC3-4DB2-B01C-BAF34B62E904.json",
+        "timestamp" : 1793574065.55
+      }
+    ],
+    "testIdentifier" : "CreatorInputsDeviceTests/writesTheCase(_:)",
+    "testIdentifierURL" : "test://com.apple.xcode/Cue%20Studio/Cue%20StudioTests/CreatorInputsDeviceTests/writesTheCase(_:)"
+  }
+]

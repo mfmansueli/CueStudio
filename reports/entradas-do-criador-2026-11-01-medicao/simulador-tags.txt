@@ -1,0 +1,19 @@
+TypedPersonalityTagsTests, simulador iPhone 17 (plano Full, scripts/test.sh only), código main ed350580, 01/11/2026 23:52.
+Resultado: 0 passed, 2 failed (os dois testes descrevem o comportamento esperado; falhar hoje confirma o achado).
+
+✘ TypedPersonalityTagsTests/aRemovedTypedOpeningLeavesTheBrief()
+  Expectation failed: !text.contains("Okay, real talk")
+  a removed opening is still sent · openings [] · customTags ["Okay, real talk"] · brief: Write in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.
+  Who they are: a lifestyle and personal creator.
+  They speak as one person: say “I” and “my”.
+  They sound casual.
+  Also true of them, in their own words: Okay, real talk.
+
+✘ TypedPersonalityTagsTests/aTypedCatchphraseIsSaidOnce()
+  Expectation failed: count == 1
+  count → 2: the catchphrase is in the brief 2 times · customTags ["Hey fam"] · brief: Write in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.
+  Who they are: a lifestyle and personal creator.
+  They speak as one person: say “I” and “my”.
+  They sound casual.
+  They often say: “Hey fam”. Use one naturally, ideally in the opening.
+  Also true of them, in their own words: Hey fam.
