@@ -84,6 +84,8 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
     var credential: String?
     /// "I" or "we" in their scripts. Nil: the kind of creator decides (`CreatorRole.suggestedSpeaksAs`).
     var speaksAs: SpeaksAs?
+    /// How the words about them agree and how the viewer is addressed, where a language asks (`VoiceAgreement`, B8).
+    var agreement = VoiceAgreement()
     /// Scripts the creator approved with "Sounds like me" (up to `VoiceLimits.approvedSamples`, the oldest goes first): examples of their voice.
     var approvedSamples: [VoiceExample]
     /// A few sentences of what the creator imported ("Import my writing"), up to `VoiceExcerpt.limit`: the library each request picks examples from.
@@ -158,7 +160,7 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
 
     var voice: CreatorVoice {
         // Only what the creator answered: the tones and the vocabulary a new profile starts with (or an older build saved unverified) are not theirs yet.
-        CreatorVoice(
+        var voice = CreatorVoice(
             sounds: hasAnswered(.tone) ? sounds : [], phrases: phrases, vocabulary: hasAnswered(.audience) ? vocabulary : nil,
             styles: styles, role: role,
             openings: openings, endings: endings, formats: formats, swearing: swearing, style: style, avoid: avoid, reach: reach,
@@ -168,6 +170,8 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
             customRole: customRole, credential: credential, speaksAs: speaksAs, approvedSamples: approvedSamples,
             excerpts: ExcerptRetriever.pick(from: excerpts, limit: VoiceExample.limit), fingerprint: fingerprint
         )
+        voice.agreement = agreement
+        return voice
     }
 
     /// The voice for something written in `language` (a code like "en" or "pt-BR"; nil is not known): the topics only when `idea` is about them (it says
@@ -213,7 +217,7 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         case confirmedVoiceSteps, unverifiedVoiceSteps
         case openings, endings, formats, swearing, examples, customTags, customFormats, declinedVoiceItems
         case style, avoid, avoidNone, reach, audienceLevel, approvals
-        case voiceTopics, topicDetails, audienceGroup, audienceNote, watchReasons, contentGoals, customRole, credential, speaksAs
+        case voiceTopics, topicDetails, audienceGroup, audienceNote, watchReasons, contentGoals, customRole, credential, speaksAs, agreement
         case approvedSamples, excerpts, fingerprint, voiceSchemaVersion
         case photoData = "photo"
         /// v1 kept a single tone; it becomes the first "How I sound".
@@ -288,6 +292,7 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         customRole = Self.trimmed(try? container.decodeIfPresent(String.self, forKey: .customRole))
         credential = Self.trimmed(try? container.decodeIfPresent(String.self, forKey: .credential))
         speaksAs = (try? container.decodeIfPresent(SpeaksAs.self, forKey: .speaksAs)) ?? nil
+        agreement = (try? container.decodeIfPresent(VoiceAgreement.self, forKey: .agreement)) ?? VoiceAgreement()
         approvedSamples = Array(
             ((try? container.decodeIfPresent([VoiceExample].self, forKey: .approvedSamples)) ?? []).suffix(VoiceLimits.approvedSamples)
         )
@@ -347,6 +352,7 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         try container.encodeIfPresent(customRole, forKey: .customRole)
         try container.encodeIfPresent(credential, forKey: .credential)
         try container.encodeIfPresent(speaksAs, forKey: .speaksAs)
+        if !agreement.isEmpty { try container.encode(agreement, forKey: .agreement) }
         try container.encode(approvedSamples, forKey: .approvedSamples)
         try container.encode(excerpts, forKey: .excerpts)
         try container.encodeIfPresent(fingerprint, forKey: .fingerprint)

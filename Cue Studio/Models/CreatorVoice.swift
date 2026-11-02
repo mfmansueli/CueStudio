@@ -41,6 +41,8 @@ nonisolated struct CreatorVoice: Hashable, Sendable {
     var credential: String?
     /// "I" or "we" as the creator chose; nil when they didn't (`resolvedSpeaksAs`).
     var speaksAs: SpeaksAs?
+    /// Gender agreement and the form of address (`VoiceAgreement`, B8): a rule, kept by `restrictionsOnly`.
+    var agreement = VoiceAgreement()
     /// Scripts the creator approved with "Sounds like me", oldest first.
     var approvedSamples: [VoiceExample] = []
     // What the creator imported ("Import my writing").

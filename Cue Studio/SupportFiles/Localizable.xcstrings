@@ -11268,6 +11268,125 @@
         }
       }
     },
+    "Feminine" : {
+      "comment" : "My Cue Voice › I am › Write me as: the words about the creator agree in the feminine (cansada, je suis allée)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مؤنث"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Feminin"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weiblich"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Femenino"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Féminin"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "स्त्रीलिंग"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Feminin"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Femminile"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "女性形"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "여성형"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Feminin"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vrouwelijk"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Feminino"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Feminin"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เพศหญิง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kadın"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nữ"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "女性"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "女性"
+          }
+        }
+      }
+    },
     "Festa Junina" : {
       "comment" : "An occasion ideas can be tied to: shown on Find inspiration's card as “Coming up: %@” and in a starter's title (Brazil's June festivals; keep the Portuguese name in other languages unless a common local name exists)",
       "localizations" : {
@@ -11621,6 +11740,244 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "接續你的影片「%@」"
+          }
+        }
+      }
+    },
+    "Formal suits finance, law, health or business audiences, where the language has it (usted, vous, Sie)." : {
+      "comment" : "My Cue Voice › I am: footnote under Speak to viewers; Cue suggests, never decides",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يناسب الأسلوب الرسمي جمهور المال والقانون والصحة والأعمال، في اللغات التي تفرّق بينهما (usted وvous وSie)."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formelt passer til økonomi, jura, sundhed eller erhvervspublikum, hvor sproget har det (usted, vous, Sie)."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Förmlich passt zu Finanzen, Recht, Gesundheit oder einem Business-Publikum, wo die Sprache es kennt (usted, vous, Sie)."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El formal va bien con finanzas, derecho, salud o público de empresa, donde el idioma lo tiene (usted, vous, Sie)."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le vouvoiement convient à la finance, au droit, à la santé ou à un public professionnel, là où la langue le distingue (usted, vous, Sie)."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "औपचारिक संबोधन वित्त, क़ानून, स्वास्थ्य या बिज़नेस दर्शकों के लिए ठीक है, जिन भाषाओं में यह फ़र्क़ है (आप, usted, Sie)।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formal cocok untuk penonton keuangan, hukum, kesehatan, atau bisnis, jika bahasanya membedakan (Anda, usted, Sie)."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il formale si addice a finanza, diritto, salute o pubblico aziendale, dove la lingua lo prevede (usted, vous, Sie)."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "丁寧な話し方は、金融・法律・医療・ビジネス向けに合います（区別がある言語で: usted、vous、Sie）。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "존댓말은 금융, 법률, 건강, 비즈니스 시청자에게 잘 맞아요(구분이 있는 언어에서: usted, vous, Sie)."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formelt passer for økonomi, jus, helse eller næringslivspublikum, der språket har det (usted, vous, Sie)."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formeel past bij financiën, recht, zorg of zakelijk publiek, waar de taal het kent (usted, vous, Sie)."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O formal combina com finanças, direito, saúde ou público de negócios, onde a língua tem (o senhor, usted, vous)."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formellt passar finans, juridik, hälsa eller företagspublik, där språket har det (usted, vous, Sie)."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "แบบเป็นทางการเหมาะกับผู้ชมด้านการเงิน กฎหมาย สุขภาพ หรือธุรกิจ ในภาษาที่มีการแยก (usted, vous, Sie)"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resmi hitap finans, hukuk, sağlık veya iş dünyası izleyicisine uyar; dilde varsa (siz, usted, Sie)."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trang trọng hợp với khán giả tài chính, luật, sức khỏe hoặc doanh nghiệp, ở ngôn ngữ có phân biệt (usted, vous, Sie)."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正式称呼适合金融、法律、健康或商业受众，适用于有此区分的语言（usted、vous、Sie）。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正式稱呼適合金融、法律、健康或商業受眾，適用於有此區分的語言（usted、vous、Sie）。"
+          }
+        }
+      }
+    },
+    "Formal" : {
+      "comment" : "My Cue Voice › I am › Speak to viewers: the formal you (usted, vous, Sie)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "رسمي"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formel"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Förmlich (Sie)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formal"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formel"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "औपचारिक"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formal"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formale"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "丁寧"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "존댓말"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formell"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formeel"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formal"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formell"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เป็นทางการ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resmi"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trang trọng"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正式"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正式"
           }
         }
       }
@@ -13886,6 +14243,244 @@
         }
       }
     },
+    "In Portuguese, Spanish, French or Italian, words like “tired” change with it. Not chosen, Cue avoids them. It goes with your voice, to Ultra AI too when you pick it." : {
+      "comment" : "My Cue Voice › I am: footnote under Write me as",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "في البرتغالية والإسبانية والفرنسية والإيطالية تتغير كلمات مثل ”متعب“ بحسب هذا الاختيار. بدون اختيار، يتجنبها Cue. يُرسل مع صوتك، وإلى Ultra AI أيضًا عند اختيارها."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "På portugisisk, spansk, fransk eller italiensk ændrer ord som “træt” sig efter det. Uden valg undgår Cue dem. Det følger med din stemme, også til Ultra AI, når du vælger den."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Im Portugiesischen, Spanischen, Französischen oder Italienischen ändern sich Wörter wie „müde“ danach. Ohne Auswahl vermeidet Cue sie. Es geht mit deiner Stimme mit, auch an Ultra AI, wenn du sie wählst."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En portugués, español, francés o italiano, palabras como “cansada” cambian con esto. Sin elegir, Cue las evita. Va con tu voz, también a Ultra AI cuando la eliges."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En portugais, espagnol, français ou italien, des mots comme « fatiguée » en dépendent. Sans choix, Cue les évite. Cela accompagne votre voix, y compris vers Ultra AI quand vous la choisissez."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "पुर्तगाली, स्पैनिश, फ़्रेंच या इतालवी में “थका” जैसे शब्द इससे बदलते हैं। न चुनें तो Cue उनसे बचता है। यह आपकी आवाज़ के साथ जाता है, और जब आप चुनें तो Ultra AI को भी।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dalam bahasa Portugis, Spanyol, Prancis, atau Italia, kata seperti “lelah” berubah karenanya. Jika tidak dipilih, Cue menghindarinya. Ini dikirim bersama suaramu, juga ke Ultra AI saat kamu memilihnya."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In portoghese, spagnolo, francese o italiano, parole come “stanca” cambiano di conseguenza. Senza scelta, Cue le evita. Va con la tua voce, anche a Ultra AI quando la scegli."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ポルトガル語・スペイン語・フランス語・イタリア語では「疲れた」などの語形がこれで変わります。未選択なら Cue はそうした語を避けます。あなたの声と一緒に送られ、Ultra AI を選んだときは Ultra AI にも送られます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "포르투갈어, 스페인어, 프랑스어, 이탈리아어에서는 ‘피곤한’ 같은 말이 이에 따라 달라져요. 선택하지 않으면 Cue가 그런 말을 피해요. 내 목소리와 함께 전달되며, Ultra AI를 고르면 Ultra AI에도 전달돼요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "På portugisisk, spansk, fransk eller italiensk endres ord som «trøtt» etter dette. Uten valg unngår Cue dem. Det følger med stemmen din, også til Ultra AI når du velger den."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In het Portugees, Spaans, Frans of Italiaans veranderen woorden als ‘moe’ hierdoor. Niet gekozen: Cue vermijdt ze. Het gaat mee met je stem, ook naar Ultra AI als je die kiest."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Em português, espanhol, francês ou italiano, palavras como “cansada” mudam com isso. Sem escolha, o Cue as evita. Vai com a sua voz, também para a Ultra AI quando você a escolhe."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "På portugisiska, spanska, franska eller italienska ändras ord som ”trött” efter detta. Utan val undviker Cue dem. Det följer med din röst, även till Ultra AI när du väljer den."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ในภาษาโปรตุเกส สเปน ฝรั่งเศส หรืออิตาลี คำอย่าง “เหนื่อย” จะเปลี่ยนตามนี้ ถ้าไม่เลือก Cue จะเลี่ยงคำเหล่านั้น ข้อมูลนี้ส่งไปพร้อมเสียงของคุณ รวมถึง Ultra AI เมื่อคุณเลือกใช้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Portekizce, İspanyolca, Fransızca veya İtalyancada “yorgun” gibi sözcükler buna göre değişir. Seçilmezse Cue bunlardan kaçınır. Sesinle birlikte gider; Ultra AI’ı seçtiğinde ona da."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trong tiếng Bồ Đào Nha, Tây Ban Nha, Pháp hoặc Ý, những từ như “mệt” thay đổi theo lựa chọn này. Nếu không chọn, Cue sẽ tránh chúng. Thông tin này đi kèm giọng của bạn, kể cả tới Ultra AI khi bạn chọn."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在葡萄牙语、西班牙语、法语或意大利语中，“累”这类词会随之变化。不选择时，Cue 会避开这些词。它会随你的声音一起发送，选择 Ultra AI 时也会发送给 Ultra AI。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在葡萄牙文、西班牙文、法文或義大利文中，「累」這類詞會隨之變化。不選擇時，Cue 會避開這些詞。它會隨你的聲音一起傳送，選擇 Ultra AI 時也會傳送給 Ultra AI。"
+          }
+        }
+      }
+    },
+    "Informal" : {
+      "comment" : "My Cue Voice › I am › Speak to viewers: the informal you (tú, tu, du), the default",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "غير رسمي"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uformel"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Locker (du)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informal"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informel"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अनौपचारिक"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Santai"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informale"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "くだけた"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "반말"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uformell"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informeel"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informal"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informell"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ไม่เป็นทางการ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Samimi"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thân mật"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "随意"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "隨意"
+          }
+        }
+      }
+    },
     "Instructions to the model" : {
       "comment" : "Preview of what Ultra AI sends: expandable section with the AI model's instructions",
       "localizations" : {
@@ -15548,6 +16143,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "農曆新年"
+          }
+        }
+      }
+    },
+    "Masculine" : {
+      "comment" : "My Cue Voice › I am › Write me as: the words about the creator agree in the masculine (cansado, je suis allé)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مذكر"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maskulin"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Männlich"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masculino"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masculin"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "पुल्लिंग"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maskulin"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maschile"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "男性形"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "남성형"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maskulin"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mannelijk"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masculino"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maskulin"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เพศชาย"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erkek"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nam"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "男性"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "男性"
           }
         }
       }
@@ -17281,6 +17995,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "螢幕錄影不帶 Cue 標記 · 輸出的影片從不帶標記"
+          }
+        }
+      }
+    },
+    "No gender" : {
+      "comment" : "My Cue Voice › I am › Write me as: the creator asked for no gender; Cue rephrases instead of marking one",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بلا جنس"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uden køn"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ohne Geschlecht"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin género"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sans genre"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "बिना लिंग"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tanpa gender"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Senza genere"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "性別なし"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "성별 없음"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uten kjønn"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zonder gender"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem gênero"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utan kön"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ไม่ระบุเพศ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cinsiyetsiz"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Không giới tính"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不分性别"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不分性別"
           }
         }
       }
@@ -23243,6 +24076,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "相機發生問題。"
+          }
+        }
+      }
+    },
+    "Speak to viewers" : {
+      "comment" : "My Cue Voice › I am: label over Informal · Formal, how the script addresses the viewer",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مخاطبة المشاهدين"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tiltal seerne"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ansprache ans Publikum"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cómo hablar a tu público"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "S’adresser au public"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "दर्शकों से संबोधन"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menyapa penonton"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Come parlare al pubblico"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "視聴者への話し方"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시청자에게 말하는 방식"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tiltal seerne"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kijkers aanspreken"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Como falar com quem assiste"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tilltala tittarna"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "การพูดกับผู้ชม"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İzleyiciye hitap"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cách xưng hô với người xem"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "对观众的称呼"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "對觀眾的稱呼"
           }
         }
       }
@@ -30402,6 +31354,125 @@
         }
       }
     },
+    "Use “%@” from your iPhone" : {
+      "comment" : "My Cue Voice › I am: button offering the gender iOS knows (Settings › Term of Address); %@ is Feminine, Masculine or No gender",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "استخدام ”%@“ من iPhone"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brug “%@” fra din iPhone"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„%@“ vom iPhone übernehmen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usar “%@” de tu iPhone"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utiliser « %@ » de votre iPhone"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अपने iPhone से “%@” इस्तेमाल करें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gunakan “%@” dari iPhone-mu"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usa “%@” dal tuo iPhone"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhoneの設定「%@」を使う"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhone의 ‘%@’ 사용"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bruk «%@» fra iPhonen din"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "‘%@’ van je iPhone gebruiken"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usar “%@” do seu iPhone"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Använd ”%@” från din iPhone"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ใช้ “%@” จาก iPhone ของคุณ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhone’daki “%@” seçimini kullan"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dùng “%@” từ iPhone của bạn"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用 iPhone 上的“%@”"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用 iPhone 上的「%@」"
+          }
+        }
+      }
+    },
     "Uses notifications · change it anytime in Settings" : {
       "comment" : "Invitation to allow notifications: what it uses, and that it can be changed",
       "localizations" : {
@@ -32607,6 +33678,244 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "用 Ultra AI 免費寫"
+          }
+        }
+      }
+    },
+    "Write us as" : {
+      "comment" : "My Cue Voice › I am: label over Feminine · Masculine · No gender, how the group agrees when scripts say we",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الكلمات عنا"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ord om os"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wörter über uns"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Palabras sobre el equipo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les mots sur nous"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "हमारे बारे में शब्द"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kata tentang kami"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le parole su di noi"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自分たちを表す言葉"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "우리를 가리키는 말"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ord om oss"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Woorden over ons"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Palavras sobre nós"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ord om oss"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "คำที่พูดถึงเรา"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bizimle ilgili sözcükler"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Từ nói về chúng tôi"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "描述我们的词"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "描述我們的詞"
+          }
+        }
+      }
+    },
+    "Write me as" : {
+      "comment" : "My Cue Voice › I am: label over Feminine · Masculine · No gender, how the words about the creator agree when scripts say I",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الكلمات عني"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ord om mig"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wörter über mich"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Palabras sobre mí"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les mots sur moi"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "मेरे बारे में शब्द"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kata tentang saya"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le parole su di me"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自分を表す言葉"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "나를 가리키는 말"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ord om meg"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Woorden over mij"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Palavras sobre mim"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ord om mig"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "คำที่พูดถึงฉัน"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Benimle ilgili sözcükler"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Từ nói về tôi"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "描述我的词"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "描述我的詞"
           }
         }
       }

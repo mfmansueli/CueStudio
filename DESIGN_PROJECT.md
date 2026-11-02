@@ -162,27 +162,44 @@ não mostra número. Teste: `-uiTestWriterStalls`.
 - **Dados** (`CreatorProfile`, tudo opcional, `decodeIfPresent`, `currentVoiceSchema = 2`): papel (8 + `customRole`), `credential`, `speaksAs` (I / We),
   temas (`Niche` + `voiceTopics`, os 15 só do My Cue Voice, fora de `Niche` para não virarem mundos no universo; `topicDetails` até 3 por tema),
   público (`audienceGroup` ou `audienceNote`, `audienceLevel`), `watchReasons` e `contentGoals` (até 2), 8 tons, `style` (energia, frases, palavras,
-  palavrão), `avoid`/`avoidNone`, `reach`, `approvedSamples` (até 3), `customTags`, `customFormats`, e da importação (§4.2) `excerpts` e `fingerprint`.
+  palavrão), `avoid`/`avoidNone`, `reach`, `approvedSamples` (até 3), `customTags`, `customFormats`, `agreement` (`VoiceAgreement`: gênero de quem
+  fala, do "nós" e o tratamento do espectador, tudo opcional), e da importação (§4.2) `excerpts` e `fingerprint`.
   O que o criador digitou nunca é reescrito. Uma abertura, um fecho ou um bordão digitado fica só no próprio campo (vai uma vez ao modelo e sai quando é
   tirado); `customTags` são as notas de "+ Something else" das perguntas sem lista, e um perfil salvo antes de 02/11 perde, ao abrir, as cópias de
   abertura, fecho e bordão que estavam ali (o que não bate com nada fica, porque pode ser uma nota). Um formato digitado ("ASMR") fica em
   `customFormats` e vai em "They film mostly", a linha que o orçamento não corta; tocar nele no editor o tira.
-- **O que vai ao modelo:** os bordões guardados (até 5) numa linha só ("Use one…"); os tons com as palavras do rótulo ("conversational",
+- **O que vai ao modelo:** dos bordões guardados (até 5), **3 por roteiro, em rodízio** (`CatchphraseRotation`, `catchphraseTurn`: cada roteiro
+  escrito na voz avança a vez), numa linha só ("Use one…"); os tons com as palavras do rótulo ("conversational",
   "straight to the point", "playful"); as plataformas pelo nome em inglês. A voz vale com qualquer resposta que o briefing conte, não só com os
   Essentials (`canWriteInMyVoice`); cada rota manda o que a política dela aceita, e com o interruptor desligado nada vai.
+- **O fecho segue o criador** (`CreatorVoice+Ending`, `FormatGuide.ending(for:)`): com "Calls to action" no Avoid, ou fechos que não pedem nada, o bloco
+  CTA do formato vira "finish on the point itself…, with no request to the viewer"; fechos que pedem uma ação levam só essa ação. O pedido do vídeo
+  vence quando pede em tantas palavras ("peça para me seguirem"; `VoiceConstraintChecker.lifted(by:)`, `requestWinsRule`, dito uma vez fora do
+  brief), e o roteiro avisa num toast "Cue followed your idea over “…” in Avoid".
+- **As regras valem em toda ferramenta** (`CreatorVoice.restrictionsOnly`: Avoid, I/We, palavrão "never", concordância): Improve, Shorter, Longer,
+  Translate, Fit da Ultra AI e o roteiro sério (que deixa o estilo de fora) recebem só as regras, nunca o estilo.
+- **Concordância e tratamento** (`AgreementGuide`, `GenderAgreementChecker`): o gênero escolhido vai na língua do roteiro em pt, es, fr, it, hi e ar;
+  sem escolha, "never assume the masculine"; "No gender" pede frases sem marca, nunca formas inventadas; o "nós" concorda com o grupo. O tratamento é
+  informal por padrão em pt (você; tu em pt-PT), es, fr, de, it, nl, tr e id, e só vai em hi, ko e ja quando escolhido. Ferramentas dizem só o escolhido.
+- **Nenhum resultado inventado** (`AttributedResultDetector`, pt/en/es/fr/it): uma cena imaginada pode ter número de rotina ("três vezes por
+  semana"), nunca quilos, dinheiro, porcentagem ou seguidores na boca do criador que o pedido não deu; se ficar depois da segunda tentativa, o roteiro
+  pede conferência (`needsFactCheck`).
 - **Força** (`voiceStrength`): Essentials 40 · Personality 40 · Proof 20, pesos por campo em `VoiceField`; duas aprovações = um exemplo; 4/8/12 trechos
   importados = 1/2/3 exemplos.
 - **Um editor só** (`VoiceEditorSheet` + `Screens/Profile/Voice/Editor/*`): a página, as 4 perguntas, a dica do dock e Settings abrem o mesmo campo; toda
   escrita passa por `CreatorProfileService+VoiceAnswers/+VoiceDetails/+Personality`. 25 temas, 7 subtemas sugeridos por tema, 11 formatos, 7 aberturas,
-  6 fechos, 9 itens de Avoid. As listas de escolha usam os 10 temas do primeiro voo (`Niche.offered`, `chipLabel`) e mantêm um tema antigo que a pessoa
+  6 fechos (nota: "nunca pedir nada" é o "Calls to action" do Avoid), 10 itens de Avoid (com "Calls to action"). As listas de escolha usam os 10 temas do primeiro voo (`Niche.offered`, `chipLabel`) e mantêm um tema antigo que a pessoa
   já tem.
+- **I am** (`VoiceRoleField`): os 8 tipos em cartões, "+ Something else", "Scripts say" I / We com a nota, e embaixo (`VoiceAgreementField`) "Write
+  me as" / "Write us as" · optional (Feminine · Masculine · No gender; tocar de novo solta; "Use “…” from your iPhone" quando o iOS tem o termo de
+  tratamento) e "Speak to viewers" (Informal · Formal), cada um com uma nota de onde vale; a credencial para Expert e Educator.
 - **Página 9.3** (`MyCueVoicePage`): um cartão (✦ WHAT CUE USES com a chave, medidor, "Next: …" com Answer), depois ESSENTIALS (I am · Topics ·
   Audience · They watch to · Voice), PERSONALITY (Style · Usual formats · Opens with · Ends with · Videos are for · My phrases · Avoid · Reach) e
   PROOF (Examples, com a nota de que exemplos, texto importado e roteiros aprovados guiam o que o Cue escreve neste iPhone, ideias incluídas, e nunca
   vão ao Private Cloud Compute nem à Ultra AI), linhas de 52 pt (rótulo cinza, valor à direita ou "+ Add · 1 tap" em amarelo). Rodapé: **Preview** (`VoicePreviewSheet`: "✦ LIVE
   PREVIEW", My voice | Without, "Sounds like me", interruptor "Write in my voice") e **What Cue sends** (`VoiceSendsSheet`, mostra o custo do prompt;
   a voz como o pedido de um roteiro a lê, sem a duração habitual; com o interruptor desligado diz em laranja que nada disso vai; com temas, diz que
-  eles só vão quando a ideia é sobre um deles).
+  eles só vão quando a ideia é sobre um deles; com bordões, mostra os 3 da próxima vez e diz que cada roteiro leva até 3, em rodízio).
   Não há botão de zerar a voz; "Delete my Cue data" apaga o perfil e zera as perguntas (`VoiceQuestionScheduler.reset()`), como numa instalação nova.
 - **Quando perguntar** (`VoiceQuestion`, 17 perguntas; `VoiceQuestionScheduler` com relógio injetável, `VoiceQuestionState`): depois de 2 dias de uso e
   1 roteiro, 1 dica por dia e 3 por semana; "Not now" adia 3 dias, 2 dispensas mandam a pergunta para o fim, 3 seguidas pausam 14 dias, "None of
@@ -192,7 +209,8 @@ não mostra número. Teste: `-uiTestWriterStalls`.
   (`.available`), e o VoiceOver ouve "Tip: {pergunta}". Cada dica de uma pergunta tem um id novo (`tipID`: geração · pergunta · rodada), e "Delete my
   Cue data" começa uma geração nova (o TipKit guarda os ids que invalidou). Fechar a folha só é dispensa quando ela fechou intocada: um exemplo
   colado ou importado, ou uma resposta escolhida, é resposta; abrir "+ Something else" sem Add, ou marcar e desmarcar, não é nem uma coisa nem outra. `VoiceQuestionSheet`:
-  lista agrupada, "+ Something else", "None of these", "Saved · voice nn%", "One more question" (no máximo 3 seguidas).
+  lista agrupada, "+ Something else", "None of these", "Saved · voice nn%", "One more question" (no máximo 3 seguidas). "Who's watching?" oferece os 8
+  grupos do editor. Com "Help improve Cue" ligado, uma resposta digitada manda só a pergunta e se bateu com uma opção (`cue_voice_typed`), nunca o texto.
 - **Setup de 4 perguntas** (2.1–2.4): a audiência pergunta também o nível; o último passo tem "Add a voice example". "Talking head" é guardado como tag;
   "Reaction" é o formato Hot take / reply.
 
@@ -256,9 +274,10 @@ não mostra número. Teste: `-uiTestWriterStalls`.
   deles (mesma palavra ou mesmo começo de 5 letras), subtemas só quando a ideia os nomeia; ideia de menos de duas palavras leva todos. O prompt diz "Write
   about this idea and only this one" e termina em "Stay on the idea: …". (Antes um subtema do perfil virava o assunto do roteiro.)
 - **Depois do roteiro** (`VoiceConstraintChecker`, `VoiceCheckedWriting`): palavra proibida, "eu"/"nós" trocado (en/pt/es), bordão como primeira frase,
-  nome do estilo de abertura escrito, emoji. Se quebrou, o roteiro é escrito **uma** vez mais dizendo a regra. **Qual fica** (`RevisionChoice`,
-  `DraftAssessment`): o segundo só substitui o primeiro se o que quebra for **menos grave** (`VoiceViolation.Kind.severity`: palavra proibida 3; eu/nós,
-  emoji, nome do estilo 2; bordão cedo 1; o que é só contado 0) **e** não perdeu nada: a frase de abertura do brief, ≥ 80% da cobertura do ângulo (ou da
+  nome do estilo de abertura escrito, emoji, concordância de gênero escolhida (pt/es/fr/it), resultado atribuído ao criador que ninguém deu. Se
+  quebrou, o roteiro é escrito **uma** vez mais dizendo a regra. **Qual fica** (`RevisionChoice`,
+  `DraftAssessment`): o segundo só substitui o primeiro se o que quebra for **menos grave** (`VoiceViolation.Kind.severity`: palavra proibida e resultado
+  inventado 3; eu/nós, concordância, emoji, nome do estilo 2; bordão cedo 1; o que é só contado 0) **e** não perdeu nada: a frase de abertura do brief, ≥ 80% da cobertura do ângulo (ou da
   ideia), ≥ 75% das palavras, o fim da última frase, e não repete mais (+8% de trigramas). Igual número de violações não basta. Roteiro curto e o desvio da `VoiceFingerprint` são **soft** (`VoiceViolation.isSoft`): nunca causam segunda tentativa sozinhos (custa ~20 s e
   reescrever "mais longo" não alonga). Guardrail recusando o que o criador digitou: uma tentativa só com o que o Cue oferece (`catalogOnly`).
 - **Tempo:** `GenerationDeadlines` corta o que nunca responde (`ScriptAIError.timedOut`), "Still drafting · taking a little longer" aparece depois de um

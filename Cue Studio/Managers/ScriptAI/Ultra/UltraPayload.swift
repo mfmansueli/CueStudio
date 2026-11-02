@@ -69,7 +69,11 @@ nonisolated struct UltraPayload: Hashable, Sendable {
 
     /// Language, platform, format and length, one line each.
     private var setting: String {
-        var lines = [languageLine, "Platform: \(request.platform.promptName)."]
+        var lines = [languageLine]
+        // Gender agreement and the form of address (the owner's B8; §11.7), as Apple Intelligence gets them.
+        let theirs = request.voice ?? request.rules
+        lines += AgreementGuide.lines(for: theirs?.agreement, speaksAs: theirs?.resolvedSpeaksAs ?? .i, language: AgreementGuide.code(of: request))
+        lines.append("Platform: \(request.platform.promptName).")
         if PlatformRegister(request.platform) == .professional { lines.append("Register: professional (no slang, no swearing, no emojis).") }
         lines.append(formatLine)
         if request.structure.isSerious { lines.append(ScriptPromptBuilder.seriousRule) }

@@ -187,6 +187,21 @@ extension CreatorProfileService {
         profile.speaksAs = speaksAs
     }
 
+    /// How the words about them agree when they say "I" (B8). Nil goes back to not chosen, which is never the masculine.
+    func setSpeakerGender(_ gender: WordGender?) {
+        profile.agreement.speaker = gender
+    }
+
+    /// How "we" agrees (B8): "nosotras", "nosotros", or no gender.
+    func setGroupGender(_ gender: WordGender?) {
+        profile.agreement.group = gender
+    }
+
+    /// Informal (the default) or formal "you", where the language has both (B8).
+    func setAddressForm(_ form: AddressForm) {
+        profile.agreement.address = form == .informal ? nil : form
+    }
+
     // MARK: - Helpers
 
     /// A single answer the creator types: empty clears it, otherwise it is checked (2–40 characters, nothing the model refuses) and kept.

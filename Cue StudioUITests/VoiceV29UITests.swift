@@ -155,6 +155,30 @@ final class VoiceV29UITests: XCTestCase {
 
     /// F9 · the tip on Scripts asks one question at a time (the sample takes were exported, so "Where do you post most?" is pulled to the
     /// front), says "Saved" and offers one more.
+    /// "I am" asks how the words about the creator agree and how viewers are addressed (the owner's B8, 02/11/2026): both optional, the chosen
+    /// gender lets go on a second tap (not chosen, never the masculine), informal is the default.
+    func testIAmAsksHowTheWordsAboutTheCreatorAgree() {
+        let app = CueApp.launch(seeded: true, ai: .stub)
+        let tab = app.cueTabBar.buttons["Profile"]
+        XCTAssertTrue(tab.exists(within: 15))
+        tab.tap()
+        app.buttons["profile.setUpVoiceButton"].tap()
+        let feminine = app.buttons["voice.speakerGender.feminine"]
+        app.scroll(to: feminine)
+        XCTAssertFalse(feminine.isSelected, "not chosen until the creator picks")
+        feminine.tap()
+        XCTAssertTrue(feminine.isSelected)
+        feminine.tap()
+        XCTAssertFalse(feminine.isSelected, "a second tap lets it go")
+        let informal = app.buttons["voice.addressForm.informal"]
+        let formal = app.buttons["voice.addressForm.formal"]
+        app.scroll(to: formal)
+        XCTAssertTrue(informal.isSelected, "informal is the default")
+        formal.tap()
+        XCTAssertTrue(formal.isSelected && !informal.isSelected)
+        capture(app, "voice-i-am-agreement")
+    }
+
     func testTheTipOnScriptsAsksOneQuestionAtATime() {
         let app = setUpVoice(extraArguments: ["-uiTestVoiceTip"])
         app.cueTabBar.buttons["Scripts"].tap()

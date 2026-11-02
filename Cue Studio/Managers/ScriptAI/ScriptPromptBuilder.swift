@@ -50,6 +50,9 @@ nonisolated enum ScriptPromptBuilder {
             lines.append(languageRule(language, variant: request.languageVariant))
             if insistsOnLanguage || language != .english { lines.append(languageInsistence(language, variant: request.languageVariant)) }
         }
+        // Gender agreement and the form of address, in the languages that mark them (the owner's B8; §11.7).
+        let theirs = request.voice ?? request.rules
+        lines += AgreementGuide.lines(for: theirs?.agreement, speaksAs: theirs?.resolvedSpeaksAs ?? .i, language: AgreementGuide.code(of: request))
         lines += PCCScriptDirection.instructions(for: request)
         return lines.joined(separator: "\n")
     }
@@ -541,6 +544,11 @@ nonisolated enum ScriptPromptBuilder {
             lines += voiceLines(voice)
         } else if let rules {
             lines += VoiceBriefBuilder.restrictionLines(for: rules, register: register, translatingTo: translatingTo)
+        }
+        if let theirs = voice ?? rules {
+            lines += AgreementGuide.lines(
+                for: theirs.agreement, speaksAs: theirs.resolvedSpeaksAs, language: AgreementGuide.code(of: language), chosenOnly: true
+            )
         }
         lines.append(editHonestyRule)
         if let brand { lines += brandKeepLines(brand) }

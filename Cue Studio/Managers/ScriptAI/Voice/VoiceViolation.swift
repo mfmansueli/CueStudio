@@ -27,6 +27,8 @@ nonisolated struct VoiceViolation: Hashable, Sendable {
         case sentenceLength
         /// Exclamation marks in the script of a creator who almost never uses them. Only counted.
         case exclamation
+        /// A word about the creator in the gender they didn't choose ("cansado" for Feminine, `GenderAgreementChecker`; the owner's B8).
+        case agreement
         /// A result of the creator's that nobody gave ("Eu perdi 2 quilos em 7 dias", `AttributedResultDetector`; the owner's B12).
         case inventedResult
 
@@ -36,7 +38,7 @@ nonisolated struct VoiceViolation: Hashable, Sendable {
         var severity: Int {
             switch self {
             case .avoided, .requiredPhrase, .inventedResult: 3
-            case .pronoun, .emoji, .styleName: 2
+            case .pronoun, .emoji, .styleName, .agreement: 2
             case .catchphraseFirst: 1
             case .tooShort, .sentenceLength, .exclamation: 0
             }

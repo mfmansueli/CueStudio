@@ -93,7 +93,23 @@ struct VoiceCheckedWriting {
         let unresolved = ScriptVerbatimSlots(phrases: request.requiredPhrases).hasUnresolvedMarker(in: script.text)
             ? [VoiceViolation(kind: .requiredPhrase, detail: "Replace any incomplete exact-wording marker with its complete assigned phrase, unchanged.")] : []
         let applicable = voice.filter { !(request.modelRoute == .privateCloud && $0.kind == .pronoun) }
-        return applicable + required + unresolved + inventedResults(in: script, for: request)
+        return applicable + required + unresolved + inventedResults(in: script, for: request) + agreement(in: script, for: request)
+    }
+
+    /// The gender they chose, kept (the owner's B8; §11.7): a word about them in the other one is written once more.
+    private func agreement(in script: GeneratedScript, for request: ScriptRequest) -> [VoiceViolation] {
+        guard let theirs = request.voice ?? request.rules else { return [] }
+        let found = GenderAgreementChecker.findings(
+            in: script.text, agreement: theirs.agreement, speaksAs: theirs.resolvedSpeaksAs, language: AgreementGuide.code(of: request)
+        )
+        guard !found.isEmpty else { return [] }
+        let words = found.map { "“\($0)”" }.joined(separator: ", ")
+        let wanted = switch theirs.resolvedSpeaksAs == .we ? theirs.agreement.group : theirs.agreement.speaker {
+        case .feminine?: "the feminine"
+        case .masculine?: "the masculine"
+        default: "wording that marks no gender"
+        }
+        return [VoiceViolation(kind: .agreement, detail: "It says \(words) about the creator: use \(wanted) for every word about them.")]
     }
 
     /// A result put in the creator's mouth that their idea doesn't give, with or without a voice (the owner's B12; §11, A11b): written once

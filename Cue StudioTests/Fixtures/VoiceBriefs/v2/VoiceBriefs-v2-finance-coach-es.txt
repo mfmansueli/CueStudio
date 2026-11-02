@@ -22,6 +22,8 @@ Rules: no hype words (game-changer, insane, mind-blowing, unbelievable): use pla
 If this video's request asks in so many words for something the creator's rules or habits leave out (an ending, a word, a call to action), the request wins.
 Write the title and every block in Spanish.
 The script is in Spanish, not in English: write it in Spanish even though these instructions are in English. The creator's catchphrases stay as they are, as does any wording explicitly requested verbatim.
+In Spanish, the creator's gender isn't known: prefer wording about them that marks none, and never assume the masculine.
+Address the viewer informally (tú), as a friend.
 
 PROMPT
 Language of the script: Spanish. Write all of it in Spanish.

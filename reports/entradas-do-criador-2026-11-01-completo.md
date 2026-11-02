@@ -1021,6 +1021,31 @@ já medidos em `PaletteContrastTests` (`ink2` sobre `surface` na página; `ink2`
 
 **Commits:** dois na branch `fix/creator-inputs`: os consertos com seus testes, e este relatório com o pacote de medição. Branch enviada ao GitHub, sem PR.
 
+### 11.12 Implementação das decisões do dono (02/11)
+
+As decisões B8 a B14 aprovadas pelo dono, cada uma com os testes dela. B2 a B7 continuam abertas (a comparação das telas, com hoje e a proposta lado a
+lado, está no canvas "My Cue Voice: decisões de UI").
+
+| Item | O que ficou | Onde |
+|---|---|---|
+| A8 · fecho | "Calls to action" no Avoid; fechos que não pedem nada tiram o CTA do formato; fechos que pedem uma ação levam só essa; o pedido do vídeo vence quando pede em tantas palavras, dito uma vez fora do brief (o brief continua em 2.100 caracteres); toast quando o pedido passou por cima do Avoid | `CreatorVoice+Ending`, `FormatGuide`, `VoiceConstraintChecker.lifted(by:)`, `ScriptStarter` |
+| A2/A4 · B9 | As regras (Avoid, I/We, palavrão "never", concordância) valem no Improve, Shorter, Longer, Translate, Fit da Ultra AI e no roteiro sério; o estilo não | `CreatorVoice+Restrictions`, `ScriptPromptBuilder.rewriteInstructions` |
+| A9 · B10 | Bordões: 3 por roteiro, em rodízio; o What Cue sends mostra os da próxima vez | `CatchphraseRotation`, `CreatorProfileService.catchphraseTurn` |
+| A11b · B12 | Resultado na boca do criador que ninguém deu (quilos, dinheiro, %, seguidores) é uma violação de gravidade 3; números de rotina ficam; sobrando, o roteiro pede conferência | `AttributedResultDetector` (48 frases rotuladas em 5 idiomas) |
+| A10 · B8 | "Write me as" / "Write us as" (opcional, com o termo do iOS como atalho) e "Speak to viewers" no I am; regra na língua do roteiro (pt, es, fr, it, hi, ar), "never assume the masculine" sem escolha, tratamento informal por padrão; conferência depois do roteiro em pt/es/fr/it | `VoiceAgreement`, `AgreementGuide`, `GenderAgreementChecker`, `VoiceAgreementField` |
+| B13 | A dica "Who's watching?" usa os 8 grupos do editor | `VoiceQuestion.audience` |
+| B14 | Resposta digitada: só a pergunta e se bateu com uma opção, com "Help improve Cue" ligado, nunca o texto | `VoiceTypedAnswerEvent` |
+
+**Medido no Mansuelli iPhone 18 Pro Max** (rodada 4, `entradas-do-criador-2026-11-01-medicao/run4-mansuelli-18pm-a8/`, 18 roteiros, todos do
+modelo do aparelho porque o PCC negou por limite do iPhone):
+
+- "No call to action" como hábito: 6 de 6 sem pedir nada (antes, 5 de 9 com CTA). Dois leram a instrução em voz alta; o texto do Close mudou depois.
+- "Follow for more": 6 de 6 pedem só para seguir (antes, outra ação em 8 de 9).
+- Resultado inventado: 0 de 6 no caso fitness; só números de rotina.
+
+**Não medido:** o PCC (limite do aparelho nos dois iPhones hoje) e o A10 no aparelho (concordância em pt/es com o modelo real); os dois ficam para
+uma rodada da bateria (`CreatorInputsDeviceTests`).
+
 ---
 
 # Anexos
