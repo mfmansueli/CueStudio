@@ -8,8 +8,9 @@ import SwiftUI
 /// Draws the star that is the transition from an idea to its script (`IdeaTransitionService`, 09 §8, `motion/README.md`), over the whole
 /// app: the star is born on the arrow (a spring and a bloom of light with a ring running out of it, 0.12 s) and rises along a curve to the
 /// middle (34% of the height, 1.2 s, `(0.2, 0.8, 0.2, 1)`), drawing a streak of light behind it while it is fast, while the screen behind
-/// darkens (84%); a halo breathes around it and twelve specks gather toward it; "Drafting in your voice", the idea, a phrase that changes
-/// every 1.6 s and how much of the script is written ("42%", an estimate: `WritingProgressEstimate`) sit under it, with Cancel at the bottom.
+/// darkens (84%); a halo breathes around it and twelve specks gather toward it; under it, "IN YOUR VOICE", the idea, a phrase that changes
+/// every 1.6 s and how much of the script is written ("42%", an estimate: `WritingProgressEstimate`), laid out by `StarTransitionWords`, with
+/// Cancel at the bottom.
 /// When the script is ready the cover goes solid (0.3 s), the ring opens (0.8 s), the star lands as the caret (0.9 s) and the page writes.
 /// Cancel or an error: the star falls 40 pt (0.3 s), the overlay fades (0.22 s).
 ///
@@ -62,6 +63,12 @@ struct StarTransitionOverlay: View {
     /// The request has taken longer than usual: the phrase says so.
     @State private var isTakingLong = false
     @State private var phraseShown = true
+    /// Changes as the words come up under the star, so the idea's words (and the first phrase's) arrive then.
+    @State private var wordsArrival = 0
+    /// How many times the phrase has changed: the first one waits for the idea's words.
+    @State private var phraseTurns = 0
+    /// Changes with each quarter's tick (Ultra AI: each pass), so the number brightens with it.
+    @State private var tickPulse = 0
     @State private var finishShown = false
     @State private var overlayOpacity: Double = 0
     /// When the idea's stream of light started (the tap); nil once it has run into the star.
@@ -204,48 +211,33 @@ struct StarTransitionOverlay: View {
     }
 
     private func textBlock(size: CGSize, centre: CGPoint, reach: CGFloat) -> some View {
-        let words = VStack(spacing: 8) {
-            Text(transition.engine == .ultra ? "Drafting with Ultra AI" : "Drafting in your voice")
-                .cueFont(20, weight: .bold)
-                .tracking(-0.2)
-                .foregroundStyle(.white)
-                .accessibilityAddTraits(.isHeader)
-            Text("“\(transition.idea)”")
-                .cueFont(15)
-                .foregroundStyle(Palette.Scripts.transitionInk)
-                .lineLimit(1)
-                .truncationMode(.tail)
-                .frame(maxWidth: 300)
-            Text(currentPhrase)
-                .cueFont(16, weight: .medium)
-                .italic()
-                .foregroundStyle(Palette.Scripts.transitionPhrase)
-                .opacity(phraseShown ? 1 : 0)
-                .offset(y: phraseShown ? 0 : (finishShown ? 0 : 4))
-                .frame(height: 22)
-                .padding(.top, 4)
-                .accessibilityAddTraits(.updatesFrequently)
-            progressLine
-        }
-        .multilineTextAlignment(.center)
+        let words = StarTransitionWords(
+            isUltra: isUltra, idea: transition.idea, ideaLines: size.height < Self.shortScreen ? 2 : 3, phrase: Self.shown(currentPhrase),
+            phraseShown: phraseShown, phraseWaits: phraseTurns == 0, arrival: wordsArrival, meter: transition.progress, step: shownPass,
+            steps: transition.progress?.pass?.count ?? UltraFlow.checked.calls, pulse: tickPulse
+        )
         .padding(.horizontal, 24)
         .frame(width: size.width)
-        return Group {
-            if isUltra {
-                // Under Ultra AI's scene, from its top: a larger type grows down, never into the ring.
-                words
-                    .frame(width: size.width, height: size.height, alignment: .top)
-                    .offset(y: centre.y + reach * UltraWaitScene.ringShare + UltraWaitScene.wordsGap)
-            } else {
-                // The percentage's line is below the board's three: the block moves down by half of it, so they stay where the board puts them.
-                words.position(x: size.width / 2, y: centre.y + 104 + 36 + (8 + Self.progressHeight) / 2)
-            }
-        }
-        .opacity(texts)
-        .offset(y: texts == 1 ? 0 : 8)
+        // From their top, under the star's ring (Ultra AI's scene), so a longer idea grows down, never into it.
+        let top = isUltra ? centre.y + reach * UltraWaitScene.ringShare + UltraWaitScene.wordsGap : centre.y + Self.wordsTop
+        return words
+            .frame(width: size.width, height: size.height, alignment: .top)
+            .offset(y: top)
+            .opacity(texts)
+            .offset(y: texts == 1 ? 0 : 8)
     }
 
-    private static let progressHeight: CGFloat = 16
+    /// How far under the star Apple Intelligence's words start (its orbit is 66 pt across).
+    private static let wordsTop: CGFloat = 88
+    /// A screen this short or shorter (an iPhone SE) shows the idea in two lines, so the words never reach Cancel.
+    private static let shortScreen: CGFloat = 700
+
+    /// The phrase as shown: without a closing "…", so every phrase ends alike (its words arriving out of the light say it is under way).
+    static func shown(_ phrase: String) -> String {
+        var text = phrase
+        while let last = text.last, last == "…" || last == "." || last == " " { text.removeLast() }
+        return text
+    }
 
     /// What Ultra AI is doing in pass `index` of `count`: the draft, its review (three passes only: one pass of the model over its claims, with
     /// no search, so never "checking the facts"; decision 8), the polish in the creator's voice.
@@ -253,19 +245,6 @@ struct StarTransitionOverlay: View {
         if index == 0 { return String(localized: "Writing the draft") }
         if index < count - 1 { return String(localized: "Reviewing the draft") }
         return String(localized: "Polishing in your voice")
-    }
-
-    /// "42%" under the phrase, from the moment the page starts writing; its room is kept before that, so nothing moves when it comes.
-    private var progressLine: some View {
-        ZStack {
-            if let meter = transition.progress {
-                WritingProgressLabel(meter: meter)
-                    .hudFont()
-                    .foregroundStyle(Palette.ink2)
-                    .accessibilityIdentifier("transition.progress")
-            }
-        }
-        .frame(height: Self.progressHeight)
     }
 
     private var currentPhrase: String {
@@ -526,6 +505,7 @@ struct StarTransitionOverlay: View {
         starOpacity = 1
         finishShown = false
         phraseIndex = 0
+        phraseTurns = 0
         isTakingLong = false
         phraseShown = true
         showsCaret = false
@@ -607,6 +587,7 @@ struct StarTransitionOverlay: View {
             transition.engine == .ultra ? String(localized: "Drafting with Ultra AI") : String(localized: "Drafting in your voice")
         ).post()
         cancelHasFocus = true
+        wordsArrival += 1
         if reduceMotion { return }
         withAnimation(.easeOut(duration: 0.4 * speed).delay(0.1 * speed)) { texts = 1 }
         withAnimation(.easeOut(duration: 0.3 * speed).delay(0.3 * speed)) { cancelOpacity = 1 }
@@ -616,6 +597,7 @@ struct StarTransitionOverlay: View {
     /// the halo goes and the star flies to the caret (0.44 s, from 2× to 0.6×).
     private func reveal() {
         finishShown = true
+        phraseTurns += 1
         phraseShown = true
         let lead = transition.coverTime
         if isUltra {
@@ -697,11 +679,12 @@ struct StarTransitionOverlay: View {
             if now > quarters {
                 quarters = now
                 Haptics.apply()
+                tickPulse += 1
             }
         }
     }
 
-    /// A new phrase every 1.6 s: the old one goes up and out (0.3 s, 4 pt), the new one comes in from 4 pt below.
+    /// A new phrase every 1.6 s: the old one goes up and out (0.3 s, 5 pt, blurring), the new one's words arrive out of the light.
     private func rotatePhrases() async {
         guard transition.phase == .waiting else { return }
         // Ultra AI's phrase says its pass (`movePass`), until a long wait says so.
@@ -712,7 +695,7 @@ struct StarTransitionOverlay: View {
             try? await Task.sleep(for: .seconds(0.3 * speed))
             guard !Task.isCancelled, transition.phase == .waiting else { return }
             isTakingLong = true
-            withAnimation(.easeOut(duration: 0.3 * speed)) { phraseShown = true }
+            await showNewPhrase()
             AccessibilityNotification.Announcement(currentPhrase).post()
             return
         }
@@ -728,7 +711,7 @@ struct StarTransitionOverlay: View {
             // A request that takes long says so once and stays on it (the system gives up on it by itself, and Cancel is there).
             if began.duration(to: clock.now) >= .seconds(IdeaTransitionService.longWait * speed) { isTakingLong = true }
             phraseIndex = (phraseIndex + 1) % max(1, count)
-            withAnimation(.easeOut(duration: 0.3 * speed)) { phraseShown = true }
+            await showNewPhrase()
             AccessibilityNotification.Announcement(currentPhrase).post()
         }
     }
@@ -738,13 +721,22 @@ struct StarTransitionOverlay: View {
     private func movePass(to index: Int?) {
         guard isUltra, let index, index > shownPass, transition.phase == .waiting || transition.phase == .rising else { return }
         Haptics.apply()
+        tickPulse += 1
         Task {
             withAnimation(.easeOut(duration: 0.3 * speed)) { phraseShown = false }
             try? await Task.sleep(for: .seconds(0.3 * speed))
             guard !finishShown else { return }
             shownPass = index
-            withAnimation(.easeOut(duration: 0.3 * speed)) { phraseShown = true }
+            await showNewPhrase()
             AccessibilityNotification.Announcement(currentPhrase).post()
         }
+    }
+
+    /// The phrase line, hidden while the last phrase left (up and out, blurring, 0.3 s), comes back with the new one a frame after it was
+    /// set, so its words arrive out of the light (`WordsFromLight`) instead of showing whole for a moment. Reduce Motion: it fades in.
+    private func showNewPhrase() async {
+        phraseTurns += 1
+        try? await Task.sleep(for: .milliseconds(40))
+        withAnimation(reduceMotion ? .easeOut(duration: 0.3 * speed) : nil) { phraseShown = true }
     }
 }

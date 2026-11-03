@@ -22,6 +22,8 @@ struct WordsFromLight: View {
     /// The first text plays too. False: the first one is simply there, and only the texts that come after it arrive (a suggestion that was
     /// already there when the screen opened isn't news).
     var playsFirst = true
+    /// Seconds the words wait, unseen, before they start arriving (to come after something else that arrives).
+    var delay = 0.0
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var elapsed = 0.0
@@ -47,6 +49,10 @@ struct WordsFromLight: View {
                 played = key
                 elapsed = 0
                 guard isNews, !reduceMotion else { elapsed = totalDuration; return }
+                if delay > 0 {
+                    try? await Task.sleep(for: .seconds(delay))
+                    guard !Task.isCancelled else { return }
+                }
                 withAnimation(.linear(duration: totalDuration)) { elapsed = totalDuration }
             }
     }
