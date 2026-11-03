@@ -6,7 +6,8 @@
 import SwiftUI
 
 /// 1.1: a star comes in from the top right and lights the dots of a C, arcs down to three words and returns to explode into the last dot;
-/// the wordmark, the promise and the button arrive after it (09 §12, `WelcomeScript`). It plays once and holds, the lit dots still shining
+/// the wordmark (under the C, as one signature), the promise and the button arrive after it (09 §12, `WelcomeScript`), everything centred
+/// on the C's axis. It plays once and holds, the lit dots still shining
 /// (their clock keeps running past the end). With Reduce Motion it is the final state only, nothing shining: the C lit, the three words,
 /// the wordmark, the title and the button. Its clock stops off screen and while the app is not active (`MotionClock`), and the haptics are
 /// beats of that clock, so a call or Control Center in the middle never skips the story ahead.
@@ -23,7 +24,7 @@ struct WelcomeChapter: View {
     /// The centres of the three words in the board's frame, once laid out; the star's last flights go to them.
     @State private var wordCentres: [CGPoint] = []
     @State private var starPath = WelcomeScript.starPath(words: [])
-    /// The wordmark, title and words as laid out (`WelcomeLayout`).
+    /// The title and words as laid out (`WelcomeLayout`).
     @State private var textHeight: CGFloat = 0
 
     private nonisolated static let frameSpace = "welcomeFrame"
@@ -41,7 +42,19 @@ struct WelcomeChapter: View {
                 )
                 let layout = WelcomeLayout(screen: screen, hasHomeIndicator: proxy.safeAreaInsets.bottom > 0, textHeight: textHeight)
                 ZStack(alignment: .top) {
+                    // The night over the sky while the star flies (`WelcomeScript.skyDim`).
+                    Palette.Universe.nightDeep
+                        .opacity(WelcomeScript.skyDim.pose(at: time).opacity)
+                        .allowsHitTesting(false)
                     scene(time, ambient: animates ? elapsed : time, layout: layout)
+                        // A little close at first, easing back while the star comes in, about the C's centre.
+                        .scaleEffect(
+                            WelcomeScript.zoom.pose(at: time).scale,
+                            anchor: UnitPoint(x: 0.5, y: min(1, 240 * layout.artScale / max(1, screen.height)))
+                        )
+                    WelcomeWordmark(time: time)
+                        .frame(maxWidth: .infinity)
+                        .padding(.top, layout.wordmarkTop)
                     words(time, layout: layout, screenWidth: screen.width)
                     button(time, layout: layout)
                 }
@@ -55,6 +68,7 @@ struct WelcomeChapter: View {
         }
         .onAppear {
             isOnScreen = true
+            if animates { HapticPatterns.prewarm() }
             clock.setRunning(runs(onScreen: true, phase: scenePhase), at: .now)
         }
         .onDisappear {
@@ -70,12 +84,14 @@ struct WelcomeChapter: View {
     /// The board's 390 × 844 frame with the star's scene, centred on the screen and scaled from the top to the room above the words.
     private func scene(_ time: Double, ambient: Double, layout: WelcomeLayout) -> some View {
         let halo = WelcomeScript.halo.pose(at: time)
+        // Once everything is in place the light behind the C keeps breathing, slowly (8 s), so the screen is never a still picture.
+        let breath = 1 + 0.04 * sin(2 * .pi * max(0, ambient - WelcomeScript.finalTime) / 8)
         return ZStack(alignment: .topLeading) {
             WelcomeShootingStar(time: time)
             Circle()
                 .fill(RadialGradient(colors: [Palette.Universe.nightViolet.opacity(0.32), .clear], center: .center, startRadius: 0, endRadius: 140))
                 .frame(width: 280, height: 280)
-                .scaleEffect(halo.scale)
+                .scaleEffect(halo.scale * breath)
                 .opacity(halo.opacity)
                 .offset(x: 55, y: 100)
         }
@@ -87,16 +103,14 @@ struct WelcomeChapter: View {
         .background { WelcomeStarCanvas(time: time, ambient: ambient, starPath: starPath, scale: layout.artScale) }
     }
 
-    /// The wordmark, the promise and the three words, with the board's spaces between them, where the layout puts them.
+    /// The promise and the three words, centred, where the layout puts them.
     private func words(_ time: Double, layout: WelcomeLayout, screenWidth: CGFloat) -> some View {
-        VStack(alignment: .leading, spacing: 0) {
-            WelcomeWordmark(time: time)
-                .frame(maxWidth: .infinity)
+        VStack(alignment: .center, spacing: 0) {
             WelcomeTitle(time: time)
-                .padding(.top, 60)
             pills(time, layout: layout, screenWidth: screenWidth)
-                .padding(.top, 22)
+                .padding(.top, 24)
         }
+        .frame(maxWidth: .infinity)
         .padding(.horizontal, 28)
         .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { textHeight = $0 }
         .padding(.top, layout.textTop)
@@ -106,21 +120,18 @@ struct WelcomeChapter: View {
 
     private func pills(_ time: Double, layout: WelcomeLayout, screenWidth: CGFloat) -> some View {
         let words = [
-            (String(localized: "TELEPROMPTER"), false), (String(localized: "AUTO CAPTIONS"), false), (String(localized: "✦ AI SCRIPTS"), true),
+            (String(localized: "FOLLOWS YOUR VOICE"), false), (String(localized: "AUTO CAPTIONS"), false), (String(localized: "✦ AI SCRIPTS"), true),
         ]
-        // On one line as on the board; on two when they don't fit it (the largest text sizes), never wider than the screen.
-        return FlowLayout(spacing: 6, lineSpacing: 6) {
+        // On one centred line when they fit it; on two, centred, when they don't (longer languages, larger text), never wider than the screen.
+        // The star lands on each pill's mark.
+        return FlowLayout(spacing: 8, lineSpacing: 8, alignment: .center) {
             ForEach(Array(words.enumerated()), id: \.offset) { index, word in
-                WelcomePill(text: word.0, isAI: word.1, hit: WelcomeScript.wordHits[index], time: time)
-                    .onGeometryChange(for: CGPoint.self) { proxy in
-                        let frame = proxy.frame(in: .named(Self.frameSpace))
-                        return CGPoint(x: frame.midX, y: frame.midY)
-                    } action: { point in
-                        let centre = layout.boardPoint(point, screenWidth: screenWidth)
-                        var centres = wordCentres.count == words.count ? wordCentres : Array(repeating: .zero, count: words.count)
-                        centres[index] = centre
-                        wordCentres = centres
-                    }
+                WelcomePill(text: word.0, isAI: word.1, hit: WelcomeScript.wordHits[index], time: time, space: Self.frameSpace) { point in
+                    let centre = layout.boardPoint(point, screenWidth: screenWidth)
+                    var centres = wordCentres.count == words.count ? wordCentres : Array(repeating: .zero, count: words.count)
+                    centres[index] = centre
+                    wordCentres = centres
+                }
             }
         }
     }
@@ -149,7 +160,7 @@ struct WelcomeChapter: View {
     /// The haptic of a beat the timeline just passed.
     private func play(_ beat: WelcomeScript.Beat) {
         switch beat {
-        case .dot: Haptics.soft()
+        case .letter: HapticPatterns.playWelcomeC()
         case .word: Haptics.apply()
         case .explosion: Haptics.success()
         }

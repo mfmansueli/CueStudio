@@ -6,8 +6,8 @@
 import SwiftUI
 
 /// The Selfie reading line: a layer of its own that stays put while the text scrolls past it. A
-/// slim grip at its right end moves it (the text window follows); the grip hides while the text
-/// plays or the camera records, so only the line is left.
+/// yellow grip at its right end moves it (the text window follows), in the make of the window's resize arc
+/// (owner, 02/11/2026); the grip hides while the text plays or the camera records, so only the line is left.
 struct ReadingLineLayer: View {
     let layout: ReadingLayout
     /// "READING LINE" above the line, while Display is open.
@@ -28,7 +28,7 @@ struct ReadingLineLayer: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private static let handleTarget: CGFloat = 44
-    private static let gripSize = CGSize(width: 14, height: 34)
+    private static let gripSize = CGSize(width: 14, height: 30)
 
     var body: some View {
         let span = layout.lineSpan
@@ -67,13 +67,15 @@ struct ReadingLineLayer: View {
     private var handle: some View {
         let dragging = dragStart != nil
         let grip = RoundedRectangle(cornerRadius: Self.gripSize.width / 2, style: .continuous)
+        // A solid yellow grip with black ⌃⌄, like the window's resize arc; it grows a little under the finger.
         return Image(systemName: "chevron.up.chevron.down")
-            .font(.fixed(7, weight: .bold))
-            .foregroundStyle(.white)
+            .font(.fixed(8, weight: .heavy))
+            .foregroundStyle(Palette.accInk)
             .frame(width: Self.gripSize.width, height: Self.gripSize.height)
-            .background(.ultraThinMaterial, in: grip)
-            .background(dragging ? Palette.Camera.readingLineHandleActive : Palette.Camera.readingLineHandle, in: grip)
-            .overlay(grip.strokeBorder(Palette.Camera.readingLineHandleBorder, lineWidth: 0.5))
+            .background(Palette.acc, in: grip)
+            .shadow(color: Palette.textShadow, radius: 2, y: 1)
+            .scaleEffect(dragging ? 1.15 : 1)
+            .animation(reduceMotion ? nil : .spring(duration: 0.25, bounce: 0.3), value: dragging)
             // A slim grip to look at, a full 44 pt to catch.
             .frame(width: Self.handleTarget, height: Self.handleTarget)
             .contentShape(Rectangle())

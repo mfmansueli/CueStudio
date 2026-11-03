@@ -19,8 +19,10 @@ struct PrompterPreviewCard: View {
     /// One copy of the sample's height, measured: the scroll loops over it.
     @State private var copyHeight: CGFloat = 0
 
-    /// The card's height; the screen is scaled to fit it (and the card's width).
-    static let height: CGFloat = 236
+    /// The card's height; the text window is scaled to fill it (owner, 02/11/2026: the window looked tiny in the phone).
+    static let height: CGFloat = 272
+    /// Around the window (and the line past its sides), so its edges and the line's ends show.
+    private static let focusMargin = CGSize(width: 10, height: 14)
     /// The camera seen under the window, in screen points.
     private static let cameraBelow: CGFloat = 24
     /// The Dynamic Island, drawn where the lens is, so the line's distance under the camera reads.
@@ -60,12 +62,19 @@ struct PrompterPreviewCard: View {
     var body: some View {
         let layout = layout
         let screenSize = CGSize(width: layout.screenWidth, height: layout.windowRect.maxY + Self.cameraBelow)
+        let focus = focusRect(layout)
         GeometryReader { proxy in
-            let scale = min(proxy.size.width / max(1, screenSize.width), proxy.size.height / max(1, screenSize.height))
+            // The window fills the card: the screen is scaled to the window (and the line's ends), not to its whole top; the camera
+            // and the Dynamic Island show where they fall in that frame.
+            let scale = min(proxy.size.width / max(1, focus.width), proxy.size.height / max(1, focus.height))
             screen(layout)
                 .frame(width: screenSize.width, height: screenSize.height)
-                .scaleEffect(scale)
-                .frame(width: proxy.size.width, height: proxy.size.height)
+                .scaleEffect(scale, anchor: .topLeading)
+                .offset(
+                    x: (proxy.size.width - focus.width * scale) / 2 - focus.minX * scale,
+                    y: (proxy.size.height - focus.height * scale) / 2 - focus.minY * scale
+                )
+                .frame(width: proxy.size.width, height: proxy.size.height, alignment: .topLeading)
         }
         .frame(height: Self.height)
         // The camera fills the whole card, so the scaled screen melts into it (no phone outline): the look of the preview stays.
@@ -85,6 +94,15 @@ struct PrompterPreviewCard: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text("Preview of the prompter"))
         .accessibilityIdentifier("settings.prompterPreview")
+    }
+
+    /// The part of the screen the card shows: the window and the reading line's span, with a margin.
+    private func focusRect(_ layout: ReadingLayout) -> CGRect {
+        let rect = layout.windowRect
+        let span = layout.lineSpan
+        let minX = min(rect.minX, span.lowerBound) - Self.focusMargin.width
+        let maxX = max(rect.maxX, span.upperBound) + Self.focusMargin.width
+        return CGRect(x: minX, y: rect.minY - Self.focusMargin.height, width: maxX - minX, height: rect.height + 2 * Self.focusMargin.height)
     }
 
     /// The top of the screen at its real size: the camera, the Dynamic Island, the window and the line where the recorder puts them.

@@ -24,19 +24,39 @@ struct CaptionPickTools: View {
         }
     }
 
+    /// "3 selected · Deselect all · Done" on one row while it fits whole; else the count over the two buttons, which never give
+    /// up letters (owner, 02/11/2026: no label is ever cut; "Alles deselecteren" left the count no room).
     private var header: some View {
-        HStack(spacing: 8) {
-            Text("\(viewModel.captions.captionPicks?.count ?? 0) selected")
-                .font(.system(.subheadline, weight: .semibold))
-                .foregroundStyle(Palette.ink)
-                .lineLimit(1)
-                .accessibilityIdentifier("edit.captionPicks.count")
-            Spacer(minLength: 4)
-            textButton(viewModel.captions.picksEveryCaption ? String(localized: "Deselect all") : String(localized: "Select all"),
-                       identifier: "edit.captionPicks.all") { viewModel.captions.togglePickAllCaptions() }
-            textButton(String(localized: "Done"), identifier: "edit.captionPicks.done") { viewModel.captions.stopPickingCaptions() }
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 8) {
+                pickCount
+                Spacer(minLength: 4)
+                headerButtons
+            }
+            VStack(alignment: .leading, spacing: 0) {
+                pickCount
+                HStack(spacing: 8) {
+                    Spacer(minLength: 0)
+                    headerButtons
+                }
+            }
         }
         .padding(.horizontal, 16)
+    }
+
+    private var pickCount: some View {
+        Text("\(viewModel.captions.captionPicks?.count ?? 0) selected")
+            .font(.system(.subheadline, weight: .semibold))
+            .foregroundStyle(Palette.ink)
+            .lineLimit(2)
+            .fixedSize(horizontal: false, vertical: true)
+            .accessibilityIdentifier("edit.captionPicks.count")
+    }
+
+    @ViewBuilder private var headerButtons: some View {
+        textButton(viewModel.captions.picksEveryCaption ? String(localized: "Deselect all") : String(localized: "Select all"),
+                   identifier: "edit.captionPicks.all") { viewModel.captions.togglePickAllCaptions() }
+        textButton(String(localized: "Done"), identifier: "edit.captionPicks.done") { viewModel.captions.stopPickingCaptions() }
     }
 
     private var actions: some View {
@@ -137,6 +157,7 @@ struct CaptionPickTools: View {
                 .font(.system(.footnote, weight: .semibold))
                 .foregroundStyle(Palette.accText)
                 .lineLimit(1)
+                .fixedSize()
                 .frame(minHeight: Metrics.hitTarget)
                 .contentShape(Rectangle())
         }

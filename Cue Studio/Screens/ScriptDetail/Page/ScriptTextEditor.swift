@@ -15,6 +15,8 @@ import SwiftUI
 struct ScriptTextEditor: View {
     @Binding var text: String
     @Binding var selection: Range<Int>?
+    /// No words yet: the placeholder shows. Handed in rather than read from `text`, which would redraw this view on every letter.
+    let isEmpty: Bool
     /// Where the AI's words sit (violet), if it has just written some.
     let passage: Range<Int>?
     let textSize: ScriptTextSize
@@ -23,6 +25,8 @@ struct ScriptTextEditor: View {
     let isLocked: Bool
     var focus: FocusState<ScriptPageFocus?>.Binding
     let onEdit: () -> Void
+    /// Where the caret moved (UTF-16, as the text view counts: no counting through the words on every letter), when nothing is selected.
+    let onCaret: (Int) -> Void
     /// Undo and Redo on the cues bar act on this editor's history when the page hands the bar the same one.
     var undo: ScriptEditorUndo?
 
@@ -41,13 +45,14 @@ struct ScriptTextEditor: View {
             minimumHeight: minimumHeight,
             focus: focus,
             undo: undo,
-            onEdit: onEdit
+            onEdit: onEdit,
+            onCaret: onCaret
         )
         .focused(focus, equals: .text)
         .allowsHitTesting(!isLocked)
         .frame(minHeight: minimumHeight, alignment: .top)
         .overlay(alignment: .topLeading) {
-            if text.isEmpty {
+            if isEmpty {
                 Text("Just start talking…")
                     .font(.fixed(textSize.points(for: dynamicTypeSize)))
                     .foregroundStyle(Palette.ink2)

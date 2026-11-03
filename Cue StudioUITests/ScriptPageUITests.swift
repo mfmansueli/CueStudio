@@ -34,10 +34,9 @@ final class ScriptPageUITests: XCTestCase {
         app.descendants(matching: .any)[id].firstMatch
     }
 
-    /// The ready switch is on ("On" as the page says it, or "1" as a toggle reports it).
-    private func isOn(_ toggle: XCUIElement) -> Bool {
-        let value = toggle.value as? String
-        return value == "On" || value == "1"
+    /// "Ready to record" is lit (and "Draft" isn't): the pair says the state by which one is selected.
+    private func isReady(_ app: XCUIApplication) -> Bool {
+        app.pageReadyToggle.isSelected && !app.pageDraftChoice.isSelected
     }
 
     private func strip(_ app: XCUIApplication) -> String {
@@ -49,22 +48,26 @@ final class ScriptPageUITests: XCTestCase {
         app.openScriptPage(titled: Self.draft)
         XCTAssertTrue(element(app, "page.strip").exists(within: 5))
         try capture(app, "4.2_draft")
-        // The switch, off, is the draft: nothing beside it says so again, and Shape is in the tools row (owner, 31/10/2026), so the
-        // switch has the row to itself. Switching it on makes the script ready and the words stay.
-        let ready = app.pageReadyToggle
-        XCTAssertTrue(ready.exists(within: 5))
-        XCTAssertFalse(isOn(ready))
-        XCTAssertFalse(element(app, "page.strip.info").exists, "the strip has no line of details beside the switch")
+        // "Draft" lit is the draft: nothing beside the pair says so again, and Shape is in the tools row (owner, 31/10/2026), so the
+        // pair has the row to itself. "Ready to record" makes the script ready and the words stay.
+        let ready = app.pageReadyToggle, draft = app.pageDraftChoice
+        XCTAssertTrue(ready.exists(within: 5) && draft.exists)
+        XCTAssertTrue(draft.isSelected)
+        XCTAssertFalse(isReady(app))
+        XCTAssertFalse(element(app, "page.strip.info").exists, "the strip has no line of details beside the pair")
         XCTAssertFalse(element(app, "page.strip").buttons["page.shapeButton"].exists, "Shape is in the tools row, not the strip")
         ready.tap()
         // A storytime has four sections and this one has a single line: the switch asks first.
         XCTAssertTrue(app.alerts.firstMatch.exists(within: 5))
         app.alerts.buttons["Mark ready anyway"].tap()
-        XCTAssertTrue(isOn(ready))
+        XCTAssertTrue(isReady(app))
         XCTAssertFalse(element(app, "page.strip.info").exists)
-        // And back to a draft with one more tap.
+        // Tapping it lit does nothing; "Draft" takes it back.
         ready.tap()
-        XCTAssertFalse(isOn(ready))
+        XCTAssertTrue(isReady(app), "tapping the lit Ready changed the state")
+        draft.tap()
+        XCTAssertFalse(isReady(app))
+        XCTAssertTrue(draft.isSelected)
     }
 
     /// Back is how creators leave: it saves and never changes the state (the owner's call, 20/10/2026).
@@ -77,10 +80,11 @@ final class ScriptPageUITests: XCTestCase {
         text.typeText(" One more line.")
         XCTAssertTrue(app.buttons["page.hideKeyboard"].exists, "while typing, the bar's ✓ only hides the keyboard")
         app.buttons["page.hideKeyboard"].tap()
-        XCTAssertTrue(isOn(app.pageReadyToggle))
+        XCTAssertTrue(isReady(app))
         app.pageBackButton.tap()
         app.openScriptPage(titled: Self.ready)
-        XCTAssertTrue(isOn(app.pageReadyToggle), "leaving made it a draft")
+        XCTAssertTrue(app.pageReadyToggle.exists(within: 5))
+        XCTAssertTrue(isReady(app), "leaving made it a draft")
     }
 
     /// The page has the screen to itself: the tab bar goes with the push and is back as soon as the page has gone (the system's own
@@ -172,6 +176,34 @@ final class ScriptPageUITests: XCTestCase {
         try capture(app, "A_ai_replaced")
         app.buttons["page.selection.undo"].tap()
         XCTAssertFalse(app.buttons["page.selection.keep"].exists)
+    }
+
+    /// In Portuguese, whose names are long ("Reescrever", "Mais impactante"), every way to rewrite stays whole on one line (they scroll inside
+    /// the bar instead of breaking: owner, 02/11/2026) and Cut stays at the bar's end, where a finger reaches it.
+    func testTheAIBarKeepsItsNamesWholeInPortuguese() throws {
+        let app = CueApp.launch(seeded: true, appLanguage: "pt")
+        app.openScriptPage(titled: Self.ready)
+        let text = element(app, "page.editor")
+        XCTAssertTrue(text.exists(within: 5))
+        text.tap()
+        text.press(forDuration: 1.0)
+        let selectAll = app.menuItems.matching(NSPredicate(format: "label IN {'Select All', 'Selecionar Tudo', 'Selecionar tudo'}")).firstMatch
+        if selectAll.exists(within: 3) { selectAll.tap() }
+        let rewrite = app.buttons["page.selection.rewrite"]
+        XCTAssertTrue(rewrite.exists(within: 5), "No AI bar over a selection")
+        for id in ["rewrite", "shorter", "punchier"] {
+            let tag = app.buttons["page.selection.\(id)"]
+            XCTAssertTrue(tag.exists, "\(id) isn't in the bar")
+            XCTAssertLessThanOrEqual(tag.frame.height, 52, "\(id) grew out of the bar: \(tag.label)")
+            // A name drawn as its own text (beside a symbol) is one line high.
+            let name = tag.staticTexts.firstMatch
+            if name.exists { XCTAssertLessThan(name.frame.height, 26, "\(id) breaks onto two lines: \(name.label)") }
+        }
+        XCTAssertEqual(app.buttons["page.selection.shorter"].label, "Mais curto", "the bar isn't in Portuguese")
+        let cut = app.buttons["page.selection.cut"]
+        XCTAssertTrue(cut.isHittable, "Cut isn't reachable at the bar's end")
+        XCTAssertLessThanOrEqual(cut.frame.maxX, app.frame.maxX)
+        XCTAssertGreaterThan(cut.frame.minX, rewrite.frame.maxX)
     }
 
     /// Without Apple Intelligence the touch-ups aren't there at all, not even dimmed (owner, 01/11/2026), but what runs on rules stays: Shape

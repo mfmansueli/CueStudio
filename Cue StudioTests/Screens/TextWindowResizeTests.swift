@@ -69,10 +69,4 @@ struct TextWindowResizeTests {
         #expect(big.height >= 3 * 70)
         #expect(big.lines >= 3)
     }
-
-    @Test func theLabelSaysWidthAndLines() {
-        let result = resize(width: 0.75, height: 6 * Double(line), by: .zero)
-        #expect(result.label.contains("75"))
-        #expect(result.label.contains("6"))
-    }
 }

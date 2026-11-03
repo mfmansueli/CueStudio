@@ -34,7 +34,8 @@ struct ProHighlightCard: View {
                 .foregroundStyle(Palette.ink2)
         }
         .lineLimit(1)
-        .minimumScaleFactor(0.8)
+        // "30 manuskripter" in a half-width card: smaller, never cut (owner, 02/11/2026).
+        .minimumScaleFactor(0.7)
         .padding(.horizontal, isCompact ? 12 : 14)
         .padding(.vertical, isCompact ? 7 : 12)
         .frame(maxWidth: .infinity, minHeight: height, alignment: .leading)

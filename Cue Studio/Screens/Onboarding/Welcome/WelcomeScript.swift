@@ -5,15 +5,15 @@
 
 import SwiftUI
 
-/// The 1.1 opening, written as the board has it (09 §12, `motion/README.md`): in a 390 × 844 frame a star comes in from the top right,
-/// lights five dots that draw the C, draws the leg without lighting the sixth, arcs down to three words, returns and explodes into the
-/// sixth dot; then the wordmark, the title and the button arrive. Every moment is a `PoseTrack`, so the scene is a function of the second
-/// it is drawn at, and holds still once the last one is over.
+/// The 1.1 opening (09 §12, `motion/README.md`, refined with the owner 02/11/2026): in a 390 × 844 frame a star comes in from the top
+/// right on one smooth curve (`WelcomeFlight`), lights five dots that draw the C, draws the leg without lighting the sixth, skims three
+/// words, returns and explodes into the sixth dot; then the wordmark, the title and the button arrive. Every moment is a pose read at the
+/// second it is drawn, so the scene holds still once the last one is over.
 enum WelcomeScript {
     /// The frame of the board; the scene is laid out in it, centred on the screen.
     static let frame = CGSize(width: 390, height: 844)
-    /// Everything is in place (the button lands at 7.75 s).
-    static let finalTime = 7.75
+    /// Everything is in place (the button lands at 7.75 s, the gold light over the title is gone by 8.3 s).
+    static let finalTime = 8.4
 
     // MARK: - The C
 
@@ -51,80 +51,59 @@ enum WelcomeScript {
 
     // MARK: - The explosion
 
-    /// The star becomes the sixth dot: the core swells ×2.2 and settles, two rings open, a yellow cross opens and settles small.
+    /// The star becomes the sixth dot: the core swells ×2.2 and settles, a ring opens, a yellow cross opens and settles small, and its
+    /// light washes over the sky and fades (`bloom`).
     static let core = PoseTrack(curve: .css(0.3, 1.3, 0.5, 1), [.init(5.0, scale: 0), .init(5.15, scale: 2.2), .init(5.55, scale: 1)])
     static let ring = PoseTrack(curve: .css(0.1, 0.6, 0.3, 1), [
         .init(5.04, opacity: 0, scale: 0.6), .init(5.08, opacity: 0.95, scale: 0.6), .init(6.85, opacity: 0, scale: 7),
     ])
-    static let secondRing = PoseTrack(curve: .css(0.1, 0.6, 0.3, 1), [
-        .init(5.2, opacity: 0, scale: 0.6), .init(5.23, opacity: 0.7, scale: 0.6), .init(7.05, opacity: 0, scale: 5.5),
-    ])
     static let flare = PoseTrack(curve: .css(0.2, 0.8, 0.3, 1), [
         .init(5.05, opacity: 0, scale: 0), .init(5.17, scale: 1.15), .init(5.75, opacity: 0.9, scale: 0.3),
     ])
+    static let bloom = PoseTrack(curve: .css(0.1, 0.7, 0.3, 1), [
+        .init(5.04, opacity: 0, scale: 0.2), .init(5.12, opacity: 1, scale: 0.4), .init(6.6, opacity: 0, scale: 1),
+    ])
 
-    // MARK: - The dust between the dots
+    // MARK: - The sky and the camera
 
-    /// A four-point speck on the line between two dots: it blinks open at `start + 0.08`, turns and goes out by `start + 0.9`.
-    struct Dust: Sendable {
-        let point: CGPoint
-        let size: CGFloat
-        let track: PoseTrack
+    /// The whole scene comes in a little close and eases back while the star enters (×1.06 → ×1 by 2.6 s, with the sky's own settle).
+    static let zoom = PoseTrack(curve: .css(0.16, 1, 0.3, 1), [.init(0, scale: 1.06), .init(2.6, scale: 1)])
 
-        init(point: CGPoint, size: CGFloat, start: Double) {
-            self.point = point
-            self.size = size
-            track = PoseTrack([
-                .init(start, opacity: 0, scale: 0), .init(start + 0.08, scale: 1.3, rotation: 20),
-                .init(start + 0.5, opacity: 0.8, scale: 0.7, rotation: 60), .init(start + 0.9, opacity: 0, scale: 0, rotation: 90),
-            ])
-        }
-    }
-
-    static let dust: [Dust] = [
-        Dust(point: CGPoint(x: 221.9, y: 177.4), size: 12, start: 1.17), Dust(point: CGPoint(x: 198.2, y: 174.4), size: 9, start: 1.24),
-        Dust(point: CGPoint(x: 164.5, y: 186.5), size: 12, start: 1.37), Dust(point: CGPoint(x: 148.2, y: 202.8), size: 9, start: 1.44),
-        Dust(point: CGPoint(x: 136.3, y: 234.5), size: 12, start: 1.57), Dust(point: CGPoint(x: 137.8, y: 255.2), size: 9, start: 1.64),
-        Dust(point: CGPoint(x: 154.8, y: 283.9), size: 12, start: 1.77), Dust(point: CGPoint(x: 172.6, y: 297.2), size: 9, start: 1.84),
-        Dust(point: CGPoint(x: 206.8, y: 305.4), size: 12, start: 2.02), Dust(point: CGPoint(x: 229.0, y: 302.4), size: 9, start: 2.14),
-    ]
+    /// The sky darkens a little while the star flies, so it is the brightest thing on the screen, and the explosion's light lifts it again
+    /// (`opacity` of the night laid over the sky).
+    static let skyDim = PoseTrack(curve: .css(0.4, 0, 0.2, 1), [
+        .init(0.4, opacity: 0), .init(1.1, opacity: 0.3), .init(5.0, opacity: 0.3), .init(5.7, opacity: 0),
+    ])
 
     // MARK: - Sparks
 
-    /// The sparks of each word the star lands on, and of the explosion on the sixth dot.
-    static let wordSparks: [[WelcomeSpark]] = wordHits.map { WelcomeSpark.word(start: $0) }
+    /// The sparks of the explosion on the sixth dot (the words the star skims only ring).
     static let explosionSparks = WelcomeSpark.explosion(start: explosionTime)
 
     // MARK: - The star
 
-    /// Where the star is (`x`, `y`) and how visible (`opacity`), for the three words it visits: at their centres (frame coordinates).
-    /// Between two dots it takes a small arc; to and from the words a bigger one, bending the way the board has it.
-    static func starPath(words: [CGPoint]) -> PoseTrack {
-        let hop = UnitCurve.css(0.5, 0, 0.9, 0.7)
-        let fall = UnitCurve.css(0.1, 0.3, 0.5, 1)
+    /// The star's flight (`WelcomeFlight`), for the three words where they are (their marks' centres in the frame): one smooth curve with
+    /// no stops. It comes in from the top right, draws the C passing through each dot as it lights, runs the leg over the dim sixth dot,
+    /// loops out to the right and dives to the first word, skims from word to word in low arcs, climbs back and crashes into the sixth dot.
+    static func starPath(words: [CGPoint]) -> WelcomeFlight {
         let first = words.first ?? CGPoint(x: 80, y: 665)
         let second = words.dropFirst().first ?? CGPoint(x: 194, y: 665)
         let third = words.dropFirst(2).first ?? CGPoint(x: 308, y: 665)
         func over(_ a: CGPoint, _ b: CGPoint, _ dx: Double, _ dy: Double) -> CGPoint {
             CGPoint(x: (a.x + b.x) / 2 + dx, y: (a.y + b.y) / 2 + dy)
         }
-        let bounce1 = over(first, second, 0, -30)
-        let bounce2 = over(second, third, 0, -30)
-        let dive = over(cue, first, 75, -10)
-        let climb = over(third, cue, 34, 0)
-        return PoseTrack([
-            .init(0, opacity: 0, x: 430, y: -20), .init(0.55, opacity: 0, x: 430, y: -20, curve: .css(0.2, 0.7, 0.3, 1)),
-            .init(1.10, x: 243, y: 180), .init(1.13, x: 243, y: 180, curve: hop), .init(1.215, x: 215.35, y: 169.29), .init(1.30, x: 179, y: 172),
-            .init(1.33, x: 179, y: 172, curve: hop), .init(1.415, x: 153.27, y: 186.92), .init(1.50, x: 135, y: 216),
-            .init(1.53, x: 135, y: 216, curve: hop), .init(1.615, x: 129.47, y: 246.7), .init(1.70, x: 139, y: 272),
-            .init(1.73, x: 139, y: 272, curve: hop), .init(1.815, x: 161.3, y: 297.82), .init(1.90, x: 187, y: 308),
-            .init(1.94, x: 187, y: 308, curve: hop), .init(2.095, x: 217, y: 310), .init(2.25, x: 247, y: 300),
-            .init(2.60, x: dive.x, y: dive.y, curve: fall), .init(2.95, x: first.x, y: first.y),
-            .init(3.05, x: first.x, y: first.y, curve: hop), .init(3.30, x: bounce1.x, y: bounce1.y, curve: fall), .init(3.55, x: second.x, y: second.y),
-            .init(3.65, x: second.x, y: second.y, curve: hop), .init(3.90, x: bounce2.x, y: bounce2.y, curve: fall), .init(4.15, x: third.x, y: third.y),
-            .init(4.25, x: third.x, y: third.y, curve: hop), .init(4.65, x: climb.x, y: climb.y, curve: fall), .init(5.05, x: 247, y: 300),
-            .init(5.17, opacity: 0, x: 247, y: 300),
-        ])
+        let points: [(Double, CGPoint)] = [
+            (0.55, CGPoint(x: 430, y: -20)), (0.84, CGPoint(x: 352, y: 98)),
+        ] + dots.map { ($0.hit, $0.point) } + [
+            (2.25, cue),
+            (2.62, over(cue, first, 80, -14)),
+            (2.95, first), (3.25, over(first, second, 0, -26)), (3.55, second), (3.85, over(second, third, 0, -26)), (4.15, third),
+            (4.6, over(third, cue, 40, 0)),
+            (explosionTime, cue),
+        ]
+        return WelcomeFlight(
+            waypoints: points.map { WelcomeFlight.Waypoint(time: $0.0, point: $0.1) }, litAt: 1.0, fadeFrom: explosionTime, goneAt: 5.17
+        )
     }
 
     // MARK: - The shine of the dots
@@ -160,28 +139,20 @@ enum WelcomeScript {
     /// When the star lands on each word.
     static let wordHits: [Double] = [2.95, 3.55, 4.15]
 
-    /// A word's pill: it appears dim at 1.0 s, jumps 12 pt when the star lands and becomes a solid yellow pill (`y`, `scale`, `opacity`), and stays
-    /// solid (`blur` here is how much yellow it is, 0...1).
+    /// A word's pill: it appears dim at 1.0 s, lifts 5 pt when the star lands on its mark and lights (`y`, `scale`, `opacity`), and stays lit
+    /// (`blur` here is how lit it is, 0...1: the mark gold, the words bright).
     static func pill(hit: Double) -> PoseTrack {
         PoseTrack(curve: .cssEaseOut, [
-            .init(0.6, opacity: 0, scale: 0.85, y: 8), .init(1.0, opacity: 0.35),
+            .init(0.6, opacity: 0, scale: 0.92, y: 6), .init(1.0, opacity: 0.35),
             .init(hit - 0.12, opacity: 0.35, curve: .css(0.2, 0.9, 0.3, 1)),
-            .init(hit, opacity: 1, scale: 1.1, y: -12, blur: 1, curve: .css(0.5, 0, 0.8, 0.6)),
-            .init(hit + 0.22, opacity: 1, scale: 1, y: 0, blur: 1),
+            .init(hit, opacity: 1, scale: 1.06, y: -5, blur: 1, curve: .css(0.3, 1.3, 0.5, 1)),
+            .init(hit + 0.45, opacity: 1, scale: 1, y: 0, blur: 1),
         ])
     }
 
-    /// The yellow glow round a pill: it flares when the star lands and settles to a faint one that stays.
+    /// The gold glow of a pill's mark and edge: it flares when the star lands and settles to a faint one that stays.
     static func pillGlow(hit: Double) -> PoseTrack {
         PoseTrack(curve: .cssEaseOut, [.init(hit - 0.02, opacity: 0), .init(hit, opacity: 1), .init(hit + 1.3, opacity: 0.3)])
-    }
-
-    /// The oval of light that crosses a word once the star is on it, left to right, in 0.44 s (0 before, 1 after).
-    static func sweep(hit: Double) -> PoseTrack {
-        PoseTrack(curve: .css(0.5, 0, 0.2, 1), [
-            .init(hit + 0.02, opacity: 0, scale: 0), .init(hit + 0.06, opacity: 1, scale: 0), .init(hit + 0.5, opacity: 1, scale: 1),
-            .init(hit + 0.52, opacity: 0, scale: 1),
-        ])
     }
 
     /// The ring that opens around a word the star landed on.
@@ -229,22 +200,30 @@ enum WelcomeScript {
         return PoseTrack(curve: .css(0.16, 1, 0.3, 1), [.init(start, opacity: 0, y: 16, blur: 10), .init(start + 0.85)])
     }
 
+    /// The gold light that runs over the title once it has landed, word after word (7.05 s on, 0.55 s from the first word to the last): each
+    /// word warms in 0.16 s and cools in 0.5 s (`opacity`, 0...1).
+    static func titleGlint(_ index: Int, of count: Int) -> PoseTrack {
+        let start = 7.05 + Double(index) * min(0.08, 0.55 / Double(max(1, count - 1)))
+        return PoseTrack(curve: .css(0.4, 0, 0.2, 1), [.init(start, opacity: 0), .init(start + 0.16, opacity: 1), .init(start + 0.66, opacity: 0)])
+    }
+
     /// The line under the title (6.55–7.45 s) and the yellow button (6.95–7.75 s).
     static let subtitle = PoseTrack(curve: .css(0.16, 1, 0.3, 1), [.init(6.55, opacity: 0, y: 10), .init(7.45)])
     static let primaryButton = PoseTrack(curve: .css(0.16, 1, 0.3, 1), [.init(6.95, opacity: 0, y: 22), .init(7.75)])
 
     // MARK: - Haptics
 
-    enum Beat: Sendable { case dot, word, explosion }
+    enum Beat: Sendable { case letter, word, explosion }
 
     /// How many beats the story has passed at `time`: the haptic of the latest (`orderedBeats[passed - 1]`) plays when this grows.
     static func beatsPassed(at time: Double) -> Int {
         beats.filter { $0.time <= time }.count
     }
 
-    /// What the hand feels and when: a soft tap on each of the five dots, a light one on each word, a success on the explosion.
+    /// What the hand feels and when: a hum with a tap on each dot while the star draws the C (one pattern, `HapticPatterns.welcomeC`, from
+    /// the first dot), a light tap on each word, a success on the explosion.
     static let beats: [(time: Double, beat: Beat)] =
-        dots.map { ($0.hit, Beat.dot) } + wordHits.map { ($0, Beat.word) } + [(explosionTime, Beat.explosion)]
+        [(dots[0].hit, Beat.letter)] + wordHits.map { ($0, Beat.word) } + [(explosionTime, Beat.explosion)]
 
     /// The beats in the order they come.
     static let orderedBeats = beats.sorted { $0.time < $1.time }

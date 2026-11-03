@@ -144,9 +144,38 @@ enum HapticPatterns {
         Beat(time: DockChipLight.duration - 0.3, intensity: 0.2, sharpness: 0.2),
     ]
 
+    /// 1.1 Welcome: the star drawing the C (`WelcomeScript`, from the first dot): a low hum under the whole stroke and the leg, swelling as
+    /// it goes, with a tap on each dot as it lights, a little firmer each time.
+    static let welcomeC: [Beat] = [
+        Beat(time: 0, intensity: 0.08, sharpness: 0.15, duration: 1.15, endIntensity: 0.26),
+    ] + (0..<5).map { index in
+        Beat(time: Double(index) * 0.2, intensity: 0.34 + Float(index) * 0.05, sharpness: 0.55)
+    }
+
+    /// 1.2 Topics: a topic picked becoming a world (`TopicBirth`): a tap on the chip, a hum that swells while its light flies (0.15–1.75 s),
+    /// and a soft landing with a small glint after it.
+    static let topicFlight: [Beat] = [
+        Beat(time: 0, intensity: 0.5, sharpness: 0.6),
+        Beat(time: 0.15, intensity: 0.05, sharpness: 0.2, duration: 1.55, endIntensity: 0.22),
+        Beat(time: 1.75, intensity: 0.6, sharpness: 0.35),
+        Beat(time: 1.84, intensity: 0.22, sharpness: 0.9),
+    ]
+
+    /// 1.3 Voyage: a platform picked (`VoyageScene`): a soft tap, a hum that swells while the light crosses to its galaxy (0.4–2.4 s), and
+    /// its arrival, a firm landing with a glint after it.
+    static let voyageFlight: [Beat] = [
+        Beat(time: 0, intensity: 0.45, sharpness: 0.4),
+        Beat(time: 0.4, intensity: 0.05, sharpness: 0.2, duration: 2.0, endIntensity: 0.24),
+        Beat(time: 2.4, intensity: 0.75, sharpness: 0.4),
+        Beat(time: 2.49, intensity: 0.25, sharpness: 0.9),
+    ]
+
     // MARK: - Playing
 
     static func playSparkles() { play(sparkles, fallback: Haptics.selection) }
+    static func playWelcomeC() { play(welcomeC, fallback: Haptics.soft) }
+    static func playTopicFlight() { play(topicFlight, fallback: Haptics.apply) }
+    static func playVoyageFlight() { play(voyageFlight, fallback: Haptics.soft) }
     static func playTakeoff() { play(takeoff, fallback: Haptics.medium) }
     static func playLanding() { play(landing, fallback: Haptics.success) }
     static func playCommit() { play(commit, fallback: Haptics.light) }

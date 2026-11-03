@@ -12,6 +12,10 @@ extension ScriptDetailViewModel {
     static let minimumSelection = 8
     /// How long a pause in writing is before the words are saved.
     static let commitDelay: Duration = .seconds(1)
+    /// How long the typing pauses before the page's measures catch up with the words (`wordsTyped()`).
+    static let typingPause: Duration = .milliseconds(300)
+    /// While the typing goes on, the measures catch up at most this often.
+    static let typingRefresh: Duration = .milliseconds(1500)
 
     // MARK: - Loading and saving
 
@@ -20,7 +24,7 @@ extension ScriptDetailViewModel {
     /// keyboard there would ride through the transition.
     func loadPage(startsInDraft: Bool) {
         guard let script else { return }
-        page.title = script.title
+        pageTitle = script.title
         page.text = script.text
         let takesKeyboard = pendingRequest == nil
         page.focusesTitle = takesKeyboard && script.title.isEmpty && script.isEmpty
@@ -31,7 +35,7 @@ extension ScriptDetailViewModel {
     /// The library changed the words (a tool, a hook): the page follows.
     func syncPage() {
         guard let script, page.isLoaded else { return }
-        page.title = script.title
+        pageTitle = script.title
         page.text = script.text
         page.selection = nil
     }
@@ -42,7 +46,7 @@ extension ScriptDetailViewModel {
         pageCommitTask?.cancel()
         pageCommitTask = nil
         guard page.isLoaded, !page.isWriting, let script else { return }
-        let titleChanged = page.title != script.title
+        let titleChanged = pageTitle != script.title
         let textChanged = CueParser.paragraphs(in: page.text) != CueParser.paragraphs(in: script.text)
         guard titleChanged || textChanged else { return }
         if textChanged { voiceQuestions?.noteEdit(ofScript: scriptID) }
@@ -52,7 +56,7 @@ extension ScriptDetailViewModel {
         let takeCount = recorded.count
         let latestTakeVersion = recorded.compactMap(\.scriptVersion).max()
         let bumpsVersion = textChanged && takeCount > 0 && (latestTakeVersion.map { script.version <= $0 } ?? !page.bumpedVersion)
-        let title = page.title
+        let title = pageTitle
         let text = textChanged ? page.text : script.text
         library.update(scriptID) { script in
             script.title = title
@@ -74,7 +78,9 @@ extension ScriptDetailViewModel {
 
     /// Something was typed: the words are saved when the creator pauses.
     func pageDidEdit() {
-        if page.isLoaded, !page.isWriting, page.text != (script?.text ?? "") || page.title != (script?.title ?? "") {
+        // Only once per visit (the words are compared only until then): the page is told again only when something it shows changes.
+        if page.isLoaded, !page.isWriting, !page.isEdited || page.isDone,
+           page.text != (script?.text ?? "") || pageTitle != (script?.title ?? "") {
             page.isEdited = true
             page.isDone = false
         }
@@ -84,6 +90,29 @@ extension ScriptDetailViewModel {
             guard !Task.isCancelled else { return }
             self?.commitPage()
         }
+    }
+
+    /// Letters typed in the words (`ScriptPageState.type(_:)`): the page's measures stay on what they last read until the typing pauses
+    /// for `typingPause` (or every `typingRefresh` while it goes on), so a letter costs the editor only, never the page around it (the
+    /// owner felt each one, on a long script the AI wrote, 03/11/2026).
+    func wordsTyped() {
+        let now = ContinuousClock.now
+        if let since = measuredAt {
+            if now - since > Self.typingRefresh {
+                page.catchUp()
+                measuredAt = now
+            }
+        } else {
+            measuredAt = now
+        }
+        typingPauseTask?.cancel()
+        typingPauseTask = Task { [weak self] in
+            try? await Task.sleep(for: Self.typingPause)
+            guard !Task.isCancelled, let self else { return }
+            page.catchUp()
+            measuredAt = nil
+        }
+        pageDidEdit()
     }
 
     /// The page goes away (back, or another tab): what was written is kept, a writing in progress stops. Leaving never changes the
@@ -108,8 +137,9 @@ extension ScriptDetailViewModel {
     var strip: ScriptStrip? {
         guard let script else { return nil }
         var current = script
-        // The strip reads the words on the page, which may be ahead of what was saved a moment ago (or still arriving).
-        if page.isLoaded { current.text = page.isWriting ? (page.revealed ?? "") : page.text }
+        // The strip reads the words on the page, which may be ahead of what was saved a moment ago (or still arriving): as the page measures
+        // them (`measuredText`), so a letter typed never redraws the page around the words.
+        if page.isLoaded { current.text = page.isWriting ? (page.revealed ?? "") : measuredText }
         return ScriptStrip(script: current, takes: scriptTakes, isEdited: page.isEdited && !page.isDone)
     }
 
@@ -204,7 +234,8 @@ extension ScriptDetailViewModel {
         if !showsCues { showsCues = true }
         var text = page.text
         let characters = text.count
-        let range = page.selection ?? characters..<characters
+        let caret = page.caret.flatMap { ScriptTextOffsets.characters(of: NSRange(location: $0, length: 0), in: page.text) }
+        let range = page.selection ?? caret ?? characters..<characters
         let lower = text.index(text.startIndex, offsetBy: min(range.lowerBound, characters))
         let offset = text.distance(from: text.startIndex, to: lower)
         let spaceBefore = offset > 0 && !text[text.index(before: lower)].isWhitespace
@@ -428,7 +459,7 @@ extension ScriptDetailViewModel {
                 // The star opens the page (ring, crossfade) before the first word is written.
                 await transition?.contentReady()
                 guard !Task.isCancelled else { return }
-                page.title = generated.title
+                pageTitle = generated.title
                 // The voice question compares with Apple Intelligence's own rewrites: not on an Ultra AI script.
                 if request.engine == .apple { beginVoicePreview(for: request) }
                 // The title arrives first, word by word (`ScriptPageHeader`), then the words under it.

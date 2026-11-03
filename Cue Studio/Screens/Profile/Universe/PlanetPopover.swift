@@ -23,11 +23,15 @@ struct PlanetPopover: View {
                 .monoFont(size: 11, weight: .semibold).interfaceTracking(1).foregroundStyle(Palette.accText)
             if isLive, let next = PlanetSize.next(videos: count) {
                 Text("\(next.remaining) more to unlock \(PlanetPopover.detailName(next.detail))")
-                    .cueFont(12.5).foregroundStyle(Palette.ink2).lineLimit(1).minimumScaleFactor(0.85)
+                    .cueFont(12.5).foregroundStyle(Palette.ink2)
+                    // On two lines when one is too short ("Nog 2 om een helderdere gloed te ontgrendelen"): never cut (owner, 02/11/2026).
+                    .fixedSize(horizontal: false, vertical: true)
             }
             Button(action: onSeeInTakes) {
                 Text("See in Takes ›").cueFont(14, weight: .semibold).foregroundStyle(Palette.ink)
-                    .frame(maxWidth: .infinity).frame(height: 32)
+                    .multilineTextAlignment(.center)
+                    .padding(.vertical, 6)
+                    .frame(maxWidth: .infinity).frame(minHeight: 32)
                     .background(Color.white.opacity(0.12), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
             }
             .buttonStyle(.plain)

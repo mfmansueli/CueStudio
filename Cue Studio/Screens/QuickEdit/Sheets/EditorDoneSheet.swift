@@ -72,8 +72,12 @@ struct EditorDoneSheet: View {
                         .font(.footnote)
                         .foregroundStyle(isPrimary ? Palette.accInk2 : Palette.ink2)
                 }
+                .fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 8)
+                // Whole, always: the title and detail wrap beside it instead (owner, 02/11/2026: no label is ever cut).
                 pill(result, isPrimary: isPrimary)
+                    .fixedSize()
+                    .layoutPriority(1)
             }
             .foregroundStyle(isPrimary ? Palette.accInk : Palette.ink)
             .padding(.horizontal, 16)

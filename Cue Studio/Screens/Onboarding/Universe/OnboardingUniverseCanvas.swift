@@ -17,6 +17,8 @@ struct OnboardingUniverseCanvas: View {
     var opening: MotionTime?
     /// UI tests: the youngest world stands still at this age.
     var frozenBirthAge: Double?
+    /// 1.2: the orbits not taken yet are drawn as faint dashed rings waiting for a world (they are the count of what can still be picked).
+    var showsEmptyOrbits = false
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
@@ -54,7 +56,8 @@ struct OnboardingUniverseCanvas: View {
     private func draw(in canvas: inout GraphicsContext, size: CGSize, time: TimeInterval, now: Date) {
         let center = CGPoint(x: size.width / 2, y: size.height / 2)
         drawMotes(in: &canvas, center: center, time: time)
-        drawCore(in: &canvas, center: center, time: time)
+        if showsEmptyOrbits { drawEmptyOrbits(in: &canvas, center: center, now: now) }
+        drawCore(in: &canvas, center: center, time: time, pulse: reduceMotion ? 0 : landingPulse(now: now))
         if let opening, !opening.isStill || opening.clock > 0 { drawEntry(at: opening.clock, in: &canvas, center: center) }
         if let star { drawStar(from: star, in: &canvas, center: center, size: size, now: now) }
         // A world per topic.
@@ -97,12 +100,55 @@ struct OnboardingUniverseCanvas: View {
         }
     }
 
+    // MARK: - The empty orbits
+
+    /// The orbit at `index`, round `center`.
+    private static func orbitPath(_ index: Int, center: CGPoint) -> Path {
+        let radiusX = Self.radiusX(index)
+        let radiusY = radiusX * Self.squash
+        let path = Path(ellipseIn: CGRect(x: -radiusX, y: -radiusY, width: radiusX * 2, height: radiusY * 2))
+        return path.applying(CGAffineTransform(rotationAngle: Self.tilt.radians).concatenating(CGAffineTransform(translationX: center.x, y: center.y)))
+    }
+
+    /// A faint dashed ring on each orbit no world has finished drawing yet; it gives way as the world's own orbit draws over it.
+    private func drawEmptyOrbits(in canvas: inout GraphicsContext, center: CGPoint, now: Date) {
+        for index in 0..<OnboardingTopic.limit {
+            var drawn = 0.0
+            if topics.indices.contains(index) {
+                drawn = reduceMotion ? 1 : TopicBirth.pose(TopicBirth.orbit, at: frozenAge(for: topics[index], now: now)).drawn
+            }
+            guard drawn < 1 else { continue }
+            canvas.stroke(
+                Self.orbitPath(index, center: center), with: .color(Palette.Universe.starLilac.opacity(0.22 * (1 - drawn))),
+                style: StrokeStyle(lineWidth: 1, dash: [2, 5])
+            )
+        }
+    }
+
+    /// How strongly the core pulses now: a world just landed (0.6 s from its landing, fading).
+    private func landingPulse(now: Date) -> Double {
+        topics.map { topic in
+            let since = frozenAge(for: topic, now: now) - TopicBirth.landing
+            guard since >= 0, since < 0.6 else { return 0 }
+            return 1 - UnitCurve.easeOut.value(at: since / 0.6)
+        }.max() ?? 0
+    }
+
     // MARK: - The core
 
     /// The board's core (1.2): a 22 pt sphere (`#fff → #F2EEFF → #C9BFFF`) in two soft glows that breathe over 3 s (white 18 → 26 pt of blur,
     /// violet 60 → 84), twelve faint rays turning once in a minute, and a ring of light that opens and fades every 2.8 s.
-    private func drawCore(in canvas: inout GraphicsContext, center: CGPoint, time: TimeInterval) {
+    /// `pulse` (0...1): a world just landed, the core brightens and a ring of light leaves it.
+    private func drawCore(in canvas: inout GraphicsContext, center: CGPoint, time: TimeInterval, pulse: Double = 0) {
         let breath = reduceMotion ? 0 : 0.5 - 0.5 * cos(2 * .pi * time / 3)
+        if pulse > 0.01 {
+            softDisc(in: &canvas, center: center, radius: 18 + 10 * pulse, blur: 24, color: .white.opacity(0.35 * pulse))
+            let radius = 14 + 26 * (1 - pulse)
+            canvas.stroke(
+                Path(ellipseIn: CGRect(x: center.x - radius, y: center.y - radius, width: radius * 2, height: radius * 2)),
+                with: .color(Palette.Universe.starLilac.opacity(0.8 * pulse)), lineWidth: 1.2
+            )
+        }
         softDisc(
             in: &canvas, center: center, radius: 11 + 20 + 12 * breath, blur: 60 + 24 * breath,
             color: Palette.Universe.nightViolet.opacity(0.30 + 0.10 * breath)
@@ -243,12 +289,9 @@ struct OnboardingUniverseCanvas: View {
         center: CGPoint, size: CGSize, time: TimeInterval
     ) {
         let color = OnboardingTopic.color(at: index)
-        let radiusX = Self.radiusX(index)
-        let radiusY = radiusX * Self.squash
         // The orbit draws for 1.3 s from the landing (1.75 s after the pick), with a white light that runs round it once.
         let orbit = TopicBirth.pose(TopicBirth.orbit, at: age)
-        var path = Path(ellipseIn: CGRect(x: -radiusX, y: -radiusY, width: radiusX * 2, height: radiusY * 2))
-        path = path.applying(CGAffineTransform(rotationAngle: Self.tilt.radians).concatenating(CGAffineTransform(translationX: center.x, y: center.y)))
+        let path = Self.orbitPath(index, center: center)
         if orbit.drawn > 0 { canvas.stroke(path.trimmedPath(from: 0, to: orbit.drawn), with: .color(color.opacity(0.4)), lineWidth: 1) }
         let runner = TopicBirth.pose(TopicBirth.orbitLight, at: age)
         if runner.opacity > 0.01, let dash = runner.dash {

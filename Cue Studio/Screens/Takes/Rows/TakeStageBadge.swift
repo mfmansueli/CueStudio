@@ -20,6 +20,8 @@ struct TakeStageBadge: View {
             Text(stage.badgeLabel)
                 .textCase(.uppercase)
                 .lineLimit(1)
+                // On a small poster, "CHOISIR LA MEILLEURE" shrinks a little rather than lose letters (owner, 02/11/2026).
+                .minimumScaleFactor(0.7)
         }
         .monoFont(size: 10, weight: .semibold)
         .foregroundStyle(stage.boardTint)

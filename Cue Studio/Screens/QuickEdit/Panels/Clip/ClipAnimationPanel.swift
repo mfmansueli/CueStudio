@@ -58,7 +58,8 @@ struct ClipAnimationPanel: View {
         } label: {
             VStack(spacing: 6) {
                 Image(systemName: systemImage).font(.editorGlyph(EditorGlyph.tool, weight: .semibold))
-                Text(label).font(.system(.caption, weight: .semibold)).lineLimit(2).multilineTextAlignment(.center).minimumScaleFactor(0.8)
+                // Two lines broken between words, never inside one (owner, 02/11/2026: no label is ever cut).
+                WholeWordsLabel(text: label, minimumScale: 0.8).font(.system(.caption, weight: .semibold))
             }
             .foregroundStyle(isOn ? Palette.accText : Palette.ink)
             .frame(width: 76, height: 70)

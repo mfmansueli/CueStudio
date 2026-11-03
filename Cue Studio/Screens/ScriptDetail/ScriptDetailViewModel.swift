@@ -21,8 +21,25 @@ final class ScriptDetailViewModel {
     var sheet: Sheet?
     /// The script's one page: the words being written and the little states around them.
     var page = ScriptPageState()
+    /// The title on the page, its own property: typing in it is seen only by what shows it (`ScriptPageHeader`), so each letter doesn't
+    /// redraw the page under it (the length bar, the tools, the editor that measures the whole script), which made the field lag.
+    var pageTitle = ""
     /// The pending save of what is being written on the page.
     var pageCommitTask: Task<Void, Never>?
+    /// The format's structure, for the format it was made for (`structure`).
+    @ObservationIgnored var structureKept: (type: ScriptType?, structure: ScriptStructure)?
+    /// The length last measured, and of what (`zone`).
+    @ObservationIgnored var zoneKept: (text: String, language: CueLanguage?, zone: LengthZone)?
+    /// The language last read from the words, with how long they were and what their start said then (`detectedLanguage(in:)`).
+    @ObservationIgnored var languageKept: (length: Int, quick: CueLanguage?, language: Locale.Language?)?
+    /// The quick language of the words' start, and that start (`quickLanguage(of:)`).
+    @ObservationIgnored var quickLanguageKept: (start: String, language: CueLanguage?)?
+    /// The start of the words `quickLanguage` reads (`LanguageDetector.quickLanguage`: 700 characters, cues and all).
+    static let languageKeyLength = 700
+    /// The page's measures catching up with the words once the typing pauses (`wordsTyped()`).
+    @ObservationIgnored var typingPauseTask: Task<Void, Never>?
+    /// When the measures last caught up while the creator kept typing.
+    @ObservationIgnored var measuredAt: ContinuousClock.Instant?
     /// The model writing into the page, if it is.
     var pageWritingTask: Task<Void, Never>?
     /// What the AI is to write into the page when it opens (an idea sent from the card), and the
@@ -112,11 +129,26 @@ final class ScriptDetailViewModel {
         page.isLoaded ? (page.revealed ?? page.text) : (script?.text ?? "")
     }
 
-    var structure: ScriptStructure { script?.structure ?? .generic }
+    /// The words as the page shows its measures of them (the length, the strip, which tools there are, the script's language): the
+    /// page's own, but while the creator types as they were when the typing last paused (`ScriptPageState.measured`).
+    /// What the tools work on is always `workingText`.
+    var measuredText: String {
+        page.isLoaded ? (page.revealed ?? page.measured) : (script?.text ?? "")
+    }
+
+    /// The format's structure, made once per format: each one is dozens of localized strings (its blocks, hooks and tools), and the page
+    /// asks for it several times every time it is drawn.
+    var structure: ScriptStructure {
+        let type = script?.type
+        if let kept = structureKept, kept.type == type { return kept.structure }
+        let structure = type?.structure ?? .generic
+        structureKept = (type, structure)
+        return structure
+    }
 
     /// What the Translate tool offers: every language but the one the script is written in.
     var translationLanguages: [CueLanguage] {
-        let current = script?.language ?? LanguageDetector.language(in: workingText)
+        let current = script?.language ?? detectedLanguage(in: measuredText).flatMap(CueLanguage.matching(language:))
         return CueLanguage.allCases.filter { $0 != current }
     }
 
@@ -130,20 +162,25 @@ final class ScriptDetailViewModel {
     }
 
     /// The language whose pace times the script (`ReadTime.pace(for:)`): its own, or read from the words on the page, as the list does.
-    var paceLanguage: CueLanguage? { script?.language ?? LanguageDetector.quickLanguage(in: workingText) }
+    var paceLanguage: CueLanguage? { script?.language ?? quickLanguage(of: measuredText) }
 
     var blocks: [ScriptBlock] {
-        ScriptBlocks.blocks(for: workingText, structure: structure, language: paceLanguage)
+        ScriptBlocks.blocks(for: measuredText, structure: structure, language: paceLanguage)
     }
 
     var summaries: [BlockSummary] { ScriptBlocks.summaries(of: blocks) }
 
+    /// Kept while the words, the platform and the pace stay the same: the page and its bar both show it.
     var zone: LengthZone {
-        LengthZone(text: workingText, preset: preset, language: paceLanguage)
+        let (text, preset, language) = (measuredText, preset, paceLanguage)
+        if let kept = zoneKept, kept.text == text, kept.zone.preset == preset, kept.language == language { return kept.zone }
+        let zone = LengthZone(text: text, preset: preset, language: language)
+        zoneKept = (text, language, zone)
+        return zone
     }
 
     /// Seconds the hook runs when it is too long.
-    var hookOverrun: TimeInterval? { ScriptBlocks.hookOverrun(in: workingText, structure: structure, language: paceLanguage) }
+    var hookOverrun: TimeInterval? { ScriptBlocks.hookOverrun(in: measuredText, structure: structure, language: paceLanguage) }
 
     var scriptTakes: [Take] { takes.takes(for: scriptID) }
 
@@ -156,7 +193,7 @@ final class ScriptDetailViewModel {
     /// The format's ready-made hooks in the script's language (read from the words when the script doesn't say; the interface's when neither
     /// does): a hook is read to camera, so a Portuguese script never gets English ones because the app is in English.
     private var templateHooks: [String] {
-        let language = script?.language ?? LanguageDetector.language(in: workingText)
+        let language = script?.language ?? detectedLanguage(in: measuredText).flatMap(CueLanguage.matching(language:))
         return (script?.type?.structure(hooksIn: language) ?? ScriptStructure.generic(hooksIn: language)).hooks
     }
 
@@ -183,7 +220,9 @@ final class ScriptDetailViewModel {
     /// draft this script, only the tools that need no model are there. "3 new hooks" is never one of them: the tools row's Hook opens the same
     /// sheet, and the tip that the hook runs long opens it from here.
     var tools: [ScriptTool] {
-        ([.inMyVoice] + structure.tools).filter { $0 != .newHooks && (canDraft || !$0.needsLanguageModel) }
+        // Asked once: whether the model drafts asks the system (and reads the words' language).
+        let canDraft = canDraft
+        return ([.inMyVoice] + structure.tools).filter { $0 != .newHooks && (canDraft || !$0.needsLanguageModel) }
     }
 
     /// Improve has something to offer: a tool, or the tip that the hook runs long.
@@ -206,7 +245,33 @@ final class ScriptDetailViewModel {
     /// The language the script is written in, as the model must keep it: the script's own, else read
     /// from its text (any language, not only the ones Cue offers).
     private var textLanguage: Locale.Language? {
-        script?.language?.locale.language ?? LanguageDetector.dominantLanguage(in: workingText)
+        script?.language?.locale.language ?? detectedLanguage(in: measuredText)
+    }
+
+    /// The language the words are in, read once and kept while they stay the same text: reading a long script costs a recognizer for each
+    /// of its sentences, and the page asks for it several times each time it is drawn (the tools, Fit, the AI bar), which made typing in
+    /// an AI's script lag where a short one of the creator's didn't (the owner, 03/11/2026). Typing on keeps it; it is read again when the
+    /// length moves by more than a fifth, or when the start of the words changed and a quick look at it (`quickLanguage`) no longer says
+    /// the same language (a translation, another language pasted in).
+    private func detectedLanguage(in text: String) -> Locale.Language? {
+        let length = text.utf8.count
+        if let kept = languageKept, kept.language != nil, abs(kept.length - length) <= kept.length / 5,
+           quickLanguage(of: text) == kept.quick {
+            return kept.language
+        }
+        let language = LanguageDetector.dominantLanguage(in: text)
+        languageKept = (length, quickLanguage(of: text), language)
+        return language
+    }
+
+    /// `LanguageDetector.quickLanguage` (the first 600 characters), kept while those stay the same: the length bar, the hooks and the
+    /// blocks each ask for it every time the page is drawn.
+    private func quickLanguage(of text: String) -> CueLanguage? {
+        let start = String(text.prefix(Self.languageKeyLength))
+        if let kept = quickLanguageKept, kept.start == start { return kept.language }
+        let language = LanguageDetector.quickLanguage(in: text)
+        quickLanguageKept = (start, language)
+        return language
     }
 
     // MARK: - Destination

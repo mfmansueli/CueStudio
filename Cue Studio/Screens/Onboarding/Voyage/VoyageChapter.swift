@@ -38,6 +38,7 @@ struct VoyageChapter: View {
         MotionScreen(hold: Self.openingEnd, loops: true, skippable: true, frozenAt: frozenAt, plays: plays) { time in
             content(time)
         }
+        .onAppear { if !reduceMotion { HapticPatterns.prewarm() } }
         .task(id: plays) { await openingHaptics() }
         .task(id: frozenPickAge) {
             if frozenPickAge != nil, picked == nil { picked = .tiktok }
@@ -79,7 +80,7 @@ struct VoyageChapter: View {
                 Spacer(minLength: 0).frame(height: 36)
                 OnboardingPrimaryButton(
                     title: String(localized: "Continue with \(picked?.label ?? onboarding.platform.label)"),
-                    disabledTitle: String(localized: "Choose a platform"), isEnabled: picked != nil,
+                    disabledTitle: String(localized: "Choose a platform"), disabledStyle: .glass, isEnabled: picked != nil, shines: true,
                     identifier: "onboarding.continue", action: onContinue
                 )
                 .padding(.horizontal, 16)
@@ -102,7 +103,7 @@ struct VoyageChapter: View {
             line(time)
                 .padding(.horizontal, 20)
                 .padding(.bottom, 8)
-            FlowLayout(spacing: 8, lineSpacing: 2) {
+            FlowLayout(spacing: 8, lineSpacing: 2, balanced: true) {
                 ForEach(Platform.primary) { platform in
                     VoyageChip(platform: platform, isPicked: picked == platform, pickAge: picked == platform ? age : nil) { choose(platform) }
                 }
@@ -115,7 +116,8 @@ struct VoyageChapter: View {
         }
     }
 
-    /// "CHOOSE ONE PLATFORM" until a pick, then "TIKTOK · TAP ANOTHER TO SWITCH" in yellow.
+    /// "CHOOSE ONE PLATFORM" until a pick, then "TAP ANOTHER TO SWITCH", both quiet: the button already names the choice, and the only
+    /// yellow under the galaxies is the button's.
     private func line(_ time: MotionTime) -> some View {
         let arrived = pose("L77", min(time.clock, 3)).opacity
         return ZStack(alignment: .leading) {
@@ -123,8 +125,8 @@ struct VoyageChapter: View {
                 .foregroundStyle(Palette.Flight.quietInk)
                 .opacity(picked == nil ? 1 : 0)
                 .accessibilityHidden(picked != nil)
-            Text("\((picked ?? onboarding.platform).label.uppercased()) · TAP ANOTHER TO SWITCH")
-                .foregroundStyle(Palette.Universe.starGold)
+            Text("TAP ANOTHER TO SWITCH")
+                .foregroundStyle(Palette.Flight.quietInk)
                 .opacity(picked == nil ? 0 : 1)
                 .accessibilityHidden(picked == nil)
         }
@@ -167,19 +169,19 @@ struct VoyageChapter: View {
 
     // MARK: - Picking
 
-    /// A chip or a galaxy was tapped: it is the destination (one at a time), the light starts, the hand answers.
+    /// A chip or a galaxy was tapped: it is the destination (one at a time), the light starts, the hand answers: a tap, a hum while the
+    /// light crosses (it leaves 0.4 s after the tap and lands 2 s later) and its landing (`HapticPatterns.voyageFlight`).
     private func choose(_ platform: Platform) {
         guard picked != platform else { return }
-        Haptics.soft()
         onboarding.platform = platform
         picked = platform
         pickedAt = .now
         if firstPickedAt == nil { firstPickedAt = .now }
-        Task {
-            // The light lands 2.4 s after the tap (it leaves 0.4 s later and takes 2 s).
-            try? await Task.sleep(for: .seconds(2.4))
-            if picked == platform, !Task.isCancelled { Haptics.success() }
+        if reduceMotion {
+            Haptics.soft()
+            return
         }
+        HapticPatterns.playVoyageFlight()
     }
 
     /// The hand feels each galaxy being born: a soft tap each, the last a lighter one (09 §15).

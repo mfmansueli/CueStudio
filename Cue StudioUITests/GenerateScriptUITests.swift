@@ -108,12 +108,12 @@ final class GenerateScriptUITests: XCTestCase {
         field.tap()
         field.typeText("Why I quit coffee for 30 days")
         app.buttons["ideaCard.submit"].tap()
-        // The stub answers at once, so by the time the page is up the writing is done and Stop is gone: the strip has the ready switch,
-        // off, since the AI drafts (the "Draft ready" toast is too short-lived to wait for; the view model's tests check it).
+        // The stub answers at once, so by the time the page is up the writing is done and Stop is gone: the strip has "Draft" lit,
+        // since the AI drafts (the "Draft ready" toast is too short-lived to wait for; the view model's tests check it).
         XCTAssertTrue(app.pageBackButton.exists(within: 10))
         let ready = app.pageReadyToggle
         XCTAssertTrue(ready.exists(within: 10))
-        XCTAssertTrue(["Off", "0"].contains(ready.value as? String ?? ""), "the AI drafts: the switch starts off")
+        XCTAssertTrue(app.pageDraftChoice.isSelected && !ready.isSelected, "the AI drafts: Draft is lit")
         XCTAssertFalse(app.buttons["page.stopButton"].exists)
     }
 

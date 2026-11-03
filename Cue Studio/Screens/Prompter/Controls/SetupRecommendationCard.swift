@@ -38,13 +38,17 @@ struct SetupRecommendationCard: View {
                 .fixedSize(horizontal: false, vertical: true)
             }
             .accessibilityElement(children: .combine)
-            HStack(spacing: 8) {
-                Button(keepTitle, action: onKeepSetup)
-                    .buttonStyle(.cueGlass())
-                    .accessibilityIdentifier("prompter.keepSetupButton")
-                Button(useTitle, action: onUseRecommended)
-                    .buttonStyle(.cuePrimary())
-                    .accessibilityIdentifier("prompter.useRecommendedButton")
+            // Side by side while both names fit whole; otherwise one over the other, the recommended first (owner, 02/11/2026: "Manter
+            // minh…" and "Usar o recom…" could not be read).
+            ViewThatFits(in: .horizontal) {
+                FairShareLayout(spacing: 8) {
+                    keepButton
+                    useButton
+                }
+                VStack(spacing: 8) {
+                    useButton
+                    keepButton
+                }
             }
         }
         .padding(16)
@@ -61,6 +65,18 @@ struct SetupRecommendationCard: View {
         // A container of its own, so the card's identifier doesn't replace the buttons'.
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("prompter.recommendationCard")
+    }
+
+    private var keepButton: some View {
+        Button(keepTitle, action: onKeepSetup)
+            .buttonStyle(.cueGlass())
+            .accessibilityIdentifier("prompter.keepSetupButton")
+    }
+
+    private var useButton: some View {
+        Button(useTitle, action: onUseRecommended)
+            .buttonStyle(.cuePrimary())
+            .accessibilityIdentifier("prompter.useRecommendedButton")
     }
 
     /// One difference reads as a sentence; several show the whole usual setup.

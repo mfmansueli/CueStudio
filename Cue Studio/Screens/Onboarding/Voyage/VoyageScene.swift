@@ -154,39 +154,27 @@ struct VoyageScene: View {
         drawArrival(at: galaxy, second: pickedAt, in: &context)
     }
 
-    /// The light: a yellow line that draws behind it (`#FFD60A`, 1.6 pt), a bright stretch at its tail, the head with its dots, and four glints.
+    /// The light (owner, 02/11/2026: few trails, as on 1.1 and 1.2): a thin route that draws behind it and stays, fading from the creator's
+    /// lilac into the destination's colour, and the head with 1.1's short tail (`StarRibbon`).
     private func drawLight(along route: VoyageRoute, at second: Double, in context: inout GraphicsContext) {
         let line = pose("L20", at: second)
-        if line.opacity > 0.01 {
+        if line.opacity > 0.01, let destination = picked?.tint {
             context.drawLayer { layer in
-                layer.opacity = line.opacity
-                layer.addFilter(.shadow(color: Palette.acc.opacity(0.8), radius: 4))
+                layer.opacity = line.opacity * 0.75
+                layer.addFilter(.shadow(color: destination.opacity(0.6), radius: 3))
                 layer.stroke(
-                    route.path.trimmedPath(from: 0, to: line.drawn), with: .color(Palette.acc), style: StrokeStyle(lineWidth: 1.6, lineCap: .round)
+                    route.path.trimmedPath(from: 0, to: line.drawn),
+                    with: .linearGradient(Gradient(colors: [Palette.Universe.starLilac, destination]), startPoint: route.from, endPoint: route.to),
+                    style: StrokeStyle(lineWidth: 1.2, lineCap: .round)
                 )
             }
         }
-        let tail = pose("L21", at: second)
-        if tail.opacity > 0.01, let dash = tail.dash {
-            let start = max(0, -dash / 100), end = min(1, (14 - dash) / 100)
-            if end > start {
-                context.drawLayer { layer in
-                    layer.opacity = tail.opacity
-                    layer.addFilter(.shadow(color: Palette.acc.opacity(0.95), radius: 6))
-                    layer.stroke(
-                        route.path.trimmedPath(from: start, to: end), with: .color(Palette.Universe.starCream),
-                        style: StrokeStyle(lineWidth: 3, lineCap: .round)
-                    )
-                }
-            }
+        let trail = StarRibbon.trail(at: second, length: 0.2) { moment in
+            let pose = pose("L23", at: moment)
+            guard let along = pose.along else { return (route.from, 0) }
+            return (route.point(atLength: along), pose.opacity)
         }
-        let sizes: [CGFloat] = [5, 7, 9, 11, 13, 16]
-        for (index, id) in ["L43", "L42", "L41", "L40", "L39", "L38"].enumerated() {
-            let dot = pose(id, at: second)
-            guard dot.opacity > 0.01, let along = dot.along else { continue }
-            let fade = dot.opacity * (0.3 + 0.12 * Double(index))
-            context.fill(LightFX.disc(route.point(atLength: along), sizes[index] / 2 * 0.65), with: .color(Palette.Universe.starCream.opacity(fade)))
-        }
+        StarRibbon.draw(trail, width: 3.2, in: &context)
         let head = pose("L23", at: second)
         if head.opacity > 0.01, let along = head.along {
             let point = route.point(atLength: along)
@@ -202,18 +190,9 @@ struct VoyageScene: View {
                 )
             )
         }
-        let glints: [(layer: String, parameter: Double, size: CGFloat)] = [
-            ("L44", 0.218, 14), ("L45", 0.414, 10), ("L46", 0.608, 14), ("L47", 0.799, 10),
-        ]
-        for glint in glints {
-            LightFX.cross(
-                at: route.point(at: glint.parameter), size: glint.size, thickness: 1, verticalRatio: 1, pose: pose(glint.layer, at: second),
-                color: Palette.Universe.starGold, in: &context
-            )
-        }
     }
 
-    /// The arrival: a flash and a cross of light, two rings, ten streaks and nine sparks on the galaxy, and then its ring that goes on pulsing.
+    /// The arrival: a flash and a ring on the galaxy, and then its ring that goes on pulsing.
     private func drawArrival(at galaxy: VoyageGalaxy, second: Double, in context: inout GraphicsContext) {
         let tint = galaxy.platform.tint
         let centre = galaxy.centre
@@ -233,18 +212,7 @@ struct VoyageScene: View {
                 )
             }
         }
-        LightFX.cross(
-            at: centre, size: 120, thickness: 1.8, verticalRatio: 0.7, pose: pose("L22", at: second),
-            color: tint.mix(with: .white, by: 0.7), glow: tint.opacity(0.9), in: &context
-        )
         LightFX.ring(pose("L24", at: second), at: centre, radius: 22 * Self.socialGrowth, color: tint, in: &context)
-        LightFX.ring(pose("L25", at: second), at: centre, radius: 22 * Self.socialGrowth, color: Palette.Flight.ice.opacity(0.8), lineWidth: 1, in: &context)
-        for index in 0..<10 { LightFX.streak(pose("L\(48 + index)", at: second), at: centre, from: tint, in: &context) }
-        let sizes: [CGFloat] = [3, 2, 2.5]
-        for index in 0..<9 {
-            let colors: [Color] = [Palette.Flight.ice, .white, tint]
-            LightFX.spark(pose("L\(58 + index)", at: second), at: centre, size: sizes[index % 3], color: colors[index % 3], in: &context)
-        }
         // The chosen galaxy's ring: it opens and fades again and again.
         let chosen = pose("L26", at: second).opacity
         if chosen > 0.01 {
@@ -269,22 +237,37 @@ struct VoyageScene: View {
         drawYou(in: &layer)
     }
 
-    /// "YOU" under the galaxy: 38 pt mono that shrinks with it to 10 pt. Its letters leave from the middle outward (O first, then Y and U), each
-    /// stretched across and blurred, settling while the tracking closes from 0.95 em to 0.16 em, with a lavender glow and a yellow glint.
+    /// "YOU" under the galaxy, in the creator's language ("VOCÊ", "DU", "あなた"): 38 pt mono that shrinks with it to 10 pt. Its letters leave
+    /// from the middle outward (the board's O first, then Y and U: the middle letters take the O's motion, the ones left and right the Y's and
+    /// the U's), each stretched across and blurred, settling while the tracking closes from 0.95 em to 0.16 em, with a lavender glow and a
+    /// yellow glint. A script whose letters join (Arabic, Devanagari, Thai) arrives as one word, with the middle's motion.
     private func drawYou(in context: inout GraphicsContext) {
+        let word = String(localized: "YOU")
+        let joining: [ClosedRange<UInt32>] = [0x0600...0x06FF, 0x0900...0x097F, 0x0E00...0x0E7F]
+        let joins = word.unicodeScalars.contains { scalar in joining.contains { $0.contains(scalar.value) } }
+        let pieces = joins ? [word] : word.map(String.init)
         let spacing = (pose("L73").letterSpacingEm ?? 0.16) * 38
-        let step = 38 * 0.6 + spacing
-        for (index, id) in ["L74", "L75", "L76"].enumerated() {
+        // A Latin letter of the mono is 0.6 em wide, a Chinese, Japanese or Korean one a whole em.
+        let widths = pieces.map { piece in
+            joins ? 38 * 0.6 * CGFloat(piece.count) : piece.unicodeScalars.allSatisfy { $0.value < 0x1100 } ? 38 * 0.6 : 38
+        }
+        let total = widths.reduce(0, +) + spacing * CGFloat(max(0, pieces.count - 1))
+        var left = -total / 2
+        let middle = Double(pieces.count - 1) / 2
+        for (index, piece) in pieces.enumerated() {
+            let centre = left + widths[index] / 2
+            left += widths[index] + spacing
+            let id = abs(Double(index) - middle) < 0.6 ? "L75" : Double(index) < middle ? "L74" : "L76"
             let letter = pose(id)
             guard letter.opacity > 0.01 else { continue }
             var layer = context
             layer.opacity = letter.opacity
-            layer.translateBy(x: CGFloat(index - 1) * step, y: 159.5)
+            layer.translateBy(x: centre, y: 159.5)
             layer.scaleBy(x: letter.sx, y: letter.sy)
             if letter.blur > 0.1 { layer.addFilter(.blur(radius: letter.blur)) }
             if letter.glowRadius > 0.1, let glow = letter.glow { layer.addFilter(.shadow(color: glow, radius: letter.glowRadius)) }
             layer.draw(
-                Text(["Y", "O", "U"][index]).font(.mono(size: 38, weight: .bold, locale: layer.environment.locale))
+                Text(verbatim: piece).font(.mono(size: 38, weight: .bold, locale: layer.environment.locale))
                     .foregroundStyle(letter.color ?? Palette.Universe.starLilac),
                 at: .zero
             )

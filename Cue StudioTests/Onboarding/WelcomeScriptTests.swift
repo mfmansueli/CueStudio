@@ -70,20 +70,21 @@ struct WelcomeScriptTests {
         #expect(last.pop.pose(at: last.hit).scale == 2.6)
     }
 
-    @Test func theHapticsAreFiveSoftThreeLightAndOneSuccessInOrder() {
+    @Test func theHapticsAreTheCsPatternThreeLightAndOneSuccessInOrder() {
         let beats = WelcomeScript.beats
-        #expect(beats.filter { $0.beat == .dot }.count == 5)
+        #expect(beats.first?.beat == .letter && beats.first?.time == WelcomeScript.dots[0].hit)
+        #expect(beats.filter { $0.beat == .letter }.count == 1)
         #expect(beats.filter { $0.beat == .word }.count == 3)
         #expect(beats.filter { $0.beat == .explosion }.count == 1)
         #expect(beats.map(\.time) == beats.map(\.time).sorted())
         #expect(beats.last?.time == WelcomeScript.explosionTime)
     }
 
-    @Test func aWordIsDimThenJumpsAndTurnsSolidYellowAtTheHitAndStays() {
+    @Test func aWordIsDimThenLiftsAndLightsAtTheHitAndStays() {
         let pill = WelcomeScript.pill(hit: 2.95)
         #expect(abs(pill.pose(at: 2).opacity - 0.35) < 0.0001)
         let hit = pill.pose(at: 2.95)
-        #expect(hit.y == -12 && hit.scale == 1.1 && hit.blur == 1)
+        #expect(hit.y == -5 && hit.scale == 1.06 && hit.blur == 1)
         #expect(pill.pose(at: 6).blur == 1 && pill.pose(at: 6).y == 0 && pill.pose(at: 6).opacity == 1)
         let glow = WelcomeScript.pillGlow(hit: 2.95)
         #expect(glow.pose(at: 2.95).opacity == 1 && abs(glow.pose(at: 6).opacity - 0.3) < 0.0001)
@@ -126,10 +127,10 @@ struct WelcomeScriptTests {
         #expect(abs(WelcomeScript.titleWord(1).keyframes[0].time - first - 0.085) < 0.0001)
     }
 
-    @Test func theBurstsAreNineSparksAndTheExplosionTwelve() {
-        #expect(WelcomeScript.dots.allSatisfy { $0.sparks.count == 9 })
-        #expect(WelcomeScript.explosionSparks.count == 12)
-        #expect(WelcomeScript.wordSparks.count == 3 && WelcomeScript.wordSparks.allSatisfy { $0.count == 7 })
+    /// Few trails (owner, 02/11/2026): four sparks off each dot, six off the explosion, none off the words.
+    @Test func theBurstsAreFourSparksAndTheExplosionSix() {
+        #expect(WelcomeScript.dots.allSatisfy { $0.sparks.count == 4 })
+        #expect(WelcomeScript.explosionSparks.count == 6)
         let spark = WelcomeScript.dots[0].sparks[0]
         #expect(spark.track.pose(at: 1.0).opacity == 0)
         #expect(spark.track.pose(at: 1.13).opacity == 1)

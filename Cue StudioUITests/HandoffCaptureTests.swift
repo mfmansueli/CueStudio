@@ -135,6 +135,35 @@ final class HandoffCaptureTests: XCTestCase {
         try shot(app, "1.1_final", wait: 1)
     }
 
+    /// The first flight's chapters 1.2 to 1.4 at rest, with their real animations played out: a topic and a platform picked, the practice
+    /// script written (`tools/contrast/audit.py` reads their glass chips and card).
+    func test1_3_1_4_AtRest() throws {
+        _ = try requireFolder()
+        let app = CueApp.launch(seeded: false, animations: true, extraArguments: ["-uiTestOnboarding", "-uiTestWelcomeOpening"])
+        let start = app.buttons["onboarding.getStarted"]
+        XCTAssertTrue(start.exists(within: 30))
+        sleep(8)
+        start.tap()
+        let food = app.buttons["onboarding.topic.niche.food"]
+        XCTAssertTrue(food.exists(within: 10))
+        // The chips come in one after another, and the topics take a tap once they are all there.
+        sleep(3)
+        food.tap()
+        sleep(3)
+        try shot(app, "1.2_rest", wait: 0)
+        app.buttons["onboarding.continue"].tap()
+        let tiktok = app.buttons["onboarding.platform.tiktok"]
+        XCTAssertTrue(tiktok.exists(within: 10))
+        sleep(2)
+        tiktok.tap()
+        sleep(4)
+        try shot(app, "1.3_rest", wait: 0)
+        app.buttons["onboarding.continue"].tap()
+        XCTAssertTrue(app.buttons["onboarding.useScript"].exists(within: 10))
+        sleep(9)
+        try shot(app, "1.4_rest", wait: 0)
+    }
+
     /// The star scene of 1.1 held still at the seconds of the board where something happens (`-uiTestWelcomeAt`).
     func test1_1_Frames() throws {
         _ = try requireFolder()
@@ -272,6 +301,27 @@ final class HandoffCaptureTests: XCTestCase {
         element(app, "page.editor").tap()
         XCTAssertTrue(app.buttons["page.addCueButton"].exists(within: 5))
         try shot(app, "4.2_cues-bar", wait: 1)
+    }
+
+    /// The AI bar over a selection (4.2), and Ultra AI's permission sheet from the dock's invitation (§57), for their text over the glass.
+    func test4_3_AIBarAndUltraConsent() throws {
+        _ = try requireFolder()
+        let app = CueApp.launch(seeded: true)
+        app.openScriptPage(titled: "Oat & Co. · sponsored read")
+        let words = element(app, "page.editor")
+        words.tap()
+        words.press(forDuration: 1.0)
+        let selectAll = app.menuItems["Select All"]
+        if selectAll.exists(within: 3) { selectAll.tap() }
+        XCTAssertTrue(app.buttons["page.selection.shorter"].exists(within: 5))
+        try shot(app, "4.3_ai-bar", wait: 1)
+        app.terminate()
+        let ultra = CueApp.launch(seeded: true, extraArguments: ["-uiTestUltra", "-uiTestUltraInvite"])
+        let tryIt = ultra.buttons["ultra.invite.try"]
+        XCTAssertTrue(tryIt.exists(within: 15))
+        tryIt.tap()
+        XCTAssertTrue(element(ultra, "ultra.consent").exists(within: 5))
+        try shot(ultra, "57_ultra-consent", wait: 3)
     }
 
     // MARK: - 6 · Share to universe (8.1, 8.2, 6.3)

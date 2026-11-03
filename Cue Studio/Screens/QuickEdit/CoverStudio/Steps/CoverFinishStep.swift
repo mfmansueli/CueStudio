@@ -28,6 +28,8 @@ struct CoverFinishStep: View {
                         ) { viewModel.setEffect(effect) }
                     }
                 }
+                // One height for the row: a tile whose name or caption takes more lines makes them all that tall.
+                .fixedSize(horizontal: false, vertical: true)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 2)
             }

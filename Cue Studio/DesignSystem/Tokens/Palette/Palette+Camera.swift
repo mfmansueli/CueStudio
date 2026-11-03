@@ -22,11 +22,6 @@ extension Palette {
         /// Soft glow around the Selfie reading line.
         static let readingLineGlow = Color(hex: 0xFFD60A, opacity: 0.45)
 
-        /// Reading line handle, at rest and while dragged.
-        static let readingLineHandle = Color(hex: 0x1E1E20, opacity: 0.55)
-        static let readingLineHandleActive = Color(hex: 0xFFD60A, opacity: 0.55)
-        static let readingLineHandleBorder = Color.white.opacity(0.28)
-
         /// Hairline around the Selfie script panel.
         static let panelBorder = Color.white.opacity(0.08)
 

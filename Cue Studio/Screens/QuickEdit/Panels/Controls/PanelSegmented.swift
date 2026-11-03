@@ -47,11 +47,10 @@ struct PanelSegmented<Value: Hashable>: View {
             Haptics.selection()
             onSelect(option.value)
         } label: {
-            Text(option.label)
+            // On two lines between words, never split inside one ("Automa-tisch"); smaller only past that (owner, 02/11/2026: no
+            // label is ever cut).
+            WholeWordsLabel(text: option.label, minimumScale: 0.75)
                 .font(.system(.footnote, weight: .semibold))
-                .lineLimit(2)
-                .minimumScaleFactor(12 / 13.5)
-                .multilineTextAlignment(.center)
                 .foregroundStyle(isOn ? (accent ? Palette.accInk : Palette.ink) : Palette.ink2)
                 .frame(maxWidth: .infinity, minHeight: height)
                 .background(

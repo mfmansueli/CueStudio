@@ -123,6 +123,8 @@ struct CaptionFindSheet: View {
         }
         .font(.system(.footnote, weight: .semibold))
         .foregroundStyle(Palette.ink2)
+        // All its lines, whatever the sheet's height leaves it (owner, 02/11/2026: "…em todas as lin…").
+        .fixedSize(horizontal: false, vertical: true)
         .accessibilityIdentifier("edit.captionFind.summary")
     }
 
@@ -149,6 +151,8 @@ struct CaptionFindSheet: View {
                     .font(.system(.footnote, weight: .semibold))
                     .foregroundStyle(Palette.ink)
                     .lineLimit(1)
+                    // The line beside it wraps; the pill's word is never cut (owner, 02/11/2026: no label is ever cut).
+                    .fixedSize()
                     .padding(.horizontal, 12)
                     .frame(minHeight: 32)
                     .background(Palette.fill, in: Capsule())

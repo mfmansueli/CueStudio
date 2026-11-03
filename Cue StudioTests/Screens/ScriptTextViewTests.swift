@@ -27,6 +27,83 @@ struct ScriptTextViewTests {
         view.textStorage.attribute(.foregroundColor, at: offset, effectiveRange: nil) as? UIColor
     }
 
+    /// The page sizes the editor from its own layout as the creator types (`fittingHeight`): it must say what a full measure says, for
+    /// one line, many, a final empty line, cues and nothing at all.
+    @Test(arguments: [
+        "", "One line.", "Hi [pause] there [laugh] and on", "A paragraph.\n\nAnother one, longer, that wraps over the width of the page.",
+        "Ends with a return.\n", String(repeating: "A long script that goes on and on. [pause] ", count: 120), SampleAIDraft.text,
+    ])
+    func itsOwnLayoutGivesTheFullMeasure(_ text: String) {
+        let view = makeView(text)
+        view.frame.size.height = 5_000
+        view.layoutIfNeeded()
+        let full = view.sizeThatFits(CGSize(width: 360, height: CGFloat.greatestFiniteMagnitude)).height
+        #expect(abs(view.fittingHeight(for: 360) - full) <= 1, "\(view.fittingHeight(for: 360)) vs \(full)")
+    }
+
+    /// While the creator types in one paragraph, the height is that paragraph laid out again plus the words below it (`fittingHeight`):
+    /// after letters, words deleted and a cue in one paragraph, another paragraph, a return, a change that didn't say so first and typing
+    /// after a final return, it still says what a full measure says.
+    @Test func typingKeepsTheFullMeasure() {
+        let paragraph = String(repeating: "A long script that goes on and on. [pause] ", count: 30)
+        let view = makeView([paragraph, paragraph, paragraph].joined(separator: "\n\n"))
+        view.frame.size.height = 5_000
+        view.layoutIfNeeded()
+        _ = view.fittingHeight(for: 360)
+        let second = paragraph.utf16.count + 2
+        // The second paragraph first, so the first one's edits don't move it.
+        let edits = [
+            TypedEdit(at: second + 40, text: " typed in the second paragraph", fromParagraph: false),
+            TypedEdit(at: second + 50, text: " and on in it", fromParagraph: true),
+            TypedEdit(at: second + 60, text: "\n\nA return makes a new paragraph", fromParagraph: false),
+            TypedEdit(at: 100, text: " and a few more words that make the line wrap", fromParagraph: false),
+            TypedEdit(at: 150, text: " and more, and more, and more words again and again", fromParagraph: true),
+            TypedEdit(at: 120, length: 30, text: "", fromParagraph: true),
+            TypedEdit(at: 130, text: "[laugh]", fromParagraph: true),
+            TypedEdit(at: 20, text: " set from outside", announced: false, fromParagraph: false),
+        ]
+        for edit in edits {
+            type(edit.text, at: edit.at, replacing: edit.length, into: view, announced: edit.announced)
+            #expect(view.measuresTypedParagraph == edit.fromParagraph, "\(edit.text)")
+            expectFullMeasure(of: view, after: edit.text)
+        }
+        // A final return, then letters on the empty line it makes.
+        let end = view.textStorage.length
+        type("\n", at: end, into: view)
+        expectFullMeasure(of: view, after: "a final return")
+        type("N", at: end + 1, into: view)
+        expectFullMeasure(of: view, after: "a letter after the final return")
+        type("ew", at: end + 2, into: view)
+        #expect(view.measuresTypedParagraph)
+        expectFullMeasure(of: view, after: "letters after the final return")
+    }
+
+    /// An edit in `typingKeepsTheFullMeasure`: where, how many letters it replaces, with what, whether it is said first as the keyboard
+    /// does, and whether the height is then measured from its paragraph.
+    private struct TypedEdit {
+        var at: Int
+        var length = 0
+        var text: String
+        var announced = true
+        var fromParagraph: Bool
+    }
+
+    /// A change as the keyboard makes it: said first (`willEdit`), then made.
+    private func type(_ text: String, at location: Int, replacing length: Int = 0, into view: ScriptTextView, announced: Bool = true) {
+        let range = NSRange(location: location, length: length)
+        if announced { view.willEdit([range], with: text) }
+        view.selectedRange = range
+        if text.isEmpty { view.deleteBackward() } else { view.insertText(text) }
+    }
+
+    /// The height right after a change says what a full measure says; then it is measured as the page would go on measuring it.
+    private func expectFullMeasure(of view: ScriptTextView, after change: String) {
+        let typed = view.fittingHeight(for: 360)
+        let full = view.sizeThatFits(CGSize(width: 360, height: CGFloat.greatestFiniteMagnitude)).height
+        #expect(abs(typed - full) <= 1, "after \(change): \(typed) vs \(full)")
+        _ = view.fittingHeight(for: 360)
+    }
+
     @Test func cuesAreChipsAndTheWordsStayTheText() throws {
         let text = "Hi 😀 [pause] there [laugh]"
         let view = makeView(text)

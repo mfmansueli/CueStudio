@@ -6,8 +6,10 @@
 import SwiftUI
 
 /// Chapter 1: "This is your universe." The creator picks what they talk about (up to three) and each topic is born as a world in orbit
-/// around them ("YOU"): the chip lights, a light travels from it to its orbit and lands in sparks and rings, the planet pops, the orbit draws
-/// and its name arrives (`TopicBirth`). The yellow ring that opens round the core on entry carries on from the star of 1.1.
+/// around them ("YOU"), on one of three empty orbits that wait for it (they are the count): the chip lights, a light flies from it to its
+/// orbit on a smooth curve and lands in a ring, the core pulses, the planet pops, the orbit draws and its name arrives (`TopicBirth`), the
+/// hand feeling the flight and the landing. The chips come in one after another. The yellow ring that opens round the core on entry
+/// carries on from the star of 1.1.
 struct UniverseChapter: View {
     let onboarding: OnboardingService
     /// The opening plays (it does not in UI tests that don't ask for it, nor with Reduce Motion).
@@ -47,11 +49,20 @@ struct UniverseChapter: View {
     /// Where the board's star lands in its 390 × 844 frame, and where it comes from: the flight is bent toward the real core.
     private static let boardCore = CGPoint(x: 195, y: 366)
     private var topicChoices: [OnboardingTopic] { Niche.offered.map(OnboardingTopic.niche) }
+    /// The chips in their order: the offered topics, then the ones typed with "+ Your own".
+    private var chips: [OnboardingTopic] { topicChoices + customTopics }
+
+    /// A chip coming in: from 1.45 s, 35 ms after the one before, rising 12 pt out of a light blur in 0.5 s (all in by 2.3 s).
+    private static func chipEntry(_ order: Int) -> PoseTrack {
+        let start = 1.45 + Double(order) * 0.035
+        return PoseTrack(curve: .css(0.16, 1, 0.3, 1), [.init(start, opacity: 0, y: 12, blur: 3), .init(start + 0.5)])
+    }
 
     var body: some View {
         MotionScreen(hold: Self.openingEnd, skippable: true, frozenAt: frozenAt, plays: plays) { time in
             content(time)
         }
+        .onAppear { if !reduceMotion { HapticPatterns.prewarm() } }
         .task(id: plays) { await landingHaptic() }
         .task(id: birthFrozenAge) { await pickForPictures() }
     }
@@ -75,11 +86,11 @@ struct UniverseChapter: View {
         return VStack(alignment: .leading, spacing: 0) {
             OnboardingHeading(
                 label: OnboardingStep.universe.chapterLabel, title: String(localized: "What do you usually talk about?"),
-                subtitle: String(localized: "Pick up to 3. Cue uses them for your ideas and scripts, and each one becomes a world."),
+                subtitle: String(localized: "Pick up to 3. Each one becomes a world in your universe and guides your ideas and scripts."),
                 poses: ["L1", "L2", "L3"].map { Self.clip.pose(of: $0, at: clock) }
             )
             .padding(.horizontal, 20)
-            OnboardingUniverseCanvas(topics: onboarding.topics, born: born, opening: time, frozenBirthAge: birthFrozenAge)
+            OnboardingUniverseCanvas(topics: onboarding.topics, born: born, opening: time, frozenBirthAge: birthFrozenAge, showsEmptyOrbits: true)
                 .frame(maxWidth: .infinity)
                 .frame(minHeight: 96, maxHeight: 300)
                 .onGeometryChange(for: CGRect.self) { $0.frame(in: .named(Self.space)) } action: { canvasFrame = $0 }
@@ -89,20 +100,22 @@ struct UniverseChapter: View {
                 .accessibilityLabel(Text("Your universe"))
                 .accessibilityValue(Text(onboarding.topics.map(\.label).joined(separator: ", ")))
             VStack(alignment: .leading, spacing: 8) {
-                TopicCounter(colors: onboarding.topics.indices.map(OnboardingTopic.color(at:)))
-                FlowLayout(spacing: 6, lineSpacing: -6) {
-                    ForEach(topicChoices) { topic in chip(topic) }
-                    ForEach(customTopics) { topic in chip(topic) }
-                    yourOwnChip
+                // Rows about as long as each other; the chips arrive one after another (`chipEntry`).
+                FlowLayout(spacing: 8, lineSpacing: -4, balanced: true) {
+                    ForEach(Array(chips.enumerated()), id: \.element.id) { order, topic in
+                        let entry = Self.chipEntry(order).pose(at: clock)
+                        chip(topic).opacity(entry.opacity).offset(y: entry.y).blur(radius: entry.blur)
+                    }
+                    let entry = Self.chipEntry(chips.count).pose(at: clock)
+                    yourOwnChip.opacity(entry.opacity).offset(y: entry.y).blur(radius: entry.blur)
                 }
                 if let customFeedback { feedbackView(customFeedback) }
             }
             .padding(.horizontal, 20)
-            .motion(Self.clip.pose(of: "L74", at: clock))
             Spacer(minLength: 12)
             OnboardingPrimaryButton(
-                title: String(localized: "Continue"), disabledTitle: String(localized: "Pick a topic"), disabledStyle: .grey,
-                isEnabled: onboarding.canContinueFromTopics, identifier: "onboarding.continue", action: onContinue
+                title: String(localized: "Continue"), disabledTitle: String(localized: "Pick a topic"), disabledStyle: .glass,
+                isEnabled: onboarding.canContinueFromTopics, shines: true, identifier: "onboarding.continue", action: onContinue
             )
             .overlay { TopicContinuePulse(since: births.last?.tap).padding(.horizontal, -1) }
             .padding(.horizontal, 20)
@@ -170,7 +183,7 @@ struct UniverseChapter: View {
                 .padding(.horizontal, 11)
                 .padding(.vertical, 4)
                 .frame(minHeight: 32)
-                .overlay(Capsule().strokeBorder(Palette.ink3, style: StrokeStyle(lineWidth: 1, dash: [4, 3])))
+                .overlay(Capsule().strokeBorder(Palette.ink3, style: StrokeStyle(lineWidth: 0.75, dash: [4, 3])))
                 .opacity(onboarding.isFull ? 0.4 : 1)
                 .padding(.vertical, 6)
                 .contentShape(Rectangle())
@@ -186,9 +199,13 @@ struct UniverseChapter: View {
             Haptics.light()
             return
         }
-        Haptics.apply()
         onboarding.toggle(topic)
-        guard !wasPicked, let index = onboarding.topics.firstIndex(of: topic) else { return }
+        guard !wasPicked, let index = onboarding.topics.firstIndex(of: topic) else {
+            Haptics.apply()
+            return
+        }
+        // The hand feels the pick, the light's flight and its landing on the orbit (a tap without the flight under Reduce Motion).
+        if reduceMotion { Haptics.apply() } else { HapticPatterns.playTopicFlight() }
         let now = Date.now
         born[topic.id] = now
         beginBirth(of: topic, at: index, now: now)

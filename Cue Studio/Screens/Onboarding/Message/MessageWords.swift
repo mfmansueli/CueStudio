@@ -27,7 +27,7 @@ struct MessageWords: View {
     let color: Color
     /// The second of the board.
     let board: Double
-    /// A caret that blinks after the last word (the CTA's).
+    /// A caret that blinks after the last word (the CTA's), twice, and goes.
     var caret: Color?
     let ambient: Double
     /// The words' size: the chapter picks the largest that lets its page fit (`MessageWordFit`).
@@ -69,8 +69,9 @@ struct MessageWords: View {
         return Self.clip.pose(of: layers[template], at: board)
     }
 
-    /// The caret waits for the last word (5.4–5.5 s), then blinks (1 s).
+    /// The caret waits for the last word (5.4–5.5 s), blinks for two seconds (1 s a blink) and goes, so the script ends still.
     private var caretOpacity: Double {
+        guard board < 7.5 else { return 0 }
         let arrived = Self.clip.pose(of: "L47", at: board).opacity
         return arrived * (Int(ambient * 2) % 2 == 0 ? 1 : 0.15)
     }

@@ -17,6 +17,7 @@ struct ScriptTextViewRepresentable: UIViewRepresentable {
     var focus: FocusState<ScriptPageFocus?>.Binding
     let undo: ScriptEditorUndo?
     let onEdit: () -> Void
+    let onCaret: (Int) -> Void
 
     func makeCoordinator() -> Coordinator {
         Coordinator(parent: self)
@@ -28,6 +29,10 @@ struct ScriptTextViewRepresentable: UIViewRepresentable {
         context.coordinator.watchOtherFields(for: view)
         view.show(text)
         context.coordinator.lastReported = text
+        #if DEBUG
+        if ScriptTypingProbe.isAsked { context.coordinator.probe = ScriptTypingProbe(view: view) }
+        if ScriptTypingRobot.isAsked { context.coordinator.robot = ScriptTypingRobot(view: view) }
+        #endif
         if let selection {
             view.select(characters: selection)
             context.coordinator.lastReportedSelection = selection
@@ -36,6 +41,10 @@ struct ScriptTextViewRepresentable: UIViewRepresentable {
     }
 
     func updateUIView(_ view: ScriptTextView, context: Context) {
+        ScriptTypingTimeline.measure("Update") { update(view, context: context) }
+    }
+
+    private func update(_ view: ScriptTextView, context: Context) {
         let coordinator = context.coordinator
         coordinator.parent = self
         coordinator.isApplying = true
@@ -61,13 +70,21 @@ struct ScriptTextViewRepresentable: UIViewRepresentable {
     static func dismantleUIView(_ view: ScriptTextView, coordinator: Coordinator) {
         coordinator.parent.undo?.detach(from: view.undoManager)
         coordinator.stopWatchingOtherFields()
+        coordinator.keystrokes.stop()
+        #if DEBUG
+        coordinator.probe?.stop()
+        coordinator.robot?.stop()
+        #endif
     }
 
     func sizeThatFits(_ proposal: ProposedViewSize, uiView view: ScriptTextView, context: Context) -> CGSize? {
+        ScriptTypingTimeline.measure("Measure") { size(proposal, view: view) }
+    }
+
+    private func size(_ proposal: ProposedViewSize, view: ScriptTextView) -> CGSize? {
         let width = proposal.width ?? view.bounds.width
         guard width > 0, width.isFinite else { return nil }
-        let fitting = view.sizeThatFits(CGSize(width: width, height: .greatestFiniteMagnitude))
-        return CGSize(width: width, height: max(minimumHeight, fitting.height))
+        return CGSize(width: width, height: max(minimumHeight, view.fittingHeight(for: width)))
     }
 
     /// The page moves the keyboard with its focus (`.text` after the title or an alert, nil for Done): the text view follows when the
@@ -95,6 +112,14 @@ struct ScriptTextViewRepresentable: UIViewRepresentable {
         var isApplying = false
         /// Whether the page's focus last asked for the keyboard here.
         var pageWantedKeyboard = false
+        /// How long each letter takes to reach the screen (Instruments, `PerformanceDeviceUITests`).
+        let keystrokes = ScriptKeystrokeClock()
+        #if DEBUG
+        /// `-uiTestTypingProbe`: how fluid the typing was, in the words' accessibility label.
+        var probe: ScriptTypingProbe?
+        /// `-uiTestAutoType`: a sentence typed at a person's pace, for the probe.
+        var robot: ScriptTypingRobot?
+        #endif
         /// Where the creator's edit happened, so only its paragraphs are painted again.
         private var pendingEdit: NSRange?
         /// A field elsewhere that has the keyboard (the "New cue" alert's, the title), and what tells when one starts and ends.
@@ -107,6 +132,10 @@ struct ScriptTextViewRepresentable: UIViewRepresentable {
 
         func textViewDidBeginEditing(_ textView: UITextView) {
             parent.undo?.attach(textView.undoManager)
+            #if DEBUG
+            probe?.start()
+            robot?.start()
+            #endif
             pageWantedKeyboard = true
             if parent.focus.wrappedValue != .text { parent.focus.wrappedValue = .text }
         }
@@ -158,7 +187,12 @@ struct ScriptTextViewRepresentable: UIViewRepresentable {
         }
 
         func textView(_ textView: UITextView, shouldChangeTextInRanges ranges: [NSValue], replacementText text: String) -> Bool {
+            keystrokes.keyPressed()
+            #if DEBUG
+            probe?.keyPressed()
+            #endif
             let ranges = ranges.map(\.rangeValue)
+            if !isApplying { (textView as? ScriptTextView)?.willEdit(ranges, with: text) }
             if let first = ranges.first {
                 let end = ranges.map(NSMaxRange).max() ?? NSMaxRange(first)
                 pendingEdit = NSRange(location: first.location, length: end - first.location + (text as NSString).length)
@@ -171,6 +205,10 @@ struct ScriptTextViewRepresentable: UIViewRepresentable {
         }
 
         func textViewDidChange(_ textView: UITextView) {
+            ScriptTypingTimeline.measure("Edit") { didChange(textView) }
+        }
+
+        private func didChange(_ textView: UITextView) {
             guard let view = textView as? ScriptTextView else { return }
             let edited = pendingEdit
             pendingEdit = nil
@@ -178,8 +216,10 @@ struct ScriptTextViewRepresentable: UIViewRepresentable {
             // A change from the page paints itself (`ScriptTextView.replace(with:)`). Painting the words while a word is still being
             // composed (Japanese, Chinese…) would end the composition.
             guard !isApplying else { return }
-            if view.markedTextRange == nil { view.restyle(around: edited) }
-            let plain = view.textStorage.string
+            if view.markedTextRange == nil { view.restyleAfterEdit(around: edited) }
+            // Native, once: the page compares and measures these words, which a string bridged from the text storage makes slow.
+            var plain = view.textStorage.string
+            plain.makeContiguousUTF8()
             if plain != lastReported {
                 lastReported = plain
                 parent.text = plain
@@ -188,13 +228,21 @@ struct ScriptTextViewRepresentable: UIViewRepresentable {
         }
 
         func textViewDidChangeSelection(_ textView: UITextView) {
+            ScriptTypingTimeline.measure("Selection") { didChangeSelection(textView) }
+        }
+
+        private func didChangeSelection(_ textView: UITextView) {
             guard let view = textView as? ScriptTextView, view.markedTextRange == nil else { return }
             // A word typed after a cue or inside the AI's passage is a plain word.
             view.typingAttributes = view.style.bodyAttributes
             guard !isApplying else { return }
-            let range = view.characterSelection
-            lastReportedSelection = range
-            if parent.selection != range { parent.selection = range }
+            let utf16 = view.selectedRange
+            if utf16.length == 0 { parent.onCaret(utf16.location) }
+            // Only a selection goes up, in characters (the AI bar needs it): a caret moving as letters are typed would redraw the page on
+            // every one, and counting the characters up to it would cost a pass through the words.
+            let selected = utf16.length == 0 ? nil : view.characterSelection.flatMap { $0.isEmpty ? nil : $0 }
+            lastReportedSelection = selected
+            if parent.selection != selected { parent.selection = selected }
         }
     }
 }

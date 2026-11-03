@@ -5,8 +5,8 @@
 
 import SwiftUI
 
-/// A topic becoming a world (1.2, 09 §14b): the chip lights, a light leaves it, travels round the universe and lands on the topic's orbit in
-/// sparks, rings and streaks; the planet springs out, the orbit draws and its name arrives. The moments are the board's own: the board plays
+/// A topic becoming a world (1.2, 09 §14b): the chip lights, a light leaves it, travels round the universe on a smooth curve and lands on
+/// the topic's orbit in a ring; the planet springs out, the orbit draws and its name arrives. The moments are the board's own: the board plays
 /// this once, tapping a chip at 2.6 s, and every layer of it is read from its motion at `age + 2.6` (`MotionClip`, layers named below).
 struct TopicBirth: Sendable {
     let color: Color
@@ -44,24 +44,12 @@ struct TopicBirth: Sendable {
 
     // MARK: - The board's layers
 
-    /// The ring, the cross and the eight sparks on the chip at the tap (`unsq`).
+    /// The ring on the chip at the tap (`unsq`).
     static let chipRing = "L80"
-    static let chipCross = "L82"
-    static let chipSparks = (83...90).map { "L\($0)" }
-    /// The light on the route: the line that draws behind it, the bright stretch at its tail, and its head (its trail is drawn from the head's
-    /// path, `StarRibbon`).
-    static let routeLine = "L25"
-    static let routeTail = "L26"
+    /// The light's head on the route (its trail is drawn from the head's path, `StarRibbon`).
     static let head = "L27"
-    /// The five glints on the route: the layer, how far along the route (0...1), and how big across (pt).
-    static let glints: [(layer: String, along: Double, size: CGFloat)] = [
-        ("L36", 0.188, 14), ("L37", 0.365, 10), ("L38", 0.545, 14), ("L39", 0.716, 10), ("L40", 0.862, 14),
-    ]
-    /// At the landing: nine sparks, ten streaks, three rings and a cross of light.
-    static let landingSparks = (60...68).map { "L\($0)" }
-    static let streaks = (49...58).map { "L\($0)" }
-    static let rings = ["L21", "L22", "L59"]
-    static let landingCross = "L23"
+    /// The ring that opens where it lands.
+    static let landingRing = "L21"
     /// The planet (springs out), its orbit (draws), the white light that runs round the orbit once, and the name.
     static let planet = "L16"
     static let orbit = "L13"

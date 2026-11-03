@@ -5,18 +5,18 @@
 
 import SwiftUI
 
-/// Draws the welcome's star scene at one second of `WelcomeScript` (09 §12): the C's line and dots, the dust, rings, flares and sparks,
-/// the star with its trail, and the explosion on the sixth dot. Everything is a pose read from a track at `time`; the lit dots keep shining
-/// after the story ends, so their shine reads `ambient` (the seconds since the opening began, past its end).
+/// Draws the welcome's star scene at one second of `WelcomeScript` (09 §12): the C's line and dots, their rings, flares and sparks, the
+/// star with its short trail, and the explosion on the sixth dot with its light over the sky. Everything is a pose read at `time`; the lit
+/// dots keep shining after the story ends, so their shine reads `ambient` (the seconds since the opening began, past its end).
 struct WelcomeStarPainter {
     let time: Double
     let ambient: Double
     /// Where the star goes after the C, which depends on where the three words are on this screen.
-    let starPath: PoseTrack
+    let starPath: WelcomeFlight
 
     func paint(in context: inout GraphicsContext) {
+        drawBloom(in: &context)
         drawLines(in: &context)
-        drawDust(in: &context)
         for (index, dot) in WelcomeScript.dots.enumerated() { drawDot(dot, index: index, in: &context) }
         drawSparks(in: &context)
         drawExplosion(in: &context)
@@ -74,23 +74,10 @@ struct WelcomeStarPainter {
         cross(at: dot.point, horizontal: 44, vertical: 30.8, thickness: 1.8, color: .white, pose: dot.flare.pose(at: time), in: &context)
     }
 
-    private func drawDust(in context: inout GraphicsContext) {
-        for dust in WelcomeScript.dust {
-            let pose = dust.track.pose(at: time)
-            cross(
-                at: dust.point, horizontal: dust.size, vertical: dust.size, thickness: 1, color: Palette.Universe.starWarm, pose: pose, glows: false,
-                in: &context
-            )
-        }
-    }
-
     // MARK: - Sparks
 
     private func drawSparks(in context: inout GraphicsContext) {
         for dot in WelcomeScript.dots { sparks(dot.sparks, from: dot.point, in: &context) }
-        for (index, hit) in WelcomeScript.wordHits.enumerated() {
-            sparks(WelcomeScript.wordSparks[index], from: wordCentre(hit: hit), in: &context)
-        }
         sparks(WelcomeScript.explosionSparks, from: WelcomeScript.cue, in: &context)
     }
 
@@ -107,27 +94,22 @@ struct WelcomeStarPainter {
         }
     }
 
-    /// Where the star lands on a word: the point of the path at the second it arrives.
-    private func wordCentre(hit: Double) -> CGPoint {
-        let pose = starPath.pose(at: hit)
-        return CGPoint(x: pose.x, y: pose.y)
-    }
-
     // MARK: - The star
 
-    /// The star and its tail (`StarRibbon`), along the path it takes this time.
+    /// The star and its tail (`StarRibbon`), along the path it takes this time: shorter and thinner than the other stars' (0.2 s), so it
+    /// reads as a star moving, not a line drawn behind it.
     private func drawStar(in context: inout GraphicsContext) {
-        let trail = StarRibbon.trail(at: time) { second in
+        let trail = StarRibbon.trail(at: time, length: 0.2) { second in
             let pose = starPath.pose(at: second)
             return (CGPoint(x: pose.x, y: pose.y), pose.opacity)
         }
-        StarRibbon.draw(trail, in: &context)
+        StarRibbon.draw(trail, width: 3.4, in: &context)
         if let head = trail.first { StarRibbon.head(at: head.point, opacity: head.opacity, spin: ambient, in: &context) }
     }
 
     // MARK: - The explosion
 
-    /// The star becomes the sixth dot: the core, its glow, two rings and the cross of yellow light.
+    /// The star becomes the sixth dot: the core, its glow, a ring and the cross of yellow light.
     private func drawExplosion(in context: inout GraphicsContext) {
         let centre = WelcomeScript.cue
         let shine = WelcomeScript.shine(of: 5, lit: WelcomeScript.explosionTime + 0.2, at: ambient)
@@ -148,14 +130,16 @@ struct WelcomeStarPainter {
         )
         let ring = WelcomeScript.ring.pose(at: time)
         if ring.opacity > 0.01 { context.stroke(LightFX.disc(centre, 10 * ring.scale), with: .color(Palette.acc.opacity(ring.opacity)), lineWidth: 1.2) }
-        let second = WelcomeScript.secondRing.pose(at: time)
-        if second.opacity > 0.01 {
-            context.stroke(LightFX.disc(centre, 10 * second.scale), with: .color(Palette.Universe.starCream.opacity(second.opacity)), lineWidth: 1)
-        }
         cross(
             at: centre, horizontal: 150, vertical: 105, thickness: 1.8, color: Palette.Universe.starGold, pose: WelcomeScript.flare.pose(at: time),
             in: &context
         )
+    }
+
+    /// The explosion's light: a warm glow that opens from the sixth dot over the sky and fades.
+    private func drawBloom(in context: inout GraphicsContext) {
+        let bloom = WelcomeScript.bloom.pose(at: time)
+        glow(at: WelcomeScript.cue, radius: 520 * bloom.scale, color: Palette.Universe.starWarm, opacity: 0.16 * bloom.opacity, in: &context)
     }
 
     // MARK: - Shapes
@@ -171,8 +155,7 @@ struct WelcomeStarPainter {
 
     /// A four-point cross of light: two thin bars that fade out at their ends, turned, scaled and faded by `pose`.
     private func cross(
-        at centre: CGPoint, horizontal: CGFloat, vertical: CGFloat, thickness: CGFloat, color: Color, pose: Pose, glows: Bool = true,
-        in context: inout GraphicsContext
+        at centre: CGPoint, horizontal: CGFloat, vertical: CGFloat, thickness: CGFloat, color: Color, pose: Pose, in context: inout GraphicsContext
     ) {
         guard pose.opacity > 0.01, pose.scale > 0.01 else { return }
         var layer = context
@@ -180,7 +163,7 @@ struct WelcomeStarPainter {
         layer.translateBy(x: centre.x, y: centre.y)
         layer.rotate(by: .degrees(pose.rotation))
         layer.scaleBy(x: pose.scale, y: pose.scale)
-        if glows { layer.addFilter(.shadow(color: color.opacity(0.9), radius: 3)) }
+        layer.addFilter(.shadow(color: color.opacity(0.9), radius: 3))
         func fade(_ start: CGPoint, _ end: CGPoint) -> GraphicsContext.Shading {
             .linearGradient(
                 Gradient(stops: [

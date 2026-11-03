@@ -8,14 +8,16 @@ import Testing
 @testable import Cue_Studio
 
 /// 1.1 on every iPhone: as the board on a board-sized screen, the button on the screen and clear of the words on an SE, the scene
-/// grown on a Pro Max.
+/// grown on a Pro Max, and "CUE STUDIO" under the C, never on the title.
 struct WelcomeLayoutTests {
-    private let boardText: CGFloat = 332
+    /// The title, the line under it and the words on the board (the wordmark sits under the C, apart from them).
+    private let boardText: CGFloat = 280
 
     @Test func onTheBoardsScreenItIsTheBoard() {
         let layout = WelcomeLayout(screen: CGSize(width: 390, height: 844), hasHomeIndicator: true, textHeight: boardText)
         #expect(layout.artScale == 1)
-        #expect(layout.textTop == 350)
+        #expect(layout.textTop == 402)
+        #expect(layout.wordmarkTop == 338)
         #expect(layout.buttonBottom == 82)
     }
 
@@ -26,10 +28,11 @@ struct WelcomeLayoutTests {
         #expect(buttonTop > 0 && layout.buttonBottom < 82)
         #expect(layout.textTop + 320 <= buttonTop - WelcomeLayout.buttonGap + 0.5)
         #expect(layout.artScale < 1, "The star's scene is drawn smaller to make room")
+        #expect(layout.wordmarkTop + WelcomeLayout.wordmarkHeight + WelcomeLayout.wordmarkGap <= layout.textTop + 0.5)
     }
 
     @Test func onAProMaxTheSceneGrowsWithTheWidth() {
-        let layout = WelcomeLayout(screen: CGSize(width: 440, height: 956), hasHomeIndicator: true, textHeight: 350)
+        let layout = WelcomeLayout(screen: CGSize(width: 440, height: 956), hasHomeIndicator: true, textHeight: 300)
         #expect(layout.artScale > 1.1 && layout.artScale <= WelcomeLayout.artScales.upperBound)
         #expect(layout.textTop >= WelcomeLayout.boardTextTop * layout.artScale, "The words start below the scene")
     }

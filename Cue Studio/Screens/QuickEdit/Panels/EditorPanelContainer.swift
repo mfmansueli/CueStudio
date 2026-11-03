@@ -102,49 +102,26 @@ struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
         .dynamicTypeSize(...DynamicTypeSize.accessibility1)
     }
 
+    /// The title and subtitle beside Reset, ◐, ▶, expand and ✓ while the title fits whole on one line there (with room for the
+    /// subtitle on up to three); else the buttons on a row of their own and the title and subtitle under them, across the panel.
+    /// The title is never cut, in any language (owner, 02/11/2026: no label is ever cut; "Automatiske undertekster" beside five
+    /// buttons on an iPhone SE).
     private var header: some View {
-        HStack(spacing: 6) {
-            VStack(alignment: .leading, spacing: 1) {
-                Text(title)
-                    .font(.system(.body, weight: .bold))
-                    .lineLimit(1)
-                    .accessibilityAddTraits(.isHeader)
-                    .accessibilityFocused($titleIsFocused)
-                Text(subtitle)
-                    .font(.system(.footnote))
-                    .foregroundStyle(Palette.ink2)
-                    // With the largest text sizes a long subtitle ("Whole video · format for where you post") wraps instead of being cut.
-                    .lineLimit(typeSize.isAccessibilitySize ? 2 : 1)
-                    .minimumScaleFactor(0.85)
-                    .accessibilityIdentifier("edit.panel.subtitle")
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 6) {
+                titles(titleLines: 1)
+                    .frame(minWidth: Self.titleMinimumWidth, maxWidth: .infinity, alignment: .leading)
+                headerButtons
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            if let onReset {
-                Button("Reset", action: onReset)
-                    .font(.system(.subheadline, weight: .semibold))
-                    .foregroundStyle(Palette.ink2)
-                    .frame(minWidth: Metrics.hitTarget, minHeight: Metrics.hitTarget)
-                    .buttonStyle(.plain)
-                    .accessibilityIdentifier("edit.panel.reset")
+            VStack(alignment: .leading, spacing: 0) {
+                HStack(spacing: 6) {
+                    Spacer(minLength: 0)
+                    headerButtons
+                }
+                titles(titleLines: 2)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.bottom, 6)
             }
-            if let compare { PanelCompareButton(compare: compare) }
-            if let play { playButton(play) }
-            if let expansion { expandButton(expansion) }
-            Button {
-                Haptics.apply()
-                onApply()
-            } label: {
-                Image(systemName: "checkmark")
-                    .font(.editorGlyph(EditorGlyph.control, weight: .bold))
-                    .foregroundStyle(Palette.accInk)
-                    .frame(width: Metrics.applyButtonSize, height: Metrics.applyButtonSize)
-                    .background(Palette.acc, in: Circle())
-                    .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
-                    .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel(Text("Apply"))
-            .accessibilityIdentifier("edit.panel.apply")
         }
         .padding(.leading, 20)
         .padding(.trailing, 10)
@@ -161,6 +138,63 @@ struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
         }
         .contentShape(Rectangle())
         .gesture(expansionDrag, isEnabled: expansion != nil)
+    }
+
+    /// The least room the title and subtitle keep beside the buttons: under it the subtitle would need more than three lines.
+    private static var titleMinimumWidth: CGFloat { 120 }
+
+    /// The title (on one line beside the buttons, on up to two across the panel) and what the panel changes under it. The
+    /// subtitle wraps to the room the title leaves (it never decides the layout: `idealWidth: 0`), on up to three lines.
+    private func titles(titleLines: Int) -> some View {
+        VStack(alignment: .leading, spacing: 1) {
+            Text(title)
+                .font(.system(.body, weight: .bold))
+                .lineLimit(titleLines)
+                .minimumScaleFactor(titleLines == 1 ? 1 : 0.8)
+                .fixedSize(horizontal: false, vertical: true)
+                .accessibilityAddTraits(.isHeader)
+                .accessibilityFocused($titleIsFocused)
+            Text(subtitle)
+                .font(.system(.footnote))
+                .foregroundStyle(Palette.ink2)
+                .lineLimit(typeSize.isAccessibilitySize ? 4 : 3)
+                .minimumScaleFactor(0.85)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(minWidth: 0, idealWidth: 0, maxWidth: .infinity, alignment: .leading)
+                .accessibilityIdentifier("edit.panel.subtitle")
+        }
+    }
+
+    /// Reset, ◐, ▶, expand and ✓, in that order: ✓ never moves when Reset appears.
+    @ViewBuilder private var headerButtons: some View {
+        if let onReset {
+            Button("Reset", action: onReset)
+                .font(.system(.subheadline, weight: .semibold))
+                .foregroundStyle(Palette.ink2)
+                .lineLimit(1)
+                .fixedSize()
+                .frame(minWidth: Metrics.hitTarget, minHeight: Metrics.hitTarget)
+                .buttonStyle(.plain)
+                .accessibilityIdentifier("edit.panel.reset")
+        }
+        if let compare { PanelCompareButton(compare: compare) }
+        if let play { playButton(play) }
+        if let expansion { expandButton(expansion) }
+        Button {
+            Haptics.apply()
+            onApply()
+        } label: {
+            Image(systemName: "checkmark")
+                .font(.editorGlyph(EditorGlyph.control, weight: .bold))
+                .foregroundStyle(Palette.accInk)
+                .frame(width: Metrics.applyButtonSize, height: Metrics.applyButtonSize)
+                .background(Palette.acc, in: Circle())
+                .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(Text("Apply"))
+        .accessibilityIdentifier("edit.panel.apply")
     }
 
     /// ▶ as round as expand, with a small "PREVIEW" tag above its corner (as the toolbar's "ALL"), so it never reads as the

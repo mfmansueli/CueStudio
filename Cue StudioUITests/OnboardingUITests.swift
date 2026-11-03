@@ -78,7 +78,7 @@ final class OnboardingUITests: XCTestCase {
         // 2 · the voyage: a platform and its format line.
         XCTAssertTrue(app.buttons["onboarding.platform.reels"].exists(within: 5))
         app.buttons["onboarding.platform.reels"].tap()
-        XCTAssertTrue(element(app, "onboarding.formatLine").matches(NSPredicate(format: "label CONTAINS %@", "REELS"), within: 5))
+        XCTAssertTrue(element(app, "onboarding.formatLine").matches(NSPredicate(format: "label CONTAINS %@", "TAP ANOTHER"), within: 5))
         XCTAssertTrue(element(app, "onboarding.formatHint").matches(NSPredicate(format: "label CONTAINS %@", "9:16"), within: 5))
         shot(app, "3-voyage")
         XCTAssertTrue(app.buttons["onboarding.continue"].label.contains("Reels"))
@@ -118,14 +118,14 @@ final class OnboardingUITests: XCTestCase {
         app.buttons["onboarding.continue"].tap()
         XCTAssertTrue(app.buttons["onboarding.useScript"].exists(within: 10))
         XCTAssertEqual(app.buttons["onboarding.useScript"].label, "Try the teleprompter")
-        XCTAssertTrue(app.staticTexts["✦ PRACTICE SCRIPT · READY"].exists(within: 10))
+        XCTAssertTrue(app.staticTexts["VIDEO FOR · TIKTOK"].exists(within: 10))
         XCTAssertTrue(app.staticTexts["24 SEC"].exists)
         XCTAssertFalse(app.staticTexts["15 SEC"].exists)
         XCTAssertTrue(app.staticTexts["It’s just practice. Nothing is recorded."].exists)
         shot(app, "4-script-practice")
     }
 
-    /// 1.4 is one screen on every iPhone but the SE (the owner's rule): the heading, the card, the capsule and "It's just practice" fit above
+    /// 1.4 is one screen on every iPhone but the SE (the owner's rule): the heading and the card fit above "It's just practice" and
     /// Try the teleprompter, without scrolling, in English and in German, the longest of Cue's languages. On a 15 Pro the words used to
     /// stay at 21 pt and the page scrolled. Run it on the size to check with `CUE_SIMULATOR` (the default iPhone 17 checks it too).
     func testTheFirstScriptFitsAboveItsButtonWithoutScrolling() {
@@ -136,16 +136,16 @@ final class OnboardingUITests: XCTestCase {
             let use = app.buttons["onboarding.useScript"]
             XCTAssertTrue(use.matches(NSPredicate(format: "isEnabled == true"), within: 10), language)
             XCTAssertTrue(page.exists && note.exists, language)
-            // Nothing runs under the button or past the page's edges: the whole column is inside the page, which ends above the button.
-            XCTAssertLessThanOrEqual(note.frame.maxY, page.frame.maxY + 1, language)
-            XCTAssertLessThanOrEqual(page.frame.maxY, use.frame.minY + 1, language)
+            // Nothing runs under the note or the button: the page ends above the note, the note above the button.
+            XCTAssertLessThanOrEqual(page.frame.maxY, note.frame.minY + 1, language)
+            XCTAssertLessThanOrEqual(note.frame.maxY, use.frame.minY + 1, language)
             let title = app.staticTexts[language == "en" ? "Your first script. Ready to read." : "Dein erstes Skript. Bereit zum Lesen."]
             XCTAssertTrue(title.exists, language)
             XCTAssertGreaterThanOrEqual(title.frame.minY, page.frame.minY - 1, language)
-            // And it doesn't scroll: a swipe leaves the note where it was.
-            let before = note.frame.minY
+            // And it doesn't scroll: a swipe leaves the title where it was.
+            let before = title.frame.minY
             page.swipeUp()
-            XCTAssertEqual(note.frame.minY, before, accuracy: 1, language)
+            XCTAssertEqual(title.frame.minY, before, accuracy: 1, language)
             shot(app, "4-script-fit-\(language)")
             app.terminate()
         }

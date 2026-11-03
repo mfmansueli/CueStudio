@@ -5,15 +5,18 @@
 
 import SwiftUI
 
-/// The state strip under the title: the "Ready to record" switch (`ReadyToggle`; a recorded script shows RECORDED instead), and beside
-/// RECORDED, in yellow, "Changed since take 3" once the words have moved on from the take. Nothing else shares the row, so the switch
-/// always says its whole name (owner, 31/10/2026: the line of details and "✦ Shape" squeezed it to "Ready to r…"; Shape is in the
-/// tools row, `ScriptToolsRow`). Light, with no box of its own, so it reads as part of the page. The Record button is the page's own,
-/// at the bottom: one per screen. While the AI writes the strip is already there, with Stop at its end.
+/// The state strip under the title: "Draft" and "Ready to record" side by side (`DraftChoice`, `ReadyToggle`; one of the two is always
+/// lit; a recorded script shows RECORDED instead), and beside RECORDED, in yellow, "Changed since take 3" once the words have moved on
+/// from the take. Nothing else shares the row, so the pair always says its whole names (owner, 31/10/2026: the line of details and
+/// "✦ Shape" squeezed it to "Ready to r…"; Shape is in the tools row, `ScriptToolsRow`). Light, with no box of its own, so it reads as
+/// part of the page. The Record button is the page's own, at the bottom: one per screen. While the AI writes the strip is already there,
+/// with Stop at its end.
 struct ScriptStateStrip: View {
     let strip: ScriptStrip
     /// The page has words: an empty one has nothing to make ready.
     var canBeReady = true
+    /// The words have the keyboard: the light on "Ready to record" waits.
+    var isTyping = false
     let onReady: (Bool) -> Void
     /// The AI is writing: Stop is at the end of the strip.
     var onStop: (() -> Void)?
@@ -22,7 +25,12 @@ struct ScriptStateStrip: View {
         // At the accessibility text sizes what follows the switch goes under it, as the system's own rows do.
         ReflowStack(spacing: 10) {
             if strip.showsReadySwitch {
-                ReadyToggle(isOn: strip.isReady, isEnabled: canBeReady && onStop == nil, onChange: onReady)
+                ReflowStack(spacing: 8) {
+                    DraftChoice(isOn: !strip.isReady) { onReady(false) }
+                    ReadyToggle(
+                        isOn: strip.isReady, isEnabled: canBeReady && onStop == nil, reminds: !isTyping, onChange: onReady
+                    )
+                }
             } else {
                 StateChip(kind: .recorded)
             }

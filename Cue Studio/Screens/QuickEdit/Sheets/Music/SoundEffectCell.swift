@@ -15,10 +15,9 @@ struct SoundEffectCell: View {
     @Environment(\.dynamicTypeSize) private var typeSize
 
     private var isPlaying: Bool { viewModel.audio.soundPreviews.playingKey == effect.rawValue }
-    /// Beside a neighbour the name keeps to one line, a little smaller if it must (never "Heart-beat" split in two), and what it's for
-    /// to two; alone in its row at the accessibility sizes, both take the lines they need.
-    private var nameLines: Int? { typeSize.isAccessibilitySize ? nil : 1 }
-    private var useLines: Int? { typeSize.isAccessibilitySize ? nil : 2 }
+    /// Beside a neighbour the name keeps to one line while it fits, else two broken between words (never "Heart-beat" split in two),
+    /// a little smaller only past that (`WholeWordsLabel`); what it's for takes the lines it needs. Never cut (owner, 02/11/2026:
+    /// "Rufar de t…", "Toque dra…").
 
     var body: some View {
         HStack(spacing: 0) {
@@ -32,14 +31,17 @@ struct SoundEffectCell: View {
                         .symbolEffect(.variableColor.iterative, isActive: isPlaying)
                         .frame(minWidth: 20)
                     VStack(alignment: .leading, spacing: 1) {
-                        Text(effect.label)
-                            .font(.system(.subheadline, weight: .semibold))
-                            .lineLimit(nameLines)
-                            .minimumScaleFactor(0.8)
+                        Group {
+                            if typeSize.isAccessibilitySize {
+                                Text(effect.label)
+                            } else {
+                                WholeWordsLabel(text: effect.label, alignment: .leading, minimumScale: Self.nameMinimumScale)
+                            }
+                        }
+                        .font(.system(.subheadline, weight: .semibold))
                         Text(effect.use)
                             .font(.caption)
                             .foregroundStyle(Palette.ink2)
-                            .lineLimit(useLines)
                     }
                     .fixedSize(horizontal: false, vertical: true)
                     Spacer(minLength: 0)
@@ -71,5 +73,21 @@ struct SoundEffectCell: View {
         .foregroundStyle(Palette.ink)
         .frame(maxHeight: .infinity)
         .editorCard(isPlaying ? .picked : .plain)
+    }
+
+    private static let nameMinimumScale: CGFloat = 0.85
+
+    /// Whether `name` reads whole in a cell `cellWidth` wide: on one line or on two broken between words (`LabelLineBreak`), at most a
+    /// little smaller, in the room the cell leaves it (its padding, the icon and the + button).
+    static func nameFits(_ name: String, cellWidth: CGFloat, typeSize: DynamicTypeSize) -> Bool {
+        let traits = UITraitCollection(preferredContentSizeCategory: UIContentSizeCategory(typeSize))
+        let size = UIFont.preferredFont(forTextStyle: .subheadline, compatibleWith: traits).pointSize
+        let font = UIFont.systemFont(ofSize: size, weight: .semibold)
+        let width: (String) -> CGFloat = { ceil(($0 as NSString).size(withAttributes: [.font: font]).width) }
+        let lines = LabelLineBreak.twoLines(name)?.components(separatedBy: "\n") ?? [name]
+        let needed = min(width(name), lines.map(width).max() ?? 0) * nameMinimumScale
+        // The leading padding, the icon (2 pt to spare for a wider one, ♩♩), the row's spacing on both sides of the name (the
+        // spacer after it counts too) and the + button.
+        return needed <= cellWidth - 12 - 22 - 10 - 10 - Metrics.hitTarget
     }
 }

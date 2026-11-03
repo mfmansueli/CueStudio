@@ -76,12 +76,10 @@ struct FiltersPanel: View {
                 .frame(width: cardWidth, height: 88)
                 .clipShape(RoundedRectangle(cornerRadius: Metrics.editorInsetRadius, style: .continuous))
                 .overlay(RoundedRectangle(cornerRadius: Metrics.editorInsetRadius, style: .continuous).strokeBorder(isOn ? Palette.acc : .clear, lineWidth: 2))
-                Text(filter.label)
+                // Two lines broken between words, never inside one (owner, 02/11/2026: no label is ever cut).
+                WholeWordsLabel(text: filter.label, minimumScale: 0.8)
                     .font(.system(.caption, weight: .semibold))
                     .foregroundStyle(isOn ? Palette.accText : Palette.ink2)
-                    .lineLimit(2)
-                    .minimumScaleFactor(0.8)
-                    .multilineTextAlignment(.center)
                     .frame(width: cardWidth)
             }
             .contentShape(Rectangle())

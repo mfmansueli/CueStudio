@@ -11,7 +11,7 @@ struct WelcomeStarCanvas: View {
     let time: Double
     /// The seconds since the opening began, past its end: the lit dots keep shining.
     let ambient: Double
-    let starPath: PoseTrack
+    let starPath: WelcomeFlight
     /// How big the board is drawn (`WelcomeLayout.artScale`), from its top, centred.
     var scale: CGFloat = 1
 

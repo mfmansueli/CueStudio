@@ -23,6 +23,8 @@ struct FilterChip: View {
         }
         .cueFont(.subheadline, weight: isSelected ? .semibold : .medium)
         .lineLimit(1)
+        // A safety net: screens put chips in a horizontal scroll or stack them, so a name is never cut (owner, 02/11/2026).
+        .minimumScaleFactor(0.8)
         .padding(.horizontal, 14)
         .frame(height: height)
         .foregroundStyle(isSelected ? Palette.chipOnInk : Palette.ink)

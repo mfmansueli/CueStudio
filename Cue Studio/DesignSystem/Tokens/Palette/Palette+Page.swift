@@ -31,6 +31,15 @@ extension Palette {
         /// "Ready to record" switched on: `successText` on green at 18% (6.7:1 over the page's night), a 0.5 pt green rim.
         static let readyFill = Color(hex: 0x34C759, opacity: 0.18)
         static let readyRim = Color(hex: 0x34C759, opacity: 0.55)
+        /// "Ready to record" off, on a page with words: the rim that breathes now and then (`ReadyToggle`), so a draft's creator knows
+        /// where to say it's ready, and, under Reduce Motion, a still rim instead. Decorative: the words say what it does.
+        static let readyHintLight = Color(hex: 0x7BE495)
+        static let readyHintRim = Color(hex: 0x34C759, opacity: 0.4)
+
+        /// "Draft" lit (the script is one): `Scripts.draftText`, the purple of the list's DRAFTS title, on that purple at 15% with a
+        /// 0.5 pt rim, the same make as "Ready to record" on (at 18% its label fell to 4.4:1 over a card).
+        static let draftFill = Color(hex: 0xC084FC, opacity: 0.15)
+        static let draftRim = Color(hex: 0xC084FC, opacity: 0.55)
 
         // The state chip (READY · DRAFT · RECORDED): ink on a fill, 4.5:1 over every surface.
         static let stateReadyInk = Color(hex: 0x34C759)

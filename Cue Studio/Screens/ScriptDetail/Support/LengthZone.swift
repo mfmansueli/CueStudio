@@ -16,7 +16,8 @@ nonisolated struct LengthZone: Equatable, Sendable {
     /// - Parameter language: the script's, whose pace sets the seconds (`ReadTime.pace(for:)`: a Korean minute holds fewer words).
     init(text: String, preset: PlatformPreset, language: CueLanguage? = nil) {
         words = ReadTime.wordCount(in: text)
-        seconds = ReadTime.seconds(for: text, language: language)
+        // The words counted once (`ReadTime.seconds(for:)` would count them again).
+        seconds = Double(words) / (ReadTime.wordsPerMinute(speed: ReadTime.naturalSpeed, language: language) / 60)
         self.preset = preset
     }
 

@@ -134,19 +134,21 @@ struct EditorToolbar: View {
         }
     }
 
+    /// "‹ Blur area": the name of what the tools change, whole in every language (owner, 02/11/2026: no label is ever cut). It goes
+    /// on two lines between words ("Voce fuori / campo"), and the button grows a little for a name that still doesn't fit
+    /// (`backWidth`), shrinking it only past that ("Unschärfebereich").
     private func backButton(_ context: String) -> some View {
         Button(action: viewModel.leaveToolbarContext) {
             VStack(spacing: 4) {
                 // Back points where back is: left, and right in Arabic.
                 Image(systemName: "chevron.backward")
                     .font(.editorGlyph(EditorGlyph.toolbar, weight: .semibold))
-                Text(context)
+                WholeWordsLabel(text: context)
                     .font(.system(size: heightClass.toolbarLabelSize, weight: .semibold))
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.7)
             }
             .foregroundStyle(Palette.accText)
-            .frame(width: 58)
+            .padding(.horizontal, Self.backLabelInset)
+            .frame(width: backWidth(context))
             .frame(maxHeight: .infinity)
             .contentShape(Rectangle())
         }
@@ -160,6 +162,21 @@ struct EditorToolbar: View {
         .accessibilityValue(Text(context))
         .accessibilityIdentifier("edit.toolbar.back")
     }
+
+    /// The back button's width: 58 pt, or as wide as its name needs on one line or on two (`LabelLineBreak`), up to
+    /// `backMaximumWidth`, so the tools keep most of the bar.
+    private func backWidth(_ context: String) -> CGFloat {
+        let font = UIFont.systemFont(ofSize: heightClass.toolbarLabelSize, weight: .semibold)
+        let width: (String) -> CGFloat = { ceil(($0 as NSString).size(withAttributes: [.font: font]).width) }
+        let oneLine = width(context)
+        let twoLines = LabelLineBreak.twoLines(context).map { $0.components(separatedBy: "\n").map(width).max() ?? oneLine }
+        let needed = min(oneLine, twoLines ?? oneLine) + 2 * Self.backLabelInset
+        return min(Self.backMaximumWidth, max(Self.backMinimumWidth, needed))
+    }
+
+    private static let backMinimumWidth: CGFloat = 58
+    private static let backMaximumWidth: CGFloat = 80
+    private static let backLabelInset: CGFloat = 3
 
     /// The room each tool takes, its side padding included (`EditorToolbarFit`): the class's width, a little less when that
     /// lets the first `count` tools show whole.

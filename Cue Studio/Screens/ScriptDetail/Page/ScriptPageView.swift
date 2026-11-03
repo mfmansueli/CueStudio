@@ -52,23 +52,30 @@ struct ScriptPageView: View {
     private static let handOverDuration = 0.7
 
     var body: some View {
+        ScriptTypingTimeline.measure("Page") { page }
+    }
+
+    private var page: some View {
         @Bindable var viewModel = viewModel
-        VStack(spacing: 0) {
+        // Read once: it counts the cues in the words.
+        let strip = viewModel.strip
+        return VStack(spacing: 0) {
             ScrollViewReader { proxy in
                 ScrollView {
                     VStack(alignment: .leading, spacing: 0) {
                         ScriptPageHeader(
-                            title: $viewModel.page.title,
+                            title: $viewModel.pageTitle,
                             isWriting: viewModel.page.isWriting,
                             focus: $focus,
-                            onSubmitTitle: { focus = .text }
+                            onSubmitTitle: { focus = .text },
+                            onEdit: viewModel.pageDidEdit
                         )
                         // While the AI writes, the page is already the one it will be: the strip (with Stop), the voice question
                         // and the fact check are in their places, waiting, so nothing moves when the writing ends.
-                        if let strip = viewModel.strip {
+                        if let strip {
                             ScriptStateStrip(
-                                strip: strip, canBeReady: !viewModel.page.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
-                                onReady: { viewModel.setReady($0) }, onStop: stop
+                                strip: strip, canBeReady: !viewModel.measuredText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+                                isTyping: focus != nil, onReady: { viewModel.setReady($0) }, onStop: stop
                             )
                             .padding(.top, 10)
                             .dimmedWhileTyping(isTyping)
@@ -98,7 +105,7 @@ struct ScriptPageView: View {
                             // Without Apple Intelligence for this script, Improve holds only what needs no model (and is gone when that is nothing).
                             offersImprove: viewModel.offersImprove,
                             // While the AI writes, Stop is the strip's and Shape waits for the words.
-                            offersShape: viewModel.strip?.canShape == true && !viewModel.page.isWriting,
+                            offersShape: strip?.canShape == true && !viewModel.page.isWriting,
                             showsCues: $viewModel.showsCues,
                             onHook: { Task { await viewModel.openHooks() } },
                             onImprove: { viewModel.sheet = .improve },
@@ -180,7 +187,6 @@ struct ScriptPageView: View {
         .onChange(of: scenePhase) { _, phase in
             if phase != .active { viewModel.commitPage() }
         }
-        .onChange(of: viewModel.page.title) { _, _ in viewModel.pageDidEdit() }
         .onChange(of: viewModel.page.selection) { _, selection in
             // Selecting other words is the creator moving on: the AI's words are theirs.
             if let passage = viewModel.page.passage, let selection, !selection.isEmpty, selection != passage.range { viewModel.keepPassage() }
@@ -196,7 +202,8 @@ struct ScriptPageView: View {
     private var toolbarItems: some ToolbarContent {
         ToolbarItem(placement: .principal) {
             VStack(spacing: 1) {
-                Text(viewModel.page.title.isEmpty ? String(localized: "Untitled") : viewModel.page.title)
+                // The saved title (a moment behind the field): reading the field's would redraw the page on every letter.
+                Text(script.title.isEmpty ? String(localized: "Untitled") : script.title)
                     .cueFont(.subheadline, weight: .semibold)
                     .foregroundStyle(Palette.ink)
                     .lineLimit(1)
@@ -329,9 +336,10 @@ struct ScriptPageView: View {
         return ScriptTextEditor(
             text: Binding(
                 get: { viewModel.page.revealed ?? viewModel.previewedText ?? viewModel.page.text },
-                set: { if !viewModel.page.isWriting, !viewModel.isTouchingUp { viewModel.page.text = $0 } }
+                set: { if !viewModel.page.isWriting, !viewModel.isTouchingUp { viewModel.page.type($0) } }
             ),
             selection: $viewModel.page.selection,
+            isEmpty: viewModel.previewedText.map(\.isEmpty) ?? viewModel.page.revealed.map(\.isEmpty) ?? viewModel.page.isEmpty,
             passage: viewModel.page.passage?.range,
             textSize: viewModel.page.textSize,
             showsCues: viewModel.showsCues,
@@ -341,9 +349,10 @@ struct ScriptPageView: View {
             onEdit: {
                 if !viewModel.page.isWriting {
                     if viewModel.page.passage != nil { viewModel.keepPassage() }
-                    viewModel.pageDidEdit()
+                    viewModel.wordsTyped()
                 }
             },
+            onCaret: { viewModel.page.caret = $0 },
             undo: editorUndo
         )
     }

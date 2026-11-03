@@ -33,11 +33,11 @@ struct PanelPresetCard<Menu: View>: View {
         } label: {
             VStack(spacing: 6) {
                 thumbnail
-                Text(name)
+                // Whole on two lines between words ("Redaktionell / avtäckning"), smaller only past that (owner, 02/11/2026: no
+                // label is ever cut); the grids align their cards at the top.
+                WholeWordsLabel(text: name, minimumScale: 0.8)
                     .font(.system(.caption, weight: isSelected ? .bold : .semibold))
                     .foregroundStyle(isSelected ? Palette.ink : Palette.ink2)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.8)
             }
             .frame(width: 96)
             .contentShape(Rectangle())

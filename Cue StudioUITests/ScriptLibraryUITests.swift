@@ -225,7 +225,8 @@ final class ScriptLibraryUITests: XCTestCase {
         XCTAssertTrue(app.pageBackButton.exists(within: 5))
         app.pageBackButton.tap()
         XCTAssertTrue(element(app, "scripts.promptCard").exists(within: 5))
-        XCTAssertFalse(app.pageBackButton.exists)
+        // The list shows while the page still slides away (the keyboard goes down with it): gone once it has.
+        XCTAssertTrue(app.pageBackButton.waitForNonExistence(timeout: 5), "The page stayed open")
     }
 
     func testStudioAndRecordReturnToTheSamePageWithoutAddingAnotherRoute() {
@@ -254,8 +255,8 @@ final class ScriptLibraryUITests: XCTestCase {
         let app = CueApp.launch(seeded: true)
         openScript(app, "Oat & Co. · sponsored read")
         XCTAssertTrue(element(app, "page.strip").exists(within: 5))
-        // A ready script has its switch on ("On" as the page says it, or "1" as a toggle reports it).
-        XCTAssertTrue(["On", "1"].contains(app.pageReadyToggle.value as? String ?? ""), "a ready script has its switch on")
+        // A ready script has "Ready to record" lit, not "Draft".
+        XCTAssertTrue(app.pageReadyToggle.isSelected && !app.pageDraftChoice.isSelected, "a ready script has Ready lit")
         XCTAssertTrue(element(app, "page.lengthBar").exists)
         XCTAssertTrue((element(app, "page.lengthBar").value as? String)?.localizedCaseInsensitiveContains("words") == true)
         XCTAssertTrue(element(app, "page.editor").exists)

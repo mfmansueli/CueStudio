@@ -72,6 +72,8 @@ struct ReviewToolbar: ToolbarContent {
             .monoFont(.subheadline, weight: .bold)
             .foregroundStyle(Palette.ink)
             .lineLimit(1)
+            // "OPNAME 2 VAN 5" shrinks a little rather than lose letters between the bar's buttons (owner, 02/11/2026).
+            .minimumScaleFactor(0.75)
             .padding(.horizontal, 14)
             .frame(minHeight: Metrics.hitTarget)
             // Glass like the bar's other controls: the title stays readable over any frame of the video.

@@ -16,14 +16,19 @@ struct ContinuePostingCard: View {
         if let current = queue.current {
             HStack(spacing: 10) {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("CONTINUE POSTING · \(queue.position(of: current)) OF \(queue.count)")
-                        .monoFont(size: 10, weight: .bold).interfaceTracking(0.8).foregroundStyle(Palette.accText).lineLimit(1)
+                    // Where "CONTINUA A PUBBLICARE · 1 DI 3" has no room, only "1 DI 3": never a cut word (owner, 02/11/2026).
+                    ViewThatFits(in: .horizontal) {
+                        Text("CONTINUE POSTING · \(queue.position(of: current)) OF \(queue.count)")
+                        Text("\(queue.position(of: current)) OF \(queue.count)")
+                    }
+                    .monoFont(size: 10, weight: .bold).interfaceTracking(0.8).foregroundStyle(Palette.accText).lineLimit(1)
                     Text("Next: \(current.network.platform.label) · \(queue.title)")
                         .cueFont(15, weight: .semibold).foregroundStyle(Palette.ink).lineLimit(1)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 Button(action: onContinue) {
                     Text("Continue").cueFont(15, weight: .bold).foregroundStyle(Palette.accInk)
+                        .lineLimit(1).fixedSize()
                         .padding(.horizontal, 18).padding(.vertical, 4).frame(minHeight: 38)
                         .background(Palette.acc, in: Capsule())
                 }

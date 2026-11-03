@@ -5,8 +5,9 @@
 
 import SwiftUI
 
-/// A platform's chip in 1.3: 38 pt tall, its colour as a dot, white with black text once picked. The tap leaves a ripple in the platform's
-/// colour (a 34 pt disc that grows to ×4 and fades in 0.55 s). The choice is single, so a chip never goes off by being tapped again.
+/// A platform's chip in 1.3: a quiet glass chip 38 pt tall, its colour as a dot; picked, it takes a tint and an edge of that colour and its
+/// name turns bright (as 1.2's topics do). The tap leaves a ripple in the platform's colour (a 34 pt disc that grows to ×4 and fades in
+/// 0.55 s). The choice is single, so a chip never goes off by being tapped again.
 struct VoyageChip: View {
     let platform: Platform
     let isPicked: Bool
@@ -21,13 +22,16 @@ struct VoyageChip: View {
                 Text(platform.label)
             }
             .cueFont(14.5, weight: .semibold)
-            .foregroundStyle(isPicked ? Palette.chipOnInk : Color.white)
+            .foregroundStyle(isPicked ? Palette.ink : Palette.ink2)
             .padding(.leading, 11)
             .padding(.trailing, 13)
             .frame(height: 38)
-            .background(isPicked ? Palette.chipOn : Palette.fill, in: Capsule())
+            .background { Capsule().fill(Palette.fill) }
+            .background { Capsule().fill(platform.tint.opacity(isPicked ? 0.22 : 0)) }
+            .overlay { Capsule().strokeBorder(isPicked ? platform.tint.opacity(0.7) : Palette.glassBorder, lineWidth: isPicked ? 1 : 0.75) }
             .overlay { ripple }
-            .animation(.easeOut(duration: 0.15), value: isPicked)
+            .shadow(color: platform.tint.opacity(isPicked ? 0.35 : 0), radius: 10)
+            .animation(.easeOut(duration: 0.22), value: isPicked)
             // The 44 pt target is the chip with 3 pt above and below, which the rows overlap.
             .padding(.vertical, 3)
             .contentShape(Rectangle())

@@ -185,8 +185,18 @@ struct LogbookView: View {
                     .accessibilityIdentifier(isLocked ? "logbook.tapToFinish" : "logbook.status")
             }
             HStack(alignment: .bottom, spacing: 8) {
-                // The prompt in `ink2`: the system's grey is about 2.4:1 on the glass.
-                TextField(text: $typed, prompt: Text("Type, or hold the mic to talk").foregroundStyle(Palette.ink2), axis: .vertical) {
+                // The prompt is drawn by the page, in `ink2` (the system's grey is about 2.4:1 on the glass), and on as many lines as it
+                // needs: a field's own prompt keeps to one line and cut "Digite ou segure o microfone para…" (owner, 02/11/2026).
+                ZStack(alignment: .topLeading) {
+                    if typed.isEmpty {
+                        Text("Type, or hold the mic to talk")
+                            .cueFont(17)
+                            .foregroundStyle(Palette.ink2)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .allowsHitTesting(false)
+                            .accessibilityHidden(true)
+                    }
+                TextField(text: $typed, prompt: Text(verbatim: ""), axis: .vertical) {
                     Text("Type, or hold the mic to talk")
                 }
                     .lineLimit(1...4)
@@ -201,10 +211,11 @@ struct LogbookView: View {
                         typed = text.replacingOccurrences(of: "\n", with: "")
                         addTyped()
                     }
+                    .accessibilityIdentifier("logbook.field")
+                }
                     .padding(.leading, 12)
                     .padding(.vertical, 12)
                     .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget, alignment: .leading)
-                    .accessibilityIdentifier("logbook.field")
                 captureButton
             }
             .padding(6)

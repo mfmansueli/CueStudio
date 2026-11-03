@@ -16,13 +16,19 @@ struct UniverseReviewRowView: View {
             HStack(spacing: 12) {
                 UniverseMiniStory(count: row.count)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(row.title).cueFont(16.5, weight: .semibold).foregroundStyle(Palette.ink).lineLimit(1)
-                    Text(row.line).monoFont(size: 10, weight: .medium).interfaceTracking(0.8).foregroundStyle(Palette.ink2).lineLimit(1)
+                    // On two lines when one is too short ("Retrospectiva de 2026", "PRÉVIA · PRONTO EM 1º DE DEZ."): never cut (owner,
+                    // 02/11/2026).
+                    Text(row.title).cueFont(16.5, weight: .semibold).foregroundStyle(Palette.ink)
+                    Text(row.line).monoFont(size: 10, weight: .medium).interfaceTracking(0.8).foregroundStyle(Palette.ink2)
                 }
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.vertical, 8)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 if !row.isLocked {
                     Label("Play", systemImage: "play.fill")
                         .cueFont(14, weight: .semibold)
+                        .lineLimit(1)
+                        .fixedSize()
                         .foregroundStyle(Palette.ink)
                         .padding(.horizontal, 12)
                         .padding(.vertical, 4)

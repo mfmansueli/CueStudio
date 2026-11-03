@@ -10,6 +10,11 @@ import Foundation
 /// - `-uiTestInMemory`: in-memory scripts, takes and export count, and a throwaway UserDefaults
 ///   suite.
 /// - `-uiTestSeedSamples`: with the above, starts with the sample scripts and takes.
+/// - `-uiTestAIDraft`: with `-uiTestInMemory`, the library also has a long script as Ultra AI writes one (`SampleAIDraft`: 800 words in
+///   Portuguese, language on Auto-detect, fact check waiting), first in the list.
+/// - `-uiTestTypingProbe`: the script page's words say in their accessibility label how fluid typing in them was (`ScriptTypingProbe`).
+/// - `-uiTestAutoType`: a second after the script's words take the keyboard, a sentence is typed into them at a person's pace
+///   (`ScriptTypingRobot`), for the probe.
 /// - `-uiTestPro`: starts on Cue Pro (read by `StoreManager`).
 /// - `-uiTestStubAI` / `-uiTestNoAI`: instant, predictable AI, or none at all.
 /// - `-uiTestUltra`: AI Scripts Ultra with a stub instead of Gemini (`StubUltraClient`); `-uiTestUltraReviewFails` makes its polish fail,
@@ -288,13 +293,15 @@ struct LaunchOptions {
         #if DEBUG
         let arguments = ProcessInfo.processInfo.arguments
         options.resetsExportsOnNewInstall = !arguments.contains("-uiTestInMemory")
-        options.ultraAvailable = UltraLabConfiguration.isPresent
-        options.makeUltraClient = { FirebaseUltraClient.make() }
+        // Gemini through the lab's Firebase app or Claude with the lab's key, whichever the lab picked (`UltraLabProvider`).
+        options.ultraAvailable = UltraLabConfiguration.isPresent || ClaudeLabConfiguration.isPresent
+        options.makeUltraClient = { UltraLabClient.make() }
         if arguments.contains("-uiTestInMemory") {
             options.isInMemory = true
             options.appsAreInstalled = arguments.contains("-uiTestAppsInstalled")
             let seeded = arguments.contains("-uiTestSeedSamples")
-            options.scriptRepository = InMemoryScriptRepository(scripts: seeded ? SampleScripts.all : [])
+            let aiDraft = arguments.contains("-uiTestAIDraft") ? [SampleAIDraft.script] : []
+            options.scriptRepository = InMemoryScriptRepository(scripts: aiDraft + (seeded ? SampleScripts.all : []))
             options.brandRepository = InMemoryBrandRepository()
             let rootName = arguments.firstIndex(of: "-uiTestAssetRoot").flatMap { arguments.indices.contains($0 + 1) ? arguments[$0 + 1] : nil }
             options.assetRoot = URL.temporaryDirectory.appending(path: "UITestAssets-\(rootName ?? UUID().uuidString)", directoryHint: .isDirectory)
