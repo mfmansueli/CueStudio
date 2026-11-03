@@ -18,9 +18,16 @@ struct SkyPicker: View {
     private static var cardShape: RoundedRectangle { RoundedRectangle(cornerRadius: Metrics.innerRadius, style: .continuous) }
 
     var body: some View {
-        LazyVGrid(columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)], spacing: 10) {
-            ForEach(SkyDensity.allCases) { sky in
-                card(sky)
+        // A `Grid`, so both cards of a row take the taller one's height when a line needs a third line ("…ein vorbeiziehendes
+        // Raumschiff"; owner, 02/11/2026: no label is ever cut).
+        let skies = SkyDensity.allCases
+        Grid(horizontalSpacing: 10, verticalSpacing: 10) {
+            ForEach(Array(stride(from: 0, to: skies.count, by: 2)), id: \.self) { index in
+                GridRow {
+                    ForEach(skies[index..<min(index + 2, skies.count)]) { sky in
+                        card(sky)
+                    }
+                }
             }
         }
         .selectionRing(on: selection, in: cards, shape: Self.cardShape, reduceMotion: reduceMotion)
@@ -61,9 +68,11 @@ struct SkyPicker: View {
                 Text(line(sky))
                     .cueFont(.caption)
                     .foregroundStyle(Palette.ink2)
-                    .lineLimit(2, reservesSpace: true)
+                    .lineLimit(2...)
+                    .fixedSize(horizontal: false, vertical: true)
                     .padding(.horizontal, 4)
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .padding(8)
             .background(Palette.surface, in: shape)
             .selectionRingAnchor(sky, in: cards)

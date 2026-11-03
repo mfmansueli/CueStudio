@@ -21,7 +21,7 @@ nonisolated struct TextWindowResize: Equatable, Sendable {
 
     let width: Double
     let height: Double
-    /// The height in lines of text, for the label and VoiceOver.
+    /// The height in lines of text, for VoiceOver.
     let lines: Int
 
     /// The window after dragging by `translation` from where it was when the drag started.
@@ -51,10 +51,5 @@ nonisolated struct TextWindowResize: Equatable, Sendable {
         }
         height = points
         lines = max(1, Int((points / Double(line)).rounded()))
-    }
-
-    /// The label while dragging: "WIDTH 93% · 6 LINES".
-    var label: String {
-        String(localized: "WIDTH \(Int((width * 100).rounded()))% · \(lines) LINES")
     }
 }

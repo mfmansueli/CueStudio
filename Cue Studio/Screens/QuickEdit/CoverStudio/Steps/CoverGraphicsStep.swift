@@ -12,7 +12,9 @@ struct CoverGraphicsStep: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            HStack(spacing: 8) {
+            // Equal tiles while every name fits one; else each as wide as its name and the rest shared ("@gebruikersnaam" takes
+            // more than "Pijl"): a name is never cut (owner, 02/11/2026: no label is ever cut).
+            FairShareLayout(spacing: 8) {
                 ForEach(CoverItemKind.allCases) { kind in
                     Button { viewModel.addItem(kind) } label: {
                         VStack(spacing: 4) {
@@ -20,6 +22,7 @@ struct CoverGraphicsStep: View {
                             Text(kind.label).font(.system(.caption, weight: .semibold)).lineLimit(1).minimumScaleFactor(0.8)
                         }
                         .foregroundStyle(Palette.ink)
+                        .padding(.horizontal, 6)
                         .frame(maxWidth: .infinity, minHeight: 58)
                         .editorCard()
                         .contentShape(Rectangle())
@@ -29,6 +32,8 @@ struct CoverGraphicsStep: View {
                     .accessibilityIdentifier("cover.add.\(kind.rawValue)")
                 }
             }
+            // The tiles' own height, not the panel's.
+            .fixedSize(horizontal: false, vertical: true)
             if let item = viewModel.selectedItem {
                 selected(item)
             } else {

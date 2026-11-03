@@ -649,7 +649,7 @@ do My Cue Voice) e a marcação automática. **Getting started** só até o prim
 abre Personalize).
 **Prompter** (`SettingsPrompterView`): na aba, com prévia no topo e céu. **A prévia** (`PrompterPreviewCard`, pedido do dono, 20/10/2026) é o topo da
 tela deste iPhone no Selfie como o gravador o monta (o mesmo `ReadingLayout`: a linha de leitura sob a lente, onde o criador a pôs ou a 118 pt, e a
-janela em volta dela, na largura e altura dele), reduzido para caber num cartão de 236 pt sobre uma câmera de mentira (`Palette.Camera.previewScene*`)
+janela em volta dela, na largura e altura dele), ampliado na janela do texto (`focusRect`) para caber num cartão de 272 pt sobre uma câmera de mentira (`Palette.Camera.previewScene*`)
 que ocupa o cartão inteiro: a ilha da câmera, a janela escura e desfocada como no gravador, a linha atravessando a tela, e o texto desenhado pelo próprio
 teleprompter (`PrompterParagraphs`) rolando na velocidade escolhida (o já lido apaga acima da linha; Reduzir Movimento: parado; o texto de exemplo vem no idioma da interface, cues incluídas); pelo **Aa** do Selfie abre como `PrompterSettingsSheet` (`.medium`/`.large`,
 `sheetMaxHeight`, fundo `Palette.surface`, sem prévia, `isRecorderSheet`), sobre os ajustes daquela gravação, medindo a linha de leitura pela tela e lente
@@ -672,18 +672,25 @@ aperta o título nem a segunda linha ao lado (pedido do dono, 30/10/2026). O mes
 velocidade do gravador, dos sliders do Display e do Studio, dos sliders dos painéis do editor (pontas da faixa), da leitura de Adjust e
 Skin ("Exposure −100", sem empurrar o Reset) e da velocidade do Remote (o − e o + não andam).
 
-**1.1 Welcome** (`09` §12): `WelcomeScript` escreve a cena de 390 × 844 como `PoseTrack`s: a estrela entra pela direita, acende 5 pontos do C (0,2 s
-entre eles), cai em TELEPROMPTER, AUTO CAPTIONS, ✦ AI SCRIPTS, volta e explode no sexto ponto; depois "CUE STUDIO", o título palavra a palavra, o subtítulo
-e **Get started**, o único botão (§36). `WelcomeStarPainter` em `Canvas` + `TimelineView`, toca uma vez (≈ 8 s). Hápticos: `.soft` nos pontos, `.light` nas palavras, `.success` na
-explosão. Testes de UI mostram o estado final, salvo `-uiTestWelcomeOpening`. **Em qualquer tela** (`WelcomeLayout`): as palavras (CUE STUDIO,
+**1.1 Welcome** (`09` §12; composição do dono, 02/11/2026): tudo centrado. `WelcomeScript` escreve a cena de 390 × 844 como `PoseTrack`s: a estrela entra
+pela direita, acende 5 pontos do C (0,2 s entre eles), pousa na marca de cada cápsula (FOLLOWS YOUR VOICE, AUTO CAPTIONS, ✦ AI SCRIPTS), volta e explode no
+sexto ponto, num voo de uma curva só, sem cantos nem paradas (`WelcomeFlight`, Hermite com os segundos como nós), cauda de 0,2 s, 4 faíscas por ponto e 6 na
+explosão; o céu escurece enquanto ela voa e a explosão abre um clarão; a cena aproxima de ×1,06 a ×1. As cápsulas são de vidro (`WelcomePill`: ponto, ou ✦
+na da IA, que fica dourado quando a estrela pousa, com um anel e a borda dourada). Depois "CUE STUDIO" sob o C (`WelcomeLayout.wordmarkTop`), o título em
+semibold com as linhas equilibradas (`FlowLayout(balanced:)`) e um brilho dourado palavra a palavra, o subtítulo ("A teleprompter that follows your voice,
+with captions and posting to all your networks.") e **Get started**, o único botão (§36). `WelcomeStarPainter` em `Canvas` + `TimelineView`, toca uma vez
+(≈ 8 s). Hápticos: o padrão `HapticPatterns.welcomeC` (os pontos, as cápsulas e a explosão). Testes de UI mostram o estado final, salvo `-uiTestWelcomeOpening`. **Em qualquer tela** (`WelcomeLayout`): as palavras (CUE STUDIO,
 título, subtítulo, cápsulas) e o botão guardam seus tamanhos e o espaço do quadro entre eles; o botão fica 82 pt acima da borda (48 pt num iPhone
 sem Home Indicator) e a cena da estrela é desenhada maior ou menor para caber no que sobra acima das palavras (×0,6 a ×1,15; ×1 no quadro, ≈ ×0,63
 num SE, ≈ ×1,13 num Pro Max), com o que sobra dividido acima e abaixo das palavras; a estrela voa até onde as cápsulas realmente estão. O texto
 cresce até o maior tamanho padrão (xxxLarge). O brilho decorativo dos botões primários é desenhado em um `Canvas` com os limites do botão, recortado pela cápsula; a faixa em movimento não amplia o retângulo de acessibilidade. A faixa branca chega a 35% de opacidade para preservar o contraste da tinta também no pico do brilho; PaletteContrastTests mede o componente renderizado nesse instante, com e sem Aumentar Contraste.
 
-**1.2 Topics become worlds:** marcador do tema é barra de 3 × 14 pt na cor do mundo (nunca bolinha). Ao tocar: brilho no chip, cruz de luz, oito faíscas,
-luz em curva até a órbita, aterrissagem em 1,4 s; o planeta aparece (×1,9 → 1), a órbita desenha (1,4–2,7 s), o nome chega (`TopicBirth`,
-`TopicBirthPainter`). Na entrada um anel amarelo abre no núcleo. Detalhes do capítulo em §18.
+**1.2 Topics become worlds:** três órbitas tracejadas vazias em volta do núcleo são o contador (uma por tema que cabe). Os chips são de vidro
+(`OnboardingTopicChip`), em linhas equilibradas, entram em cascata, e trazem uma barra vazia de 3 × 14 pt antes do nome (nunca bolinha) que se enche da cor
+do mundo ao tocar; o chip escolhido ganha o tom e a borda dessa cor e um oval de luz o atravessa. Ao tocar, a luz sai do chip com uma cauda curta
+(`StarRibbon`) e pousa na órbita com um anel (sem linha, faíscas nem cruzes); o núcleo pulsa, o planeta aparece (×1,9 → 1), a órbita desenha
+(1,4–2,7 s), o nome chega (`TopicBirth`, `TopicBirthPainter`). Hápticos: `HapticPatterns.topicFlight`. As cores seguem a ordem de escolha (1ª quente,
+2ª menta, 3ª rosa; dono, 02/11/2026), não o assunto. Detalhes do capítulo em §18.
 
 ## 11. Exportações grátis acabando (`09` "Free exports running out")
 
@@ -847,21 +854,28 @@ permissions, firstStar, yourUniverse, sendOff, milestone, pro, share; `skyBackgr
 - **1.1:** `WelcomeScript` (§10), `BgWash.welcome`, `WelcomeShootingStar`; céu `OnboardingSky`, `SkyDirector`.
 - **1.2 Topics:** 10 temas, do mais comum ao menos (`Niche.offered`: Fitness & wellness · Food & cooking · Beauty & skincare · Fashion & style · Personal
   finance · Tech & AI · Budget travel · Productivity & career · Parenting & family · Daily routines) + "+ Your own"; `Wellness` e `Education` continuam
-  válidos para quem já os tem. O nome do chip é o do mundo em todo o app (`Niche.chipLabel`). De 1 a 3: **Continue** fica cinza ("Pick a topic") até o
-  primeiro, `TopicCounter` diz quantos faltam; com 3, os outros ficam apagados (toque só dá aviso tátil); soltar um libera outro. Luz, planeta, órbita e
-  nome vêm do quadro (`TopicBirth`, `idade + 2,6 s`).
+  válidos para quem já os tem. O nome do chip é o do mundo em todo o app (`Niche.chipLabel`). De 1 a 3: **Continue** fica de vidro ("Pick a topic",
+  `DisabledStyle.glass`, `ink2`) até o primeiro, e as órbitas vazias dizem quantos cabem; com 3, os outros ficam apagados (toque só dá aviso tátil); soltar um
+  libera outro. Luz, planeta, órbita e nome vêm do quadro (`TopicBirth`, `idade + 2,6 s`).
 - **1.3 Voyage:** `VoyageScene` (Canvas) com a galáxia do criador, as das redes e a rota, encaixadas entre o título e os chips (`VoyageFit`, §36);
-  nada vem marcado: o botão diz "Choose a platform" e depois
-  "Continue with {rede}"; "9:16 · IDEAL … · SAFE ZONES ON" (OFF em YouTube e LinkedIn, sem zonas seguras) é digitado em 34 passos.
-- **1.4 First script:** `ScriptChapter` com `MessageCard` (gancho, corpo e CTA do roteiro de prática palavra por palavra no ritmo do quadro, "VIDEO FOR ·
-  {REDE}" e o tempo de leitura medido), "SCRIPT READY · LET’S TRY IT", "It’s just practice. Nothing is recorded." e **Try the teleprompter** (§35).
+  nada vem marcado: o botão é de vidro e brilha ("Choose a platform") e depois diz "Continue with {rede}". Os chips são de vidro (`VoyageChip`), em linhas
+  equilibradas; o escolhido ganha o tom da rede (22%), a borda e a sombra dela. A rota é uma linha fina (lilás → cor da rede) com a luz e uma cauda
+  (`StarRibbon`) correndo por ela; a chegada é um clarão e um anel que pulsa. "YOU" sob a galáxia é traduzido (`String(localized: "YOU")`, letras nas três
+  camadas do quadro; escritas que se ligam, como árabe, devanágari e tailandês, numa palavra só). Sobre os chips, "TAP ANOTHER TO SWITCH" em
+  `quietInk`; embaixo "9:16 · IDEAL … · SAFE ZONES ON" (OFF em YouTube e LinkedIn, sem zonas seguras), digitado em 34 passos. Hápticos:
+  `HapticPatterns.voyageFlight` (partida, zumbido da viagem, chegada; Reduzir Movimento: um toque).
+- **1.4 First script:** `ScriptChapter` com `MessageCard`, um cartão de vidro limpo (aurora, borda `glassBorder`): no topo "VIDEO FOR · {REDE}" com o
+  ponto da rede, e à direita um anel na cor da rede que se fecha num ✓ e o tempo de leitura contando até o medido; gancho, corpo e CTA do roteiro de
+  prática chegam palavra por palavra no ritmo do quadro (rótulos em `quietInk`, palavras em `ink`), com um cursor que pisca e some ao fim e uma linha de
+  leitura creme suave. Entre o cartão e o botão, fixo, "It’s just practice. Nothing is recorded."; **Try the teleprompter** é de vidro até o ✓ (5,5 s
+  do quadro) e então brilha (§35). Um toque pula para o fim. Hápticos: `.soft` a cada parte que chega, `.success` no ✓.
 - **1.5 Permissions:** `VoicePermissionsArt`, linhas com **Allow** / **Next** (§5.3).
 - **1.6 Practice:** caixa do teleprompter do app (`PrompterView` com `isPractice`, 310 pt, §36), texto de 24 pt, sem trilho nem linha até a contagem;
   play abre **GET READY 3 · 2 · 1** com anéis, **READ!** e traz **Record my first video**; o texto então espera a voz (§35); no fim "You’ve got it. Ready to
   record?" e os dois caminhos (`PracticeStage`,
   `PracticeBoxOverlay`, `PracticeMessageCard`, `PracticeVoiceStatus`, `PracticeBottomBar`). A barra de capítulos acende o 4º segmento em 1.5 e 1.6; o 5º é do primeiro astro.
 - **1.7:** §16.
-- Hápticos de 1.2–1.6 (`.soft` ao tocar, `.success` ao pousar) são proposta, sem confirmação do dono.
+- Hápticos de 1.5–1.6 (`.soft` ao tocar, `.success` ao pousar) são proposta, sem confirmação do dono; 1.1–1.4 têm os padrões acima.
 
 **8.2 Send-off** (quadro de 390 × 844 escalado; `SendOffLayout`, `SendOffScript`, `SendOffMap`, `SendOffView`): órbitas de 316 e 220 pt achatadas a 32% e
 giradas −9°, YOU de 56 pt, planetas de 20/18/17/16/14/12 pt por ordem de vídeos, cartão de 54 × 96 pt vira luz (0,65 s), uma estrela por rede (0,52 s +
@@ -982,12 +996,15 @@ roteiro (v2, v3…) liga as takes ao texto lido: mudar as palavras depois de um 
 são essa mesma versão (também na mesma visita, com o gravador por cima). O texto é **corrido**, sem rótulos de estrutura nem régua de tempo (decisão do dono, 20/10/2026: o criador tem de se
 sentir livre para escrever como quiser). **Sem dicas embaixo do texto** (gancho longo, frase longa, "No CTA yet"): quem quiser mudanças usa o Improve
 (decisão do dono, 20/10/2026).
-- **Rascunho ou pronto (decisão do dono, 20/10/2026):** a faixa sob o título (`ScriptStateStrip`, sem caixa) tem o interruptor **"Ready to record"**
-  (`ReadyToggle`; RECORDED num roteiro gravado e, em amarelo ao lado, "Changed since take N" quando as palavras mudaram depois do take) e Stop no fim
-  enquanto a IA escreve; sem linha de detalhes (dono, 31/10/2026: o interruptor diz se é rascunho, as palavras e o Cues mostram as cues, o formato está
-  em Script details). Ligar: verde
+- **Rascunho ou pronto (decisão do dono, 20/10/2026):** a faixa sob o título (`ScriptStateStrip`, sem caixa) tem o par **Draft** e **Ready to record**
+  lado a lado, um dos dois sempre aceso (`DraftChoice` + `ReadyToggle`; RECORDED num roteiro gravado e, em amarelo ao lado, "Changed since take N"
+  quando as palavras mudaram depois do take) e Stop no fim enquanto a IA escreve; sem linha de detalhes (dono, 31/10/2026: o par diz se é rascunho, as
+  palavras e o Cues mostram as cues, o formato está em Script details). **Draft** (lápis) aceso é roxo, o mesmo do título DRAFTS da lista (dono,
+  02/11/2026: `Palette.Scripts.draftText` sobre `Palette.Page.draftFill`, 15% de `0xC084FC`, 4,6:1 no pior fundo); tocá-lo num roteiro pronto o
+  devolve a rascunho. **Ready to record** apagado tem um anel vazio cuja borda **respira** em verde (2,9 s de luz, 8 s de escuro, nunca enquanto se
+  digita; Reduzir Movimento: borda verde parada), para o criador saber onde dizer que está pronto. Ligar: verde
   (`readyFill`/`readyRim`, `successText` 6,7:1), acende uma vez e dá dois toques suaves (`HapticPatterns.finish`); formato com seções vazias pergunta
-  ("Mark ready anyway" / "Keep writing"); página vazia: desativado. Desligar volta a rascunho. **Sair nunca muda o estado** (voltar só salva; editar um
+  ("Mark ready anyway" / "Keep writing"); página vazia: desativado. Tocar no aceso não faz nada: o Draft o desfaz. **Sair nunca muda o estado** (voltar só salva; editar um
   roteiro pronto não o rebaixa); só o interruptor muda, e gravar (leva a pronto e depois a gravado). **O roteiro que a IA escreve começa como rascunho**
   ("AI is drafting for you"). A página não tem "Done": digitando, o ✓ da barra só fecha o teclado (e a plataforma e o ••• voltam).
 - **Linha de ferramentas** (`ScriptToolsRow`, sob a barra de duração; dono, 31/10/2026): Hook, Improve, **✦ Shape** (ao lado de Improve, no mesmo
@@ -1018,6 +1035,10 @@ sentir livre para escrever como quiser). **Sem dicas embaixo do texto** (gancho 
   solta o modelo e o que ele responder depois não entra; e uma resposta só entra se o roteiro ainda tem a mesma versão e as mesmas palavras de
   quando foi pedida (`touchingUp`), senão não entra em lugar nenhum (nunca no lugar errado). O Undo de 4 s segue como conveniência. Tradução e
   "Make a version for…" fazem uma cópia e deixam a página livre.
+- **Barra da IA sobre uma seleção** (`AISelectionBar`; dono, 02/11/2026: feita como a das cues, `ScriptCuesBar`): uma barra de Liquid Glass de largura
+  toda, 52 pt, tingida de violeta noturno, cada jeito de reescrever numa etiqueta violeta própria (✦ Rewrite · Shorter · Punchier · More me), inteira numa
+  linha e rolando dentro da barra com degradê nas pontas quando não cabem; divisor e **Cut** (✂) fixo no fim, como o + das cues. Trabalhando,
+  "DRAFTING…" com Stop (✕) no fim; com as palavras novas no texto, ✓ Keep · ↺ Undo · ✦ Try again. Sem Apple Intelligence ela não existe.
 - **Recortar** pela barra da seleção (Cut) leva uma cue inteira e deixa um espaço só entre as palavras.
 - **Duração numa linha** (`ScriptLengthBar`): "113 WORDS · ~0:45" à esquerda, "IDEAL 1:15–1:45" à direita, trilho de 5 pt; amarelo abaixo do ideal,
   verde dentro (com ✓, brilha uma vez e toque leve ao entrar), laranja acima ("CUT 6S", toque firme). Acima do ideal, uma linha sob o trilho avisa
@@ -1035,6 +1056,21 @@ sentir livre para escrever como quiser). **Sem dicas embaixo do texto** (gancho 
   pilha toda), então ela sai e volta junto com a animação de entrar e sair, sem o dock e a barra pularem (no voltar e no Cancel da estrela).
 - **Título na barra:** rolando além do título, a barra mostra o título pequeno com "WORDS · ~TEMPO" embaixo (como Notas e Mail).
 - **Foco ao digitar:** com o teclado no texto, faixa, duração, voz, aviso de fatos e ferramentas ficam a 30% (continuam funcionando); voltam ao fechar.
+- **Digitar flui como no Notas, qualquer que seja o tamanho do roteiro** (dono, 03/11/2026: num roteiro longo da IA a digitação travava, num curto
+  não). Uma letra custa só o editor: o que fica em volta das palavras (faixa, duração, ferramentas, idioma, aviso de fatos) lê `measuredText`, que
+  alcança o texto numa pausa de 0,3 s ou a cada 1,5 s digitando (`ScriptPageState.type`/`catchUp`); o idioma é lido de novo só quando as palavras
+  mudam de tamanho ou de começo; o cursor sobe em UTF-16 (sem contar caracteres); a pintura das cues só refaz o parágrafo quando ele tem `[`/`]`; o
+  estado da IA do aparelho é guardado por 1 s (`AIModelAnswers`), a estrutura do formato por formato e a duração por texto. **A altura do editor**,
+  digitando num parágrafo, é a do roteiro inteiro medida quando a digitação nele começou mais o quanto o parágrafo cresceu, medido sozinho
+  (`ParagraphGauge`, o mesmo TextKit 2 na mesma largura); o roteiro inteiro é medido pelo UIKit numa troca vinda de fora, outro parágrafo, um
+  Enter, um Undo ou um salto maior que poucas linhas. (O layout do próprio editor deixa os parágrafos de baixo onde estavam até serem
+  desenhados: medido por ele, o editor ficava duas linhas mais curto que o texto no fim de um roteiro longo, e diagramar o roteiro inteiro a cada
+  medida do SwiftUI era o que travava.) Medido no Simulator com um roteiro de 809 palavras da Ultra AI, 61 letras no ritmo de uma pessoa
+  (`PerformanceDeviceUITests`, `-uiTestAIDraft -uiTestTypingProbe -uiTestAutoType`): quadros perdidos 55 → cerca de 20 (o roteiro curto: 2 a
+  7), a letra na tela em 16–20 ms no p95; o teste falha se o editor terminar mais curto que o texto (`heightGap`). O que sobra é desenho e o
+  trabalho do próprio UIKit a cada letra, cerca de 2 ms cada: chegar ao nível do curto pede o editor que rola sozinho, como o Notas (o
+  experimento deu 4 a 5 quadros perdidos). `ScriptPageTypingTests` garante que uma letra não redesenha a página; `ScriptTextViewTests`, que a
+  altura digitando é a de uma medida inteira.
 - **Ferramentas:** Hook (`text.quote`), ✦ Improve, Cues e o Aa redondo, todos com ícone, numa linha só: quando não cabem (SE, texto grande) a
   linha rola de lado em vez de quebrar uma palavra. Inserir uma cue pela barra do teclado dá um tick. O texto da página cresce com o Dynamic Type
   sobre o tamanho do Aa (até o 2º tamanho de acessibilidade, `ScriptTextSize.points(for:)`).
@@ -1183,6 +1219,12 @@ pode ser gravada (iPhone cheio), a take não entra e o vídeo volta para `tmp/ta
 roteiro e da versão ao lado (`TakeRecoveryNote`), onde a recuperação o acha e o devolve sob aquele roteiro; sem nota (Cue parou no meio) ou com o roteiro
 apagado, volta como "Freestyle recording": nunca um vídeo na biblioteca sem take que aponte para ele. Um Retake aberto da revisão (Takes › Retake) sem
 microfone lê em Steady, como uma sessão nova.
+
+**No Selfie, a janela do texto guarda só as palavras** (dono, 02/11/2026): sem o chip "Following your voice" sobre ela; a linha sob o Voice | Steady
+(`VoiceIndicator`, onde fica a velocidade no Steady) diz **Following your voice** em amarelo enquanto ouve e segue, "Scrolls when you talk, waits when
+you stop." pausado, ou o estado longo quando o modelo prepara, baixa ou o texto anda na velocidade escolhida. **O canto que redimensiona a janela**
+(`TextWindowResizeHandle`) é um arco grosso por fora do canto arredondado, seguindo a curva (50° do quarto); com o dedo, a janela ganha contorno
+amarelo e nada mais (o rótulo "WIDTH · LINES" sumia sob a barra; a própria janela diz o tamanho); dois toques voltam ao tamanho original.
 
 **Logbook** (`LogbookView`, folha em `.large`): título grande do sistema ("Logbook", `navigationSubtitle` "Catch it now. Write it later.") e Done na
 barra (sai durante a seleção). As ideias enchem a página, **por dia** (TODAY, YESTERDAY, o dia da semana, a data; `LogbookDays`, rótulo mono `ink2`),
@@ -3091,12 +3133,16 @@ Ultra AI* (§30). Uma resposta a comentário fica com o Apple Intelligence. Com 
 
 **Permissão** (`UltraConsentSheet`, `UltraConsentService`, chave `ultra.consent.v1`, separada do interruptor do Apple Intelligence): antes do primeiro envio,
 como um convite (dono, 31/10/2026: curta, convidativa, o teste grátis em primeiro lugar; sem as seções de etapas, do que fica no iPhone e do que o Google
-guarda, nem o *What Cue sends*). No topo, o ✦ da Ultra AI numa pequena galáxia (`UltraConsentHero`: duas órbitas inclinadas nas cores `ultraGlow`
-girando devagar, cada uma com uma lua, estrelas que piscam; o ✦ acende como no convite, `UltraMotion.ignite`, e respira o brilho; decorativo; Reduzir
-Movimento: parado, só aparece). **Meet Ultra AI** (title, negrito) e, sob ele, os roteiros grátis ("Your first 3 scripts are free.", `aiText`, title3);
-três linhas curtas ("Goes further with every idea", "Checks its claims as it writes", "Polished in your voice", ícones `aiText`). Embaixo, fixos, **uma
+guarda, nem o *What Cue sends*; 02/11/2026: mais rica, para dar vontade de experimentar). No topo, o ✦ da Ultra AI numa galáxia que se abre com a folha
+(`UltraConsentHero`: uma nebulosa violeta com um calor ao lado, três órbitas inclinadas nas cores `ultraGlow` que se desenham, e o ✦ que acende pequeno e
+girado, passa do tamanho e volta, com clarão, anel, seis faíscas e o toque `HapticPatterns.ultraIgnite`; depois duas luas correm as órbitas com a
+cauda curta do primeiro voo (`StarRibbon`), o ✦ respira sob uma cruz de luz lenta e as estrelas piscam; a luz sempre cabe no desenho; decorativo;
+Reduzir Movimento: a galáxia pronta, parada). **Meet Ultra AI** (title, negrito, uma luz creme o atravessa uma vez depois do ✦) e, sob ele, os roteiros
+grátis ("Your first 3 scripts are free.", `aiText`, title3); três linhas em vidro ("Goes further with every idea", "Checks its claims as it writes",
+"Polished in your voice") que entram uma depois da outra saindo de um desfoque, cada símbolo num disco violeta que acende ao entrar. A página fica no
+meio da folha. Embaixo, fixos, **uma
 linha** do que vai e para quem ("Your idea, your choices and your My Cue Voice preferences go to Google, which writes it. Turn it off any time in
-Settings.", `ink2`), **Try it free** enquanto há roteiros grátis (Find inspiration, que rascunha na hora: **Write it free with Ultra AI**; sem grátis:
+Settings.", `ink2`), **Try it free** (brilha quando a página termina de entrar) enquanto há roteiros grátis (Find inspiration, que rascunha na hora: **Write it free with Ultra AI**; sem grátis:
 **Allow Ultra AI** / **Allow and write with Ultra AI**) e **Not now**. Rola só se não couber (tamanhos grandes de texto). O detalhe do envio fica em
 Settings › Privacy & AI data e no *What Cue sends* do My Cue Voice (`UltraPayloadView`). Settings › Privacy & AI
 data tem o interruptor **Ultra AI** (ligar abre a folha; desligar revoga e nada mais sai, nem a próxima chamada de um roteiro em andamento), a página
@@ -3109,6 +3155,13 @@ vídeos, áudio e fotos); *What Google does with it* (roda o modelo e devolve o 
 (`UltraPayloadView` com a ideia do dock) e o link **Google Cloud’s data terms**; o rodapé diz como parar e que o Apple Intelligence não muda) e, em Debug,
 **Ultra AI · Lab**; o Apple Intelligence passa a dizer "Cue’s default writer. Ultra AI has its own switch." e a folha de privacidade deixa de dizer "nothing
 else" onde a Ultra AI existe.
+
+**Claude no laboratório** (Debug; dono, 02/11/2026: provar o Claude no lugar do Google e modelos mais baratos): o Ultra AI · Lab escolhe quem escreve
+(`UltraLabProvider`: Gemini 3.5 Flash, Claude Opus 5.5, Sonnet 5.5 ou Haiku 5.5) e, para o Claude, o esforço (`UltraLabEffort`: High, Medium, Low,
+`output_config.effort`); lidos a cada chamada (`UltraLabClient`), sem relançar. O Claude vai direto à API da Anthropic (`AnthropicUltraClient`) com a
+chave copiada à mão para `Documents/UltraLab-AnthropicKey` (`tools/ultra/install-claude-key.sh`, `ClaudeLabConfiguration`): **nunca** no app, no git
+ou no terminal. Uma recusa de política é refeita no modelo recomendado da Anthropic (o Haiku não tem esse recurso). O custo do laboratório usa o preço
+de cada modelo (`UltraLabProvider.price`). O Ultra AI que for lançado chama o Claude pelo servidor do Cue, nunca com uma chave no app.
 
 **Como escreve** (`UltraScriptService`, `UltraPayload`, `UltraInstructions`): três chamadas pelo Firebase AI Logic (Agent Platform, `global`, modelo pedido
 `gemini-3.5-flash`, App Check), sem nova tentativa nem outro modelo (`UltraFlow.checked`): (1) um rascunho desenvolvido com quem o criador é e para quem

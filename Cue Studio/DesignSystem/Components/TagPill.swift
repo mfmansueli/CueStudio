@@ -17,6 +17,8 @@ struct TagPill: View {
         }
         .cueFont(.caption, weight: .medium)
         .lineLimit(1)
+        // A tag shrinks a little rather than lose letters (owner, 02/11/2026: no label is ever cut).
+        .minimumScaleFactor(0.8)
         .foregroundStyle(Palette.inkSoft)
         .padding(.horizontal, 8)
         .padding(.vertical, 2)

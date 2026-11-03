@@ -63,6 +63,9 @@ struct CueStudioButtonStyle: ButtonStyle {
             configuration.label
                 .font(size == .compact || size == .medium ? .subheadline.weight(.semibold) : .body.weight(.semibold))
                 .lineLimit(1)
+                // Never "Manter minh…": a label longer than its button shrinks a little rather than lose letters (owner, 02/11/2026);
+                // screens that put buttons side by side stack them when the words don't fit (`FairShareLayout` in a `ViewThatFits`).
+                .minimumScaleFactor(0.75)
                 .padding(.horizontal, size == .compact || size == .medium ? 14 : 18)
                 .frame(maxWidth: expands ? .infinity : nil, minHeight: size.height)
                 .foregroundStyle(foreground)

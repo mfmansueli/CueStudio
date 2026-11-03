@@ -139,6 +139,12 @@ final class LayoutAuditCaptureTests: XCTestCase {
         record.tap()
         sleep(2)
         shot(app, "prompter")
+        // Studio's bar, out until the first play: its quick adjustments and Voice | Steady, words that must never be cut.
+        let studio = app.segmentedControls["prompter.mode"].buttons.element(boundBy: 1)
+        guard studio.exists(within: 5) else { return miss("prompter.mode") }
+        studio.tap()
+        sleep(1)
+        shot(app, "studio")
     }
 
     // MARK: - Profile

@@ -7,7 +7,9 @@ import SwiftUI
 
 /// The corner of the Selfie text window: drag it to make the window wider, narrower, taller or
 /// shorter (it stays centered), double-tap to put the original size back. While the finger is
-/// down the window gets a yellow outline and a label says the width and the lines.
+/// down the window gets a yellow outline, and nothing else: the window's own size says it (owner, 02/11/2026: the
+/// "WIDTH · LINES" label above it hid under the top bar). The mark is a thick arc around the outside of the window's
+/// rounded corner, following its curve.
 struct TextWindowResizeHandle: View {
     let viewModel: PrompterViewModel
     let layout: ReadingLayout
@@ -17,37 +19,33 @@ struct TextWindowResizeHandle: View {
     @State private var resize: TextWindowResize?
 
     private static let target: CGFloat = 44
-    private static let glyph: CGFloat = 14
-    /// Keeps the corner mark inside the window's rounded corner.
-    private static let cornerInset: CGFloat = 10
+    /// The arc's gap from the window's edge and its thickness.
+    private static let gap: CGFloat = 5
+    private static let thickness: CGFloat = 4
+    /// The arc's radius: the window's corner, grown by the gap and half the stroke, so it sits around the corner.
+    private static var arcRadius: CGFloat { Metrics.cardRadius + gap + thickness / 2 }
 
     var body: some View {
         let rect = layout.windowRect
         ZStack {
-            if let resize {
+            if resize != nil {
                 RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous)
                     .strokeBorder(Palette.acc, lineWidth: 1.5)
                     .frame(width: rect.width, height: rect.height)
                     .position(x: rect.midX, y: rect.midY)
                     .allowsHitTesting(false)
-                Text(resize.label)
-                    .hudFont()
-                    .foregroundStyle(Palette.accText)
-                    .padding(.horizontal, 10)
-                    .frame(height: 26)
-                    .background(Palette.Takes.posterPill, in: Capsule())
-                    .position(x: rect.midX, y: max(60, rect.minY - 20))
-                    .allowsHitTesting(false)
             }
-            handle.position(x: rect.maxX - Self.cornerInset - Self.glyph / 2, y: rect.maxY - Self.cornerInset - Self.glyph / 2)
+            // The touch target is centered on the arc's middle, at 45° around the corner.
+            let center = CGPoint(x: rect.maxX - Metrics.cardRadius, y: rect.maxY - Metrics.cardRadius)
+            let reach = Self.arcRadius * CGFloat(0.5).squareRoot()
+            handle.position(x: center.x + reach, y: center.y + reach)
         }
         .ignoresSafeArea()
     }
 
     private var handle: some View {
-        CornerMark()
-            .stroke(Palette.acc, style: StrokeStyle(lineWidth: 2.5, lineCap: .round, lineJoin: .round))
-            .frame(width: Self.glyph, height: Self.glyph)
+        CornerArc(radius: Self.arcRadius)
+            .stroke(Palette.acc, style: StrokeStyle(lineWidth: Self.thickness, lineCap: .round))
             .shadow(color: Palette.textShadow, radius: 2, y: 1)
             .frame(width: Self.target, height: Self.target)
             .contentShape(Rectangle())
@@ -93,15 +91,17 @@ struct TextWindowResizeHandle: View {
 }
 
 extension TextWindowResizeHandle {
-    /// The "L" in the window's bottom-right corner: a right edge and a bottom edge joined by a rounded corner.
-    private nonisolated struct CornerMark: Shape {
+    /// The arc around the window's bottom-right corner, drawn in a frame centered on its middle (45°): the circle's center is the
+    /// corner's, up and to the left of the frame's center by the radius at 45°. A short stretch of the quarter, 50° around its
+    /// middle (owner, 02/11/2026: shorter and thinner).
+    private nonisolated struct CornerArc: Shape {
+        let radius: CGFloat
+
         func path(in rect: CGRect) -> Path {
+            let reach = radius * CGFloat(0.5).squareRoot()
+            let center = CGPoint(x: rect.midX - reach, y: rect.midY - reach)
             var path = Path()
-            let radius: CGFloat = 6
-            path.move(to: CGPoint(x: rect.maxX, y: rect.minY))
-            path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY - radius))
-            path.addQuadCurve(to: CGPoint(x: rect.maxX - radius, y: rect.maxY), control: CGPoint(x: rect.maxX, y: rect.maxY))
-            path.addLine(to: CGPoint(x: rect.minX, y: rect.maxY))
+            path.addArc(center: center, radius: radius, startAngle: .degrees(20), endAngle: .degrees(70), clockwise: false)
             return path
         }
     }

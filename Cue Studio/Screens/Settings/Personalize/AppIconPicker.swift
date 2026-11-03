@@ -66,11 +66,14 @@ struct AppIconPicker: View {
                                 }
                         }
                     }
+                // Two lines under the icon when one is too short ("Không gian sâu thẳm"): never cut (owner, 02/11/2026).
                 Text(icon.title)
                     .cueFont(.caption)
                     .foregroundStyle(isCurrent ? Palette.ink : Palette.ink2)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.7)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.85)
+                    .fixedSize(horizontal: false, vertical: true)
                 if let note = note(icon, isUnlocked: isUnlocked) {
                     Text(verbatim: note)
                         .cueFont(.caption2)

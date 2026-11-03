@@ -81,19 +81,29 @@ struct SelfieControlParts {
 
     // MARK: - Microphone and setup
 
+    /// The microphone first: its name is never squeezed for the setup's (owner, 02/11/2026: "MIC…").
     var audioPill: some View {
         AudioInputPill(isEnabled: viewModel.canChangeAudioInput) { viewModel.openAudioInput() }
-            .layoutPriority(1)
+            .layoutPriority(2)
     }
 
+    /// The setup with the name of where it comes from, or, where the line has no room for that name, without it.
     var setupPill: some View {
+        ViewThatFits(in: .horizontal) {
+            setupSummary(showsSource: true)
+            setupSummary(showsSource: false)
+        }
+        .layoutPriority(1)
+    }
+
+    private func setupSummary(showsSource: Bool) -> some View {
         SetupSummaryPill(
             summary: viewModel.captureSummary,
             source: viewModel.session.captureSource,
             isEnabled: viewModel.canChangeSetup,
+            showsSource: showsSource,
             action: { viewModel.openRecordingSetup() }
         )
-        .layoutPriority(2)
     }
 
     /// The two pills with their dot between, without a frame of their own.

@@ -10,6 +10,10 @@ import SwiftUI
 /// row, so the bar stays the same size while the creator sets how the text sits for their eyes.
 /// Mirror flips the text for a beam-splitter glass, Remote opens Remote Control (its icon is yellow while a controller is connected) and Aa
 /// opens Display for the font, colors and background.
+///
+/// No chip's name is ever cut, in any language (owner, 02/11/2026: "Tam…", "Mar…", "Esp…", "Cont…" in Portuguese): the names use the
+/// width the glass button keeps for its own padding, shrink a little at most, and when one still doesn't fit the chips go on two rows
+/// (`BalancedRowsLayout`). Remote has a short name of its own here ("Remoto", where Settings says "Controle remoto").
 struct StudioAdjustBar: View {
     /// The adjustment chosen, if any; the panel that holds the bar shows its slider.
     @Binding var selected: StudioAdjustment?
@@ -24,7 +28,7 @@ struct StudioAdjustBar: View {
     @Environment(SessionSetupService.self) private var session
 
     var body: some View {
-        HStack(spacing: 8) {
+        BalancedRowsLayout(spacing: 8, minimumScale: Self.minimumScale) {
             ForEach(Array(StudioAdjustment.allCases.enumerated()), id: \.offset) { index, adjustment in
                 chip(adjustment).sheetReveal(progress, from: start(of: index), to: end(of: index))
             }
@@ -37,6 +41,11 @@ struct StudioAdjustBar: View {
 
     // MARK: - Chips
 
+    /// How far a chip's name may shrink to fit; past that the chips take two rows.
+    private static let minimumScale: CGFloat = 0.8
+    /// The glass button's own side padding that a chip's name may use (its corners are round, its middle is free).
+    private static let labelReach: CGFloat = 9
+
     /// The chips arrive left to right, after the speed below them.
     private func start(of index: Int) -> CGFloat { 0.42 + 0.06 * CGFloat(index) }
     private func end(of index: Int) -> CGFloat { min(1, 0.78 + 0.045 * CGFloat(index)) }
@@ -47,7 +56,7 @@ struct StudioAdjustBar: View {
         } label: {
             VStack(spacing: 3) {
                 CueIconView(adjustment.icon, size: 20)
-                Text(adjustment.title).cueFont(.caption2, weight: .semibold).lineLimit(1).minimumScaleFactor(0.8)
+                Text(adjustment.title).cueFont(.caption2, weight: .semibold).lineLimit(1).minimumScaleFactor(Self.minimumScale)
             }
         }
         .accessibilityLabel(Text(adjustment.spokenName))
@@ -62,7 +71,7 @@ struct StudioAdjustBar: View {
         } label: {
             VStack(spacing: 3) {
                 CueIconView(.mirrorText, size: 20)
-                Text("Mirror").cueFont(.caption2, weight: .semibold).lineLimit(1).minimumScaleFactor(0.8)
+                Text("Mirror").cueFont(.caption2, weight: .semibold).lineLimit(1).minimumScaleFactor(Self.minimumScale)
             }
         }
         .accessibilityLabel(Text("Mirror text"))
@@ -76,7 +85,11 @@ struct StudioAdjustBar: View {
                 Image(systemName: "iphone.radiowaves.left.and.right")
                     .cueFont(17, weight: .semibold)
                     .frame(height: 20)
-                Text("Remote").cueFont(.caption2, weight: .semibold).lineLimit(1).minimumScaleFactor(0.8)
+                Text(LocalizedStringResource(
+                    "studio.remote", defaultValue: "Remote",
+                    comment: "Studio's bar: the short name under the Remote Control chip's icon (one short word; Settings keeps the full name)."
+                ))
+                .cueFont(.caption2, weight: .semibold).lineLimit(1).minimumScaleFactor(Self.minimumScale)
             }
             .foregroundStyle(isRemoteConnected ? Palette.accText : Palette.ink)
         }
@@ -89,7 +102,7 @@ struct StudioAdjustBar: View {
         chipButton(isOn: false, action: onMore) {
             VStack(spacing: 3) {
                 Text("Aa").cueFont(17, weight: .semibold).frame(height: 20)
-                Text("More").cueFont(.caption2, weight: .semibold).lineLimit(1).minimumScaleFactor(0.8)
+                Text("More").cueFont(.caption2, weight: .semibold).lineLimit(1).minimumScaleFactor(Self.minimumScale)
             }
         }
         .accessibilityLabel(Text("Display settings"))
@@ -102,6 +115,7 @@ struct StudioAdjustBar: View {
         let content = label()
             .foregroundStyle(isOn ? Palette.chipOnInk : Palette.ink)
             .frame(maxWidth: .infinity, minHeight: 40)
+            .padding(.horizontal, -Self.labelReach)
         Group {
             if isOn {
                 Button(action: action) { content }

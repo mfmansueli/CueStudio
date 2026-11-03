@@ -48,14 +48,15 @@ struct RemoteCapabilities: View {
                 .frame(width: 24)
                 .animation(reduceMotion ? nil : CueMotion.light(duration: 0.45).delay(isLive ? 0.75 + beat : 0), value: isLive)
                 .accessibilityHidden(true)
+            // On the lines it needs ("Riprodurre e mettere in pausa"): never cut (owner, 02/11/2026).
             Text(title)
                 .cueFont(.subheadline)
                 .foregroundStyle(Palette.ink)
-                .lineLimit(2)
-                .minimumScaleFactor(0.85)
+                .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 0)
         }
         .padding(.horizontal, 14)
+        .padding(.vertical, 6)
         .frame(minHeight: 52)
         .background(Palette.surface, in: RoundedRectangle(cornerRadius: Metrics.innerRadius, style: .continuous))
         .opacity(shown ? 1 : 0)

@@ -142,16 +142,33 @@ struct CaptionLineCard: View {
                     nudger(String(localized: "Start"), edge: .start)
                     nudger(String(localized: "End"), edge: .end)
                 }
-                HStack(spacing: 6) {
-                    chip(String(localized: "Split"), identifier: "edit.captionSplit") { viewModel.captions.splitCaptionAtPlayhead(cueID) }
-                    chip(String(localized: "Join next"), identifier: "edit.captionJoin") { viewModel.captions.joinCaption(cueID) }
-                    chip(String(localized: "Line break"), identifier: "edit.captionBreak") {
-                        viewModel.captions.breakCaptionLine(cueID, atCharacter: cursorOffset)
+                // On one row while the three names fit whole; else Split and Line break on one and Join next under them, and one
+                // per row past that ("Mit nächster Zeile verbinden"): a name is never cut (owner, 02/11/2026).
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 6) { splitChip; joinChip; breakChip }
+                    VStack(alignment: .leading, spacing: 0) {
+                        HStack(spacing: 6) { splitChip; breakChip }
+                        joinChip
                     }
+                    VStack(alignment: .leading, spacing: 0) { splitChip; joinChip; breakChip }
                 }
                 WordTimingStrip(viewModel: viewModel, cueID: cueID)
                 CaptionEmphasisStrip(viewModel: viewModel, cueID: cueID)
             }
+        }
+    }
+
+    private var splitChip: some View {
+        chip(String(localized: "Split"), identifier: "edit.captionSplit") { viewModel.captions.splitCaptionAtPlayhead(cueID) }
+    }
+
+    private var joinChip: some View {
+        chip(String(localized: "Join next"), identifier: "edit.captionJoin") { viewModel.captions.joinCaption(cueID) }
+    }
+
+    private var breakChip: some View {
+        chip(String(localized: "Line break"), identifier: "edit.captionBreak") {
+            viewModel.captions.breakCaptionLine(cueID, atCharacter: cursorOffset)
         }
     }
 
@@ -291,7 +308,8 @@ struct CaptionLineCard: View {
         Button(action: action) {
             HStack(spacing: 5) {
                 if let systemImage { Image(systemName: systemImage).font(.editorGlyph(EditorGlyph.mark, weight: .bold)) }
-                Text(label).font(.system(.footnote, weight: .semibold)).lineLimit(1)
+                // A safety net only: the rows stack the chips before a name would not fit (owner, 02/11/2026: no label is ever cut).
+                Text(label).font(.system(.footnote, weight: .semibold)).lineLimit(1).minimumScaleFactor(0.8)
             }
             .padding(.horizontal, 12)
             .padding(.vertical, 6)

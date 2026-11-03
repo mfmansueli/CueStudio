@@ -80,7 +80,7 @@ struct ScriptPageViewModelTests {
     @Test func writingIsSavedWithoutADoneButton() {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }
-        scenario.viewModel.page.title = "Renamed"
+        scenario.viewModel.pageTitle = "Renamed"
         scenario.viewModel.page.text = "New words."
         scenario.viewModel.commitPage()
         let saved = scenario.library.script(id: scenario.viewModel.scriptID)
@@ -153,7 +153,7 @@ struct ScriptPageViewModelTests {
     @Test func renamingKeepsTheVersionAndRenamesTheTakes() {
         let scenario = makeScenario(takeCount: 1)
         defer { scenario.defaults.tearDown() }
-        scenario.viewModel.page.title = "A new name"
+        scenario.viewModel.pageTitle = "A new name"
         scenario.viewModel.commitPage()
         #expect(scenario.library.script(id: scenario.viewModel.scriptID)?.version == 1)
         #expect(scenario.viewModel.scriptTakes.first?.scriptTitle == "A new name")

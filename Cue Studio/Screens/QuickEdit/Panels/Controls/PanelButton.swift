@@ -26,7 +26,9 @@ struct PanelButton: View {
         Button(action: action) {
             HStack(spacing: 6) {
                 if let systemImage { Image(systemName: systemImage).font(.editorGlyph(EditorGlyph.small, weight: .semibold)) }
-                Text(label).font(.system(.footnote, weight: .semibold)).lineLimit(1)
+                // Its own width, whatever sits beside it (Cancel next to "Making the voice-over…"): a pill's words are never
+                // cut (owner, 02/11/2026: no label is ever cut).
+                Text(label).font(.system(.footnote, weight: .semibold)).lineLimit(1).fixedSize()
             }
             .foregroundStyle(isDestructive ? Palette.dangerText : Palette.ink)
             .opacity(isEnabled ? 1 : Metrics.disabledOpacity)

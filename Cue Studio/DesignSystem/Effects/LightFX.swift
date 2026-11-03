@@ -5,38 +5,10 @@
 
 import SwiftUI
 
-/// The small lights the boards draw on every landing and birth, for a scene's `Canvas`: a spark, a streak, a cross of light and a ring. Each
-/// reads its place, size and fade from a `MotionPose` (the board's own layer at the second being drawn), so the scene only says where and in
-/// what colour.
+/// The small lights the boards draw on every landing and birth, for a scene's `Canvas`: a cross of light and a ring, which read their size,
+/// turn and fade from a `MotionPose` (the board's own layer at the second being drawn), so the scene only says where and in what colour; and
+/// the disc they are made of.
 enum LightFX {
-    /// A spark flying out of `centre`: the pose's `tx`, `ty` is where it is (from the centre), `sx` how big it is (× `size`) and `opacity` how bright.
-    static func spark(_ pose: MotionPose, at centre: CGPoint, size: CGFloat, color: Color, in context: inout GraphicsContext) {
-        guard pose.opacity > 0.01 else { return }
-        let point = CGPoint(x: centre.x + pose.tx, y: centre.y + pose.ty)
-        context.drawLayer { layer in
-            layer.addFilter(.shadow(color: color.opacity(0.95), radius: 6))
-            layer.fill(disc(point, size / 2 * pose.sx), with: .color(color.opacity(pose.opacity)))
-        }
-    }
-
-    /// A streak: a bar of `length` (× the pose's `sx`) that starts at `centre` + (`tx`, `ty`) and points outward at the pose's `rot` degrees, from
-    /// `from` to `to` along its length.
-    static func streak(
-        _ pose: MotionPose, at centre: CGPoint, length: CGFloat = 14, from: Color, to: Color = .white, in context: inout GraphicsContext
-    ) {
-        guard pose.opacity > 0.01 else { return }
-        var layer = context
-        layer.opacity = pose.opacity
-        layer.translateBy(x: centre.x + pose.tx, y: centre.y + pose.ty)
-        layer.rotate(by: .degrees(pose.rot))
-        layer.addFilter(.shadow(color: from.opacity(0.9), radius: 5))
-        let bar = CGRect(x: 0, y: -0.8, width: length * pose.sx, height: 1.6)
-        layer.fill(
-            Path(roundedRect: bar, cornerRadius: 0.8),
-            with: .linearGradient(Gradient(colors: [from, to]), startPoint: .zero, endPoint: CGPoint(x: max(bar.width, 1), y: 0))
-        )
-    }
-
     /// A four-point cross of light `size` across (its upright is `verticalRatio` of it), opening and closing with the pose's scale and turning
     /// with its rotation.
     static func cross(

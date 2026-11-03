@@ -137,6 +137,20 @@ struct ReadyToTravelView: View {
         .accessibilityIdentifier("ready.noCaptions")
     }
 
+    private func exportsLabel(_ text: String, tint: Color, named: Bool) -> some View {
+        HStack(spacing: 6) {
+            if named {
+                Text("FREE EXPORTS").foregroundStyle(Palette.ink2)
+                Text("·").foregroundStyle(Palette.ink2)
+            }
+            Text(text).foregroundStyle(tint)
+        }
+        .hudFont()
+        .interfaceTracking(1)
+        .lineLimit(1)
+        .fixedSize()
+    }
+
     /// 8.1: the free exports left as a label ("2 OF 5 LEFT", "LAST FREE EXPORT" in yellow, "0 OF 5 LEFT · EXPORT WITH PRO" in orange) and the
     /// five bars; on Pro, "PRO · UNLIMITED EXPORTS".
     private func exportsCard(left: Int?) -> some View {
@@ -149,17 +163,12 @@ struct ReadyToTravelView: View {
         case .exhausted: Palette.warnText
         }
         return HStack {
-            HStack(spacing: 6) {
-                if left != nil {
-                    Text("FREE EXPORTS").foregroundStyle(Palette.ink2)
-                    Text("·").foregroundStyle(Palette.ink2)
-                }
-                Text(label.text).foregroundStyle(tint)
+            // "FREE EXPORTS · 0 OF 3 LEFT · EXPORT WITH PRO" where it fits, the state alone where it doesn't: never a cut word (owner,
+            // 02/11/2026).
+            ViewThatFits(in: .horizontal) {
+                exportsLabel(label.text, tint: tint, named: left != nil)
+                exportsLabel(label.text, tint: tint, named: false)
             }
-            .hudFont()
-            .interfaceTracking(1)
-            .lineLimit(1)
-            .minimumScaleFactor(0.7)
             .animation(.easeOut(duration: 0.25), value: label.tone)
             Spacer(minLength: 8)
             if let left {

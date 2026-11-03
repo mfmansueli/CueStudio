@@ -39,14 +39,15 @@ struct EditorTopBar: ToolbarContent {
         }
     }
 
-    /// "● IN EDIT · AUTOSAVED" once something changed (the draft keeps it), "● NO CHANGES YET" before.
+    /// "● IN EDIT · AUTOSAVED" once something changed (the draft keeps it), "● NO CHANGES YET" before. Never cut (owner,
+    /// 02/11/2026: no label is ever cut): where the whole line doesn't fit between Back and Done ("IN BEARBEITUNG · AUTOMATISCH
+    /// GESICHERT" on a 6.1" iPhone), "● SAVED" says the part that matters; past that the words shrink a little.
     private var statusChip: some View {
         let changed = viewModel.hasUnsavedChanges
-        return HStack(spacing: 6) {
-            Circle().fill(changed ? Palette.ink : Palette.ink2).frame(width: 5, height: 5)
-            Text(changed ? "In edit · Autosaved" : "No changes yet")
-                .textCase(.uppercase)
-                .lineLimit(1)
+        return ViewThatFits(in: .horizontal) {
+            status(changed ? "In edit · Autosaved" : "No changes yet", changed: changed)
+            status(changed ? "Saved" : "No changes yet", changed: changed)
+                .minimumScaleFactor(0.8)
         }
         .monoFont(.caption2, weight: .heavy)
         .interfaceTracking(0.6)
@@ -58,5 +59,14 @@ struct EditorTopBar: ToolbarContent {
         .accessibilityAddTraits(.isStaticText)
         .accessibilityRemoveTraits(.isButton)
         .accessibilityIdentifier("edit.statusChip")
+    }
+
+    private func status(_ words: LocalizedStringKey, changed: Bool) -> some View {
+        HStack(spacing: 6) {
+            Circle().fill(changed ? Palette.ink : Palette.ink2).frame(width: 5, height: 5)
+            Text(words)
+                .textCase(.uppercase)
+                .lineLimit(1)
+        }
     }
 }

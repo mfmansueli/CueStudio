@@ -42,12 +42,10 @@ struct MediaModeCards: View {
         } label: {
             VStack(spacing: 6) {
                 MediaLayoutDiagram(shape: .mode(mode), isOn: isOn)
-                Text(mode.label)
+                // Two lines broken between words, never inside one (owner, 02/11/2026: no label is ever cut).
+                WholeWordsLabel(text: mode.label, minimumScale: 0.8)
                     .font(.system(.caption, weight: .semibold))
                     .foregroundStyle(isOn ? Palette.accText : Palette.ink)
-                    .lineLimit(2)
-                    .multilineTextAlignment(.center)
-                    .minimumScaleFactor(0.8)
             }
             .frame(maxWidth: .infinity, minHeight: 84)
             .padding(.horizontal, 4)

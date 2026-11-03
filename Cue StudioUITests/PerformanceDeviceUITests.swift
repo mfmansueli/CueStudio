@@ -6,7 +6,8 @@
 import XCTest
 
 /// How Cue performs on a real iPhone, with XCTest's own metrics: the cold launch, scrolling Scripts over the sky, opening a take
-/// in the editor, opening Profile's universe, the idea's star and the Logbook (time, memory, CPU, scroll and animation hitches). In
+/// in the editor, opening Profile's universe, the idea's star, the Logbook and typing in a long script (time, memory, CPU, scroll and
+/// animation hitches). In
 /// memory and seeded, so the owner's library is never touched; real animations, as a creator sees them. Opt-in (a Debug build: compare
 /// runs with each other, not with the App Store's): `CUE_DEVICE=… TEST_RUNNER_CUE_PERF=1 scripts/test.sh device-ui PerformanceDeviceUITests`.
 @MainActor
@@ -208,5 +209,143 @@ final class PerformanceDeviceUITests: XCTestCase {
                 app.terminate()
             }
         }
+    }
+
+    /// Forty letters typed into the words of a long script (the stub's, 443 words), five times: the app's CPU and how long the typing
+    /// takes. A letter should cost only the field it lands in, never the page around it (the owner felt each one lag, 03/11/2026).
+    func testTypingInALongScriptsWords() {
+        let app = openLongScript()
+        let words = app.textViews["page.editor"]
+        words.tap()
+        // XCTest runs the block on the main thread.
+        measure(metrics: Self.typingMetrics(app), options: options) {
+            MainActor.assumeIsolated { words.typeText(Self.typed) }
+        }
+    }
+
+    /// The same letters typed into a short script's words (15 words): what typing costs whatever the length, to tell from the long one.
+    func testTypingInAShortScriptsWords() {
+        let app = CueApp.launch(seeded: true)
+        app.openScriptPage(titled: "Cold showers: one month in")
+        let words = app.textViews["page.editor"]
+        XCTAssertTrue(words.exists(within: 10))
+        words.tap()
+        // XCTest runs the block on the main thread.
+        measure(metrics: Self.typingMetrics(app), options: options) {
+            MainActor.assumeIsolated { words.typeText(Self.typed) }
+        }
+    }
+
+    /// The same forty letters typed into the long script's title.
+    func testTypingInALongScriptsTitle() {
+        let app = openLongScript()
+        let title = app.textFields["page.titleField"]
+        title.tap()
+        // XCTest runs the block on the main thread.
+        measure(metrics: [XCTClockMetric(), XCTCPUMetric(application: app)], options: options) {
+            MainActor.assumeIsolated { title.typeText(Self.typed) }
+        }
+    }
+
+    private static let typed = "and then one more line to see it feel "
+
+    /// Words typed one at a time in the middle of the long script Ultra AI wrote (`SampleAIDraft`: 800 words in Portuguese, language on
+    /// Auto-detect, the fact check waiting) with the real Apple Intelligence: what the owner typed into when the words lagged (03/11/2026).
+    /// Each word is followed by the pause XCTest takes between two, so the page's measures catch up (and the words are saved) as they do
+    /// for a creator. The probe (`ScriptTypingProbe`) says how many frames the main thread missed and how long a letter took to show.
+    func testTypingInAnAIDraft() throws {
+        let app = CueApp.launch(seeded: true, ai: .appleIntelligence, extraArguments: ["-uiTestAIDraft", "-uiTestTypingProbe"])
+        app.openScriptPage(titled: "Acordei às 5h por 30 dias: o que ninguém te conta")
+        probeTyping(in: app, named: "the AI's draft")
+    }
+
+    /// The same words typed the same way into a short draft (15 words): what XCTest's typing costs the app whatever the script, to tell from
+    /// what the long one adds.
+    func testTypingInAShortDraft() throws {
+        let app = CueApp.launch(seeded: true, ai: .appleIntelligence, extraArguments: ["-uiTestTypingProbe"])
+        app.openScriptPage(titled: "Cold showers: one month in")
+        probeTyping(in: app, named: "a short draft")
+    }
+
+    /// The AI's draft again, typed by the app itself at a person's pace (`ScriptTypingRobot`): XCTest stays out of the way, so the probe
+    /// measures only what a letter costs the app. The same for the short draft, to compare.
+    func testTypingInAnAIDraftAtAPersonsPace() throws {
+        let app = CueApp.launch(seeded: true, ai: .appleIntelligence, extraArguments: ["-uiTestAIDraft", "-uiTestTypingProbe", "-uiTestAutoType"])
+        app.openScriptPage(titled: "Acordei às 5h por 30 dias: o que ninguém te conta")
+        probeRobotTyping(in: app, named: "the AI's draft at a person's pace")
+    }
+
+    func testTypingInAShortDraftAtAPersonsPace() throws {
+        let app = CueApp.launch(seeded: true, ai: .appleIntelligence, extraArguments: ["-uiTestTypingProbe", "-uiTestAutoType"])
+        app.openScriptPage(titled: "Cold showers: one month in")
+        probeRobotTyping(in: app, named: "a short draft at a person's pace")
+    }
+
+    private func probeRobotTyping(in app: XCUIApplication, named name: String) {
+        let words = app.textViews["page.editor"]
+        XCTAssertTrue(words.exists(within: 10))
+        words.tap()
+        // A second, then 61 letters at 90 ms and 13 breaths of 350 ms; nothing asked of the app meanwhile.
+        Thread.sleep(forTimeInterval: 12)
+        report(words, named: name)
+    }
+
+    private func probeTyping(in app: XCUIApplication, named name: String) {
+        let words = app.textViews["page.editor"]
+        XCTAssertTrue(words.exists(within: 10))
+        words.tap()
+        for word in Self.typedInPortuguese.split(separator: " ") {
+            words.typeText(word + " ")
+        }
+        // The probe speaks 0.6 s after the last letter.
+        Thread.sleep(forTimeInterval: 1.5)
+        report(words, named: name)
+    }
+
+    private func report(_ words: XCUIElement, named name: String) {
+        let probe = NSPredicate(format: "label CONTAINS %@", "probe keys=")
+        expectation(for: probe, evaluatedWith: words)
+        waitForExpectations(timeout: 10)
+        let numbers = Self.probeNumbers(in: words.label)
+        let report = words.label.components(separatedBy: "probe ").last ?? ""
+        XCTContext.runActivity(named: "Typing in \(name): \(report)") { activity in
+            activity.add(XCTAttachment(string: words.label))
+        }
+        XCTAssertGreaterThan(numbers["keys"] ?? 0, 40, "The probe heard fewer letters than were typed")
+        // The words' frame is never shorter than the words: a last line cut off is a broken page, however fluid.
+        XCTAssertLessThanOrEqual(numbers["heightGap"] ?? .infinity, 1, "The editor ended shorter than its words")
+    }
+
+    private static let typedInPortuguese = "e depois mais uma linha para ver se a escrita flui bem agora"
+
+    /// "keys=40 keyP95=12.1 …" from the words' label, as numbers.
+    private static func probeNumbers(in label: String) -> [String: Double] {
+        guard let range = label.range(of: "probe ") else { return [:] }
+        return label[range.upperBound...].split(separator: " ").reduce(into: [:]) { numbers, pair in
+            let parts = pair.split(separator: "=")
+            if parts.count == 2, let value = Double(parts[1]) { numbers[String(parts[0])] = value }
+        }
+    }
+
+    /// The time, the app's CPU and each step of a letter in the editor (`studio.cue` / Typing).
+    private static func typingMetrics(_ app: XCUIApplication) -> [any XCTMetric] {
+        let steps: [StaticString] = ["Keystroke", "Edit", "Selection", "Update", "Measure", "Layout"]
+        return [XCTClockMetric(), XCTCPUMetric(application: app)]
+            + steps.map { XCTOSSignpostMetric(subsystem: "studio.cue", category: "Typing", name: "\($0)") }
+    }
+
+    /// The card's idea sent with the stub writing its long script: the page open on its words, ready to type in.
+    private func openLongScript() -> XCUIApplication {
+        let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestLongScript"])
+        let send = app.buttons["ideaCard.submit"]
+        XCTAssertTrue(send.exists(within: 15))
+        expectation(for: NSPredicate(format: "isEnabled == true"), evaluatedWith: send)
+        waitForExpectations(timeout: 30)
+        send.tap()
+        let words = app.textViews["page.editor"]
+        XCTAssertTrue(words.exists(within: 30), "No page for the long script")
+        expectation(for: NSPredicate(format: "isEnabled == true"), evaluatedWith: app.textFields["page.titleField"])
+        waitForExpectations(timeout: 30)
+        return app
     }
 }

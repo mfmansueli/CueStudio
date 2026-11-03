@@ -8,25 +8,28 @@ import SwiftUI
 /// The second half of the toolbar's HUD line: the quality and frame the take records in
 /// ("4K · 9:16 ›"), so the creator can check the setup before tapping record. When the values come
 /// from a platform recommendation or were changed for this take, it says so first, in yellow
-/// ("TIKTOK SETUP · 1080P · 9:16 ›"). Opens "This take".
+/// ("TIKTOK SETUP · 1080P · 9:16 ›"). Opens "This take". Where the line has no room for the source's name ("CONFIGURACIÓN DE
+/// INSTAGRAM"), the HUD asks for it without (`showsSource`), and the values take the source's yellow instead: never a cut word (owner,
+/// 02/11/2026).
 struct SetupSummaryPill: View {
     /// "4K · 9:16"
     let summary: String
     let source: SetupSource
     let isEnabled: Bool
+    var showsSource = true
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
             HStack(spacing: 5) {
-                if source != .creatorSetup {
+                if showsSource, source != .creatorSetup {
                     Text(source.label)
                         .foregroundStyle(Palette.accText)
                     Text("·")
                         .foregroundStyle(Palette.ink3)
                 }
                 Text(summary)
-                    .foregroundStyle(Palette.ink)
+                    .foregroundStyle(showsSource || source == .creatorSetup ? Palette.ink : Palette.accText)
                 Text("›")
                     .foregroundStyle(Palette.ink2)
             }

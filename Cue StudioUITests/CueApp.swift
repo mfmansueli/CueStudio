@@ -88,8 +88,11 @@ extension XCUIApplication {
         XCTAssertLessThanOrEqual(element.frame.maxY, limit, "\(element) is under the tab bar", file: file, line: line)
     }
 
-    /// The script page's "Ready to record" switch (a toggle to VoiceOver, so not among `buttons`).
+    /// The script page's "Ready to record", beside "Draft" (`pageDraftChoice`): the lit one of the two is selected.
     var pageReadyToggle: XCUIElement { descendants(matching: .any)["page.readyToggle"].firstMatch }
+
+    /// The script page's "Draft", beside "Ready to record".
+    var pageDraftChoice: XCUIElement { descendants(matching: .any)["page.draftChoice"].firstMatch }
 
     /// The script page's back button: the navigation bar's own (v30).
     var pageBackButton: XCUIElement { navigationBars.buttons["BackButton"].firstMatch }

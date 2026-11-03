@@ -40,13 +40,12 @@ struct FullScreenLayer<Swipe: ViewModifier>: View, Animatable {
                 .scaleEffect(morph.scale)
                 .offset(morph.offset)
                 .opacity(morph.pictureOpacity)
-            Text("Tap video to play · tap outside to exit")
-                .font(.system(.footnote, weight: .semibold))
-                .padding(.horizontal, 14)
-                .frame(height: 30)
-                .background(Palette.Takes.durationBadge, in: Capsule())
+            hint
                 .opacity(morph.hintOpacity)
                 .allowsHitTesting(false)
+                .padding(.horizontal, Metrics.gutter)
+                // Its top stays where one line's is (`FullScreenMorph.hintTop`, under the arrow); a second line grows down.
+                .alignmentGuide(.bottom) { $0[.top] + 30 }
                 .frame(maxHeight: .infinity, alignment: .bottom)
                 .padding(.bottom, 40)
             PreviewFullScreenArrow(viewModel: viewModel, turn: morph.cover)
@@ -55,5 +54,22 @@ struct FullScreenLayer<Swipe: ViewModifier>: View, Animatable {
         .modifier(swipe)
         .allowsHitTesting(viewModel.isFullScreen)
         .ignoresSafeArea()
+    }
+
+    /// "Tap video to play · tap outside to exit" on one line, or its two parts on two where one is too short ("Tippe aufs Video zum
+    /// Abspielen · daneben zum Beenden" on an SE): never cut (owner, 02/11/2026).
+    private var hint: some View {
+        let text = String(localized: "Tap video to play · tap outside to exit")
+        return ViewThatFits(in: .horizontal) {
+            Text(verbatim: text).lineLimit(1)
+            Text(verbatim: text.replacingOccurrences(of: " · ", with: "\n"))
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .font(.system(.footnote, weight: .semibold))
+        .padding(.horizontal, 14)
+        .padding(.vertical, 6)
+        .frame(minHeight: 30)
+        .background(Palette.Takes.durationBadge, in: Capsule())
     }
 }

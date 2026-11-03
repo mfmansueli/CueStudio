@@ -44,6 +44,7 @@ struct MilestoneView: View {
                         .frame(height: 200 * fit)
                         .padding(.top, 72 * fit)
                     VStack(spacing: 10) {
+                        // On two lines when one is too short ("Ein neues Symbol gehört dir."): never cut (owner, 02/11/2026).
                         Text("A new icon is yours.")
                             .cueFont(30, weight: .bold)
                             .tracking(-0.6)
@@ -51,6 +52,7 @@ struct MilestoneView: View {
                             .accessibilityAddTraits(.isHeader)
                         Text(message).cueFont(15).foregroundStyle(Palette.ink2)
                     }
+                    .fixedSize(horizontal: false, vertical: true)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 28)
                     .padding(.top, 24 * fit)

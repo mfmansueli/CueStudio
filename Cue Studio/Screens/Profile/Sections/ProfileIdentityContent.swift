@@ -42,7 +42,9 @@ struct ProfileIdentityContent: View {
                         .lineLimit(isStacked ? 2 : 1)
                     if !isEmpty {
                         if let subtitle {
-                            Text(verbatim: subtitle).cueFont(.subheadline).foregroundStyle(Palette.ink2).lineLimit(isStacked ? 3 : 1)
+                            // Two lines when one doesn't hold it ("@mayacooks · Criador de lifestyle" on an SE): never cut (owner, 02/11/2026).
+                            Text(verbatim: subtitle).cueFont(.subheadline).foregroundStyle(Palette.ink2).lineLimit(isStacked ? 3 : 2)
+                                .fixedSize(horizontal: false, vertical: true)
                         } else if let invite {
                             Button(action: onEdit) {
                                 Label(invite, systemImage: "plus").cueFont(.subheadline, weight: .semibold).foregroundStyle(Palette.accText)

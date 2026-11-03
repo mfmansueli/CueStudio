@@ -43,29 +43,16 @@ struct TopicBirthTests {
     // MARK: - The board's layers
 
     @Test func everyLayerTheBirthReadsIsInTheBoard() {
-        let single = [
-            TopicBirth.chipRing, TopicBirth.chipCross, TopicBirth.routeLine, TopicBirth.routeTail, TopicBirth.head, TopicBirth.landingCross,
-            TopicBirth.planet, TopicBirth.orbit, TopicBirth.orbitLight, TopicBirth.label,
+        let layers = [
+            TopicBirth.chipRing, TopicBirth.head, TopicBirth.landingRing, TopicBirth.planet, TopicBirth.orbit, TopicBirth.orbitLight, TopicBirth.label,
         ]
-        let layers = single
-            + TopicBirth.chipSparks + TopicBirth.landingSparks + TopicBirth.streaks + TopicBirth.rings
-            + TopicBirth.glints.map(\.layer)
         for layer in layers { #expect(TopicBirth.clip.has(layer), "\(layer) is not in 1.2_topics") }
-    }
-
-    @Test func theBoardHasEightSparksOnTheChipAndNineOnTheLanding() {
-        #expect(TopicBirth.chipSparks.count == 8)
-        #expect(TopicBirth.landingSparks.count == 9)
-        #expect(TopicBirth.streaks.count == 10)
-        #expect(TopicBirth.glints.count == 5)
-        #expect(TopicBirth.rings.count == 3)
     }
 
     @Test func theChipLightsAtTheTap() {
         #expect(TopicBirth.pose(TopicBirth.chipRing, at: 0).opacity < 0.1)
         #expect(TopicBirth.pose(TopicBirth.chipRing, at: 0.05).opacity > 0.8)
         #expect(TopicBirth.pose(TopicBirth.chipRing, at: 0.7).opacity == 0)
-        #expect(TopicBirth.pose(TopicBirth.chipSparks[0], at: 0.2).opacity > 0.5)
     }
 
     @Test func theLightTravelsFromJustAfterTheTapToTheLanding() {
@@ -76,8 +63,6 @@ struct TopicBirthTests {
         let landed = TopicBirth.pose(TopicBirth.head, at: TopicBirth.landing).along ?? 0
         #expect(started < middle && middle < landed)
         #expect(abs(landed - 1) < 0.01)
-        #expect(TopicBirth.pose(TopicBirth.routeLine, at: 0.05).drawn == 0)
-        #expect(abs(TopicBirth.pose(TopicBirth.routeLine, at: TopicBirth.landing).drawn - 1) < 0.01)
     }
 
     @Test func thePlanetSpringsOutAtTheLandingAndSettlesAtItsSize() {
@@ -104,11 +89,7 @@ struct TopicBirthTests {
     }
 
     @Test func nothingOfTheLightShowIsLeftWhenTheBirthEnds() {
-        let single = [TopicBirth.chipRing, TopicBirth.chipCross, TopicBirth.routeLine, TopicBirth.routeTail, TopicBirth.head, TopicBirth.landingCross]
-        let overlay = single
-            + TopicBirth.chipSparks + TopicBirth.landingSparks + TopicBirth.streaks + TopicBirth.rings
-            + TopicBirth.glints.map(\.layer)
-        for layer in overlay {
+        for layer in [TopicBirth.chipRing, TopicBirth.head, TopicBirth.landingRing] {
             #expect(TopicBirth.pose(layer, at: TopicBirth.duration).opacity == 0, "\(layer) is still lit at \(TopicBirth.duration) s")
         }
     }

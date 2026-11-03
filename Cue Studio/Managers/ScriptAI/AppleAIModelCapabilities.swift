@@ -12,32 +12,38 @@ import FoundationModels
 nonisolated struct AppleAIModelCapabilities: AIModelCapabilities {
     /// Nil while Private Cloud Compute is off.
     let privateCloud: PrivateCloudComputeLanguageModel?
+    /// The answers, kept for a second (`AIModelAnswers`): asked often, they cost milliseconds each time.
+    private let answers = AIModelAnswers()
 
     init(usesPrivateCloudCompute: Bool) {
         privateCloud = usesPrivateCloudCompute ? PrivateCloudComputeLanguageModel() : nil
     }
 
     var deviceStatus: AIModelStatus {
-        switch SystemLanguageModel.default.availability {
-        case .available: .available
-        case .unavailable(.deviceNotEligible): .deviceNotEligible
-        case .unavailable(.appleIntelligenceNotEnabled): .turnedOff
-        case .unavailable(.modelNotReady): .preparing
-        case .unavailable: .deviceNotEligible
+        answers.device {
+            switch SystemLanguageModel.default.availability {
+            case .available: .available
+            case .unavailable(.deviceNotEligible): .deviceNotEligible
+            case .unavailable(.appleIntelligenceNotEnabled): .turnedOff
+            case .unavailable(.modelNotReady): .preparing
+            case .unavailable: .deviceNotEligible
+            }
         }
     }
 
     func deviceSupports(_ locale: Locale) -> Bool {
-        SystemLanguageModel.default.supportsLocale(locale)
+        answers.supports(locale) { SystemLanguageModel.default.supportsLocale(locale) }
     }
 
     var cloudStatus: AIModelStatus? {
         guard let privateCloud else { return nil }
-        switch privateCloud.availability {
-        case .available: return privateCloud.quotaUsage.isLimitReached ? .quotaReached : .available
-        case .unavailable(.deviceNotEligible): return .deviceNotEligible
-        case .unavailable(.systemNotReady): return .preparing
-        case .unavailable: return .deviceNotEligible
+        return answers.cloud {
+            switch privateCloud.availability {
+            case .available: return privateCloud.quotaUsage.isLimitReached ? .quotaReached : .available
+            case .unavailable(.deviceNotEligible): return .deviceNotEligible
+            case .unavailable(.systemNotReady): return .preparing
+            case .unavailable: return .deviceNotEligible
+            }
         }
     }
 

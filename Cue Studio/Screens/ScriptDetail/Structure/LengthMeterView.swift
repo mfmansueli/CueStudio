@@ -13,17 +13,32 @@ struct LengthMeterView: View {
     /// The same two colors for the words next to the meter, dark enough on a light surface.
     private var textColor: Color { zone.isInIdealRange ? Palette.accText : Palette.warnText }
 
+    private var count: some View {
+        Text("\(zone.words) words · \(Text(zone.durationLabel).foregroundStyle(textColor).fontWeight(.semibold))")
+            .foregroundStyle(Palette.ink2)
+    }
+
+    private var status: some View {
+        Text(zone.status)
+            .fontWeight(.semibold)
+            .foregroundStyle(textColor)
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            HStack(alignment: .firstTextBaseline) {
-                Text("\(zone.words) words · \(Text(zone.durationLabel).foregroundStyle(textColor).fontWeight(.semibold))")
-                    .foregroundStyle(Palette.ink2)
-                    .lineLimit(1)
-                Spacer(minLength: 8)
-                Text(zone.status)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(textColor)
-                    .lineLimit(1)
+            // The count and the status side by side while both fit whole, the status under the count otherwise (owner, 02/11/2026:
+            // no label is ever cut; "encore 1 min 20 s pour pubs en milieu de vidéo" in French).
+            ViewThatFits(in: .horizontal) {
+                HStack(alignment: .firstTextBaseline) {
+                    count.fixedSize()
+                    Spacer(minLength: 8)
+                    status.fixedSize()
+                }
+                VStack(alignment: .leading, spacing: 2) {
+                    count
+                    status
+                }
+                .fixedSize(horizontal: false, vertical: true)
             }
             .cueFont(.footnote)
             GeometryReader { proxy in

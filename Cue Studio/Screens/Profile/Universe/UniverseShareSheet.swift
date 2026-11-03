@@ -13,6 +13,18 @@ struct UniverseShareSheet: View {
 
     private static let previewWidth: CGFloat = 150
 
+    private var saveButton: some View {
+        Button { Task { await viewModel.save() } } label: { Text("Save to Photos").frame(maxWidth: .infinity) }
+            .buttonStyle(.cueSecondary(.large))
+            .accessibilityIdentifier("universeShare.save")
+    }
+
+    private var shareButton: some View {
+        Button { Task { await viewModel.share() } } label: { Text("Share…").frame(maxWidth: .infinity) }
+            .buttonStyle(.cuePrimary(.large))
+            .accessibilityIdentifier("universeShare.share")
+    }
+
     var body: some View {
         VStack(spacing: 14) {
             Text("Share your \(String(viewModel.snapshot.year))").cueFont(.headline, weight: .semibold)
@@ -45,13 +57,17 @@ struct UniverseShareSheet: View {
             .padding(.horizontal, 16)
             .padding(.vertical, 12)
             .background(Palette.surface, in: RoundedRectangle(cornerRadius: Metrics.innerRadius, style: .continuous))
-            HStack(spacing: 12) {
-                Button { Task { await viewModel.save() } } label: { Text("Save to Photos").frame(maxWidth: .infinity) }
-                    .buttonStyle(.cueSecondary(.large))
-                    .accessibilityIdentifier("universeShare.save")
-                Button { Task { await viewModel.share() } } label: { Text("Share…").frame(maxWidth: .infinity) }
-                    .buttonStyle(.cuePrimary(.large))
-                    .accessibilityIdentifier("universeShare.share")
+            // Side by side while both names fit whole, else one over the other ("Enregistrer dans Photos" on an SE; owner, 02/11/2026:
+            // no label is ever cut).
+            ViewThatFits(in: .horizontal) {
+                FairShareLayout(spacing: 12) {
+                    saveButton
+                    shareButton
+                }
+                VStack(spacing: 10) {
+                    shareButton
+                    saveButton
+                }
             }
             .disabled(viewModel.isRendering)
             status

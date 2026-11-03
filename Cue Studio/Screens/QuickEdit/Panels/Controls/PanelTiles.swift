@@ -54,10 +54,10 @@ struct PanelTiles<Value: Hashable>: View {
                 if let symbol = option.systemImage {
                     Image(systemName: symbol).font(.editorGlyph(EditorGlyph.toolbar, weight: .medium))
                 }
-                Text(option.label)
+                // Whole in every language: on two lines between words ("Dissolvenza / incrociata"), smaller only past that
+                // (owner, 02/11/2026: no label is ever cut). Two lines and the icon still fit the tile's 68 pt.
+                WholeWordsLabel(text: option.label, minimumScale: 0.75)
                     .font(.system(.footnote, weight: .semibold))
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.75)
             }
             .foregroundStyle(isOn ? Palette.accText : Palette.ink)
             .frame(maxWidth: .infinity, minHeight: 68)

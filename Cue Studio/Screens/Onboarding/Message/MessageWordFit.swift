@@ -6,7 +6,7 @@
 import CoreGraphics
 
 /// How big the practice script's words are on 1.4: the board's 21 pt when the page fits with it, smaller for a longer language or a shorter
-/// iPhone, so the heading, the card, the capsule, the note and the button stay on one screen without scrolling. Only when even the smallest
+/// iPhone, so the heading, the card, the note and the button stay on one screen without scrolling. Only when even the smallest
 /// size doesn't fit (an iPhone SE, a large text size) does the page scroll, at that smallest size so there is as little to scroll as can be.
 nonisolated enum MessageWordFit {
     /// The sizes the words can take, largest first (the board's 21 pt is the first).

@@ -21,28 +21,46 @@ struct ProPlanCard: View {
     var time = ProOpeningScript.settled
     let action: () -> Void
 
+    private var title: some View {
+        Text(plan == .annual ? String(localized: "Yearly") : plan.label)
+            .cueFont(isCompact ? 16.5 : 17, weight: .bold)
+            .foregroundStyle(Palette.ink)
+            .fixedSize()
+    }
+
+    @ViewBuilder
+    private var badgeView: some View {
+        if let badge {
+            Text(badge)
+                .monoFont(size: 10, weight: .bold)
+                .interfaceTracking(0.5)
+                .foregroundStyle(Palette.accInk)
+                .padding(.horizontal, 7)
+                .padding(.vertical, 3)
+                .background(Palette.acc, in: Capsule())
+                .fixedSize()
+                .scaleEffect(ProOpeningScript.badge.pose(at: time).scale)
+        }
+    }
+
     var body: some View {
         let shape = RoundedRectangle(cornerRadius: 20, style: .continuous)
         Button(action: action) {
             VStack(alignment: .leading, spacing: 3) {
-                HStack(spacing: 8) {
-                    Text(plan == .annual ? String(localized: "Yearly") : plan.label)
-                        .cueFont(isCompact ? 16.5 : 17, weight: .bold)
-                        .foregroundStyle(Palette.ink)
-                    if let badge {
-                        Text(badge)
-                            .monoFont(size: 10, weight: .bold)
-                            .interfaceTracking(0.5)
-                            .foregroundStyle(Palette.accInk)
-                            .padding(.horizontal, 7)
-                            .padding(.vertical, 3)
-                            .background(Palette.acc, in: Capsule())
-                            .scaleEffect(ProOpeningScript.badge.pose(at: time).scale)
+                // The badge beside the name while both fit whole, else under it ("Annuale" / "RISPARMIA IL 17%" in a half-width
+                // card): never cut (owner, 02/11/2026).
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 8) {
+                        title
+                        badgeView
+                    }
+                    VStack(alignment: .leading, spacing: 4) {
+                        title
+                        badgeView
                     }
                 }
                 .lineLimit(1)
-                .minimumScaleFactor(0.8)
-                Text(detail).cueFont(isCompact ? 13.5 : 14).foregroundStyle(Palette.inkSoft).lineLimit(1).minimumScaleFactor(0.8)
+                Text(detail).cueFont(isCompact ? 13.5 : 14).foregroundStyle(Palette.inkSoft).lineLimit(1).minimumScaleFactor(0.7)
             }
             .padding(.horizontal, 16)
             .frame(maxWidth: .infinity, alignment: .leading)

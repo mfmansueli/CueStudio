@@ -5,8 +5,8 @@
 
 import SwiftUI
 
-/// What sits on the text window besides the words: the section rail on its right edge and "✦ FOLLOWING YOUR VOICE" at the bottom left (not while a
-/// take records: the waveform in the controls already says it, and the words are all that should be there).
+/// What sits on the text window besides the words: the section rail on its right edge. That the text follows the voice is said by the
+/// controls (`VoiceIndicator`), never over the words (owner, 02/11/2026: the violet chip on the text was hard to read).
 struct PrompterTextOverlays: View {
     let viewModel: PrompterViewModel
 
@@ -22,15 +22,7 @@ struct PrompterTextOverlays: View {
                     .padding(.trailing, 8)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
             }
-            HStack(alignment: .bottom) {
-                if viewModel.followsSpeech && viewModel.isPlaying && !viewModel.isRecording { FollowingVoiceChip().transition(.opacity) }
-                Spacer(minLength: 8)
-            }
-            .padding(.horizontal, 12)
-            .padding(.bottom, 10)
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
         }
-        .animation(.easeOut(duration: 0.2), value: viewModel.isPlaying)
         .task(id: viewModel.script?.text) { sections = viewModel.makeSections() }
         .allowsHitTesting(false)
     }

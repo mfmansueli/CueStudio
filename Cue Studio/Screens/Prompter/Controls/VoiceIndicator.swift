@@ -7,7 +7,8 @@ import SwiftUI
 
 /// Voice Following's status: a small waveform that moves with the mic level, and what it's doing.
 /// In the Selfie toolbar it is the line under the mode switch, where the speed slider is in
-/// Steady: "Scrolls when you talk, waits when you stop." while recognition follows the words, or
+/// Steady: "Following your voice" in yellow while it listens and follows the words (the text window
+/// keeps only the words; owner, 02/11/2026), "Scrolls when you talk, waits when you stop." while paused, or
 /// the longer status when the model is getting ready, downloading or the text scrolls at the set
 /// speed while the creator talks. In Studio (`fillsWidth`) it is the waveform and a short status.
 struct VoiceIndicator: View {
@@ -30,10 +31,12 @@ struct VoiceIndicator: View {
                     .foregroundStyle(Palette.accText)
             } else {
                 Text(hint)
-                    .cueFont(.caption)
-                    .foregroundStyle(Palette.ink2)
+                    .cueFont(isFollowing ? .subheadline : .caption, weight: isFollowing ? .semibold : .regular)
+                    .foregroundStyle(isFollowing ? Palette.accText : Palette.ink2)
                     .lineLimit(2)
                     .fixedSize(horizontal: false, vertical: true)
+                    .contentTransition(.opacity)
+                    .animation(reduceMotion ? nil : .easeOut(duration: 0.2), value: isFollowing)
                 Spacer(minLength: 0)
             }
         }
@@ -45,9 +48,16 @@ struct VoiceIndicator: View {
         .accessibilityIdentifier("prompter.voiceIndicator")
     }
 
-    /// What the line says: the habit when recognition follows the words, the status when it can't.
+    /// Listening and following the words.
+    private var isFollowing: Bool {
+        if case .followingWords = status { return isListening }
+        return false
+    }
+
+    /// What the line says: that it follows the voice while it does, the habit while paused, the status when it can't.
     private var hint: String {
         switch status {
+        case .followingWords where isListening: String(localized: "Following your voice")
         case .followingWords: String(localized: "Scrolls when you talk, waits when you stop.")
         case .scrollsWhileTalking, .preparing, .downloading: status.detail(speedLabel: speedLabel)
         }

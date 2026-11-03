@@ -34,29 +34,43 @@ struct SettingsIconLabel: View {
                     )
                 }
                 .accessibilityHidden(true)
-            // At the accessibility text sizes the value goes under the name: beside it, the name broke into syllables.
+            // The value goes under the name at the accessibility text sizes (beside it, the name broke into syllables) and whenever
+            // it doesn't fit whole beside it ("Vorderseite · 1080p" on an SE; owner, 02/11/2026: no label is ever cut).
             if dynamicTypeSize.isAccessibilitySize {
-                VStack(alignment: .leading, spacing: 2) {
-                    HStack(spacing: 8) {
-                        Text(title).foregroundStyle(titleColor)
-                        badgeView
-                    }
-                    if let value {
-                        Text(verbatim: value).foregroundStyle(Palette.ink2)
-                    }
-                }
-                Spacer(minLength: 0)
+                stacked
             } else {
-                Text(title).foregroundStyle(titleColor)
-                badgeView
-                Spacer(minLength: 8)
-                if let value {
-                    Text(verbatim: value).foregroundStyle(Palette.ink2).lineLimit(1)
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 13) {
+                        Text(title).foregroundStyle(titleColor).fixedSize()
+                        badgeView
+                        Spacer(minLength: 8)
+                        if let value {
+                            Text(verbatim: value).foregroundStyle(Palette.ink2).lineLimit(1).fixedSize()
+                        }
+                    }
+                    stacked
                 }
             }
         }
         .frame(minHeight: Metrics.listRowContent)
         .contentShape(Rectangle())
+    }
+
+    private var stacked: some View {
+        HStack(spacing: 0) {
+            VStack(alignment: .leading, spacing: 2) {
+                HStack(spacing: 8) {
+                    Text(title).foregroundStyle(titleColor)
+                    badgeView
+                }
+                if let value {
+                    Text(verbatim: value).foregroundStyle(Palette.ink2)
+                }
+            }
+            .fixedSize(horizontal: false, vertical: true)
+            .padding(.vertical, 6)
+            Spacer(minLength: 0)
+        }
     }
 
     @ViewBuilder

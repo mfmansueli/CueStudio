@@ -28,7 +28,9 @@ final class ToolAuditCaptureTests: XCTestCase {
         let folder = ProcessInfo.processInfo.environment["CUE_SCREENSHOT_DIR"] ?? NSTemporaryDirectory()
         directory = URL(fileURLWithPath: folder, isDirectory: true)
         try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
-        app = EditorApp.open(demo: true, arguments: arguments)
+        // `TEST_RUNNER_CUE_AUDIT_LANGUAGE=pt` tours the editor in another of Cue's languages (for `tools/layout/truncation.py`).
+        let language = ProcessInfo.processInfo.environment["CUE_AUDIT_LANGUAGE"].map { ["-uiTestAppLanguage", $0] } ?? []
+        app = EditorApp.open(demo: true, arguments: arguments + language)
         sleep(2)
     }
 

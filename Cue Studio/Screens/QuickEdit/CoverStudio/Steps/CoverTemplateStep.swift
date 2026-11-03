@@ -19,7 +19,8 @@ struct CoverTemplateStep: View {
     var body: some View {
         let library = viewModel.coverStyles
         ScrollView(.horizontal) {
-            HStack(spacing: 10) {
+            // At the top: a name on two lines doesn't move its picture down.
+            HStack(alignment: .top, spacing: 10) {
                 ForEach(library.styles) { style in
                     tile(
                         name: style.name, image: viewModel.savedThumbnails[style.id],
@@ -127,11 +128,11 @@ struct CoverTemplateStep: View {
                             .padding(.bottom, 4)
                     }
                 }
-                Text(name)
+                // Whole on two lines between words ("Mang tính / giáo dục"), smaller only past that (owner, 02/11/2026: no label
+                // is ever cut).
+                WholeWordsLabel(text: name, minimumScale: 0.8)
                     .font(.system(.footnote, weight: .semibold))
                     .foregroundStyle(isOn ? Palette.accText : Palette.ink)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.8)
             }
             .frame(width: width)
             .contentShape(Rectangle())

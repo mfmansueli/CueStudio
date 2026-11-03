@@ -4894,6 +4894,125 @@
         }
       }
     },
+    "A teleprompter that follows your voice, with captions and posting to all your networks." : {
+      "comment" : "1.1 Welcome: the line under the title, what Cue does (the text follows the voice, captions, posting to every social network from one place)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ملقّن يتبع صوتك، مع ترجمة نصية ونشر على كل شبكاتك."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En teleprompter, der følger din stemme, med undertekster og opslag på alle dine kanaler."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Teleprompter, der deiner Stimme folgt, mit Untertiteln und Posten auf all deinen Kanälen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un teleprompter que sigue tu voz, con subtítulos y publicación en todas tus redes."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un téléprompteur qui suit votre voix, avec sous-titres et publication sur tous vos réseaux."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपकी आवाज़ के साथ चलने वाला टेलीप्रॉम्प्टर, कैप्शन और आपके सभी सोशल नेटवर्क पर पोस्टिंग के साथ।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teleprompter yang mengikuti suaramu, dengan teks dan posting ke semua media sosialmu."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un teleprompter che segue la tua voce, con sottotitoli e pubblicazione su tutti i tuoi social."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "声に合わせて進むプロンプター。字幕を付けて、すべてのSNSに投稿できます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목소리를 따라오는 프롬프터. 자막을 넣고 모든 채널에 올리세요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En teleprompter som følger stemmen din, med undertekster og publisering på alle kanalene dine."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Een teleprompter die je stem volgt, met ondertitels en posten op al je kanalen."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um teleprompter que segue a sua voz, com legendas e publicação em todas as suas redes."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En teleprompter som följer din röst, med undertexter och publicering i alla dina kanaler."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เทเลพรอมป์เตอร์ที่ตามเสียงของคุณ พร้อมคำบรรยาย และโพสต์ได้ทุกช่องทางของคุณ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sesini takip eden bir teleprompter; altyazılar ve tüm sosyal ağlarında paylaşım dahil."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teleprompter chạy theo giọng nói của bạn, có phụ đề và đăng lên mọi mạng xã hội của bạn."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "跟着你的声音走的提词器，还能加字幕、发布到你所有的平台。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "跟著你的聲音走的提詞機，還能加字幕、發布到你所有的平台。"
+          }
+        }
+      }
+    },
     "A true number from your work" : {
       "comment" : "My Cue Voice › Stories and facts: a question the creator answers with a real number (years, clients, results)",
       "localizations" : {
@@ -13882,6 +14001,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "接續你的影片「%@」"
+          }
+        }
+      }
+    },
+    "FOLLOWS YOUR VOICE" : {
+      "comment" : "1.1 Welcome: the first of the three short words under the title (uppercase, mono): the teleprompter's text follows the creator's voice",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يتبع صوتك"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FØLGER DIN STEMME"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FOLGT DEINER STIMME"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SIGUE TU VOZ"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SUIT VOTRE VOIX"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपकी आवाज़ के साथ"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MENGIKUTI SUARAMU"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SEGUE LA TUA VOCE"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "声に合わせて進む"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목소리를 따라가요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FØLGER STEMMEN DIN"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "VOLGT JE STEM"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SEGUE SUA VOZ"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FÖLJER DIN RÖST"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ตามเสียงของคุณ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SESİNİ TAKİP EDER"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "THEO GIỌNG NÓI"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "跟随你的声音"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "跟隨你的聲音"
           }
         }
       }
@@ -24544,121 +24782,121 @@
         }
       }
     },
-    "Pick up to 3. Cue uses them for your ideas and scripts, and each one becomes a world." : {
-      "comment" : "1.2 Topics: the line under the title (topics feed idea suggestions and the voice in scripts; each becomes a planet of the creator's universe)",
+    "Pick up to 3. Each one becomes a world in your universe and guides your ideas and scripts." : {
+      "comment" : "1.2 Topics: the line under the title (each topic becomes a planet of the creator's universe and feeds idea suggestions and scripts)",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "اختر حتى 3. يستخدمها Cue لأفكارك ونصوصك، وكل واحد منها يصبح عالمًا."
+            "value" : "اختر حتى 3. كل واحد منها يصبح عالمًا في كونك ويوجّه أفكارك ونصوصك."
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vælg op til 3. Cue bruger dem til dine idéer og manuskripter, og hvert emne bliver en verden."
+            "value" : "Vælg op til 3. Hvert emne bliver en verden i dit univers og styrer dine idéer og manuskripter."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wähle bis zu 3. Cue nutzt sie für deine Ideen und Skripte, und jedes wird zu einer Welt."
+            "value" : "Wähle bis zu 3. Jedes wird zu einer Welt in deinem Universum und leitet deine Ideen und Skripte."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Elige hasta 3. Cue los usa para tus ideas y guiones, y cada uno se convierte en un mundo."
+            "value" : "Elige hasta 3. Cada uno se convierte en un mundo de tu universo y guía tus ideas y guiones."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Choisissez-en jusqu’à 3. Cue s’en sert pour vos idées et vos scripts, et chacun devient un monde."
+            "value" : "Choisissez-en jusqu’à 3. Chacun devient un monde de votre univers et guide vos idées et vos scripts."
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3 तक चुनें। Cue इन्हें आपके आइडिया और स्क्रिप्ट के लिए इस्तेमाल करता है, और हर विषय एक दुनिया बन जाता है।"
+            "value" : "3 तक चुनें। हर विषय आपके यूनिवर्स में एक दुनिया बन जाता है और आपके आइडिया और स्क्रिप्ट को दिशा देता है।"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pilih sampai 3. Cue memakainya untuk ide dan naskahmu, dan masing-masing jadi sebuah dunia."
+            "value" : "Pilih sampai 3. Masing-masing jadi sebuah dunia di semestamu dan memandu ide serta naskahmu."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Scegline fino a 3. Cue li usa per le tue idee e i tuoi copioni, e ognuno diventa un mondo."
+            "value" : "Scegline fino a 3. Ognuno diventa un mondo del tuo universo e guida le tue idee e i tuoi copioni."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3つまで選べます。Cueはアイデアと台本に使い、それぞれがひとつの世界になります。"
+            "value" : "3つまで選べます。それぞれがあなたの宇宙のひとつの世界になり、アイデアと台本の方向を決めます。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "최대 3개까지 고르세요. Cue가 아이디어와 대본에 활용하고, 하나하나가 세계가 돼요."
+            "value" : "최대 3개까지 고르세요. 하나하나가 내 유니버스의 세계가 되어 아이디어와 대본을 이끌어요."
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Velg opptil 3. Cue bruker dem til ideene og manusene dine, og hvert emne blir en verden."
+            "value" : "Velg opptil 3. Hvert emne blir en verden i universet ditt og styrer ideene og manusene dine."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kies er maximaal 3. Cue gebruikt ze voor je ideeën en scripts, en elk wordt een wereld."
+            "value" : "Kies er maximaal 3. Elk wordt een wereld in je universum en stuurt je ideeën en scripts."
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Escolha até 3. O Cue usa esses temas nas suas ideias e roteiros, e cada um vira um mundo."
+            "value" : "Escolha até 3. Cada tema vira um mundo no seu universo e guia as suas ideias e roteiros."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Välj upp till 3. Cue använder dem till dina idéer och manus, och varje ämne blir en värld."
+            "value" : "Välj upp till 3. Varje ämne blir en värld i ditt universum och styr dina idéer och manus."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "เลือกได้สูงสุด 3 หัวข้อ Cue จะใช้กับไอเดียและสคริปต์ของคุณ และแต่ละหัวข้อจะกลายเป็นหนึ่งโลก"
+            "value" : "เลือกได้สูงสุด 3 หัวข้อ แต่ละหัวข้อจะกลายเป็นหนึ่งโลกในจักรวาลของคุณ และเป็นแนวทางให้ไอเดียและสคริปต์ของคุณ"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "En fazla 3 tane seç. Cue bunları fikirlerin ve senaryoların için kullanır ve her biri bir dünyaya dönüşür."
+            "value" : "En fazla 3 tane seç. Her biri evreninde bir dünyaya dönüşür ve fikirlerine ve senaryolarına yön verir."
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chọn tối đa 3. Cue dùng chúng cho ý tưởng và kịch bản của bạn, và mỗi chủ đề trở thành một thế giới."
+            "value" : "Chọn tối đa 3. Mỗi chủ đề trở thành một thế giới trong vũ trụ của bạn và định hướng ý tưởng, kịch bản của bạn."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "最多选 3 个。Cue 会把它们用在你的点子和脚本里，每一个都会变成一个世界。"
+            "value" : "最多选 3 个。每一个都会成为你宇宙中的一个世界，并引导你的点子和脚本。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "最多選 3 個。Cue 會把它們用在你的想法和腳本裡，每一個都會變成一個世界。"
+            "value" : "最多選 3 個。每一個都會成為你宇宙中的一個世界，並引導你的想法和腳本。"
           }
         }
       }
@@ -31101,6 +31339,131 @@
         }
       }
     },
+    "studio.remote" : {
+      "comment" : "Studio's bar: the short name under the Remote Control chip's icon (one short word; Settings keeps the full name).",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "التحكم عن بُعد"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fjernbetjening"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fernbedienung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remote"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remoto"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Télécommande"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "रिमोट"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remote"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Telecomando"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リモコン"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "리모컨"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fjernkontroll"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afstandsbediening"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remoto"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fjärrkontroll"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "รีโมต"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kumanda"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Điều khiển từ xa"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "遥控"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "遙控器"
+          }
+        }
+      }
+    },
     "Subscribe · export now" : {
       "comment" : "Calm Pro's button (free exports used up): subscribes and exports the waiting video",
       "localizations" : {
@@ -31573,6 +31936,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "再點一次設為「我從不用」。"
+          }
+        }
+      }
+    },
+    "TAP ANOTHER TO SWITCH" : {
+      "comment" : "1.3 Voyage: the quiet line above the platform chips once one is picked (mono, uppercase): tapping another changes the choice",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اضغط على آخر للتبديل"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TRYK PÅ EN ANDEN FOR AT SKIFTE"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ZUM WECHSELN ANDERE ANTIPPEN"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TOCA OTRO PARA CAMBIAR"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TOUCHEZ-EN UNE AUTRE POUR CHANGER"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "बदलने के लिए दूसरे पर टैप करें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KETUK YANG LAIN UNTUK GANTI"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TOCCANE UN’ALTRA PER CAMBIARE"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "他をタップして切り替え"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다른 플랫폼을 탭해 바꾸기"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TRYKK PÅ EN ANNEN FOR Å BYTTE"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TIK OP EEN ANDERE OM TE WISSELEN"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TOQUE EM OUTRA PARA TROCAR"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TRYCK PÅ EN ANNAN FÖR ATT BYTA"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "แตะอันอื่นเพื่อเปลี่ยน"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DEĞİŞTİRMEK İÇİN BAŞKASINA DOKUN"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CHẠM NỀN TẢNG KHÁC ĐỂ ĐỔI"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "轻点另一个以切换"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "點另一個即可切換"
           }
         }
       }
@@ -51707,124 +52189,6 @@
         }
       }
     },
-    "%@ · TAP ANOTHER TO SWITCH" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · اضغط على آخر للتبديل"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · TRYK PÅ EN ANDEN FOR AT SKIFTE"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · ZUM WECHSELN ANDERE ANTIPPEN"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · TOCA OTRO PARA CAMBIAR"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · TOUCHEZ-EN UNE AUTRE POUR CHANGER"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · बदलने के लिए दूसरे पर टैप करें"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · KETUK YANG LAIN UNTUK GANTI"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · TOCCANE UN’ALTRA PER CAMBIARE"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · 他をタップして切り替え"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · 다른 플랫폼을 탭해 바꾸기"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · TRYKK PÅ EN ANNEN FOR Å BYTTE"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · TIK OP EEN ANDERE OM TE WISSELEN"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · TOQUE EM OUTRA PARA TROCAR"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · TRYCK PÅ EN ANNAN FÖR ATT BYTA"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · แตะอันอื่นเพื่อเปลี่ยน"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · DEĞİŞTİRMEK İÇİN BAŞKASINA DOKUN"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · CHẠM NỀN TẢNG KHÁC ĐỂ ĐỔI"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · 轻点另一个以切换"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · 點另一個即可切換"
-          }
-        }
-      }
-    },
     "%@ · the last one is shortened to fit" : {
       "comment" : "Note under several photos and videos picked together: where they go, and the last one is shortened to end before the video does",
       "localizations" : {
@@ -69583,242 +69947,6 @@
         }
       }
     },
-    "%lld OF %lld · ADD MORE OR CONTINUE" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld من %2$lld · أضف المزيد أو تابع"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld AF %2$lld · TILFØJ FLERE ELLER FORTSÆT"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld VON %2$lld · MEHR HINZUFÜGEN ODER WEITER"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld DE %2$lld · AÑADE MÁS O CONTINÚA"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld SUR %2$lld · AJOUTEZ-EN OU CONTINUEZ"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%2$lld में से %1$lld · और जोड़ें या जारी रखें"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld DARI %2$lld · TAMBAH LAGI ATAU LANJUT"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld DI %2$lld · AGGIUNGINE ALTRI O CONTINUA"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld / %2$lld · 追加するか、続ける"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld / %2$lld · 더 추가하거나 계속"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld AV %2$lld · LEGG TIL FLERE ELLER FORTSETT"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld VAN %2$lld · VOEG MEER TOE OF GA DOOR"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld DE %2$lld · ADICIONE MAIS OU CONTINUE"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld AV %2$lld · LÄGG TILL FLER ELLER FORTSÄTT"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld จาก %2$lld · เพิ่มอีกหรือไปต่อ"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld / %2$lld · DAHA FAZLA EKLE YA DA DEVAM ET"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld/%2$lld · THÊM NỮA HOẶC TIẾP TỤC"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld / %2$lld · 可继续添加，或轻点“继续”"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld / %2$lld · 可繼續新增，或點「繼續」"
-          }
-        }
-      }
-    },
-    "%lld OF %lld · ADD ONE MORE OR CONTINUE" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld من %2$lld · أضف واحدًا آخر أو تابع"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld AF %2$lld · TILFØJ ÉT MERE ELLER FORTSÆT"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld VON %2$lld · NOCH EINS ODER WEITER"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld DE %2$lld · AÑADE UNO MÁS O CONTINÚA"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld SUR %2$lld · AJOUTEZ-EN UN OU CONTINUEZ"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%2$lld में से %1$lld · एक और जोड़ें या जारी रखें"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld DARI %2$lld · TAMBAH SATU LAGI ATAU LANJUT"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld DI %2$lld · AGGIUNGINE UNO O CONTINUA"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld / %2$lld · もう1つ追加するか、続ける"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld / %2$lld · 하나 더 추가하거나 계속"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld AV %2$lld · LEGG TIL ÉN TIL ELLER FORTSETT"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld VAN %2$lld · VOEG ER ÉÉN TOE OF GA DOOR"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld DE %2$lld · ADICIONE MAIS UM OU CONTINUE"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld AV %2$lld · LÄGG TILL ETT TILL ELLER FORTSÄTT"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld จาก %2$lld · เพิ่มอีกหนึ่งหรือไปต่อ"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld / %2$lld · BİR TANE DAHA EKLE YA DA DEVAM ET"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld/%2$lld · THÊM MỘT CHỦ ĐỀ NỮA HOẶC TIẾP TỤC"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld / %2$lld · 再加一个，或轻点“继续”"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld / %2$lld · 再加一個，或點「繼續」"
-          }
-        }
-      }
-    },
     "%lld of %lld · Imported: %lld" : {
       "comment" : "My Cue Voice: Import my writing",
       "localizations" : {
@@ -69934,124 +70062,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld / %lld · 已匯入：%lld"
-          }
-        }
-      }
-    },
-    "%lld OF %lld · TAP ONE TO SWAP" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld من %2$lld · اضغط على واحد لتبديله"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld AF %2$lld · TRYK PÅ ET FOR AT BYTTE"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld VON %2$lld · ZUM TAUSCHEN TIPPEN"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld DE %2$lld · TOCA UNO PARA CAMBIARLO"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld SUR %2$lld · TOUCHEZ-EN UN POUR L’ÉCHANGER"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%2$lld में से %1$lld · बदलने के लिए एक पर टैप करें"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld DARI %2$lld · KETUK SATU UNTUK MENUKAR"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld DI %2$lld · TOCCANE UNO PER SOSTITUIRLO"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld / %2$lld · タップして入れ替え"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld / %2$lld · 눌러서 바꾸기"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld AV %2$lld · TRYKK PÅ ÉN FOR Å BYTTE"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld VAN %2$lld · TIK OP ÉÉN OM TE WISSELEN"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld DE %2$lld · TOQUE EM UM PARA TROCAR"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld AV %2$lld · TRYCK PÅ ETT FÖR ATT BYTA"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld จาก %2$lld · แตะอันหนึ่งเพื่อสลับ"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld / %2$lld · DEĞİŞTİRMEK İÇİN BİRİNE DOKUN"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld/%2$lld · CHẠM MỘT CHỦ ĐỀ ĐỂ ĐỔI"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld / %2$lld · 轻点一个以替换"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld / %2$lld · 點一個即可替換"
           }
         }
       }
@@ -79198,362 +79208,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "✦ 起草我的腳本"
-          }
-        }
-      }
-    },
-    "✦ FOLLOWING YOUR VOICE" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ يتبع صوتك"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ FØLGER DIN STEMME"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ FOLGT DEINER STIMME"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ SIGUIENDO TU VOZ"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ SUIVI DE VOTRE VOIX"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ आपकी आवाज़ के साथ"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ MENGIKUTI SUARAMU"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ SEGUE LA TUA VOCE"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ 声に合わせて進行中"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ 목소리를 따라가는 중"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ FØLGER STEMMEN DIN"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ VOLGT JE STEM"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ SEGUINDO SUA VOZ"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ FÖLJER DIN RÖST"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ กำลังติดตามเสียงของคุณ"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ SESİNİ TAKİP EDİYOR"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ ĐANG THEO GIỌNG BẠN"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ 正在跟随你的声音"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ 正在跟隨你的聲音"
-          }
-        }
-      }
-    },
-    "✦ PRACTICE SCRIPT · READY" : {
-      "comment" : "1.4: the card's header once the practice script is there (mono, uppercase)",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ نص التدريب · جاهز"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ ØVEMANUSKRIPT · KLAR"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ ÜBUNGSSKRIPT · BEREIT"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ GUION DE PRÁCTICA · LISTO"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ SCRIPT D’ENTRAÎNEMENT · PRÊT"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ अभ्यास स्क्रिप्ट · तैयार"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ NASKAH LATIHAN · SIAP"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ COPIONE DI PROVA · PRONTO"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ 練習用台本 · 準備完了"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ 연습 대본 · 준비 완료"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ ØVINGSMANUS · KLART"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ OEFENSCRIPT · KLAAR"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ ROTEIRO DE PRÁTICA · PRONTO"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ ÖVNINGSMANUS · KLART"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ สคริปต์ฝึกซ้อม · พร้อมแล้ว"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ ALIŞTIRMA SENARYOSU · HAZIR"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ KỊCH BẢN LUYỆN TẬP · SẴN SÀNG"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ 练习脚本 · 已就绪"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ 練習腳本 · 已就緒"
-          }
-        }
-      }
-    },
-    "✦ PREPARING YOUR SCRIPT" : {
-      "comment" : "1.4: the card's header while the practice script arrives (mono, uppercase)",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ جارٍ تجهيز نصك"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ GØR DIT MANUSKRIPT KLAR"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ DEIN SKRIPT WIRD VORBEREITET"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ PREPARANDO TU GUION"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ PRÉPARATION DE VOTRE SCRIPT"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ आपकी स्क्रिप्ट तैयार हो रही है"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ MENYIAPKAN NASKAHMU"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ COPIONE IN PREPARAZIONE"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ 台本を準備中"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ 대본 준비 중"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ FORBEREDER MANUSET DITT"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ JE SCRIPT WORDT KLAARGEZET"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ PREPARANDO SEU ROTEIRO"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ FÖRBEREDER DITT MANUS"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ กำลังเตรียมสคริปต์ของคุณ"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ SENARYON HAZIRLANIYOR"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ ĐANG CHUẨN BỊ KỊCH BẢN"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ 正在准备你的脚本"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ 正在準備你的腳本"
           }
         }
       }
@@ -313520,125 +313174,6 @@
         }
       }
     },
-    "O" : {
-      "comment" : "A letter of the word YOU in the universe core; not translated",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O"
-          }
-        }
-      }
-    },
     "Off" : {
       "localizations" : {
         "ar" : {
@@ -333026,124 +332561,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "挑選"
-          }
-        }
-      }
-    },
-    "PICK 1 TO 3 TOPICS" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "اختر من 1 إلى 3 مواضيع"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "VÆLG 1 TIL 3 EMNER"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "WÄHLE 1 BIS 3 THEMEN"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ELIGE DE 1 A 3 TEMAS"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "CHOISISSEZ DE 1 À 3 SUJETS"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "1 से 3 विषय चुनें"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "PILIH 1 SAMPAI 3 TOPIK"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "SCEGLI DA 1 A 3 ARGOMENTI"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "トピックを1〜3個選択"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "주제를 1~3개 고르세요"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "VELG 1 TIL 3 EMNER"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "KIES 1 TOT 3 ONDERWERPEN"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ESCOLHA DE 1 A 3 TEMAS"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "VÄLJ 1 TILL 3 ÄMNEN"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "เลือก 1 ถึง 3 หัวข้อ"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "1 İLA 3 KONU SEÇ"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "CHỌN 1 ĐẾN 3 CHỦ ĐỀ"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "选择 1 到 3 个主题"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "選擇 1 到 3 個主題"
           }
         }
       }
@@ -386645,125 +386062,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "腳本長度以留住注意力為目標"
-          }
-        }
-      }
-    },
-    "SCRIPT READY · LET’S TRY IT" : {
-      "comment" : "1.4: the capsule under the card once the script is there (mono, uppercase)",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "النص جاهز · لنجرّبه"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "MANUSKRIPT KLAR · LAD OS PRØVE"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "SKRIPT BEREIT · PROBIEREN WIR ES"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "GUION LISTO · VAMOS A PROBARLO"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "SCRIPT PRÊT · ESSAYONS"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "स्क्रिप्ट तैयार · चलिए आज़माएँ"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "NASKAH SIAP · AYO COBA"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "COPIONE PRONTO · PROVIAMO"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "台本の準備完了 · 試してみましょう"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "대본 준비 완료 · 해 볼까요"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "MANUS KLART · LA OSS PRØVE"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "SCRIPT KLAAR · PROBEER HET"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ROTEIRO PRONTO · VAMOS TESTAR"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "MANUS KLART · NU TESTAR VI"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "สคริปต์พร้อมแล้ว · มาลองกัน"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "SENARYO HAZIR · HADİ DENEYELİM"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "KỊCH BẢN SẴN SÀNG · THỬ NGAY"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "脚本已就绪 · 来试试吧"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "腳本已就緒 · 來試試吧"
           }
         }
       }
@@ -443050,124 +442348,6 @@
         }
       }
     },
-    "TELEPROMPTER" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "الملقّن"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "TELEPROMPTER"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "TELEPROMPTER"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "TELEPROMPTER"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "TÉLÉPROMPTEUR"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "टेलीप्रॉम्प्टर"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "TELEPROMPTER"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "TELEPROMPTER"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "プロンプター"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "프롬프터"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "TELEPROMPTER"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "TELEPROMPTER"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "TELEPROMPTER"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "TELEPROMPTER"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "เทเลพรอมป์เตอร์"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "TELEPROMPTER"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "TELEPROMPTER"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "提词器"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "提詞機"
-          }
-        }
-      }
-    },
     "Tell me your snooze count below." : {
       "comment" : "My Cue Voice: preview and learning",
       "localizations" : {
@@ -478654,125 +477834,6 @@
         }
       }
     },
-    "U" : {
-      "comment" : "A letter of the word YOU in the universe core; not translated",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "U"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "U"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "U"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "U"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "U"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "U"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "U"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "U"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "U"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "U"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "U"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "U"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "U"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "U"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "U"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "U"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "U"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "U"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "U"
-          }
-        }
-      }
-    },
     "UGC, reviews, social media manager" : {
       "localizations" : {
         "ar" : {
@@ -504225,124 +503286,6 @@
         }
       }
     },
-    "WIDTH %lld%% · %lld LINES" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "العرض %lld%% · الأسطر: %lld"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "BREDDE %1$lld %% · %2$lld LINJER"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "BREITE %lld%% · %lld ZEILEN"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ANCHO %lld%% · %lld LÍNEAS"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "LARGEUR %lld %% · %lld LIGNES"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "चौड़ाई %lld%% · %lld लाइनें"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "LEBAR %lld%% · %lld BARIS"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "LARGHEZZA %lld%% · %lld RIGHE"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "幅%lld%% · %lld行"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "너비 %lld%% · %lld줄"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "BREDDE %1$lld %% · %2$lld LINJER"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "BREEDTE %1$lld%% · %2$lld REGELS"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "LARGURA %lld%% · %lld LINHAS"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "BREDD %1$lld %% · %2$lld RADER"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "กว้าง %lld%% · %lld บรรทัด"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "GENİŞLİK %%%lld · %lld SATIR"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "RỘNG %lld%% · %lld DÒNG"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "宽度 %lld%% · %lld 行"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "寬度 %1$lld%% · %2$lld 行"
-          }
-        }
-      }
-    },
     "Win clients" : {
       "comment" : "My Cue Voice (Apple Intelligence plan)",
       "localizations" : {
@@ -509208,125 +508151,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "請自己寫回覆。"
-          }
-        }
-      }
-    },
-    "Write your script, read it while you look at the camera, and record. Then add captions, edit, and share." : {
-      "comment" : "1.1 Welcome: the line under the title, what Cue does",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "اكتب نصك، واقرأه وأنت تنظر إلى الكاميرا، وسجّل. ثم أضف الترجمة النصية وعدّل وشارك."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Skriv dit manuskript, læs det, mens du kigger ind i kameraet, og optag. Tilføj så undertekster, rediger og del."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Schreib dein Skript, lies es mit Blick in die Kamera und nimm auf. Dann Untertitel hinzufügen, bearbeiten und teilen."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Escribe tu guion, léelo mientras miras a la cámara y graba. Después añade subtítulos, edita y comparte."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Écrivez votre script, lisez-le en regardant la caméra et filmez. Ajoutez ensuite des sous-titres, montez et partagez."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "अपनी स्क्रिप्ट लिखें, कैमरे की ओर देखते हुए पढ़ें और रिकॉर्ड करें। फिर कैप्शन जोड़ें, एडिट करें और शेयर करें।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tulis naskahmu, baca sambil menatap kamera, lalu rekam. Setelah itu tambahkan teks, edit, dan bagikan."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Scrivi il tuo copione, leggilo guardando la fotocamera e registra. Poi aggiungi i sottotitoli, modifica e condividi."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "台本を書いて、カメラを見ながら読んで録画。字幕を付けて、編集して、共有まで。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "대본을 쓰고, 카메라를 보며 읽고, 녹화하세요. 그다음 자막을 넣고 편집해 공유하세요."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Skriv manuset ditt, les det mens du ser inn i kameraet, og ta opp. Legg så til undertekster, rediger og del."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Schrijf je script, lees het voor terwijl je in de camera kijkt en neem op. Voeg dan ondertitels toe, bewerk en deel."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Escreva seu roteiro, leia olhando para a câmera e grave. Depois coloque legendas, edite e compartilhe."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Skriv ditt manus, läs det medan du tittar in i kameran och spela in. Lägg sedan till undertexter, redigera och dela."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "เขียนสคริปต์ อ่านขณะมองกล้อง แล้วอัด จากนั้นใส่คำบรรยาย ตัดต่อ และแชร์"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Senaryonu yaz, kameraya bakarak oku ve çek. Sonra altyazı ekle, düzenle ve paylaş."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Viết kịch bản, đọc khi nhìn vào camera và quay. Sau đó thêm phụ đề, chỉnh sửa và chia sẻ."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "写好脚本，看着镜头读出来并录制。然后加字幕、剪辑、分享。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "寫好腳本，看著鏡頭讀出來並錄影。然後加字幕、剪輯、分享。"
           }
         }
       }
@@ -516472,7 +515296,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deine Mediathek"
+            "value" : "Mediathek"
           }
         },
         "es" : {
@@ -516484,7 +515308,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Votre bibliothèque"
+            "value" : "Bibliothèque"
           }
         },
         "hi" : {
@@ -516556,7 +515380,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Thư viện của bạn"
+            "value" : "Thư viện"
           }
         },
         "zh-Hans" : {
@@ -519643,7 +518467,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cảnh quay của bạn"
+            "value" : "Cảnh quay"
           }
         },
         "zh-Hans" : {
