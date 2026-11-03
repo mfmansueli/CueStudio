@@ -6,7 +6,8 @@
 import SwiftUI
 
 /// Under "Scripts say I / We" (the owner's B8, 02/11/2026; `reports/entradas-do-criador-2026-11-01-completo.md` §11.7): how the words about the
-/// creator agree ("Write me as", or "Write us as" for a team) and how the viewer is addressed. Both optional. What iOS knows of the person is
+/// creator agree ("Write me as", or "Write us as" for a team) and how the viewer is addressed, each under its own title (`VoiceFieldSection`). Both
+/// optional. What iOS knows of the person is
 /// offered, never chosen for them: the script may be someone else's. Tapping the chosen gender again lets it go (not chosen, never the masculine).
 ///
 /// Each one is asked where it changes the scripts (the owner's item 8, 02/11/2026): in the script language of Settings › Language & Region (else
@@ -27,7 +28,7 @@ struct VoiceAgreementField: View {
     private var asksAddress: Bool { yous != nil || current.agreement.address != nil }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: Metrics.questionGap) {
             if asksGender { gender }
             if asksAddress { address }
             if !asksGender || !asksAddress { more }
@@ -36,7 +37,7 @@ struct VoiceAgreementField: View {
 
     private var more: some View {
         DisclosureGroup(isExpanded: $showsMore) {
-            VStack(alignment: .leading, spacing: 16) {
+            VStack(alignment: .leading, spacing: Metrics.questionGap) {
                 if !asksGender { gender }
                 if !asksAddress { address }
             }
@@ -50,11 +51,13 @@ struct VoiceAgreementField: View {
                 .accessibilityIdentifier("voice.agreement.more")
         }
         .tint(Palette.ink2)
+        .padding(.horizontal, 4)
     }
 
     private var gender: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            VoiceFieldLabel(isTeam ? String(localized: "Write us as") : String(localized: "Write me as"), detail: String(localized: "optional"))
+        VoiceFieldSection(
+            isTeam ? String(localized: "Write us as") : String(localized: "Write me as"), detail: String(localized: "optional"), help: genderNote
+        ) {
             VoiceSegmentedChoice(
                 values: WordGender.allCases, selection: chosen, label: \.label,
                 onPick: { pick in
@@ -78,7 +81,6 @@ struct VoiceAgreementField: View {
                 .buttonStyle(.plain)
                 .accessibilityIdentifier("voice.speakerGender.fromDevice")
             }
-            footnote(genderNote)
         }
     }
 
@@ -92,21 +94,15 @@ struct VoiceAgreementField: View {
     }
 
     private var address: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            VoiceFieldLabel(String(localized: "Speak to viewers"))
+        VoiceFieldSection(
+            String(localized: "Speak to viewers"),
+            help: yous.map { String(localized: "Pick how scripts speak to viewers: “\($0.informal)” or “\($0.formal)”.") }
+                ?? String(localized: "Only changes scripts in languages with a formal “you”.")
+        ) {
             VoiceSegmentedChoice(
                 values: AddressForm.allCases, selection: current.agreement.address ?? .informal, label: \.label,
                 onPick: { profile.setAddressForm($0) }, identifier: "voice.addressForm"
             )
-            footnote(yous.map { String(localized: "Pick how scripts speak to viewers: “\($0.informal)” or “\($0.formal)”.") }
-                ?? String(localized: "Only changes scripts in languages with a formal “you”."))
         }
-    }
-
-    private func footnote(_ text: String) -> some View {
-        Text(text)
-            .cueFont(.footnote)
-            .foregroundStyle(Palette.ink2)
-            .padding(.horizontal, 4)
     }
 }

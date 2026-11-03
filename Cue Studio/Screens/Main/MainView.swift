@@ -161,7 +161,11 @@ struct MainView: View {
                 NavigationStack(path: $presentation.profilePath) {
                     ProfileView()
                         .navigationDestination(for: ProfileRoute.self) { route in
-                            YourUniverseView(opensYearInReview: route == .yearInReview)
+                            if route == .myCueVoice {
+                                MyCueVoicePage()
+                            } else {
+                                YourUniverseView(opensYearInReview: route == .yearInReview)
+                            }
                         }
                 }
                 .toolbarVisibility(barVisibility, for: .tabBar)

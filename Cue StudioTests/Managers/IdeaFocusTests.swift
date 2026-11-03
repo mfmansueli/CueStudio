@@ -30,7 +30,7 @@ struct IdeaFocusTests {
     }
 
     @Test func theCreatorHasBothTopicsAndTheirSubtopics() throws {
-        #expect(topics(try Self.profile(), idea: nil) == ["language learning (Italian)", "Daily Routine (Bureaucracy)"])
+        #expect(topics(try Self.profile(), idea: nil) == ["education and learning (Languages, Italian)", "Daily Routine (Bureaucracy)"])
     }
 
     @Test func anIdeaOutsideTheirTopicsSendsNone() throws {
@@ -44,12 +44,12 @@ struct IdeaFocusTests {
 
     @Test func aSubtopicTheIdeaNamesStays() throws {
         #expect(topics(try Self.profile(), idea: "my daily routine fighting bureaucracy at the town hall") == ["Daily Routine (Bureaucracy)"])
-        #expect(topics(try Self.profile(), idea: "learning Italian in ten minutes a day") == ["language learning (Italian)"])
+        #expect(topics(try Self.profile(), idea: "learning Italian in ten minutes a day") == ["education and learning (Italian)"])
     }
 
     @Test func aWordThatStartsLikeTheTopicIsTheTopic() throws {
         #expect(topics(try Self.profile(), idea: "routines that changed my mornings") == ["Daily Routine"])
-        #expect(topics(try Self.profile(), idea: "what I learned about languages this year") == ["language learning"])
+        #expect(topics(try Self.profile(), idea: "what I learned about languages this year") == ["education and learning (Languages)"])
     }
 
     @Test func noIdeaOrAHintOfOneKeepsEveryTopic() throws {
@@ -59,6 +59,7 @@ struct IdeaFocusTests {
 
     @Test func accentsAndCaseDoNotMatter() throws {
         var profile = try Self.profile()
+        profile.niches = []
         profile.customTopics = ["Educação"]
         #expect(profile.voice(inLanguage: "pt", idea: "EDUCACAO financeira para crianças").topics.map(\.topic.promptName) == ["Educação"])
     }

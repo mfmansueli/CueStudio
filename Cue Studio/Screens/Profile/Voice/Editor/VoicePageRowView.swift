@@ -5,13 +5,13 @@
 
 import SwiftUI
 
-/// A row of the My Cue Voice page: the field on the left in grey, what Cue knows on the right (or "+ Add · 1 tap" in yellow) with where it is used
-/// under it while the voice is on (the owner's item 2), a chevron, and a hairline above. Topics show the bar of the world they are in the universe
-/// (3 × 14 pt) before each name; the ones only the voice offers have no world and no bar.
+/// A row of the My Cue Voice page: the field on the left in grey, what Cue knows on the right (or a small "Add" pill in soft yellow, the owner,
+/// 03/11/2026: the bold yellow line on every empty row was loud), a chevron, and a
+/// hairline above (the line saying where the answer is used is gone: the owner, 03/11/2026, "só está acumulando informações"). Topics show the
+/// bar of the world they are in the universe (3 × 14 pt) before each name.
 struct VoicePageRowView: View {
     let row: VoicePageRow
     let profile: CreatorProfile
-    var showsUse = true
     let action: () -> Void
 
     var body: some View {
@@ -26,14 +26,11 @@ struct VoicePageRowView: View {
                     if value.isEmpty, row == .learned {
                         Text("Nothing yet").cueFont(16).foregroundStyle(Palette.ink2)
                     } else if value.isEmpty {
-                        Text("+ Add · 1 tap").cueFont(16, weight: .semibold).foregroundStyle(Palette.accText)
+                        addPill
                     } else if row == .topics {
                         topics
                     } else {
                         Text(value).cueFont(16).foregroundStyle(Palette.ink)
-                    }
-                    if showsUse {
-                        Text(verbatim: "✦ \(row.use)").cueFont(12, weight: .semibold).foregroundStyle(Palette.aiText)
                     }
                 }
                 .multilineTextAlignment(.leading)
@@ -52,12 +49,24 @@ struct VoicePageRowView: View {
         .buttonStyle(.plain)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(Text("\(row.title), \(value.isEmpty ? String(localized: "Add") : value)"))
-        .accessibilityHint(showsUse ? Text(row.use) : Text(verbatim: ""))
         .accessibilityIdentifier("voicePage.row.\(row.rawValue)")
     }
 
+    /// "Add" drawn as the app's compact button (the "Add" beside a typed answer), in the accent's soft fill and line (the owner, 03/11/2026:
+    /// "esse botão, só que fundinho amarelo"). Drawn, not a button: the whole row is the button.
+    private var addPill: some View {
+        Text("Add")
+            .cueFont(.subheadline, weight: .semibold)
+            .foregroundStyle(Palette.accText)
+            .lineLimit(1)
+            .padding(.horizontal, 14)
+            .frame(minHeight: Metrics.compactButtonHeight)
+            .background(Palette.accSoft, in: Capsule())
+            .overlay(Capsule().strokeBorder(Palette.accLine, lineWidth: 1))
+    }
+
     private var topics: some View {
-        let worlds = profile.topics.filter { if case .extra = $0 { false } else { true } }
+        let worlds = profile.topics
         return FlowLayout(spacing: 10, lineSpacing: 2) {
             ForEach(profile.topics) { topic in
                 HStack(spacing: 6) {

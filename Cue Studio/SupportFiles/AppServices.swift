@@ -262,6 +262,7 @@ struct AppServices {
         takes.onTakeAdded = { [draftLearning] take in draftLearning.tookTake(of: take.scriptReference) }
         Self.reportWhenHelpingImprove(privacy: privacy, voyage: voyage, profile: profile)
         voiceQuestions = VoiceQuestionScheduler(profile: profile, defaults: options.defaults, skipsGates: options.voiceTipSkipsGates,
+                                                invitesOnSend: options.invitesVoiceOnSend,
                                                 scriptLanguage: { [languages] in (languages.scriptLanguage ?? languages.interfaceLanguage).rawValue })
         notifications = Self.makeNotifications(options: options, services: NotificationWiring(
             library: library, takes: takes, shareQueue: shareQueue, logbook: logbook, ideas: ideaSuggestions, profile: profile,

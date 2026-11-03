@@ -7,8 +7,9 @@ import SwiftUI
 
 /// "✦ Voice 65%" on the idea card (v29): how much of the creator Cue knows (`CreatorProfile.voiceStrength`), 0% before any answer (the owner's
 /// call, 29/10/2026: the number says there is more to give). Short of room it is "✦ Voice", as wide as the chips beside it, so the whole row
-/// fits an iPhone 15 Pro (the owner, 30/10/2026); VoiceOver still says the percentage. Tapping it opens the voice questions (the full
-/// My Cue Voice page, where the voice is switched on and off, is on Profile). Violet because it is the AI's.
+/// fits an iPhone 15 Pro (the owner, 30/10/2026); VoiceOver still says the percentage. Tapping it opens the voice questions from where the
+/// creator stopped; once the five are answered, Profile › My Cue Voice, where the answers are looked at and changed (the owner, 03/11/2026).
+/// Violet because it is the AI's.
 ///
 /// The card owns `setup` and presents the sheet itself: the card's content is always dark, and a sheet shown from in
 /// there would not follow the screen. The card also knows when the setup covers it: the microphone is let go and its
@@ -24,6 +25,7 @@ struct MyCueVoiceChip: View {
 
     @Environment(CreatorProfileService.self) private var profile
     @Environment(DictationService.self) private var dictation
+    @Environment(PresentationService.self) private var presentation
     /// The setup asked for while a dictation was still finishing its last words.
     @State private var pendingSetup: VoiceSetupSheet.Mode?
 
@@ -62,7 +64,9 @@ struct MyCueVoiceChip: View {
         .buttonStyle(.cuePress)
         .accessibilityLabel(Text("My Cue Voice"))
         .accessibilityValue(Text(verbatim: "\(profile.profile.voiceStrength)%"))
-        .accessibilityHint(Text(isSet ? "Opens your voice questions to change them." : "Answer a few questions so scripts sound like you."))
+        .accessibilityHint(Text(
+            profile.profile.answeredEverySetupStep ? "Opens My Cue Voice to change your answers." : "Answer a few questions so scripts sound like you."
+        ))
         .accessibilityIdentifier("ideaCard.voiceChip")
         // The dictation wrote its last words (or let go): the setup asked for meanwhile opens now.
         .onChange(of: dictation.isActive) { _, isActive in
@@ -72,9 +76,15 @@ struct MyCueVoiceChip: View {
         }
     }
 
-    /// Tapping the chip: the questions, from the first one. Set up already, they open filled in.
+    /// Tapping the chip: the questions still open, from where the creator stopped; all answered, My Cue Voice on Profile.
     private func openQuestions() {
-        let mode: VoiceSetupSheet.Mode = isSet ? .edit : .missing
+        if profile.profile.answeredEverySetupStep {
+            if dictation.isActive { dictation.stop() }
+            presentation.selectedTab = .profile
+            presentation.profilePath = [.myCueVoice]
+            return
+        }
+        let mode = VoiceSetupSheet.Mode.missing
         if dictation.isActive {
             // The dictation writes its last words first; the setup opens when it is done.
             pendingSetup = mode

@@ -20,6 +20,7 @@ final class FreePlanUITests: XCTestCase {
         XCTAssertTrue(chip.exists(within: 15))
         chip.tap()
         app.buttons["voiceSetup.skipRole"].tap()
+        app.buttons["voiceSetup.saveButton"].tap()
         app.buttons["voiceSetup.niche.tech"].tap()
         app.buttons["voiceSetup.saveButton"].tap()
         let technical = app.buttons["voiceSetup.audience.insiders"]

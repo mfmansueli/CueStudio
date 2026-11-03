@@ -83,7 +83,7 @@ struct GenerationDeadlinesTests {
     }
 
     @Test func whenNothingIsWaitingTheScriptsAreFiled() async {
-        let (service, library, writer, defaults) = tagging(busy: false, topic: "Fitness & wellness")
+        let (service, library, writer, defaults) = tagging(busy: false, topic: "Fitness & training")
         defer { defaults.tearDown() }
         await service.tagUntagged()
         #expect(writer.topicsAsked == 3)

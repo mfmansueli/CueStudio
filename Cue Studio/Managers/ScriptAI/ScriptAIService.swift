@@ -57,6 +57,10 @@ final class ScriptAIService: ScriptWriting {
     private var backgroundWork: [UUID: Task<String?, Never>] = [:]
     /// Actual route of the last successful idea batch, for device quality measurements.
     private(set) var lastIdeaModel: AIModelRoute?
+    /// Whether Private Cloud Compute edited the last batch (`IdeaEdits`), and the batch as the model wrote it before, in the slots' order, for
+    /// the same measurements.
+    private(set) var lastIdeasEdited = false
+    private(set) var lastIdeaDrafts: [IdeaBriefReader.Answer] = []
     /// Ideas being written (`suggestIdeas`): cancelled when the creator asks for something that is not ideas.
     private var ideaWork: [UUID: Task<[ThemeIdea], any Error>] = [:]
 
@@ -466,9 +470,82 @@ final class ScriptAIService: ScriptWriting {
     /// inspiration: the device measurement (`InspirationDeviceTests`) compares the two.
     nonisolated(unsafe) static var writesIdeaBriefs = true
 
+    /// Private Cloud Compute alone writes them: the iPhone's own model wrote vaguer ones ("gestão de orçamento"), and the ideas made around them
+    /// were no better (`IdeaLanguageDeviceTests`, 03/11/2026). Without it, or in a language it doesn't write, there are none. A kind at a time,
+    /// all at once (`IdeaIngredientList`): a kind the guardrails refuse is only that kind gone.
+    func ideaIngredients(
+        for topic: IdeaTopic, apartFrom others: [IdeaTopic], creator: IdeaCreator?, language: CueLanguage
+    ) async throws -> IdeaIngredients {
+        // Never shown: without ingredients the ideas are asked as they were.
+        guard isEnabled, cloudHasRoomForIdeas else { throw ScriptAIError.modelUnavailable("") }
+        guard await capabilities.cloudSupports(language.locale) else { throw ScriptAIError.unsupportedLanguage }
+        let requests = IdeaIngredientKind.allCases.map { kind in
+            (kind, Task { try await self.ingredientList(kind, for: topic, apartFrom: others, creator: creator, language: language) })
+        }
+        var ingredients = IdeaIngredients()
+        var failure: (any Error)?
+        await withTaskCancellationHandler {
+            for (kind, request) in requests {
+                do {
+                    ingredients.set(try await request.value, for: kind)
+                } catch {
+                    logger.notice("Idea ingredients (\(kind.rawValue, privacy: .public)) not written: \(String(describing: error), privacy: .public)")
+                    failure = error
+                }
+            }
+        } onCancel: {
+            for (_, request) in requests { request.cancel() }
+        }
+        let cleaned = ingredients.cleaned()
+        if cleaned.isEmpty { throw failure ?? ScriptAIError.emptyResponse }
+        return cleaned
+    }
+
+    private func ingredientList(
+        _ kind: IdeaIngredientKind, for topic: IdeaTopic, apartFrom others: [IdeaTopic], creator: IdeaCreator?, language: CueLanguage
+    ) async throws -> [String] {
+        let session = session(on: .privateCloud, instructions: ScriptPromptBuilder.ingredientsInstructions(language: language))
+        let prompt = ScriptPromptBuilder.ingredientsPrompt(kind, topic: topic, others: others, creator: creator, language: language)
+        // Lower than the ideas': the subjects must read as people say them, and at 0.9 some came out odd ("Briga no carrinho da lancheira").
+        let options = GenerationOptions(temperature: 0.7, maximumResponseTokens: 300)
+        return try await answering { try await session.respond(to: prompt, generating: IdeaIngredientList.self, options: options).content.items }
+    }
+
+    /// Whether the iPhone model's ideas outside English are edited by Private Cloud Compute (`IdeaEdits`); the device measurement
+    /// (`IdeaLanguageDeviceTests`) compares the two.
+    nonisolated(unsafe) static var editsIdeas = true
+
+    /// Private Cloud Compute can take a request for ideas: available, and this person's quota not near its limit. Ideas are a nicety; scripts and
+    /// their tools need the quota (they go to Private Cloud Compute first), so the ideas give it up before it runs short.
+    private var cloudHasRoomForIdeas: Bool {
+        guard let privateCloud, capabilities.cloudStatus == .available else { return false }
+        if case .belowLimit(let below) = privateCloud.quotaUsage.status { return !below.isApproachingLimit }
+        return false
+    }
+
+    /// The batch as Private Cloud Compute edits it in `language` (`IdeaEdits`), or as it was when it can't: English (the iPhone's model writes
+    /// it well), no room on Private Cloud Compute (`cloudHasRoomForIdeas`), a language it doesn't write, a refusal or a failure.
+    private func edited(
+        _ answers: [IdeaBriefReader.Answer], slots: [IdeaSlot], language: CueLanguage?, creator: IdeaCreator?
+    ) async -> (answers: [IdeaBriefReader.Answer], slots: [IdeaSlot]) {
+        guard Self.editsIdeas, let language, language != .english, !answers.isEmpty, cloudHasRoomForIdeas,
+              await capabilities.cloudSupports(language.locale) else { return (answers, slots) }
+        let session = session(on: .privateCloud, instructions: ScriptPromptBuilder.ideaEditInstructions(language: language))
+        let prompt = ScriptPromptBuilder.ideaEditPrompt(answers: answers, slots: slots, language: language, creator: creator)
+        let options = GenerationOptions(temperature: 0.8, maximumResponseTokens: 1_500)
+        do {
+            let edits = try await answering { try await session.respond(to: prompt, generating: IdeaEdits.self, options: options).content }
+            lastIdeasEdited = true
+            return IdeaBriefReader.edited(answers, slots: slots, by: edits.answers)
+        } catch {
+            logger.notice("Ideas not edited: \(String(describing: error), privacy: .public)")
+            return (answers, slots)
+        }
+    }
+
     /// Find inspiration and the device measurements: the creator is waiting for these.
     func suggestIdeas(slots: [IdeaSlot], language: CueLanguage?, voice: CreatorVoice?, inspiration: [String]) async throws -> [ThemeIdea] {
-        try await suggestIdeas(slots: slots, language: language, voice: voice, inspiration: inspiration, priority: .waiting)
+        try await suggestIdeas(slots: slots, language: language, voice: voice, creator: nil, inspiration: inspiration, priority: .waiting)
     }
 
     /// Ideas run on the same model as scripts, and a batch of six briefs takes seconds: fetched ahead of the taps (`prefetch`) they never start while
@@ -476,7 +553,7 @@ final class ScriptAIService: ScriptWriting {
     /// the script is never written behind them. Asked while Find inspiration has nothing to show (`waiting`) they count as the creator's request:
     /// filing scripts under topics stands aside for them.
     func suggestIdeas(
-        slots: [IdeaSlot], language: CueLanguage?, voice: CreatorVoice?, inspiration: [String], priority: IdeaRequestPriority
+        slots: [IdeaSlot], language: CueLanguage?, voice: CreatorVoice?, creator: IdeaCreator?, inspiration: [String], priority: IdeaRequestPriority
     ) async throws -> [ThemeIdea] {
         guard !slots.isEmpty else { return try await themeIdeas(for: [], language: language, voice: voice) }
         if priority == .prefetch, isBusyForeground { throw CancellationError() }
@@ -486,13 +563,17 @@ final class ScriptAIService: ScriptWriting {
         }
         defer { if priority == .waiting { endForeground() } }
         let id = UUID()
-        let work = Task { try await self.writeIdeas(slots: slots, language: language, voice: voice, inspiration: inspiration) }
+        let work = Task {
+            try await self.writeIdeas(slots: slots, language: language, voice: voice, creator: creator, inspiration: inspiration)
+        }
         ideaWork[id] = work
         defer { ideaWork[id] = nil }
         return try await withTaskCancellationHandler { try await work.value } onCancel: { work.cancel() }
     }
 
-    private func writeIdeas(slots: [IdeaSlot], language: CueLanguage?, voice: CreatorVoice?, inspiration: [String]) async throws -> [ThemeIdea] {
+    private func writeIdeas(
+        slots: [IdeaSlot], language: CueLanguage?, voice: CreatorVoice?, creator: IdeaCreator?, inspiration: [String]
+    ) async throws -> [ThemeIdea] {
         let plan = try await plan(for: .themes, languages: language.map { [$0.locale.language] } ?? [])
         let asBriefs = Self.writesIdeaBriefs
         let languageCode = language?.locale.language.minimalIdentifier
@@ -501,7 +582,9 @@ final class ScriptAIService: ScriptWriting {
                 voice: voice, voiceBudget: model == .privateCloud ? AIRequestPolicy.cloudVoiceBudget : nil
             )
             let session = self.session(on: model, instructions: instructions)
-            let prompt = ScriptPromptBuilder.themesPrompt(slots: slots, language: language, inspiration: inspiration, asBriefs: asBriefs)
+            let prompt = ScriptPromptBuilder.themesPrompt(
+                slots: slots, language: language, inspiration: inspiration, asBriefs: asBriefs, creator: creator
+            )
             // A creative task: the idea is the point, not the one answer the model is surest of.
             let options = GenerationOptions(temperature: 1.0, maximumResponseTokens: 1_800)
             var ideas: [ThemeIdea] = []
@@ -509,8 +592,13 @@ final class ScriptAIService: ScriptWriting {
                 let suggestions = try await self.answering {
                     try await session.respond(to: prompt, generating: IdeaBriefSuggestions.self, options: options).content
                 }
-                let answers = suggestions.ideas.map { IdeaBriefReader.Answer(title: $0.title, angle: $0.angle, openingLine: $0.openingLine) }
-                ideas = IdeaBriefReader.ideas(from: answers, slots: slots, language: languageCode, phrases: voice?.phrases ?? [])
+                let written = suggestions.ideas.map { IdeaBriefReader.Answer(title: $0.title, angle: $0.angle, openingLine: $0.openingLine) }
+                self.lastIdeasEdited = false
+                self.lastIdeaDrafts = written
+                // What the larger model writes in its own words is not edited again.
+                let (answers, kept) = model == .onDevice
+                    ? await self.edited(written, slots: slots, language: language, creator: creator) : (written, slots)
+                ideas = IdeaBriefReader.ideas(from: answers, slots: kept, language: languageCode, phrases: voice?.phrases ?? [])
             } else {
                 let suggestions = try await self.answering {
                     try await session.respond(to: prompt, generating: ThemeSuggestions.self, options: options).content

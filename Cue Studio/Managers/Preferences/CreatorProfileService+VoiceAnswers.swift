@@ -17,8 +17,8 @@ extension CreatorProfileService {
         case .speakerGender: return held.agreement.speaker?.rawValue == option.id
         case .groupGender: return held.agreement.group?.rawValue == option.id
         case .address: return held.agreement.address?.rawValue == option.id
-        case .role: return held.role?.rawValue == option.id
-        case .topics: return held.niches.contains { $0.rawValue == option.id } || held.voiceTopics.contains { $0.rawValue == option.id }
+        case .role: return held.creatorKind == option.id || (held.creatorKind == nil && held.role?.rawValue == option.id)
+        case .topics: return held.niches.contains { $0.rawValue == option.id }
         case .audience: return held.isChosen(.audience) && held.audienceGroup?.rawValue == option.id
         case .tone: return held.isChosen(.tone) && held.sounds.contains { $0.rawValue == option.id }
         case .endings: return Self.holds(option.id, in: held.endings)
@@ -98,8 +98,15 @@ extension CreatorProfileService {
         let result: VoiceEditResult
         switch question {
         case .role:
-            updated.role = CreatorRole(rawValue: option.id)
-            // One of the eight replaces what the creator typed for themselves.
+            // A kind out of the long list, with its broad kind; an id of the eight (a test, an older caller) sets only that.
+            if let kind = CreatorKind.find(option.id) {
+                updated.creatorKind = kind.id
+                updated.role = kind.role
+            } else {
+                updated.creatorKind = nil
+                updated.role = CreatorRole(rawValue: option.id)
+            }
+            // A kind picked replaces what the creator typed for themselves.
             updated.customRole = nil
             result = .added
         case .topics:
@@ -227,7 +234,7 @@ extension CreatorProfileService {
         case .topics:
             let existing = profile.topics.map(\.label)
             return addText(
-                raw, vocabulary: keepingTyped ? [] : Niche.allCases.map(\.chipLabel) + VoiceTopic.allCases.map(\.label), existing: existing,
+                raw, vocabulary: keepingTyped ? [] : Niche.allCases.map(\.chipLabel), existing: existing,
                 held: profile.topicCount, limit: (VoiceLimits.topics, String(localized: "topics"))
             ) { $0.customTopics.append($1) }
         case .formats:

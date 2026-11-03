@@ -15,7 +15,7 @@ struct VoiceToneField: View {
     @State private var showsOneIdea = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 18) {
+        VStack(alignment: .leading, spacing: Metrics.questionGap) {
             // One card for how they sound (the owner's item 4): the example on top changes with every tap below it.
             VoiceLiveExample(
                 caption: String(localized: "Example · changes as you tap"), line: VoiceSampleBuilder.soundExample(for: current),
@@ -29,7 +29,7 @@ struct VoiceToneField: View {
     // MARK: - The tones
 
     private var tones: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VoiceFieldSection {
             GroupedCard(background: Palette.surface2, radius: 16, dividerInset: 16) {
                 ForEach(VoiceSound.offered) { sound in
                     let picked = current.isChosen(.tone) && current.sounds.contains(sound)
@@ -50,14 +50,13 @@ struct VoiceToneField: View {
                 ? "Up to \(VoiceLimits.tones) · \(current.sounds.count) of \(VoiceLimits.tones)" : "Pick up to \(VoiceLimits.tones)")
                 .cueFont(.footnote)
                 .foregroundStyle(Palette.ink2)
-                .padding(.horizontal, 4)
         }
     }
 
     // MARK: - How they come across
 
     private var style: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: Metrics.questionGap) {
             group(String(localized: "Energy")) {
                 VoiceSegmentedChoice(
                     values: VoiceEnergy.allCases, selection: current.style.energy, label: \.label,
@@ -82,33 +81,31 @@ struct VoiceToneField: View {
                     onPick: { answer(.humor, $0.rawValue, $0.label) }, identifier: "voice.humor"
                 )
             }
-            group(String(localized: "Swearing")) {
+            group(
+                String(localized: "Swearing"),
+                help: String(localized: "Strong swearing and slurs are never written. Apple Intelligence won’t generate them.")
+            ) {
                 VoiceSegmentedChoice(
                     values: Swearing.allCases, selection: current.style.swearing, label: \.label,
                     onPick: { answer(.swearing, $0.rawValue, $0.label) }, identifier: "voice.swearing"
                 )
-                Text("Strong swearing and slurs are never written. Apple Intelligence won’t generate them.")
-                    .cueFont(.footnote)
-                    .foregroundStyle(Palette.ink2)
-                    .padding(.horizontal, 4)
             }
             // Not a question: "Adjust" › Too long › Too many ideas turns it on. Shown while it is on, and until the field closes once turned off.
             if showsOneIdea {
-                Toggle(VoiceDelivery.oneIdeaLabel, isOn: Binding(get: { current.style.oneIdea }, set: { profile.setOneIdea($0) }))
-                    .cueFont(.subheadline, weight: .semibold)
-                    .foregroundStyle(Palette.ink)
-                    .tint(Palette.successText)
-                    .accessibilityIdentifier("voice.oneIdea")
+                VoiceFieldSection {
+                    Toggle(VoiceDelivery.oneIdeaLabel, isOn: Binding(get: { current.style.oneIdea }, set: { profile.setOneIdea($0) }))
+                        .cueFont(.subheadline, weight: .semibold)
+                        .foregroundStyle(Palette.ink)
+                        .tint(Palette.successText)
+                        .accessibilityIdentifier("voice.oneIdea")
+                }
             }
         }
         .onAppear { showsOneIdea = showsOneIdea || current.style.oneIdea }
     }
 
-    private func group<Content: View>(_ title: String, @ViewBuilder content: () -> Content) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            VoiceFieldLabel(title)
-            content()
-        }
+    private func group<Content: View>(_ title: String, help: String? = nil, @ViewBuilder content: () -> Content) -> some View {
+        VoiceFieldSection(title, help: help, content: content)
     }
 
     private func answer(_ question: VoiceQuestion, _ id: String, _ label: String) {

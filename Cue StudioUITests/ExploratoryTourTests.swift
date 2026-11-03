@@ -213,8 +213,10 @@ final class ExploratoryTourTests: XCTestCase {
     private func voiceFlow() {
         guard tap("ideaCard.voiceChip") else { return }
         shot("voice-1-role")
-        _ = tap("voiceSetup.role.personal")
+        _ = tap("voiceSetup.role.lifestyleCreator")
         shot("voice-1-role-picked")
+        _ = tap("voiceSetup.saveButton")
+        shot("voice-2-speech")
         _ = tap("voiceSetup.saveButton")
         shot("voice-2-topics")
         _ = tap("voiceSetup.niche.tech")

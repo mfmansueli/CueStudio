@@ -9,7 +9,8 @@ import SwiftUI
 /// around them ("YOU"), on one of three empty orbits that wait for it (they are the count): the chip lights, a light flies from it to its
 /// orbit on a smooth curve and lands in a ring, the core pulses, the planet pops, the orbit draws and its name arrives (`TopicBirth`), the
 /// hand feeling the flight and the landing. The chips come in one after another. The yellow ring that opens round the core on entry
-/// carries on from the star of 1.1.
+/// carries on from the star of 1.1. The topics are the broad themes (`Niche.offered`, the owner, 03/11/2026: "Travel", not "Budget travel";
+/// what inside them is said later, in My Cue Voice); where they don't all fit beside the universe, they scroll under it.
 struct UniverseChapter: View {
     let onboarding: OnboardingService
     /// The opening plays (it does not in UI tests that don't ask for it, nor with Reduce Motion).
@@ -40,6 +41,12 @@ struct UniverseChapter: View {
     @State private var canvasOnScreen = CGRect.zero
     /// The topics typed with "+ Your own", kept in the list as chips (picked or not) so they can be picked again.
     @State private var customTopics: [OnboardingTopic] = []
+    /// How tall the chips are laid out: the most their scroll takes.
+    @State private var chipsHeight: CGFloat = 400
+    /// The chips go on under the scroll's bottom edge.
+    @State private var hasMoreBelow = false
+    /// The chips have scrolled up past the scroll's top edge.
+    @State private var hasMoreAbove = false
 
     private nonisolated static let space = "universeChapter"
     private static let clip = MotionLibrary.clip("1.2_topics")
@@ -52,9 +59,11 @@ struct UniverseChapter: View {
     /// The chips in their order: the offered topics, then the ones typed with "+ Your own".
     private var chips: [OnboardingTopic] { topicChoices + customTopics }
 
-    /// A chip coming in: from 1.45 s, 35 ms after the one before, rising 12 pt out of a light blur in 0.5 s (all in by 2.3 s).
-    private static func chipEntry(_ order: Int) -> PoseTrack {
-        let start = 1.45 + Double(order) * 0.035
+    /// A chip coming in: from 1.45 s, one after another (35 ms apart, closer with many chips so the last is in when the opening holds at
+    /// 2.6 s), rising 12 pt out of a light blur in 0.5 s.
+    private static func chipEntry(_ order: Int, of count: Int) -> PoseTrack {
+        let gap = min(0.035, 0.6 / Double(max(count, 1)))
+        let start = 1.45 + Double(order) * gap
         return PoseTrack(curve: .css(0.16, 1, 0.3, 1), [.init(start, opacity: 0, y: 12, blur: 3), .init(start + 0.5)])
     }
 
@@ -86,32 +95,62 @@ struct UniverseChapter: View {
         return VStack(alignment: .leading, spacing: 0) {
             OnboardingHeading(
                 label: OnboardingStep.universe.chapterLabel, title: String(localized: "What do you usually talk about?"),
-                subtitle: String(localized: "Pick up to 3. Each one becomes a world in your universe and guides your ideas and scripts."),
+                // Firm (the owner, 03/11/2026): the AI's ideas and scripts come from these, so they are worth choosing well.
+                subtitle: String(localized: "Choose up to 3, and choose well: the AI writes your ideas and scripts from them."),
                 poses: ["L1", "L2", "L3"].map { Self.clip.pose(of: $0, at: clock) }
             )
             .padding(.horizontal, 20)
             OnboardingUniverseCanvas(topics: onboarding.topics, born: born, opening: time, frozenBirthAge: birthFrozenAge, showsEmptyOrbits: true)
                 .frame(maxWidth: .infinity)
-                .frame(minHeight: 96, maxHeight: 300)
+                // Up to 260 pt (300 on the board, made for eleven chips): the room left goes to the themes.
+                .frame(minHeight: 96, maxHeight: 260)
                 .onGeometryChange(for: CGRect.self) { $0.frame(in: .named(Self.space)) } action: { canvasFrame = $0 }
                 .onGeometryChange(for: CGRect.self) { $0.frame(in: .global) } action: { canvasOnScreen = $0 }
                 .motion(Self.clip.pose(of: "L4", at: clock))
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel(Text("Your universe"))
                 .accessibilityValue(Text(onboarding.topics.map(\.label).joined(separator: ", ")))
-            VStack(alignment: .leading, spacing: 8) {
-                // Rows about as long as each other; the chips arrive one after another (`chipEntry`).
-                FlowLayout(spacing: 8, lineSpacing: -4, balanced: true) {
-                    ForEach(Array(chips.enumerated()), id: \.element.id) { order, topic in
-                        let entry = Self.chipEntry(order).pose(at: clock)
-                        chip(topic).opacity(entry.opacity).offset(y: entry.y).blur(radius: entry.blur)
+            ScrollView {
+                VStack(alignment: .leading, spacing: 8) {
+                    // Rows about as long as each other; the chips arrive one after another (`chipEntry`).
+                    FlowLayout(spacing: 8, lineSpacing: -4, balanced: true) {
+                        ForEach(Array(chips.enumerated()), id: \.element.id) { order, topic in
+                            let entry = Self.chipEntry(order, of: chips.count + 1).pose(at: clock)
+                            chip(topic).opacity(entry.opacity).offset(y: entry.y).blur(radius: entry.blur)
+                        }
+                        let entry = Self.chipEntry(chips.count, of: chips.count + 1).pose(at: clock)
+                        yourOwnChip.opacity(entry.opacity).offset(y: entry.y).blur(radius: entry.blur)
                     }
-                    let entry = Self.chipEntry(chips.count).pose(at: clock)
-                    yourOwnChip.opacity(entry.opacity).offset(y: entry.y).blur(radius: entry.blur)
+                    if let customFeedback { feedbackView(customFeedback) }
                 }
-                if let customFeedback { feedbackView(customFeedback) }
+                .padding(.horizontal, 20)
+                .padding(.bottom, 8)
+                .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { chipsHeight = $0 }
             }
-            .padding(.horizontal, 20)
+            // As tall as the chips, so the universe keeps what they leave; shorter, they scroll, and each edge fades while there is more past
+            // it (the owner, 03/11/2026: the top edge cut the chips sharply), so the cut reads as "more", not as the end.
+            .frame(maxHeight: chipsHeight)
+            .scrollBounceBehavior(.basedOnSize)
+            .scrollIndicatorsFlash(trigger: hasMoreBelow)
+            .onScrollGeometryChange(for: Bool.self) { geometry in
+                geometry.contentOffset.y + geometry.containerSize.height < geometry.contentSize.height - 1
+            } action: { _, more in
+                hasMoreBelow = more
+            }
+            .onScrollGeometryChange(for: Bool.self) { geometry in
+                geometry.contentOffset.y > geometry.contentInsets.top + 1
+            } action: { _, scrolled in
+                hasMoreAbove = scrolled
+            }
+            .mask {
+                VStack(spacing: 0) {
+                    LinearGradient(colors: [.clear, .black], startPoint: .top, endPoint: .bottom).frame(height: hasMoreAbove ? 36 : 0)
+                    Rectangle()
+                    LinearGradient(colors: [.black, .clear], startPoint: .top, endPoint: .bottom).frame(height: hasMoreBelow ? 36 : 0)
+                }
+                .animation(.easeOut(duration: 0.2), value: hasMoreAbove)
+                .animation(.easeOut(duration: 0.2), value: hasMoreBelow)
+            }
             Spacer(minLength: 12)
             OnboardingPrimaryButton(
                 title: String(localized: "Continue"), disabledTitle: String(localized: "Pick a topic"), disabledStyle: .glass,
@@ -123,7 +162,7 @@ struct UniverseChapter: View {
             .motion(Self.clip.pose(of: "L91", at: clock))
         }
         .coordinateSpace(name: Self.space)
-        // Eleven chips, the universe and the button share one screen: past the largest standard size the button left an iPhone SE.
+        // The chips, the universe and the button share one screen: past the largest standard size the button left an iPhone SE.
         .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
         .overlay { TopicBirthOverlay(births: births, frozenAge: birthFrozenAge) }
         .overlay { openingStar(at: clock) }

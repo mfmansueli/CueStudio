@@ -13,7 +13,7 @@ struct VoicePhrasesField: View {
     private var current: CreatorProfile { profile.profile }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 22) {
+        VStack(alignment: .leading, spacing: Metrics.questionGap) {
             phrases
             avoid
         }
@@ -22,8 +22,7 @@ struct VoicePhrasesField: View {
     // MARK: - Phrases
 
     private var phrases: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            VoiceFieldLabel(String(localized: "Phrases you actually say"), detail: String(localized: "used sometimes, never in every video"))
+        VoiceFieldSection(String(localized: "Phrases you actually say"), detail: String(localized: "used sometimes, never in every video")) {
             if !current.phrases.isEmpty {
                 GroupedCard(background: Palette.surface2, radius: 16, dividerInset: 16) {
                     ForEach(current.phrases, id: \.self) { phrase in
@@ -55,8 +54,7 @@ struct VoicePhrasesField: View {
         let options = VoiceQuestion.avoid.options
         let known = Set(options.map { VoiceTextValidator.key($0.id) })
         let typed = current.avoid.filter { !known.contains(VoiceTextValidator.key($0)) }
-        return VStack(alignment: .leading, spacing: 8) {
-            VoiceFieldLabel(String(localized: "Cue never writes"), detail: String(localized: "up to \(VoiceLimits.avoid)"))
+        return VoiceFieldSection(String(localized: "Cue never writes"), detail: String(localized: "up to \(VoiceLimits.avoid)")) {
             VoiceOptionChips(
                 options: options,
                 isSelected: { profile.isSelected($0, for: .avoid) },

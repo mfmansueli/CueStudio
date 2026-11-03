@@ -232,10 +232,8 @@ nonisolated enum VoiceBriefBuilder {
 
         private static func identity(_ voice: CreatorVoice, contextualPreferences: Bool) -> [String] {
             var lines = ["Write in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about."]
-            if let custom = voice.customRole {
-                lines.append("Who they are: \(custom).")
-            } else if let role = voice.role {
-                lines.append("Who they are: \(role.promptName).")
+            if let who = voice.whoTheyAre {
+                lines.append("Who they are: \(who).")
             }
             if let credential = voice.credential {
                 lines.append("Credential: \(credential). Mention it only where it fits; never invent another.")

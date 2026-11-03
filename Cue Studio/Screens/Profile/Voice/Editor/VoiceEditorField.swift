@@ -15,11 +15,11 @@ enum VoiceEditorField: String, CaseIterable, Identifiable {
     /// The editor behind a row of the page. Why they watch is part of "Who's watching?", and the style is part of how they talk.
     init(_ row: VoicePageRow) {
         switch row {
-        case .role: self = .role
+        case .role, .goals: self = .role
         case .topics: self = .topics
         case .audience, .watch: self = .audience
         case .tone, .style: self = .tone
-        case .formats, .openings, .endings, .goals: self = .formats
+        case .formats, .openings, .endings: self = .formats
         case .phrases, .avoid: self = .phrases
         case .reach: self = .reach
         case .notes: self = .notes

@@ -11,11 +11,9 @@ import Foundation
 extension CreatorProfileService {
     // MARK: - Topics
 
-    /// The topic an option id stands for: one of the ten, or one only the voice offers.
+    /// The theme an option id stands for.
     nonisolated static func topicRef(for id: String) -> VoiceTopicRef? {
-        if let niche = Niche(rawValue: id) { return .niche(niche) }
-        if let topic = VoiceTopic(rawValue: id) { return .extra(topic) }
-        return nil
+        Niche(rawValue: id).map(VoiceTopicRef.niche)
     }
 
     /// Puts a topic in or takes it out of `profile` (and its subtopics with it). One more than `VoiceLimits.topics` is refused, whatever the kinds.
@@ -23,13 +21,11 @@ extension CreatorProfileService {
         let isHeld: Bool
         switch topic {
         case .niche(let niche): isHeld = profile.niches.contains(niche)
-        case .extra(let extra): isHeld = profile.voiceTopics.contains(extra)
         case .custom(let name): isHeld = profile.customTopics.contains { VoiceTextValidator.key($0) == VoiceTextValidator.key(name) }
         }
         if isHeld {
             switch topic {
             case .niche(let niche): profile.niches.removeAll { $0 == niche }
-            case .extra(let extra): profile.voiceTopics.removeAll { $0 == extra }
             case .custom(let name): profile.customTopics.removeAll { VoiceTextValidator.key($0) == VoiceTextValidator.key(name) }
             }
             profile.topicDetails[topic.id] = nil
@@ -40,7 +36,6 @@ extension CreatorProfileService {
         }
         switch topic {
         case .niche(let niche): profile.niches.append(niche)
-        case .extra(let extra): profile.voiceTopics.append(extra)
         case .custom(let name): profile.customTopics.append(name)
         }
         return .added
@@ -171,7 +166,11 @@ extension CreatorProfileService {
     /// answer still counts and still suggests "I" or "we"; an empty text goes back to the eight.
     @discardableResult
     func setCustomRole(_ raw: String) -> VoiceEditResult {
-        let result = setTyped(raw, clear: { $0.customRole = nil }, store: { $0.customRole = $1 })
+        // Their own words in place of a kind out of the list; the broad kind stays for "I" or "we".
+        let result = setTyped(raw, clear: { $0.customRole = nil }, store: {
+            $0.customRole = $1
+            $0.creatorKind = nil
+        })
         if case .added = result { reportTypedAnswer(VoiceTypedAnswerEvent(question: .role, raw: raw, options: CreatorRole.allCases.map(\.label))) }
         return result
     }
@@ -245,6 +244,11 @@ extension CreatorProfileService {
         var updated = profile
         updated.confirm(step)
         profile = updated
+    }
+
+    /// "Clear my answers" on My Cue Voice: the voice starts over, the themes stay (`CreatorProfile.clearingVoice`).
+    func clearVoice() {
+        profile = profile.clearingVoice()
     }
 
     // MARK: - Approved scripts

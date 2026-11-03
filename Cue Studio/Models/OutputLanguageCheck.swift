@@ -41,6 +41,21 @@ nonisolated enum OutputLanguageCheck {
         return expectedShare >= presentConfidence || top.value < rejectConfidence
     }
 
+    /// How sure a recognizer asked only between English and the expected language must be of English to refuse a title.
+    static let englishTitleConfidence = 0.9
+
+    /// A title is too short for `isPlausible`; what it can still tell is English in place of the language asked for, the model's slip on 5 of 376
+    /// titles read in Portuguese and Spanish (03/11/2026: "Seven tasty snack swaps" over a Spanish angle). Asked only between the two languages,
+    /// the recognizer gave those five 0.997 or more and every title in the right language 0.004 or less. Under three words, it passes.
+    static func isTitlePlausible(_ title: String, in expected: Locale.Language) -> Bool {
+        guard let code = expected.languageCode?.identifier, code != "en", WordSegmenter.roughWordCount(of: title) >= 3 else { return true }
+        let own: [NLLanguage] = code == "zh" ? [.simplifiedChinese, .traditionalChinese] : [NLLanguage(rawValue: code)]
+        let recognizer = NLLanguageRecognizer()
+        recognizer.languageConstraints = own + [.english]
+        recognizer.processString(title)
+        return (recognizer.languageHypotheses(withMaximum: 3)[.english] ?? 0) < englishTitleConfidence
+    }
+
     private static func isOtherChineseScript(_ heard: Locale.Language, than expected: Locale.Language) -> Bool {
         guard let heardLanguage = CueLanguage.matching(language: heard),
               let expectedLanguage = CueLanguage.matching(language: expected) else { return false }

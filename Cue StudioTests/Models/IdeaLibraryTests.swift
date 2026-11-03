@@ -15,11 +15,18 @@ struct IdeaLibraryTests {
         "en", "ar", "da", "de", "es", "fr", "hi", "id", "it", "ja", "ko", "nb", "nl", "pt", "sv", "th", "tr", "vi", "zh-Hans", "zh-Hant",
     ]
 
+    @Test func theWriterAsksForEveryThemeOnce() {
+        let asked = IdeaLibraryDeviceTests.pairs.flatMap(\.self)
+        #expect(asked.count == Set(asked).count)
+        #expect(Set(asked) == Set(Niche.offered))
+    }
+
     @Test(arguments: Self.localizations)
     func everyLanguageHasAPackAboutEveryTopic(_ localization: String) throws {
         let pack = try #require(IdeaLibrary.load(localization), "No pack for \(localization)")
         #expect(pack.language == localization)
         #expect(pack.version == IdeaLibraryPack.currentVersion)
+        // Every theme the first flight offers (the 24 added on 03/11/2026 too).
         for niche in Niche.offered {
             let ideas = pack.ideas.filter { $0.topic == niche.rawValue }
             #expect(ideas.count >= 30, "\(localization) \(niche.rawValue): \(ideas.count)")

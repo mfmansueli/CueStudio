@@ -62,10 +62,13 @@ final class UserReportCaptureTests: XCTestCase {
         sleep(1)
         try shot(app, "u06_voice-setup-1")
         // Each step: pick the first option, Continue, and capture the next one.
-        for (index, prefix) in [(2, "voiceSetup.role."), (3, "voiceSetup.niche."), (4, "voiceSetup.audience.")] {
-            let option = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@", prefix)).firstMatch
-            guard option.exists(within: 3) else { break }
-            option.tap()
+        // How scripts talk about them (nil) is optional: Continue as it is.
+        for (index, prefix) in [(2, "voiceSetup.role."), (3, nil), (4, "voiceSetup.niche."), (5, "voiceSetup.audience.")] as [(Int, String?)] {
+            if let prefix {
+                let option = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@ AND NOT identifier CONTAINS %@", prefix, ".area.")).firstMatch
+                guard option.exists(within: 3) else { break }
+                option.tap()
+            }
             let next = element(app, "voiceSetup.saveButton")
             guard next.exists(within: 3) else { break }
             next.tap()
@@ -83,10 +86,12 @@ final class UserReportCaptureTests: XCTestCase {
         let setUp = element(app, "profile.setUpVoiceButton")
         XCTAssertTrue(setUp.exists(within: 5))
         setUp.tap()
-        for prefix in ["voiceSetup.role.", "voiceSetup.niche.", "voiceSetup.audience.", "voiceSetup.tone."] {
-            let option = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@", prefix)).firstMatch
-            XCTAssertTrue(option.exists(within: 5), prefix)
-            option.tap()
+        for prefix in ["voiceSetup.role.", nil, "voiceSetup.niche.", "voiceSetup.audience.", "voiceSetup.tone."] as [String?] {
+            if let prefix {
+                let option = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@ AND NOT identifier CONTAINS %@", prefix, ".area.")).firstMatch
+                XCTAssertTrue(option.exists(within: 5), prefix)
+                option.tap()
+            }
             let next = element(app, "voiceSetup.saveButton")
             XCTAssertTrue(next.exists(within: 3))
             next.tap()

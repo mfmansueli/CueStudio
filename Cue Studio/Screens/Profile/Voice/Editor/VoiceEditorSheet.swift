@@ -61,7 +61,11 @@ struct VoiceEditorSheet: View {
     @ViewBuilder
     private var content: some View {
         switch field {
-        case .role: VoiceRoleField()
+        case .role:
+            VStack(alignment: .leading, spacing: Metrics.questionGap) {
+                VoiceRoleField()
+                VoiceSpeechField()
+            }
         case .topics: VoiceTopicsField()
         case .audience: VoiceAudienceField()
         case .tone: VoiceToneField()

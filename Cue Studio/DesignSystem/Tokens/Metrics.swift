@@ -9,6 +9,8 @@ import CoreGraphics
 enum Metrics {
     /// Side margin for cards and lists.
     static let gutter: CGFloat = 16
+    /// Between two questions of My Cue Voice (`VoiceFieldSection`): wider than inside one, so each reads as its own.
+    static let questionGap: CGFloat = 30
     /// Side margin for titles and loose text.
     static let textGutter: CGFloat = 20
     static let cardRadius: CGFloat = 26

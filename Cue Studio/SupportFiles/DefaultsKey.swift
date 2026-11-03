@@ -26,6 +26,8 @@ nonisolated enum DefaultsKey {
     static let dockDraft = "dockDraft"
     /// The card's suggested ideas written by the model and not yet shown, and the titles of the ones that were (`IdeaSuggestionService`).
     static let ideaSuggestions = "ideaSuggestions"
+    /// The concrete subjects of each topic's ideas, a week at a time (`IdeaIngredientStore`).
+    static let ideaIngredients = "ideaIngredients"
     /// The library has held a script at least once (`LibraryHistory`): an empty Scripts is then the returning state, not the first-use one.
     static let hasEverHadScript = "hasEverHadScript"
     /// The creator's own cues on the script page's cues bar (`[String]`).

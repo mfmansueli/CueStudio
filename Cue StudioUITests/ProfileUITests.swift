@@ -248,6 +248,7 @@ final class ProfileUITests: XCTestCase {
     private func setUpVoice(_ app: XCUIApplication) {
         app.buttons["profile.setUpVoiceButton"].tap()
         app.buttons["voiceSetup.skipRole"].tap()
+        app.buttons["voiceSetup.saveButton"].tap()
         app.buttons["voiceSetup.niche.food"].tap()
         app.buttons["voiceSetup.saveButton"].tap()
         app.buttons["voiceSetup.audience.parents"].tap()

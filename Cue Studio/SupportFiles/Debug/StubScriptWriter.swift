@@ -136,6 +136,13 @@ final class StubScriptWriter: ScriptWriting {
         return IdeaBriefReader.ideas(from: answers, slots: slots, language: language?.locale.language.minimalIdentifier)
     }
 
+    /// No ingredients: the stub's ideas are numbered, not made around a subject.
+    func ideaIngredients(
+        for topic: IdeaTopic, apartFrom others: [IdeaTopic], creator: IdeaCreator?, language: CueLanguage
+    ) async throws -> IdeaIngredients {
+        throw ScriptAIError.modelUnavailable("")
+    }
+
     func themeIdeas(for niches: [Niche], language: CueLanguage?, voice: CreatorVoice?) async throws -> [ThemeIdea] {
         guard availability.isAvailable else { throw ScriptAIError.modelUnavailable(availability.reason ?? "") }
         return [ThemeIdea(title: "A stub idea for testing", kind: "List", length: .minute1, niche: niches.first ?? .lifestyle)]

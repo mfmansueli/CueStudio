@@ -42,18 +42,24 @@ final class VoiceTipUITests: XCTestCase {
         try capture(app, "voice_tip")
         openTip(app)
 
-        // The first question of an empty voice in English is who's watching (no grammar to ask), then how much they know.
-        try capture(app, "voice_question_audience")
-        XCTAssertTrue(element(app, "voice.sheet.audience").exists(within: 5))
-        element(app, "voice.option.parents").tap()
-        element(app, "voice.option.some").tap()
+        // The first question of an empty voice is what kind of creator they are (the owner, 03/11/2026): the long list with its search
+        // and areas, saved with Save once a kind is picked; in English there is no grammar to ask, so who's watching comes next.
+        try capture(app, "voice_question_role")
+        XCTAssertTrue(element(app, "voice.sheet.role").exists(within: 5))
+        let save = app.buttons["voice.sheet.save"]
+        XCTAssertTrue(save.exists)
+        XCTAssertFalse(save.isEnabled, "Save waits for a kind")
+        element(app, "voiceSetup.role.area.lawMoney").tap()
+        element(app, "voiceSetup.role.lawyer").tap()
+        XCTAssertTrue(save.isEnabled)
+        save.tap()
         let saved = element(app, "voice.saved")
         XCTAssertTrue(saved.exists(within: 5))
-        XCTAssertTrue(saved.label.contains("10%"), saved.label)
+        XCTAssertTrue(saved.label.contains("%"), saved.label)
         try capture(app, "voice_saved")
 
         element(app, "voice.more").tap()
-        XCTAssertTrue(element(app, "voice.sheet.role").exists(within: 5))
+        XCTAssertTrue(element(app, "voice.sheet.audience").exists(within: 5))
         app.buttons["sheet.closeButton"].tap()
         XCTAssertTrue(app.buttons["scripts.newButton"].exists(within: 5))
     }
@@ -69,13 +75,12 @@ final class VoiceTipUITests: XCTestCase {
 
     func testAMultipleAnswerQuestionHasSaveAndNoneOfThese() {
         // The "Saved" shows for 0.9 s before the sheet closes; without the closing animation it can be gone before the test looks.
-        let app = CueApp.launch(seeded: false, animations: true, extraArguments: ["-uiTestVoiceTip"])
+        // What kind of creator is answered: the tip starts at who's watching.
+        let app = CueApp.launch(seeded: false, animations: true, extraArguments: ["-uiTestVoiceTip", "-uiTestCreatorKind", "lifestyleCreator"])
         XCTAssertTrue(element(app, "voice.tip").exists(within: 15))
         openTip(app)
         element(app, "voice.option.parents").tap()
         element(app, "voice.option.some").tap()
-        element(app, "voice.more").tap()
-        element(app, "voice.option.personal").tap()
         element(app, "voice.more").tap()
         XCTAssertTrue(element(app, "voice.sheet.topics").exists(within: 5))
         element(app, "voice.option.fitness").tap()
@@ -89,9 +94,11 @@ final class VoiceTipUITests: XCTestCase {
     }
 
     /// The owner's item 13: where the script language marks it, the first tip asks how scripts write the creator, answered with one tap on
-    /// the tip; the tip goes, and I am › Write me as shows the choice.
+    /// the tip; the tip goes, and the next question takes its place.
     func testTheGrammarIsAnsweredWithOneTapOnTheTip() throws {
-        let app = CueApp.launch(seeded: false, extraArguments: ["-uiTestVoiceTip", "-uiTestScriptLanguage", "pt-BR"])
+        let app = CueApp.launch(
+            seeded: false, extraArguments: ["-uiTestVoiceTip", "-uiTestScriptLanguage", "pt-BR", "-uiTestCreatorKind", "lifestyleCreator"]
+        )
         // TipKit names every control inside a tip "TipView": the answers are found by their words, inside the tip.
         let tip = element(app, "voice.tip")
         let feminine = tip.buttons["Feminine"]
@@ -110,13 +117,10 @@ final class VoiceTipUITests: XCTestCase {
         XCTAssertFalse(question.exists)
         // No sheet opened.
         XCTAssertFalse(element(app, "voice.sheet.speakerGender").exists)
-
-        let tab = app.cueTabBar.buttons["Profile"]
-        tab.tap()
-        app.buttons["profile.setUpVoiceButton"].tap()
-        let chosen = app.buttons["voice.speakerGender.feminine"]
-        app.scroll(to: chosen)
-        XCTAssertTrue(chosen.exists)
-        XCTAssertTrue(chosen.isSelected, "Write me as doesn't show Feminine")
+        // The answer counted: the next question, how to speak to viewers, takes the tip's place (one tap too). The kind of creator was
+        // answered before (`-uiTestCreatorKind`), so My Cue Voice's setup no longer shows "Write me as": `VoiceTipByImpactTests` checks the
+        // profile holds Feminine.
+        XCTAssertTrue(tip.buttons["Informal"].exists(within: 10), "The next question didn't come")
+        XCTAssertTrue(tip.buttons["Formal"].exists)
     }
 }

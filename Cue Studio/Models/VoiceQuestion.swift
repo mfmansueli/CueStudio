@@ -16,12 +16,14 @@ nonisolated enum VoiceQuestion: String, CaseIterable, Identifiable, Sendable {
 
     var id: String { rawValue }
 
-    /// The order the tip asks in, by how much an answer changes the scripts (the owner's item 13, 02/11/2026): first how the words about the
-    /// creator (or their team) agree and how scripts speak to viewers, asked only where the script language needs them
-    /// (`VoiceQuestionScheduler`); then the audience; then the other Essentials, the Personality details and, last, the example.
+    /// The order the tip asks in: first what kind of creator they are, with what their videos are for (the owner, 03/11/2026: it tells the scripts
+    /// and the ideas the most, so it is the first question); then how the words about the creator (or their team) agree and how scripts speak to
+    /// viewers, asked only where the script language needs them (`VoiceQuestionScheduler`); then the audience (the owner's item 13,
+    /// 02/11/2026); then the other Essentials, the Personality details and, last, the example.
     static let askingOrder: [VoiceQuestion] = [
+        .role,
         .speakerGender, .groupGender, .address,
-        .audience, .role, .topics, .tone,
+        .audience, .topics, .tone,
         .endings, .openings, .formats, .length, .humor, .platforms, .energy, .sentences, .words, .swearing, .phrases, .avoid,
         .example,
     ]
@@ -123,7 +125,7 @@ nonisolated enum VoiceQuestion: String, CaseIterable, Identifiable, Sendable {
         switch self {
         case .speakerGender, .groupGender: WordGender.allCases.map { VoiceOption(id: $0.rawValue, label: $0.label) }
         case .address: AddressForm.allCases.map { VoiceOption(id: $0.rawValue, label: $0.label) }
-        case .role: CreatorRole.allCases.map { VoiceOption(id: $0.rawValue, label: $0.label, detail: $0.examples) }
+        case .role: CreatorKind.all.map { VoiceOption(id: $0.id, label: $0.title) }
         case .topics: Self.topicOptions
         // The editor's eight groups, one list for the tip and the page (the owner's B13, 02/11/2026; §11): a group sets its vocabulary too.
         case .audience: AudienceGroup.allCases.map { VoiceOption(id: $0.rawValue, label: $0.label) }
@@ -147,11 +149,9 @@ nonisolated enum VoiceQuestion: String, CaseIterable, Identifiable, Sendable {
         }
     }
 
-    /// The 25 topics: the ten of the first flight, then the fifteen only My Cue Voice offers. A topic a creator already holds outside these
-    /// (wellness, education) is shown by the editor next to them.
+    /// The broad themes, the same the first flight offers. One a creator already holds outside these (wellness) is shown by the editor next to them.
     static var topicOptions: [VoiceOption] {
         Niche.offered.map { VoiceOption(id: $0.rawValue, label: $0.chipLabel) }
-            + VoiceTopic.allCases.map { VoiceOption(id: $0.rawValue, label: $0.label) }
     }
 
     /// "Nothing to avoid": an answer of its own that counts as filled.

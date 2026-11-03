@@ -14,19 +14,6 @@ enum VoicePageRow: String, CaseIterable, Identifiable {
 
     var id: String { rawValue }
 
-    /// Where the answer is used (the owner's item 2, 02/11/2026), as `VoicePageUseTests` checks against what the prompts really carry: a topic
-    /// reaches a script only when the idea is about it, the phrases take turns, what to avoid reaches every tool, and the examples never go to
-    /// Ultra AI.
-    var use: String {
-        switch self {
-        case .topics: String(localized: "Ideas, and scripts about them")
-        case .phrases: String(localized: "Up to \(CatchphraseRotation.perScript) per script, taking turns")
-        case .avoid: String(localized: "Scripts, ideas and every tool")
-        case .examples, .stories: String(localized: "Scripts and ideas, never Ultra AI")
-        default: String(localized: "Scripts and ideas")
-        }
-    }
-
     var title: String {
         switch self {
         case .role: String(localized: "I am")
@@ -64,7 +51,7 @@ enum VoicePageRow: String, CaseIterable, Identifiable {
         let separator = Self.separator
         switch self {
         case .role:
-            return ([profile.customRole ?? profile.role?.label, profile.credential].compactMap { $0 }).joined(separator: separator)
+            return ([profile.customRole ?? profile.kind?.title ?? profile.role?.label, profile.credential].compactMap { $0 }).joined(separator: separator)
         case .topics:
             return profile.topics.map { topic in
                 let subtopics = profile.subtopics(of: topic).map(VoiceSubtopicCatalog.displayName(of:))

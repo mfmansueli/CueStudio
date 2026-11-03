@@ -54,6 +54,15 @@ amarelo), o aviso de Pouca Energia e a dica da barra de ferramentas vestem a mes
   espaço que sobra fica depois da lâmpada. **Cor pelo papel** (`IdeaCardChip`, contornos de 1 pt, decorativos): os ajustes do roteiro (Format, a rede)
   em vidro claro (`Palette.Scripts.heroChipGlass` + `heroChipStroke`), o da IA em violeta (`heroChipAI` + `heroChipAIStroke`), a lâmpada em amarelo
   (cápsula de 44 × 30 pt em `accSoft` com contorno `accLine`). Menus com `chevron.up.chevron.down`; o valor do ✦ Voice ("65%") em sans medium violeta.
+  O ✦ Voz abre **as perguntas que faltam** (`VoiceSetupSheet`, `CreatorProfile.pendingSetupSteps`), uma por tela, de onde o criador parou;
+  **com as cinco respondidas** (o tipo, como os roteiros falam dele, os temas com algum subtema, o público e o tom:
+  `answeredEverySetupStep`), vai direto para Profile › My Cue Voice (`ProfileRoute.myCueVoice`), onde as respostas são vistas e mudadas
+  (dono, 03/11/2026). **Convite no primeiro envio** (`VoiceInviteSheet`, `DockVoiceSheets`, dono, 03/11/2026): a primeira ideia enviada pela
+  seta com perguntas ainda abertas abre, uma vez só (`VoiceQuestionScheduler.invitesBeforeSending`, guardado no estado da dica), "Make your
+  scripts sound like you", o medidor, três linhas de vidro (estilo, público, preferências) que entram uma depois da outra como no convite da
+  Ultra AI, "About a minute. Your idea stays right where it is.", **Continue answering** (as perguntas de onde parou; a última diz "✦ Draft
+  my script" e a ideia sai pela seta como sairia) e **Write my script now** (envia como está). A ideia digitada fica no campo; fechar o convite
+  ou as perguntas não envia nada. Testes de UI só o veem com `-uiTestVoiceInvite`.
   Com pouco espaço, cada chip encurta (`ScriptsDock.RowWords`: "TikTok" no lugar de "For TikTok", depois "✦ Voice" sem a porcentagem, que o VoiceOver
   continua dizendo, e o Format só com o símbolo `rectangle.stack`, primeiro no Auto e depois com qualquer formato); a linha inteira cabe sem rolar
   (`ViewThatFits`), e só quando nem a versão mais curta cabe (texto muito grande) os chips rolam com a lâmpada fixa no fim. Onde a Ultra AI é
@@ -130,7 +139,7 @@ violeta e um anel fino que corre para fora, 0,45 s) e, 0,12 s depois, voa em cur
 saem do campo do dock, um após o outro (0,7 s), e correm em curva até ela (1 s cada); ela **acende** onde para (clarão e anel de luz, aos 1,24 s,
 `LightBurst`). **Atrás dela o app é uma foto parada do momento do toque** (`TransitionBackdrop`), que escurece com a curva da subida (brilho −0,4,
 saturação 0,7, desfoque 10 pt, escala 0,94): a página do roteiro abre por baixo, sem o push, e a IA começa a escrever na hora, sem nada à vista;
-o app vivo fica escondido. Depois: halo, 12 partículas, "Drafting in your voice", a ideia e 7 frases a cada 1,6 s, a porcentagem e, em volta da
+o app vivo fica escondido. Depois: halo, 12 partículas, as palavras sob a estrela (`StarTransitionWords`, refinamento do dono 03/11/2026) e, em volta da
 estrela, uma **órbita de progresso** (`ProgressOrbit`, cores `dockGlow`, que fecha com a porcentagem), Cancel. Dura **no mínimo 3,0 s**; quando o
 roteiro chega: frase final, capa sólida (0,3 s; a foto sai debaixo dela), anel (0,8 s, a capa é uma forma com furo, `RingCover`) abrindo para a
 página viva com uma faixa de luz descendo por ela (1,4 s, `transitionSweep`), a estrela voa até o cursor amarelo onde começa o título deixando um
@@ -150,7 +159,15 @@ com o app vivo atrás eram até 7, 92 ms) e a estrela anda a ~55–60 quadros po
 87 fps com 3–4 engasgos curtos (60 ms somados), ainda a melhorar. As animações do SwiftUI ficam perto de 60 Hz mesmo com a tela de 120 Hz
 (`CADisableMinimumFrameDurationOnPhone` não mudou a medida e não está ligado).
 
-**Porcentagem escrita** (pedido do dono, não está no quadro): linha mono `ink2` sob a frase (`WritingProgressLabel`), estimada por `WritingProgressEstimate`
+**As palavras sob a estrela**, em dois grupos. O que se escreve: quem escreve, em maiúsculas mono pequenas e espaçadas ("IN YOUR VOICE", ou
+"✦ ULTRA AI"), e a ideia entre aspas, as maiores palavras da tela (20 pt semibold `ink`), inteira até 3 linhas (2 numa tela baixa) e um pouco menor
+antes de cortar; ela volta palavra por palavra depois da capa, sem o brilho da IA (são do criador). Até onde foi: a frase (15,5 pt itálico, 7 frases a
+cada 1,6 s), que chega palavra por palavra saindo da luz da IA (`WordsFromLight`; a primeira espera 0,3 s as primeiras palavras da ideia) e sai
+subindo e desfocando, numa linha só cujo lugar não muda; embaixo, o número, que conta passando por todos os valores até onde a escrita está
+(`CountingPercent`, 0,6 s, dígitos de largura fixa e o sinal de % mais apagado) e acende e cresce um pouco a cada quarto escrito (na Ultra AI, a cada
+etapa, que ele diz: "STEP 2 OF 3 · 40%"). Reduzir Movimento: as palavras já estão lá e o número muda no lugar.
+
+**Porcentagem escrita** (pedido do dono, não está no quadro): linha mono sob a frase (`CountingPercent`), estimada por `WritingProgressEstimate`
 a partir dos eventos do roteirista (`ScriptWritingEvent`, `WritingProgressMeter`): até 5% em 2 s antes das primeiras palavras; o primeiro rascunho vai de
 5% a no máximo 85% pelas palavras contra o mínimo pedido (desacelera depois de 3/4); cada rodada a mais preenche 60% do que falta até 95%. **Só o
 roteiro pronto é 100%, e o número nunca volta.** O lugar da linha é guardado desde o início. `numericText`; VoiceOver "Written so far". Contraste em
@@ -159,8 +176,11 @@ não mostra número. Teste: `-uiTestWriterStalls`.
 
 ## 4. My Cue Voice
 
-- **Dados** (`CreatorProfile`, tudo opcional, `decodeIfPresent`, `currentVoiceSchema = 2`): papel (8 + `customRole`), `credential`, `speaksAs` (I / We),
-  temas (`Niche` + `voiceTopics`, os 15 só do My Cue Voice, fora de `Niche` para não virarem mundos no universo; `topicDetails` até 3 por tema),
+- **Dados** (`CreatorProfile`, tudo opcional, `decodeIfPresent`, `currentVoiceSchema = 2`): tipo de criador (`creatorKind`, um dos 130 de
+  `CreatorKind`, cada um com o seu papel entre os 8 em `role` e, onde difere do papel, I ou We: UGC e afiliado dizem "I", igreja e ONG "We"; ou o
+  digitado, `customRole`, que tira o tipo e mantém o papel; um id que uma versão mais nova criou lê como nenhum), `credential`, `speaksAs` (I / We),
+  temas (`Niche`: 34 temas gerais, os mesmos do primeiro voo, cada um é um mundo no universo; `topicDetails` até 10 por tema; os `voiceTopics` de
+  antes viram temas ao abrir, e Study e Languages entram em Education & learning como subtemas: `CreatorProfile.niches(_:joining:details:)`),
   público (`audienceGroup` ou `audienceNote`, `audienceLevel`), `watchReasons` e `contentGoals` (até 2), 5 tons (`VoiceSound.offered`: Conversational,
   Straight to the point, Educational, Confident, Dry & sarcastic; um Warm & calm, Energetic ou Playful salvo antes vira, ao abrir, energia calma, alta
   ou um pouco de humor, onde não havia resposta: `foldTones`; a dica e "Import my writing" também só oferecem os 5), `style` (energia, frases, palavras, palavrão), `avoid`/`avoidNone`, `reach`, `approvedSamples` (até 3), `customTags`, `customFormats`, `agreement` (`VoiceAgreement`: gênero de quem
@@ -191,19 +211,44 @@ não mostra número. Teste: `-uiTestWriterStalls`.
   aparelho e o PCC recebem tudo, a prova também (D1), e o número é um só; a Ultra AI recebe tudo menos a prova, e o texto diz isso numa linha (a nota
   de PROOF, What Cue sends), sem segundo número.
 - **Um editor só** (`VoiceEditorSheet` + `Screens/Profile/Voice/Editor/*`): a página, as 4 perguntas, a dica do dock e Settings abrem o mesmo campo; toda
-  escrita passa por `CreatorProfileService+VoiceAnswers/+VoiceDetails/+Personality`. 25 temas, 7 subtemas sugeridos por tema, 11 formatos, 7 aberturas,
+  escrita passa por `CreatorProfileService+VoiceAnswers/+VoiceDetails/+Personality`. 34 temas, 13 a 15 subtemas sugeridos por tema
+  (`VoiceSubtopicCatalog`: públicos diferentes dentro do tema, do amador ao profissional, do barato ao luxo, review e como fazer), 11 formatos, 7 aberturas,
   6 fechos (nota: "nunca pedir nada" é o "Calls to action" do Avoid), 10 itens de Avoid (com "Calls to action"). Um formato digitado fica só em
   `customFormats`. Aberturas e fechos têm três estados (`VoiceUseNeverChips`, o item 5): um toque é "I use" (✓), o segundo "I never use" (✕,
   `neverOpenings`/`neverEndings`, até 3 cada, que vão ao modelo como "Never open with…" / "Never end by…"), o terceiro tira; "No call to action" não
   tem "never" (é o "Calls to action" do Avoid). Tocar e segurar dá as mesmas escolhas e, com dois fechos, "Make it the main one": o primeiro é o
-  principal ("· Main"). As listas de escolha usam os 10 temas do primeiro voo (`Niche.offered`, `chipLabel`) e mantêm um tema antigo que a pessoa
-  já tem.
-- **I am** (`VoiceRoleField`): os 8 tipos em cartões, "+ Something else", "Scripts say" I / We com a nota, e embaixo (`VoiceAgreementField`) "Write
+  principal ("· Main"). As listas de escolha usam os 34 temas do primeiro voo (`Niche.offered`, `chipLabel`), os do tipo de criador primeiro
+  (`CreatorKind.themes`: um advogado vê Law & rights primeiro).
+- **Temas e subtemas** (`VoiceTopicsField`, dono, 03/11/2026): o primeiro voo pergunta só temas gerais ("Travel", não "Budget travel"); aqui, sob
+  cada tema escolhido, "More specific in {tema}" com os subtemas sugeridos e um campo para os do criador, **até 10 por tema** ("Max 10 subtopics").
+  Tudo vira insumo das ideias (§30). Os temas foram pesquisados em 03/11/2026 (categorias do TikTok, YouTube e Instagram, relatórios da economia de
+  criadores, fóruns de criadores) para cobrir o máximo de criadores; ficaram de fora adulto, apostas e fantasy sports.
+- **I am** (`VoiceRoleField`, **a primeira pergunta** da dica, `VoiceQuestion.askingOrder`, dono 03/11/2026): "What kind of creator are you?" com
+  busca e **uma lista longa agrupada por área** (`CreatorKindPicker`: 130 tipos, de advogado, nutricionista e crítico de comida a criador UGC,
+  afiliado, produtor rural e "Just starting out"; "Browse by area" numa faixa que rola de lado, como os temas do Find inspiration: Popular (os 16 que
+  cobrem mais criadores) e 15 áreas com ícone (`CreatorKindArea`: Creators & influencers, Business & sales, Health & wellness… Cars & transport; um
+  tipo pode estar em duas, um criador de beleza é criador e é beleza); embaixo, os tipos da área escolhida, e quem já tem um tipo abre na área dele;
+  a busca acha qualquer um pelo nome, de todas as áreas, sem acento nem caixa; o escolhido tem ✓ e o fundo do acento); a mesma lista em Edit
+  Profile › What you make (`CreatorTypePicker`) e na folha da dica, que mostra o campo inteiro com Save em vez da lista de respostas. Depois "+ Something else", **My videos are for** (até
+  2, na mesma tela do tipo; a linha "Videos are for" fica em WHO YOU ARE).
+- **How should scripts talk about you?** (`VoiceSpeechField`, dono 03/11/2026: o tipo carregava cinco perguntas numa tela): na configuração, o
+  passo logo depois do tipo (`VoiceSetupStep.speech`, opcional, Continue sempre ativo; a configuração agora tem 5 passos, "01 / 05", e quem já tem
+  o tipo, da lista longa ou nas próprias palavras, não vê nenhum dos dois; só um dos oito papéis de um build antigo não basta: o tipo é perguntado
+  de novo). **Os subtemas na configuração** (dono, 03/11/2026: "a pessoa definir ali quando clica no voice"): quem escolheu temas no primeiro voo e
+  nenhum subtema ainda vê o passo dos temas de novo, com "Pick what you talk about inside each theme.", os temas escolhidos, os subtemas de cada um
+  e, depois deles, a lista de temas (no editor também nessa ordem); no editor, embaixo do tipo; a folha da dica mostra só o tipo e os objetivos (a gramática tem as perguntas dela na
+  dica). "Scripts say" I / We com a nota ("“We” for a business, a brand or a team."), e embaixo (`VoiceAgreementField`) "Write
   me as" / "Write us as" · optional (Feminine · Masculine · No gender; tocar de novo solta; "Use “…” from your iPhone" quando o iOS tem o termo de
   tratamento) e "Speak to viewers" (Informal · Formal), cada um com uma nota curta que diz o que escolher, com as palavras do idioma ("cansada" ou
-  "cansado", "tú" ou "usted"); a credencial para Expert e Educator. Os dois aparecem abertos só onde mudam os roteiros: no Script language de
+  "cansado", "tú" ou "usted"); a credencial para os tipos de papel Expert e Educator. O que a IA lê é o tipo inteiro ("Who they are: a lawyer who
+  explains people's rights in plain words", `CreatorVoice.whoTheyAre`); o digitado vai como foi escrito. Os dois aparecem abertos só onde mudam os roteiros: no Script language de
   Ajustes › Language & Region (sem ele, o idioma do app). Nos outros idiomas ficam em "More questions" (`DisclosureGroup`), e um já escolhido fica à
   vista.
+- **Títulos das perguntas** (`VoiceFieldSection`, dono 03/11/2026: títulos mais visíveis e diretos e as perguntas mais separadas, **sem
+  cartões**: a versão em cartões foi recusada): a pergunta em `.headline` `ink` com o limite depois em `ink2` ("· up to 2", "· optional"), a nota
+  do que a resposta muda logo abaixo dela (antes ficava depois das opções), e as respostas; 30 pt entre uma pergunta e a outra
+  (`Metrics.questionGap`). Vale em todos os campos da voz (tipo, fala, temas e subtemas, público, tom e cada controle do estilo, formatos,
+  frases, alcance, exemplos), na configuração, no editor e na folha da dica.
 - **Exemplo ao vivo** (`VoiceLiveExample`): sob as aberturas e os fechos, e no topo de How you sound, uma linha "EXAMPLE · …" da amostra das
   manhãs (`VoiceSampleBuilder`) muda a cada toque (a abertura ou o fecho tocado por último); o VoiceOver lê a linha nova. Os chips de escolha marcam o
   estado com ✓, não só com a cor.
@@ -226,17 +271,22 @@ não mostra número. Teste: `-uiTestWriterStalls`.
   "I may name this person" (desligado, o roteiro nunca diz o nome). Vão ao Apple Intelligence (aparelho e PCC) como "True moments they told…: use one
   only when it fits this idea, with its facts and numbers as given; never invent others" (duas por pedido, a que é sobre a ideia primeiro); a Ultra AI e
   a nova tentativa só com o catálogo não as recebem.
-- **Página 9.3** (`MyCueVoicePage`): um cartão (✦ WHAT CUE USES com a chave, medidor, "Next: …" com Answer), depois as seções na ordem do criador
-  (`VoicePageSection`): WHO YOU ARE (I am) · WHO YOU TALK TO (Audience · They watch to · Reach) · WHAT ABOUT (Topics · Usual formats · Videos are
-  for) · HOW YOU SOUND (Voice · Style · My phrases) · HOW YOU OPEN AND CLOSE (Opens with · Ends with) · WHAT’S TRUE ABOUT YOU (Also true · Stories and facts) · WHAT CUE
-  NEVER WRITES (Avoid) · EXAMPLES AND WHAT CUE LEARNED (Examples · What Cue learned). Com a voz ligada, cada linha diz em violeta onde a resposta é
-  usada (`VoicePageRow.use`, conferido nos prompts por `VoicePageUseTests`): "Scripts and ideas"; Topics "Ideas, and scripts about them"; My phrases
-  "Up to 3 per script, taking turns"; Avoid "Scripts, ideas and every tool"; Examples e Stories and facts "Scripts and ideas, never Ultra AI". **What Cue learned**
+- **Página 9.3** (`MyCueVoicePage`, em Profile; o ✦ Voz do dock a abre só com as cinco perguntas respondidas): um cartão; no topo dele, uma
+  seção à parte num painel `surface2` (dono, 03/11/2026): "Use my voice in drafts" com a chave, o medidor e "✦ Next: …" com Answer numa faixa
+  `surface3`; depois as seções na ordem do criador (`VoicePageSection`), cada nome como título em `.headline` negrito branco, sem
+  maiúsculas, com 26 pt acima (dono, 03/11/2026: os nomes em maiúsculas cinza se confundiam com os das linhas): WHO YOU ARE (I am · Videos are for) · WHO YOU TALK TO (Audience · They watch
+  to · Reach) · WHAT ABOUT (Topics · Usual formats) · HOW YOU SOUND (Voice · Style · My phrases) · HOW YOU OPEN AND CLOSE (Opens with · Ends with) ·
+  WHAT’S TRUE ABOUT YOU (Also true · Stories and facts) · WHAT CUE NEVER WRITES (Avoid) · EXAMPLES AND WHAT CUE LEARNED (Examples · What Cue
+  learned); linhas de 52 pt (rótulo cinza à esquerda, valor à direita ou uma pílula "Add" do tamanho do botão compacto do app, em amarelo suave, `accSoft` com contorno `accLine`, dono 03/11/2026). **Não diz onde cada resposta é usada** (dono,
+  03/11/2026: "só está acumulando informações"; `VoicePageUseTests` segue conferindo que cada linha chega aos prompts: tópicos só nas ideias e nos
+  roteiros sobre eles, Avoid em toda ferramenta, exemplos, histórias e o aprendido nunca na Ultra AI). **What Cue learned**
   (`VoiceLearnedField`): as mudanças que o Adjust guardou no perfil (`CreatorProfile.learned`, `VoiceLearning` com a voz antes e depois, até 12),
   com "ADJUST · <motivo> · data", e os roteiros aprovados ou gravados ("SOUNDS LIKE ME" / "YOUR EDITS"), do mais novo ao mais velho; o ✕ desfaz
   (cada valor volta ao que era, a não ser que o criador o tenha mudado depois) e os próximos roteiros não o usam; vazio, a linha diz "Nothing yet".
   A seção de exemplos tem a nota "Apple Intelligence writes like these, ideas included, on this iPhone or in Private Cloud Compute. Ultra AI never
-  gets them." (`AIDisclosure.proof`), linhas de 52 pt (rótulo cinza, valor à direita ou "+ Add · 1 tap" em amarelo). Rodapé: **Preview** (`VoicePreviewSheet`: "✦ LIVE
+  gets them." (`AIDisclosure.proof`). Embaixo de tudo, **Clear my answers** em vermelho (dono, 03/11/2026, para recomeçar e testar): pede
+  confirmação ("Clear My Cue Voice?") e apaga todas as respostas, subtemas, exemplos, amostras e o que o Cue aprendeu, e as dicas e o convite
+  recomeçam (`CreatorProfile.clearingVoice`, `VoiceQuestionScheduler.reset`); ficam os temas, o nome, o @ e a foto. Rodapé: **Preview** (`VoicePreviewSheet`: "✦ LIVE
   PREVIEW", My voice | Without, "Sounds like me", interruptor "Write in my voice") e **What Cue sends** (`VoiceSendsSheet`, mostra o custo do prompt;
   a voz como o pedido de um roteiro a lê, sem a duração habitual, no aparelho e no Private Cloud Compute, os dois com os exemplos; na Ultra AI,
   "It gets everything but your examples"; com o interruptor desligado diz em laranja que nada disso vai; com temas, diz que
@@ -852,9 +902,11 @@ permissions, firstStar, yourUniverse, sendOff, milestone, pro, share; `skyBackgr
 
 **Onboarding (1.1–1.7)**
 - **1.1:** `WelcomeScript` (§10), `BgWash.welcome`, `WelcomeShootingStar`; céu `OnboardingSky`, `SkyDirector`.
-- **1.2 Topics:** 10 temas, do mais comum ao menos (`Niche.offered`: Fitness & wellness · Food & cooking · Beauty & skincare · Fashion & style · Personal
-  finance · Tech & AI · Budget travel · Productivity & career · Parenting & family · Daily routines) + "+ Your own"; `Wellness` e `Education` continuam
-  válidos para quem já os tem. O nome do chip é o do mundo em todo o app (`Niche.chipLabel`). De 1 a 3: **Continue** fica de vidro ("Pick a topic",
+- **1.2 Topics:** 34 temas gerais, dos que cobrem mais criadores aos que cobrem menos (`Niche.offered`: Lifestyle & daily life · Beauty & personal
+  care · Business & marketing · Food & gastronomy · Fitness & training · Comedy & entertainment · … · Weddings & events; dono, 03/11/2026: o que é
+  mais específico fica para os subtemas do My Cue Voice) + "+ Your own". O nome do chip é o do mundo em todo o app (`Niche.chipLabel`). O universo
+  fica com até 260 pt (300 no quadro, feito para 11 chips); os chips rolam embaixo dele e cada borda esmaece enquanto há mais além dela (a de cima, só depois de rolar); entram um após o
+  outro, mais juntos com muitos, e estão todos na tela quando a abertura para (2,6 s). De 1 a 3: **Continue** fica de vidro ("Pick a topic",
   `DisabledStyle.glass`, `ink2`) até o primeiro, e as órbitas vazias dizem quantos cabem; com 3, os outros ficam apagados (toque só dá aviso tátil); soltar um
   libera outro. Luz, planeta, órbita e nome vêm do quadro (`TopicBirth`, `idade + 2,6 s`).
 - **1.3 Voyage:** `VoyageScene` (Canvas) com a galáxia do criador, as das redes e a rota, encaixadas entre o título e os chips (`VoyageFit`, §36);
@@ -1509,21 +1561,30 @@ nada de história, resultado, número ou tendência inventados).
   mesmo cartão): "Coming up: Mother’s Day" (calendário), "Follows up your video “…”" (título cortado em 48 caracteres numa palavra), "From a comment you
   answered". No ↻ do dock não cabe: o VoiceOver diz o porquê junto com a sugestão.
 - **Motor** (`IdeaSuggestionService`, um pool para a folha e o ↻): o próximo cartão sai do cache sem chamar o modelo; cada filtro reabastece em lotes de 6
-  com 4 restando; temas, idioma ou voz mudados cancelam o pedido; **o roteiro vem primeiro** (`IdeaRequestPriority`). Sempre o modelo do iPhone: 12 ideias
+  com 8 restando (dois lotes à frente); temas, idioma, voz ou tipo de criador mudados cancelam o pedido; **o roteiro vem primeiro** (`IdeaRequestPriority`). Sempre o modelo do iPhone: 12 ideias
   no Private Cloud Compute com as 6 melhores guardadas perderam para as 6 do iPhone na avaliação às cegas do dono (2 a 0, 01/11/2026,
   `research_notes/Ideas/cloud-quality-q1*`); a nuvem só era mais rápida (5–6 s × 9–11 s) e gastaria a cota dos roteiros. **Temas:** um tema nas palavras
   do criador (digitado, ou com subtemas) tem duas vezes no lote, um nicho amplo uma, e mais uma a cada envio (no máximo 3), espalhadas por peso. O
   pedido manda o modelo nomear o assunto exato ("nunca só \"products\""), e o brief leva o tema até o roteiro ("keep the video inside that topic",
-  nos dois roteiristas). **Ligações** (`IdeaSignals`, `IdeaTie`): nas semanas antes de uma data do país do criador (`IdeaCalendar`: 21 datas, Dia das
+  nos dois roteiristas). **Para quem** (`IdeaCreator`, dono 03/11/2026): o tipo de criador e o que os vídeos buscam vão em todo pedido de ideias, com
+  a voz ligada ou não ("The creator is a lawyer who… Their videos aim to win new clients…, and the ideas serve that."), nos ingredientes e na
+  edição. **Ingredientes** (`IdeaIngredients`, `IdeaIngredientStore`): o Private Cloud Compute lista uma vez por semana, por tema, idioma e para quem,
+  crenças, erros, momentos e coisas do dia a dia do país do criador, longe dos outros temas dele; cada vaga sem ligação ganha um assunto deles, em
+  rodízio. **Mistura** (`IdeaSlot`, dono 03/11/2026: "uns 4 de 12"): em cada lote de 6, 2 vagas juntam dois temas do criador (os pares se revezam,
+  nos ângulos em que eles se encontram melhor), 1 fica aberta, sem assunto, e as que ficam sem assunto passam pelos subtemas escolhidos, um por
+  vez (`IdeaSlot.focusing`); fora disso cada ideia fica no próprio tema (antes, 4 em 48 misturavam sem querer; com os ingredientes longe dos outros
+  temas, 0 em 33). **Edição** (`IdeaEdits`, fora do inglês): o Private Cloud Compute reescreve o rascunho do iPhone como um criador nativo
+  escreveria, mantendo tipo, tema e assunto. **Ligações** (`IdeaSignals`, `IdeaTie`): nas semanas antes de uma data do país do criador (`IdeaCalendar`: 21 datas, Dia das
   Mães e dos Pais por país, Páscoa, calendários lunar e islâmico do Foundation, 21 dias antes; volta às aulas e Diwali só como "chegando", de 30 dias
   antes a 7 depois; sem região, nenhuma), uma vaga a cada dois lotes é sobre ela; nos outros, uma continua um dos 3 vídeos compartilhados mais novos; a
   cada três, uma responde a próxima pergunta depois de um comentário já respondido. Nunca o lote inteiro. **Ideias de partida:** primeiro as ligadas (a
-  data chegando, os 2 vídeos mais novos), depois 6 escritas por tema do primeiro voo e a **biblioteca** (`IdeaLibrary`, ~40 por tema em cada um dos 20
-  idiomas, 7.987 ideias e 2,9 MB dentro do app, escritas uma vez pela Ultra AI nativamente em cada idioma, ~US$ 17 dos créditos do Google em 100
-  chamadas, e filtradas por idioma, ideia fraca, repetida e porcentagem: `IdeaLibraryDeviceTests`, `tools/ideas/collect_library.py`,
+  data chegando, os 2 vídeos mais novos), depois 6 escritas por tema nos 10 temas antigos e a **biblioteca** (`IdeaLibrary`, ~40 por tema nos 34 temas e nos 20
+  idiomas, 26.996 ideias e 9,6 MB dentro do app, escritas uma vez pela Ultra AI nativamente em cada idioma: os 10 temas antigos em 01/11/2026,
+  ~US$ 17 em 100 chamadas do iPhone; os 24 novos em 03/11/2026, ~US$ 41 em 240 chamadas do Mac, `tools/ideas/write_library.py`, a mesma chamada
+  sem ocupar o iPhone; tudo dos créditos do Google; filtradas por idioma, ideia fraca, repetida e porcentagem: `IdeaLibraryDeviceTests`, `tools/ideas/collect_library.py`,
   `IdeaLibraryBuildTests`; como nos roteiros, é um rascunho: cena imaginada em primeira pessoa pode, número, estudo, credencial ou resultado inventado
   não; amostra em português aprovada pelo dono, 01/11/2026; o cartão mostra a ideia inteira até 300 caracteres e o campo a encaixa em 200, como as do
-  modelo, e o roteirista recebe a ideia do cartão); para temas digitados ou do My Cue Voice, 16 modelos (um por ângulo). O gosto ordena as
+  modelo, e o roteirista recebe a ideia do cartão); para os temas digitados, 16 modelos (um por ângulo) com o nome do tema e dos subtemas. O gosto ordena as
   de partida (as preferidas intercaladas com as outras, as passadas por último). Sem Apple Intelligence é tudo o que a folha e o ↻ mostram, sem custo
   nenhum depois. **Gosto** (`IdeaTaste`, entre sessões, qualquer idioma): passar −0,35, usar +1,5, enviar pelo card +3, roteiro escrito +4 (o ângulo só
   conta se ainda estava no texto); no máximo metade do lote para os ângulos preferidos, o resto para os menos vistos. Testes de UI: datas só com
@@ -1704,8 +1765,9 @@ O dono revisou no iPhone, tela a tela, o primeiro voo, a primeira estrela, o Pro
   CAPTIONS, ✦ AI SCRIPTS) vira uma cápsula **amarela sólida** com letras pretas (`accInk` sobre `acc`) e fica assim. Título "A teleprompter made for your
   creative universe."; **Get started** é o único botão, 82 pt acima da borda: **não há "I already use Cue" nem Skip** em nenhum capítulo (todo criador novo
   faz o primeiro voo).
-- **1.2:** "What do you usually talk about?", com o subtítulo "Pick up to 3. Cue uses them for your ideas and scripts, and each one becomes a world."
-  (os temas também ligam a voz nos roteiros); o tema de estilo de vida é **Daily routines** (o que a IA lê: "daily routines and daily life").
+- **1.2:** "What do you usually talk about?", com o subtítulo firme "Choose up to 3, and choose well: the AI writes your ideas and scripts from them."
+  (dono, 03/11/2026: a pessoa precisa saber que escolher bem importa)
+  (os temas também ligam a voz nos roteiros); o tema de estilo de vida é **Lifestyle & daily life** (o que a IA lê: "lifestyle and daily life").
 - **1.3:** as galáxias são desenhadas no quadro, mas encaixadas na faixa entre o título e "CHOOSE ONE PLATFORM" (`VoyageFit`: 14 pt de folga, de ×0,8 a
   ×1,12 conforme cabe, nunca sob as palavras); cada galáxia das redes é ×1,25 do quadro e a do criador ×1,12, sobre o próprio centro (nomes e anéis se
   afastam junto). Os chips ficam 36 pt acima do botão.

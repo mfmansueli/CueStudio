@@ -11,7 +11,7 @@ import UIKit
 @testable import Cue_Studio
 
 /// The developer tool that writes the idea library (`IdeaLibrary`), once: Ultra AI writes, natively in each of Cue's 20 languages, forty briefs for
-/// each first-flight topic, two topics a call (100 calls, about USD 10, counted in the lab's calls). Each idea is printed as a `LIBRARY` line (one
+/// each first-flight topic, two topics a call (20 calls a pair, about USD 0.10 each, counted in the lab's calls). Each idea is printed as a `LIBRARY` line (one
 /// JSON) and each call's cost as `LIBRARYCOST`; `tools/ideas/collect_library.py` gathers the lines into `research_notes/Ideas/library-raw/`, and
 /// `IdeaLibraryBuildTests` filters them into the bundle's packs. Synthetic: nothing of a creator is sent.
 ///
@@ -27,8 +27,14 @@ struct IdeaLibraryDeviceTests {
     /// The ideas a topic gets.
     nonisolated static let perTopic = 40
 
-    /// The first-flight topics, two a call.
-    nonisolated static let pairs: [[Niche]] = [[.fitness, .food], [.beauty, .fashion], [.finance, .tech], [.travel, .productivity], [.parenting, .lifestyle]]
+    /// The first-flight topics, two a call: the ten it offered until 03/11/2026 (pairs 0–4, written 01/11), then the 24 broad themes added that
+    /// day (pairs 5–16; `TEST_RUNNER_CUE_IDEA_LIBRARY_PAIRS=5,6,…,16` writes only those).
+    nonisolated static let pairs: [[Niche]] = [
+        [.fitness, .food], [.beauty, .fashion], [.finance, .tech], [.travel, .productivity], [.parenting, .lifestyle],
+        [.business, .comedy], [.education, .healthcare], [.selfImprovement, .gaming], [.wellness, .musicArts], [.relationships, .sports],
+        [.faith, .booksMovies], [.news, .homeDIY], [.shopping, .pets], [.realEstate, .artDesign], [.law, .cars], [.trades, .events],
+        [.agriculture, .causes],
+    ]
 
     /// Cue's interface languages (the String Catalog's), and how each is to be written.
     nonisolated static let languages: [(localization: String, name: String)] = [

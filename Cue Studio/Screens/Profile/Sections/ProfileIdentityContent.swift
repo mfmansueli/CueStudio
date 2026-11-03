@@ -25,7 +25,7 @@ struct ProfileIdentityContent: View {
             && profile.role == nil && profile.customRole == nil
     }
 
-    private var creatorType: String? { profile.customRole ?? profile.role?.creatorLabel }
+    private var creatorType: String? { profile.creatorTitle }
 
     /// At the accessibility text sizes the photo goes above the name: side by side, the name had room for a word.
     private var isStacked: Bool { dynamicTypeSize.isAccessibilitySize }

@@ -21,6 +21,8 @@ struct CreatorRoleTests {
         var profile = CreatorProfile(niches: [.tech], confirmedVoiceSteps: [.audience, .tone])
         #expect(profile.role == nil && profile.hasMinimumVoice && profile.missingVoiceSteps.isEmpty)
         profile.role = .expert
+        #expect(profile.hasMinimumVoice && !profile.hasAnswered(.role), "one of the eight broad roles alone: the kind is asked again")
+        profile.creatorKind = "lawyer"
         #expect(profile.hasMinimumVoice && profile.hasAnswered(.role))
     }
 
@@ -47,14 +49,16 @@ struct CreatorRoleTests {
         let service = CreatorProfileService(defaults: UserDefaults(suiteName: "CreatorRoleTests-\(UUID())")!)
         let plan = VoiceSetupPlan(profile: service.profile)
         #expect(plan.steps.first == .role)
-        service.answer(.role, with: VoiceOption(id: CreatorRole.educator.rawValue, label: "Educator"))
+        service.answer(.role, with: VoiceOption(id: "teacher", label: "Teacher"))
         service.toggleTopic(.niche(.tech))
         service.setAudienceGroup(.insiders)
         service.answer(.tone, with: VoiceOption(id: VoiceSound.educational.rawValue, label: "Educational"))
         #expect(plan.canFinish(in: service.profile))
         service.setWritesInMyVoice(true)
-        #expect(service.profile.role == .educator && service.writesInMyVoice)
-        // Asked again, the role isn't asked a second time.
+        #expect(service.profile.creatorKind == "teacher" && service.profile.role == .educator && service.writesInMyVoice)
+        // Asked again, the role isn't asked a second time (and a subtopic keeps the themes from being asked again).
+        service.toggleSubtopic("Apps", of: .niche(.tech))
+        service.setSpeaksAs(.i)
         #expect(VoiceSetupPlan(profile: service.profile).steps.isEmpty)
     }
 }

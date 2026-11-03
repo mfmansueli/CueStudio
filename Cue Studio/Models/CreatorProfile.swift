@@ -15,8 +15,11 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
     var customTopics: [String]
     /// Catchphrases the creator always says ("Hey fam").
     var phrases: [String]
-    /// "What kind of creator are you?": the first question of My Cue Voice. Optional.
+    /// "What kind of creator are you?": the first question of My Cue Voice. Optional. Set with `creatorKind`, it is that kind's broad one.
     var role: CreatorRole?
+    /// The creator's own kind out of the long list (`CreatorKind`, by its id): "Lawyer", "Food reviewer". Nil for a profile that only has a
+    /// `role` (before 03/11/2026) or none; an id a newer build added reads as absent.
+    var creatorKind: String?
     /// The creator said a script written in their voice "sounds like me" (the preview strip on the
     /// script page stops asking).
     var voiceApproved: Bool
@@ -66,8 +69,6 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
     /// The photo (a small JPEG) the creator chose in Edit Profile; the avatar shows their initial without one. Stays on this iPhone.
     var photoData: Data?
     // My Cue Voice for Apple Intelligence (v2). Every field is optional in what was saved before: absent is empty / nil.
-    /// Topics only My Cue Voice offers (`VoiceTopic`): with `niches` and `customTopics` at most `VoiceLimits.topics`. Not worlds in the universe.
-    var voiceTopics: [VoiceTopic]
     /// Up to `VoiceLimits.details` subtopics under a topic, keyed by `VoiceTopicRef.id`: Cue's own are kept as their English text, typed ones as typed.
     var topicDetails: [String: [String]]
     /// Who is watching, as a group Cue offers (`audienceNote` is the creator's own words).
@@ -116,11 +117,11 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         style: VoiceDelivery = VoiceDelivery(), avoid: [String] = [], avoidNone: Bool = false, reach: VoiceReach = VoiceReach(),
         audienceLevel: AudienceLevel? = nil, approvals: Int = 0,
         examples: [VoiceExample] = [], customTags: [String] = [], declinedVoiceItems: Set<VoicePersonalityItem> = [],
-        voiceTopics: [VoiceTopic] = [], topicDetails: [String: [String]] = [:], audienceGroup: AudienceGroup? = nil,
+        topicDetails: [String: [String]] = [:], audienceGroup: AudienceGroup? = nil,
         audienceNote: String? = nil, watchReasons: [WatchReason] = [], contentGoals: [ContentGoal] = [], customRole: String? = nil,
         credential: String? = nil, speaksAs: SpeaksAs? = nil, approvedSamples: [VoiceExample] = [],
         excerpts: [VoiceExcerpt] = [], fingerprint: VoiceFingerprint? = nil,
-        voiceSchemaVersion: Int = CreatorProfile.currentVoiceSchema
+        voiceSchemaVersion: Int = CreatorProfile.currentVoiceSchema, creatorKind: String? = nil
     ) {
         self.name = name
         self.handle = handle
@@ -150,7 +151,6 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         self.examples = examples
         self.customTags = customTags
         self.declinedVoiceItems = declinedVoiceItems
-        self.voiceTopics = voiceTopics
         self.topicDetails = topicDetails
         self.audienceGroup = audienceGroup
         self.audienceNote = audienceNote
@@ -163,6 +163,7 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         self.excerpts = Array(excerpts.prefix(VoiceExcerpt.limit))
         self.fingerprint = fingerprint
         self.voiceSchemaVersion = voiceSchemaVersion
+        self.creatorKind = creatorKind
     }
 
     var voice: CreatorVoice {
@@ -178,6 +179,7 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
             excerpts: ExcerptRetriever.pick(from: excerpts, limit: VoiceExample.limit), fingerprint: fingerprint
         )
         voice.agreement = agreement
+        voice.creatorKind = creatorKind
         // What they use wins over a "never" an older answer left.
         voice.neverOpenings = neverOpenings.filter { id in !openings.contains { VoiceTextValidator.key($0) == VoiceTextValidator.key(id) } }
         voice.neverEndings = neverEndings.filter { id in !endings.contains { VoiceTextValidator.key($0) == VoiceTextValidator.key(id) } }
@@ -232,6 +234,7 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         case openings, endings, formats, swearing, examples, customTags, customFormats, declinedVoiceItems
         case style, avoid, avoidNone, reach, audienceLevel, approvals
         case voiceTopics, topicDetails, audienceGroup, audienceNote, watchReasons, contentGoals, customRole, credential, speaksAs, agreement
+        case creatorKind
         case approvedSamples, learned, neverOpenings, neverEndings, stories, excerpts, fingerprint, voiceSchemaVersion
         case photoData = "photo"
         /// v1 kept a single tone; it becomes the first "How I sound".
@@ -245,7 +248,8 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         let defaults = CreatorProfile()
         name = try container.decodeIfPresent(String.self, forKey: .name) ?? defaults.name
         handle = try container.decodeIfPresent(String.self, forKey: .handle) ?? defaults.handle
-        niches = try container.decodeIfPresent([Niche].self, forKey: .niches) ?? defaults.niches
+        // A theme a newer build added reads as absent, so the rest of the profile still opens.
+        niches = (try? container.decodeIfPresent([String].self, forKey: .niches))?.compactMap(Niche.init(rawValue:)) ?? defaults.niches
         customTopics = try container.decodeIfPresent([String].self, forKey: .customTopics) ?? defaults.customTopics
         phrases = try container.decodeIfPresent([String].self, forKey: .phrases) ?? defaults.phrases
         role = try container.decodeIfPresent(CreatorRole.self, forKey: .role)
@@ -290,9 +294,11 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         customFormats = (try? container.decodeIfPresent([String].self, forKey: .customFormats)) ?? []
         declinedVoiceItems = (try? container.decodeIfPresent(Set<VoicePersonalityItem>.self, forKey: .declinedVoiceItems)) ?? []
         photoData = try container.decodeIfPresent(Data.self, forKey: .photoData)
-        // A value a newer build added (a topic, a group) reads as absent, so the rest of the profile still opens.
-        voiceTopics = (try? container.decodeIfPresent([String].self, forKey: .voiceTopics))?.compactMap(VoiceTopic.init(rawValue:)) ?? []
-        topicDetails = Self.cleaned(details: (try? container.decodeIfPresent([String: [String]].self, forKey: .topicDetails)) ?? [:])
+        // A value a newer build added (a group) reads as absent, so the rest of the profile still opens.
+        var details = (try? container.decodeIfPresent([String: [String]].self, forKey: .topicDetails)) ?? [:]
+        let legacy = (try? container.decodeIfPresent([String].self, forKey: .voiceTopics)) ?? []
+        niches = Self.niches(niches, joining: legacy, details: &details)
+        topicDetails = Self.cleaned(details: details)
         audienceGroup = (try? container.decodeIfPresent(AudienceGroup.self, forKey: .audienceGroup)) ?? nil
         audienceNote = Self.trimmed(try? container.decodeIfPresent(String.self, forKey: .audienceNote))
         watchReasons = Array(
@@ -304,6 +310,7 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
                 .prefix(ContentGoal.limit)
         )
         customRole = Self.trimmed(try? container.decodeIfPresent(String.self, forKey: .customRole))
+        creatorKind = CreatorKind.find(try? container.decodeIfPresent(String.self, forKey: .creatorKind))?.id
         credential = Self.trimmed(try? container.decodeIfPresent(String.self, forKey: .credential))
         speaksAs = (try? container.decodeIfPresent(SpeaksAs.self, forKey: .speaksAs)) ?? nil
         agreement = (try? container.decodeIfPresent(VoiceAgreement.self, forKey: .agreement)) ?? VoiceAgreement()
@@ -376,13 +383,13 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         try container.encode(customFormats, forKey: .customFormats)
         try container.encode(declinedVoiceItems, forKey: .declinedVoiceItems)
         try container.encodeIfPresent(photoData, forKey: .photoData)
-        try container.encode(voiceTopics.map(\.rawValue), forKey: .voiceTopics)
         try container.encode(topicDetails, forKey: .topicDetails)
         try container.encodeIfPresent(audienceGroup, forKey: .audienceGroup)
         try container.encodeIfPresent(audienceNote, forKey: .audienceNote)
         try container.encode(watchReasons.map(\.rawValue), forKey: .watchReasons)
         try container.encode(contentGoals.map(\.rawValue), forKey: .contentGoals)
         try container.encodeIfPresent(customRole, forKey: .customRole)
+        try container.encodeIfPresent(creatorKind, forKey: .creatorKind)
         try container.encodeIfPresent(credential, forKey: .credential)
         try container.encodeIfPresent(speaksAs, forKey: .speaksAs)
         if !agreement.isEmpty { try container.encode(agreement, forKey: .agreement) }
@@ -408,6 +415,23 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         guard let text else { return nil }
         let value = text.trimmingCharacters(in: .whitespacesAndNewlines)
         return value.isEmpty ? nil : value
+    }
+
+    /// `niches` with the topics only My Cue Voice offered before 03/11/2026 (`voiceTopics`), now themes like the others: "Study & exams" and
+    /// "Languages" became subtopics of Education (with what was kept under them), the others kept their ids. At most `VoiceLimits.topics`, as
+    /// before (the typed topics count too, and are trimmed by the limit where they are set).
+    static func niches(_ niches: [Niche], joining legacy: [String], details: inout [String: [String]]) -> [Niche] {
+        var joined = niches
+        let folded = ["study": "Study & exams", "languages": "Languages"]
+        for id in legacy {
+            if let subtopic = folded[id] {
+                if !joined.contains(.education) { joined.append(.education) }
+                details[Niche.education.rawValue, default: []] += [subtopic] + (details.removeValue(forKey: id) ?? [])
+            } else if let niche = Niche(rawValue: id), !joined.contains(niche) {
+                joined.append(niche)
+            }
+        }
+        return joined
     }
 
     /// Subtopics as they are kept: trimmed, without repeats, at most `VoiceLimits.details` under a topic, and no topic without any.

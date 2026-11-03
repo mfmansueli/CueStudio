@@ -36,7 +36,7 @@ struct IdeaTiesTests {
     @Test func theModelIsAskedForTheTieInTheSlotsOwnLine() {
         let slots = signals.tie(IdeaTaste().slots(round: 1, among: [beauty]), round: 1)
         let prompt = ScriptPromptBuilder.themesPrompt(slots: slots, asBriefs: true)
-        #expect(prompt.contains("1. \(slots[0].angle.ask) about beauty and skincare, as a follow-up to their video “Sunscreen under makeup”"))
+        #expect(prompt.contains("1. \(slots[0].angle.ask) about beauty and personal care, as a follow-up to their video “Sunscreen under makeup”"))
         #expect(prompt.contains("the title or angle names the exact subject"))
         let occasion = signals.tie(IdeaTaste().slots(round: 0, among: [beauty]), round: 0)
         #expect(ScriptPromptBuilder.themesPrompt(slots: occasion, asBriefs: true).contains(", tied to Mother's Day, on May"))
@@ -48,7 +48,7 @@ struct IdeaTiesTests {
         let answer = IdeaBriefReader.Answer(title: "A gift-ready skincare kit", angle: "Build a simple kit.", openingLine: "Here's a kit anyone can make.")
         let idea = try #require(IdeaBriefReader.idea(from: answer, slot: slot, language: "en"))
         #expect(idea.tie == .occasion(mothersDay))
-        #expect(idea.brief?.topic == "beauty and skincare")
+        #expect(idea.brief?.topic == "beauty and personal care")
         #expect(idea.tie?.cardLine.contains(mothersDay.name) == true)
     }
 
@@ -56,8 +56,8 @@ struct IdeaTiesTests {
 
     @Test func theScriptStaysInsideTheTopicTheIdeaWasSuggestedFor() {
         let brief = IdeaBrief(subject: "How to choose products without surprises", angle: "Read the label first.", openingLine: "Look at the name.",
-                              topicKey: Niche.beauty.rawValue, topic: "beauty and skincare")
-        #expect(ScriptPromptBuilder.briefTopicRule(brief) == "The idea was suggested for the creator's topic “beauty and skincare”: keep the video inside that topic.")
+                              topicKey: Niche.beauty.rawValue, topic: "beauty and personal care")
+        #expect(ScriptPromptBuilder.briefTopicRule(brief) == "The idea was suggested for the creator's topic “beauty and personal care”: keep the video inside that topic.")
         var old = brief
         old.topic = nil
         #expect(ScriptPromptBuilder.briefTopicRule(old) == nil, "kept by an older version: nothing added")
@@ -68,7 +68,7 @@ struct IdeaTiesTests {
     @Test func theStartersTiedToTheCreatorComeFirst() {
         let tied = ThemeCatalog.tied(to: signals, topic: beauty)
         #expect(tied.map(\.tie) == [.occasion(mothersDay), .followUp("Sunscreen under makeup"), .followUp("My 5-minute routine")])
-        #expect(tied.allSatisfy { $0.brief?.topic == "beauty and skincare" && $0.niche == .beauty })
+        #expect(tied.allSatisfy { $0.brief?.topic == "beauty and personal care" && $0.niche == .beauty })
         #expect(ThemeCatalog.tied(to: IdeaSignals(comments: ["A question"]), topic: beauty).isEmpty, "a comment alone has no starter")
     }
 
