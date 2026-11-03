@@ -15,7 +15,7 @@ struct VoiceSetupPlanTests {
     @Test func aNewProfileIsAskedAllFourQuestionsWithNothingAnswered() {
         let profile = CreatorProfile()
         let plan = VoiceSetupPlan(profile: profile)
-        #expect(plan.steps == [.role, .niche, .audience, .tone])
+        #expect(plan.steps == [.role, .speech, .niche, .audience, .tone])
         // The default tone and vocabulary are not answers.
         #expect(!plan.canFinish(in: profile))
         #expect(!VoiceSetupPlan.canContinue(.niche, in: profile) && !VoiceSetupPlan.canContinue(.audience, in: profile))
@@ -27,7 +27,10 @@ struct VoiceSetupPlanTests {
             niches: [.tech], sounds: [.funny, .energetic], vocabulary: .technical, unverifiedVoiceSteps: [.audience, .tone]
         )
         let plan = VoiceSetupPlan(profile: profile)
-        #expect(plan.steps == [.audience, .tone])
+        // What kind of creator they are is still unknown: it comes first (the owner, 03/11/2026); the theme, with nothing more specific, is
+        // asked again for its subtopics.
+        #expect(plan.steps == [.role, .speech, .niche, .audience, .tone])
+        #expect(plan.asksSubtopics)
         #expect(plan.confirmsExistingValues)
         // Nothing to pick again: it can be confirmed right away.
         #expect(plan.canFinish(in: profile))
@@ -41,20 +44,54 @@ struct VoiceSetupPlanTests {
     @Test func anOlderProfileStillNeedsTheTopicItNeverHad() {
         var profile = CreatorProfile(sounds: [.funny], vocabulary: .technical, unverifiedVoiceSteps: [.audience, .tone])
         let plan = VoiceSetupPlan(profile: profile)
-        #expect(plan.steps == [.role, .niche, .audience, .tone])
+        #expect(plan.steps == [.role, .speech, .niche, .audience, .tone])
+        #expect(!plan.asksSubtopics, "no theme yet: the step asks for themes")
         #expect(!plan.canFinish(in: profile))
         profile.niches = [.tech]
         #expect(plan.canFinish(in: profile))
     }
 
     @Test func onlyWhatIsMissingIsAskedAndWhatWasAnsweredIsKept() {
-        var profile = CreatorProfile(niches: [.tech], confirmedVoiceSteps: [.audience])
+        var profile = CreatorProfile(niches: [.tech], confirmedVoiceSteps: [.audience], creatorKind: "developer")
+        profile.topicDetails[VoiceTopicRef.niche(.tech).id] = ["Apps"]
         let plan = VoiceSetupPlan(profile: profile)
-        #expect(plan.steps == [.tone])
+        #expect(plan.steps == [.speech, .tone])
         #expect(!plan.canFinish(in: profile))
         profile.sounds = [.casual]
         profile.confirm(.tone)
         #expect(plan.canFinish(in: profile))
+    }
+
+    @Test func afterTheFirstFlightTheKindOfCreatorComesFirstAndTheSubtopicsWithTheThemes() {
+        // The first flight asked the themes only: the kind of creator first, then the themes again for what inside them.
+        #expect(VoiceSetupPlan(profile: CreatorProfile(niches: [.travel])).steps == [.role, .speech, .niche, .audience, .tone])
+        // Only one of the eight broad roles (an older build): the kind is asked again.
+        #expect(VoiceSetupPlan(profile: CreatorProfile(niches: [.travel], role: .expert)).steps == [.role, .speech, .niche, .audience, .tone])
+        #expect(VoiceSetupPlan(profile: CreatorProfile(niches: [.travel], creatorKind: "lawyer")).steps == [.speech, .niche, .audience, .tone])
+        #expect(VoiceSetupPlan(profile: CreatorProfile(niches: [.travel], customRole: "Chess coach")).steps == [.speech, .niche, .audience, .tone])
+        // One subtopic anywhere is enough: the themes aren't asked again.
+        var profile = CreatorProfile(niches: [.travel, .food], creatorKind: "lawyer")
+        profile.topicDetails[VoiceTopicRef.niche(.food).id] = ["Street food"]
+        #expect(VoiceSetupPlan(profile: profile).steps == [.speech, .audience, .tone])
+    }
+
+    @Test func aVoiceInUseStillAsksWhatTheFiveStepsLackFromWhereTheCreatorStopped() {
+        var profile = CreatorProfile(niches: [.tech], sounds: [.casual], confirmedVoiceSteps: [.audience, .tone])
+        #expect(profile.missingVoiceSteps.isEmpty && !profile.answeredEverySetupStep)
+        #expect(VoiceSetupPlan(profile: profile).steps == [.role, .speech, .niche])
+        profile.creatorKind = "developer"
+        profile.confirm(.speech)
+        profile.topicDetails[VoiceTopicRef.niche(.tech).id] = ["Apps"]
+        #expect(profile.answeredEverySetupStep && profile.pendingSetupSteps.isEmpty)
+        #expect(VoiceSetupPlan(profile: profile).steps.isEmpty, "all five answered: ✦ Voice opens My Cue Voice instead")
+    }
+
+    @Test func goingOnPastHowScriptsTalkAboutThemAnswersIt() {
+        var profile = CreatorProfile()
+        #expect(!profile.hasAnswered(.speech))
+        profile.confirm(.speech)
+        #expect(profile.hasAnswered(.speech))
+        #expect(CreatorProfile(speaksAs: .we).hasAnswered(.speech))
     }
 
     @Test func editingAsksEverythingWithTheCurrentAnswersInPlace() {
@@ -67,7 +104,7 @@ struct VoiceSetupPlanTests {
     }
 
     @Test func aTopicOfAnyKindAndAnAudienceInTheCreatorsWordsAreAnswers() {
-        var profile = CreatorProfile(confirmedVoiceSteps: [.audience, .tone], voiceTopics: [.pets])
+        var profile = CreatorProfile(niches: [.pets], confirmedVoiceSteps: [.audience, .tone])
         #expect(VoiceSetupPlan.canContinue(.niche, in: profile))
         profile = CreatorProfile(customTopics: ["Chess"])
         #expect(VoiceSetupPlan.canContinue(.niche, in: profile))

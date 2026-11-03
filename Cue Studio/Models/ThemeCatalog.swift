@@ -20,8 +20,12 @@ nonisolated enum ThemeCatalog {
         var angleKind: IdeaAngle
     }
 
-    /// The starters of a first-flight topic: the ones written here, then the library's about it in the same language (`IdeaLibrary`), none
-    /// repeating a title written here.
+    /// The themes with six starters written here: the ten the first flight offered until 03/11/2026. Every theme has its pack of ideas in the
+    /// library (`IdeaLibrary`; the 24 added that day were written by Ultra AI the same day), so none falls back to the templates.
+    static let stocked: [Niche] = [.fitness, .food, .beauty, .fashion, .finance, .tech, .travel, .productivity, .parenting, .lifestyle]
+
+    /// The starters of a theme: the ones written here, then the library's about it in the same language (`IdeaLibrary`), none repeating a title
+    /// written here; for a theme outside `stocked`, only the library's (besides Wellness and Education's three).
     static func ideas(for niche: Niche) -> [ThemeIdea] {
         let written = written(for: niche)
         let titles = Set(written.map(\.id))
@@ -29,7 +33,7 @@ nonisolated enum ThemeCatalog {
     }
 
     // swiftlint:disable function_body_length
-    /// The starters written here for a first-flight topic (six each; Wellness and Education, no longer offered, keep their three).
+    /// The starters written here for a theme (six each of `stocked`; Wellness and Education keep their three).
     static func written(for niche: Niche) -> [ThemeIdea] {
         let entries: [Entry] = switch niche {
         case .lifestyle: [
@@ -386,6 +390,9 @@ nonisolated enum ThemeCatalog {
                 openingLine: String(localized: "You probably say it every day. Do you know where it comes from?"), angleKind: .fact
             ),
         ]
+        // The themes that were only My Cue Voice's before 03/11/2026: made from the theme and its subtopics (`ideas(for: IdeaTopic)`).
+        case .business, .healthcare, .law, .relationships, .homeDIY, .booksMovies, .musicArts, .gaming, .sports, .pets, .cars, .realEstate, .faith,
+             .news, .comedy, .selfImprovement, .shopping, .artDesign, .trades, .agriculture, .causes, .events: []
         }
         return entries.map { entry in
             var idea = ThemeIdea(title: entry.title, kind: entry.kind, length: entry.length, niche: niche)
@@ -398,20 +405,25 @@ nonisolated enum ThemeCatalog {
     }
     // swiftlint:enable function_body_length
 
-    /// Starters for a topic Cue has none of its own for (one only My Cue Voice offers, or one the creator typed): briefs made from the topic's
-    /// name and its subtopics, one for each way of looking at it here. Better than starters about something they don't make.
+    /// Starters for a topic: its theme's own, or, for one Cue has none of its own for (a theme without starters, or one the creator typed), briefs
+    /// made from the topic's name and its subtopics, one for each way of looking at it here. Better than starters about something they don't make.
     static func ideas(for topic: IdeaTopic) -> [ThemeIdea] {
-        if let niche = topic.niche { return ideas(for: niche) }
+        if let niche = topic.niche {
+            let own = ideas(for: niche)
+            if !own.isEmpty { return own }
+        }
         // The topic itself, then each of its subtopics in turn: "Languages", "Italian", "Languages"…
         let subjects = [nil] + topic.subtopics.map(Optional.some)
         return templates.enumerated().map { index, template in
             let subtopic = subjects[index % subjects.count]
             let name = subtopic ?? topic.label
             let parts = template(name)
-            var idea = ThemeIdea(title: parts.title, kind: parts.kind, length: parts.length, niche: .lifestyle, topic: topic.label)
+            var idea = ThemeIdea(
+                title: parts.title, kind: parts.kind, length: parts.length, niche: topic.niche ?? .lifestyle, topic: topic.niche == nil ? topic.label : nil
+            )
             idea.brief = IdeaBrief(
                 subject: parts.title, angle: parts.angle, openingLine: parts.openingLine, subtopic: subtopic, language: interfaceLanguage,
-                angleKind: parts.angleKind.rawValue, topicKey: topic.label, topic: topic.name
+                angleKind: parts.angleKind.rawValue, topicKey: IdeaTaste.topicKey(of: topic), topic: topic.name
             )
             return idea
         }

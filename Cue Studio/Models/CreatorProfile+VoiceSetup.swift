@@ -12,7 +12,10 @@ nonisolated extension CreatorProfile {
     /// so having one (of the ten, one only My Cue Voice offers, or one the creator typed) is the answer.
     func hasAnswered(_ step: VoiceSetupStep) -> Bool {
         switch step {
-        case .role: role != nil || customRole != nil
+        case .role: knowsKind
+        // Optional, so going on past it is an answer too (`confirm`): it is never asked again for being left as it was.
+        case .speech:
+            speaksAs != nil || agreement.speaker != nil || agreement.group != nil || agreement.address != nil || confirmedVoiceSteps.contains(.speech)
         case .niche: topicCount > 0
         case .audience, .tone: confirmedVoiceSteps.contains(step)
         }
@@ -23,6 +26,35 @@ nonisolated extension CreatorProfile {
     /// A new profile's defaults are neither.
     func isChosen(_ step: VoiceSetupStep) -> Bool {
         hasAnswered(step) || unverifiedVoiceSteps.contains(step)
+    }
+
+    /// They said what kind of creator they are: a kind of the long list (`CreatorKind`) or their own words. A role alone (one of the eight an
+    /// older build asked) is not enough: the kind is asked again, the first question of My Cue Voice (the owner, 03/11/2026).
+    var knowsKind: Bool { creatorKind != nil || customRole != nil }
+
+    /// Themes picked (in the first flight, say) and nothing more specific in any of them yet: the setup asks for the subtopics where it asks
+    /// the themes (the owner, 03/11/2026: "a pessoa definir ali quando clica no voice").
+    var lacksSubtopics: Bool { !topics.isEmpty && topics.allSatisfy { subtopics(of: $0).isEmpty } }
+
+    /// The five steps of the guided questions are all answered, the themes with something more specific in one of them (the owner,
+    /// 03/11/2026): ✦ Voice on the AI card then opens Profile › My Cue Voice instead of the questions, and the first idea sent no longer
+    /// invites to finish them. A kind of creator skipped is still to answer.
+    var answeredEverySetupStep: Bool { VoiceSetupStep.allCases.allSatisfy(hasAnswered) && !lacksSubtopics }
+
+    /// My Cue Voice cleared ("Clear my answers", the owner, 03/11/2026): who they are on Profile (name, handle, photo), their themes and where
+    /// they post stay; every answer, subtopic, example, sample, imported writing and what Cue learned goes, as on a new profile.
+    func clearingVoice() -> CreatorProfile {
+        var cleared = CreatorProfile(
+            name: name, handle: handle, niches: niches, customTopics: customTopics, defaultPlatform: defaultPlatform,
+            monetizationGoals: monetizationGoals
+        )
+        cleared.photoData = photoData
+        return cleared
+    }
+
+    /// The steps of the guided questions still to answer, in their order (what `answeredEverySetupStep` waits for).
+    var pendingSetupSteps: [VoiceSetupStep] {
+        VoiceSetupStep.allCases.filter { !hasAnswered($0) || ($0 == .niche && lacksSubtopics) }
     }
 
     /// The creator answered `step`, by choosing or confirming.
@@ -87,6 +119,7 @@ nonisolated extension CreatorProfile {
     /// Whether the creator has given Cue everything `field` asks for.
     func isFilled(_ field: VoiceField) -> Bool {
         switch field {
+        // A role from an older build still counts for the meter, which never drops for anyone (the setup asks the kind again all the same).
         case .role: role != nil || customRole != nil
         case .topics: topicCount > 0
         case .audience: isChosen(.audience) && audienceLevel != nil

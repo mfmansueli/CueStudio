@@ -31,6 +31,8 @@ nonisolated struct VoiceQuestionState: Codable, Equatable, Sendable {
     /// How many tips of each question TipKit has already spent (opened or closed): TipKit never shows an invalidated tip again, so the
     /// next one of that question is a tip of its own.
     var tipRounds: [String: Int] = [:]
+    /// The invitation to finish the questions, shown on the first idea sent from the AI card while some were open: never again.
+    var sendInviteShown = false
 
     init() {}
 
@@ -48,5 +50,6 @@ nonisolated struct VoiceQuestionState: Codable, Equatable, Sendable {
         voiceScriptIDs = try container.decodeIfPresent([String].self, forKey: .voiceScriptIDs) ?? []
         generatedEdits = try container.decodeIfPresent(Int.self, forKey: .generatedEdits) ?? 0
         tipRounds = try container.decodeIfPresent([String: Int].self, forKey: .tipRounds) ?? [:]
+        sendInviteShown = try container.decodeIfPresent(Bool.self, forKey: .sendInviteShown) ?? false
     }
 }

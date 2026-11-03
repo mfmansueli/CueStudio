@@ -18,22 +18,23 @@ struct VoiceQuestionAnswerTests {
 
     @Test func theBankHasTwentyQuestionsAskedByImpact() {
         #expect(VoiceQuestion.allCases.count == 20)
-        // Every question once, the grammar first, then the audience, the other Essentials, the details and, last, the example.
+        // Every question once, what kind of creator first (the owner, 03/11/2026), the grammar, the audience, the other Essentials, the details
+        // and, last, the example.
         #expect(Set(VoiceQuestion.askingOrder) == Set(VoiceQuestion.allCases))
         #expect(VoiceQuestion.askingOrder.count == VoiceQuestion.allCases.count)
         #expect(VoiceQuestion.askingOrder.map(\.rawValue).prefix(7) == [
-            "speakerGender", "groupGender", "address", "audience", "role", "topics", "tone",
+            "role", "speakerGender", "groupGender", "address", "audience", "topics", "tone",
         ])
         #expect(VoiceQuestion.askingOrder.last == .example)
     }
 
-    @Test func theAppsEightRolesAndFiveTonesAreTheOptions() {
-        #expect(VoiceQuestion.role.options.count == 8)
+    @Test func theKindsOfCreatorAndFiveTonesAreTheOptions() {
+        #expect(VoiceQuestion.role.options.map(\.id) == CreatorKind.all.map(\.id))
+        #expect(VoiceQuestion.role.options.count >= 120)
         // Warm & calm, Energetic and Playful are said in the style and the humor (the owner's item 4).
         #expect(VoiceQuestion.tone.options.map(\.label) == ["Conversational", "Straight to the point", "Educational", "Confident", "Dry & sarcastic"])
-        // The ten of the first flight and the fifteen only My Cue Voice offers.
-        #expect(VoiceQuestion.topics.options.count == 25)
-        #expect(VoiceQuestion.topics.options.prefix(10).map(\.id) == Niche.offered.map(\.rawValue))
+        // The broad themes, the same the first flight offers.
+        #expect(VoiceQuestion.topics.options.map(\.id) == Niche.offered.map(\.rawValue))
     }
 
     @Test func rowsWithoutFreeTextHaveNone() {

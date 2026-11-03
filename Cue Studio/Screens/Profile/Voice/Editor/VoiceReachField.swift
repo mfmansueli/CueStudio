@@ -13,9 +13,8 @@ struct VoiceReachField: View {
     private var current: CreatorProfile { profile.profile }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 22) {
-            VStack(alignment: .leading, spacing: 8) {
-                VoiceFieldLabel(String(localized: "Where you post"))
+        VStack(alignment: .leading, spacing: Metrics.questionGap) {
+            VoiceFieldSection(String(localized: "Where you post")) {
                 VoiceOptionChips(
                     options: Platform.allCases.map { VoiceOption(id: $0.rawValue, label: $0.label) },
                     isSelected: { option in current.reach.platforms.contains { $0.rawValue == option.id } },
@@ -26,16 +25,11 @@ struct VoiceReachField: View {
                     identifier: "voice.platform"
                 )
             }
-            VStack(alignment: .leading, spacing: 8) {
-                VoiceFieldLabel(String(localized: "Usual length"))
+            VoiceFieldSection(String(localized: "Usual length"), help: String(localized: "Without a length, Cue drafts for this one.")) {
                 VoiceSegmentedChoice(
                     values: VideoLength.allCases, selection: current.reach.length, label: \.label,
                     onPick: { profile.answer(.length, with: VoiceOption(id: $0.rawValue, label: $0.label)) }, identifier: "voice.length"
                 )
-                Text("Without a length, Cue drafts for this one.")
-                    .cueFont(.footnote)
-                    .foregroundStyle(Palette.ink2)
-                    .padding(.horizontal, 4)
             }
         }
     }

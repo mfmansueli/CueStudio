@@ -15,6 +15,8 @@ nonisolated struct CreatorVoice: Hashable, Sendable {
     var styles: [VoiceStyle]
     /// Who is talking; nil when the creator didn't say.
     var role: CreatorRole?
+    /// Who is talking, in the creator's own kind out of the long list (`CreatorKind`, its id): said in place of `role` when there is one.
+    var creatorKind: String?
     // The Personality and Proof layers (v29).
     var openings: [String] = []
     var endings: [String] = []
@@ -58,5 +60,10 @@ nonisolated struct CreatorVoice: Hashable, Sendable {
     var fingerprint: VoiceFingerprint?
 
     /// Who is talking: the creator's choice, or what their kind of creator suggests ("I" with neither).
-    var resolvedSpeaksAs: SpeaksAs { speaksAs ?? role?.suggestedSpeaksAs ?? .i }
+    var resolvedSpeaksAs: SpeaksAs { speaksAs ?? CreatorKind.find(creatorKind)?.suggestedSpeaksAs ?? role?.suggestedSpeaksAs ?? .i }
+
+    /// Who they are, for the AI: what they typed, their kind out of the long list, or their broad kind.
+    var whoTheyAre: String? {
+        customRole ?? CreatorKind.find(creatorKind)?.promptName ?? role?.promptName
+    }
 }

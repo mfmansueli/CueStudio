@@ -5,9 +5,10 @@
 
 import SwiftUI
 
-/// Edit Profile › What you make: the creator types as chips to tap, one chosen at a time (tapped again, none), and, for whoever none of
-/// them describes, "+ Add your own" (owner's ask, 21/10/2026): the chip opens into a field in place, and what is typed becomes their own
-/// type, chosen, the one My Cue Voice keeps too (`CreatorProfile.customRole`). Their own chip has × to take it away.
+/// Edit Profile › What you make: the long list of kinds of creator with a search (`CreatorKindPicker`, the same My Cue Voice shows), one
+/// chosen at a time (tapped again, none), and, for whoever none of them describes, "+ Add your own" (owner's ask, 21/10/2026): the chip opens
+/// into a field in place, and what is typed becomes their own type, chosen, the one My Cue Voice keeps too (`CreatorProfile.customRole`).
+/// Their own chip has × to take it away.
 struct CreatorTypePicker: View {
     @Binding var draft: ProfileDraft
 
@@ -17,47 +18,38 @@ struct CreatorTypePicker: View {
     @State private var typed = ""
 
     var body: some View {
-        FlowLayout(spacing: 8, lineSpacing: 8) {
-            ForEach(CreatorRole.allCases) { role in
-                chip(role.creatorLabel, isOn: draft.customRole == nil && draft.role == role) {
-                    draft.customRole = nil
-                    draft.role = draft.role == role ? nil : role
+        VStack(alignment: .leading, spacing: 8) {
+            CreatorKindPicker(
+                selected: draft.customRole == nil ? draft.creatorKind : nil, onPick: pick, identifier: "editProfile.role", bleed: 16
+            )
+            FlowLayout(spacing: 8, lineSpacing: 8) {
+                if let custom = draft.customRole {
+                    ownChip(custom)
                 }
-                .accessibilityIdentifier("editProfile.role.\(role.rawValue)")
-            }
-            if let custom = draft.customRole {
-                ownChip(custom)
-            }
-            if isAdding {
-                field
-            } else {
-                addChip
+                if isAdding {
+                    field
+                } else {
+                    addChip
+                }
             }
         }
-        .animation(reduceMotion ? CueMotion.fade : .spring(response: 0.35, dampingFraction: 0.8), value: draft.role)
+        .animation(reduceMotion ? CueMotion.fade : .spring(response: 0.35, dampingFraction: 0.8), value: draft.creatorKind)
         .animation(reduceMotion ? CueMotion.fade : .spring(response: 0.35, dampingFraction: 0.8), value: draft.customRole)
         .animation(reduceMotion ? CueMotion.fade : .spring(response: 0.35, dampingFraction: 0.8), value: isAdding)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("editProfile.rolePicker")
     }
 
-    private func chip(_ title: String, isOn: Bool, action: @escaping () -> Void) -> some View {
-        Button {
-            Haptics.selection()
-            action()
-        } label: {
-            Text(verbatim: title)
-                .cueFont(.subheadline)
-                .foregroundStyle(isOn ? Palette.accText : Palette.ink)
-                .padding(.horizontal, 14)
-                .padding(.vertical, 4)
-                .frame(minHeight: 36)
-                .background(isOn ? Palette.Settings.toolTileTop : Palette.surface2, in: Capsule())
-                .overlay(Capsule().strokeBorder(isOn ? Palette.acc : Palette.separator, lineWidth: isOn ? 1.5 : 0.5))
-                .contentShape(Capsule())
+    /// A kind tapped is chosen in place of their own; the one chosen, tapped again, is let go.
+    private func pick(_ kind: CreatorKind) {
+        draft.customRole = nil
+        if draft.creatorKind == kind.id {
+            draft.creatorKind = nil
+            draft.role = nil
+        } else {
+            draft.creatorKind = kind.id
+            draft.role = kind.role
         }
-        .buttonStyle(.cuePress)
-        .accessibilityAddTraits(isOn ? [.isSelected] : [])
     }
 
     /// Their own type, chosen, with × to take it away.
@@ -135,5 +127,6 @@ struct CreatorTypePicker: View {
         guard !text.isEmpty else { return }
         Haptics.selection()
         draft.customRole = text
+        draft.creatorKind = nil
     }
 }

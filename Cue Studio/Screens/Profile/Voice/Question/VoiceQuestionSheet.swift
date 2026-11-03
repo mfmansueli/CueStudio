@@ -8,10 +8,12 @@ import SwiftUI
 /// The My Cue Voice tip's question sheet (04 §F9): the system's sheet, a grabber, the close button in a glass circle (leading; it counts as
 /// "Not now"), "My Cue Voice · ✦ nn%" in the bar, the question as a large title, the answers as an inset-grouped list (one tap is the
 /// answer), then "+ Something else" (violet) and "None of these". A list that takes several answers has Save. After an answer it says
-/// "Saved · voice nn%" and offers one more question.
+/// "Saved · voice nn%" and offers one more question. "What kind of creator are you?" is the editor's own field instead (`VoiceRoleField`: the long
+/// list with search and what the videos are for, on one screen), with Save.
 struct VoiceQuestionSheet: View {
     @State private var model: VoiceQuestionSheetModel
     @Environment(\.dismiss) private var dismiss
+    @Environment(CreatorProfileService.self) private var profile
     @FocusState private var fieldIsFocused: Bool
 
     init(model: VoiceQuestionSheetModel) {
@@ -23,6 +25,8 @@ struct VoiceQuestionSheet: View {
             Group {
                 if model.question == .example {
                     ScrollView { VoiceExamplesField().padding(Metrics.gutter) }
+                } else if model.question == .role, model.savedStrength == nil {
+                    kindOfCreator
                 } else if let saved = model.savedStrength {
                     savedView(strength: saved)
                 } else {
@@ -36,9 +40,11 @@ struct VoiceQuestionSheet: View {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(role: .close) { dismiss() }.accessibilityIdentifier("sheet.closeButton")
                 }
-                if model.savedStrength == nil, case .multiple = model.kind {
+                if savesWithButton {
                     ToolbarItem(placement: .confirmationAction) {
-                        Button("Save") { model.save() }.accessibilityIdentifier("voice.sheet.save")
+                        Button("Save") { model.save() }
+                            .disabled(model.question == .role && !profile.profile.hasAnswered(.role))
+                            .accessibilityIdentifier("voice.sheet.save")
                     }
                 }
             }
@@ -60,7 +66,30 @@ struct VoiceQuestionSheet: View {
         .accessibilityIdentifier("voice.sheet.\(model.question.rawValue)")
     }
 
+    /// Save in the bar: a list that takes several answers, and the kind of creator (a kind and up to two aims).
+    private var savesWithButton: Bool {
+        guard model.savedStrength == nil else { return false }
+        if model.question == .role { return true }
+        if case .multiple = model.kind { return true }
+        return false
+    }
+
     // MARK: - The question
+
+    private var kindOfCreator: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
+                Text(model.title)
+                    .cueFont(.title2, weight: .bold)
+                    .foregroundStyle(Palette.ink)
+                    .accessibilityAddTraits(.isHeader)
+                    .accessibilityIdentifier("voice.sheet.title")
+                VoiceRoleField()
+            }
+            .padding(Metrics.gutter)
+        }
+        .scrollDismissesKeyboard(.interactively)
+    }
 
     private var list: some View {
         List {

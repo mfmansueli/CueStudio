@@ -37,15 +37,16 @@ struct VoiceTipByImpactTests {
     func theGrammarComesFirstThenTheAudience(language: String) {
         let rig = make(language: language)
         defer { rig.defaults.tearDown() }
-        #expect(Array(rig.scheduler.remaining.prefix(4)) == [.speakerGender, .address, .audience, .role])
-        #expect(rig.scheduler.tipQuestion(isAIAvailable: true, scriptCount: 0) == .speakerGender)
+        // What kind of creator first (the owner, 03/11/2026), then the grammar.
+        #expect(Array(rig.scheduler.remaining.prefix(4)) == [.role, .speakerGender, .address, .audience])
+        #expect(rig.scheduler.tipQuestion(isAIAvailable: true, scriptCount: 0) == .role)
     }
 
     @Test func germanAsksOnlyHowToSpeakToViewers() {
         let rig = make(language: "de-DE")
         defer { rig.defaults.tearDown() }
         #expect(!rig.scheduler.remaining.contains(.speakerGender))
-        #expect(Array(rig.scheduler.remaining.prefix(2)) == [.address, .audience])
+        #expect(Array(rig.scheduler.remaining.prefix(3)) == [.role, .address, .audience])
     }
 
     @Test(arguments: ["en-US", "en-GB"])
@@ -54,14 +55,14 @@ struct VoiceTipByImpactTests {
         defer { rig.defaults.tearDown() }
         let grammar: Set<VoiceQuestion> = [.speakerGender, .groupGender, .address]
         #expect(rig.scheduler.remaining.allSatisfy { !grammar.contains($0) })
-        #expect(rig.scheduler.remaining.first == .audience)
+        #expect(Array(rig.scheduler.remaining.prefix(2)) == [.role, .audience])
     }
 
     @Test func aTeamIsAskedHowTheGroupAgrees() {
         let rig = make(language: "es")
         defer { rig.defaults.tearDown() }
         rig.profile.setSpeaksAs(.we)
-        #expect(rig.scheduler.remaining.first == .groupGender)
+        #expect(Array(rig.scheduler.remaining.prefix(2)) == [.role, .groupGender])
         #expect(!rig.scheduler.remaining.contains(.speakerGender))
         #expect(VoiceQuestion.groupGender.title == "How should scripts write your team?")
     }
@@ -86,7 +87,7 @@ struct VoiceTipByImpactTests {
         rig.profile.setAddressForm(.informal)
         #expect(!rig.scheduler.remaining.contains(.speakerGender))
         #expect(!rig.scheduler.remaining.contains(.address))
-        #expect(rig.scheduler.remaining.first == .audience)
+        #expect(Array(rig.scheduler.remaining.prefix(2)) == [.role, .audience])
     }
 
     @Test func theGrammarAnsweredInTheSheetIsNotAskedAgain() {
@@ -124,7 +125,7 @@ struct VoiceTipByImpactTests {
         #expect(rig.scheduler.state.snoozedUntil[VoiceQuestion.speakerGender.rawValue] == nil)
         #expect(rig.toast.message == "Saved · voice \(rig.profile.profile.voiceStrength)%")
         #expect(!rig.scheduler.remaining.contains(.speakerGender), "never asked again")
-        #expect(rig.scheduler.remaining.first == .address)
+        #expect(Array(rig.scheduler.remaining.prefix(2)) == [.role, .address])
     }
 
     @Test func aTapThatCompletesTheVoiceSaysSoInstead() {

@@ -40,6 +40,7 @@ struct ScriptsDock: View {
     @Environment(PresentationService.self) private var presentation
     @Environment(UltraScriptService.self) private var ultra
     @Environment(GuidanceGate.self) private var guidance
+    @Environment(VoiceQuestionScheduler.self) private var voiceQuestions
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(IdeaTransitionService.self) private var transition
     @Environment(\.scenePhase) private var scenePhase
@@ -52,6 +53,8 @@ struct ScriptsDock: View {
     @State private var focusesWhenDone = false
     /// The My Cue Voice setup over the dock, if it is open.
     @State private var voiceSetup: VoiceSetupSheet.Mode?
+    /// The invitation to finish My Cue Voice, on the first idea sent with questions open (`DockVoiceSheets`).
+    @State private var showsVoiceInvite = false
     /// Where the arrow is on the screen: the star leaves from there.
     @State private var sendCenter = CGPoint.zero
     /// What the dock shows of Ultra AI, a step behind the service so it moves where it is seen (`syncUltra`): the writer chip lit, and the
@@ -134,7 +137,7 @@ struct ScriptsDock: View {
     private var isCovered: Bool {
         presentation.sheet != nil || presentation.prompter != nil
             || presentation.showsRemoteController || presentation.selectedTab != .scripts
-            || voiceSetup != nil
+            || voiceSetup != nil || showsVoiceInvite
     }
 
     var body: some View {
@@ -220,26 +223,7 @@ struct ScriptsDock: View {
         }
         .animation(reduceMotion ? nil : .smooth(duration: 0.25), value: isExpanded)
         .accessibilityElement(children: .contain)
-        .sheet(item: $voiceSetup) { mode in
-            if mode == .edit {
-                // The voice is set up: the chip opens the full page (9.3), where every row has its own sheet.
-                NavigationStack {
-                    MyCueVoicePage()
-                        .toolbar {
-                            ToolbarItem(placement: .confirmationAction) {
-                                Button("Done") { voiceSetup = nil }.accessibilityIdentifier("voicePage.done")
-                            }
-                        }
-                }
-            } else {
-                // With an idea waiting in the dock, the last question writes it: the script is the preview. An idea in a language
-                // Apple Intelligence can't draft in ends on "Done" instead (the dock says why when it is sent).
-                let ideaText = starter.drafting(before: ideaDraft.submission).isAvailable ? ideaDraft.submission : nil
-                VoiceSetupSheet(mode: mode, profile: profile.profile, ideaText: ideaText) { writesScript in
-                    if writesScript { starter.write() }
-                }
-            }
-        }
+        .modifier(voiceSheets)
         .onChange(of: ideaDraft.wantsFocus) { _, wants in
             guard wants else { return }
             ideaDraft.wantsFocus = false
@@ -647,7 +631,8 @@ struct ScriptsDock: View {
     }
 
     private var editor: some View {
-        // The suggestion is shown as the board shows it: white words over two lines (a text field's prompt keeps to one).
+        // The suggestion is shown as the board shows it: white words over two lines (a text field's prompt keeps to one). A tap on the
+        // field opens it to five, as typing does, so the whole idea can be read before it is sent.
         ZStack(alignment: .topLeading) {
             if let suggestion {
                 // A new suggestion (↻, or the next after one was sent) arrives word by word out of the AI's light; the one already there
@@ -656,7 +641,7 @@ struct ScriptsDock: View {
                     text: suggestion, font: .cue(16, weight: .medium, for: dynamicTypeSize), color: Palette.ink, stagger: Self.suggestionStagger,
                     playsFirst: false
                 )
-                    .lineLimit(Self.minLines)
+                    .lineLimit(isExpanded ? Self.maxLines : Self.minLines)
                     .padding(.vertical, 6)
                     .allowsHitTesting(false)
                     .accessibilityHidden(true)
@@ -811,10 +796,22 @@ struct ScriptsDock: View {
     /// a blank draft.
     private func submit() {
         guard canSend else { return }
-        IdeaSendTimeline.measure("Idea send", send)
+        IdeaSendTimeline.measure("Idea send") { send() }
     }
 
-    private func send() {
+    /// The questions and the invitation over the card. The idea they write is the typed one (✦ Voice) or the one the arrow was sending
+    /// (the invitation), when Apple Intelligence can draft in its language.
+    private var voiceSheets: DockVoiceSheets {
+        let draftable = { (text: String?) -> String? in starter.drafting(before: text).isAvailable ? text : nil }
+        let typed = ideaDraft.submission
+        let waiting = hasTypedIdea ? typed : suggestion ?? typed
+        return DockVoiceSheets(
+            setup: $voiceSetup, showsInvite: $showsVoiceInvite, typedIdea: { draftable(typed) }, waitingIdea: { draftable(waiting) },
+            write: { starter.write() }, send: { send(skippingInvite: true) }
+        )
+    }
+
+    private func send(skippingInvite: Bool = false) {
         isFocused = false
         guard hasAI else {
             starter.writeByHand()
@@ -824,6 +821,12 @@ struct ScriptsDock: View {
         // An idea in a language Apple Intelligence can't draft in takes nothing off: the starter says why (with "Write it") and it stays.
         guard IdeaSendTimeline.measure("Drafting check", { starter.drafting(before: idea ?? ideaDraft.submission).isAvailable }) else {
             starter.write(idea: idea, fromDock: true, from: sendCenter)
+            return
+        }
+        // The first idea sent while My Cue Voice still has questions open invites to finish them, once; the idea waits in the field.
+        if !skippingInvite, voiceQuestions.invitesBeforeSending {
+            voiceQuestions.sendInviteWasShown()
+            showsVoiceInvite = true
             return
         }
         IdeaSendTimeline.measure("Takeoff haptic") { HapticPatterns.playTakeoff() }

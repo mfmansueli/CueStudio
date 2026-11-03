@@ -212,7 +212,7 @@ struct FindInspirationViewModelTests {
 
     @Test func theCardDrawsItsOwnQuotesAndLeavesOutWhatIsNotThere() {
         var idea = ThemeIdea(title: "Desk stretches", kind: "", length: .minute1, niche: .fitness)
-        idea.brief = IdeaBrief(subject: "Desk stretches", angle: " ", openingLine: "“Your back hurts by 3 p.m.?”", subtopic: "fitness & wellness")
+        idea.brief = IdeaBrief(subject: "Desk stretches", angle: " ", openingLine: "“Your back hurts by 3 p.m.?”", subtopic: "fitness & training")
         let card = InspirationCardContent(idea: idea, topics: [], logbookLabel: "Logbook")
         #expect(card.openingLine == "Your back hurts by 3 p.m.?")
         #expect(card.angle == nil)

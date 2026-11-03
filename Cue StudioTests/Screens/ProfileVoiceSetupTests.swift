@@ -22,9 +22,9 @@ struct ProfileVoiceSetupTests {
     @Test func editingStartsOnTheQuestionOfTheRowAndAsksAllFour() {
         let profile = CreatorProfile(niches: [.tech], role: .expert, confirmedVoiceSteps: [.audience, .tone])
         let plan = VoiceSetupPlan(profile: profile, steps: VoiceSetupStep.allCases)
-        #expect(plan.steps == [.role, .niche, .audience, .tone])
+        #expect(plan.steps == [.role, .speech, .niche, .audience, .tone])
         #expect(profile.role == .expert && plan.canFinish(in: profile))
-        #expect(plan.steps.firstIndex(of: .audience) == 2)
+        #expect(plan.steps.firstIndex(of: .audience) == 3)
     }
 
     /// v30: every page Settings opens is pushed, none is a sheet.

@@ -5,9 +5,9 @@
 
 import SwiftUI
 
-/// "What do you talk about?" (Essentials 2): up to three topics out of twenty-five, then, under each one picked, the subtopics that make it
-/// specific (up to three each, or their own words). The ten of the first flight come first; the fifteen only My Cue Voice offers are not worlds in the
-/// universe. The same field in the guided questions and in the editor.
+/// "What do you talk about?" (Essentials 2): up to three broad themes, the same the first flight offers, then, under each one picked, the
+/// subtopics that make it specific (up to `VoiceLimits.details` each, Cue's or their own words). The owner (03/11/2026): the first flight asks
+/// general themes, and here the creator says what inside them, as much as they like. The same field in the guided questions and in the editor.
 struct VoiceTopicsField: View {
     @Environment(CreatorProfileService.self) private var profile
     @Environment(ToastService.self) private var toast
@@ -16,28 +16,29 @@ struct VoiceTopicsField: View {
 
     private var current: CreatorProfile { profile.profile }
 
-    /// The topics a creator can pick: the ten of the first flight, the fifteen of the voice, and any other one they already hold.
-    private var popular: [VoiceTopicRef] {
-        Niche.allCases.filter { Niche.offered.contains($0) || current.niches.contains($0) }.map(VoiceTopicRef.niche)
+    /// The themes a creator can pick, the ones their kind of creator most often talks about first (a lawyer sees Law & rights first).
+    private var themes: [VoiceTopicRef] {
+        let first = current.kind?.themes ?? []
+        return (first + Niche.offered.filter { !first.contains($0) }).map(VoiceTopicRef.niche)
     }
 
-    private var more: [VoiceTopicRef] { VoiceTopic.allCases.map(VoiceTopicRef.extra) }
-
     var body: some View {
-        VStack(alignment: .leading, spacing: 18) {
+        VStack(alignment: .leading, spacing: Metrics.questionGap) {
+            // What they picked and what inside it first (the owner, 03/11/2026: the subtopics are what this asks once the first flight gave
+            // the themes); the long list of themes, to change or add one, after them.
             if !current.topics.isEmpty { picked }
-            section(String(localized: "Popular"), topics: popular)
-            section(String(localized: "More"), topics: more)
-            ownTopic
             ForEach(current.topics) { topic in subtopics(of: topic) }
+            VoiceFieldSection(String(localized: "Themes")) {
+                chips(themes)
+                ownTopic
+            }
         }
     }
 
     // MARK: - The topics
 
     private var picked: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            VoiceFieldLabel(String(localized: "Your topics"), detail: "\(current.topicCount) / \(VoiceLimits.topics)")
+        VoiceFieldSection(String(localized: "Your topics"), detail: "\(current.topicCount) / \(VoiceLimits.topics)") {
             FlowLayout(spacing: 8, lineSpacing: 4) {
                 ForEach(current.topics) { topic in
                     Button { toggle(topic) } label: {
@@ -54,10 +55,10 @@ struct VoiceTopicsField: View {
         }
     }
 
-    /// The bar of the world a topic is in the universe (3 × 14 pt, in the order they were picked); a topic only the voice offers has no world, so none.
+    /// The bar of the world a topic is in the universe (3 × 14 pt, in the order they were picked).
     @ViewBuilder
     private func bar(for topic: VoiceTopicRef) -> some View {
-        if let world = worldIndex(of: topic) {
+        if let world = current.topics.firstIndex(of: topic) {
             RoundedRectangle(cornerRadius: 1.5)
                 .fill(OnboardingTopic.color(at: world))
                 .frame(width: Metrics.themeRailWidth, height: Metrics.themeRailChipHeight)
@@ -66,28 +67,19 @@ struct VoiceTopicsField: View {
         }
     }
 
-    /// The place of a topic among the worlds of the universe (the ten and the typed ones, in order), or nil when it isn't one.
-    private func worldIndex(of topic: VoiceTopicRef) -> Int? {
-        let worlds = current.topics.filter { if case .extra = $0 { false } else { true } }
-        return worlds.firstIndex(of: topic)
-    }
-
-    private func section(_ title: String, topics: [VoiceTopicRef]) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
-            VoiceFieldLabel(title)
-            FlowLayout(spacing: 8, lineSpacing: 0) {
-                ForEach(topics) { topic in
-                    let isOn = current.topics.contains(topic)
-                    Button { toggle(topic) } label: {
-                        FilterChip(label: topic.label, isSelected: isOn, height: 40)
-                            .fixedSize()
-                            .frame(minHeight: Metrics.hitTarget)
-                            .contentShape(Rectangle())
-                            .opacity(isOn || current.topicCount < VoiceLimits.topics ? 1 : 0.45)
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityIdentifier("voiceSetup.niche.\(topic.id)")
+    private func chips(_ topics: [VoiceTopicRef]) -> some View {
+        FlowLayout(spacing: 8, lineSpacing: 0) {
+            ForEach(topics) { topic in
+                let isOn = current.topics.contains(topic)
+                Button { toggle(topic) } label: {
+                    FilterChip(label: topic.label, isSelected: isOn, height: 40)
+                        .fixedSize()
+                        .frame(minHeight: Metrics.hitTarget)
+                        .contentShape(Rectangle())
+                        .opacity(isOn || current.topicCount < VoiceLimits.topics ? 1 : 0.45)
                 }
+                .buttonStyle(.plain)
+                .accessibilityIdentifier("voiceSetup.niche.\(topic.id)")
             }
         }
     }
@@ -124,13 +116,12 @@ struct VoiceTopicsField: View {
 
     // MARK: - Subtopics
 
-    /// More specific: the subtopics Cue suggests for a topic they picked, up to three, and a field for their own.
+    /// More specific: the subtopics Cue suggests for a topic they picked, up to `VoiceLimits.details`, and a field for their own.
     private func subtopics(of topic: VoiceTopicRef) -> some View {
         let held = current.subtopics(of: topic)
         let suggested = topic.suggestedSubtopics
         let own = held.filter { text in !suggested.contains { $0.id == text } }
-        return VStack(alignment: .leading, spacing: 10) {
-            VoiceFieldLabel(String(localized: "More specific in \(topic.label)"), detail: String(localized: "up to \(VoiceLimits.details)"))
+        return VoiceFieldSection(String(localized: "More specific in \(topic.label)"), detail: String(localized: "up to \(VoiceLimits.details)")) {
             VoiceOptionChips(
                 options: suggested,
                 isSelected: { held.contains($0.id) },
@@ -147,8 +138,6 @@ struct VoiceTopicsField: View {
                 identifier: "voice.subtopic.field.\(topic.id)"
             )
         }
-        .padding(14)
-        .background(Palette.surface2.opacity(0.7), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("voice.subtopics.\(topic.id)")
     }

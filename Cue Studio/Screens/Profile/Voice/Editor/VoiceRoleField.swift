@@ -5,73 +5,38 @@
 
 import SwiftUI
 
-/// "What kind of creator are you?" (My Cue Voice · Essentials 1): the eight kinds as cards, "+ Something else" for their own words, a short
-/// credential, "Scripts say I / We" and, under it, how the words about them agree and how viewers are addressed (`VoiceAgreementField`). The
-/// same field in the guided questions and in the editor.
+/// "What kind of creator are you?" (My Cue Voice · Essentials 1, the first question): the long list of kinds with a search and areas
+/// (`CreatorKindPicker`) and "+ Something else" for their own words, then what their videos are for (the owner, 03/11/2026: on the same screen,
+/// so a lawyer says "win clients" and "raise awareness" right there), each under its own title (`VoiceFieldSection`). How scripts talk about them (I or
+/// we, the grammar) is the next step (`VoiceSpeechField`). The same field in the guided questions, the tip's sheet and the editor.
 struct VoiceRoleField: View {
     @Environment(CreatorProfileService.self) private var profile
+    @Environment(ToastService.self) private var toast
 
     @State private var typesRole = false
 
-    private let columns = [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)]
     private var current: CreatorProfile { profile.profile }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            LazyVGrid(columns: columns, spacing: 10) {
-                ForEach(CreatorRole.allCases) { role in card(role) }
+        VStack(alignment: .leading, spacing: Metrics.questionGap) {
+            VoiceFieldSection {
+                CreatorKindPicker(selected: current.customRole == nil ? current.creatorKind : nil, onPick: pick, identifier: "voiceSetup.role")
+                ownRole
             }
-            ownRole
-            VoiceFieldLabel(String(localized: "Scripts say"))
-            VoiceSegmentedChoice(
-                values: SpeaksAs.allCases, selection: current.resolvedSpeaksAs, label: \.label,
-                onPick: { profile.setSpeaksAs($0) }, identifier: "voice.speaksAs"
-            )
-            Text("“We” for a business, a brand or a team. Doing more than one? Pick the one you film most.")
-                .cueFont(.footnote)
-                .foregroundStyle(Palette.ink2)
-                .padding(.horizontal, 4)
-            VoiceAgreementField()
-            if showsCredential { credential }
+            goals
         }
     }
 
-    // MARK: - The eight
+    // MARK: - The list
 
-    private func card(_ role: CreatorRole) -> some View {
-        Button {
-            Haptics.selection()
-            profile.answer(.role, with: VoiceOption(id: role.rawValue, label: role.label))
-            typesRole = false
-        } label: {
-            SelectableCard(isSelected: current.role == role && current.customRole == nil, radius: 16) {
-                VStack(alignment: .leading, spacing: 8) {
-                    Image(systemName: role.systemImage)
-                        .font(.fixed(17, weight: .medium))
-                        .foregroundStyle(Palette.accText)
-                        .frame(width: 34, height: 34)
-                        .background(Palette.accSoft, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
-                    Text(role.label)
-                        .cueFont(.subheadline, weight: .semibold)
-                        .foregroundStyle(Palette.ink)
-                        .multilineTextAlignment(.leading)
-                    Text(role.examples)
-                        .cueFont(.caption)
-                        .foregroundStyle(Palette.ink2)
-                        .multilineTextAlignment(.leading)
-                }
-                .frame(maxWidth: .infinity, minHeight: 112, alignment: .topLeading)
-                .padding(12)
-            }
-        }
-        .buttonStyle(.plain)
-        .accessibilityElement(children: .combine)
-        .accessibilityIdentifier("voiceSetup.role.\(role.id)")
+    private func pick(_ kind: CreatorKind) {
+        profile.answer(.role, with: VoiceOption(id: kind.id, label: kind.title))
+        typesRole = false
     }
 
     // MARK: - Their own
 
-    /// "+ Something else": a few words of their own, when none of the eight is it. The closest of the eight can stay picked beside it.
+    /// "+ Something else": a few words of their own, when no kind in the list is it.
     @ViewBuilder
     private var ownRole: some View {
         if let custom = current.customRole, !typesRole {
@@ -112,25 +77,19 @@ struct VoiceRoleField: View {
         }
     }
 
-    // MARK: - Credential
+    // MARK: - What the videos are for
 
-    /// A short credential, for the kinds of creator whose word carries one ("Registered nurse"). Optional.
-    private var showsCredential: Bool {
-        current.customRole != nil || current.role == .expert || current.role == .educator
-    }
-
-    private var credential: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            VoiceFieldLabel(String(localized: "Your credential"), detail: String(localized: "optional"))
-            VoiceTypedField(
-                placeholder: String(localized: "e.g. Registered nurse"),
-                submit: { text, _ in profile.setCredential(text) }, addLabel: String(localized: "Save"),
-                initialText: current.credential ?? "", clearsWhenAdded: false, identifier: "voice.credential"
+    private var goals: some View {
+        VoiceFieldSection(String(localized: "My videos are for"), detail: String(localized: "up to \(VoiceLimits.contentGoals)")) {
+            VoiceOptionChips(
+                options: ContentGoal.allCases.map { VoiceOption(id: $0.rawValue, label: $0.label) },
+                isSelected: { option in current.contentGoals.contains { $0.rawValue == option.id } },
+                onTap: { option in
+                    guard let goal = ContentGoal(rawValue: option.id) else { return }
+                    if case .limit(let message) = profile.toggleContentGoal(goal) { toast.show(message, kind: .problem) }
+                },
+                identifier: "voice.goal"
             )
-            Text("Cue says it only where it is true of you, and never invents another.")
-                .cueFont(.footnote)
-                .foregroundStyle(Palette.ink2)
-                .padding(.horizontal, 4)
         }
     }
 }

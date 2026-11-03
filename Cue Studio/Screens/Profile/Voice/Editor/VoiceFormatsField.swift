@@ -5,8 +5,8 @@
 
 import SwiftUI
 
-/// Personality · how their videos work: what they film most, how they like to open and how they usually end, and what the videos are for. One
-/// field in the editor; each group is a question of the bank, answered the same way as in the tip.
+/// Personality · how their videos work: what they film most, how they like to open and how they usually end (what the videos are for is asked
+/// with who they are, `VoiceRoleField`). One field in the editor; each group is a question of the bank, answered the same way as in the tip.
 struct VoiceFormatsField: View {
     @Environment(CreatorProfileService.self) private var profile
     @Environment(ToastService.self) private var toast
@@ -17,7 +17,7 @@ struct VoiceFormatsField: View {
     private var current: CreatorProfile { profile.profile }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 22) {
+        VStack(alignment: .leading, spacing: Metrics.questionGap) {
             group(.formats, label: String(localized: "What you film most"), limit: VoiceLimits.formats)
             group(.openings, label: String(localized: "How you like to open"), limit: VoiceLimits.openings)
             // A habit, not a rule (the owner's B11, 02/11/2026): "never" is Avoid's.
@@ -25,7 +25,6 @@ struct VoiceFormatsField: View {
                 .endings, label: String(localized: "How you usually end"), limit: VoiceLimits.endings,
                 note: String(localized: "What you usually do. To never ask viewers for anything, pick Calls to action under Avoid.")
             )
-            goals
         }
     }
 
@@ -34,8 +33,7 @@ struct VoiceFormatsField: View {
     private func group(_ question: VoiceQuestion, label: String, limit: Int, note: String? = nil) -> some View {
         let options = question.options
         let extras = typed(for: question, among: options)
-        return VStack(alignment: .leading, spacing: 8) {
-            VoiceFieldLabel(label, detail: String(localized: "up to \(limit)"))
+        return VoiceFieldSection(label, detail: String(localized: "up to \(limit)")) {
             if let item = item(for: question) {
                 // Openings and endings: "I use" and "I never use" (the owner's item 5).
                 VoiceUseNeverChips(
@@ -118,22 +116,5 @@ struct VoiceFormatsField: View {
 
     private func isStyleName(_ text: String, among options: [VoiceOption]) -> Bool {
         options.contains { VoiceTextValidator.key($0.label) == VoiceTextValidator.key(text) }
-    }
-
-    // MARK: - What the videos are for
-
-    private var goals: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            VoiceFieldLabel(String(localized: "My videos are for"), detail: String(localized: "up to \(VoiceLimits.contentGoals)"))
-            VoiceOptionChips(
-                options: ContentGoal.allCases.map { VoiceOption(id: $0.rawValue, label: $0.label) },
-                isSelected: { option in current.contentGoals.contains { $0.rawValue == option.id } },
-                onTap: { option in
-                    guard let goal = ContentGoal(rawValue: option.id) else { return }
-                    if case .limit(let message) = profile.toggleContentGoal(goal) { toast.show(message, kind: .problem) }
-                },
-                identifier: "voice.goal"
-            )
-        }
     }
 }

@@ -30,6 +30,8 @@ final class VoiceQuestionScheduler {
     private let calendar: Calendar
     /// Debug: every gate but the queue is open (`-uiTestVoiceTip`).
     private let skipsGates: Bool
+    /// The invitation on the first idea sent may show (UI tests: only with `-uiTestVoiceInvite`).
+    private let invitesOnSend: Bool
     /// The script language ("pt-BR"): Settings › Language & Region's Script Language, else the app's. It says which grammar is asked.
     private let scriptLanguage: () -> String?
     private(set) var state: VoiceQuestionState
@@ -44,8 +46,9 @@ final class VoiceQuestionScheduler {
 
     init(
         profile: CreatorProfileService, defaults: UserDefaults = .standard, now: @escaping () -> Date = { .now },
-        calendar: Calendar = .current, skipsGates: Bool = false, scriptLanguage: @escaping () -> String? = { nil }
+        calendar: Calendar = .current, skipsGates: Bool = false, invitesOnSend: Bool = true, scriptLanguage: @escaping () -> String? = { nil }
     ) {
+        self.invitesOnSend = invitesOnSend
         self.profile = profile
         self.scriptLanguage = scriptLanguage
         self.defaults = defaults
@@ -218,6 +221,20 @@ final class VoiceQuestionScheduler {
         // TipKit's store keeps the tips it invalidated: the next ones get new ids.
         tipGeneration += 1
         defaults.set(tipGeneration, forKey: DefaultsKey.voiceTipGeneration)
+    }
+
+    // MARK: - The invitation on the first send
+
+    /// The first idea sent from the AI card while some of the five guided questions are still open invites to finish them first, once
+    /// (the owner, 03/11/2026: "evite repetir o convite a cada envio").
+    var invitesBeforeSending: Bool {
+        invitesOnSend && !state.sendInviteShown && !profile.profile.answeredEverySetupStep
+    }
+
+    /// The invitation was shown, whatever the creator chose: it never comes again.
+    func sendInviteWasShown() {
+        state.sendInviteShown = true
+        save()
     }
 
     // MARK: - Storage

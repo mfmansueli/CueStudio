@@ -59,6 +59,8 @@ import Foundation
 /// - `-uiTestVoyage`: the first voyage (the first video guide) is on; without it no UI test sees its card, strip or tips.
 /// - `-uiTestVoiceTip`: the My Cue Voice tip needs no second day, script, wait or cap (tests of the tip itself); without it the
 ///   tip stays away in UI tests (they open the app on one day).
+/// - `-uiTestVoiceInvite`: the first idea sent from the AI card with My Cue Voice questions open invites to finish them; without it no UI
+///   test sees the invitation.
 /// - `-uiTestStarTransition`: the idea's star transition keeps its real timings (3 s at least); UI tests shorten it otherwise.
 /// - `-uiTestSlowWriting`: with the stub writer, the script's words arrive on the page slowly enough to look at the page mid-writing.
 /// - `-uiTestRealWriting`: the words arrive at the real pace (55 ms a step), and `-uiTestLongScript` makes the stub's script run well past
@@ -102,6 +104,8 @@ import Foundation
 ///   the screen a test goes back to). An introduction a notification asks for (`-uiTestNotificationTap cleanUp`) comes either way.
 /// - `-uiTestTopics <list>`: with `-uiTestInMemory`, the creator holds these topics (comma separated: a first-flight topic by its id, `fitness`,
 ///   or one they typed, `custom:Daily Routine`): Find inspiration's filters with several topics, only typed ones, or none (no argument).
+/// - `-uiTestCreatorKind <id>`: with `-uiTestInMemory`, the creator already said what kind of creator they are (`CreatorKind`, e.g. `lawyer`):
+///   My Cue Voice's setup and tips start at the question after it.
 /// - `-uiTestAppLanguage <lproj>`: with `-uiTestInMemory`, Cue's interface starts in that language
 ///   (as if picked in Language & Region) without changing the simulator's. The interface language
 ///   always lives in memory under `-uiTestInMemory`.
@@ -161,6 +165,8 @@ struct LaunchOptions {
     var appsAreInstalled = false
     /// UI tests of the My Cue Voice tip: its gates are open (`-uiTestVoiceTip`).
     var voiceTipSkipsGates = false
+    /// The invitation to finish My Cue Voice on the first idea sent; UI tests see it only with `-uiTestVoiceInvite`.
+    var invitesVoiceOnSend = true
     /// UI tests of the first voyage: the guide is on (`-uiTestVoyage`); every other UI test runs without it.
     var showsVoyage = false
     /// UI tests of the star transition: it takes its real time (`-uiTestStarTransition`).
@@ -286,6 +292,25 @@ struct LaunchOptions {
         }
         defaults.set(try? JSONEncoder().encode(profile), forKey: DefaultsKey.creatorProfile)
     }
+
+    /// The profile a UI test starts with: `-uiTestTopics`, then `-uiTestCreatorKind`.
+    private static func writeProfile(_ arguments: [String], to defaults: UserDefaults) {
+        func value(_ flag: String) -> String? {
+            arguments.firstIndex(of: flag).flatMap { arguments.indices.contains($0 + 1) ? arguments[$0 + 1] : nil }
+        }
+        if let topics = value("-uiTestTopics") { writeTopics(topics, to: defaults) }
+        if let kind = value("-uiTestCreatorKind") { writeCreatorKind(kind, to: defaults) }
+    }
+
+    /// `-uiTestCreatorKind lawyer`: the profile (the topics' one, if any) holds that kind of creator and its role.
+    private static func writeCreatorKind(_ id: String, to defaults: UserDefaults) {
+        guard let kind = CreatorKind.find(id) else { return }
+        var profile = defaults.data(forKey: DefaultsKey.creatorProfile)
+            .flatMap { try? JSONDecoder().decode(CreatorProfile.self, from: $0) } ?? CreatorProfile()
+        profile.creatorKind = kind.id
+        profile.role = kind.role
+        defaults.set(try? JSONEncoder().encode(profile), forKey: DefaultsKey.creatorProfile)
+    }
     #endif
 
     static func fromProcess() -> LaunchOptions {
@@ -371,9 +396,7 @@ struct LaunchOptions {
             } else {
                 options.defaults.set(SkyDensity.off.rawValue, forKey: DefaultsKey.skyDensity)
             }
-            if let index = arguments.firstIndex(of: "-uiTestTopics"), arguments.indices.contains(index + 1) {
-                Self.writeTopics(arguments[index + 1], to: options.defaults)
-            }
+            Self.writeProfile(arguments, to: options.defaults)
             if let index = arguments.firstIndex(of: "-uiTestUniverse"), arguments.indices.contains(index + 1),
                let kind = UniverseSeed.Kind(rawValue: arguments[index + 1]) {
                 UniverseSeed.apply(kind, to: options.defaults)
@@ -390,6 +413,7 @@ struct LaunchOptions {
             options.platformRules = PlatformRulesService(cacheURL: nil, remoteURL: nil)
             options.showsOnboarding = arguments.contains("-uiTestOnboarding")
             options.voiceTipSkipsGates = arguments.contains("-uiTestVoiceTip")
+            options.invitesVoiceOnSend = arguments.contains("-uiTestVoiceInvite")
             options.showsVoyage = arguments.contains("-uiTestVoyage")
             options.keepsStarTransitionTimings = arguments.contains("-uiTestStarTransition")
             options.animationsOff = arguments.contains("-uiTestFastAnimations")

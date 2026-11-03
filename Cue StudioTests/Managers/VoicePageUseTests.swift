@@ -7,8 +7,8 @@ import Foundation
 import Testing
 @testable import Cue_Studio
 
-/// The owner's items 2 and 10 (02/11/2026): the page in the creator's order, and each row's "where it is used" true of what the prompts carry. An
-/// answer is "used" by a prompt when giving it changes that prompt.
+/// The owner's item 10 (02/11/2026): the page in the creator's order, and every row on it reaching the prompts (the page no longer says where,
+/// the owner, 03/11/2026; the rules stay). An answer is "used" by a prompt when giving it changes that prompt.
 @MainActor
 struct VoicePageUseTests {
     /// Someone who said what kind of creator they are: what every row adds to.
@@ -65,10 +65,10 @@ struct VoicePageUseTests {
     }
 
     @Test(arguments: VoicePageRow.allCases)
-    func eachRowSaysWhereItIsUsed(_ row: VoicePageRow) {
+    func eachRowReachesThePrompts(_ row: VoicePageRow) {
         let with = answered(row)
-        let use = row.use
-        if use == String(localized: "Ideas, and scripts about them") {
+        // A topic: the ideas, and only the scripts about it.
+        if row == .topics {
             #expect(ideas(with) != ideas(base))
             #expect(script(with, idea: "My fitness routine before work") != script(base, idea: "My fitness routine before work"), "a script about it")
             #expect(script(with, idea: "Saving for a house") == script(base, idea: "Saving for a house"), "a script about something else")
@@ -77,10 +77,12 @@ struct VoicePageUseTests {
         // Every other row: the scripts and the ideas.
         #expect(script(with) != script(base), "scripts: \(row)")
         #expect(ideas(with) != ideas(base), "ideas: \(row)")
-        if use == String(localized: "Scripts, ideas and every tool") {
+        // What to avoid: every tool too.
+        if row == .avoid {
             #expect(VoiceBriefBuilder.restrictionLines(for: with.voice) != VoiceBriefBuilder.restrictionLines(for: base.voice), "tools: \(row)")
         }
-        if use == String(localized: "Scripts and ideas, never Ultra AI") || row == .learned {
+        // The proof: never Ultra AI.
+        if row == .examples || row == .stories || row == .learned {
             let ultra = { (profile: CreatorProfile) in VoiceBriefBuilder.ultraProjection(for: profile.voice, register: .casual) }
             #expect(ultra(with) == ultra(base), "Ultra AI: \(row)")
         }
@@ -88,7 +90,6 @@ struct VoicePageUseTests {
 
     @Test func thePhrasesTakeTurnsThreeAtATime() {
         let phrases = ["One", "Two", "Three", "Four", "Five"]
-        #expect(VoicePageRow.phrases.use == String(localized: "Up to \(CatchphraseRotation.perScript) per script, taking turns"))
         #expect(CatchphraseRotation.perScript == 3)
         #expect(CatchphraseRotation.rotates(phrases))
     }
@@ -96,7 +97,8 @@ struct VoicePageUseTests {
     @Test func thePageShowsEveryRowOnceInTheCreatorsOrder() {
         let rows = VoicePageSection.allCases.flatMap(\.rows)
         #expect(rows.count == VoicePageRow.allCases.count && Set(rows) == Set(VoicePageRow.allCases))
-        #expect(VoicePageSection.allCases.first?.rows == [.role])
+        // Who they are and what their videos are for, together (the owner, 03/11/2026).
+        #expect(VoicePageSection.allCases.first?.rows == [.role, .goals])
         #expect(VoicePageSection.proof.rows == [.examples, .learned])
     }
 }

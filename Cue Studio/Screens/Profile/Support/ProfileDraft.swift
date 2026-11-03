@@ -16,6 +16,8 @@ nonisolated struct ProfileDraft: Equatable, Sendable {
     var name: String
     var handle: String
     var role: CreatorRole?
+    /// Their kind out of the long list (`CreatorKind`, its id), with `role` its broad kind.
+    var creatorKind: String?
     /// A creator type of their own ("Podcaster", "Chef"), in place of `role` when set: the one My Cue Voice keeps too.
     var customRole: String?
     var photoData: Data?
@@ -28,6 +30,7 @@ nonisolated struct ProfileDraft: Equatable, Sendable {
         name = profile.name
         handle = profile.handle
         role = profile.role
+        creatorKind = profile.creatorKind
         customRole = profile.customRole
         photoData = profile.photoData
         defaultPlatform = profile.defaultPlatform
@@ -58,8 +61,8 @@ nonisolated struct ProfileDraft: Equatable, Sendable {
     /// The footer under the username while it is wrong: "Use 2 to 24 letters, numbers, . or _".
     var handleError: String? { isHandleValid ? nil : String(localized: "Use 2 to 24 letters, numbers, . or _") }
 
-    /// What the creator type reads as: their own, else the chosen one's name ("Educator"), nil when none.
-    var creatorType: String? { customRole ?? role?.creatorLabel }
+    /// What the creator type reads as: their own, else the chosen one's name ("Lawyer"), nil when none.
+    var creatorType: String? { customRole ?? CreatorKind.find(creatorKind)?.title ?? role?.creatorLabel }
 
     /// Longest creator type of their own.
     static let customRoleLimit = 30
@@ -70,6 +73,7 @@ nonisolated struct ProfileDraft: Equatable, Sendable {
         profile.name = trimmedName
         profile.handle = handle
         profile.role = role
+        profile.creatorKind = creatorKind
         profile.customRole = customRole.map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }.flatMap { $0.isEmpty ? nil : $0 }
         profile.photoData = photoData
         profile.defaultPlatform = defaultPlatform

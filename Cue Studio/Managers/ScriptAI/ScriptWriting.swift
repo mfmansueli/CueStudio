@@ -40,10 +40,17 @@ protocol ScriptWriting: AnyObject {
     /// topics apart answers as `themeIdeas(for:)` does.
     func suggestIdeas(slots: [IdeaSlot], language: CueLanguage?, voice: CreatorVoice?, inspiration: [String]) async throws -> [ThemeIdea]
 
-    /// `suggestIdeas` as whole briefs (`ThemeIdea.brief`), asked `priority` (`IdeaRequestPriority`): a prefetch never makes a script wait.
+    /// `suggestIdeas` as whole briefs (`ThemeIdea.brief`), asked `priority` (`IdeaRequestPriority`): a prefetch never makes a script wait. They are
+    /// for `creator` (who they are, what their videos are for), when the creator said.
     func suggestIdeas(
-        slots: [IdeaSlot], language: CueLanguage?, voice: CreatorVoice?, inspiration: [String], priority: IdeaRequestPriority
+        slots: [IdeaSlot], language: CueLanguage?, voice: CreatorVoice?, creator: IdeaCreator?, inspiration: [String], priority: IdeaRequestPriority
     ) async throws -> [ThemeIdea]
+
+    /// The concrete things `topic`'s videos can be about in `language`, for `creator`'s viewers and clear of the creator's `others` topics, for its
+    /// ideas to be made around (`IdeaIngredients`). Throws when they can't be written now; the ideas are then asked without them.
+    func ideaIngredients(
+        for topic: IdeaTopic, apartFrom others: [IdeaTopic], creator: IdeaCreator?, language: CueLanguage
+    ) async throws -> IdeaIngredients
 
     /// Why Apple Intelligence can't write in `languages` right now (a translation lists both), told before
     /// anything is sent; nil when it can. Being available says nothing about a language.
@@ -69,9 +76,16 @@ extension ScriptWriting {
 
     /// A writer with no queue of its own (tests, the structured draft) answers every request the same way.
     func suggestIdeas(
-        slots: [IdeaSlot], language: CueLanguage?, voice: CreatorVoice?, inspiration: [String], priority: IdeaRequestPriority
+        slots: [IdeaSlot], language: CueLanguage?, voice: CreatorVoice?, creator: IdeaCreator?, inspiration: [String], priority: IdeaRequestPriority
     ) async throws -> [ThemeIdea] {
         try await suggestIdeas(slots: slots, language: language, voice: voice, inspiration: inspiration)
+    }
+
+    /// For no one in particular (the device measurements).
+    func suggestIdeas(
+        slots: [IdeaSlot], language: CueLanguage?, voice: CreatorVoice?, inspiration: [String], priority: IdeaRequestPriority
+    ) async throws -> [ThemeIdea] {
+        try await suggestIdeas(slots: slots, language: language, voice: voice, creator: nil, inspiration: inspiration, priority: priority)
     }
 
     /// A writer that edits in one piece reports it as one part, done.

@@ -15,7 +15,6 @@ struct CreatorProfileVoiceV2Tests {
     @Test func everyOlderProfileOpensWithTheNewFieldsEmpty() throws {
         for (name, json) in [("v1", CreatorProfileFixtures.v1), ("v29", CreatorProfileFixtures.v29), ("v30", CreatorProfileFixtures.v30)] {
             let profile = try CreatorProfileFixtures.decode(json)
-            #expect(profile.voiceTopics.isEmpty, "\(name)")
             #expect(profile.topicDetails.isEmpty, "\(name)")
             #expect(profile.audienceGroup == nil && profile.audienceNote == nil, "\(name)")
             #expect(profile.watchReasons.isEmpty && profile.contentGoals.isEmpty, "\(name)")
@@ -44,7 +43,7 @@ struct CreatorProfileVoiceV2Tests {
         let profile = try CreatorProfileFixtures.decode(CreatorProfileFixtures.v29)
         #expect(profile.style.swearing == .mild)
         #expect(profile.customTopics == ["Chess"])
-        #expect(profile.topics.map(\.label) == ["Tech & AI", "Productivity & career", "Chess"])
+        #expect(profile.topics.map(\.label) == ["Tech & AI", "Career & productivity", "Chess"])
         #expect(profile.hasMinimumVoice)
     }
 
@@ -72,7 +71,7 @@ struct CreatorProfileVoiceV2Tests {
 
     @Test func theNewFieldsRoundTrip() throws {
         var profile = try CreatorProfileFixtures.decode(CreatorProfileFixtures.v30)
-        profile.voiceTopics = [.pets, .gaming]
+        profile.niches = [.pets, .gaming]
         profile.topicDetails = ["fitness": ["Yoga & stretching", "Sleep & recovery"], "pets": ["Dogs"], "Chess club": ["Openings"]]
         profile.audienceGroup = .parents
         profile.audienceNote = "Parents of toddlers"
@@ -96,12 +95,12 @@ struct CreatorProfileVoiceV2Tests {
 
     @Test func aValueFromANewerBuildReadsAsAbsentAndTheProfileStillOpens() throws {
         let json = """
-        {"name":"Ana","niches":["fitness"],"voiceTopics":["gaming","hologram"],"audienceGroup":"aliens","speaksAs":"they",
+        {"name":"Ana","niches":["fitness","hologram"],"voiceTopics":["gaming","hologram"],"audienceGroup":"aliens","speaksAs":"they",
          "watchReasons":["learn","teleport"],"contentGoals":["sell","conquer"]}
         """
         let profile = try CreatorProfileFixtures.decode(json)
         #expect(profile.name == "Ana")
-        #expect(profile.voiceTopics == [.gaming])
+        #expect(profile.niches == [.fitness, .gaming], "a theme only My Cue Voice offered before is a theme like the others")
         #expect(profile.audienceGroup == nil)
         #expect(profile.speaksAs == nil)
         #expect(profile.watchReasons == [.learn])
@@ -124,10 +123,11 @@ struct CreatorProfileVoiceV2Tests {
 
     @Test func subtopicsAreTidiedWhenRead() throws {
         let json = """
-        {"topicDetails":{"fitness":[" Running ","running","","Yoga & stretching","Home workouts","Weight loss"],"pets":[],"faith":["  "]}}
+        {"topicDetails":{"fitness":[" Running ","running","","Yoga & stretching","Home workouts","Weight loss","A","B","C","D","E","F","G"],
+         "pets":[],"faith":["  "]}}
         """
         let profile = try CreatorProfileFixtures.decode(json)
-        #expect(profile.topicDetails == ["fitness": ["Running", "Yoga & stretching", "Home workouts"]])
+        #expect(profile.topicDetails == ["fitness": ["Running", "Yoga & stretching", "Home workouts", "Weight loss", "A", "B", "C", "D", "E", "F"]])
     }
 
     @Test func typedTextIsTrimmedAndEmptyIsNil() throws {
@@ -140,24 +140,38 @@ struct CreatorProfileVoiceV2Tests {
 
     // MARK: - Topics
 
-    @Test func topicsAreThePickedOnesThenTheVoiceOnesThenTheTypedOnes() {
-        let profile = CreatorProfile(niches: [.tech], customTopics: ["Chess"], voiceTopics: [.pets])
-        #expect(profile.topics == [.niche(.tech), .extra(.pets), .custom("Chess")])
+    @Test func topicsAreThePickedThemesThenTheTypedOnes() {
+        let profile = CreatorProfile(niches: [.tech, .pets], customTopics: ["Chess"])
+        #expect(profile.topics == [.niche(.tech), .niche(.pets), .custom("Chess")])
         #expect(profile.topicCount == 3)
     }
 
-    /// A topic only the voice offers tells the AI what the videos are about and is never a world in the universe.
+    /// The owner (03/11/2026): every theme is a broad one the first flight offers, and every one is a world in the universe.
     @MainActor
-    @Test func aTopicOnlyTheVoiceOffersIsNeverAWorldInTheUniverse() {
+    @Test func everyThemeIsAWorldInTheUniverse() {
         let defaults = TestDefaults()
         defer { defaults.tearDown() }
         let profile = CreatorProfileService(defaults: defaults.defaults)
-        profile.profile = CreatorProfile(niches: [.tech], customTopics: ["Chess"], voiceTopics: [.pets, .gaming])
+        profile.profile = CreatorProfile(niches: [.law, .pets], customTopics: ["Chess"])
         let tagging = TopicTaggingService(
             library: ScriptLibraryService(repository: FakeScriptRepository(), now: { .now }), profile: profile,
             personalization: PersonalizationService(defaults: defaults.defaults), writer: FakeScriptWriter()
         )
-        #expect(tagging.topics == [.niche(.tech), .custom("Chess")])
+        #expect(tagging.topics == [.niche(.law), .niche(.pets), .custom("Chess")])
+    }
+
+    /// Before 03/11/2026 fifteen topics were only My Cue Voice's (`voiceTopics`): they open as themes, and "Study & exams" and "Languages" as
+    /// subtopics of Education, with what was kept under them.
+    @Test func theTopicsOnlyMyCueVoiceOfferedOpenAsThemes() throws {
+        let json = """
+        {"niches":["tech"],"voiceTopics":["pets","study","languages"],"topicDetails":{"study":["Exam prep"],"languages":["Italian"],"pets":["Dogs"]}}
+        """
+        let profile = try CreatorProfileFixtures.decode(json)
+        #expect(profile.niches == [.tech, .pets, .education])
+        #expect(profile.topicDetails["education"] == ["Study & exams", "Exam prep", "Languages", "Italian"])
+        #expect(profile.topicDetails["pets"] == ["Dogs"] && profile.topicDetails["study"] == nil)
+        let written = try JSONSerialization.jsonObject(with: JSONEncoder().encode(profile)) as? [String: Any]
+        #expect(written?["voiceTopics"] == nil, "written as themes from now on")
     }
 
     /// A Scripts row's ✦ (`ScriptRow`): one of the creator's topics, in its world's colour; never "no topic" nor one they no longer have.
@@ -181,10 +195,10 @@ struct CreatorProfileVoiceV2Tests {
         }
     }
 
-    @Test func aTopicOnlyTheVoiceOffersIsAnAnswer() {
+    @Test func aThemeOfAnyKindIsAnAnswer() {
         var profile = CreatorProfile(role: .business, sounds: [.casual], confirmedVoiceSteps: [.audience, .tone])
         #expect(!profile.hasAnswered(.niche))
-        profile.voiceTopics = [.realEstate]
+        profile.niches = [.realEstate]
         #expect(profile.hasAnswered(.niche))
         #expect(profile.isFilled(.topics))
     }
@@ -211,14 +225,14 @@ struct CreatorProfileVoiceV2Tests {
 
     @Test func theVoiceCarriesTheNewFieldsAndTheTopicsWithTheirSubtopics() {
         let profile = CreatorProfile(
-            niches: [.travel], customTopics: ["Van life"], role: .brands,
-            voiceTopics: [.cars], topicDetails: ["travel": ["Cheap flights"]], audienceGroup: .youngAdults, audienceNote: "Gap-year people",
+            niches: [.travel, .cars], customTopics: ["Van life"], role: .brands,
+            topicDetails: ["travel": ["Cheap flights"]], audienceGroup: .youngAdults, audienceNote: "Gap-year people",
             watchReasons: [.solveProblem], contentGoals: [.sell], customRole: "Travel photographer", credential: "Pilot", speaksAs: .i
         )
         let voice = profile.voice
         #expect(voice.topics == [
             VoiceTopicEntry(topic: .niche(.travel), subtopics: ["Cheap flights"]),
-            VoiceTopicEntry(topic: .extra(.cars)),
+            VoiceTopicEntry(topic: .niche(.cars)),
             VoiceTopicEntry(topic: .custom("Van life")),
         ])
         #expect(voice.speaksAs == .i)

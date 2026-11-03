@@ -34,8 +34,10 @@ final class IdeaSuggestionService {
     }
 
     /// Fewer ideas than this ahead of the one shown (on the card, or for the topic Find inspiration is showing), and the next six are asked for: a
-    /// creator who taps fast never reaches the end. A batch takes seconds on an iPhone; reading a card takes a few.
-    static let lowWater = 4
+    /// creator who taps fast never reaches the end. A batch takes about twelve seconds on an iPhone (eight to write, four for Private Cloud Compute
+    /// to edit it outside English: `IdeaEdits`), reading a card a few: the next batch is asked at the first tap, so about two are always ahead.
+    /// Six a request, not twelve: the iPhone model's window holds the prompt and six briefs, and it writes long lists worse.
+    static let lowWater = 8
     /// The most ideas remembered as shown, to be told apart from the new ones.
     static let memory = 60
     /// A note from the Logbook comes up after this many ideas of the model's.
@@ -89,6 +91,8 @@ final class IdeaSuggestionService {
     private let now: () -> Date
     @ObservationIgnored private var occasionCache: (key: String, occasions: [IdeaOccasion])?
     private let defaults: UserDefaults
+    /// The concrete subjects of each topic's ideas (`IdeaIngredientStore`).
+    private let ingredients: IdeaIngredientStore
     /// How often a refill that waits for the model looks again whether it is free.
     var busyRetry: Duration = .milliseconds(600)
 
@@ -112,6 +116,7 @@ final class IdeaSuggestionService {
         self.region = region
         self.now = now
         self.defaults = defaults
+        ingredients = IdeaIngredientStore(defaults: defaults, now: now)
         signature = currentSignature
         restore()
     }
@@ -505,6 +510,8 @@ final class IdeaSuggestionService {
         let asked = signature
         let language = interfaceLanguage()
         let voice = profile.writesInMyVoice ? profile.profile.voice(inLanguage: language?.locale.language.languageCode?.identifier) : nil
+        // Who they are and what for goes with the topics, the voice on or off: it says what the ideas are for, not how they sound.
+        let creator = profile.profile.ideaCreator
         // What came before, by title alone for what an older version kept, by title, angle and opening line for the rest.
         let known = seen.filter { title in !echoes.contains { $0.title == IdeaSimilarity.words(in: title) } }.map(IdeaEcho.init(title:))
             + echoes + pool.map(IdeaEcho.init)
@@ -515,12 +522,19 @@ final class IdeaSuggestionService {
         var new: [ThemeIdea] = []
         var failed = false
         for _ in 0..<2 where new.count < 4 {
-            let slots = currentSignals.tie(taste.slots(round: round, among: topics), round: round)
+            // Joined among all the creator's topics: Find inspiration's one topic still meets the others.
+            let mine = profile.profile.ideaTopics
+            let tied = currentSignals.tie(taste.slots(round: round, among: topics), round: round)
+            let turn = round
             round += 1
+            let shaped = IdeaSlot.opening(IdeaSlot.bridging(tied, among: mine, round: turn), round: turn)
+            let slots = IdeaSlot.focusing(await seasoned(shaped, in: language, among: mine, for: creator), round: turn)
+            guard !Task.isCancelled else { return asked == signature ? .cancelled : .stale }
+            guard asked == signature else { return .stale }
             let fresh: [ThemeIdea]
             do {
                 fresh = try await writer.suggestIdeas(
-                    slots: slots, language: language, voice: voice, inspiration: inspiration(), priority: priority
+                    slots: slots, language: language, voice: voice, creator: creator, inspiration: inspiration(), priority: priority
                 )
             } catch is CancellationError {
                 return asked == signature ? .cancelled : .stale
@@ -557,6 +571,35 @@ final class IdeaSuggestionService {
         return .added
     }
 
+    /// `slots`, each around a subject of its topic's ingredients (`IdeaIngredientStore`): the topics without them this week are asked for them
+    /// first, all at once (about two seconds), once a week, clear of the creator's other topics (`mine`). Where they can't be written, the slots
+    /// go as they were.
+    private func seasoned(
+        _ slots: [IdeaSlot], in language: CueLanguage?, among mine: [IdeaTopic], for creator: IdeaCreator?
+    ) async -> [IdeaSlot] {
+        guard let language else { return slots }
+        let due = ingredients.due(slots.filter { $0.tie == nil }.map(\.topic), in: language, for: creator)
+        let writer = writer
+        let requests = due.map { topic in
+            (topic, Task {
+                try await writer.ideaIngredients(for: topic, apartFrom: mine.filter { $0 != topic }, creator: creator, language: language)
+            })
+        }
+        await withTaskCancellationHandler {
+            for (topic, request) in requests {
+                if let found = try? await request.value {
+                    ingredients.keep(found, for: topic, in: language, creator: creator)
+                } else if !Task.isCancelled {
+                    // A refill stood aside for a script: that is no answer, and the topic is asked again next time.
+                    ingredients.noteFailure(for: topic, in: language, creator: creator)
+                }
+            }
+        } onCancel: {
+            for (_, request) in requests { request.cancel() }
+        }
+        return ingredients.seasoned(slots, in: language, for: creator)
+    }
+
     // MARK: - Topics changed
 
     /// What the ideas were written for: the topics with their subtopics, the language they are in and whether they are in the creator's voice.
@@ -567,7 +610,9 @@ final class IdeaSuggestionService {
         let encoded = try? encoder.encode(profile.profile)
         let digest = encoded.map { SHA256.hash(data: $0).map { String(format: "%02x", $0) }.joined() } ?? ""
         let voice = profile.writesInMyVoice ? digest : "plain"
-        return [topics, interfaceLanguage()?.rawValue ?? "", voice].joined(separator: "|")
+        // Who they are and what for, when they said: a new kind of creator makes the ideas before about someone else.
+        let creator = [profile.profile.ideaCreator?.promptLine].compactMap { $0 }
+        return ([topics, interfaceLanguage()?.rawValue ?? "", voice] + creator).joined(separator: "|")
     }
 
     /// Other topics, language or voice make the ideas written before about something else: they go, what was being asked for is cancelled, and

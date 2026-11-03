@@ -13,7 +13,8 @@
 #                                    (VoiceFollowingSpeechTests, VoiceFollowingLatencyTests, CaptionSpeechTests, EditByTextDeviceTests, SpeechResultsDeviceTests,
 #                                    SpokenLanguageDeviceTests, LanguageModelDeviceTests, ScriptGenerationFlowDeviceTests, VoicePersonaDeviceTests,
 #                                    PromptBudgetDeviceTests, WritingImportDeviceTests, PlatformLengthDeviceTests,
-#                                    LengthVariantsDeviceTests, ScriptToolsDeviceTests, IdeaRelevanceDeviceTests, IdeaSuggestionsDeviceTests, CreatorDayDeviceTests,
+#                                    LengthVariantsDeviceTests, ScriptToolsDeviceTests, IdeaRelevanceDeviceTests, IdeaSuggestionsDeviceTests, IdeaLanguageDeviceTests,
+#                                    CreatorDayDeviceTests,
 #                                    InspirationDeviceTests, QuickEditPreviewLatencyTests, EditorExportDeviceTests, SkinSmoothingDeviceTests,
 #                                    BackgroundDeviceTests, ContinuedTaskDeviceTests, MotionAnalysisDeviceTests, EditorMotionDeviceTests,
 #                                    SplitScreenDeviceTests, BlurAreaDeviceTests, BlurTrackingDeviceTests, CustomFontStoreTests,
@@ -100,7 +101,7 @@ case "$mode" in
         case "${ids[0]}" in
             VoiceFollowingSpeechTests* | VoiceFollowingLatencyTests* | CaptionSpeechTests* | SpokenLanguageDeviceTests* | EditByTextDeviceTests* | \
             SpeechResultsDeviceTests*) export TEST_RUNNER_CUE_SPEECH_E2E=1 ;;
-            LanguageModelDeviceTests* | ScriptGenerationFlowDeviceTests* | VoicePersonaDeviceTests* | PromptBudgetDeviceTests* | WritingImportDeviceTests* | PlatformLengthDeviceTests* | LengthVariantsDeviceTests* | ScriptToolsDeviceTests* | IdeaRelevanceDeviceTests* | IdeaSuggestionsDeviceTests* | CreatorDayDeviceTests* | InspirationDeviceTests* | ScriptQualityDeviceTests* | CreatorInputsDeviceTests*)
+            LanguageModelDeviceTests* | ScriptGenerationFlowDeviceTests* | VoicePersonaDeviceTests* | PromptBudgetDeviceTests* | WritingImportDeviceTests* | PlatformLengthDeviceTests* | LengthVariantsDeviceTests* | ScriptToolsDeviceTests* | IdeaRelevanceDeviceTests* | IdeaSuggestionsDeviceTests* | IdeaLanguageDeviceTests* | CreatorDayDeviceTests* | InspirationDeviceTests* | ScriptQualityDeviceTests* | CreatorInputsDeviceTests*)
                 export TEST_RUNNER_CUE_AI_E2E=1 ;;
             QuickEditPreviewLatencyTests*) export TEST_RUNNER_CUE_PREVIEW_LATENCY=1 ;;
             # The six text effects: painting, a frame of their way in, the picture a gesture picks up, three at once in real time.

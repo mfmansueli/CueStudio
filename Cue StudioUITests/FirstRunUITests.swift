@@ -130,11 +130,15 @@ final class FirstRunUITests: XCTestCase {
 
         // 01 · the kind of creator (Continue waits for a pick). 02 · topics. 03 · audience. 04 · tone.
         chip.tap()
-        XCTAssertTrue(app.buttons["voiceSetup.role.personal"].exists(within: 5))
+        XCTAssertTrue(app.buttons["voiceSetup.role.lifestyleCreator"].exists(within: 5))
         let next = app.buttons["voiceSetup.saveButton"]
         XCTAssertTrue(next.exists)
         XCTAssertFalse(next.isEnabled)
-        app.buttons["voiceSetup.role.personal"].tap()
+        app.buttons["voiceSetup.role.lifestyleCreator"].tap()
+        XCTAssertTrue(next.isEnabled)
+        next.tap()
+        // How scripts talk about them: optional, Continue goes on as it is.
+        XCTAssertTrue(app.buttons["voice.speaksAs.i"].exists(within: 5))
         XCTAssertTrue(next.isEnabled)
         next.tap()
         XCTAssertTrue(app.buttons["voiceSetup.niche.lifestyle"].exists(within: 5))
@@ -174,6 +178,7 @@ final class FirstRunUITests: XCTestCase {
         app.buttons["ideaCard.voiceChip"].tap()
         XCTAssertTrue(app.buttons["voiceSetup.skipRole"].exists(within: 5))
         app.buttons["voiceSetup.skipRole"].tap()
+        app.buttons["voiceSetup.saveButton"].tap()
         XCTAssertTrue(app.buttons["voiceSetup.niche.lifestyle"].exists(within: 5))
         app.buttons["voiceSetup.niche.lifestyle"].tap()
         app.buttons["voiceSetup.saveButton"].tap()
@@ -220,6 +225,7 @@ final class FirstRunUITests: XCTestCase {
         XCTAssertTrue(chip.exists(within: 15))
         chip.tap()
         app.buttons["voiceSetup.skipRole"].tap()
+        app.buttons["voiceSetup.saveButton"].tap()
         app.buttons["voiceSetup.niche.tech"].tap()
         app.buttons["voiceSetup.saveButton"].tap()
         app.buttons["voiceSetup.audience.parents"].tap()
@@ -234,12 +240,81 @@ final class FirstRunUITests: XCTestCase {
         XCTAssertEqual(chip.value as? String, "30%")
         XCTAssertFalse(app.switches["ideaCard.voiceToggle"].exists)
 
-        // Tapping the chip opens My Cue Voice (9.3): the three layers, each row with its own sheet.
+        // Tapping the chip goes on with the questions still open, one per screen (the owner, 03/11/2026: Profile › My Cue Voice opens from
+        // here only once the five are answered).
         chip.tap()
-        XCTAssertTrue(element(app, "voicePage").exists(within: 5))
-        app.buttons["voicePage.done"].tap()
+        XCTAssertTrue(element(app, "voiceSetup.sheet").exists(within: 5))
+        XCTAssertFalse(element(app, "voicePage").exists)
+        // From where they stopped: the kind of creator (skipped) and what inside the theme (nothing yet).
+        XCTAssertEqual(element(app, "voiceSetup.progress").label, "Question 1 of 2")
+        XCTAssertTrue(app.buttons["voiceSetup.skipRole"].exists)
+        app.buttons["voiceSetup.skipRole"].tap()
+        XCTAssertTrue(app.buttons["voiceSetup.niche.tech"].isSelected, "what was answered is in place")
+        app.buttons["sheet.closeButton"].tap()
         XCTAssertTrue(chip.exists(within: 5))
         XCTAssertEqual(chip.value as? String, "30%")
+    }
+
+    /// The five questions answered, ✦ Voice opens Profile › My Cue Voice, where the answers are looked at and changed (the owner, 03/11/2026).
+    func testOnceTheFiveAreAnsweredTheVoiceChipOpensMyCueVoiceOnProfile() {
+        let app = CueApp.launch(seeded: false, extraArguments: ["-uiTestTopics", "tech", "-uiTestCreatorKind", "developer"])
+        let chip = app.buttons["ideaCard.voiceChip"]
+        XCTAssertTrue(chip.exists(within: 15))
+        chip.tap()
+        // The kind of creator is known: how scripts talk about them comes first, then what inside the theme.
+        XCTAssertTrue(app.buttons["voice.speaksAs.i"].exists(within: 5))
+        app.buttons["voiceSetup.saveButton"].tap()
+        let subtopic = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@", "voice.subtopic.tech.")).firstMatch
+        XCTAssertTrue(subtopic.exists(within: 5))
+        subtopic.tap()
+        app.buttons["voiceSetup.saveButton"].tap()
+        app.buttons["voiceSetup.audience.parents"].tap()
+        app.buttons["voiceSetup.level.some"].tap()
+        app.buttons["voiceSetup.saveButton"].tap()
+        app.buttons["voiceSetup.tone.casual"].tap()
+        app.buttons["voiceSetup.saveButton"].tap()
+        XCTAssertTrue(chip.exists(within: 5))
+        chip.tap()
+        XCTAssertTrue(element(app, "voicePage").exists(within: 5))
+        XCTAssertTrue(element(app, "voicePage.status").exists)
+        EditorApp.capture(app, "voice-page-status")
+        XCTAssertTrue(app.cueTabBar.buttons["Profile"].isSelected)
+    }
+
+    /// The first idea sent with questions open invites to finish them (the owner, 03/11/2026): "Continue answering" goes on from where the
+    /// creator stopped, the idea waits in the field, and the invitation never comes again.
+    func testTheFirstIdeaSentWithQuestionsOpenInvitesToFinishThemOnce() {
+        let app = CueApp.launch(seeded: false, extraArguments: ["-uiTestVoiceInvite"])
+        let field = element(app, "ideaCard.field")
+        XCTAssertTrue(field.exists(within: 15))
+        field.tap()
+        field.typeText("Carnival in Salvador")
+        app.buttons["ideaCard.submit"].tap()
+        XCTAssertTrue(element(app, "voiceInvite").exists(within: 5))
+        XCTAssertTrue(app.buttons["voiceInvite.write"].exists)
+        sleep(1) // the rows come in one after the other
+        EditorApp.capture(app, "voice-invite")
+        app.buttons["voiceInvite.answer"].tap()
+        XCTAssertTrue(app.buttons["voiceSetup.skipRole"].exists(within: 5), "from where they stopped: the kind of creator")
+        app.buttons["sheet.closeButton"].tap()
+        XCTAssertTrue(element(app, "ideaCard.field").exists(within: 5))
+        XCTAssertTrue((element(app, "ideaCard.field").value as? String)?.contains("Carnival in Salvador") == true, "the idea waits")
+        app.buttons["ideaCard.submit"].tap()
+        XCTAssertFalse(element(app, "voiceInvite").exists(within: 2), "never again")
+        XCTAssertTrue(element(app, "page.editor").exists(within: 15))
+    }
+
+    /// "Write my script now": the idea goes as it is.
+    func testWriteMyScriptNowSendsTheIdeaAsItIs() {
+        let app = CueApp.launch(seeded: false, extraArguments: ["-uiTestVoiceInvite"])
+        let field = element(app, "ideaCard.field")
+        XCTAssertTrue(field.exists(within: 15))
+        field.tap()
+        field.typeText("Carnival in Salvador")
+        app.buttons["ideaCard.submit"].tap()
+        XCTAssertTrue(element(app, "voiceInvite").exists(within: 5))
+        app.buttons["voiceInvite.write"].tap()
+        XCTAssertTrue(element(app, "page.editor").exists(within: 15))
     }
 
     // MARK: - Dictation

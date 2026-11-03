@@ -189,7 +189,7 @@ struct ScriptContextTests {
 
     @Test func everythingTheCreatorGaveReachesOneRequestInOrderOfWhoSaysWhat() throws {
         var profile = VoicePersonas.yogaTeacher.profile
-        profile.voiceTopics = [.pets]
+        profile.niches += [.pets]
         profile.topicDetails = ["fitness": ["Yoga & stretching"]]
         let request = request("How to start a practice", platform: .shorts, format: .tutorial, voice: profile.voice)
         let instructions = ScriptPromptBuilder.instructions(for: request)
@@ -197,7 +197,7 @@ struct ScriptContextTests {
         let platform = try #require(instructions.range(of: "Platform: YouTube Shorts")?.lowerBound)
         let voice = try #require(instructions.range(of: "Write in the creator's own voice.")?.lowerBound)
         #expect(platform < voice, "where it is posted comes before who is posting")
-        #expect(instructions.contains("Topics: fitness and wellness (Yoga & stretching); pets and animals."))
+        #expect(instructions.contains("Topics: fitness and training (Yoga & stretching); pets and animals."))
         #expect(prompt.contains("Write a tutorial script for YouTube Shorts."))
         #expect(prompt.contains("The video: How to start a practice"))
         #expect(instructions.count + prompt.count < 3_500, "a small model's room: \(instructions.count + prompt.count) characters")

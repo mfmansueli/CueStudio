@@ -8,16 +8,26 @@ import Testing
 
 @Suite("ThemeCatalog")
 struct ThemeCatalogTests {
-    @Test func everyFirstFlightTopicHasSixStartersAndTheOldOnesKeepTheirThree() {
-        for niche in Niche.offered {
+    @Test func everyStockedThemeHasSixStartersAndWellnessAndEducationTheirThree() {
+        for niche in ThemeCatalog.stocked {
             #expect(ThemeCatalog.written(for: niche).count == 6, "\(niche)")
         }
         #expect(ThemeCatalog.written(for: .wellness).count == 3)
         #expect(ThemeCatalog.written(for: .education).count == 3)
     }
 
-    @Test func theLibrarysIdeasComeAfterTheWrittenOnesAndNoneRepeats() {
+    /// The themes added on 03/11/2026 have no starters of their own yet: theirs are made from the theme's name and subtopics.
+    @Test func everyThemeHasStartersAboutItself() {
         for niche in Niche.offered {
+            let topic = IdeaTopic(name: niche.promptName, label: niche.label, niche: niche)
+            let ideas = ThemeCatalog.ideas(for: topic)
+            #expect(ideas.count >= 3, "\(niche)")
+            #expect(ideas.allSatisfy { $0.niche == niche && $0.brief?.topic == niche.promptName }, "\(niche)")
+        }
+    }
+
+    @Test func theLibrarysIdeasComeAfterTheWrittenOnesAndNoneRepeats() {
+        for niche in ThemeCatalog.stocked {
             let written = ThemeCatalog.written(for: niche)
             let all = ThemeCatalog.ideas(for: niche)
             #expect(Array(all.prefix(written.count)) == written, "\(niche)")

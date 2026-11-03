@@ -18,8 +18,9 @@ nonisolated enum VoiceLimits {
     static let phraseLength = 40
     static let formats = 3
     static let avoid = 3
-    /// Subtopics kept under each topic.
-    static let details = 3
+    /// Subtopics kept under each topic: the first flight asks only broad themes, and this is where the creator says what inside them (the owner,
+    /// 03/11/2026: "and more if they want").
+    static let details = 10
     static let watchReasons = WatchReason.limit
     static let contentGoals = ContentGoal.limit
     /// Scripts the creator approved ("Sounds like me") that Cue keeps to learn from; the oldest goes when a fourth comes.

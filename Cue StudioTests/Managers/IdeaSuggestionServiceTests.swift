@@ -79,7 +79,7 @@ struct IdeaSuggestionServiceTests {
     }
 
     @Test func aCreatorWhoHoldsOnlyTheirOwnTopicsGetsStartersAboutThemNotAboutSomethingElse() {
-        let rig = rig { $0.customTopics = ["Daily Routine"]; $0.voiceTopics = [.languages] }
+        let rig = rig { $0.customTopics = ["Daily Routine", "Italian lessons"] }
         defer { rig.defaults.tearDown() }
         let first = rig.service.current
         #expect(first?.topic != nil, "made from one of their topics, not a first-flight niche")
@@ -126,9 +126,8 @@ struct IdeaSuggestionServiceTests {
         defer { rig.defaults.tearDown() }
         rig.writer.suggestionBatches = [batch("First"), batch("Second")]
         await rig.service.refill()
-        // Six ideas, one shown: five ahead is enough. Two taps and four are left: the next six are on their way.
-        rig.service.another()
         #expect(rig.writer.suggestionRequests.count == 1)
+        // Six ideas, one shown: one tap and four are left, fewer than two batches' worth: the next six are on their way.
         rig.service.another()
         while rig.writer.suggestionRequests.count < 2 { await Task.yield() }
         while rig.service.isRefilling { await Task.yield() }

@@ -108,12 +108,12 @@ nonisolated enum QualityProfiles {
         language: .spanish,
         full: complete(
             CreatorProfile(
-                customTopics: ["Cerámica artesanal"], phrases: ["Hola, familia."], role: .business, sounds: [.warmCalm, .casual],
+                niches: [.business], customTopics: ["Cerámica artesanal"], phrases: ["Hola, familia."], role: .business, sounds: [.warmCalm, .casual],
                 confirmedVoiceSteps: [.audience, .tone], openings: ["Story opener"], endings: ["Follow for more"], formats: [.story, .tutorial],
                 style: VoiceDelivery(energy: .balanced, sentences: .mixed, words: .plain, swearing: .never), avoid: ["Hype words"],
                 reach: VoiceReach(platforms: [.reels], length: .thirtyToSixty, humor: .noHumor), audienceLevel: .new,
                 examples: [VoiceExample(text: "Hola, familia. Cada taza que sale de nuestro taller pasa por nuestras manos tres veces. Nosotros la tornamos, la esmaltamos y la revisamos antes de enviarla.")],
-                voiceTopics: [.business], topicDetails: ["Cerámica artesanal": ["Tazas", "Esmaltes"]], audienceGroup: .localCommunity,
+                topicDetails: ["Cerámica artesanal": ["Tazas", "Esmaltes"]], audienceGroup: .localCommunity,
                 watchReasons: [.getInspired, .decideToBuy], contentGoals: [.sell, .community], speaksAs: .we,
                 approvedSamples: [VoiceExample(text: "Hola, familia. Hoy les contamos por qué nuestras tazas tardan dos semanas. Nosotros dejamos secar cada pieza despacio, porque si la apuramos, se agrieta en el horno. Síguenos para ver el proceso completo.", source: "My scripts")]
             ),

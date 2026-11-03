@@ -126,4 +126,27 @@ struct CreatorProfileServiceTests {
         #expect(reloaded.profile.sounds.isEmpty && reloaded.profile.reach.humor == .little && reloaded.profile.style.energy == .high)
         #expect(reloaded.profile.vocabulary == .genZ)
     }
+
+    /// "Clear my answers" (the owner, 03/11/2026): the voice starts over, the themes and who they are on Profile stay.
+    @Test func clearingTheVoiceKeepsTheThemesAndStartsTheRestOver() {
+        let store = TestDefaults()
+        defer { store.tearDown() }
+        let service = CreatorProfileService(defaults: store.defaults)
+        service.profile.name = "Maya Reyes"
+        service.profile.niches = [.food, .travel]
+        service.profile.customTopics = ["Chess"]
+        service.profile.creatorKind = "chef"
+        service.profile.phrases = ["Okay, real talk."]
+        service.profile.speaksAs = .we
+        service.profile.topicDetails[VoiceTopicRef.niche(.food).id] = ["Baking"]
+        service.profile.examples = [VoiceExample(text: "So here’s the thing.")]
+        service.profile.confirm(.audience)
+        service.profile.confirm(.tone)
+        service.clearVoice()
+        let cleared = CreatorProfileService(defaults: store.defaults).profile
+        #expect(cleared.name == "Maya Reyes" && cleared.niches == [.food, .travel] && cleared.customTopics == ["Chess"])
+        #expect(cleared.creatorKind == nil && cleared.phrases.isEmpty && cleared.speaksAs == nil && cleared.examples.isEmpty)
+        #expect(cleared.subtopics(of: .niche(.food)).isEmpty && cleared.confirmedVoiceSteps.isEmpty && cleared.voiceStrength < 30)
+        #expect(cleared.pendingSetupSteps == [.role, .speech, .niche, .audience, .tone])
+    }
 }

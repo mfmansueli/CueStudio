@@ -121,8 +121,7 @@ struct VoiceExamplesField: View {
     }
 
     private var adding: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            VoiceFieldLabel(String(localized: "Add an example"))
+        VoiceFieldSection(String(localized: "Add an example")) {
             TextField(String(localized: "Add 2 to 4 sentences"), text: $text, axis: .vertical)
                 .lineLimit(3...6)
                 .padding(14)

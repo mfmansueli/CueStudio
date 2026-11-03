@@ -40,12 +40,20 @@ final class FakeScriptWriter: ScriptWriting {
     /// What `suggestIdeas` answers, one batch for each request (the last one again when they run out); empty: the fake `ideas`.
     var suggestionBatches: [[ThemeIdea]] = []
     private(set) var suggestionRequests: [(slots: [IdeaSlot], inspiration: [String])] = []
+    /// Who each batch of ideas was asked for (`IdeaCreator`).
+    private(set) var suggestionCreators: [IdeaCreator?] = []
     /// How each request for ideas was asked (a prefetch, or the creator waiting).
     private(set) var suggestionPriorities: [IdeaRequestPriority] = []
     /// Set, a request for ideas waits until it is false again (or is cancelled): a model still writing.
     var holdsSuggestions = false
     /// Requests for ideas that were cancelled while they waited.
     private(set) var cancelledSuggestions = 0
+    /// What `ideaIngredients` answers for every topic; nil: they can't be written (no Private Cloud Compute).
+    var ingredients: IdeaIngredients?
+    /// The topics (by the name the model reads), the creator's other topics and the languages ingredients were asked for, in order.
+    private(set) var ingredientRequests: [(topic: String, others: [String], language: CueLanguage)] = []
+    /// Who each request for ingredients was for.
+    private(set) var ingredientCreators: [IdeaCreator?] = []
     private var interruptsSuggestions = false
 
     /// A script begins, as on the real writer (`beginForeground`): the creator waits for it, and ideas being written stand aside.
@@ -112,15 +120,16 @@ final class FakeScriptWriter: ScriptWriting {
     }
 
     func suggestIdeas(slots: [IdeaSlot], language: CueLanguage?, voice: CreatorVoice?, inspiration: [String]) async throws -> [ThemeIdea] {
-        try await suggestIdeas(slots: slots, language: language, voice: voice, inspiration: inspiration, priority: .waiting)
+        try await suggestIdeas(slots: slots, language: language, voice: voice, creator: nil, inspiration: inspiration, priority: .waiting)
     }
 
     /// As the real writer: a prefetch is refused while the creator waits for something else.
     func suggestIdeas(
-        slots: [IdeaSlot], language: CueLanguage?, voice: CreatorVoice?, inspiration: [String], priority: IdeaRequestPriority
+        slots: [IdeaSlot], language: CueLanguage?, voice: CreatorVoice?, creator: IdeaCreator?, inspiration: [String], priority: IdeaRequestPriority
     ) async throws -> [ThemeIdea] {
         if priority == .prefetch, isBusyForeground { throw CancellationError() }
         suggestionRequests.append((slots, inspiration))
+        suggestionCreators.append(creator)
         suggestionPriorities.append(priority)
         do {
             while holdsSuggestions {
@@ -135,6 +144,15 @@ final class FakeScriptWriter: ScriptWriting {
         guard availability.isAvailable else { throw ScriptAIError.modelUnavailable(availability.reason ?? "") }
         guard !suggestionBatches.isEmpty else { return ideas }
         return suggestionBatches[min(suggestionRequests.count - 1, suggestionBatches.count - 1)]
+    }
+
+    func ideaIngredients(
+        for topic: IdeaTopic, apartFrom others: [IdeaTopic], creator: IdeaCreator?, language: CueLanguage
+    ) async throws -> IdeaIngredients {
+        ingredientRequests.append((topic.name, others.map(\.name), language))
+        ingredientCreators.append(creator)
+        guard let ingredients else { throw ScriptAIError.modelUnavailable("") }
+        return ingredients
     }
 
     func pickTopic(for text: String, among topics: [String]) async -> String? {

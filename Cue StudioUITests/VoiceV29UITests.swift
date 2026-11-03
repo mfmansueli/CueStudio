@@ -36,6 +36,7 @@ final class VoiceV29UITests: XCTestCase {
         XCTAssertTrue(setUp.exists(within: 5))
         setUp.tap()
         app.buttons["voiceSetup.skipRole"].tap()
+        app.buttons["voiceSetup.saveButton"].tap()
         app.buttons["voiceSetup.niche.food"].tap()
         app.buttons["voiceSetup.saveButton"].tap()
         app.buttons["voiceSetup.audience.parents"].tap()
@@ -81,6 +82,10 @@ final class VoiceV29UITests: XCTestCase {
         app.scroll(to: preview)
         XCTAssertTrue(preview.exists)
         XCTAssertTrue(element(app, "voicePage.sends").exists)
+        // Under them, "Clear my answers" (the owner, 03/11/2026).
+        let clear = element(app, "voicePage.clear")
+        app.scroll(to: clear)
+        XCTAssertTrue(clear.exists)
         capture(app, "9.3_my_cue_voice")
     }
 
@@ -255,11 +260,40 @@ final class VoiceV29UITests: XCTestCase {
         XCTAssertFalse(app.buttons["voice.agreement.more"].exists, "nothing folded in Portuguese")
     }
 
+    /// After the first flight (themes only), My Cue Voice asks what kind of creator first, then what they talk about inside each theme, with the
+    /// subtopics before the list of themes (the owner, 03/11/2026).
+    func testAfterTheFirstFlightTheSetupAsksTheKindThenWhatInsideEachTheme() {
+        let app = CueApp.launch(seeded: true, ai: .stub, extraArguments: ["-uiTestTopics", "food"])
+        let tab = app.cueTabBar.buttons["Profile"]
+        XCTAssertTrue(tab.exists(within: 15))
+        tab.tap()
+        app.buttons["profile.setUpVoiceButton"].tap()
+        let skip = app.buttons["voiceSetup.skipRole"]
+        XCTAssertTrue(skip.exists(within: 5), "the kind of creator first")
+        skip.tap()
+        XCTAssertTrue(app.buttons["voice.speaksAs.i"].exists(within: 5))
+        app.buttons["voiceSetup.saveButton"].tap()
+        let subtopic = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@", "voice.subtopic.food.")).firstMatch
+        XCTAssertTrue(subtopic.exists(within: 5), "the themes again, for what inside them")
+        XCTAssertTrue(app.staticTexts["Pick what you talk about inside each theme."].exists)
+        XCTAssertLessThan(subtopic.frame.minY, app.buttons["voiceSetup.niche.travel"].frame.minY, "the subtopics before the list of themes")
+        capture(app, "voice-setup-subtopics")
+        subtopic.tap()
+        XCTAssertTrue(subtopic.isSelected)
+        app.buttons["voiceSetup.saveButton"].tap()
+        XCTAssertTrue(app.buttons["voiceSetup.audience.parents"].exists(within: 5))
+    }
+
+    /// The setup's second step, how scripts talk about the creator (right after the kind of creator, skipped here).
     private func openIAm(_ app: XCUIApplication) {
         let tab = app.cueTabBar.buttons["Profile"]
         XCTAssertTrue(tab.exists(within: 15))
         tab.tap()
         app.buttons["profile.setUpVoiceButton"].tap()
+        let skip = app.buttons["voiceSetup.skipRole"]
+        XCTAssertTrue(skip.exists(within: 5))
+        skip.tap()
+        XCTAssertTrue(app.buttons["voice.speaksAs.i"].exists(within: 5))
     }
 
     func testTheTipOnScriptsAsksOneQuestionAtATime() {

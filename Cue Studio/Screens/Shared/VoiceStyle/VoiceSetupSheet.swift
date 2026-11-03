@@ -5,8 +5,8 @@
 
 import SwiftUI
 
-/// My Cue Voice (V1): four questions, one at a time, with a progress bar ("01 / 04"): what kind of
-/// creator, what you talk about, who is watching, how you sound. Each question is the field the editor
+/// My Cue Voice (V1): five questions, one at a time, with a progress bar ("01 / 05"): what kind of
+/// creator, how scripts talk about you, what you talk about, who is watching, how you sound. Each question is the field the editor
 /// shows for the same answer (`VoiceEditorSheet`), and an answer is kept as it is given: only the shell
 /// differs (Continue and "n of 4" here, Done there). A creator with an idea waiting on the card finishes
 /// with "Draft my script", and the script that comes is the preview of the voice (see `VoicePreviewStrip`).
@@ -92,7 +92,8 @@ struct VoiceSetupSheet: View {
     private var subtitle: LocalizedStringKey {
         switch step {
         case .role: "Pick the closest. Change it anytime."
-        case .niche: "Cue suggests ideas about them."
+        case .speech: "Scripts follow it in every line."
+        case .niche: plan.asksSubtopics ? "Pick what you talk about inside each theme." : "Cue suggests ideas about them."
         case .audience: plan.confirmsExistingValues ? "Confirm what’s here, or change it." : "They decide the words Cue uses."
         case .tone: plan.confirmsExistingValues ? "Confirm what’s here, or change it." : "Pick the closest. Change it anytime."
         }
@@ -102,6 +103,7 @@ struct VoiceSetupSheet: View {
     private var content: some View {
         switch step {
         case .role: VoiceRoleField()
+        case .speech: VoiceSpeechField()
         case .niche: VoiceTopicsField()
         case .audience: VoiceAudienceField()
         case .tone: VoiceToneField()
@@ -200,6 +202,8 @@ struct VoiceSetupSheet: View {
         guard canContinue else { return }
         // What an older build saved is kept as it is and counts as answered once the creator goes on with it.
         if !profile.profile.hasAnswered(step), profile.profile.isChosen(step) { profile.confirm(step) }
+        // How scripts talk about them is optional: going on with it as it is answers it.
+        if step == .speech, !profile.profile.hasAnswered(.speech) { profile.confirm(.speech) }
         if isLast {
             save(writesScript: hasIdea && mode != .edit)
         } else {

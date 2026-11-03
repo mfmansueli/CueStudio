@@ -26,7 +26,12 @@ struct IdeaAngleTests {
         let slots = IdeaTaste().slots(round: 0, among: topics)
         let prompt = ScriptPromptBuilder.themesPrompt(slots: slots)
         #expect(slots.count == 6)
-        #expect(prompt.contains("Daily Routine (Bureaucracy); language learning (Italian)"))
+        #expect(prompt.contains("each about its own topic unless joined with another"))
+        #expect(!prompt.contains("Daily Routine (Bureaucracy); language learning (Italian)"), "the topics are never listed together")
+        let routine = slots.first { $0.topic.name == "Daily Routine" }
+        #expect(routine.map { prompt.contains("\($0.angle.ask) about Daily Routine") } ?? false, "each slot names its own topic")
+        let focused = IdeaSlot.focusing(slots, round: 0)
+        #expect(ScriptPromptBuilder.themesPrompt(slots: focused).contains("about Daily Routine (Bureaucracy)"), "inside the subtopic it is about")
         #expect(prompt.contains("1. \(slots[0].angle.ask) about \(slots[0].topic.name)"))
         #expect(!prompt.contains("Do not repeat or reword"))
         #expect(ScriptPromptBuilder.themesPrompt(slots: IdeaTaste().slots(round: 1, among: topics)) != prompt)
@@ -36,7 +41,8 @@ struct IdeaAngleTests {
         let slots = IdeaTaste().slots(round: 0, among: topics)
         let prompt = ScriptPromptBuilder.themesPrompt(slots: slots, inspiration: ["Why Italian forms take three tries", "My morning with the AI planner"])
         #expect(prompt.contains("The creator has been thinking about: “Why Italian forms take three tries”; “My morning with the AI planner”"))
-        #expect(prompt.contains("never repeat these"))
+        #expect(prompt.contains("one on its own topic, in a new way"), "a script about one topic never pulls another topic's idea to it")
+        #expect(prompt.contains("never repeat or carry them across topics"))
         #expect(!ScriptPromptBuilder.themesPrompt(slots: slots).contains("has been thinking about"))
     }
 

@@ -37,7 +37,8 @@ nonisolated enum IdeaBriefReader {
         idea.angle = slot.angle.rawValue
         idea.tie = slot.tie
         idea.brief = IdeaBrief(
-            subject: title, angle: angle, openingLine: opening, subtopic: subtopic(of: slot.topic, in: [title, angle, opening], language: language),
+            subject: title, angle: angle, openingLine: opening,
+            subtopic: slot.subtopic ?? subtopic(of: slot.topic, in: [title, angle, opening], language: language),
             language: language, angleKind: slot.angle.rawValue, topicKey: IdeaTaste.topicKey(of: slot.topic), topic: slot.topic.name
         ).fitted(to: Self.cardLimit)
         // The headline the card shows is the brief's, cut the same way.
@@ -45,12 +46,34 @@ nonisolated enum IdeaBriefReader {
         return idea
     }
 
+    /// The batch after Private Cloud Compute's edit (`IdeaEdits`): each idea in the words it wrote, the ones it dropped (nil) gone with their slots.
+    /// An idea it gave no edit for, or an edit without a title or an opening line, stays as the iPhone wrote it; an edit that drops every idea is
+    /// not trusted, and the batch stays as it was.
+    static func edited(_ answers: [Answer], slots: [IdeaSlot], by edits: [Answer?]) -> (answers: [Answer], slots: [IdeaSlot]) {
+        guard edits.contains(where: { $0 != nil }) else { return (answers, slots) }
+        var kept: (answers: [Answer], slots: [IdeaSlot]) = ([], [])
+        for (index, pair) in zip(answers, slots).enumerated() {
+            guard index < edits.count else {
+                kept.answers.append(pair.0)
+                kept.slots.append(pair.1)
+                continue
+            }
+            guard let edit = edits[index] else { continue }
+            let usable = !edit.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                && !edit.openingLine.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            kept.answers.append(usable ? edit : pair.0)
+            kept.slots.append(pair.1)
+        }
+        return kept
+    }
+
     /// A bad-language item never reaches the shared pool, even if the rest of its batch is valid.
     static func validated(_ ideas: [ThemeIdea], language: Locale.Language?) throws -> [ThemeIdea] {
         guard let language else { return ideas }
         let valid = ideas.filter { idea in
             let text = [idea.title, idea.brief?.angle ?? "", idea.brief?.openingLine ?? ""].joined(separator: " ")
-            return OutputLanguageCheck.isPlausible(text, in: language)
+            // The whole brief can pass on its angle and opening line with the title in English: the title is the card's largest words.
+            return OutputLanguageCheck.isPlausible(text, in: language) && OutputLanguageCheck.isTitlePlausible(idea.title, in: language)
         }
         guard !valid.isEmpty else { throw ScriptAIError.wrongLanguage }
         return valid

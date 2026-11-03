@@ -39,9 +39,9 @@ struct VoicePersonasTests {
         #expect(persona.profile.hasMinimumVoice)
         #expect(persona.request(for: persona.ideas[0]).voice != nil)
         persona.profile.customTopics = []
-        persona.profile.voiceTopics = [.pets]
+        persona.profile.niches = [.pets]
         #expect(persona.profile.hasMinimumVoice)
-        persona.profile.voiceTopics = []
+        persona.profile.niches = []
         #expect(!persona.profile.hasMinimumVoice, "with no topic at all the voice still isn't set")
     }
 

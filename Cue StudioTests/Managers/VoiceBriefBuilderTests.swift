@@ -26,7 +26,7 @@ struct VoiceBriefBuilderTests {
         // The default tones and vocabulary are not the creator's answers; only the topic is.
         let profile = CreatorProfile(niches: [.tech])
         let text = brief(profile.voice)
-        #expect(text.contains("Topics: tech and AI."))
+        #expect(text.contains("Topics: technology and AI."))
         #expect(!text.contains("They sound"))
         #expect(!text.contains("audience"))
     }
@@ -56,11 +56,11 @@ struct VoiceBriefBuilderTests {
             niches: [.travel, .lifestyle], customTopics: ["Van life"], topicDetails: ["travel": ["Cheap flights", "Solo travel"]]
         )
         let text = brief(profile.voice)
-        #expect(text.contains("Topics: budget travel (Cheap flights, Solo travel); daily routines and daily life; Van life."))
+        #expect(text.contains("Topics: travel (Cheap flights, Solo travel); lifestyle and daily life; Van life."))
     }
 
     @Test func aTopicOnlyTheVoiceOffersIsToldToo() {
-        #expect(brief(CreatorProfile(voiceTopics: [.realEstate]).voice).contains("Topics: real estate."))
+        #expect(brief(CreatorProfile(niches: [.realEstate]).voice).contains("Topics: real estate."))
     }
 
     @Test func whoIsTalkingFollowsTheCreatorsChoiceThenTheKind() {

@@ -14,9 +14,9 @@ enum VoicePageSection: String, CaseIterable, Identifiable {
 
     var rows: [VoicePageRow] {
         switch self {
-        case .whoYouAre: [.role]
+        case .whoYouAre: [.role, .goals]
         case .whoYouTalkTo: [.audience, .watch, .reach]
-        case .whatAbout: [.topics, .formats, .goals]
+        case .whatAbout: [.topics, .formats]
         case .howYouSound: [.tone, .style, .phrases]
         case .openAndClose: [.openings, .endings]
         case .trueAboutYou: [.notes, .stories]

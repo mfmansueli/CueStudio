@@ -447,10 +447,31 @@ nonisolated enum ScriptPromptBuilder {
 
     /// What the model is told before it suggests ideas: who it works for, and the creator's voice when there is one (their topics, who is
     /// watching and why) so the ideas are theirs and not any creator's.
+    /// Told the same in Apple's own words for the language (`localePhrase`, `nativeAnswerRule`), the iPhone's model wrote no better ideas outside
+    /// English (`IdeaLanguageDeviceTests`, 03/11/2026): what made them particular was a concrete subject for each (`IdeaSlot.subject`).
     static func themesInstructions(voice: CreatorVoice? = nil, voiceBudget: Int? = nil) -> String {
         var lines = ["You suggest video ideas for creators who film themselves talking to camera.", punctuationRule]
         if let voice { lines += voiceLines(voice, budget: voiceBudget) }
         return lines.joined(separator: "\n")
+    }
+
+    /// Apple's exact phrase for the person's locale, first in the instructions: it comes from the model's training and lowers hallucinations outside
+    /// U.S. English ("Supporting languages and locales with Foundation Models"). None for U.S. English.
+    static func localePhrase(_ language: CueLanguage) -> String? {
+        language == .english ? nil : "The person's locale is \(language.locale.identifier(.icu))."
+    }
+
+    /// The language to answer in, as Apple words it, and how: as its speakers write it, never translated from English.
+    static func nativeAnswerRule(_ language: CueLanguage) -> String {
+        let name = language.englishName
+        let culture = country(of: language).map { " and other cultural contexts of \($0)" } ?? ""
+        return "You MUST respond in \(name) and be mindful of \(name) spelling, vocabulary, entities\(culture). Write everything the way a native "
+            + "speaker would, never as a word-for-word translation of English."
+    }
+
+    /// The country of the language's region, named in English.
+    static func country(of language: CueLanguage) -> String? {
+        language.locale.region.flatMap { Locale(identifier: "en").localizedString(forRegionCode: $0.identifier) }
     }
 
     /// Ideas for what the creator makes videos about, all of it: the first flight's topics, the ones only the voice offers and the ones they typed, with
@@ -459,15 +480,15 @@ nonisolated enum ScriptPromptBuilder {
     /// - Parameter asBriefs: each idea as a whole brief (a title, the angle to take and an opening line, `IdeaBriefSuggestions`), as Find
     ///   inspiration and the card show them; false asks for titles alone (`ThemeSuggestions`), what the card had before, kept to measure the two
     ///   against each other on a device.
+    /// Each idea is kept to its own topic (the owner, 03/11/2026: a creator of AI, daily routines and cooking got ideas that blended them): the
+    /// topics are not listed together, each slot names its own, and what the creator wrote lately feeds only an idea of its topic; two slots of
+    /// six join two topics (`IdeaSlot.bridging`).
+    /// - Parameter creator: who they are and what their videos are for (`IdeaCreator`): a lawyer who wants clients gets ideas that bring them.
     static func themesPrompt(
-        slots: [IdeaSlot], language: CueLanguage? = nil, inspiration: [String] = [], asBriefs: Bool = false
+        slots: [IdeaSlot], language: CueLanguage? = nil, inspiration: [String] = [], asBriefs: Bool = false, creator: IdeaCreator? = nil
     ) -> String {
-        func name(_ topic: IdeaTopic) -> String {
-            topic.subtopics.isEmpty ? topic.name : "\(topic.name) (\(topic.subtopics.joined(separator: ", ")))"
-        }
-        var topics: [IdeaTopic] = []
-        for slot in slots where !topics.contains(slot.topic) { topics.append(slot.topic) }
-        var prompt = "Suggest \(slots.count) fresh talking-head video ideas for a creator whose topics are: \(topics.map(name).joined(separator: "; ")). "
+        var prompt = "Suggest \(slots.count) fresh talking-head video ideas for a creator, each about its own topic unless joined with another. "
+        if let line = creator?.promptLine { prompt += line + " " }
         if asBriefs {
             prompt += "Each idea has a title of at most eight words, written the way a creator would post it: natural, specific, and promising something the "
                 + "viewer gets, never a generic \"Top 5\" and never starting with the name of its angle as a label; an angle, one short sentence that tells the "
@@ -479,12 +500,17 @@ nonisolated enum ScriptPromptBuilder {
                 + "(a number, a surprise, a mistake, a result), never a generic \"Top 5\" and never starting with the name of its angle as a label. In this order: "
         }
         prompt += slots.enumerated().map { index, slot in
-            "\(index + 1). \(slot.angle.ask) about \(slot.topic.name)\(slot.tie?.promptClause ?? "")"
+            let subject = slot.subject.map { ", around this subject: \($0)" } ?? ""
+            // Inside the subtopic the slot is about (`IdeaSlot.focusing`): with up to ten a theme, naming them all cost the window more than the
+            // ideas used, and the model drifted to the first ones.
+            let topic = slot.subtopic.map { "\(slot.topic.name) (\($0))" } ?? slot.topic.name
+            let bridge = slot.bridge.map { ", joined with \($0.name): one idea where the two meet" } ?? ""
+            return "\(index + 1). \(slot.angle.ask) about \(topic)\(subject)\(bridge)\(slot.tie?.promptClause ?? "")"
         }.joined(separator: "; ")
         prompt += asBriefs ? "." : ". Each idea names its topic exactly as written."
         if !inspiration.isEmpty {
             prompt += " The creator has been thinking about: \(inspiration.prefix(8).map { "“\($0.prefix(140))”" }.joined(separator: "; ")). "
-                + "Let the ideas grow from what interests them, in new ways: never repeat these."
+            prompt += "An idea may grow from one on its own topic, in a new way: never repeat or carry them across topics."
         }
         if asBriefs {
             // Said last, where the small model listens best: the line is put in the creator's mouth, so it must be something they can say honestly.

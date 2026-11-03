@@ -58,7 +58,7 @@ struct VoiceQuestionSchedulerTests {
         let rig = make(essentials: false)
         defer { rig.defaults.tearDown() }
         // No script language: no grammar to ask.
-        #expect(Array(rig.scheduler.remaining.prefix(5)) == [.audience, .role, .topics, .tone, .endings])
+        #expect(Array(rig.scheduler.remaining.prefix(5)) == [.role, .audience, .topics, .tone, .endings])
         let essentialsAndProof: Set<VoiceQuestion> = [.role, .topics, .audience, .tone, .example]
         let order = rig.scheduler.remaining.filter { !essentialsAndProof.contains($0) }
         #expect(order == [.endings, .openings, .formats, .length, .humor, .platforms, .energy, .sentences, .words, .swearing, .phrases, .avoid])
@@ -247,13 +247,41 @@ struct VoiceQuestionSchedulerTests {
         defer { defaults.tearDown() }
         let profile = CreatorProfileService(defaults: defaults.defaults)
         let scheduler = VoiceQuestionScheduler(profile: profile, defaults: defaults.defaults, skipsGates: true)
-        #expect(scheduler.tipQuestion(isAIAvailable: true, scriptCount: 0) == .audience)
+        #expect(scheduler.tipQuestion(isAIAvailable: true, scriptCount: 0) == .role)
+    }
+
+    // MARK: - The invitation on the first send
+
+    /// The owner, 03/11/2026: the first idea sent from the AI card with questions open invites to finish them, and never again.
+    @Test func theFirstIdeaSentWithQuestionsOpenInvitesOnceAndNeverAgain() {
+        let rig = make()
+        defer { rig.defaults.tearDown() }
+        #expect(rig.scheduler.invitesBeforeSending, "the kind of creator, how scripts talk about them and the subtopics are open")
+        rig.scheduler.sendInviteWasShown()
+        #expect(!rig.scheduler.invitesBeforeSending)
+        let again = VoiceQuestionScheduler(profile: rig.profile, defaults: rig.defaults.defaults, now: { rig.clock.now }, calendar: Self.utc)
+        #expect(!again.invitesBeforeSending, "kept across launches")
+    }
+
+    @Test func noInvitationOnceTheFiveAreAnsweredOrInUITestsWithoutTheFlag() {
+        let rig = make()
+        defer { rig.defaults.tearDown() }
+        var full = Self.fullProfile()
+        full.confirm(.speech)
+        full.topicDetails[VoiceTopicRef.niche(.tech).id] = ["Apps"]
+        rig.profile.profile = full
+        #expect(full.answeredEverySetupStep && !rig.scheduler.invitesBeforeSending)
+        let empty = TestDefaults()
+        defer { empty.tearDown() }
+        let off = VoiceQuestionScheduler(profile: CreatorProfileService(defaults: empty.defaults), defaults: empty.defaults, invitesOnSend: false)
+        #expect(!off.invitesBeforeSending, "a new creator, but UI tests see it only with -uiTestVoiceInvite")
     }
 
     // MARK: - Helpers
 
     static func fullProfile() -> CreatorProfile {
         var profile = CreatorProfile(niches: [.tech], role: .personal)
+        profile.creatorKind = CreatorKind.all.first { $0.role == .personal }?.id
         profile.confirm(.audience)
         profile.confirm(.tone)
         profile.audienceLevel = .some

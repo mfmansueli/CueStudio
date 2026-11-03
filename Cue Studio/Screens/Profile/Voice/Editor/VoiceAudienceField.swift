@@ -6,7 +6,7 @@
 import SwiftUI
 
 /// "Who's watching?" (Essentials 3): the people (eight groups, the likeliest for their kind of creator first, or their own words), why they watch
-/// (up to two) and how much they already know. The same field in the guided questions and in the editor.
+/// (up to two) and how much they already know, each under its own title (`VoiceFieldSection`). The same field in the guided questions and in the editor.
 struct VoiceAudienceField: View {
     @Environment(CreatorProfileService.self) private var profile
     @Environment(ToastService.self) private var toast
@@ -16,14 +16,14 @@ struct VoiceAudienceField: View {
     private var current: CreatorProfile { profile.profile }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 18) {
-            VStack(alignment: .leading, spacing: 8) {
-                VoiceFieldLabel(String(localized: "Who is watching?"))
+        VStack(alignment: .leading, spacing: Metrics.questionGap) {
+            VoiceFieldSection(String(localized: "Who is watching?")) {
                 people
                 ownWords
             }
-            VStack(alignment: .leading, spacing: 8) {
-                VoiceFieldLabel(String(localized: "Why do they watch you?"), detail: String(localized: "up to \(VoiceLimits.watchReasons) · shapes the hook and the payoff"))
+            VoiceFieldSection(
+                String(localized: "Why do they watch you?"), detail: String(localized: "up to \(VoiceLimits.watchReasons) · shapes the hook and the payoff")
+            ) {
                 VoiceOptionChips(
                     options: WatchReason.allCases.map { VoiceOption(id: $0.rawValue, label: $0.label) },
                     isSelected: { option in current.watchReasons.contains { $0.rawValue == option.id } },
@@ -94,8 +94,7 @@ struct VoiceAudienceField: View {
     // MARK: - How much they know
 
     private var level: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            VoiceFieldLabel(String(localized: "How much do they already know?"))
+        VoiceFieldSection(String(localized: "How much do they already know?")) {
             VoiceSegmentedChoice(
                 values: AudienceLevel.allCases, selection: current.audienceLevel, label: \.label,
                 onPick: { profile.answerAudienceLevel($0) }, identifier: "voiceSetup.level"
@@ -104,7 +103,6 @@ struct VoiceAudienceField: View {
                 Text(level.explanation)
                     .cueFont(.footnote)
                     .foregroundStyle(Palette.ink2)
-                    .padding(.horizontal, 4)
             }
         }
     }

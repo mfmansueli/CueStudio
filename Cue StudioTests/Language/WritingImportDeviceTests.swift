@@ -68,7 +68,6 @@ struct WritingImportDeviceTests {
         profile.role = full.role
         profile.customRole = full.customRole
         profile.niches = full.niches
-        profile.voiceTopics = full.voiceTopics
         profile.sounds = full.sounds
         profile.vocabulary = full.vocabulary
         profile.confirmedVoiceSteps = [.audience, .tone]

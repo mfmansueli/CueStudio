@@ -80,6 +80,24 @@ struct IdeaRepeatTests {
         #expect(IdeaSpecificity.isUnusable(idea))
     }
 
+    @Test(arguments: [
+        "Mito sobre finanças pessoais", "Pergunta: você guarda dinheiro?", "Uma lição sobre controle de gastos", "Reto para ahorrar en comidas",
+        "Myth about protein", "Lesson: never skip the warm-up",
+    ])
+    func aTitleThatIsItsAnglesLabelIsNoIdea(_ title: String) {
+        let idea = Self.idea(title, angle: "Desmonte uma crença comum com um exemplo do dia a dia.", opening: "Todo mundo já ouviu isso.")
+        #expect(IdeaSpecificity.weaknesses(of: idea).contains(.labelTitle))
+        #expect(IdeaSpecificity.isUnusable(idea), "a label alone is no idea")
+    }
+
+    @Test(arguments: [
+        "O mito do café que tira a fome", "Lições que o primeiro cartão de crédito ensina", "Historias de mochileros en Lisboa",
+        "Opinião honesta sobre malas leves",
+    ])
+    func anAnglesNameThatIsPartOfTheTitleIsNoLabel(_ title: String) {
+        #expect(!IdeaSpecificity.isLabel(title))
+    }
+
     @Test func aSpecificBriefHasNoWeakness() {
         let idea = Self.idea(
             "Dicas de skincare com três produtos de farmácia", angle: "Monte uma rotina noturna barata em três passos.",

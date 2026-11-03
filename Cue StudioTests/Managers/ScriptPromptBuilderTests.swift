@@ -72,7 +72,7 @@ struct ScriptPromptBuilderTests {
         #expect(instructions.contains("casual slang"))
         #expect(instructions.contains("Their audience is young"))
         #expect(instructions.contains("Style: storytelling."), "short sentences is what every profile holds: it is not told")
-        #expect(instructions.contains("Topics: wellness."))
+        #expect(instructions.contains("Topics: mental health and wellness."))
     }
 
     @Test func withoutAVoiceTheInstructionsStayNeutral() {

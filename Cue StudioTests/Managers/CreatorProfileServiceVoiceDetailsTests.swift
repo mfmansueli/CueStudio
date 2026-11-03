@@ -19,37 +19,35 @@ struct CreatorProfileServiceVoiceDetailsTests {
 
     // MARK: - Topics
 
-    @Test func theTwentyFiveTopicsAreTheTenOfTheFirstFlightAndFifteenOnlyTheVoiceOffers() {
+    @Test func myCueVoiceOffersTheSameBroadThemesAsTheFirstFlight() {
         let ids = VoiceQuestion.topics.options.map(\.id)
-        #expect(ids.count == 25 && Set(ids).count == 25)
-        #expect(ids.dropFirst(10).allSatisfy { VoiceTopic(rawValue: $0) != nil })
+        #expect(ids == Niche.offered.map(\.rawValue) && Set(ids).count == ids.count)
     }
 
     @Test func aTopicOfEitherKindIsPickedThroughTheSameAnswer() {
         let (service, defaults) = service()
         defer { defaults.tearDown() }
         let fitness = VoiceQuestion.topics.options.first { $0.id == Niche.fitness.rawValue }
-        let pets = VoiceQuestion.topics.options.first { $0.id == VoiceTopic.pets.rawValue }
+        let pets = VoiceQuestion.topics.options.first { $0.id == Niche.pets.rawValue }
         #expect(service.answer(.topics, with: fitness ?? VoiceOption(id: "", label: "")) == .added)
         #expect(service.answer(.topics, with: pets ?? VoiceOption(id: "", label: "")) == .added)
-        #expect(service.profile.niches == [.fitness])
-        #expect(service.profile.voiceTopics == [.pets])
+        #expect(service.profile.niches == [.fitness, .pets])
         #expect(service.isSelected(pets ?? VoiceOption(id: "", label: ""), for: .topics))
         #expect(service.answer(.topics, with: pets ?? VoiceOption(id: "", label: "")) == .removed)
-        #expect(service.profile.voiceTopics.isEmpty)
+        #expect(service.profile.niches == [.fitness])
     }
 
     @Test func threeTopicsOfAnyKindIsTheLimitAndAFourthSaysSo() {
         let (service, defaults) = service()
         defer { defaults.tearDown() }
         #expect(service.toggleTopic(.niche(.tech)) == .added)
-        #expect(service.toggleTopic(.extra(.gaming)) == .added)
+        #expect(service.toggleTopic(.niche(.gaming)) == .added)
         #expect(service.addSomethingElse("Chess openings", for: .topics) == .added)
         #expect(service.profile.topicCount == 3)
-        #expect(service.toggleTopic(.extra(.cars)) == .limit("Max 3 topics"))
+        #expect(service.toggleTopic(.niche(.cars)) == .limit("Max 3 topics"))
         #expect(service.toggleTopic(.niche(.food)) == .limit("Max 3 topics"))
         #expect(service.addSomethingElse("Gardening", for: .topics) == .limit("Max 3 topics"))
-        #expect(service.profile.topicCount == 3 && service.profile.voiceTopics == [.gaming])
+        #expect(service.profile.topicCount == 3 && service.profile.niches == [.tech, .gaming])
     }
 
     @Test func dropAtopicAndItsSubtopicsGoWithIt() {
@@ -62,7 +60,7 @@ struct CreatorProfileServiceVoiceDetailsTests {
         #expect(service.profile.topicDetails.isEmpty)
     }
 
-    @Test func subtopicsOfATopicTheCreatorHoldsUpToThreeAndAFourthSaysSo() {
+    @Test func subtopicsOfATopicTheCreatorHoldsUpToTenAndAnEleventhSaysSo() {
         let (service, defaults) = service()
         defer { defaults.tearDown() }
         let fitness = VoiceTopicRef.niche(.fitness)
@@ -71,9 +69,11 @@ struct CreatorProfileServiceVoiceDetailsTests {
         #expect(service.toggleSubtopic("Running", of: fitness) == .added)
         #expect(service.toggleSubtopic("Home workouts", of: fitness) == .added)
         #expect(service.toggleSubtopic("Weight loss", of: fitness) == .added)
-        #expect(service.toggleSubtopic("Yoga & stretching", of: fitness) == .limit("Max 3 subtopics"))
+        let more = ["Yoga & stretching", "Pilates", "Running clubs", "Cycling", "Mobility", "Calisthenics", "Gym"]
+        for subtopic in more { #expect(service.toggleSubtopic(subtopic, of: fitness) == .added, "\(subtopic)") }
+        #expect(service.toggleSubtopic("Swimming", of: fitness) == .limit("Max 10 subtopics"))
         #expect(service.toggleSubtopic("running", of: fitness) == .removed, "the same subtopic however it is cased")
-        #expect(service.profile.subtopics(of: fitness) == ["Home workouts", "Weight loss"])
+        #expect(service.profile.subtopics(of: fitness) == ["Home workouts", "Weight loss"] + more)
     }
 
     @Test func aTypedSubtopicIsCheckedLikeEveryTypedAnswerAndASuggestionTypedIsTheSuggestion() {
@@ -209,14 +209,14 @@ struct CreatorProfileServiceVoiceDetailsTests {
         let defaults = TestDefaults()
         defer { defaults.tearDown() }
         let first = CreatorProfileService(defaults: defaults.defaults)
-        first.toggleTopic(.extra(.faith))
-        first.toggleSubtopic("Prayer", of: .extra(.faith))
+        first.toggleTopic(.niche(.faith))
+        first.toggleSubtopic("Prayer", of: .niche(.faith))
         first.toggleWatchReason(.feelUnderstood)
         first.setAudienceGroup(.localCommunity)
         first.toggleContentGoal(.community)
         first.setSpeaksAs(.we)
         let second = CreatorProfileService(defaults: defaults.defaults)
-        #expect(second.profile.voiceTopics == [.faith])
+        #expect(second.profile.niches == [.faith])
         #expect(second.profile.topicDetails == ["faith": ["Prayer"]])
         #expect(second.profile.watchReasons == [.feelUnderstood] && second.profile.audienceGroup == .localCommunity)
         #expect(second.profile.contentGoals == [.community] && second.profile.speaksAs == .we)

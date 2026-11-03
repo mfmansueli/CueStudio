@@ -5,14 +5,14 @@
 
 import Foundation
 
-/// A topic the creator makes videos about, as the ideas are asked for: the ten of the first flight have starter ideas of their own (`niche`), the ones only
-/// My Cue Voice offers and the ones the creator typed have none, so only the model can suggest for them.
+/// A topic the creator makes videos about, as the ideas are asked for: one of Cue's themes (`niche`, most with starter ideas of their own) or one
+/// the creator typed, with what they cover inside it.
 nonisolated struct IdeaTopic: Hashable, Codable, Sendable {
     /// What the model reads: what the creator typed stays as typed.
     var name: String
     /// What the creator reads.
     var label: String
-    /// The topic when it is one of the first flight's.
+    /// The topic when it is one of Cue's themes.
     var niche: Niche?
     /// What the creator said they cover inside it ("Yoga & stretching", "Italian").
     var subtopics: [String] = []
