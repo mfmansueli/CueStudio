@@ -288,8 +288,9 @@ struct LaunchOptions {
         #if DEBUG
         let arguments = ProcessInfo.processInfo.arguments
         options.resetsExportsOnNewInstall = !arguments.contains("-uiTestInMemory")
-        options.ultraAvailable = UltraLabConfiguration.isPresent
-        options.makeUltraClient = { FirebaseUltraClient.make() }
+        // Gemini through the lab's Firebase app or Claude with the lab's key, whichever the lab picked (`UltraLabProvider`).
+        options.ultraAvailable = UltraLabConfiguration.isPresent || ClaudeLabConfiguration.isPresent
+        options.makeUltraClient = { UltraLabClient.make() }
         if arguments.contains("-uiTestInMemory") {
             options.isInMemory = true
             options.appsAreInstalled = arguments.contains("-uiTestAppsInstalled")

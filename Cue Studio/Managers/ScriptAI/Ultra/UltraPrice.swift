@@ -16,5 +16,14 @@ nonisolated struct UltraPrice: Hashable, Sendable {
     /// The answer and the thinking before it.
     var outputPerMillion: Double
 
-    static let current = UltraPrice(inputPerMillion: 1.50, cachedInputPerMillion: 0.15, outputPerMillion: 9.00)
+    static let google = UltraPrice(inputPerMillion: 1.50, cachedInputPerMillion: 0.15, outputPerMillion: 9.00)
+
+    /// The price of the model that writes now: in a Debug build, the lab's pick (`UltraLabProvider`, Gemini or Claude).
+    static var current: UltraPrice {
+        #if DEBUG
+        UltraLabProvider.selected.price
+        #else
+        google
+        #endif
+    }
 }

@@ -13,6 +13,8 @@ import SwiftUI
 struct UltraLabView: View {
     @State private var model: UltraLabViewModel?
     @State private var asksPermission = false
+    @AppStorage(UltraLabProvider.key) private var provider = UltraLabProvider.google
+    @AppStorage(UltraLabEffort.key) private var effort = UltraLabEffort.high
 
     @Environment(UltraScriptService.self) private var ultra
     @Environment(ScriptStarter.self) private var starter
@@ -48,6 +50,7 @@ struct UltraLabView: View {
                 Text(verbatim: "Two or three calls a script (the steps below). Failed calls count too.")
                     .foregroundStyle(Palette.ink2)
             }
+            writer(model)
             if let spend = model.ultra.spend { cost(spend) }
             if let allowance = model.ultra.allowance {
                 Section {
@@ -197,6 +200,34 @@ struct UltraLabView: View {
         }
     }
 
+    /// Who writes Ultra AI's scripts on this iPhone, here and on Scripts: Gemini or Claude (`UltraLabProvider`), for the comparison.
+    private func writer(_ model: UltraLabViewModel) -> some View {
+        Section {
+            Picker(selection: $provider) {
+                ForEach(UltraLabProvider.allCases) { Text(verbatim: $0.label).tag($0) }
+            } label: {
+                Text(verbatim: "Model")
+            }
+            .disabled(model.isWorking)
+            .accessibilityIdentifier("ultraLab.provider")
+            if provider.claudeModel != nil {
+                Picker(selection: $effort) {
+                    ForEach(UltraLabEffort.allCases) { Text(verbatim: $0.label).tag($0) }
+                } label: {
+                    Text(verbatim: "Effort")
+                }
+                .pickerStyle(.segmented)
+                .disabled(model.isWorking)
+                .accessibilityIdentifier("ultraLab.effort")
+            }
+        } header: {
+            Text(verbatim: "Who writes")
+        } footer: {
+            Text(verbatim: "Gemini: the lab’s Firebase app (\(UltraLabConfiguration.isPresent ? "set up" : "not on this iPhone")). Claude: the key copied by tools/ultra/install-claude-key.sh (\(ClaudeLabConfiguration.isPresent ? "set up" : "not on this iPhone")), a call straight to the Claude API; lower effort thinks less, so it costs less. The permission sheet still says Google.")
+                .foregroundStyle(Palette.ink2)
+        }
+    }
+
     /// What every Ultra script and fit from this iPhone cost, finished or not, and what a finished one costs on average and at most.
     private func cost(_ spend: UltraSpendLedger) -> some View {
         Section {
@@ -219,7 +250,7 @@ struct UltraLabView: View {
         } header: {
             Text(verbatim: "Cost")
         } footer: {
-            Text(verbatim: "Google’s own token counts for every call, at Google’s price for Ultra AI’s model: USD \(Self.rate(UltraPrice.current.inputPerMillion)) per million tokens in, \(Self.rate(UltraPrice.current.outputPerMillion)) per million out (thinking included). Failed and stopped requests count in the total, not in the averages. The bill for every phone together: tools/ultra/spend.js.")
+            Text(verbatim: "The provider’s own token counts for every call, at the price of the model picked above (\(provider.label)): USD \(Self.rate(UltraPrice.current.inputPerMillion)) per million tokens in, \(Self.rate(UltraPrice.current.outputPerMillion)) per million out (thinking included). Start a new measurement when you switch models: the totals are priced at the model picked now. Failed and stopped requests count in the total, not in the averages. Google’s bill for every phone together: tools/ultra/spend.js.")
                 .foregroundStyle(Palette.ink2)
         }
     }
