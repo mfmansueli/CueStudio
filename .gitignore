@@ -26,3 +26,8 @@ buildServer.json
 
 # Claude Code worktrees, one per parallel session
 .claude/worktrees/
+
+# Cue's server (server/functions): installed packages and the compiled output
+server/functions/node_modules/
+server/functions/lib/
+server/functions/.env.local

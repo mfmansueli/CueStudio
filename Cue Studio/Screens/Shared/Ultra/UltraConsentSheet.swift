@@ -8,7 +8,7 @@ import SwiftUI
 /// Asked before Ultra sends anything, as an invitation (owner, 31/10/2026: short, inviting, the free scripts first; 02/11/2026: richer, so the
 /// creator wants to try it): Ultra AI's ✦ igniting in its galaxy (`UltraConsentHero`), "Meet Ultra AI" with a light that crosses it once, the
 /// free scripts it may write, three glass rows on what it does that come in one after the other as their symbols light, and one line that
-/// says the request goes to Google and where to turn it off (Settings › Privacy & AI data has the rest), over a button that shines. The
+/// says the request goes to Anthropic and where to turn it off (Settings › Privacy & AI data has the rest), over a button that shines. The
 /// page sits in the middle of the sheet, scrolling only when it doesn't fit. Allowing it is separate from the Apple Intelligence switch, and
 /// saying no changes nothing else in Cue.
 struct UltraConsentSheet: View {
@@ -131,7 +131,7 @@ struct UltraConsentSheet: View {
     /// What goes, in one line, over the two buttons.
     private var footer: some View {
         VStack(spacing: 12) {
-            Text("Your idea, your choices and your My Cue Voice preferences go to Google, which writes it. Turn it off any time in Settings.")
+            Text("Your idea, your choices and your My Cue Voice preferences go to Anthropic, which writes it. Turn it off any time in Settings.")
                 .cueFont(.footnote)
                 .foregroundStyle(Palette.ink2)
                 .multilineTextAlignment(.center)

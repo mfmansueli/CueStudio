@@ -130,9 +130,11 @@ struct LaunchOptions {
     /// UI tests and previews swap in rules read from the bundle only (no cache, no download).
     var platformRules: PlatformRulesService = PlatformRulesService()
     var writer: ScriptWriting = ScriptAIService()
-    /// AI Scripts Ultra is offered (Debug, with the lab's configuration on this iPhone, or a UI test's stub). Release has none.
+    /// Ultra AI is offered from launch (Debug with Firebase running or the lab set up, or a UI test's stub).
     var ultraAvailable = false
-    /// Gemini's client, made only when a permitted Ultra script is first written (`UltraScriptService`).
+    /// A Release build offers Ultra AI once `UltraDistribution` says it isn't the App Store's (TestFlight), until the server keeps credits.
+    var checksUltraDistribution = false
+    /// Ultra AI's client, made only when a permitted script is first written (`UltraScriptService`).
     var makeUltraClient: @MainActor () -> (any UltraModelClient)? = { nil }
     /// Where the lab counts its calls: the app's standard defaults, which a UI test's throwaway suite can't reset (only the stub counts there).
     var ultraBudgetDefaults: UserDefaults = .standard
@@ -318,9 +320,10 @@ struct LaunchOptions {
         #if DEBUG
         let arguments = ProcessInfo.processInfo.arguments
         options.resetsExportsOnNewInstall = !arguments.contains("-uiTestInMemory")
-        // Gemini through the lab's Firebase app or Claude with the lab's key, whichever the lab picked (`UltraLabProvider`).
-        options.ultraAvailable = UltraLabConfiguration.isPresent || ClaudeLabConfiguration.isPresent
-        options.makeUltraClient = { UltraLabClient.make() }
+        // Cue's server (as on TestFlight), Gemini through the lab's Firebase app or Claude with the lab's key, whichever the lab picked
+        // (`UltraLabProvider`).
+        options.ultraAvailable = UltraLabClient.isOffered
+        options.makeUltraClient = { UltraLabClient() }
         if arguments.contains("-uiTestInMemory") {
             options.isInMemory = true
             options.appsAreInstalled = arguments.contains("-uiTestAppsInstalled")
@@ -465,6 +468,10 @@ struct LaunchOptions {
                     : arguments.contains("-uiTestRealWriting") ? .milliseconds(55) : .zero
             }
         }
+        #else
+        // TestFlight: Ultra AI through Cue's server, offered once the build is known not to be the App Store's (`UltraDistribution`).
+        options.makeUltraClient = { CueServerUltraClient.make() }
+        options.checksUltraDistribution = UltraAppCheck.isReady
         #endif
         return options
     }

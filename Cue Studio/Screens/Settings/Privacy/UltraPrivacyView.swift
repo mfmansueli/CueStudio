@@ -21,7 +21,7 @@ struct UltraPrivacyView: View {
                 row("The draft between steps, for the check and the polish", position: .middle)
                 row("With Fit to time, on a script Ultra AI wrote: that script with your edits", position: .last)
             } header: {
-                CueSectionHeader("Sent to Google")
+                CueSectionHeader("Sent to Anthropic")
             } footer: {
                 Text("Only when you pick Ultra AI: up to 3 requests for a script (draft, check and polish) and 1 for Fit to time. Nothing is sent in the background.")
                     .foregroundStyle(Palette.ink2)
@@ -32,11 +32,11 @@ struct UltraPrivacyView: View {
                 CueSectionHeader("Never sent")
             }
             Section {
-                row("Google runs its AI model to write, check, polish or fit the script, and sends the text back.", position: .first)
-                row("Under Google Cloud’s terms, Google doesn’t use it to train its models. It may keep it for up to 24 hours to answer faster, and may log requests to detect abuse.", position: .middle)
+                row("Anthropic runs its AI model to write, check, polish or fit the script, and sends the text back.", position: .first)
+                row("It goes through Cue’s server, which keeps none of it. Under Anthropic’s commercial terms, Anthropic doesn’t use it to train its models and keeps it for up to 30 days to detect abuse.", position: .middle)
                 row("A check from Google (Firebase App Check) confirms each request comes from Cue.", position: .last)
             } header: {
-                CueSectionHeader("What Google does with it")
+                CueSectionHeader("What Anthropic does with it")
             }
             Section {
                 NavigationLink {
@@ -45,7 +45,7 @@ struct UltraPrivacyView: View {
                             .padding(EdgeInsets(top: 12, leading: Metrics.gutter, bottom: 24, trailing: Metrics.gutter))
                     }
                     .skyBackground()
-                    .navigationTitle("Requests to Google")
+                    .navigationTitle("Requests to Anthropic")
                     .navigationBarTitleDisplayMode(.inline)
                     .accessibilityIdentifier("privacy.ultraRequests.screen")
                 } label: {
@@ -53,14 +53,14 @@ struct UltraPrivacyView: View {
                 }
                 .accessibilityIdentifier("privacy.ultraRequests")
                 .cardRowBackground(position: .first)
-                if let url = AppLinks.googleCloudDataTerms {
+                if let url = AppLinks.anthropicCommercialTerms {
                     Link(destination: url) {
-                        Text("Google Cloud’s data terms").foregroundStyle(Palette.accText).frame(minHeight: Metrics.listRowContent)
+                        Text("Anthropic’s commercial terms").foregroundStyle(Palette.accText).frame(minHeight: Metrics.listRowContent)
                     }
                     .cardRowBackground(position: .last)
                 }
             } footer: {
-                Text("Turn Ultra AI off in Privacy & AI data and nothing more goes to Google. Scripts it already wrote stay on this iPhone. Apple Intelligence doesn’t change.")
+                Text("Turn Ultra AI off in Privacy & AI data and nothing more goes to Anthropic. Scripts it already wrote stay on this iPhone. Apple Intelligence doesn’t change.")
                     .foregroundStyle(Palette.ink2)
             }
         }

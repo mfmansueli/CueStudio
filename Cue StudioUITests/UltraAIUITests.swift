@@ -38,7 +38,7 @@ final class UltraAIUITests: XCTestCase {
         let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestUltra", "-uiTestStarTransition"])
         pickUltra(app)
         XCTAssertTrue(element(app, "ultra.consent").exists(within: 5), "Ultra AI was picked without asking")
-        XCTAssertTrue(text(app, containing: "Google").exists, "The disclosure doesn't say who processes the request")
+        XCTAssertTrue(text(app, containing: "Anthropic").exists, "The disclosure doesn’t say who processes the request")
         let allow = app.buttons["ultra.consent.allow"]
         app.scroll(to: allow)
         allow.tap()
@@ -59,7 +59,7 @@ final class UltraAIUITests: XCTestCase {
     }
 
     /// On a script Ultra AI wrote, every touch-up is Apple Intelligence's (owner, 01/11/2026: Ultra writes, it never touches up): Improve says
-    /// so, its Fit to time doesn't name Ultra AI, and fitting puts Apple Intelligence's answer on the page, not a second call to Google.
+    /// so, its Fit to time doesn't name Ultra AI, and fitting puts Apple Intelligence's answer on the page, not a second call to Ultra AI.
     func testEveryTouchUpOnAnUltraScriptIsAppleIntelligences() {
         let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestUltra", "-uiTestUltraAllowed"])
         pickUltra(app)
@@ -110,7 +110,7 @@ final class UltraAIUITests: XCTestCase {
         XCTAssertFalse(text(app, containing: "Gemini").exists, "The brand of the model is on screen")
     }
 
-    /// Settings › Privacy & AI data › What Ultra AI sends: what goes to Google, what never does, what Google does with it, and the requests
+    /// Settings › Privacy & AI data › What Ultra AI sends: what goes to Anthropic, what never does, what Anthropic does with it, and the requests
     /// word for word (App Review 5.1.2(i)); the consent stays one line.
     func testPrivacyHasEverythingUltraAISends() {
         let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestUltra", "-uiTestUltraAllowed"])
@@ -128,7 +128,7 @@ final class UltraAIUITests: XCTestCase {
         // Lower down the list, which only builds the rows on screen.
         let training = text(app, containing: "doesn’t use it to train")
         app.scroll(to: training)
-        XCTAssertTrue(training.exists, "What Google does with it is missing")
+        XCTAssertTrue(training.exists, "What Anthropic does with it is missing")
         let requests = element(app, "privacy.ultraRequests")
         app.scroll(to: requests)
         requests.tap()

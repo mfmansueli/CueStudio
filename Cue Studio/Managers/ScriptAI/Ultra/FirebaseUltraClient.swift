@@ -36,12 +36,9 @@ final class FirebaseUltraClient: UltraModelClient {
         guard FileManager.default.fileExists(atPath: path), let options = FirebaseOptions(contentsOfFile: path),
               UltraLabConfiguration.accepts(projectID: options.projectID, bundleID: options.bundleID, appBundleID: Bundle.main.bundleIdentifier)
         else { return nil }
+        // App Check's provider for this app (the debug one, with the lab's registered token) comes from `CueAppCheckProviderFactory`, installed
+        // with Firebase at launch.
         if FirebaseApp.app(name: UltraLabConfiguration.appName) == nil {
-            // The registered debug token, when it was copied over: App Check's debug provider reads it from here.
-            if let token = UltraLabConfiguration.debugToken() {
-                UserDefaults.standard.set(token, forKey: UltraLabConfiguration.debugTokenDefaultsKey)
-            }
-            AppCheck.setAppCheckProviderFactory(UltraLabAppCheckFactory())
             FirebaseApp.configure(name: UltraLabConfiguration.appName, options: options)
         }
         guard let app = FirebaseApp.app(name: UltraLabConfiguration.appName) else { return nil }

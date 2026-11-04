@@ -7,10 +7,13 @@ import SwiftUI
 
 /// "WHAT CUE KNOWS 65% · GOOD START" and a bar: how much of the creator Cue knows (9.1 and 9.3), never how good a script is (the owner's item 3,
 /// 02/11/2026). The number is the computed `voiceStrength`, so it moves with every answer, and it counts what reaches the model: both Apple
-/// Intelligence routes get all of it.
+/// Intelligence routes get all of it. On the My Cue Voice page the bar is the spaceship's fuel tank (`.tank`, `VoiceFuelTank`).
 struct VoiceMeter: View {
+    enum Style { case bar, tank }
+
     let strength: Int
     let level: VoiceStrengthLevel
+    var style: Style = .bar
 
     /// The meter's name, as VoiceOver reads it.
     static var title: String { String(localized: "What Cue knows") }
@@ -35,18 +38,25 @@ struct VoiceMeter: View {
                     levelLabel
                 }
             }
-            GeometryReader { proxy in
-                ZStack(alignment: .leading) {
-                    Capsule().fill(Palette.Slider.track)
-                    Capsule().fill(Palette.acc).frame(width: proxy.size.width * CGFloat(min(100, max(0, strength))) / 100)
-                }
+            switch style {
+            case .bar: bar
+            case .tank: VoiceFuelTank(strength: strength).padding(.top, 2)
             }
-            .frame(height: 4)
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(Self.title))
         .accessibilityValue(Text("\(strength) percent, \(level.label)"))
         .accessibilityIdentifier("voice.meter")
+    }
+
+    private var bar: some View {
+        GeometryReader { proxy in
+            ZStack(alignment: .leading) {
+                Capsule().fill(Palette.Slider.track)
+                Capsule().fill(Palette.acc).frame(width: proxy.size.width * CGFloat(min(100, max(0, strength))) / 100)
+            }
+        }
+        .frame(height: 4)
     }
 
     private var strengthLabel: some View {

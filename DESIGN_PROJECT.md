@@ -272,8 +272,22 @@ não mostra número. Teste: `-uiTestWriterStalls`.
   only when it fits this idea, with its facts and numbers as given; never invent others" (duas por pedido, a que é sobre a ideia primeiro); a Ultra AI e
   a nova tentativa só com o catálogo não as recebem.
 - **Página 9.3** (`MyCueVoicePage`, em Profile; o ✦ Voz do dock a abre só com as cinco perguntas respondidas): um cartão; no topo dele, uma
-  seção à parte num painel `surface2` (dono, 03/11/2026): "Use my voice in drafts" com a chave, o medidor e "✦ Next: …" com Answer numa faixa
-  `surface3`; depois as seções na ordem do criador (`VoicePageSection`), cada nome como título em `.headline` negrito branco, sem
+  seção à parte num painel `surface2` (dono, 03/11/2026): "Use my voice in drafts" com a chave e o medidor como o **tanque de combustível da nave**
+  (`VoiceFuelTank`, `VoiceFuelPainter`, `VoiceShipFlight`, `Palette.Fuel`; dono, 03/11/2026: nível award, não um zoom): um tubo de vidro de 18 pt
+  (noite funda, luz no topo, sombra interna, marcas de 25/50/75 gravadas nas bordas) com plasma em duas camadas (âmbar escuro atrás, amarelo na
+  frente, ondas próprias), a frente acesa onde encontra o vazio e um pulso de luz que o atravessa a cada 2,8 s. Ao abrir a página e quando o quanto Cue
+  sabe cresce (com uma folha de respostas aberta, o medidor guarda o valor de antes e só sobe, com a nave, ao fechar a folha, depois de a página voltar ao topo em 0,5 s se estiver rolada: dono, 04/11/2026, o
+  voo é a recompensa por responder; ao limpar as respostas o tanque só esvazia) a nave do céu, mais larga que o tubo (27 pt de comprimento, numa faixa própria por cima dele), corre o tubo em 1,25 s despejando o plasma, que se inclina com a velocidade e, quando ela para, avança, volta e
+  assenta (mola). Então o voo em três atos: **antecipação** (0,28 s: recua, agacha, motores carregam), **arrancada** (0,45 s: arco para a frente e de
+  volta para o meio, sempre acima do tanque e na tela, olhando um pouco à frente na curva e inclinando o quanto vira, esticada pela velocidade,
+  com o rastro de íons; chega à virada ainda andando) e **até quem olha** (0,70 s: o nariz aponta para a tela, a vista de cima vira uma linha e
+  abre a vista de frente, `SpaceshipPainter.drawCraftFront`; uma onda de choque onde ela acelera e anéis de força empurrados para trás a cada
+  0,08 s, o impacto atrás dela; cresce em perspectiva, 1/z, até 8×, seguindo um pouco a direção de onde veio numa curva leve, saindo inclinada da
+  curva, nivelando e inclinando de leve para o outro lado ao passar; a luz dos motores tinge a página, um borrão de velocidade no fim e passa pelo
+  vidro no canto de cima à direita com um clarão). Um padrão háptico só acompanha tudo
+  (`HapticPatterns.voiceFuel`: zumbido do enchimento, clique do tanque cheio, carga, empurrão da arrancada, batida da onda de choque, zumbido da aproximação e toque ao passar).
+  Com Reduzir Movimento, só o tubo cheio até o nível. A
+  próxima pergunta não fica aqui (está no cartão do Profile); depois as seções na ordem do criador (`VoicePageSection`), cada nome como título em `.headline` negrito branco, sem
   maiúsculas, com 26 pt acima (dono, 03/11/2026: os nomes em maiúsculas cinza se confundiam com os das linhas): WHO YOU ARE (I am · Videos are for) · WHO YOU TALK TO (Audience · They watch
   to · Reach) · WHAT ABOUT (Topics · Usual formats) · HOW YOU SOUND (Voice · Style · My phrases) · HOW YOU OPEN AND CLOSE (Opens with · Ends with) ·
   WHAT’S TRUE ABOUT YOU (Also true · Stories and facts) · WHAT CUE NEVER WRITES (Avoid) · EXAMPLES AND WHAT CUE LEARNED (Examples · What Cue
@@ -505,7 +519,15 @@ Só no Adrift: um astronauta flutuando e batendo de leve nas bordas.
 `#FFFBEA → #FFE680 → #FFD60A → #B88A00`), 26 pt acima do meio do disco, respira 1 → 1,04 em 6 s com brilho de 58 pt, e dois anéis finos (−14° e 16°) com
 uma bolinha cada (rosa 40 s, menta 31 s), a metade de trás atrás da bola. O mapa (`UniverseMap`, grade 358 × 320, visto em ângulo): brilho violeta,
 elipses 70 × 43 e 122 × 80 (tracejada), **um ponto por vídeo** (1,9–2,9 pt, cor do tema, nítido e sem halo) no disco que gira em 140 s, rotas curvas
-tracejadas até os planetas e a estrela **NEW** (pulsa em 2,6 s). Limpo e nítido, com poucos movimentos (pedido do dono, §36). Tudo para com Reduzir
+tracejadas até os planetas e a estrela **NEW** (pulsa em 2,6 s). Limpo e nítido, com poucos movimentos (pedido do dono, §36). **Refino (dono, 04/11/2026):** profundidade no disco (cada ponto cresce e
+acende ao vir para a frente e encolhe e apaga atrás, `0,72–1,22×` e `42–100%`), o disco como um plano tênue (violeta na frente, a borda de perto com
+luz), as órbitas mais fracas atrás e mais fortes na frente, rotas cúbicas que saem da borda do YOU, sobem para fora do plano e descem no planeta,
+planetas iluminados pelo YOU (lado dia, terminador suave, lado noite, uma linha de ar na borda acesa, faixas e duas tempestades girando em 48 s,
+`PlanetPainter.Look`), anéis do YOU com corpo (linha fina sobre brilho suave, contas com halo), "YOU" numa plaquinha sob a esfera (`Palette.Universe.youPlate`,
+por cima dos pontos) e a estrela mais nova como uma estrela de quatro pontas que solta um anel a cada 2,6 s, com "NEW · REELS" numa plaquinha (some
+no ano selado). **Paralaxe:** em Your universe o mapa responde à inclinação do iPhone (`UniverseTilt`, gravidade do sensor, sem permissão;
+`UniverseParallax`): névoa 2 pt, disco 5, YOU 8, planetas 13 a uma inclinação de ~20°, e o disco se abre até 18% quando o topo do iPhone vai para
+trás; volta ao centro sozinho em alguns segundos. Não vale nas fotos e no vídeo do "Share my universe". Tudo para com Reduzir
 Movimento e nos anos selados. **Toques:** núcleo → `UniverseCoreSheet`
 (temas como anéis, marcos, **Core colour**, que tinge bola, brilho, card do Profile e o "Share my universe"); ponto → aquela take (procura o ponto mais
 perto de onde ele está agora). Forma: a foto do protótipo animado que o dono mandou (o PNG e o HTML do handoff estão desatualizados). Catálogo:
@@ -837,8 +859,9 @@ planeta → Takes filtrado (`TakesRequest`, chip "{ANO} · SHARED ✕"); núcleo
 (`UniverseMediaRenderer`, AVAssetWriter, 20 fps), Show numbers / Show @handle, Save to Photos, Share…. **Year in review** (`YearInReviewView`,
 `fullScreenCover`, fade 0,3 s): 5 slides de 3,2 s, barras de 3 pt, toque nos lados, ✕, "Share my {ano}" no último; fatias sem dados saem (sempre ≥ 2);
 a partir de 3 vídeos; ao vivo só de 1º de dezembro (antes "PREVIEW · READY DEC 1"). Pode abrir pela aba Profile já na história (`ProfileRoute`,
-`YourUniverseView(opensYearInReview:)`). Reduzir Movimento: barras cheias, sem avanço sozinho. A legenda mostra as três linhas de tema acima do cartão do
-marco (o quadro as cobre); em aparelhos baixos a tela rola.
+`YourUniverseView(opensYearInReview:)`). Reduzir Movimento: barras cheias, sem avanço sozinho. A legenda dos temas é uma linha centralizada logo abaixo do mapa (quebra
+quando precisa; `UniverseLegend`), e mapa e legenda ficam no meio do espaço acima dos cartões (dono, 04/11/2026: sem a faixa vazia embaixo);
+em aparelhos baixos a tela rola.
 **O cartão do próximo marco** ("NEXT MILESTONE · n / m", "Share k more videos", "Unlocks the … app icon") conta os vídeos compartilhados desde sempre, como
 os ícones (§16), e só promete um ícone ainda não destravado; passado o último marco (50), não aparece. No ano novo, o cartão "FIRST STAR OF {ano}" mostra o
 ícone do próximo marco (nenhum, se não há). O ano continua sendo a retrospectiva: planetas, contagens e a Year in review.
@@ -3181,13 +3204,28 @@ som, decisões técnicas e limites: `AUDIO_LIBRARY.md`.
 
 ## 57. Ultra AI: o roteirista experimental (29 de outubro de 2026; pedido do dono)
 
-**Nome:** a função se chama **Ultra AI** em toda a interface; a marca do modelo (Gemini) nunca aparece na tela (decisão do dono, 29/10/2026). As telas de
-privacidade dizem que o pedido vai ao **Google** (a empresa que processa), como pede a App Store (5.1.2(i)). Código: `Managers/ScriptAI/Ultra/`,
-`Screens/Shared/Ultra/`, `Screens/Settings/Privacy/UltraLab/`.
+**Nome:** a função se chama **Ultra AI** em toda a interface; a marca do modelo (Claude, ou o Gemini do laboratório) nunca aparece na tela (decisão do
+dono, 29/10/2026). As telas de privacidade dizem que o pedido vai à **Anthropic** (a empresa que processa), como pede a App Store (5.1.2(i)). Código:
+`Managers/ScriptAI/Ultra/`, `Screens/Shared/Ultra/`, `Screens/Settings/Privacy/UltraLab/`; o servidor em `server/`.
 
-**Onde existe:** só em Debug, num iPhone com a configuração do laboratório (`Documents/UltraLab-GoogleService-Info.plist`, projeto `cue-script-ai-lab`, o
-bundle do app; `UltraLabConfiguration.isPresent`) ou num teste de UI (`-uiTestUltra`). Release não tem nada dela. O Apple Intelligence continua o padrão
-e nunca é trocado por ela em silêncio (nem ela por ele): cada roteiro da Ultra AI é uma escolha explícita.
+**Quem escreve: o Claude, pelo servidor do Cue** (dono, 03/11/2026: o Claude no app, já no TestFlight). O app nunca tem chave: cada chamada vai à função
+`ultra` (`server/functions`, Cloud Functions 2ª geração no projeto Firebase `cuestudio-app`, `us-central1`;
+`https://us-central1-cuestudio-app.cloudfunctions.net/ultra`), que confere o **App Check** (App Attest num iPhone de verdade; o token de depuração
+registrado num build Debug), lê a chave da Anthropic no Secret Manager (`ANTHROPIC_API_KEY`), escolhe o modelo e o esforço (`server/functions/.env`:
+`ULTRA_MODEL`, hoje `claude-sonnet-5-5`; `ULTRA_EFFORT`, hoje `high`: trocar é publicar de novo, sem build novo; o dono ainda decide entre Sonnet e Opus)
+e devolve os eventos do Claude enquanto chegam (`CueServerUltraClient`, `ClaudeStreamReader`). O app manda só a etapa, as instruções e o pedido como o
+*What Cue sends* mostra, o formato JSON da etapa (`ClaudeStageShape`) e um esforço menor quando o fluxo pede (`UltraThinking`). O servidor recusa o que o
+app nunca manda (etapa desconhecida, textos acima de 40 mil caracteres, formato errado), tem teto de 32 mil tokens por resposta, refaz uma recusa de
+política no modelo que a Anthropic recomenda (`fallbacks: "default"`) e para o Claude quando o criador cancela. O log do servidor guarda etapa, modelo,
+tokens, tempo e como terminou, nunca o texto. O App Check só pede token quando a Ultra AI chama (`UltraAppCheck`, `CueAppCheckProviderFactory`,
+`FirebaseAppCheckTokenAutoRefreshEnabled` desligado). Configurar ou trocar a chave: `server/setup.sh` (chave, publicação, App Attest e token de
+depuração); testes do servidor: `npm test` em `server/functions`. Ainda **não** há créditos por conta no servidor: os grátis e os do Pro são contados no
+iPhone (`UltraAllowanceService`), e o limite de gasto é o saldo da conta da Anthropic.
+
+**Onde existe:** no **TestFlight** (Release, quando o StoreKit diz que não é a App Store: `UltraDistribution`, ambiente `sandbox` ou `xcode`; na App
+Store fica escondida até o servidor guardar os créditos), em Debug com o Firebase ligado ou o laboratório configurado (`UltraLabClient.isOffered`) e num
+teste de UI (`-uiTestUltra`). O Apple Intelligence continua o padrão e nunca é trocado por ela em silêncio (nem ela por ele): cada roteiro da Ultra AI
+é uma escolha explícita.
 
 **Como se escolhe:** no dock, o chip de quem escreve (§2), que guarda a última escolha do criador (decisão do dono, 29/10/2026); no Find inspiration, *Draft with
 Ultra AI* (§30). Uma resposta a comentário fica com o Apple Intelligence. Com a Ultra AI escolhida, a disponibilidade do Apple Intelligence não importa
@@ -3203,30 +3241,31 @@ Reduzir Movimento: a galáxia pronta, parada). **Meet Ultra AI** (title, negrito
 grátis ("Your first 3 scripts are free.", `aiText`, title3); três linhas em vidro ("Goes further with every idea", "Checks its claims as it writes",
 "Polished in your voice") que entram uma depois da outra saindo de um desfoque, cada símbolo num disco violeta que acende ao entrar. A página fica no
 meio da folha. Embaixo, fixos, **uma
-linha** do que vai e para quem ("Your idea, your choices and your My Cue Voice preferences go to Google, which writes it. Turn it off any time in
+linha** do que vai e para quem ("Your idea, your choices and your My Cue Voice preferences go to Anthropic, which writes it. Turn it off any time in
 Settings.", `ink2`), **Try it free** (brilha quando a página termina de entrar) enquanto há roteiros grátis (Find inspiration, que rascunha na hora: **Write it free with Ultra AI**; sem grátis:
 **Allow Ultra AI** / **Allow and write with Ultra AI**) e **Not now**. Rola só se não couber (tamanhos grandes de texto). O detalhe do envio fica em
 Settings › Privacy & AI data e no *What Cue sends* do My Cue Voice (`UltraPayloadView`). Settings › Privacy & AI
 data tem o interruptor **Ultra AI** (ligar abre a folha; desligar revoga e nada mais sai, nem a próxima chamada de um roteiro em andamento), a página
-**What Ultra AI sends** (`UltraPrivacyView`, o detalhe que a App Review pede em 5.1.2(i) sem aumentar o consentimento: *Sent to Google* (a ideia como foi
+**What Ultra AI sends** (`UltraPrivacyView`, o detalhe que a App Review pede em 5.1.2(i) sem aumentar o consentimento: *Sent to Anthropic* (a ideia como foi
 digitada ou as respostas do formato; idioma, rede, formato e duração; as preferências do My Cue Voice; a inspiração, os dados da marca de um patrocinado e
 as palavras pedidas; o rascunho entre as etapas; no Fit to time de um roteiro da Ultra AI, o roteiro com as edições), só quando a Ultra AI é escolhida,
 até 3 pedidos por roteiro e 1 por Fit to time, nada em segundo plano; *Never sent* (nome e @, exemplos de escrita, trechos importados, outros roteiros,
-vídeos, áudio e fotos); *What Google does with it* (roda o modelo e devolve o texto; pelos termos do Google Cloud não treina com isso, pode guardar até
-24 h para responder mais rápido e registrar pedidos para detectar abuso; o App Check confere que o pedido vem do Cue); **See the requests, word for word**
-(`UltraPayloadView` com a ideia do dock) e o link **Google Cloud’s data terms**; o rodapé diz como parar e que o Apple Intelligence não muda) e, em Debug,
+vídeos, áudio e fotos); *What Anthropic does with it* (roda o modelo e devolve o texto; passa pelo servidor do Cue, que não guarda nada; pelos termos
+comerciais da Anthropic não treina com isso e guarda até 30 dias para detectar abuso; o App Check confere que o pedido vem do Cue); **See the requests,
+word for word** (`UltraPayloadView` com a ideia do dock) e o link **Anthropic’s commercial terms**; o rodapé diz como parar e que o Apple Intelligence não muda) e, em Debug,
 **Ultra AI · Lab**; o Apple Intelligence passa a dizer "Cue’s default writer. Ultra AI has its own switch." e a folha de privacidade deixa de dizer "nothing
 else" onde a Ultra AI existe.
 
-**Claude no laboratório** (Debug; dono, 02/11/2026: provar o Claude no lugar do Google e modelos mais baratos): o Ultra AI · Lab escolhe quem escreve
-(`UltraLabProvider`: Gemini 3.5 Flash, Claude Opus 5.5, Sonnet 5.5 ou Haiku 5.5) e, para o Claude, o esforço (`UltraLabEffort`: High, Medium, Low,
-`output_config.effort`); lidos a cada chamada (`UltraLabClient`), sem relançar. O Claude vai direto à API da Anthropic (`AnthropicUltraClient`) com a
+**Laboratório** (Debug; dono, 02/11/2026: provar o Claude no lugar do Google e modelos mais baratos): o Ultra AI · Lab escolhe quem escreve
+(`UltraLabProvider`: **Cue server (as on TestFlight)**, o padrão, exatamente o caminho do TestFlight; Gemini 3.5 Flash; Claude Opus 5.5, Sonnet 5.5 ou
+Haiku 5.5 direto do iPhone) e, para o Claude direto, o esforço (`UltraLabEffort`: High, Medium, Low, `output_config.effort`); lidos a cada chamada
+(`UltraLabClient`), sem relançar. O Claude vai direto à API da Anthropic (`AnthropicUltraClient`) com a
 chave copiada à mão para `Documents/UltraLab-AnthropicKey` (`tools/ultra/install-claude-key.sh`, `ClaudeLabConfiguration`): **nunca** no app, no git
 ou no terminal. Uma recusa de política é refeita no modelo recomendado da Anthropic (o Haiku não tem esse recurso). O custo do laboratório usa o preço
-de cada modelo (`UltraLabProvider.price`). O Ultra AI que for lançado chama o Claude pelo servidor do Cue, nunca com uma chave no app.
+de cada modelo (`UltraLabProvider.price`; pelo servidor, o do modelo que a resposta diz, `UltraPrice.server`).
 
-**Como escreve** (`UltraScriptService`, `UltraPayload`, `UltraInstructions`): três chamadas pelo Firebase AI Logic (Agent Platform, `global`, modelo pedido
-`gemini-3.5-flash`, App Check), sem nova tentativa nem outro modelo (`UltraFlow.checked`): (1) um rascunho desenvolvido com quem o criador é e para quem
+**Como escreve** (`UltraScriptService`, `UltraPayload`, `UltraInstructions`): três chamadas pelo servidor do Cue (no laboratório, também pelo Firebase AI
+Logic com o `gemini-3.5-flash` ou pelo Claude direto), sem nova tentativa (`UltraFlow.checked`): (1) um rascunho desenvolvido com quem o criador é e para quem
 fala, com exemplos dentro do mundo dele; (2) a **checagem das afirmações**, sem o jeito de falar: corrige o que é falso ou universal demais, mecanismo
 inventado, número, estudo, credencial ou "a ciência explica" que o pedido não deu e promessa absoluta, com a menor mudança, e mantém cenas imaginadas,
 opiniões, estrutura e fim (JSON com o roteiro e a lista do que corrigiu); (3) o polimento com o jeito de falar sobre o rascunho checado, que mantém as

@@ -53,9 +53,11 @@ struct YourUniverseView: View {
             VStack(alignment: .leading, spacing: 10) {
                 header(content)
                 if let badge = content.sealedBadge { UniverseSealedBadge(text: badge) }
+                // The map and its themes sit in the middle of the room left above the cards (the owner, 04/11/2026: no empty band under
+                // them); the cards stay at the bottom, just over the button, as on the board.
+                Spacer(minLength: 4)
                 map(content, snapshot: snapshot)
                 if snapshot.total > 0 { UniverseLegend(snapshot: snapshot) { openTakes(theme: $0, year: snapshot.year) } }
-                // With nothing to draw the cards go to the bottom, just over the button, as on the board.
                 Spacer(minLength: 12)
                 card(content)
                 UniverseReviewRowView(row: content.review) { openReview(content) }
@@ -124,7 +126,8 @@ struct YourUniverseView: View {
             onCore: { showsCore = true },
             onSeeInTakes: { openTakes(platform: $0, year: snapshot.year) },
             onDot: { openTake($0) },
-            playsOpening: true
+            playsOpening: true,
+            respondsToTilt: true
         )
         .id(content.selectedYear)
         .frame(maxWidth: .infinity)

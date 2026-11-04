@@ -5,9 +5,10 @@
 
 import SwiftUI
 
-/// The core of 9.2 as the prototype shows it in motion: "YOU" is a lit sphere of the core's colour, 38 pt, lifted over the middle of the disc, with a warm
-/// glow that swells (6 s) and two thin rings tilted around it, each carrying a small bead of a world's colour (31 and 40 s a lap). The far half of each ring
-/// goes behind the ball and the near half in front, so the picture has depth. Drawn in board points; the map's disc of videos turns around it.
+/// The core of 9.2 as the prototype shows it in motion: "YOU" is a lit sphere of the core's colour, 38 pt, lifted over the middle of the disc, with a
+/// warm glow that swells (6 s) and two rings tilted around it (a fine line over a soft glow), each carrying a small bead of a world's colour (31 and
+/// 40 s a lap). The far half of each ring goes behind the ball and the near half in front, so the picture has depth. Drawn in board points; the
+/// map's disc of videos turns around it.
 enum UniverseSphere {
     static let diameter: CGFloat = 38
     static let breathPeriod = 6.0
@@ -152,13 +153,17 @@ enum UniverseSphere {
         layer.rotate(by: .degrees(ring.tilt))
         var arc = Path()
         arc.addArc(center: .zero, radius: 1, startAngle: .degrees(front ? 0 : 180), endAngle: .degrees(front ? 180 : 360), clockwise: false)
-        layer.stroke(
-            arc.applying(CGAffineTransform(scaleX: ring.rx, y: ring.ry)),
-            with: .color(Palette.Universe.starGold.opacity(front ? 0.55 : 0.3)), lineWidth: 0.8
-        )
+        // A ring with body: a soft glow under a fine line, the near half brighter than the far one.
+        let ringPath = arc.applying(CGAffineTransform(scaleX: ring.rx, y: ring.ry))
+        layer.stroke(ringPath, with: .color(Palette.Universe.starGold.opacity(front ? 0.16 : 0.08)), style: StrokeStyle(lineWidth: 3.2, lineCap: .round))
+        layer.stroke(ringPath, with: .color(Palette.Universe.starGold.opacity(front ? 0.72 : 0.32)), style: StrokeStyle(lineWidth: 1.1, lineCap: .round))
         let angle = (ring.start + 360 * time / ring.period) * .pi / 180
         guard (sin(angle) >= 0) == front else { return }
         let bead = CGPoint(x: ring.rx * cos(angle), y: ring.ry * sin(angle))
+        layer.fill(
+            Path(ellipseIn: CGRect(x: bead.x - 5, y: bead.y - 5, width: 10, height: 10)),
+            with: .radialGradient(Gradient(colors: [ring.bead.opacity(front ? 0.45 : 0.2), ring.bead.opacity(0)]), center: bead, startRadius: 0, endRadius: 5)
+        )
         layer.fill(
             Path(ellipseIn: CGRect(x: bead.x - 2.3, y: bead.y - 2.3, width: 4.6, height: 4.6)),
             with: .color(ring.bead.opacity(front ? 1 : 0.6))
