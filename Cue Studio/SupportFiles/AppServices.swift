@@ -191,8 +191,8 @@ struct AppServices {
         self.ideaTransition = ideaTransition
         // The free scripts and Pro's monthly ones are a preview kept on this iPhone (`UltraAllowanceService`), never a protection of credits.
         let ultra = UltraScriptService(
-            isAvailable: options.ultraAvailable, consent: UltraConsentService(defaults: options.defaults),
-            budget: UltraCallBudget(defaults: options.ultraBudgetDefaults),
+            isAvailable: options.ultraAvailable, checksDistribution: options.checksUltraDistribution,
+            consent: UltraConsentService(defaults: options.defaults), budget: UltraCallBudget(defaults: options.ultraBudgetDefaults),
             allowance: UltraAllowanceService(defaults: options.defaults) { [store] in
                 UltraAllowance.Membership(tier: store.tier)
             },

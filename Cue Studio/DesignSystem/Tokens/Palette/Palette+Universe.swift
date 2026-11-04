@@ -22,6 +22,8 @@ extension Palette {
 
         /// The violet glow of the night behind a constellation.
         static let nightViolet = Color(hex: 0x9D8CFF)
+        /// The small plate "YOU" sits on under the map's core (`UniverseMap`): the night, nearly opaque, so the label reads over any dot.
+        static let youPlate = Color(hex: 0x15132C, opacity: 0.9)
         /// The night of the universe cards and the story: from this near-black at the top to the indigo at the bottom.
         static let nightDeep = Color(hex: 0x0A0B12)
         static let nightIndigo = Color(hex: 0x1B1740)

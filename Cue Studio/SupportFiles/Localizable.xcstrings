@@ -8583,6 +8583,244 @@
         }
       }
     },
+    "Anthropic’s commercial terms" : {
+      "comment" : "What Ultra AI sends: link to Anthropic's commercial terms (how API data is used and kept)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شروط Anthropic التجارية"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anthropics forretningsvilkår"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geschäftsbedingungen von Anthropic"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Condiciones comerciales de Anthropic"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conditions commerciales d’Anthropic"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anthropic की व्यावसायिक शर्तें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ketentuan komersial Anthropic"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Condizioni commerciali di Anthropic"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anthropicの商用規約"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anthropic 상업 약관"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anthropics forretningsvilkår"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zakelijke voorwaarden van Anthropic"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Termos comerciais da Anthropic"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anthropics affärsvillkor"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ข้อกำหนดเชิงพาณิชย์ของ Anthropic"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anthropic’in ticari koşulları"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Điều khoản thương mại của Anthropic"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anthropic 商业条款"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anthropic 商業條款"
+          }
+        }
+      }
+    },
+    "Anthropic runs its AI model to write, check, polish or fit the script, and sends the text back." : {
+      "comment" : "What Ultra AI sends › What Anthropic does with it: a row",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تشغّل Anthropic نموذج الذكاء الاصطناعي الخاص بها لكتابة النص أو تدقيقه أو تحسينه أو ملاءمته، ثم تعيد النص."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anthropic kører sin AI-model for at skrive, tjekke, finpudse eller tilpasse manuskriptet og sender teksten tilbage."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anthropic lässt sein KI-Modell das Skript schreiben, prüfen, verfeinern oder anpassen und schickt den Text zurück."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anthropic ejecuta su modelo de IA para escribir, revisar, pulir o ajustar el guion, y devuelve el texto."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anthropic exécute son modèle d’IA pour rédiger, vérifier, peaufiner ou ajuster le script, puis renvoie le texte."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anthropic अपने AI मॉडल से स्क्रिप्ट लिखता, जाँचता, निखारता या फ़िट करता है, और टेक्स्ट वापस भेजता है।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anthropic menjalankan model AI-nya untuk menulis, mengecek, memoles, atau menyesuaikan naskah, lalu mengirim teksnya kembali."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anthropic usa il suo modello di IA per scrivere, controllare, rifinire o adattare il copione e rimanda il testo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anthropicは自社のAIモデルで台本を書き、チェックし、仕上げ、または時間に合わせ、テキストを返します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anthropic은 자사 AI 모델로 대본을 쓰고, 검토하고, 다듬거나 시간에 맞춘 뒤 텍스트를 돌려줘요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anthropic kjører KI-modellen sin for å skrive, sjekke, finpusse eller tilpasse manuset, og sender teksten tilbake."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anthropic laat zijn AI-model het script schrijven, controleren, afwerken of op lengte brengen en stuurt de tekst terug."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Anthropic roda o modelo de IA dela para escrever, checar, polir ou ajustar o roteiro e devolve o texto."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anthropic kör sin AI-modell för att skriva, kontrollera, putsa eller anpassa manuset och skickar tillbaka texten."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anthropic ใช้โมเดล AI ของตนเขียน ตรวจ ขัดเกลา หรือปรับสคริปต์ให้พอดี แล้วส่งข้อความกลับมา"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anthropic metni yazmak, kontrol etmek, cilalamak ya da süreye sığdırmak için kendi yapay zekâ modelini çalıştırır ve metni geri gönderir."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anthropic chạy mô hình AI của mình để viết, kiểm tra, trau chuốt hoặc chỉnh vừa kịch bản, rồi gửi văn bản lại."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anthropic 用它的 AI 模型撰写、核查、润色或适配脚本，并把文本发回。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anthropic 用它的 AI 模型撰寫、核查、潤飾或配合腳本，並把文字傳回。"
+          }
+        }
+      }
+    },
     "Anxiety" : {
       "comment" : "My Cue Voice: a more specific topic inside the theme “mental health and wellness” (a short chip)",
       "localizations" : {
@@ -8821,121 +9059,121 @@
         }
       }
     },
-    "Apple Intelligence writes by default. Ultra AI sends your request and voice preferences to Google, which runs its model, only when you allow it and pick it for a script. Writing examples and imported excerpts never go to Google." : {
-      "comment" : "Privacy sheet: which AI is used, what Ultra AI sends, and that writing examples never go to Google",
+    "Apple Intelligence writes by default. Ultra AI sends your request and voice preferences to Anthropic, which runs its model, only when you allow it and pick it for a script. Writing examples and imported excerpts never go to Anthropic." : {
+      "comment" : "Privacy sheet: which AI is used, what Ultra AI sends, and that writing examples never go to Anthropic",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "يكتب Apple Intelligence المسودات افتراضيًا. يرسل Ultra AI طلبك وتفضيلات أسلوبك إلى Google، التي تشغّل نموذجها، فقط عندما تسمح بذلك وتختاره لنص. لا تصل أمثلة الكتابة والمقتطفات المستوردة إلى Google أبدًا."
+            "value" : "يكتب Apple Intelligence المسودات افتراضيًا. يرسل Ultra AI طلبك وتفضيلات أسلوبك إلى Anthropic، التي تشغّل نموذجها، فقط عندما تسمح بذلك وتختاره لنص. لا تصل أمثلة الكتابة والمقتطفات المستوردة إلى Anthropic أبدًا."
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apple Intelligence laver udkastene som standard. Ultra AI sender din anmodning og dine stilpræferencer til Google, som kører sin model, kun når du tillader det og vælger det til et manuskript. Skriveeksempler og importerede uddrag sendes aldrig til Google."
+            "value" : "Apple Intelligence laver udkastene som standard. Ultra AI sender din anmodning og dine stilpræferencer til Anthropic, som kører sin model, kun når du tillader det og vælger det til et manuskript. Skriveeksempler og importerede uddrag sendes aldrig til Anthropic."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apple Intelligence entwirft standardmäßig. Ultra AI sendet deine Anfrage und Stilpräferenzen an Google, das sein Modell betreibt, nur wenn du es erlaubst und für ein Skript wählst. Schreibbeispiele und importierte Auszüge gehen nie an Google."
+            "value" : "Apple Intelligence entwirft standardmäßig. Ultra AI sendet deine Anfrage und Stilpräferenzen an Anthropic, das sein Modell betreibt, nur wenn du es erlaubst und für ein Skript wählst. Schreibbeispiele und importierte Auszüge gehen nie an Anthropic."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apple Intelligence redacta por defecto. Ultra AI envía tu solicitud y tus preferencias de estilo a Google, que ejecuta su modelo, solo cuando lo permites y lo eliges para un guion. Los ejemplos de escritura y los fragmentos importados nunca van a Google."
+            "value" : "Apple Intelligence redacta por defecto. Ultra AI envía tu solicitud y tus preferencias de estilo a Anthropic, que ejecuta su modelo, solo cuando lo permites y lo eliges para un guion. Los ejemplos de escritura y los fragmentos importados nunca van a Anthropic."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apple Intelligence rédige par défaut. Ultra AI envoie votre demande et vos préférences de style à Google, qui exécute son modèle, seulement si vous l’autorisez et le choisissez pour un script. Les exemples de textes et les extraits importés ne vont jamais à Google."
+            "value" : "Apple Intelligence rédige par défaut. Ultra AI envoie votre demande et vos préférences de style à Anthropic, qui exécute son modèle, seulement si vous l’autorisez et le choisissez pour un script. Les exemples de textes et les extraits importés ne vont jamais à Anthropic."
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "डिफ़ॉल्ट रूप से Apple Intelligence ड्राफ़्ट बनाता है। Ultra AI आपका अनुरोध और शैली संबंधी प्राथमिकताएँ Google को, जो उसका मॉडल चलाता है, सिर्फ़ तब भेजता है जब आप अनुमति दें और किसी स्क्रिप्ट के लिए उसे चुनें। लेखन के उदाहरण और आयात किए गए अंश कभी Google को नहीं जाते।"
+            "value" : "डिफ़ॉल्ट रूप से Apple Intelligence ड्राफ़्ट बनाता है। Ultra AI आपका अनुरोध और शैली संबंधी प्राथमिकताएँ Anthropic को, जो उसका मॉडल चलाता है, सिर्फ़ तब भेजता है जब आप अनुमति दें और किसी स्क्रिप्ट के लिए उसे चुनें। लेखन के उदाहरण और आयात किए गए अंश कभी Anthropic को नहीं जाते।"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Secara bawaan, Apple Intelligence yang menyusun draf. Ultra AI mengirim permintaan dan preferensi gayamu ke Google, yang menjalankan modelnya, hanya saat kamu mengizinkannya dan memilihnya untuk sebuah naskah. Contoh tulisan dan kutipan yang diimpor tidak pernah dikirim ke Google."
+            "value" : "Secara bawaan, Apple Intelligence yang menyusun draf. Ultra AI mengirim permintaan dan preferensi gayamu ke Anthropic, yang menjalankan modelnya, hanya saat kamu mengizinkannya dan memilihnya untuk sebuah naskah. Contoh tulisan dan kutipan yang diimpor tidak pernah dikirim ke Anthropic."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apple Intelligence crea le bozze per impostazione predefinita. Ultra AI invia la tua richiesta e le preferenze di stile a Google, che esegue il suo modello, solo se lo consenti e lo scegli per un copione. Gli esempi di scrittura e gli estratti importati non vanno mai a Google."
+            "value" : "Apple Intelligence crea le bozze per impostazione predefinita. Ultra AI invia la tua richiesta e le preferenze di stile ad Anthropic, che esegue il suo modello, solo se lo consenti e lo scegli per un copione. Gli esempi di scrittura e gli estratti importati non vanno mai ad Anthropic."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "標準ではApple Intelligenceが下書きします。Ultra AIは、許可して台本に選んだときだけ、リクエストと文体の設定を、モデルを動かすGoogleに送ります。文章のサンプルと読み込んだ抜粋がGoogleに送られることはありません。"
+            "value" : "標準ではApple Intelligenceが下書きします。Ultra AIは、許可して台本に選んだときだけ、リクエストと文体の設定を、モデルを動かすAnthropicに送ります。文章のサンプルと読み込んだ抜粋がAnthropicに送られることはありません。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "기본적으로 Apple Intelligence가 초안을 만들어요. Ultra AI는 허용하고 대본에 선택했을 때만 요청과 문체 설정을 모델을 실행하는 Google로 보내요. 글쓰기 예시와 가져온 발췌문은 절대 Google로 가지 않아요."
+            "value" : "기본적으로 Apple Intelligence가 초안을 만들어요. Ultra AI는 허용하고 대본에 선택했을 때만 요청과 문체 설정을 모델을 실행하는 Anthropic으로 보내요. 글쓰기 예시와 가져온 발췌문은 절대 Anthropic으로 가지 않아요."
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apple Intelligence lager utkastene som standard. Ultra AI sender forespørselen og stilpreferansene dine til Google, som kjører modellen sin, bare når du tillater det og velger det for et manus. Skriveeksempler og importerte utdrag sendes aldri til Google."
+            "value" : "Apple Intelligence lager utkastene som standard. Ultra AI sender forespørselen og stilpreferansene dine til Anthropic, som kjører modellen sin, bare når du tillater det og velger det for et manus. Skriveeksempler og importerte utdrag sendes aldri til Anthropic."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apple Intelligence maakt standaard de concepten. Ultra AI stuurt je verzoek en stijlvoorkeuren naar Google, dat zijn model draait, alleen als je het toestaat en het voor een script kiest. Schrijfvoorbeelden en geïmporteerde fragmenten gaan nooit naar Google."
+            "value" : "Apple Intelligence maakt standaard de concepten. Ultra AI stuurt je verzoek en stijlvoorkeuren naar Anthropic, dat zijn model draait, alleen als je het toestaat en het voor een script kiest. Schrijfvoorbeelden en geïmporteerde fragmenten gaan nooit naar Anthropic."
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O Apple Intelligence rascunha por padrão. O Ultra AI envia seu pedido e suas preferências de estilo ao Google, que roda o modelo, só quando você permite e o escolhe para um roteiro. Exemplos de escrita e trechos importados nunca vão para o Google."
+            "value" : "O Apple Intelligence rascunha por padrão. O Ultra AI envia seu pedido e suas preferências de estilo à Anthropic, que roda o modelo, só quando você permite e o escolhe para um roteiro. Exemplos de escrita e trechos importados nunca vão para a Anthropic."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apple Intelligence gör utkasten som standard. Ultra AI skickar din begäran och dina stilpreferenser till Google, som kör sin modell, bara när du tillåter det och väljer det för ett manus. Skrivexempel och importerade utdrag skickas aldrig till Google."
+            "value" : "Apple Intelligence gör utkasten som standard. Ultra AI skickar din begäran och dina stilpreferenser till Anthropic, som kör sin modell, bara när du tillåter det och väljer det för ett manus. Skrivexempel och importerade utdrag skickas aldrig till Anthropic."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "โดยค่าเริ่มต้น Apple Intelligence จะเป็นผู้ร่าง ส่วน Ultra AI จะส่งคำขอและการตั้งค่าสไตล์ของคุณไปยัง Google ซึ่งรันโมเดลของตัวเอง เฉพาะเมื่อคุณอนุญาตและเลือกใช้กับสคริปต์เท่านั้น ตัวอย่างงานเขียนและข้อความที่นำเข้าจะไม่ถูกส่งไปยัง Google เลย"
+            "value" : "โดยค่าเริ่มต้น Apple Intelligence จะเป็นผู้ร่าง ส่วน Ultra AI จะส่งคำขอและการตั้งค่าสไตล์ของคุณไปยัง Anthropic ซึ่งรันโมเดลของตัวเอง เฉพาะเมื่อคุณอนุญาตและเลือกใช้กับสคริปต์เท่านั้น ตัวอย่างงานเขียนและข้อความที่นำเข้าจะไม่ถูกส่งไปยัง Anthropic เลย"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Varsayılan olarak taslakları Apple Intelligence hazırlar. Ultra AI, isteğini ve üslup tercihlerini modelini çalıştıran Google’a yalnızca sen izin verdiğinde ve bir senaryo için seçtiğinde gönderir. Yazı örnekleri ve içe aktarılan alıntılar asla Google’a gitmez."
+            "value" : "Varsayılan olarak taslakları Apple Intelligence hazırlar. Ultra AI, isteğini ve üslup tercihlerini modelini çalıştıran Anthropic’e yalnızca sen izin verdiğinde ve bir senaryo için seçtiğinde gönderir. Yazı örnekleri ve içe aktarılan alıntılar asla Anthropic’e gitmez."
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Theo mặc định, Apple Intelligence soạn nháp. Ultra AI chỉ gửi yêu cầu và tùy chọn phong cách của bạn đến Google, nơi chạy mô hình của họ, khi bạn cho phép và chọn nó cho một kịch bản. Ví dụ bài viết và đoạn trích đã nhập không bao giờ được gửi đến Google."
+            "value" : "Theo mặc định, Apple Intelligence soạn nháp. Ultra AI chỉ gửi yêu cầu và tùy chọn phong cách của bạn đến Anthropic, nơi chạy mô hình của họ, khi bạn cho phép và chọn nó cho một kịch bản. Ví dụ bài viết và đoạn trích đã nhập không bao giờ được gửi đến Anthropic."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "默认由 Apple Intelligence 起草。只有在你允许并为某个脚本选择 Ultra AI 时，它才会把你的请求和文风偏好发送给运行其模型的 Google。写作示例和导入的摘录绝不会发送给 Google。"
+            "value" : "默认由 Apple Intelligence 起草。只有在你允许并为某个脚本选择 Ultra AI 时，它才会把你的请求和文风偏好发送给运行其模型的 Anthropic。写作示例和导入的摘录绝不会发送给 Anthropic。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "預設由 Apple Intelligence 起草。只有在你允許並為某個腳本選擇 Ultra AI 時，它才會把你的要求和文風偏好傳送給執行其模型的 Google。寫作範例和輸入的摘錄絕不會傳送給 Google。"
+            "value" : "預設由 Apple Intelligence 起草。只有在你允許並為某個腳本選擇 Ultra AI 時，它才會把你的要求和文風偏好傳送給執行其模型的 Anthropic。寫作範例和輸入的摘錄絕不會傳送給 Anthropic。"
           }
         }
       }
@@ -39709,244 +39947,6 @@
         }
       }
     },
-    "Google Cloud’s data terms" : {
-      "comment" : "What Ultra AI sends: link to Google Cloud's generative AI data governance page",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "شروط البيانات في Google Cloud"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Google Clouds datavilkår"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Datenbedingungen von Google Cloud"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Términos de datos de Google Cloud"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Conditions de données de Google Cloud"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Google Cloud की डेटा शर्तें"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ketentuan data Google Cloud"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Termini sui dati di Google Cloud"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Google Cloudのデータ規約"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Google Cloud 데이터 약관"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Google Clouds datavilkår"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gegevensvoorwaarden van Google Cloud"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Termos de dados do Google Cloud"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Google Clouds datavillkor"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ข้อกำหนดข้อมูลของ Google Cloud"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Google Cloud veri koşulları"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Điều khoản dữ liệu của Google Cloud"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Google Cloud 数据条款"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Google Cloud 資料條款"
-          }
-        }
-      }
-    },
-    "Google runs its AI model to write, check, polish or fit the script, and sends the text back." : {
-      "comment" : "What Ultra AI sends › What Google does with it: a row",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تشغّل Google نموذج الذكاء الاصطناعي الخاص بها لكتابة النص أو تدقيقه أو تحسينه أو ملاءمته، ثم تعيد النص."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Google kører sin AI-model for at skrive, tjekke, finpudse eller tilpasse manuskriptet og sender teksten tilbage."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Google lässt sein KI-Modell das Skript schreiben, prüfen, verfeinern oder anpassen und schickt den Text zurück."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Google ejecuta su modelo de IA para escribir, revisar, pulir o ajustar el guion, y devuelve el texto."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Google exécute son modèle d’IA pour rédiger, vérifier, peaufiner ou ajuster le script, puis renvoie le texte."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Google अपने AI मॉडल से स्क्रिप्ट लिखता, जाँचता, निखारता या फ़िट करता है, और टेक्स्ट वापस भेजता है।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Google menjalankan model AI-nya untuk menulis, mengecek, memoles, atau menyesuaikan naskah, lalu mengirim teksnya kembali."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Google usa il suo modello di IA per scrivere, controllare, rifinire o adattare il copione e rimanda il testo."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Googleは自社のAIモデルで台本を書き、チェックし、仕上げ、または時間に合わせ、テキストを返します。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Google은 자사 AI 모델로 대본을 쓰고, 검토하고, 다듬거나 시간에 맞춘 뒤 텍스트를 돌려줘요."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Google kjører KI-modellen sin for å skrive, sjekke, finpusse eller tilpasse manuset, og sender teksten tilbake."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Google laat zijn AI-model het script schrijven, controleren, afwerken of op lengte brengen en stuurt de tekst terug."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O Google roda o modelo de IA dele para escrever, checar, polir ou ajustar o roteiro e devolve o texto."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Google kör sin AI-modell för att skriva, kontrollera, putsa eller anpassa manuset och skickar tillbaka texten."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Google ใช้โมเดล AI ของตนเขียน ตรวจ ขัดเกลา หรือปรับสคริปต์ให้พอดี แล้วส่งข้อความกลับมา"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Google metni yazmak, kontrol etmek, cilalamak ya da süreye sığdırmak için kendi yapay zekâ modelini çalıştırır ve metni geri gönderir."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Google chạy mô hình AI của mình để viết, kiểm tra, trau chuốt hoặc chỉnh vừa kịch bản, rồi gửi văn bản lại."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Google 用它的 AI 模型撰写、核查、润色或适配脚本，并把文本发回。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Google 用它的 AI 模型撰寫、核查、潤飾或配合腳本，並把文字傳回。"
-          }
-        }
-      }
-    },
     "Graphic designer" : {
       "comment" : "What kind of creator are you? (a chip in a long searchable list): a graphic designer who teaches design and wins clients",
       "localizations" : {
@@ -47440,6 +47440,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "稍後會恢復。"
+          }
+        }
+      }
+    },
+    "It goes through Cue’s server, which keeps none of it. Under Anthropic’s commercial terms, Anthropic doesn’t use it to train its models and keeps it for up to 30 days to detect abuse." : {
+      "comment" : "What Ultra AI sends › What Anthropic does with it: a row (the request passes through Cue's server; Anthropic's commercial terms on training and retention)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يمر عبر خادم Cue، الذي لا يحتفظ بشيء منه. بموجب الشروط التجارية لـ Anthropic، لا تستخدمه Anthropic لتدريب نماذجها، وتحتفظ به لمدة تصل إلى 30 يومًا لاكتشاف إساءة الاستخدام."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Det går gennem Cues server, som ikke gemmer noget af det. Ifølge Anthropics forretningsvilkår bruger Anthropic det ikke til at træne sine modeller og gemmer det i op til 30 dage for at opdage misbrug."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Es läuft über den Server von Cue, der nichts davon speichert. Nach den Geschäftsbedingungen von Anthropic nutzt Anthropic es nicht, um seine Modelle zu trainieren, und bewahrt es bis zu 30 Tage auf, um Missbrauch zu erkennen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pasa por el servidor de Cue, que no guarda nada. Según las condiciones comerciales de Anthropic, Anthropic no lo usa para entrenar sus modelos y lo guarda hasta 30 días para detectar abusos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il passe par le serveur de Cue, qui n’en garde rien. Selon les conditions commerciales d’Anthropic, Anthropic ne l’utilise pas pour entraîner ses modèles et le conserve jusqu’à 30 jours pour détecter les abus."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "यह Cue के सर्वर से होकर जाता है, जो इसमें से कुछ भी नहीं रखता। Anthropic की व्यावसायिक शर्तों के तहत Anthropic इसका इस्तेमाल अपने मॉडल प्रशिक्षित करने के लिए नहीं करता, और दुरुपयोग पकड़ने के लिए इसे 30 दिनों तक रखता है।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data melewati server Cue, yang tidak menyimpan apa pun. Berdasarkan ketentuan komersial Anthropic, Anthropic tidak menggunakannya untuk melatih modelnya dan menyimpannya hingga 30 hari untuk mendeteksi penyalahgunaan."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passa dal server di Cue, che non ne conserva nulla. Secondo le condizioni commerciali di Anthropic, Anthropic non lo usa per addestrare i suoi modelli e lo conserva fino a 30 giorni per rilevare abusi."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cueのサーバーを経由しますが、サーバーには何も残りません。Anthropicの商用規約により、Anthropicはこれをモデルのトレーニングに使わず、不正利用を検出するため最大30日間保管します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue 서버를 거쳐 가지만 서버에는 아무것도 남지 않아요. Anthropic 상업 약관에 따라 Anthropic은 이를 모델 학습에 사용하지 않으며, 악용을 감지하기 위해 최대 30일 동안 보관해요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Det går gjennom Cues server, som ikke lagrer noe av det. Etter Anthropics forretningsvilkår bruker ikke Anthropic det til å trene modellene sine, og lagrer det i opptil 30 dager for å oppdage misbruk."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Het gaat via de server van Cue, die er niets van bewaart. Volgens de zakelijke voorwaarden van Anthropic gebruikt Anthropic het niet om zijn modellen te trainen en bewaart het tot 30 dagen om misbruik op te sporen."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passa pelo servidor do Cue, que não guarda nada. Pelos termos comerciais da Anthropic, a Anthropic não usa isso para treinar os modelos dela e guarda por até 30 dias para detectar abusos."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Det går via Cues server, som inte sparar något av det. Enligt Anthropics affärsvillkor använder Anthropic det inte för att träna sina modeller och sparar det i upp till 30 dagar för att upptäcka missbruk."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ข้อมูลจะผ่านเซิร์ฟเวอร์ของ Cue ซึ่งไม่เก็บอะไรไว้ ตามข้อกำหนดเชิงพาณิชย์ของ Anthropic นั้น Anthropic จะไม่นำไปใช้ฝึกโมเดล และจะเก็บไว้ไม่เกิน 30 วันเพื่อตรวจหาการใช้งานในทางที่ผิด"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue’nun sunucusundan geçer; sunucu hiçbirini saklamaz. Anthropic’in ticari koşullarına göre Anthropic bunu modellerini eğitmek için kullanmaz ve kötüye kullanımı tespit etmek için en fazla 30 gün saklar."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dữ liệu đi qua máy chủ của Cue, nơi không lưu lại gì. Theo điều khoản thương mại của Anthropic, Anthropic không dùng dữ liệu này để huấn luyện mô hình và giữ tối đa 30 ngày để phát hiện lạm dụng."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "内容会经过 Cue 的服务器，服务器不会保留任何内容。根据 Anthropic 的商业条款，Anthropic 不会用它训练模型，为检测滥用最多保留 30 天。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "內容會經過 Cue 的伺服器，伺服器不會保留任何內容。根據 Anthropic 的商業條款，Anthropic 不會用它訓練模型，為偵測濫用最多保留 30 天。"
           }
         }
       }
@@ -60125,121 +60244,121 @@
         }
       }
     },
-    "Not allowed: nothing goes to Google. If you allow it, this is what a script you pick Ultra AI for sends." : {
+    "Not allowed: nothing goes to Anthropic. If you allow it, this is what a script you pick Ultra AI for sends." : {
       "comment" : "My Cue Voice › What Cue sends: note when Ultra AI isn't allowed",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "غير مسموح: لا يُرسل أي شيء إلى Google. إذا سمحت به، فهذا ما يرسله النص الذي تختار له Ultra AI."
+            "value" : "غير مسموح: لا يُرسل أي شيء إلى Anthropic. إذا سمحت به، فهذا ما يرسله النص الذي تختار له Ultra AI."
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ikke tilladt: intet sendes til Google. Hvis du tillader det, er det her, hvad et manuskript, du vælger Ultra AI til, sender."
+            "value" : "Ikke tilladt: intet sendes til Anthropic. Hvis du tillader det, er det her, hvad et manuskript, du vælger Ultra AI til, sender."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nicht erlaubt: Nichts geht an Google. Wenn du es erlaubst, sendet ein Skript, für das du Ultra AI wählst, Folgendes."
+            "value" : "Nicht erlaubt: Nichts geht an Anthropic. Wenn du es erlaubst, sendet ein Skript, für das du Ultra AI wählst, Folgendes."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No permitido: nada va a Google. Si lo permites, esto es lo que envía un guion para el que elijas Ultra AI."
+            "value" : "No permitido: nada va a Anthropic. Si lo permites, esto es lo que envía un guion para el que elijas Ultra AI."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Non autorisé : rien n’est envoyé à Google. Si vous l’autorisez, voici ce qu’envoie un script pour lequel vous choisissez Ultra AI."
+            "value" : "Non autorisé : rien n’est envoyé à Anthropic. Si vous l’autorisez, voici ce qu’envoie un script pour lequel vous choisissez Ultra AI."
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "अनुमति नहीं है: Google को कुछ नहीं जाता। अनुमति देने पर, जिस स्क्रिप्ट के लिए आप Ultra AI चुनेंगे, वह यह भेजेगी।"
+            "value" : "अनुमति नहीं है: Anthropic को कुछ नहीं जाता। अनुमति देने पर, जिस स्क्रिप्ट के लिए आप Ultra AI चुनेंगे, वह यह भेजेगी।"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tidak diizinkan: tidak ada yang dikirim ke Google. Jika kamu izinkan, inilah yang dikirim naskah yang kamu pilihkan Ultra AI."
+            "value" : "Tidak diizinkan: tidak ada yang dikirim ke Anthropic. Jika kamu izinkan, inilah yang dikirim naskah yang kamu pilihkan Ultra AI."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Non consentito: niente va a Google. Se lo consenti, ecco cosa invia un copione per cui scegli Ultra AI."
+            "value" : "Non consentito: niente va ad Anthropic. Se lo consenti, ecco cosa invia un copione per cui scegli Ultra AI."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "許可されていません。Googleには何も送られません。許可すると、Ultra AIを選んだ台本では次の内容が送られます。"
+            "value" : "許可されていません。Anthropicには何も送られません。許可すると、Ultra AIを選んだ台本では次の内容が送られます。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "허용 안 됨: Google로 아무것도 전송되지 않아요. 허용하면 Ultra AI를 선택한 대본은 다음 내용을 보내요."
+            "value" : "허용 안 됨: Anthropic으로 아무것도 전송되지 않아요. 허용하면 Ultra AI를 선택한 대본은 다음 내용을 보내요."
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ikke tillatt: ingenting sendes til Google. Hvis du tillater det, er dette hva et manus du velger Ultra AI for, sender."
+            "value" : "Ikke tillatt: ingenting sendes til Anthropic. Hvis du tillater det, er dette hva et manus du velger Ultra AI for, sender."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Niet toegestaan: er gaat niets naar Google. Als je het toestaat, is dit wat een script waarvoor je Ultra AI kiest verstuurt."
+            "value" : "Niet toegestaan: er gaat niets naar Anthropic. Als je het toestaat, is dit wat een script waarvoor je Ultra AI kiest verstuurt."
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Não permitido: nada vai para o Google. Se você permitir, é isto que um roteiro em que você escolher o Ultra AI envia."
+            "value" : "Não permitido: nada vai para a Anthropic. Se você permitir, é isto que um roteiro em que você escolher o Ultra AI envia."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Inte tillåtet: inget skickas till Google. Om du tillåter det är det här vad ett manus du väljer Ultra AI för skickar."
+            "value" : "Inte tillåtet: inget skickas till Anthropic. Om du tillåter det är det här vad ett manus du väljer Ultra AI för skickar."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ไม่ได้อนุญาต: ไม่มีสิ่งใดส่งไปยัง Google หากคุณอนุญาต สคริปต์ที่คุณเลือกใช้ Ultra AI จะส่งข้อมูลต่อไปนี้"
+            "value" : "ไม่ได้อนุญาต: ไม่มีสิ่งใดส่งไปยัง Anthropic หากคุณอนุญาต สคริปต์ที่คุณเลือกใช้ Ultra AI จะส่งข้อมูลต่อไปนี้"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "İzin verilmedi: Google’a hiçbir şey gitmez. İzin verirsen, Ultra AI seçtiğin bir senaryo bunları gönderir."
+            "value" : "İzin verilmedi: Anthropic’e hiçbir şey gitmez. İzin verirsen, Ultra AI seçtiğin bir senaryo bunları gönderir."
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chưa cho phép: không có gì được gửi đến Google. Nếu bạn cho phép, đây là những gì một kịch bản bạn chọn Ultra AI sẽ gửi."
+            "value" : "Chưa cho phép: không có gì được gửi đến Anthropic. Nếu bạn cho phép, đây là những gì một kịch bản bạn chọn Ultra AI sẽ gửi."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "未允许：不会向 Google 发送任何内容。如果你允许，为脚本选择 Ultra AI 时会发送以下内容。"
+            "value" : "未允许：不会向 Anthropic 发送任何内容。如果你允许，为脚本选择 Ultra AI 时会发送以下内容。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "未允許：不會向 Google 傳送任何內容。如果你允許，為腳本選擇 Ultra AI 時會傳送以下內容。"
+            "value" : "未允許：不會向 Anthropic 傳送任何內容。如果你允許，為腳本選擇 Ultra AI 時會傳送以下內容。"
           }
         }
       }
@@ -71668,121 +71787,121 @@
         }
       }
     },
-    "Requests to Google" : {
+    "Requests to Anthropic" : {
       "comment" : "What Ultra AI sends › the page with the requests word for word: title",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "الطلبات إلى Google"
+            "value" : "الطلبات إلى Anthropic"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Forespørgsler til Google"
+            "value" : "Forespørgsler til Anthropic"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Anfragen an Google"
+            "value" : "Anfragen an Anthropic"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Solicitudes a Google"
+            "value" : "Solicitudes a Anthropic"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Requêtes à Google"
+            "value" : "Requêtes à Anthropic"
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Google को अनुरोध"
+            "value" : "Anthropic को अनुरोध"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Permintaan ke Google"
+            "value" : "Permintaan ke Anthropic"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Richieste a Google"
+            "value" : "Richieste ad Anthropic"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Googleへのリクエスト"
+            "value" : "Anthropicへのリクエスト"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Google로 보내는 요청"
+            "value" : "Anthropic으로 보내는 요청"
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Forespørsler til Google"
+            "value" : "Forespørsler til Anthropic"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Verzoeken aan Google"
+            "value" : "Verzoeken aan Anthropic"
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pedidos ao Google"
+            "value" : "Pedidos à Anthropic"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Förfrågningar till Google"
+            "value" : "Förfrågningar till Anthropic"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "คำขอที่ส่งไปยัง Google"
+            "value" : "คำขอที่ส่งไปยัง Anthropic"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Google’a istekler"
+            "value" : "Anthropic’e istekler"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Yêu cầu gửi đến Google"
+            "value" : "Yêu cầu gửi đến Anthropic"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "发给 Google 的请求"
+            "value" : "发给 Anthropic 的请求"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "傳給 Google 的請求"
+            "value" : "傳給 Anthropic 的請求"
           }
         }
       }
@@ -76321,240 +76440,240 @@
         }
       }
     },
-    "Sent to Google" : {
-      "comment" : "What Ultra AI sends: section header",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "يُرسل إلى Google"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sendes til Google"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "An Google gesendet"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Se envía a Google"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Envoyé à Google"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Google को भेजा जाता है"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dikirim ke Google"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Inviato a Google"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Googleに送信"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Google로 전송"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sendes til Google"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Naar Google verstuurd"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Enviado ao Google"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Skickas till Google"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ส่งไปยัง Google"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Google’a gönderilir"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gửi đến Google"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "发送给 Google"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "傳送給 Google"
-          }
-        }
-      }
-    },
-    "Sent to Google · only when you pick it" : {
+    "Sent to Anthropic · only when you pick it" : {
       "comment" : "Settings › Privacy & AI data: subtitle of the Ultra AI switch",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "يُرسل إلى Google · فقط عندما تختاره"
+            "value" : "يُرسل إلى Anthropic · فقط عندما تختاره"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sendes til Google · kun når du vælger det"
+            "value" : "Sendes til Anthropic · kun når du vælger det"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "An Google gesendet · nur wenn du es wählst"
+            "value" : "An Anthropic gesendet · nur wenn du es wählst"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Se envía a Google · solo si lo eliges"
+            "value" : "Se envía a Anthropic · solo si lo eliges"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Envoyé à Google · seulement si vous le choisissez"
+            "value" : "Envoyé à Anthropic · seulement si vous le choisissez"
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Google को भेजा जाता है · सिर्फ़ जब आप इसे चुनें"
+            "value" : "Anthropic को भेजा जाता है · सिर्फ़ जब आप इसे चुनें"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dikirim ke Google · hanya saat kamu memilihnya"
+            "value" : "Dikirim ke Anthropic · hanya saat kamu memilihnya"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Inviato a Google · solo quando lo scegli"
+            "value" : "Inviato ad Anthropic · solo quando lo scegli"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Googleに送信 · 選んだときだけ"
+            "value" : "Anthropicに送信 · 選んだときだけ"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Google로 전송 · 선택할 때만"
+            "value" : "Anthropic으로 전송 · 선택할 때만"
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sendes til Google · bare når du velger det"
+            "value" : "Sendes til Anthropic · bare når du velger det"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Naar Google verstuurd · alleen als je het kiest"
+            "value" : "Naar Anthropic verstuurd · alleen als je het kiest"
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enviado ao Google · só quando você escolhe"
+            "value" : "Enviado à Anthropic · só quando você escolhe"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Skickas till Google · bara när du väljer det"
+            "value" : "Skickas till Anthropic · bara när du väljer det"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ส่งไปยัง Google · เฉพาะเมื่อคุณเลือก"
+            "value" : "ส่งไปยัง Anthropic · เฉพาะเมื่อคุณเลือก"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Google’a gönderilir · yalnızca sen seçtiğinde"
+            "value" : "Anthropic’e gönderilir · yalnızca sen seçtiğinde"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gửi đến Google · chỉ khi bạn chọn"
+            "value" : "Gửi đến Anthropic · chỉ khi bạn chọn"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "发送给 Google · 仅在你选择时"
+            "value" : "发送给 Anthropic · 仅在你选择时"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "傳送給 Google · 僅在你選擇時"
+            "value" : "傳送給 Anthropic · 僅在你選擇時"
+          }
+        }
+      }
+    },
+    "Sent to Anthropic" : {
+      "comment" : "What Ultra AI sends: section header",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يُرسل إلى Anthropic"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sendes til Anthropic"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "An Anthropic gesendet"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se envía a Anthropic"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Envoyé à Anthropic"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anthropic को भेजा जाता है"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dikirim ke Anthropic"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inviato ad Anthropic"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anthropicに送信"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anthropic으로 전송"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sendes til Anthropic"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naar Anthropic verstuurd"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviado à Anthropic"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skickas till Anthropic"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ส่งไปยัง Anthropic"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anthropic’e gönderilir"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gửi đến Anthropic"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "发送给 Anthropic"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "傳送給 Anthropic"
           }
         }
       }
@@ -89893,121 +90012,121 @@
         }
       }
     },
-    "Turn Ultra AI off in Privacy & AI data and nothing more goes to Google. Scripts it already wrote stay on this iPhone. Apple Intelligence doesn’t change." : {
+    "Turn Ultra AI off in Privacy & AI data and nothing more goes to Anthropic. Scripts it already wrote stay on this iPhone. Apple Intelligence doesn’t change." : {
       "comment" : "What Ultra AI sends: footer, how to stop it",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "أوقف Ultra AI من «الخصوصية وبيانات الذكاء الاصطناعي» ولن يُرسل أي شيء آخر إلى Google. النصوص التي كتبها تبقى على هذا الـ iPhone. لا يتغير Apple Intelligence."
+            "value" : "أوقف Ultra AI من «الخصوصية وبيانات الذكاء الاصطناعي» ولن يُرسل أي شيء آخر إلى Anthropic. النصوص التي كتبها تبقى على هذا الـ iPhone. لا يتغير Apple Intelligence."
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Slå Ultra AI fra i Anonymitet og AI-data, så sendes der ikke mere til Google. Manuskripter, den allerede har skrevet, bliver på denne iPhone. Apple Intelligence ændres ikke."
+            "value" : "Slå Ultra AI fra i Anonymitet og AI-data, så sendes der ikke mere til Anthropic. Manuskripter, den allerede har skrevet, bliver på denne iPhone. Apple Intelligence ændres ikke."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Schalte Ultra AI in Datenschutz & KI-Daten aus, dann geht nichts mehr an Google. Bereits geschriebene Skripte bleiben auf diesem iPhone. Apple Intelligence ändert sich nicht."
+            "value" : "Schalte Ultra AI in Datenschutz & KI-Daten aus, dann geht nichts mehr an Anthropic. Bereits geschriebene Skripte bleiben auf diesem iPhone. Apple Intelligence ändert sich nicht."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Desactiva Ultra AI en Privacidad y datos de IA y no se enviará nada más a Google. Los guiones que ya escribió se quedan en este iPhone. Apple Intelligence no cambia."
+            "value" : "Desactiva Ultra AI en Privacidad y datos de IA y no se enviará nada más a Anthropic. Los guiones que ya escribió se quedan en este iPhone. Apple Intelligence no cambia."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Désactivez Ultra AI dans Confidentialité et données d’IA et plus rien n’est envoyé à Google. Les scripts déjà écrits restent sur cet iPhone. Apple Intelligence ne change pas."
+            "value" : "Désactivez Ultra AI dans Confidentialité et données d’IA et plus rien n’est envoyé à Anthropic. Les scripts déjà écrits restent sur cet iPhone. Apple Intelligence ne change pas."
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "“गोपनीयता और AI डेटा” में Ultra AI बंद करें, फिर Google को कुछ और नहीं जाता। जो स्क्रिप्ट वह लिख चुका है, वे इसी iPhone पर रहती हैं। Apple Intelligence नहीं बदलता।"
+            "value" : "“गोपनीयता और AI डेटा” में Ultra AI बंद करें, फिर Anthropic को कुछ और नहीं जाता। जो स्क्रिप्ट वह लिख चुका है, वे इसी iPhone पर रहती हैं। Apple Intelligence नहीं बदलता।"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Matikan Ultra AI di Privasi & data AI, dan tidak ada lagi yang dikirim ke Google. Naskah yang sudah ditulisnya tetap di iPhone ini. Apple Intelligence tidak berubah."
+            "value" : "Matikan Ultra AI di Privasi & data AI, dan tidak ada lagi yang dikirim ke Anthropic. Naskah yang sudah ditulisnya tetap di iPhone ini. Apple Intelligence tidak berubah."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Disattiva Ultra AI in Privacy e dati IA e non va più nulla a Google. I copioni già scritti restano su questo iPhone. Apple Intelligence non cambia."
+            "value" : "Disattiva Ultra AI in Privacy e dati IA e non va più nulla ad Anthropic. I copioni già scritti restano su questo iPhone. Apple Intelligence non cambia."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "「プライバシーとAIデータ」でUltra AIをオフにすると、それ以上Googleには何も送られません。すでに書かれた台本はこのiPhoneに残ります。Apple Intelligenceは変わりません。"
+            "value" : "「プライバシーとAIデータ」でUltra AIをオフにすると、それ以上Anthropicには何も送られません。すでに書かれた台本はこのiPhoneに残ります。Apple Intelligenceは変わりません。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "개인정보 보호 및 AI 데이터에서 Ultra AI를 끄면 더 이상 Google로 아무것도 보내지 않아요. 이미 쓴 대본은 이 iPhone에 남아요. Apple Intelligence는 바뀌지 않아요."
+            "value" : "개인정보 보호 및 AI 데이터에서 Ultra AI를 끄면 더 이상 Anthropic으로 아무것도 보내지 않아요. 이미 쓴 대본은 이 iPhone에 남아요. Apple Intelligence는 바뀌지 않아요."
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Slå av Ultra AI i Personvern og KI-data, så sendes ingenting mer til Google. Manus det allerede har skrevet, blir på denne iPhonen. Apple Intelligence endres ikke."
+            "value" : "Slå av Ultra AI i Personvern og KI-data, så sendes ingenting mer til Anthropic. Manus det allerede har skrevet, blir på denne iPhonen. Apple Intelligence endres ikke."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zet Ultra AI uit in Privacy en AI-gegevens en er gaat niets meer naar Google. Scripts die het al schreef, blijven op deze iPhone. Apple Intelligence verandert niet."
+            "value" : "Zet Ultra AI uit in Privacy en AI-gegevens en er gaat niets meer naar Anthropic. Scripts die het al schreef, blijven op deze iPhone. Apple Intelligence verandert niet."
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Desligue o Ultra AI em Privacidade e dados de IA e nada mais vai para o Google. Os roteiros que ele já escreveu ficam neste iPhone. O Apple Intelligence não muda."
+            "value" : "Desligue o Ultra AI em Privacidade e dados de IA e nada mais vai para a Anthropic. Os roteiros que ele já escreveu ficam neste iPhone. O Apple Intelligence não muda."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Stäng av Ultra AI i Integritet och AI-data så skickas inget mer till Google. Manus som det redan har skrivit stannar på den här iPhonen. Apple Intelligence ändras inte."
+            "value" : "Stäng av Ultra AI i Integritet och AI-data så skickas inget mer till Anthropic. Manus som det redan har skrivit stannar på den här iPhonen. Apple Intelligence ändras inte."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ปิด Ultra AI ใน “ความเป็นส่วนตัวและข้อมูล AI” แล้วจะไม่มีอะไรส่งไปยัง Google อีก สคริปต์ที่เขียนไปแล้วยังอยู่ใน iPhone เครื่องนี้ Apple Intelligence ไม่เปลี่ยน"
+            "value" : "ปิด Ultra AI ใน “ความเป็นส่วนตัวและข้อมูล AI” แล้วจะไม่มีอะไรส่งไปยัง Anthropic อีก สคริปต์ที่เขียนไปแล้วยังอยู่ใน iPhone เครื่องนี้ Apple Intelligence ไม่เปลี่ยน"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gizlilik ve yapay zekâ verileri’nden Ultra AI’ı kapatırsan Google’a başka hiçbir şey gitmez. Yazdığı metinler bu iPhone’da kalır. Apple Intelligence değişmez."
+            "value" : "Gizlilik ve yapay zekâ verileri’nden Ultra AI’ı kapatırsan Anthropic’e başka hiçbir şey gitmez. Yazdığı metinler bu iPhone’da kalır. Apple Intelligence değişmez."
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tắt Ultra AI trong Quyền riêng tư & dữ liệu AI thì không gửi thêm gì đến Google nữa. Các kịch bản nó đã viết vẫn ở trên iPhone này. Apple Intelligence không thay đổi."
+            "value" : "Tắt Ultra AI trong Quyền riêng tư & dữ liệu AI thì không gửi thêm gì đến Anthropic nữa. Các kịch bản nó đã viết vẫn ở trên iPhone này. Apple Intelligence không thay đổi."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在“隐私与 AI 数据”中关闭 Ultra AI 后，不会再向 Google 发送任何内容。它已写好的脚本会留在这台 iPhone 上。Apple Intelligence 不受影响。"
+            "value" : "在“隐私与 AI 数据”中关闭 Ultra AI 后，不会再向 Anthropic 发送任何内容。它已写好的脚本会留在这台 iPhone 上。Apple Intelligence 不受影响。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在「隱私權與 AI 資料」中關閉 Ultra AI 後，不會再向 Google 傳送任何內容。它已寫好的腳本會留在這部 iPhone 上。Apple Intelligence 不受影響。"
+            "value" : "在「隱私權與 AI 資料」中關閉 Ultra AI 後，不會再向 Anthropic 傳送任何內容。它已寫好的腳本會留在這部 iPhone 上。Apple Intelligence 不受影響。"
           }
         }
       }
@@ -90960,6 +91079,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ultra AI · 錄影前請核對事實"
+          }
+        }
+      }
+    },
+    "Ultra AI · sent to Anthropic" : {
+      "comment" : "My Cue Voice › What Cue sends: heading of the Ultra AI section",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI · يُرسل إلى Anthropic"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI · sendes til Anthropic"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI · an Anthropic gesendet"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI · se envía a Anthropic"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI · envoyé à Anthropic"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI · Anthropic को भेजा जाता है"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI · dikirim ke Anthropic"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI · inviato ad Anthropic"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI · Anthropicに送信"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI · Anthropic으로 전송"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI · sendes til Anthropic"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI · naar Anthropic verstuurd"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI · enviado à Anthropic"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI · skickas till Anthropic"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI · ส่งไปยัง Anthropic"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI · Anthropic’e gönderilir"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI · gửi đến Anthropic"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI · 发送给 Anthropic"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI · 傳送給 Anthropic"
           }
         }
       }
@@ -92883,125 +93121,6 @@
         }
       }
     },
-    "Ultra AI · sent to Google" : {
-      "comment" : "My Cue Voice › What Cue sends: heading of the Ultra AI section",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI · يُرسل إلى Google"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI · sendes til Google"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI · an Google gesendet"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI · se envía a Google"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI · envoyé à Google"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI · Google को भेजा जाता है"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI · dikirim ke Google"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI · inviato a Google"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI · Googleに送信"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI · Google로 전송"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI · sendes til Google"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI · naar Google verstuurd"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI · enviado ao Google"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI · skickas till Google"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI · ส่งไปยัง Google"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI · Google’a gönderilir"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI · gửi đến Google"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI · 发送给 Google"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI · 傳送給 Google"
-          }
-        }
-      }
-    },
     "Ultra AI’s test calls are used up" : {
       "comment" : "Error toast: the experiment's limited number of requests is used up",
       "localizations" : {
@@ -93236,125 +93355,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "開箱"
-          }
-        }
-      }
-    },
-    "Under Google Cloud’s terms, Google doesn’t use it to train its models. It may keep it for up to 24 hours to answer faster, and may log requests to detect abuse." : {
-      "comment" : "What Ultra AI sends › What Google does with it: a row (from Google Cloud's generative AI data governance terms)",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "بموجب شروط Google Cloud، لا تستخدمه Google لتدريب نماذجها. قد تحتفظ به لمدة تصل إلى 24 ساعة للرد بسرعة أكبر، وقد تسجّل الطلبات لاكتشاف إساءة الاستخدام."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ifølge Google Clouds vilkår bruger Google det ikke til at træne sine modeller. Google kan gemme det i op til 24 timer for at svare hurtigere og kan logge forespørgsler for at opdage misbrug."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Laut den Bedingungen von Google Cloud nutzt Google es nicht, um seine Modelle zu trainieren. Google kann es bis zu 24 Stunden speichern, um schneller zu antworten, und Anfragen protokollieren, um Missbrauch zu erkennen."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Según los términos de Google Cloud, Google no lo usa para entrenar sus modelos. Puede guardarlo hasta 24 horas para responder más rápido y puede registrar solicitudes para detectar abusos."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Selon les conditions de Google Cloud, Google ne l’utilise pas pour entraîner ses modèles. Il peut le conserver jusqu’à 24 heures pour répondre plus vite et peut journaliser des requêtes pour détecter les abus."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Google Cloud की शर्तों के तहत Google इसे अपने मॉडल ट्रेन करने में इस्तेमाल नहीं करता। तेज़ जवाब देने के लिए वह इसे 24 घंटे तक रख सकता है, और दुरुपयोग पकड़ने के लिए अनुरोध लॉग कर सकता है।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Berdasarkan ketentuan Google Cloud, Google tidak menggunakannya untuk melatih modelnya. Google dapat menyimpannya hingga 24 jam agar menjawab lebih cepat, dan dapat mencatat permintaan untuk mendeteksi penyalahgunaan."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Secondo i termini di Google Cloud, Google non lo usa per addestrare i suoi modelli. Può conservarlo fino a 24 ore per rispondere più in fretta e può registrare le richieste per individuare abusi."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Google Cloudの規約により、Googleはこれをモデルのトレーニングに使いません。応答を速くするために最大24時間保持することがあり、不正利用を検出するためにリクエストを記録することがあります。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Google Cloud 약관에 따라 Google은 이를 모델 학습에 사용하지 않아요. 더 빨리 답하기 위해 최대 24시간 보관할 수 있고, 남용을 감지하려고 요청을 기록할 수 있어요."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Etter Google Clouds vilkår bruker ikke Google det til å trene modellene sine. Google kan lagre det i opptil 24 timer for å svare raskere, og kan logge forespørsler for å oppdage misbruk."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Volgens de voorwaarden van Google Cloud gebruikt Google het niet om zijn modellen te trainen. Google kan het tot 24 uur bewaren om sneller te antwoorden, en kan verzoeken loggen om misbruik op te sporen."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pelos termos do Google Cloud, o Google não usa isso para treinar os modelos dele. Pode guardar por até 24 horas para responder mais rápido e pode registrar pedidos para detectar abusos."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Enligt Google Clouds villkor använder Google det inte för att träna sina modeller. Google kan spara det i upp till 24 timmar för att svara snabbare och kan logga förfrågningar för att upptäcka missbruk."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ตามข้อกำหนดของ Google Cloud นั้น Google ไม่นำไปใช้ฝึกโมเดล อาจเก็บไว้นานสูงสุด 24 ชั่วโมงเพื่อตอบได้เร็วขึ้น และอาจบันทึกคำขอเพื่อตรวจจับการใช้งานในทางที่ผิด"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Google Cloud koşullarına göre Google bunu modellerini eğitmek için kullanmaz. Daha hızlı yanıt vermek için 24 saate kadar saklayabilir ve kötüye kullanımı tespit etmek için istekleri kaydedebilir."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Theo điều khoản của Google Cloud, Google không dùng dữ liệu này để huấn luyện mô hình. Google có thể lưu tối đa 24 giờ để trả lời nhanh hơn và có thể ghi lại yêu cầu để phát hiện lạm dụng."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "根据 Google Cloud 的条款，Google 不会用它来训练模型。为了更快回应，Google 可能会保留最多 24 小时，也可能记录请求以检测滥用。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "根據 Google Cloud 的條款，Google 不會用它來訓練模型。為了更快回應，Google 可能會保留最多 24 小時，也可能記錄請求以偵測濫用。"
           }
         }
       }
@@ -96520,6 +96520,125 @@
         }
       }
     },
+    "What Anthropic does with it" : {
+      "comment" : "What Ultra AI sends: section header",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ما تفعله Anthropic به"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hvad Anthropic gør med det"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Was Anthropic damit macht"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Qué hace Anthropic con ello"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce que Anthropic en fait"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anthropic इसके साथ क्या करता है"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yang dilakukan Anthropic dengannya"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cosa ne fa Anthropic"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anthropicによる扱い"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anthropic이 하는 일"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hva Anthropic gjør med det"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wat Anthropic ermee doet"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O que a Anthropic faz com isso"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vad Anthropic gör med det"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anthropic ทำอะไรกับข้อมูลนี้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anthropic bununla ne yapar"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anthropic làm gì với dữ liệu này"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anthropic 如何处理"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anthropic 如何處理"
+          }
+        }
+      }
+    },
     "What Cue knows" : {
       "comment" : "VoiceOver name of the My Cue Voice meter: how much of the creator Cue knows",
       "localizations" : {
@@ -97115,125 +97234,6 @@
         }
       }
     },
-    "What Google does with it" : {
-      "comment" : "What Ultra AI sends: section header",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ما تفعله Google به"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hvad Google gør med det"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Was Google damit macht"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Qué hace Google con ello"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ce que Google en fait"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Google इसके साथ क्या करता है"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Yang dilakukan Google dengannya"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cosa ne fa Google"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Googleによる扱い"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Google이 하는 일"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hva Google gjør med det"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wat Google ermee doet"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O que o Google faz com isso"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vad Google gör med det"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Google ทำอะไรกับข้อมูลนี้"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Google bununla ne yapar"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Google làm gì với dữ liệu này"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Google 如何处理"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Google 如何處理"
-          }
-        }
-      }
-    },
     "What was too long?" : {
       "comment" : "Adjust sheet: question shown when Too long is kept in the profile",
       "localizations" : {
@@ -97591,121 +97591,121 @@
         }
       }
     },
-    "When it’s on and you pick Ultra AI, your idea, your choices and your My Cue Voice preferences go to Google, which writes the script. Off, nothing more is sent. Turning it off doesn’t change Apple Intelligence." : {
+    "When it’s on and you pick Ultra AI, your idea, your choices and your My Cue Voice preferences go to Anthropic, which writes the script. Off, nothing more is sent. Turning it off doesn’t change Apple Intelligence." : {
       "comment" : "Settings › Privacy & AI data: footer of the Ultra AI switch",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "عند تشغيله واختيارك Ultra AI، تُرسل فكرتك واختياراتك وتفضيلاتك في My Cue Voice إلى Google، التي تكتب النص. عند إيقافه، لا يُرسل أي شيء آخر. إيقافه لا يغيّر Apple Intelligence."
+            "value" : "عند تشغيله واختيارك Ultra AI، تُرسل فكرتك واختياراتك وتفضيلاتك في My Cue Voice إلى Anthropic، التي تكتب النص. عند إيقافه، لا يُرسل أي شيء آخر. إيقافه لا يغيّر Apple Intelligence."
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Når det er slået til, og du vælger Ultra AI, sendes din idé, dine valg og dine præferencer i My Cue Voice til Google, som skriver manuskriptet. Slået fra sendes der ikke mere. At slå det fra ændrer ikke Apple Intelligence."
+            "value" : "Når det er slået til, og du vælger Ultra AI, sendes din idé, dine valg og dine præferencer i My Cue Voice til Anthropic, som skriver manuskriptet. Slået fra sendes der ikke mere. At slå det fra ændrer ikke Apple Intelligence."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wenn es an ist und du Ultra AI wählst, gehen deine Idee, deine Auswahl und deine Einstellungen in My Cue Voice an Google, das das Skript schreibt. Aus wird nichts mehr gesendet. Ausschalten ändert nichts an Apple Intelligence."
+            "value" : "Wenn es an ist und du Ultra AI wählst, gehen deine Idee, deine Auswahl und deine Einstellungen in My Cue Voice an Anthropic, das das Skript schreibt. Aus wird nichts mehr gesendet. Ausschalten ändert nichts an Apple Intelligence."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cuando está activado y eliges Ultra AI, tu idea, tus elecciones y tus preferencias de My Cue Voice se envían a Google, que escribe el guion. Desactivado, no se envía nada más. Desactivarlo no cambia Apple Intelligence."
+            "value" : "Cuando está activado y eliges Ultra AI, tu idea, tus elecciones y tus preferencias de My Cue Voice se envían a Anthropic, que escribe el guion. Desactivado, no se envía nada más. Desactivarlo no cambia Apple Intelligence."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Quand il est activé et que vous choisissez Ultra AI, votre idée, vos choix et vos préférences My Cue Voice sont envoyés à Google, qui rédige le script. Désactivé, plus rien n’est envoyé. Le désactiver ne change pas Apple Intelligence."
+            "value" : "Quand il est activé et que vous choisissez Ultra AI, votre idée, vos choix et vos préférences My Cue Voice sont envoyés à Anthropic, qui rédige le script. Désactivé, plus rien n’est envoyé. Le désactiver ne change pas Apple Intelligence."
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "चालू होने पर, जब आप Ultra AI चुनते हैं, तो आपका आइडिया, आपकी पसंद और आपकी My Cue Voice प्राथमिकताएँ Google को जाती हैं, जो स्क्रिप्ट लिखता है। बंद होने पर इसके बाद कुछ नहीं भेजा जाता। इसे बंद करने से Apple Intelligence नहीं बदलता।"
+            "value" : "चालू होने पर, जब आप Ultra AI चुनते हैं, तो आपका आइडिया, आपकी पसंद और आपकी My Cue Voice प्राथमिकताएँ Anthropic को जाती हैं, जो स्क्रिप्ट लिखता है। बंद होने पर इसके बाद कुछ नहीं भेजा जाता। इसे बंद करने से Apple Intelligence नहीं बदलता।"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Saat aktif dan kamu memilih Ultra AI, idemu, pilihanmu, dan preferensimu di My Cue Voice dikirim ke Google, yang menulis naskahnya. Saat nonaktif, tidak ada lagi yang dikirim. Mematikannya tidak mengubah Apple Intelligence."
+            "value" : "Saat aktif dan kamu memilih Ultra AI, idemu, pilihanmu, dan preferensimu di My Cue Voice dikirim ke Anthropic, yang menulis naskahnya. Saat nonaktif, tidak ada lagi yang dikirim. Mematikannya tidak mengubah Apple Intelligence."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Quando è attivo e scegli Ultra AI, la tua idea, le tue scelte e le tue preferenze di My Cue Voice vanno a Google, che scrive il copione. Disattivato, non viene inviato più nulla. Disattivarlo non cambia Apple Intelligence."
+            "value" : "Quando è attivo e scegli Ultra AI, la tua idea, le tue scelte e le tue preferenze di My Cue Voice vanno ad Anthropic, che scrive il copione. Disattivato, non viene inviato più nulla. Disattivarlo non cambia Apple Intelligence."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "オンにしてUltra AIを選ぶと、アイデア、選んだ内容、My Cue Voiceの設定がGoogleに送られ、Googleが台本を書きます。オフにすると、それ以上は何も送られません。オフにしてもApple Intelligenceは変わりません。"
+            "value" : "オンにしてUltra AIを選ぶと、アイデア、選んだ内容、My Cue Voiceの設定がAnthropicに送られ、Anthropicが台本を書きます。オフにすると、それ以上は何も送られません。オフにしてもApple Intelligenceは変わりません。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "켜 두고 Ultra AI를 선택하면 아이디어, 선택한 내용, My Cue Voice 설정이 Google로 보내지고 Google이 대본을 써요. 끄면 더 이상 아무것도 보내지 않아요. 꺼도 Apple Intelligence는 바뀌지 않아요."
+            "value" : "켜 두고 Ultra AI를 선택하면 아이디어, 선택한 내용, My Cue Voice 설정이 Anthropic으로 보내지고 Anthropic이 대본을 써요. 끄면 더 이상 아무것도 보내지 않아요. 꺼도 Apple Intelligence는 바뀌지 않아요."
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Når det er på og du velger Ultra AI, sendes ideen din, valgene dine og preferansene dine i My Cue Voice til Google, som skriver manuset. Av sendes ingenting mer. Å slå det av endrer ikke Apple Intelligence."
+            "value" : "Når det er på og du velger Ultra AI, sendes ideen din, valgene dine og preferansene dine i My Cue Voice til Anthropic, som skriver manuset. Av sendes ingenting mer. Å slå det av endrer ikke Apple Intelligence."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Als het aan staat en je kiest Ultra AI, gaan je idee, je keuzes en je voorkeuren uit My Cue Voice naar Google, dat het script schrijft. Uit wordt er niets meer verstuurd. Uitzetten verandert niets aan Apple Intelligence."
+            "value" : "Als het aan staat en je kiest Ultra AI, gaan je idee, je keuzes en je voorkeuren uit My Cue Voice naar Anthropic, dat het script schrijft. Uit wordt er niets meer verstuurd. Uitzetten verandert niets aan Apple Intelligence."
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Quando está ligado e você escolhe o Ultra AI, sua ideia, suas escolhas e suas preferências do My Cue Voice vão para o Google, que escreve o roteiro. Desligado, nada mais é enviado. Desligar não muda o Apple Intelligence."
+            "value" : "Quando está ligado e você escolhe o Ultra AI, sua ideia, suas escolhas e suas preferências do My Cue Voice vão para a Anthropic, que escreve o roteiro. Desligado, nada mais é enviado. Desligar não muda o Apple Intelligence."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "När det är på och du väljer Ultra AI skickas din idé, dina val och dina inställningar i My Cue Voice till Google, som skriver manuset. Avstängt skickas inget mer. Att stänga av det ändrar inte Apple Intelligence."
+            "value" : "När det är på och du väljer Ultra AI skickas din idé, dina val och dina inställningar i My Cue Voice till Anthropic, som skriver manuset. Avstängt skickas inget mer. Att stänga av det ändrar inte Apple Intelligence."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "เมื่อเปิดไว้และคุณเลือก Ultra AI ไอเดีย ตัวเลือก และการตั้งค่า My Cue Voice ของคุณจะถูกส่งไปยัง Google ซึ่งเป็นผู้เขียนสคริปต์ เมื่อปิด จะไม่มีการส่งอะไรเพิ่มอีก การปิดไม่เปลี่ยน Apple Intelligence"
+            "value" : "เมื่อเปิดไว้และคุณเลือก Ultra AI ไอเดีย ตัวเลือก และการตั้งค่า My Cue Voice ของคุณจะถูกส่งไปยัง Anthropic ซึ่งเป็นผู้เขียนสคริปต์ เมื่อปิด จะไม่มีการส่งอะไรเพิ่มอีก การปิดไม่เปลี่ยน Apple Intelligence"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Açıkken Ultra AI’ı seçtiğinde fikrin, seçimlerin ve My Cue Voice tercihlerin metni yazan Google’a gider. Kapalıyken başka hiçbir şey gönderilmez. Kapatmak Apple Intelligence’ı değiştirmez."
+            "value" : "Açıkken Ultra AI’ı seçtiğinde fikrin, seçimlerin ve My Cue Voice tercihlerin metni yazan Anthropic’e gider. Kapalıyken başka hiçbir şey gönderilmez. Kapatmak Apple Intelligence’ı değiştirmez."
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Khi bật và bạn chọn Ultra AI, ý tưởng, lựa chọn và tùy chọn My Cue Voice của bạn được gửi đến Google để viết kịch bản. Khi tắt, không gửi thêm gì nữa. Tắt đi không thay đổi Apple Intelligence."
+            "value" : "Khi bật và bạn chọn Ultra AI, ý tưởng, lựa chọn và tùy chọn My Cue Voice của bạn được gửi đến Anthropic để viết kịch bản. Khi tắt, không gửi thêm gì nữa. Tắt đi không thay đổi Apple Intelligence."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "开启后，当你选择 Ultra AI 时，你的想法、你的选择和你的 My Cue Voice 偏好会发送给 Google，由它来写脚本。关闭后，不会再发送任何内容。关闭它不会影响 Apple Intelligence。"
+            "value" : "开启后，当你选择 Ultra AI 时，你的想法、你的选择和你的 My Cue Voice 偏好会发送给 Anthropic，由它来写脚本。关闭后，不会再发送任何内容。关闭它不会影响 Apple Intelligence。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "開啟後，當你選擇 Ultra AI 時，你的想法、你的選擇和你的 My Cue Voice 偏好會傳送給 Google，由它來寫腳本。關閉後，不會再傳送任何內容。關閉它不會影響 Apple Intelligence。"
+            "value" : "開啟後，當你選擇 Ultra AI 時，你的想法、你的選擇和你的 My Cue Voice 偏好會傳送給 Anthropic，由它來寫腳本。關閉後，不會再傳送任何內容。關閉它不會影響 Apple Intelligence。"
           }
         }
       }
@@ -101637,121 +101637,121 @@
         }
       }
     },
-    "Your idea, your choices and your My Cue Voice preferences go to Google, which writes it. Turn it off any time in Settings." : {
-      "comment" : "Ultra AI's permission sheet: the one line over the buttons that says what is sent and to whom (keep 'Google' and 'My Cue Voice')",
+    "Your idea, your choices and your My Cue Voice preferences go to Anthropic, which writes it. Turn it off any time in Settings." : {
+      "comment" : "Ultra AI's permission sheet: the one line over the buttons that says what is sent and to whom (keep 'Anthropic' and 'My Cue Voice')",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "تُرسل فكرتك واختياراتك وتفضيلاتك في My Cue Voice إلى Google، التي تكتب النص. أوقفه في أي وقت من الإعدادات."
+            "value" : "تُرسل فكرتك واختياراتك وتفضيلاتك في My Cue Voice إلى Anthropic، التي تكتب النص. أوقفه في أي وقت من الإعدادات."
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Din idé, dine valg og dine præferencer i My Cue Voice sendes til Google, som skriver den. Slå det fra når som helst i Indstillinger."
+            "value" : "Din idé, dine valg og dine præferencer i My Cue Voice sendes til Anthropic, som skriver den. Slå det fra når som helst i Indstillinger."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deine Idee, deine Auswahl und deine Einstellungen in My Cue Voice gehen an Google, das das Skript schreibt. Du kannst es jederzeit in den Einstellungen ausschalten."
+            "value" : "Deine Idee, deine Auswahl und deine Einstellungen in My Cue Voice gehen an Anthropic, das das Skript schreibt. Du kannst es jederzeit in den Einstellungen ausschalten."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tu idea, tus elecciones y tus preferencias de My Cue Voice se envían a Google, que lo escribe. Desactívalo cuando quieras en Ajustes."
+            "value" : "Tu idea, tus elecciones y tus preferencias de My Cue Voice se envían a Anthropic, que lo escribe. Desactívalo cuando quieras en Ajustes."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Votre idée, vos choix et vos préférences My Cue Voice sont envoyés à Google, qui rédige le script. Désactivez-le à tout moment dans Réglages."
+            "value" : "Votre idée, vos choix et vos préférences My Cue Voice sont envoyés à Anthropic, qui rédige le script. Désactivez-le à tout moment dans Réglages."
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "आपका आइडिया, आपकी पसंद और आपकी My Cue Voice प्राथमिकताएँ Google को जाती हैं, जो इसे लिखता है। सेटिंग्ज़ में कभी भी बंद करें।"
+            "value" : "आपका आइडिया, आपकी पसंद और आपकी My Cue Voice प्राथमिकताएँ Anthropic को जाती हैं, जो इसे लिखता है। सेटिंग्ज़ में कभी भी बंद करें।"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Idemu, pilihanmu, dan preferensimu di My Cue Voice dikirim ke Google, yang menuliskannya. Matikan kapan saja di Pengaturan."
+            "value" : "Idemu, pilihanmu, dan preferensimu di My Cue Voice dikirim ke Anthropic, yang menuliskannya. Matikan kapan saja di Pengaturan."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La tua idea, le tue scelte e le tue preferenze di My Cue Voice vanno a Google, che scrive il copione. Puoi disattivarlo quando vuoi in Impostazioni."
+            "value" : "La tua idea, le tue scelte e le tue preferenze di My Cue Voice vanno ad Anthropic, che scrive il copione. Puoi disattivarlo quando vuoi in Impostazioni."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "アイデア、選んだ内容、My Cue Voiceの設定はGoogleに送られ、Googleが台本を書きます。設定でいつでもオフにできます。"
+            "value" : "アイデア、選んだ内容、My Cue Voiceの設定はAnthropicに送られ、Anthropicが台本を書きます。設定でいつでもオフにできます。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "아이디어, 선택한 내용, My Cue Voice 설정이 Google로 보내지고 Google이 대본을 써요. 설정에서 언제든 끌 수 있어요."
+            "value" : "아이디어, 선택한 내용, My Cue Voice 설정이 Anthropic으로 보내지고 Anthropic이 대본을 써요. 설정에서 언제든 끌 수 있어요."
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ideen din, valgene dine og preferansene dine i My Cue Voice sendes til Google, som skriver manuset. Slå det av når som helst i Innstillinger."
+            "value" : "Ideen din, valgene dine og preferansene dine i My Cue Voice sendes til Anthropic, som skriver manuset. Slå det av når som helst i Innstillinger."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Je idee, je keuzes en je voorkeuren uit My Cue Voice gaan naar Google, dat het script schrijft. Zet het op elk moment uit in Instellingen."
+            "value" : "Je idee, je keuzes en je voorkeuren uit My Cue Voice gaan naar Anthropic, dat het script schrijft. Zet het op elk moment uit in Instellingen."
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sua ideia, suas escolhas e suas preferências do My Cue Voice vão para o Google, que escreve o roteiro. Desligue quando quiser em Ajustes."
+            "value" : "Sua ideia, suas escolhas e suas preferências do My Cue Voice vão para a Anthropic, que escreve o roteiro. Desligue quando quiser em Ajustes."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Din idé, dina val och dina inställningar i My Cue Voice skickas till Google, som skriver manuset. Stäng av det när som helst i Inställningar."
+            "value" : "Din idé, dina val och dina inställningar i My Cue Voice skickas till Anthropic, som skriver manuset. Stäng av det när som helst i Inställningar."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ไอเดีย ตัวเลือก และการตั้งค่า My Cue Voice ของคุณจะถูกส่งไปยัง Google ซึ่งเป็นผู้เขียนสคริปต์ ปิดได้ทุกเมื่อในการตั้งค่า"
+            "value" : "ไอเดีย ตัวเลือก และการตั้งค่า My Cue Voice ของคุณจะถูกส่งไปยัง Anthropic ซึ่งเป็นผู้เขียนสคริปต์ ปิดได้ทุกเมื่อในการตั้งค่า"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fikrin, seçimlerin ve My Cue Voice tercihlerin metni yazan Google’a gider. İstediğin zaman Ayarlar’dan kapatabilirsin."
+            "value" : "Fikrin, seçimlerin ve My Cue Voice tercihlerin metni yazan Anthropic’e gider. İstediğin zaman Ayarlar’dan kapatabilirsin."
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ý tưởng, lựa chọn và tùy chọn My Cue Voice của bạn được gửi đến Google để viết kịch bản. Tắt bất cứ lúc nào trong Cài đặt."
+            "value" : "Ý tưởng, lựa chọn và tùy chọn My Cue Voice của bạn được gửi đến Anthropic để viết kịch bản. Tắt bất cứ lúc nào trong Cài đặt."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你的想法、你的选择和你的 My Cue Voice 偏好会发送给 Google，由它来写。你随时可以在设置中关闭。"
+            "value" : "你的想法、你的选择和你的 My Cue Voice 偏好会发送给 Anthropic，由它来写。你随时可以在设置中关闭。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你的想法、你的選擇和你的 My Cue Voice 偏好會傳送給 Google，由它來寫。你隨時可以在設定中關閉。"
+            "value" : "你的想法、你的選擇和你的 My Cue Voice 偏好會傳送給 Anthropic，由它來寫。你隨時可以在設定中關閉。"
           }
         }
       }

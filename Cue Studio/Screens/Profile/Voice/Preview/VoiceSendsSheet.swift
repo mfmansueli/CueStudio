@@ -101,10 +101,10 @@ struct VoiceSendsSheet: View {
     /// AI Scripts Ultra, where it is offered: the three calls to Google's Gemini as they go out, with the dock's idea and choices.
     private var ultraSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Ultra AI · sent to Google").cueFont(.subheadline, weight: .semibold).foregroundStyle(Palette.ink)
+            Text("Ultra AI · sent to Anthropic").cueFont(.subheadline, weight: .semibold).foregroundStyle(Palette.ink)
             Text(ultra.consent.isGranted
                 ? AIDisclosure.ultraSends
-                : String(localized: "Not allowed: nothing goes to Google. If you allow it, this is what a script you pick Ultra AI for sends."))
+                : String(localized: "Not allowed: nothing goes to Anthropic. If you allow it, this is what a script you pick Ultra AI for sends."))
                 .cueFont(.footnote)
                 .foregroundStyle(Palette.ink2)
             UltraPayloadView(payload: starter.ultraPreview())

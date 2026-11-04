@@ -5,8 +5,8 @@
 
 import SwiftUI
 
-/// 9.3 · My Cue Voice, the full page: on top of the card, a section of its own with the voice's switch, the meter and the next question
-/// (the owner, 03/11/2026), then the sections in the creator's order
+/// 9.3 · My Cue Voice, the full page: on top of the card, a section of its own with the voice's switch and the meter as a fuel tank (the owner,
+/// 03/11/2026; the next question is on the Profile's card, not here), then the sections in the creator's order
 /// (`VoicePageSection`, the owner's item 10) — each row opening the one editor on its field — and, under them,
 /// **✦ Preview my voice** and **What Cue sends**. Without Apple
 /// Intelligence the data stays saved and editable, and the page says the voice needs it. Where Ultra AI is offered and its invitation is due, a card
@@ -25,8 +25,16 @@ struct MyCueVoicePage: View {
     @State private var showsSends = false
     @State private var asksUltra = false
     @State private var confirmsClear = false
+    /// What the tank shows while a sheet of answers is open: the strength from before it, so the ship doesn't launch at every answer; when the
+    /// sheet closes, the tank catches up and the ship pours what was added once (the owner, 04/11/2026: the flight is the reward for answering).
+    @State private var heldStrength: Int?
+    /// The page's scroll, to bring the tank into view before it launches.
+    @State private var scroll = ScrollPosition(edge: .top)
+    @State private var isScrolledDown = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private var current: CreatorProfile { profile.profile }
+    private var shownStrength: Int { heldStrength ?? current.voiceStrength }
 
     var body: some View {
         ScrollView {
@@ -46,13 +54,22 @@ struct MyCueVoicePage: View {
             }
             .padding(EdgeInsets(top: 8, leading: Metrics.gutter, bottom: 40, trailing: Metrics.gutter))
         }
+        .scrollPosition($scroll)
+        .onScrollGeometryChange(for: Bool.self) { geometry in
+            geometry.contentOffset.y + geometry.contentInsets.top > 8
+        } action: { _, scrolledDown in
+            isScrolledDown = scrolledDown
+        }
         .skyBackground()
         .navigationTitle("My Cue Voice")
         .toolbarTitleDisplayMode(.inline)
-        .sheet(item: $setup) { setup in
+        .sheet(item: $setup, onDismiss: releaseStrength) { setup in
             VoiceSetupSheet(mode: setup.mode, profile: profile.profile, startAt: setup.startAt)
         }
-        .sheet(item: $editing) { VoiceEditorSheet(field: $0) }
+        .sheet(item: $editing, onDismiss: releaseStrength) { VoiceEditorSheet(field: $0) }
+        .onChange(of: setup != nil || editing != nil) { _, answering in
+            if answering, heldStrength == nil { heldStrength = current.voiceStrength }
+        }
         .sheet(isPresented: $showsPreview) { VoicePreviewSheet() }
         .sheet(isPresented: $asksUltra) {
             UltraConsentSheet {
@@ -87,8 +104,8 @@ struct MyCueVoicePage: View {
         .profileBlock()
     }
 
-    /// The voice at a glance, set apart inside the card on a raised panel (the owner, 03/11/2026): the switch named for what it does, how
-    /// much Cue knows, and the next question with Answer.
+    /// The voice at a glance, set apart inside the card on a raised panel (the owner, 03/11/2026): the switch named for what it does and how
+    /// much Cue knows, as the spaceship's fuel tank.
     private var status: some View {
         VStack(alignment: .leading, spacing: 16) {
             HStack(spacing: 12) {
@@ -103,8 +120,7 @@ struct MyCueVoicePage: View {
                     .accessibilityLabel(Text("Use my voice in drafts"))
                     .accessibilityIdentifier("voicePage.toggle")
             }
-            VoiceMeter(strength: current.voiceStrength, level: current.voiceLevel)
-            if aiStatus.isAvailable, let next = scheduler.remaining.first { nextQuestion(next) }
+            VoiceMeter(strength: shownStrength, level: VoiceStrengthLevel(strength: shownStrength), style: .tank)
         }
         .padding(14)
         .background(Palette.surface2, in: RoundedRectangle(cornerRadius: Metrics.profileBlockRadius - 8, style: .continuous))
@@ -131,6 +147,23 @@ struct MyCueVoicePage: View {
         .accessibilityIdentifier("voicePage.needsAI")
     }
 
+    /// The sheet of answers closed: if Cue knows more, the page first glides back to the top so the tank is in view (the owner, 04/11/2026), then
+    /// the meter shows what Cue knows now and the ship pours what was added (`VoiceFuelTank`); otherwise the meter simply lets go.
+    private func releaseStrength() {
+        guard let held = heldStrength, current.voiceStrength > held, isScrolledDown else {
+            heldStrength = nil
+            return
+        }
+        withAnimation(reduceMotion ? nil : .smooth(duration: Self.backToTop)) { scroll.scrollTo(edge: .top) }
+        Task {
+            try? await Task.sleep(for: .seconds(reduceMotion ? 0 : Self.backToTop))
+            heldStrength = nil
+        }
+    }
+
+    /// The glide back to the top before the tank launches.
+    private static let backToTop: TimeInterval = 0.5
+
     // MARK: - Sections
 
     /// A section: its name as a title, white and bold over the grey names of its rows, with room above it so each area reads as its own
@@ -156,29 +189,6 @@ struct MyCueVoicePage: View {
                     .accessibilityIdentifier("voicePage.proofNote")
             }
         }
-    }
-
-    /// The next question in the queue, answered right here on a strip of its own: "✦ Next: How do you usually end a video?  Answer".
-    private func nextQuestion(_ question: VoiceQuestion) -> some View {
-        Button { editing = VoiceEditorField(question.field) } label: {
-            HStack(spacing: 10) {
-                Text(verbatim: "✦").foregroundStyle(Palette.aiText)
-                Text("Next: \(question.title)")
-                    .cueFont(.subheadline, weight: .medium)
-                    .foregroundStyle(Palette.ink)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                Text("Answer")
-                    .cueFont(.subheadline, weight: .semibold)
-                    .foregroundStyle(Palette.accText)
-            }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
-            .frame(minHeight: Metrics.hitTarget)
-            .background(Palette.surface3, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
-            .contentShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-        }
-        .buttonStyle(.plain)
-        .accessibilityIdentifier("voicePage.next")
     }
 
     // MARK: - Clearing

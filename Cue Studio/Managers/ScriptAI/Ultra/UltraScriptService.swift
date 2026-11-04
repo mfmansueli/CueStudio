@@ -6,8 +6,9 @@
 import Foundation
 import os
 
-/// AI Scripts Ultra: a developed draft from Google's Gemini, then (`UltraFlow.checked`) its claims checked on their own, then its polish in the
-/// creator's way of speaking, two or three calls through Firebase (`UltraModelClient`). Apple Intelligence stays the default and is never
+/// AI Scripts Ultra: a developed draft from Claude through Cue's server (Gemini or Claude directly in the Debug lab), then
+/// (`UltraFlow.checked`) its claims checked on their own, then its polish in the creator's way of speaking, two or three calls
+/// (`UltraModelClient`). Apple Intelligence stays the default and is never
 /// replaced or fallen back from: a script is written here only when the creator chose Ultra for it, and only with their permission
 /// (`UltraConsentService`). Before every call it asks again whether it may go out (permission, the lab's cap, cancellation), so a revoked
 /// permission or a Stop never lets the next call leave. Only the polished script comes back; a failed check or polish is a failure, with the
@@ -34,8 +35,9 @@ final class UltraScriptService: UltraScriptWriting {
     let invite: UltraInviteService?
     /// What each request spent; nil keeps no record (tests that don't look at it).
     let spend: UltraSpendLedger?
-    /// Ultra is in this build and set up on this iPhone; read without touching the network.
-    let isAvailable: Bool
+    /// Ultra is in this build and set up on this iPhone; read without touching the network. A TestFlight build turns it on shortly after
+    /// launch (`becomeAvailable`, `UltraDistribution`).
+    private(set) var isAvailable: Bool
     /// Makes the client the first time a script is written: nothing about Firebase (not even App Check) starts before the creator allowed it.
     @ObservationIgnored private let makeClient: @MainActor () -> (any UltraModelClient)?
     @ObservationIgnored private var client: (any UltraModelClient)?
@@ -43,11 +45,13 @@ final class UltraScriptService: UltraScriptWriting {
     private static let log = Logger(subsystem: "studio.cue", category: "Ultra")
 
     /// - Parameters:
-    ///   - isAvailable: false when this build or this iPhone has no Ultra (Release, or no lab configuration): nothing about it is shown.
-    ///   - makeClient: the Firebase client, made only when a permitted script is first written.
+    ///   - isAvailable: false when this launch has no Ultra (yet): nothing about it is shown.
+    ///   - makeClient: the client (Cue's server, or the lab's in Debug), made only when a permitted script is first written.
+    ///   - checksDistribution: a Release build asks StoreKit whether it is TestFlight's and offers Ultra if so (`UltraDistribution`).
     init(
-        isAvailable: Bool, consent: UltraConsentService, budget: UltraCallBudget, allowance: UltraAllowanceService? = nil,
-        invite: UltraInviteService? = nil, spend: UltraSpendLedger? = nil, makeClient: @escaping @MainActor () -> (any UltraModelClient)?
+        isAvailable: Bool, checksDistribution: Bool = false, consent: UltraConsentService, budget: UltraCallBudget,
+        allowance: UltraAllowanceService? = nil, invite: UltraInviteService? = nil, spend: UltraSpendLedger? = nil,
+        makeClient: @escaping @MainActor () -> (any UltraModelClient)?
     ) {
         self.isAvailable = isAvailable
         self.consent = consent
@@ -56,6 +60,11 @@ final class UltraScriptService: UltraScriptWriting {
         self.invite = invite
         self.spend = spend
         self.makeClient = makeClient
+        if checksDistribution {
+            Task { [weak self] in
+                if await UltraDistribution.allowsUltra() { self?.becomeAvailable() }
+            }
+        }
     }
 
     /// With a client already made (tests, the UI tests' stub).
@@ -64,6 +73,11 @@ final class UltraScriptService: UltraScriptWriting {
         invite: UltraInviteService? = nil, spend: UltraSpendLedger? = nil
     ) {
         self.init(isAvailable: true, consent: consent, budget: budget, allowance: allowance, invite: invite, spend: spend, makeClient: { client })
+    }
+
+    /// Offers Ultra from now on (a TestFlight build, once StoreKit says it isn't the App Store's).
+    func becomeAvailable() {
+        isAvailable = true
     }
 
     var isReady: Bool { isAvailable && consent.isGranted }

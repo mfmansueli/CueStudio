@@ -19,6 +19,8 @@
 			</array>
 		</dict>
 	</array>
+	<key>FirebaseAppCheckTokenAutoRefreshEnabled</key>
+	<false/>
 	<key>MetaAppID</key>
 	<string></string>
 	<key>NSBonjourServices</key>

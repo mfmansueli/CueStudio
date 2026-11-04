@@ -71,7 +71,7 @@ struct PrivacyView: View {
     private var ultraSection: some View {
         Section {
             SettingsListToggle(
-                title: String(localized: "Ultra AI"), detail: String(localized: "Sent to Google · only when you pick it"),
+                title: String(localized: "Ultra AI"), detail: String(localized: "Sent to Anthropic · only when you pick it"),
                 isOn: Binding(get: { ultra.consent.isGranted }, set: { allowed in
                     if allowed { asksUltra = true } else { ultra.consent.revoke(); starter.choose(.apple) }
                 })
@@ -89,7 +89,7 @@ struct PrivacyView: View {
                 .cardRowBackground(position: .last)
             #endif
         } footer: {
-            Text("When it’s on and you pick Ultra AI, your idea, your choices and your My Cue Voice preferences go to Google, which writes the script. Off, nothing more is sent. Turning it off doesn’t change Apple Intelligence.")
+            Text("When it’s on and you pick Ultra AI, your idea, your choices and your My Cue Voice preferences go to Anthropic, which writes the script. Off, nothing more is sent. Turning it off doesn’t change Apple Intelligence.")
                 .foregroundStyle(Palette.ink2)
         }
     }

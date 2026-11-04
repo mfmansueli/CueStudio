@@ -32,6 +32,6 @@ nonisolated enum AIDisclosure {
 
     /// The privacy sheet where Ultra AI is offered.
     static var ultraPrivacy: String {
-        String(localized: "Apple Intelligence writes by default. Ultra AI sends your request and voice preferences to Google, which runs its model, only when you allow it and pick it for a script. Writing examples and imported excerpts never go to Google.")
+        String(localized: "Apple Intelligence writes by default. Ultra AI sends your request and voice preferences to Anthropic, which runs its model, only when you allow it and pick it for a script. Writing examples and imported excerpts never go to Anthropic.")
     }
 }

@@ -46,6 +46,20 @@ enum HapticPatterns {
         Beat(time: 1.24, intensity: 0.5, sharpness: 0.9),
     ]
 
+    /// My Cue Voice's fuel tank (`VoiceFuelTank`): a hum that swells as the ship pours the plasma, a firm click as the tank locks full
+    /// (`VoiceFuelPainter.runSeconds`), a short charge as it crouches, a thump as it launches, a hard knock with the shock wave as it boosts at
+    /// the screen, a rushing hum as it comes and a bright tap as it passes the glass (`VoiceShipFlight`).
+    static let voiceFuel: [Beat] = [
+        Beat(time: 0, intensity: 0.4, sharpness: 0.35),
+        Beat(time: 0.05, intensity: 0.12, sharpness: 0.2, duration: 1.15, endIntensity: 0.45),
+        Beat(time: 1.25, intensity: 0.75, sharpness: 0.6),
+        Beat(time: 1.3, intensity: 0.1, sharpness: 0.5, duration: 0.22, endIntensity: 0.5),
+        Beat(time: 1.53, intensity: 0.95, sharpness: 0.4),
+        Beat(time: 1.98, intensity: 0.85, sharpness: 0.7),
+        Beat(time: 2.0, intensity: 0.15, sharpness: 0.2, duration: 0.6, endIntensity: 0.85),
+        Beat(time: 2.62, intensity: 0.55, sharpness: 0.95),
+    ]
+
     /// The star landing as the script's page: a soft, heavy thump and two small glints after it.
     static let landing: [Beat] = [
         Beat(time: 0, intensity: 0.7, sharpness: 0.15),
@@ -177,6 +191,7 @@ enum HapticPatterns {
     static func playTopicFlight() { play(topicFlight, fallback: Haptics.apply) }
     static func playVoyageFlight() { play(voyageFlight, fallback: Haptics.soft) }
     static func playTakeoff() { play(takeoff, fallback: Haptics.medium) }
+    static func playVoiceFuel() { play(voiceFuel, fallback: Haptics.medium) }
     static func playLanding() { play(landing, fallback: Haptics.success) }
     static func playCommit() { play(commit, fallback: Haptics.light) }
     static func playFinish() { play(finish, fallback: Haptics.soft) }

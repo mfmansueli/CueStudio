@@ -13,7 +13,7 @@ import SwiftUI
 struct UltraLabView: View {
     @State private var model: UltraLabViewModel?
     @State private var asksPermission = false
-    @AppStorage(UltraLabProvider.key) private var provider = UltraLabProvider.google
+    @AppStorage(UltraLabProvider.key) private var provider = UltraLabProvider.cueServer
     @AppStorage(UltraLabEffort.key) private var effort = UltraLabEffort.high
 
     @Environment(UltraScriptService.self) private var ultra
