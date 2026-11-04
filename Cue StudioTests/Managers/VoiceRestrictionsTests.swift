@@ -77,7 +77,7 @@ struct VoiceRestrictionsTests {
         profile.profile.avoid = ["Hype words"]
         profile.profile.speaksAs = .we
         profile.profile.phrases.append("Hey fam")
-        let factory = ScriptRequestFactory(rules: TestData.rulesService(), profile: profile, scriptLanguage: nil, interfaceLanguage: .english)
+        let factory = ScriptRequestFactory(profile: profile, scriptLanguage: nil, interfaceLanguage: .english)
         let serious = factory.request(idea: "We are sorry about the delays", platform: .reels, format: .apology)
         #expect(serious.voice == nil, "no style, no voice preview, no voice counted")
         #expect(serious.rules?.avoid == ["Hype words"] && serious.rules?.speaksAs == .we && serious.rules?.phrases.isEmpty == true)

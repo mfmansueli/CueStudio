@@ -54,20 +54,30 @@ struct UltraScriptServiceTests {
         #expect(scenario.client.madeCount == 0 && scenario.client.requests.isEmpty)
     }
 
-    /// The app's flow: the draft, its claims checked, then the polish (the comparison of 29/10/2026 chose the check).
-    @Test func theDraftItsCheckThenItsPolishAndOnlyThePolishComesBack() async throws {
+    /// The app's flow: the draft, then its polish, which also corrects the claims (the study of 04/11/2026: a separate check didn't pay).
+    @Test func theDraftThenItsPolishAndOnlyThePolishComesBack() async throws {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }
         let run = try await scenario.service.run(request)
-        #expect(run.flow == .checked)
-        #expect(scenario.client.requests.map(\.stage) == [.draft, .check, .review])
+        #expect(run.flow == .polished && UltraFlow.standard == .polished)
+        #expect(scenario.client.requests.map(\.stage) == [.draft, .review])
         #expect(scenario.client.requests[1].prompt.contains("A developed draft with a reason and an example."))
         #expect(run.script.text == "The polished script.")
         #expect(run.script.title == "Polished title")
         #expect(run.script.engine == .ultra && run.script.needsFactCheck)
         #expect(run.draft == "A developed draft with a reason and an example.")
         #expect(run.changes == ["Tightened the opening."])
-        #expect(scenario.budget.used == 3)
+        #expect(scenario.budget.used == 2)
+    }
+
+    /// A script from an idea keeps the title the creator picked on the card, whatever the editor wrote.
+    @Test func aScriptFromAnIdeaKeepsTheIdeasTitle() async throws {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        var asked = request
+        asked.brief = IdeaBrief(subject: "Why I stopped buying bottled water", angle: "", openingLine: "")
+        #expect(try await scenario.service.generate(asked, reporting: nil).title == "Why I stopped buying bottled water")
+        #expect(try await scenario.service.generate(request, reporting: nil).title == "Polished title")
     }
 
     @Test func revokedWhileTheDraftIsOutThePolishNeverLeaves() async {
@@ -100,7 +110,7 @@ struct UltraScriptServiceTests {
         } catch {
             Issue.record("Unexpected error \(error)")
         }
-        #expect(scenario.budget.used == 3)
+        #expect(scenario.budget.used == 2)
     }
 
     @Test func aScriptIsCountedOnlyOnceWritten() async throws {
@@ -173,7 +183,7 @@ struct UltraScriptServiceTests {
         #expect(scenario.client.requests[0].prompt.contains("Length: 60 to 90 seconds of speech"))
         automatic.platform = .youtube
         _ = try await scenario.service.run(automatic)
-        #expect(scenario.client.requests.last { $0.stage == .draft }?.prompt.contains("Length: free.") == true)
+        #expect(scenario.client.requests.last { $0.stage == .draft }?.prompt.contains("Length: 60 to 90 seconds of speech") == true)
         _ = try await scenario.service.run(request, length: .required(60...90))
         #expect(scenario.client.requests.last { $0.stage == .draft }?.prompt.contains("the creator chose 60 to 90 seconds") == true)
     }
@@ -280,14 +290,15 @@ struct UltraScriptServiceTests {
         var automatic = request
         automatic.durationPolicy = .informative
         let run = try await scenario.service.run(automatic)
-        #expect(scenario.client.requests.map(\.stage) == [.draft, .check, .review, .fit])
+        #expect(scenario.client.requests.map(\.stage) == [.draft, .review, .fit])
         #expect(run.script.text == "The fitted script.")
-        #expect(scenario.budget.used == 4)
+        #expect(scenario.budget.used == 3)
         let chosen = try await scenario.service.run(request)
-        #expect(chosen.script.text == long && scenario.budget.used == 7)
+        #expect(chosen.script.text == long && scenario.budget.used == 5)
+        // YouTube's long form is written to the same range and fitted the same way (the owner's call, 04/11/2026).
         automatic.platform = .youtube
         let youTube = try await scenario.service.run(automatic)
-        #expect(youTube.script.text == long && scenario.budget.used == 10)
+        #expect(youTube.script.text == "The fitted script." && scenario.budget.used == 8)
     }
 
     @Test func aScriptAlreadyInTheRangeCostsNoCall() async throws {
@@ -333,18 +344,29 @@ struct UltraScriptServiceTests {
         client.fit = try metered(client.fit, 1_300, 300, 2_000)
     }
 
-    @Test func aScriptRecordsWhatItsThreeCallsSpent() async throws {
+    @Test func aScriptRecordsWhatItsTwoCallsSpent() async throws {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }
         try meter(scenario.client)
         let run = try await scenario.service.run(request)
+        #expect(run.cost.calls == 2 && run.cost.meteredCalls == 2)
+        #expect(run.cost.inputTokens == 2_465 && run.cost.outputTokens == 1_139 && run.cost.thinkingTokens == 3_653)
+        #expect(scenario.spend.entries.map(\.kind) == [.script] && scenario.spend.entries[0].finished)
+        #expect(scenario.spend.entries[0].cost == run.cost && scenario.spend.total == run.cost)
+    }
+
+    @Test func aScriptWithTheLabsCheckRecordsItsThreeCalls() async throws {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        try meter(scenario.client)
+        let run = try await scenario.service.run(request, flow: .checked)
         #expect(run.cost.calls == 3 && run.cost.meteredCalls == 3)
         #expect(run.cost.inputTokens == 3_865 && run.cost.outputTokens == 1_639 && run.cost.thinkingTokens == 6_153)
         #expect(scenario.spend.entries.map(\.kind) == [.script] && scenario.spend.entries[0].finished)
         #expect(scenario.spend.entries[0].cost == run.cost && scenario.spend.total == run.cost)
     }
 
-    /// A failed polish spent the draft and the check (and maybe part of itself): in the total, never as a finished script.
+    /// A failed polish spent the draft (and maybe part of itself): in the total, never as a finished script.
     @Test func aFailedScriptRecordsWhatWentOut() async throws {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }
@@ -353,7 +375,7 @@ struct UltraScriptServiceTests {
         _ = try? await scenario.service.generate(request, reporting: nil)
         let entry = try #require(scenario.spend.entries.first)
         #expect(entry.kind == .script && !entry.finished)
-        #expect(entry.cost.calls == 3 && entry.cost.meteredCalls == 2 && entry.cost.inputTokens == 2_400)
+        #expect(entry.cost.calls == 2 && entry.cost.meteredCalls == 1 && entry.cost.inputTokens == 1_000)
         #expect(scenario.spend.summary(of: .script) == nil)
     }
 
@@ -370,8 +392,8 @@ struct UltraScriptServiceTests {
         var automatic = request
         automatic.durationPolicy = .informative
         let run = try await scenario.service.run(automatic)
-        #expect(scenario.client.requests.map(\.stage) == [.draft, .check, .review, .fit])
-        #expect(run.cost.calls == 4 && run.cost.inputTokens == 5_165)
+        #expect(scenario.client.requests.map(\.stage) == [.draft, .review, .fit])
+        #expect(run.cost.calls == 3 && run.cost.inputTokens == 3_765)
         #expect(scenario.spend.entries.map(\.kind) == [.script] && scenario.spend.entries[0].cost == run.cost)
     }
 
@@ -399,7 +421,7 @@ struct UltraScriptServiceTests {
         scenario.service.thinking = .low
         _ = try await scenario.service.run(request)
         _ = try await scenario.service.fit(fitRequest(longScript))
-        #expect(scenario.client.requests.suffix(4).map(\.thinking) == [.low, .low, .low, .low])
+        #expect(scenario.client.requests.suffix(3).map(\.thinking) == [.low, .low, .low])
     }
 
     @Test func onlyTheClaimCheckKeepsTheModelsOwnThinking() {

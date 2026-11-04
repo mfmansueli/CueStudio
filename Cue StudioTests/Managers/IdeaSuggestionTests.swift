@@ -37,7 +37,7 @@ struct IdeaSuggestionTests {
         let defaults = TestDefaults()
         defer { defaults.tearDown() }
         let factory = ScriptRequestFactory(
-            rules: TestData.rulesService(), profile: CreatorProfileService(defaults: defaults.defaults), scriptLanguage: nil,
+            profile: CreatorProfileService(defaults: defaults.defaults), scriptLanguage: nil,
             interfaceLanguage: .english
         )
         #expect(factory.request(idea: "x", platform: .tiktok, format: .ad, brand: brand).brand == brand)

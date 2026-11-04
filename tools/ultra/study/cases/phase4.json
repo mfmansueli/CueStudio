@@ -1,0 +1,898 @@
+[
+ {
+  "id": "c4-card-beauty-mistake",
+  "language": "pt-BR",
+  "creator": "pt-beauty",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "O erro de passar base direto na pele ressecada",
+   "angle": "Mostre por que a base craquela sem preparo e como um hidratante leve antes resolve.",
+   "openingLine": "Se a sua base racha no meio do dia, o problema começou antes dela.",
+   "angleKind": "mistake",
+   "topicKey": "beauty"
+  }
+ },
+ {
+  "id": "c4-card-beauty-beginner",
+  "language": "pt-BR",
+  "creator": "pt-beauty",
+  "voice": "half",
+  "platform": "reels",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "Qual pincel comprar primeiro quando você está começando",
+   "angle": "Responda indicando os dois pincéis que fazem quase tudo numa make do dia a dia.",
+   "openingLine": "Se eu só pudesse ter dois pincéis, seriam esses aqui.",
+   "angleKind": "beginner",
+   "topicKey": "beauty"
+  }
+ },
+ {
+  "id": "c4-card-beauty-challenge",
+  "language": "pt-BR",
+  "creator": "pt-beauty",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "Desafio da make completa em cinco minutos",
+   "angle": "Desafie quem assiste a fazer uma make de trabalho com cronômetro e só cinco produtos.",
+   "openingLine": "Coloca cinco minutos no cronômetro que hoje a gente se arruma correndo.",
+   "angleKind": "challenge",
+   "topicKey": "beauty"
+  }
+ },
+ {
+  "id": "c4-card-beauty-tool",
+  "language": "pt-BR",
+  "creator": "pt-beauty",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "A esponja que mudou o jeito que eu passo corretivo",
+   "angle": "Conte como trocar o dedo pela esponja úmida deixou o corretivo natural e sem marcar.",
+   "openingLine": "Passei anos aplicando corretivo com o dedo sem saber o que estava perdendo.",
+   "angleKind": "tool",
+   "topicKey": "beauty"
+  }
+ },
+ {
+  "id": "c4-card-money-lesson",
+  "language": "pt-BR",
+  "creator": "pt-money",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "O que aprendi emprestando dinheiro para um amigo",
+   "angle": "Conte a lição de emprestar sem combinar prazo e como hoje você combina tudo por escrito.",
+   "openingLine": "Eu perdi o dinheiro e quase perdi o amigo na mesma tacada.",
+   "angleKind": "lesson",
+   "topicKey": "finance"
+  }
+ },
+ {
+  "id": "c4-card-money-question",
+  "language": "pt-BR",
+  "creator": "pt-money",
+  "voice": "half",
+  "platform": "tiktok",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "Vocês dividem as contas da casa meio a meio?",
+   "angle": "Pergunte ao público como dividem as despesas e apresente as duas formas: igual ou proporcional ao salário.",
+   "openingLine": "Me conta aí: na sua casa é meio a meio ou cada um paga conforme ganha?",
+   "angleKind": "question",
+   "topicKey": "finance"
+  }
+ },
+ {
+  "id": "c4-card-money-comparison",
+  "language": "pt-BR",
+  "creator": "pt-money",
+  "voice": "full",
+  "platform": "reels",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "À vista com desconto ou parcelado sem juros?",
+   "angle": "Compare as duas escolhas e mostre quando o desconto à vista vale mais que deixar o dinheiro rendendo.",
+   "openingLine": "Parcelar sem juros parece sempre vantagem, mas nem sempre é.",
+   "angleKind": "comparison",
+   "topicKey": "finance"
+  }
+ },
+ {
+  "id": "c4-card-money-challenge",
+  "language": "pt-BR",
+  "creator": "pt-money",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "Desafio de um mês sem pedir delivery",
+   "angle": "Proponha trinta dias cozinhando em casa e anotando quanto deixou de gastar com aplicativo.",
+   "openingLine": "Topa ficar um mês inteiro sem abrir o aplicativo de delivery?",
+   "angleKind": "challenge",
+   "topicKey": "finance"
+  }
+ },
+ {
+  "id": "c4-card-money-opinion",
+  "language": "pt-BR",
+  "creator": "pt-money",
+  "voice": "full",
+  "platform": "reels",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "Por que eu não compraria carro no primeiro emprego",
+   "angle": "Argumente que o carro financiado cedo come a renda de quem está começando e que dá para esperar.",
+   "openingLine": "Financiar um carro no primeiro emprego atrasou a vida de muita gente que eu conheço.",
+   "angleKind": "opinion",
+   "topicKey": "finance"
+  }
+ },
+ {
+  "id": "c4-card-filming-tool",
+  "language": "pt-BR",
+  "creator": "pt-filming",
+  "voice": "none",
+  "platform": "tiktok",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "O suporte de mesa que acabou com meus vídeos tremidos",
+   "angle": "Mostre como um suporte barato deixou a gravação estável e liberou as mãos para gesticular.",
+   "openingLine": "Eu parei de equilibrar o celular numa pilha de livros.",
+   "angleKind": "tool",
+   "topicKey": "Gravar vídeos com o celular"
+  }
+ },
+ {
+  "id": "c4-card-filming-beforeafter",
+  "language": "pt-BR",
+  "creator": "pt-filming",
+  "voice": "full",
+  "platform": "shorts",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "Meu enquadramento antes e depois da regra dos terços",
+   "angle": "Compare o rosto centralizado com os olhos na linha de cima da grade da câmera.",
+   "openingLine": "Liga a grade da câmera agora e repara onde estão os seus olhos.",
+   "angleKind": "beforeAfter",
+   "topicKey": "Gravar vídeos com o celular"
+  }
+ },
+ {
+  "id": "c4-card-filming-lesson",
+  "language": "pt-BR",
+  "creator": "pt-filming",
+  "voice": "half",
+  "platform": "tiktok",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "A gravação que perdi porque a memória do celular encheu",
+   "angle": "Conte a lição de conferir o armazenamento antes de apertar o botão de gravar.",
+   "openingLine": "Quarenta minutos de gravação e o celular parou dizendo memória cheia.",
+   "angleKind": "lesson",
+   "topicKey": "tech"
+  }
+ },
+ {
+  "id": "c4-card-filming-fact",
+  "language": "pt-BR",
+  "creator": "pt-filming",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "Por que a câmera de trás grava melhor que a da frente",
+   "angle": "Explique que a traseira costuma ter sensor e lente melhores e por isso vale gravar com ela.",
+   "openingLine": "A câmera que você usa pra se ver é quase sempre a pior do seu celular.",
+   "angleKind": "fact",
+   "topicKey": "tech"
+  }
+ },
+ {
+  "id": "c4-card-biz-mistake",
+  "language": "pt-BR",
+  "creator": "pt-consultant",
+  "voice": "full",
+  "platform": "linkedin",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "O erro de negociar sem um preço mínimo definido",
+   "angle": "Mostre como decidir antes da reunião o menor valor aceitável evita descontos que dão prejuízo.",
+   "openingLine": "Quem entra numa negociação sem saber o próprio piso já começou cedendo.",
+   "angleKind": "mistake",
+   "topicKey": "business"
+  }
+ },
+ {
+  "id": "c4-card-biz-list",
+  "language": "pt-BR",
+  "creator": "pt-consultant",
+  "voice": "half",
+  "platform": "linkedin",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "Quatro perguntas antes de aceitar um cliente novo",
+   "angle": "Liste as perguntas que mostram se o cliente cabe no seu escopo, no seu prazo e no seu preço.",
+   "openingLine": "Nem todo cliente disposto a pagar é um cliente que você deveria aceitar.",
+   "angleKind": "list",
+   "topicKey": "business"
+  }
+ },
+ {
+  "id": "c4-card-biz-dayinlife",
+  "language": "pt-BR",
+  "creator": "pt-consultant",
+  "voice": "full",
+  "platform": "linkedin",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "Minha primeira semana dentro de uma empresa cliente",
+   "angle": "Mostre o que você observa, quem entrevista e o que anota nos primeiros dias de um diagnóstico.",
+   "openingLine": "Na primeira semana numa empresa nova eu quase não opino. Eu observo.",
+   "angleKind": "dayInLife",
+   "topicKey": "business"
+  }
+ },
+ {
+  "id": "c4-card-food-myth",
+  "language": "pt-BR",
+  "creator": "pt-cooking",
+  "voice": "full",
+  "platform": "reels",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "O mito de que lavar o frango cru deixa ele mais limpo",
+   "angle": "Explique que lavar o frango espalha respingos pela pia e que é o cozimento completo que garante segurança.",
+   "openingLine": "Para de lavar o frango na pia, você está espalhando o problema.",
+   "angleKind": "myth",
+   "topicKey": "food"
+  }
+ },
+ {
+  "id": "c4-card-food-tutorial",
+  "language": "pt-BR",
+  "creator": "pt-cooking",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "Como cozinhar ovo que descasca inteirinho",
+   "angle": "Ensine a colocar o ovo na água já fervendo e dar um choque no gelo para a casca soltar.",
+   "openingLine": "Se descascar ovo cozido vira guerra aí na sua casa, olha isso.",
+   "angleKind": "tutorial",
+   "topicKey": "food"
+  }
+ },
+ {
+  "id": "c4-card-food-mistake",
+  "language": "pt-BR",
+  "creator": "pt-cooking",
+  "voice": "full",
+  "platform": "reels",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "O erro de lotar a frigideira de carne moída",
+   "angle": "Mostre como encher demais a panela faz a carne soltar água e cozinhar em vez de dourar.",
+   "openingLine": "Sua carne moída fica cinza e aguada? Eu sei o motivo.",
+   "angleKind": "mistake",
+   "topicKey": "food"
+  }
+ },
+ {
+  "id": "c4-card-food-beforeafter",
+  "language": "pt-BR",
+  "creator": "pt-cooking",
+  "voice": "full",
+  "platform": "reels",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "Meu macarrão antes e depois de guardar a água da massa",
+   "angle": "Compare o molho seco e separado com o molho cremoso que gruda na massa graças à água do cozimento.",
+   "openingLine": "Antes de escorrer o macarrão, guarda uma xícara dessa água.",
+   "angleKind": "beforeAfter",
+   "topicKey": "food"
+  }
+ },
+ {
+  "id": "c4-card-en-beginner",
+  "language": "en-US",
+  "creator": "en-fitness",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "How many days a week should a beginner train?",
+   "angle": "Answer the question every beginner asks with a simple three-day starting week.",
+   "openingLine": "If you're just starting out, you don't need to train every day.",
+   "angleKind": "beginner",
+   "topicKey": "fitness"
+  }
+ },
+ {
+  "id": "c4-card-en-comparison",
+  "language": "en-US",
+  "creator": "en-fitness",
+  "voice": "full",
+  "platform": "reels",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "Resistance bands or dumbbells for a small apartment",
+   "angle": "Compare cost, storage space and how you progress with each one when you train at home.",
+   "openingLine": "Tiny apartment, tight budget: bands or dumbbells?",
+   "angleKind": "comparison",
+   "topicKey": "fitness"
+  }
+ },
+ {
+  "id": "c4-card-en-dayinlife",
+  "language": "en-US",
+  "creator": "en-fitness",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "A day of moving more without a single workout",
+   "angle": "Walk through a normal day where stairs, short walks and stretch breaks add up.",
+   "openingLine": "I didn't do a workout today, and I still barely sat still.",
+   "angleKind": "dayInLife",
+   "topicKey": "wellness"
+  }
+ },
+ {
+  "id": "c4-card-en-fact",
+  "language": "en-US",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "shorts",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "Why your grip gives out before your back does",
+   "angle": "Explain that forearm muscles tire first on pulling moves and how straps or grip work help.",
+   "openingLine": "Your back isn't what's quitting on that row. Your hands are.",
+   "angleKind": "fact",
+   "topicKey": "fitness"
+  }
+ },
+ {
+  "id": "c4-card-en-prediction",
+  "language": "en-US",
+  "creator": "en-fitness",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "Short daily workouts will replace the hour at the gym",
+   "angle": "Predict that more people will train in short sessions at home and say what that means for them.",
+   "openingLine": "The one-hour gym session is going out of style, and that's good news.",
+   "angleKind": "prediction",
+   "topicKey": "fitness"
+  }
+ },
+ {
+  "id": "c4-card-es-story",
+  "language": "es-ES",
+  "creator": "es-ceramics",
+  "voice": "full",
+  "platform": "reels",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "La hornada que se nos agrietó entera",
+   "angle": "Cuenta cómo secar las piezas demasiado rápido nos agrietó una hornada y qué cambiamos.",
+   "openingLine": "Abrimos el horno aquella mañana y no se había salvado ni una pieza.",
+   "angleKind": "story",
+   "topicKey": "Cerámica artesanal"
+  }
+ },
+ {
+  "id": "c4-card-es-opinion",
+  "language": "es-ES",
+  "creator": "es-ceramics",
+  "voice": "half",
+  "platform": "reels",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "Por qué no hacemos descuentos en Black Friday",
+   "angle": "Defiende que en un taller pequeño rebajar desvaloriza el trabajo a mano y cuenta qué ofrecemos a cambio.",
+   "openingLine": "Este año tampoco habrá descuentos en el taller, y os contamos por qué.",
+   "angleKind": "opinion",
+   "topicKey": "business"
+  }
+ },
+ {
+  "id": "c4-card-es-list",
+  "language": "es-ES",
+  "creator": "es-ceramics",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "Cuatro herramientas de cerámica que ya tienes en casa",
+   "angle": "Enumera utensilios de cocina que sirven para modelar barro a quien está empezando.",
+   "openingLine": "Para empezar a modelar no hace falta gastar: mira en el cajón de la cocina.",
+   "angleKind": "list",
+   "topicKey": "Cerámica artesanal"
+  }
+ },
+ {
+  "id": "c4-card-es-tutorial",
+  "language": "es-ES",
+  "creator": "es-ceramics",
+  "voice": "full",
+  "platform": "reels",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "Cómo amasar el barro para que no queden burbujas",
+   "angle": "Muestra el amasado en espiral paso a paso y explica por qué el aire atrapado rompe la pieza.",
+   "openingLine": "Si una pieza te ha estallado en el horno, seguramente fue por esto.",
+   "angleKind": "tutorial",
+   "topicKey": "Cerámica artesanal"
+  }
+ },
+ {
+  "id": "c4-card-es-myth",
+  "language": "es-ES",
+  "creator": "es-ceramics",
+  "voice": "none",
+  "platform": "tiktok",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "El mito de que el barro rojo es peor que el blanco",
+   "angle": "Desmonta la idea de que el color del barro decide la calidad y explica qué importa de verdad.",
+   "openingLine": "Mucha gente cree que una taza de barro rojo es de peor calidad. No lo es.",
+   "angleKind": "myth",
+   "topicKey": "Cerámica artesanal"
+  }
+ },
+ {
+  "id": "c4-type-money-13th",
+  "language": "pt-BR",
+  "creator": "pt-money",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "auto",
+  "length": "auto",
+  "idea": "décimo terceiro"
+ },
+ {
+  "id": "c4-type-money-1000",
+  "language": "pt-BR",
+  "creator": "pt-money",
+  "voice": "half",
+  "platform": "tiktok",
+  "format": "auto",
+  "length": "auto",
+  "idea": "5 coisas que eu faria se sobrassem mil reais no mês"
+ },
+ {
+  "id": "c4-type-money-revolving",
+  "language": "pt-BR",
+  "creator": "pt-money",
+  "voice": "full",
+  "platform": "reels",
+  "format": "auto",
+  "length": "seconds30",
+  "idea": "como sair do rotativo do cartão"
+ },
+ {
+  "id": "c4-type-beauty-frizz",
+  "language": "pt-BR",
+  "creator": "pt-beauty",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "auto",
+  "length": "auto",
+  "idea": "frizz"
+ },
+ {
+  "id": "c4-type-beauty-heat",
+  "language": "pt-BR",
+  "creator": "pt-beauty",
+  "voice": "none",
+  "platform": "reels",
+  "format": "auto",
+  "length": "auto",
+  "idea": "Minha opinião: aquela make de influenciadora que dura o dia todo não aguenta quem trabalha em pé, pega ônibus e enfrenta 35 graus. Quero falar o que eu faço de diferente pra make durar até a noite sem retocar mil vezes."
+ },
+ {
+  "id": "c4-type-beauty-hair",
+  "language": "pt-BR",
+  "creator": "pt-beauty",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "auto",
+  "length": "auto",
+  "idea": "3 jeitos de prender o cabelo sem deixar marca"
+ },
+ {
+  "id": "c4-type-filming-prompter",
+  "language": "pt-BR",
+  "creator": "pt-filming",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "auto",
+  "length": "auto",
+  "idea": "Quero ensinar a gravar com teleprompter sem parecer que está lendo: deixar o texto bem perto da lente, ler mais devagar do que parece natural, olhar direto pra lente nas frases importantes e passar o texto duas vezes em voz alta antes. Termina chamando a pessoa pra gravar hoje mesmo."
+ },
+ {
+  "id": "c4-type-filming-horizontal",
+  "language": "pt-BR",
+  "creator": "pt-filming",
+  "voice": "half",
+  "platform": "shorts",
+  "format": "auto",
+  "length": "auto",
+  "idea": "por que eu gravo na horizontal mesmo postando vídeo vertical"
+ },
+ {
+  "id": "c4-type-filming-edit",
+  "language": "pt-BR",
+  "creator": "pt-filming",
+  "voice": "full",
+  "platform": "youtube",
+  "format": "auto",
+  "length": "minutes2",
+  "idea": "Como editar um vídeo inteiro no celular em 20 minutos, do corte às legendas"
+ },
+ {
+  "id": "c4-type-biz-delegate",
+  "language": "pt-BR",
+  "creator": "pt-consultant",
+  "voice": "full",
+  "platform": "linkedin",
+  "format": "auto",
+  "length": "auto",
+  "idea": "delegar sem perder o controle"
+ },
+ {
+  "id": "c4-type-biz-family",
+  "language": "pt-BR",
+  "creator": "pt-consultant",
+  "voice": "half",
+  "platform": "linkedin",
+  "format": "auto",
+  "length": "auto",
+  "idea": "Minha opinião sobre contratar parente na empresa pequena. Diga exatamente: \"empresa familiar não precisa ser empresa bagunçada\"."
+ },
+ {
+  "id": "c4-type-food-rice",
+  "language": "pt-BR",
+  "creator": "pt-cooking",
+  "voice": "full",
+  "platform": "reels",
+  "format": "auto",
+  "length": "auto",
+  "idea": "o que fazer com o arroz que sobrou"
+ },
+ {
+  "id": "c4-type-food-spices",
+  "language": "pt-BR",
+  "creator": "pt-cooking",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "auto",
+  "length": "auto",
+  "idea": "4 temperos baratos que salvam qualquer comida sem graça"
+ },
+ {
+  "id": "c4-type-food-stroganoff",
+  "language": "pt-BR",
+  "creator": "pt-cooking",
+  "voice": "none",
+  "platform": "tiktok",
+  "format": "auto",
+  "length": "minute1",
+  "idea": "strogonoff de frango pra quem só tem uma panela e quinze minutos"
+ },
+ {
+  "id": "c4-type-en-consistency",
+  "language": "en-US",
+  "creator": "en-fitness",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "auto",
+  "length": "auto",
+  "idea": "consistency"
+ },
+ {
+  "id": "c4-type-en-desk",
+  "language": "en-US",
+  "creator": "en-fitness",
+  "voice": "full",
+  "platform": "shorts",
+  "format": "auto",
+  "length": "auto",
+  "idea": "5 moves to do at your desk if you sit all day"
+ },
+ {
+  "id": "c4-type-en-plan",
+  "language": "en-US",
+  "creator": "en-fitness",
+  "voice": "full",
+  "platform": "youtube",
+  "format": "auto",
+  "length": "minutes2",
+  "idea": "How to build your first home workout plan when you only have 20 minutes, three days a week, and no equipment. Explain how to pick the moves, how many rounds to do, and how to make it a little harder each week. End by saying exactly: \"Start small, but start today.\""
+ },
+ {
+  "id": "c4-type-es-custom",
+  "language": "es-ES",
+  "creator": "es-ceramics",
+  "voice": "full",
+  "platform": "reels",
+  "format": "auto",
+  "length": "auto",
+  "idea": "encargos personalizados"
+ },
+ {
+  "id": "c4-type-es-packing",
+  "language": "es-ES",
+  "creator": "es-ceramics",
+  "voice": "half",
+  "platform": "tiktok",
+  "format": "auto",
+  "length": "auto",
+  "idea": "Cómo embalamos las piezas para que lleguen enteras a casa"
+ },
+ {
+  "id": "c4-type-es-oneday",
+  "language": "es-ES",
+  "creator": "es-ceramics",
+  "voice": "none",
+  "platform": "reels",
+  "format": "auto",
+  "length": "auto",
+  "idea": "Qué pensamos de los talleres de cerámica de un solo día: ¿sirven para aprender algo o son solo para la foto?"
+ },
+ {
+  "id": "c4-fmt-story-pudding",
+  "language": "pt-BR",
+  "creator": "pt-cooking",
+  "voice": "full",
+  "platform": "reels",
+  "format": "story",
+  "length": "auto",
+  "idea": "A vez que troquei o açúcar pelo sal no pudim da festa da firma"
+ },
+ {
+  "id": "c4-fmt-story-5k",
+  "language": "en-US",
+  "creator": "en-fitness",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "story",
+  "length": "auto",
+  "idea": "The first time I signed up for a 5K and ended up walking half of it"
+ },
+ {
+  "id": "c4-fmt-tut-brows",
+  "language": "pt-BR",
+  "creator": "pt-beauty",
+  "voice": "half",
+  "platform": "tiktok",
+  "format": "tutorial",
+  "length": "auto",
+  "idea": "Como fazer sobrancelha natural só com lápis e escovinha"
+ },
+ {
+  "id": "c4-fmt-tut-slip",
+  "language": "es-ES",
+  "creator": "es-ceramics",
+  "voice": "full",
+  "platform": "reels",
+  "format": "tutorial",
+  "length": "auto",
+  "idea": "Cómo decorar a mano una taza con engobes de colores"
+ },
+ {
+  "id": "c4-fmt-list-settings",
+  "language": "pt-BR",
+  "creator": "pt-filming",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "list",
+  "length": "auto",
+  "idea": "Configurações da câmera do celular que eu mudo antes de gravar"
+ },
+ {
+  "id": "c4-fmt-list-heavier",
+  "language": "en-US",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "reels",
+  "format": "list",
+  "length": "seconds30",
+  "idea": "Signs you're ready to lift heavier"
+ },
+ {
+  "id": "c4-fmt-myth-minimum",
+  "language": "pt-BR",
+  "creator": "pt-money",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "mythFact",
+  "length": "auto",
+  "idea": "Pagar o mínimo da fatura evita os juros"
+ },
+ {
+  "id": "c4-fmt-myth-kiln",
+  "language": "es-ES",
+  "creator": "es-ceramics",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "mythFact",
+  "length": "auto",
+  "idea": "Para hacer cerámica necesitas tener un horno en casa"
+ },
+ {
+  "id": "c4-fmt-op-remote",
+  "language": "pt-BR",
+  "creator": "pt-consultant",
+  "voice": "full",
+  "platform": "linkedin",
+  "format": "opinion",
+  "length": "auto",
+  "idea": "Não foi o trabalho remoto que enfraqueceu a cultura da empresa, foi a falta de gestão"
+ },
+ {
+  "id": "c4-fmt-op-togusto",
+  "language": "pt-BR",
+  "creator": "pt-cooking",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "opinion",
+  "length": "auto",
+  "idea": "Receita que manda colocar sal \"a gosto\" não é receita"
+ },
+ {
+  "id": "c4-fmt-rev-cinema",
+  "language": "pt-BR",
+  "creator": "pt-filming",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "review",
+  "length": "minute1",
+  "idea": "Testei o modo cinema do celular pra gravar vídeo falando pra câmera"
+ },
+ {
+  "id": "c4-fmt-rev-wheel",
+  "language": "es-ES",
+  "creator": "es-ceramics",
+  "voice": "half",
+  "platform": "reels",
+  "format": "review",
+  "length": "auto",
+  "idea": "Probamos un torno eléctrico pequeño pensado para principiantes"
+ },
+ {
+  "id": "c4-fmt-ad-erp",
+  "language": "pt-BR",
+  "creator": "pt-consultant",
+  "voice": "full",
+  "platform": "linkedin",
+  "format": "ad",
+  "length": "auto",
+  "idea": "Publi do sistema de gestão financeira que eu indico para meus clientes",
+  "brand": {
+   "name": "Gestor Claro",
+   "product": "sistema de gestão financeira para pequenas empresas",
+   "mustSay": "Teste grátis de 14 dias",
+   "neverSay": "Não dizer que substitui o contador",
+   "link": "gestorclaro.com.br",
+   "code": ""
+  }
+ },
+ {
+  "id": "c4-fmt-ad-rope",
+  "language": "en-US",
+  "creator": "en-fitness",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "ad",
+  "length": "auto",
+  "idea": "Sponsored: the jump rope I use for quick cardio at home",
+  "brand": {
+   "name": "SkipRight",
+   "product": "weighted jump rope with an adjustable cable",
+   "mustSay": "The cable adjusts to your height in seconds",
+   "neverSay": "Don't say it burns a specific number of calories",
+   "link": "skipright.com",
+   "code": "CUE15"
+  }
+ },
+ {
+  "id": "c4-fmt-launch-brushes",
+  "language": "pt-BR",
+  "creator": "pt-beauty",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "launch",
+  "length": "auto",
+  "idea": "Abri a pré-venda do meu kit com três pincéis, só até domingo"
+ },
+ {
+  "id": "c4-fmt-launch-class",
+  "language": "es-ES",
+  "creator": "es-ceramics",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "launch",
+  "length": "auto",
+  "idea": "Abrimos plazas para el curso de torno de los jueves, grupos de seis personas"
+ },
+ {
+  "id": "c4-fmt-apo-joke",
+  "language": "pt-BR",
+  "creator": "pt-cooking",
+  "voice": "full",
+  "platform": "reels",
+  "format": "apology",
+  "length": "auto",
+  "idea": "Peço desculpas por ter feito piada com a comida típica de outra região"
+ },
+ {
+  "id": "c4-fmt-apo-live",
+  "language": "en-US",
+  "creator": "en-fitness",
+  "voice": "half",
+  "platform": "tiktok",
+  "format": "apology",
+  "length": "auto",
+  "idea": "I owe you an apology for canceling the live workout at the last minute three times this month"
+ },
+ {
+  "id": "c4-fmt-pov-wallet",
+  "language": "pt-BR",
+  "creator": "pt-money",
+  "voice": "none",
+  "platform": "tiktok",
+  "format": "pov",
+  "length": "auto",
+  "idea": "Você é o amigo que sempre esquece a carteira no rolê"
+ },
+ {
+  "id": "c4-fmt-th-nofilter",
+  "language": "pt-BR",
+  "creator": "pt-beauty",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "talking",
+  "length": "auto",
+  "idea": "Por que eu mostro a minha pele sem filtro nos vídeos"
+ }
+]

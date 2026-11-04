@@ -1,0 +1,614 @@
+[
+ {
+  "id": "lg-fr-fr-card",
+  "format": "auto",
+  "brief": {
+   "subject": "L'erreur qui fait souffrir tes genoux pendant les squats",
+   "angle": "Montre comment laisser les genoux rentrer vers l'intérieur les surcharge et comment corriger ça avec une seule consigne.",
+   "openingLine": "Si tes genoux te font mal après les squats, regarde où ils pointent.",
+   "angleKind": "mistake",
+   "topicKey": "fitness"
+  },
+  "language": "fr-FR",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-fr-fr-typed",
+  "format": "auto",
+  "idea": "comment commencer le sport à la maison avec 15 minutes par jour",
+  "language": "fr-FR",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-fr-fr-list",
+  "format": "list",
+  "idea": "3 signes que tu as besoin d'un jour de repos",
+  "language": "fr-FR",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-de-de-card",
+  "format": "auto",
+  "brief": {
+   "subject": "Der Fehler, der deine Knie bei Kniebeugen schmerzen lässt",
+   "angle": "Zeig, wie nach innen kippende Knie sie überlasten und wie ein einziger Hinweis das behebt.",
+   "openingLine": "Wenn dir nach Kniebeugen die Knie wehtun, schau, wohin sie zeigen.",
+   "angleKind": "mistake",
+   "topicKey": "fitness"
+  },
+  "language": "de-DE",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-de-de-typed",
+  "format": "auto",
+  "idea": "wie man mit 15 Minuten am Tag zu Hause mit dem Training anfängt",
+  "language": "de-DE",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-de-de-list",
+  "format": "list",
+  "idea": "3 Zeichen, dass du einen Ruhetag brauchst",
+  "language": "de-DE",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-it-it-card",
+  "format": "auto",
+  "brief": {
+   "subject": "L'errore che ti fa male alle ginocchia durante lo squat",
+   "angle": "Mostra come lasciare che le ginocchia cedano verso l'interno le sovraccarichi e come correggerlo con un solo segnale.",
+   "openingLine": "Se ti fanno male le ginocchia dopo lo squat, guarda dove puntano.",
+   "angleKind": "mistake",
+   "topicKey": "fitness"
+  },
+  "language": "it-IT",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-it-it-typed",
+  "format": "auto",
+  "idea": "come iniziare ad allenarsi a casa con 15 minuti al giorno",
+  "language": "it-IT",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-it-it-list",
+  "format": "list",
+  "idea": "3 segnali che ti serve un giorno di riposo",
+  "language": "it-IT",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-ja-jp-card",
+  "format": "auto",
+  "brief": {
+   "subject": "スクワットで膝が痛くなる、よくある間違い",
+   "angle": "膝が内側に入ると膝に負担がかかること、そしてひとつの意識で直せることを見せる。",
+   "openingLine": "スクワットのあとに膝が痛いなら、膝がどこを向いているか見てみて。",
+   "angleKind": "mistake",
+   "topicKey": "fitness"
+  },
+  "language": "ja-JP",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-ja-jp-typed",
+  "format": "auto",
+  "idea": "1日15分で家でトレーニングを始める方法",
+  "language": "ja-JP",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-ja-jp-list",
+  "format": "list",
+  "idea": "休息日が必要な3つのサイン",
+  "language": "ja-JP",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-ko-kr-card",
+  "format": "auto",
+  "brief": {
+   "subject": "스쿼트할 때 무릎이 아픈 흔한 실수",
+   "angle": "무릎이 안쪽으로 모이면 무릎에 부담이 가는 이유와 한 가지 신호로 고치는 법을 보여 주세요.",
+   "openingLine": "스쿼트 후에 무릎이 아프다면, 무릎이 어디를 향하는지 보세요.",
+   "angleKind": "mistake",
+   "topicKey": "fitness"
+  },
+  "language": "ko-KR",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-ko-kr-typed",
+  "format": "auto",
+  "idea": "하루 15분으로 집에서 운동 시작하는 법",
+  "language": "ko-KR",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-ko-kr-list",
+  "format": "list",
+  "idea": "휴식일이 필요하다는 3가지 신호",
+  "language": "ko-KR",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-zh-cn-card",
+  "format": "auto",
+  "brief": {
+   "subject": "深蹲时让膝盖疼的常见错误",
+   "angle": "展示膝盖内扣如何给膝盖增加压力，以及如何用一个提示来纠正。",
+   "openingLine": "如果深蹲后膝盖疼，看看你的膝盖朝哪个方向。",
+   "angleKind": "mistake",
+   "topicKey": "fitness"
+  },
+  "language": "zh-CN",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-zh-cn-typed",
+  "format": "auto",
+  "idea": "每天15分钟在家开始锻炼的方法",
+  "language": "zh-CN",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-zh-cn-list",
+  "format": "list",
+  "idea": "你需要休息日的3个信号",
+  "language": "zh-CN",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-zh-tw-card",
+  "format": "auto",
+  "brief": {
+   "subject": "深蹲時讓膝蓋痛的常見錯誤",
+   "angle": "示範膝蓋內夾會怎麼增加膝蓋負擔，以及怎麼用一個提示來修正。",
+   "openingLine": "如果深蹲後膝蓋會痛，看看你的膝蓋朝哪個方向。",
+   "angleKind": "mistake",
+   "topicKey": "fitness"
+  },
+  "language": "zh-TW",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-zh-tw-typed",
+  "format": "auto",
+  "idea": "每天15分鐘在家開始運動的方法",
+  "language": "zh-TW",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-zh-tw-list",
+  "format": "list",
+  "idea": "你需要休息日的3個訊號",
+  "language": "zh-TW",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-hi-in-card",
+  "format": "auto",
+  "brief": {
+   "subject": "वह गलती जिससे स्क्वैट में घुटनों में दर्द होता है",
+   "angle": "दिखाइए कि घुटने अंदर की ओर झुकने से उन पर ज़ोर कैसे पड़ता है और एक संकेत से इसे कैसे ठीक करें।",
+   "openingLine": "अगर स्क्वैट के बाद आपके घुटनों में दर्द होता है, तो देखिए वे किस ओर हैं।",
+   "angleKind": "mistake",
+   "topicKey": "fitness"
+  },
+  "language": "hi-IN",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-hi-in-typed",
+  "format": "auto",
+  "idea": "रोज़ 15 मिनट में घर पर वर्कआउट कैसे शुरू करें",
+  "language": "hi-IN",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-hi-in-list",
+  "format": "list",
+  "idea": "3 संकेत कि आपको आराम के दिन की ज़रूरत है",
+  "language": "hi-IN",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-id-id-card",
+  "format": "auto",
+  "brief": {
+   "subject": "Kesalahan yang bikin lutut sakit saat squat",
+   "angle": "Tunjukkan bagaimana lutut yang masuk ke dalam membebaninya dan cara memperbaikinya dengan satu petunjuk.",
+   "openingLine": "Kalau lututmu sakit setelah squat, lihat ke mana arahnya.",
+   "angleKind": "mistake",
+   "topicKey": "fitness"
+  },
+  "language": "id-ID",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-id-id-typed",
+  "format": "auto",
+  "idea": "cara mulai olahraga di rumah dengan 15 menit sehari",
+  "language": "id-ID",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-id-id-list",
+  "format": "list",
+  "idea": "3 tanda kamu butuh hari istirahat",
+  "language": "id-ID",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-ar-sa-card",
+  "format": "auto",
+  "brief": {
+   "subject": "الخطأ الذي يجعل ركبتيك تؤلمانك في السكوات",
+   "angle": "اشرح كيف يُجهد انثناء الركبتين للداخل المفصل، وكيف تصححه بإشارة واحدة.",
+   "openingLine": "إذا كانت ركبتاك تؤلمانك بعد السكوات، فانظر إلى أين تتجهان.",
+   "angleKind": "mistake",
+   "topicKey": "fitness"
+  },
+  "language": "ar-SA",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-ar-sa-typed",
+  "format": "auto",
+  "idea": "كيف تبدأ التمرين في البيت بخمس عشرة دقيقة يوميًا",
+  "language": "ar-SA",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-ar-sa-list",
+  "format": "list",
+  "idea": "3 علامات على أنك تحتاج يوم راحة",
+  "language": "ar-SA",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-tr-tr-card",
+  "format": "auto",
+  "brief": {
+   "subject": "Squat yaparken dizlerini ağrıtan hata",
+   "angle": "Dizlerin içe kaçmasının onları nasıl zorladığını ve tek bir ipucuyla nasıl düzeltileceğini göster.",
+   "openingLine": "Squat sonrası dizlerin ağrıyorsa, nereyi gösterdiklerine bak.",
+   "angleKind": "mistake",
+   "topicKey": "fitness"
+  },
+  "language": "tr-TR",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-tr-tr-typed",
+  "format": "auto",
+  "idea": "günde 15 dakikayla evde spora nasıl başlanır",
+  "language": "tr-TR",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-tr-tr-list",
+  "format": "list",
+  "idea": "Dinlenme gününe ihtiyacın olduğunun 3 işareti",
+  "language": "tr-TR",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-th-th-card",
+  "format": "auto",
+  "brief": {
+   "subject": "ข้อผิดพลาดที่ทำให้เจ็บเข่าตอนสควอท",
+   "angle": "แสดงให้เห็นว่าการปล่อยให้เข่าบิดเข้าด้านในทำให้เข่ารับภาระอย่างไร และแก้ได้ด้วยคำแนะนำเดียว",
+   "openingLine": "ถ้าเจ็บเข่าหลังสควอท ลองดูว่าเข่าชี้ไปทางไหน",
+   "angleKind": "mistake",
+   "topicKey": "fitness"
+  },
+  "language": "th-TH",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-th-th-typed",
+  "format": "auto",
+  "idea": "วิธีเริ่มออกกำลังกายที่บ้านวันละ 15 นาที",
+  "language": "th-TH",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-th-th-list",
+  "format": "list",
+  "idea": "3 สัญญาณว่าคุณต้องการวันพัก",
+  "language": "th-TH",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-vi-vn-card",
+  "format": "auto",
+  "brief": {
+   "subject": "Lỗi khiến đầu gối bị đau khi squat",
+   "angle": "Cho thấy việc để đầu gối chụm vào trong gây áp lực lên khớp ra sao và cách sửa bằng một gợi ý duy nhất.",
+   "openingLine": "Nếu đầu gối bạn đau sau khi squat, hãy xem nó đang hướng về đâu.",
+   "angleKind": "mistake",
+   "topicKey": "fitness"
+  },
+  "language": "vi-VN",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-vi-vn-typed",
+  "format": "auto",
+  "idea": "cách bắt đầu tập thể dục tại nhà với 15 phút mỗi ngày",
+  "language": "vi-VN",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-vi-vn-list",
+  "format": "list",
+  "idea": "3 dấu hiệu bạn cần một ngày nghỉ",
+  "language": "vi-VN",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-nl-nl-card",
+  "format": "auto",
+  "brief": {
+   "subject": "De fout waardoor je knieën pijn doen bij squats",
+   "angle": "Laat zien hoe naar binnen zakkende knieën ze overbelasten en hoe je dat met één aanwijzing oplost.",
+   "openingLine": "Doen je knieën pijn na squats? Kijk waar ze naartoe wijzen.",
+   "angleKind": "mistake",
+   "topicKey": "fitness"
+  },
+  "language": "nl-NL",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-nl-nl-typed",
+  "format": "auto",
+  "idea": "hoe je thuis begint met sporten in 15 minuten per dag",
+  "language": "nl-NL",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-nl-nl-list",
+  "format": "list",
+  "idea": "3 tekenen dat je een rustdag nodig hebt",
+  "language": "nl-NL",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-sv-se-card",
+  "format": "auto",
+  "brief": {
+   "subject": "Felet som gör att knäna värker när du knäböjer",
+   "angle": "Visa hur knän som faller inåt överbelastar dem och hur du rättar till det med en enda instruktion.",
+   "openingLine": "Om dina knän gör ont efter knäböj, kolla vart de pekar.",
+   "angleKind": "mistake",
+   "topicKey": "fitness"
+  },
+  "language": "sv-SE",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-sv-se-typed",
+  "format": "auto",
+  "idea": "hur du börjar träna hemma med 15 minuter om dagen",
+  "language": "sv-SE",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-sv-se-list",
+  "format": "list",
+  "idea": "3 tecken på att du behöver en vilodag",
+  "language": "sv-SE",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-da-dk-card",
+  "format": "auto",
+  "brief": {
+   "subject": "Fejlen, der giver ondt i knæene, når du laver squats",
+   "angle": "Vis, hvordan knæ, der falder indad, overbelaster dem, og hvordan én enkelt instruktion retter det.",
+   "openingLine": "Hvis dine knæ gør ondt efter squats, så kig på, hvor de peger hen.",
+   "angleKind": "mistake",
+   "topicKey": "fitness"
+  },
+  "language": "da-DK",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-da-dk-typed",
+  "format": "auto",
+  "idea": "sådan kommer du i gang med at træne hjemme med 15 minutter om dagen",
+  "language": "da-DK",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-da-dk-list",
+  "format": "list",
+  "idea": "3 tegn på, at du har brug for en hviledag",
+  "language": "da-DK",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-nb-no-card",
+  "format": "auto",
+  "brief": {
+   "subject": "Feilen som gir vondt i knærne når du tar knebøy",
+   "angle": "Vis hvordan knær som faller innover overbelaster dem, og hvordan én enkel instruks retter det.",
+   "openingLine": "Hvis knærne gjør vondt etter knebøy, se hvor de peker.",
+   "angleKind": "mistake",
+   "topicKey": "fitness"
+  },
+  "language": "nb-NO",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-nb-no-typed",
+  "format": "auto",
+  "idea": "hvordan du begynner å trene hjemme med 15 minutter om dagen",
+  "language": "nb-NO",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ },
+ {
+  "id": "lg-nb-no-list",
+  "format": "list",
+  "idea": "3 tegn på at du trenger en hviledag",
+  "language": "nb-NO",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "tiktok",
+  "length": "auto"
+ }
+]

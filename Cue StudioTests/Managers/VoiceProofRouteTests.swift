@@ -41,7 +41,7 @@ struct VoiceProofRouteTests {
         let profile = CreatorProfileService(defaults: defaults.defaults)
         profile.profile = creator.full
         let factory = ScriptRequestFactory(
-            rules: TestData.rulesService(), profile: profile, scriptLanguage: creator.language, interfaceLanguage: creator.language
+            profile: profile, scriptLanguage: creator.language, interfaceLanguage: creator.language
         )
         return factory.request(idea: idea, platform: .reels, format: nil)
     }

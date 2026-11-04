@@ -1,13 +1,13 @@
 {
   "schemaVersion": 2,
-  "revision": 4,
+  "revision": 5,
   "platforms": {
     "tiktok": {
       "aspect": "9:16",
       "resolution": "1080p",
       "frameRate": 30,
-      "ideal": [75, 105],
-      "monetization": { "ideal": [75, 105], "minimum": 60, "goal": "creatorRewards" },
+      "ideal": [75, 150],
+      "monetization": { "ideal": [75, 150], "minimum": 60, "goal": "creatorRewards" },
       "prefersStudio": false,
       "safeZone": { "aspect": "9:16", "videoWidth": 1080, "videoHeight": 1920, "top": 160, "bottom": 480, "left": 60, "right": 140 }
     },
@@ -15,7 +15,7 @@
       "aspect": "9:16",
       "resolution": "1080p",
       "frameRate": 30,
-      "ideal": [75, 105],
+      "ideal": [75, 150],
       "prefersStudio": false,
       "safeZone": { "aspect": "9:16", "videoWidth": 1080, "videoHeight": 1920, "top": 220, "bottom": 420, "left": 60, "right": 120 }
     },
@@ -23,7 +23,7 @@
       "aspect": "9:16",
       "resolution": "1080p",
       "frameRate": 60,
-      "ideal": [75, 105],
+      "ideal": [75, 150],
       "prefersStudio": false,
       "safeZone": { "aspect": "9:16", "videoWidth": 1080, "videoHeight": 1920, "top": 190, "bottom": 380, "left": 60, "right": 140 }
     },
@@ -39,7 +39,7 @@
       "aspect": "4:5",
       "resolution": "1080p",
       "frameRate": 30,
-      "ideal": [75, 105],
+      "ideal": [75, 150],
       "prefersStudio": false,
       "safeZone": { "aspect": "4:5", "videoWidth": 1080, "videoHeight": 1350, "top": 0, "bottom": 200, "left": 40, "right": 40 }
     },
@@ -47,7 +47,7 @@
       "aspect": "9:16",
       "resolution": "1080p",
       "frameRate": 30,
-      "ideal": [15, 30],
+      "ideal": [75, 150],
       "prefersStudio": false,
       "safeZone": { "aspect": "9:16", "videoWidth": 1080, "videoHeight": 1920, "top": 250, "bottom": 250, "left": 60, "right": 60 }
     }

@@ -29,6 +29,19 @@ struct RepeatedSentencesTests {
         #expect(ScriptPromptBuilder.collapsingRepeatedSentences(text) == "Drink water when you wake up.\n\nThen stretch for two minutes.\n\nSave this.")
     }
 
+    /// Only the repeat leaves: a point inside a number, a link or an abbreviation, or before a closing quote, never gains a space ("R$ 1. 800"
+    /// in 46 of 1,047 Ultra scripts in the study of 04/11/2026).
+    @Test func numbersLinksAndQuotesStayAsWritten() {
+        let text = "Eu gastava R$ 1.800 por mês no mercado. Hoje compro no panelaleve.com.br às 10 p.m. em ponto.\n\n"
+            + "Ela me disse “isso é mito.” E eu ri.\n\nNo começo, R$ 2.500,00 parecia pouco… e não era."
+        #expect(ScriptPromptBuilder.collapsingRepeatedSentences(text) == text)
+    }
+
+    @Test func aRepeatedSentenceWithANumberGoesWhole() {
+        let text = "Eu gastava R$ 1.800 por mês. Isso pesava.\n\nHoje sobra dinheiro. Eu gastava R$ 1.800 por mês. Não mais."
+        #expect(ScriptPromptBuilder.collapsingRepeatedSentences(text) == "Eu gastava R$ 1.800 por mês. Isso pesava.\n\nHoje sobra dinheiro. Não mais.")
+    }
+
     @Test func theDeviceRunsLoseNothingButTheLoop() throws {
         var changed: [String] = []
         for run in ["baseline-a", "after-1", "after-2"] {

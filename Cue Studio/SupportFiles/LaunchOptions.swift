@@ -19,8 +19,8 @@ import Foundation
 /// - `-uiTestStubAI` / `-uiTestNoAI`: instant, predictable AI, or none at all.
 /// - `-uiTestUltra`: AI Scripts Ultra with a stub instead of Gemini (`StubUltraClient`); `-uiTestUltraReviewFails` makes its polish fail,
 ///   `-uiTestUltraSlow` holds each call for two seconds, `-uiTestUltraPaced` paces each call as Gemini's usually go (a think, then the words
-///   in steps: about 24 s in all, the scene round the star filmed), `-uiTestUltraPacedLong` with a check of 26 s (its comet),
-///   `-uiTestUltraLong` polishes a script past a vertical network's ideal (the length bar's fit), `-uiTestUltraAllowed` starts with Google
+///   in steps: about 24 s in all, the scene round the star filmed), `-uiTestUltraPacedLong` with a polish of 26 s (its comet),
+///   `-uiTestUltraLong` polishes a script past a network's top whose own fit fails (the length bar's fit), `-uiTestUltraAllowed` starts with Google
 ///   processing already allowed,
 ///   `-uiTestUltraScriptsLeft <0...3>` with that many free scripts left (3 without it), `-uiTestUltraInvite` with the AI used once before (the
 ///   invitation to try Ultra AI is due).

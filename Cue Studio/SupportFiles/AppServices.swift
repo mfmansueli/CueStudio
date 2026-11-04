@@ -201,7 +201,7 @@ struct AppServices {
         )
         self.ultra = ultra
         starter = ScriptStarter(
-            library: library, rules: rules, profile: profile, languages: languages,
+            library: library, profile: profile, languages: languages,
             presentation: presentation, ideaDraft: ideaDraft, transition: ideaTransition,
             writer: options.writer, ultra: ultra, toast: toast
         )

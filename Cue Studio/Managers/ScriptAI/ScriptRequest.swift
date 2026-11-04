@@ -69,6 +69,17 @@ nonisolated struct ScriptRequest: Hashable, Sendable {
     /// Only explicit, recognizable verbatim directives; this is not a general understanding of every requirement.
     var requiredPhrases: [String] { ScriptVerbatimRequirements.phrases(in: source) }
 
+    /// The title a script from an idea keeps: the idea's own, the one the creator picked on the card or in Find inspiration, whatever its length
+    /// (the owner, 04/11/2026: the title no longer changes between the idea and its script). Nil for a typed request, whose title the model
+    /// writes short. Both writers use it (`ScriptAIService.finishedDraft`, `UltraScriptService`).
+    var ideaTitle: String? {
+        guard let subject = brief?.subject.trimmingCharacters(in: .whitespacesAndNewlines), !subject.isEmpty else { return nil }
+        return subject
+    }
+
+    /// The kind of the idea from the cards or Find inspiration (`IdeaBrief.angleKind`): a story, a myth, a how-to…; nil for a typed request.
+    var ideaKind: IdeaAngle? { brief?.angleKind.flatMap(IdeaAngle.init(rawValue:)) }
+
     /// History, science, "how X came to be": needs a fact check before recording.
     var isFactualTopic: Bool {
         if case .prompt(let text) = source { FactualTopic.isFactual(text) } else { false }

@@ -153,7 +153,7 @@ struct IdeaRelevanceDeviceTests {
         default: break
         }
         let factory = ScriptRequestFactory(
-            rules: TestData.rulesService(), profile: profileService, scriptLanguage: nil, interfaceLanguage: .english, preferredLanguages: ["en-US"]
+            profile: profileService, scriptLanguage: nil, interfaceLanguage: .english, preferredLanguages: ["en-US"]
         )
         for run in 0..<Self.runs {
             let request = factory.request(idea: Self.idea, platform: .tiktok, format: nil)

@@ -36,7 +36,7 @@ struct ScriptStarterUltraTests {
         ultra.isReady = ultraReady
         let toast = ToastService()
         let starter = ScriptStarter(
-            library: library, rules: TestData.rulesService(), profile: CreatorProfileService(defaults: defaults.defaults),
+            library: library, profile: CreatorProfileService(defaults: defaults.defaults),
             languages: TestData.languages(defaults: defaults.defaults), presentation: presentation, ideaDraft: ideaDraft,
             transition: transition, writer: writer, ultra: ultra, toast: toast
         )
@@ -53,7 +53,7 @@ struct ScriptStarterUltraTests {
         scenario.ultra.isAvailable = false
         #expect(!scenario.starter.offersUltra)
         let plain = ScriptStarter(
-            library: scenario.library, rules: TestData.rulesService(), profile: CreatorProfileService(defaults: scenario.defaults.defaults),
+            library: scenario.library, profile: CreatorProfileService(defaults: scenario.defaults.defaults),
             languages: TestData.languages(defaults: scenario.defaults.defaults), presentation: scenario.presentation,
             ideaDraft: scenario.ideaDraft, transition: scenario.transition, writer: scenario.writer, toast: scenario.toast
         )

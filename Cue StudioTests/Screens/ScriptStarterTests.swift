@@ -32,7 +32,7 @@ struct ScriptStarterTests {
         let writer = FakeScriptWriter()
         let toast = ToastService()
         let starter = ScriptStarter(
-            library: library, rules: TestData.rulesService(), profile: CreatorProfileService(defaults: defaults.defaults),
+            library: library, profile: CreatorProfileService(defaults: defaults.defaults),
             languages: languages ?? TestData.languages(defaults: defaults.defaults), presentation: presentation, ideaDraft: ideaDraft,
             transition: transition, writer: writer, toast: toast
         )

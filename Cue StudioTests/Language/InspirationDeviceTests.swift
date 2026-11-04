@@ -103,7 +103,7 @@ struct InspirationDeviceTests {
         let defaults = TestDefaults()
         defer { defaults.tearDown() }
         let factory = ScriptRequestFactory(
-            rules: TestData.rulesService(), profile: CreatorProfileService(defaults: defaults.defaults), scriptLanguage: nil,
+            profile: CreatorProfileService(defaults: defaults.defaults), scriptLanguage: nil,
             interfaceLanguage: .english, preferredLanguages: ["en-US"]
         )
         let angleWords = IdeaFocus.words(in: brief.angle, language: "en")

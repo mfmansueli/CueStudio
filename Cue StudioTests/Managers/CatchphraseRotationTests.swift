@@ -56,7 +56,7 @@ struct CatchphraseRotationTests {
         let profile = CreatorProfileService(defaults: defaults.defaults)
         profile.saveVoiceSetup(niches: [.fitness], vocabulary: .simple, sounds: [.energetic])
         profile.profile.phrases = five
-        let factory = ScriptRequestFactory(rules: TestData.rulesService(), profile: profile, scriptLanguage: nil, interfaceLanguage: .english)
+        let factory = ScriptRequestFactory(profile: profile, scriptLanguage: nil, interfaceLanguage: .english)
         let request = factory.request(idea: "Treino de 10 minutos em casa", platform: .tiktok, format: nil)
         #expect(request.voice?.phrases == ["Bora lá", "Sem desculpa", "Partiu treino"])
         #expect(ScriptPromptBuilder.instructions(for: request).contains("“Bora lá”, “Sem desculpa”, “Partiu treino”"))

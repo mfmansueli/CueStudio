@@ -27,7 +27,7 @@ extension ScriptQualityDeviceTests {
         for id in wanted {
             let item = try #require(cases.first { $0.id == id })
             let factory = ScriptRequestFactory(
-                rules: TestData.rulesService(), profile: clone, scriptLanguage: item.language, interfaceLanguage: item.language
+                profile: clone, scriptLanguage: item.language, interfaceLanguage: item.language
             )
             let request = factory.request(idea: item.prompt, platform: .reels, format: nil)
             let script = try await service.generate(request)

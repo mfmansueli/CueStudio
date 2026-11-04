@@ -10,7 +10,6 @@ import Foundation
 /// language, so the card, the ideas sheet and a retry all ask the same way.
 @MainActor
 struct ScriptRequestFactory {
-    let rules: PlatformRulesService
     let profile: CreatorProfileService
     /// Language & Region's script language; nil is Auto-detect.
     let scriptLanguage: CueLanguage?
@@ -28,15 +27,16 @@ struct ScriptRequestFactory {
 
     /// - Parameter languageText: the creator's own words when `idea` wraps them in Cue's (an answered comment): the language is read
     ///   from them, not from the English around them.
+    /// - Parameter engine: who writes it. On Auto, Ultra writes to all of 1:15 to 2:30 and Apple Intelligence to the part of it where it
+    ///   writes best (`targetRange`).
     func request(
         idea: String, platform: Platform?, format: ScriptType?, length: ScriptLength = .auto, brand: BrandBrief? = nil, brief: IdeaBrief? = nil,
-        languageText: String? = nil, formatChoice: FormatChoice? = nil
+        languageText: String? = nil, formatChoice: FormatChoice? = nil, engine: ScriptEngine = .apple
     ) -> ScriptRequest {
         let text = idea.trimmingCharacters(in: .whitespacesAndNewlines)
         let platform = platform ?? defaultPlatform
         let format = formatChoice == nil ? format : formatChoice?.scriptType
         let effectiveLength = length == .auto ? (ScriptLength.detected(in: text) ?? .auto) : length
-        let preset = rules.preset(for: platform, monetizationGoals: profile.profile.monetizationGoals)
         let isSerious = format?.structure.isSerious ?? false
         let language = writingLanguage(for: languageText ?? text)
         var theirs = profile.writesInMyVoice
@@ -50,7 +50,7 @@ struct ScriptRequestFactory {
             source: .prompt(text),
             platform: platform,
             voice: voice,
-            targetRange: targetRange(for: effectiveLength, platform: platform, preset: preset, voice: voice),
+            targetRange: targetRange(for: effectiveLength, voice: voice, engine: engine),
             durationPolicy: effectiveLength == .auto ? .informative : .targeted,
             language: language,
             languageVariant: writingVariant(for: languageText ?? text),
@@ -62,26 +62,36 @@ struct ScriptRequestFactory {
             formatChoice: formatChoice
         )
         if isSerious { request.rules = theirs?.restrictionsOnly }
+        request.engine = engine
         return request
     }
 
     /// The least a spoken video can run and still say something (a hook, a point and a call to action, about 60 words at 150 a minute): what the creator's
-    /// usual length may bring a script down to. The platforms' own ideals start higher (`PlatformRules.json`, revision 4).
+    /// usual length may bring a script down to. Scripts on Auto start higher (`writingRange`).
     static let spokenFloor: TimeInterval = 25
 
-    /// The most a script runs on Auto, whatever the creator's usual length (2 minutes, 300 words at 150 a minute): the owner's call, 29/10/2026.
-    /// YouTube's long form, on a rig, keeps its own range.
-    nonisolated static let autoCeiling: TimeInterval = 120
+    /// The most a script runs on Auto, whatever the creator's usual length: the top of `writingRange` (2:30, 375 words at 150 a minute; the
+    /// owner's call of 04/11/2026, after two minutes since 29/10). Apple Intelligence stops where it writes well (`AppleScriptLength.ceiling`).
+    nonisolated static let autoCeiling: TimeInterval = 150
 
-    /// How long the script runs: what the creator chose, or, on Auto, how long their videos usually are (they said so in My Cue Voice; a monetization
-    /// goal left on by default shouldn't outweigh it, but nothing goes below the spoken floor or past `autoCeiling`), or else the platform's ideal.
-    /// Long-form on a rig and Stories (a card of a few seconds, whatever their other videos are) keep the platform's own.
-    func targetRange(for length: ScriptLength, platform: Platform, preset: PlatformPreset, voice: CreatorVoice?) -> ClosedRange<TimeInterval> {
-        guard length == .auto, platform != .stories, !preset.prefersStudio, let usual = voice?.reach.length?.targetRange else {
-            return length.targetRange(ideal: preset.idealRange)
+    /// What a script is written to on Auto on every network, YouTube's long form included: 1:15 to 2:30, the owner's call of 04/11/2026 ("o
+    /// roteiro é sempre um rascunho inicial, ela precisa lapidar": growing it into a long YouTube video is the creator's). Ultra writes to all of
+    /// it, Apple Intelligence to the part where it writes best (`AppleScriptLength.window`). It is the writers' own: the screen shows every
+    /// creator the network's goal (`PlatformRules.json`: the same 1:15 to 2:30 but YouTube's, 4 to 10 minutes, 8 to 15 with a monetization goal),
+    /// whoever writes ("o tempo do front-end deve refletir para todos, mas o que o back-end faz no tempo fica no back-end").
+    nonisolated static let writingRange: ClosedRange<TimeInterval> = 75...autoCeiling
+
+    /// How long the script runs: what the creator chose, or, on Auto, how long their videos usually are (they said so in My Cue Voice; nothing
+    /// goes below the spoken floor or past the ceiling: `autoCeiling` for Ultra, `AppleScriptLength.ceiling` for Apple Intelligence), or else
+    /// `writingRange`: all of it for Ultra, the part Apple Intelligence writes best (`AppleScriptLength.window`). The same on every network.
+    func targetRange(for length: ScriptLength, voice: CreatorVoice?, engine: ScriptEngine = .apple) -> ClosedRange<TimeInterval> {
+        guard length == .auto else { return length.targetRange(ideal: Self.writingRange) }
+        let ceiling = engine == .ultra ? Self.autoCeiling : AppleScriptLength.ceiling
+        guard let usual = voice?.reach.length?.targetRange else {
+            return engine == .ultra ? Self.writingRange : AppleScriptLength.window(within: Self.writingRange)
         }
         let low = max(usual.lowerBound, Self.spokenFloor)
-        return low...max(low, min(usual.upperBound, Self.autoCeiling))
+        return low...max(low, min(usual.upperBound, ceiling))
     }
 
     /// The script language when one is set; otherwise the language the creator typed in; otherwise

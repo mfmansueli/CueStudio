@@ -369,7 +369,7 @@ final class ScriptAIService: ScriptWriting {
             throw ScriptAIError.emptyResponse
         }
         try Self.requireLanguage(request.language?.locale.language, in: text)
-        let title = ScriptPromptBuilder.cleanTitle(draft.title, language: language, preserving: request.preservedPhrases)
+        let title = request.ideaTitle ?? ScriptPromptBuilder.cleanTitle(draft.title, language: language, preserving: request.preservedPhrases)
         return GeneratedScript(
             title: title,
             text: text,

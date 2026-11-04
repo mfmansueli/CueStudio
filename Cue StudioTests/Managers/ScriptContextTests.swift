@@ -131,7 +131,7 @@ struct ScriptContextTests {
         let defaults = TestDefaults()
         let service = CreatorProfileService(defaults: defaults.defaults)
         service.profile = voice(VoicePersonas.yogaTeacher.profile)
-        return (ScriptRequestFactory(rules: TestData.rulesService(), profile: service, scriptLanguage: nil, interfaceLanguage: .english), defaults)
+        return (ScriptRequestFactory(profile: service, scriptLanguage: nil, interfaceLanguage: .english), defaults)
     }
 
     @Test func onAutoTheLengthIsHowLongTheCreatorsVideosUsuallyAre() {
@@ -148,31 +148,51 @@ struct ScriptContextTests {
         #expect(factory.request(idea: "a 2 minute video about mornings", platform: .tiktok, format: nil).targetRange == 108...132)
     }
 
-    @Test func withNoUsualLengthLongOrALongFormPlatformTheIdealStands() {
+    /// On Auto a script is written to 1:15 to 2:30 on every network (the owner's call, 04/11/2026): all of it on Ultra, the part Apple Intelligence
+    /// writes best on Apple Intelligence (`AppleScriptLength.window`), whatever goal the screen shows for the network (YouTube's 4 to 10 minutes).
+    @Test func withNoUsualLengthEveryNetworkIsWrittenToTheWritingRange() {
         let (none, noneDefaults) = factory { var profile = $0; profile.reach.length = nil; return profile }
         defer { noneDefaults.tearDown() }
-        let ideal = TestData.preset(.tiktok).idealRange
-        #expect(none.request(idea: "x", platform: .tiktok, format: nil).targetRange == ideal)
+        let apple = AppleScriptLength.window(within: ScriptRequestFactory.writingRange)
+        #expect(ScriptRequestFactory.writingRange == 75...150 && ScriptRequestFactory.writingRange.contains(apple.lowerBound)
+            && ScriptRequestFactory.writingRange.contains(apple.upperBound))
+        for platform in Platform.allCases {
+            #expect(none.request(idea: "x", platform: platform, format: nil, engine: .ultra).targetRange == 75...150, "\(platform)")
+            #expect(none.request(idea: "x", platform: platform, format: nil).targetRange == apple, "\(platform)")
+        }
         let (longer, longerDefaults) = factory { var profile = $0; profile.reach.length = .longer; return profile }
         defer { longerDefaults.tearDown() }
-        #expect(longer.request(idea: "x", platform: .tiktok, format: nil).targetRange == ideal)
-        let (short, shortDefaults) = factory { var profile = $0; profile.reach.length = .under30; return profile }
-        defer { shortDefaults.tearDown() }
-        #expect(short.request(idea: "x", platform: .youtube, format: nil).targetRange == TestData.preset(.youtube).idealRange, "long-form keeps its own")
+        #expect(longer.request(idea: "x", platform: .tiktok, format: nil, engine: .ultra).targetRange == 75...150)
+        #expect(none.request(idea: "x", platform: .youtube, format: nil, length: .minutes2, engine: .ultra).targetRange == 108...132)
     }
 
-    @Test func aStoryKeepsItsOwnLengthWhateverTheCreatorsOtherVideosAre() {
-        let (factory, defaults) = factory { var profile = $0; profile.reach.length = .oneToThree; return profile }
+    /// What the screen shows is the network's goal, the same for every creator: 1:15 to 2:30 on TikTok, Reels, Shorts, LinkedIn and Stories,
+    /// YouTube's own long form ("o tempo do front-end deve refletir para todos").
+    @Test func theScreenShowsTheNetworksGoalWhoeverWrites() {
+        for platform in Platform.allCases where platform != .youtube {
+            #expect(TestData.preset(platform).idealRange == ScriptRequestFactory.writingRange, "\(platform)")
+        }
+        #expect(TestData.preset(.youtube).idealRange.lowerBound >= 240)
+    }
+
+    /// A creator's usual length is the same on every network, Stories and YouTube included, never past the writer's ceiling: 2:30 on Ultra
+    /// (the owner's call, 04/11/2026), Apple Intelligence's own.
+    @Test func theUsualLengthIsTheSameOnEveryNetworkUpToTheWritersCeiling() {
+        let (usual, defaults) = factory { var profile = $0; profile.reach.length = .oneToThree; return profile }
         defer { defaults.tearDown() }
-        #expect(factory.request(idea: "x", platform: .stories, format: nil).targetRange == TestData.preset(.stories).idealRange)
-        // Never past two minutes on Auto, whatever their usual length (the owner's call, 29/10/2026).
-        #expect(factory.request(idea: "x", platform: .reels, format: nil).targetRange == 60...120)
+        for platform in [Platform.reels, .stories, .youtube] {
+            #expect(usual.request(idea: "x", platform: platform, format: nil, engine: .ultra).targetRange == 60...150, "\(platform)")
+            #expect(usual.request(idea: "x", platform: platform, format: nil).targetRange == 60...AppleScriptLength.ceiling, "\(platform)")
+        }
+        let (short, shortDefaults) = factory { var profile = $0; profile.reach.length = .under30; return profile }
+        defer { shortDefaults.tearDown() }
+        #expect(short.request(idea: "x", platform: .youtube, format: nil).targetRange == 25...30)
     }
 
     @Test func adjustTooLongAsALongVideoShortensTheNextScriptOnAuto() {
         let (factory, defaults) = factory { var profile = $0; profile.reach.length = .oneToThree; return profile }
         defer { defaults.tearDown() }
-        #expect(factory.request(idea: "x", platform: .reels, format: nil).targetRange == 60...120)
+        #expect(factory.request(idea: "x", platform: .reels, format: nil).targetRange == 60...AppleScriptLength.ceiling)
         factory.profile.profile = VoiceAdjustment.tooLong.applied(to: factory.profile.profile, cause: .video)
         #expect(factory.request(idea: "x", platform: .reels, format: nil).targetRange == 30...60)
         factory.profile.profile = VoiceAdjustment.tooLong.applied(to: factory.profile.profile, cause: .video)
@@ -182,7 +202,7 @@ struct ScriptContextTests {
     @Test func theUsualLengthIsPartOfTheVoiceSoWithTheVoiceOffItIsIgnored() {
         let (factory, defaults) = factory { var profile = $0; profile.reach.length = .under30; profile.usesVoiceInAI = false; return profile }
         defer { defaults.tearDown() }
-        #expect(factory.request(idea: "x", platform: .tiktok, format: nil).targetRange == TestData.preset(.tiktok).idealRange)
+        #expect(factory.request(idea: "x", platform: .tiktok, format: nil, engine: .ultra).targetRange == ScriptRequestFactory.writingRange)
     }
 
     // MARK: - Together

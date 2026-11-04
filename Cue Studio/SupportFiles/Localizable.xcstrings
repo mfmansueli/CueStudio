@@ -595,359 +595,121 @@
         }
       }
     },
-    "[the script polished in step 3]" : {
-      "comment" : "What Ultra AI sends, step 4: placeholder for the script the polish of step 3 wrote",
+    "[the script polished in step 2]" : {
+      "comment" : "What Ultra AI sends, step 3: placeholder for the script the polish of step 2 wrote",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "[النص الذي تم صقله في الخطوة 3]"
+            "value" : "[النص الذي تم صقله في الخطوة 2]"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "[manuskriptet poleret i trin 3]"
+            "value" : "[manuskriptet poleret i trin 2]"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "[das in Schritt 3 überarbeitete Skript]"
+            "value" : "[das in Schritt 2 überarbeitete Skript]"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "[el guion pulido en el paso 3]"
+            "value" : "[el guion pulido en el paso 2]"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "[le script peaufiné à l’étape 3]"
+            "value" : "[le script peaufiné à l’étape 2]"
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "[चरण 3 में निखारी गई स्क्रिप्ट]"
+            "value" : "[चरण 2 में निखारी गई स्क्रिप्ट]"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "[naskah yang dipoles di langkah 3]"
+            "value" : "[naskah yang dipoles di langkah 2]"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "[il copione rifinito nel passaggio 3]"
+            "value" : "[il copione rifinito nel passaggio 2]"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "[ステップ3で仕上げた台本]"
+            "value" : "[ステップ2で仕上げた台本]"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "[3단계에서 다듬은 대본]"
+            "value" : "[2단계에서 다듬은 대본]"
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "[manuset finpusset i trinn 3]"
+            "value" : "[manuset finpusset i trinn 2]"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "[het in stap 3 opgepoetste script]"
+            "value" : "[het in stap 2 opgepoetste script]"
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "[o roteiro refinado na etapa 3]"
+            "value" : "[o roteiro refinado na etapa 2]"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "[manuset som putsades i steg 3]"
+            "value" : "[manuset som putsades i steg 2]"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "[สคริปต์ที่ขัดเกลาแล้วในขั้นตอนที่ 3]"
+            "value" : "[สคริปต์ที่ขัดเกลาแล้วในขั้นตอนที่ 2]"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "[3. adımda cilalanan senaryo]"
+            "value" : "[2. adımda cilalanan senaryo]"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "[kịch bản đã trau chuốt ở bước 3]"
+            "value" : "[kịch bản đã trau chuốt ở bước 2]"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "[第 3 步润色后的脚本]"
+            "value" : "[第 2 步润色后的脚本]"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "[第 3 步潤飾後的腳本]"
-          }
-        }
-      }
-    },
-    "[what step 2 corrected]" : {
-      "comment" : "What Cue sends for Ultra AI: placeholder for the check's list of corrections inside the third call",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[ما صحّحته الخطوة 2]"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[det, trin 2 rettede]"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[was Schritt 2 korrigiert hat]"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[lo que corrigió el paso 2]"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[ce que l’étape 2 a corrigé]"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[चरण 2 में किए गए सुधार]"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[yang dikoreksi di langkah 2]"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[cosa ha corretto il passaggio 2]"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[ステップ2での修正内容]"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[2단계에서 고친 내용]"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[det trinn 2 rettet]"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[wat stap 2 heeft verbeterd]"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[o que a etapa 2 corrigiu]"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[det som steg 2 rättade]"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[สิ่งที่ขั้นตอนที่ 2 แก้ไข]"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[2. adımda düzeltilenler]"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[những gì bước 2 đã sửa]"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[第 2 步改正的内容]"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[第 2 步更正的內容]"
-          }
-        }
-      }
-    },
-    "[the draft checked in step 2]" : {
-      "comment" : "What Cue sends for Ultra AI: placeholder for the checked draft inside the third call",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[المسودة التي تم التحقق منها في الخطوة 2]"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[udkastet tjekket i trin 2]"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[der in Schritt 2 geprüfte Entwurf]"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[el borrador comprobado en el paso 2]"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[le brouillon vérifié à l’étape 2]"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[चरण 2 में जाँचा गया ड्राफ़्ट]"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[draf yang diperiksa di langkah 2]"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[la bozza verificata nel passaggio 2]"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[ステップ2で確認した下書き]"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[2단계에서 확인한 초안]"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[utkastet sjekket i trinn 2]"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[het in stap 2 gecontroleerde concept]"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[o rascunho verificado na etapa 2]"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[utkastet som kontrollerades i steg 2]"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[ฉบับร่างที่ตรวจแล้วในขั้นตอนที่ 2]"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[2. adımda kontrol edilen taslak]"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[bản nháp đã kiểm tra ở bước 2]"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[第 2 步核查过的草稿]"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[第 2 步查核過的草稿]"
+            "value" : "[第 2 步潤飾後的腳本]"
           }
         }
       }
@@ -3228,359 +2990,240 @@
         }
       }
     },
-    "2 · Check" : {
-      "comment" : "What Cue sends for Ultra AI: heading of the second call, where the draft's claims are checked",
+    "3 · Fit to time" : {
+      "comment" : "What Cue sends for Ultra AI: heading of the optional third call, Fit to time on a script Ultra AI wrote",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2 · التحقق"
+            "value" : "3 · ملاءمة المدة"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2 · Tjek"
+            "value" : "3 · Tilpas længden"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2 · Prüfung"
+            "value" : "3 · Auf Länge bringen"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2 · Comprobación"
+            "value" : "3 · Ajustar a la duración"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2 · Vérification"
+            "value" : "3 · Ajuster à la durée"
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2 · जाँच"
+            "value" : "3 · समय में फ़िट करें"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2 · Pemeriksaan"
+            "value" : "3 · Sesuaikan durasi"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2 · Verifica"
+            "value" : "3 · Adatta alla durata"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2 · 確認"
+            "value" : "3 · 時間に合わせる"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2 · 확인"
+            "value" : "3 · 시간에 맞추기"
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2 · Sjekk"
+            "value" : "3 · Tilpass til tid"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2 · Controle"
+            "value" : "3 · Op lengte brengen"
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2 · Verificação"
+            "value" : "3 · Ajustar ao tempo"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2 · Kontroll"
+            "value" : "3 · Anpassa till tid"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2 · การตรวจ"
+            "value" : "3 · ปรับให้พอดีเวลา"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2 · Kontrol"
+            "value" : "3 · Süreye sığdır"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2 · Kiểm tra"
+            "value" : "3 · Vừa thời lượng"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2 · 核查"
+            "value" : "3 · 适配时长"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2 · 查核"
+            "value" : "3 · 配合時長"
           }
         }
       }
     },
-    "3 · Polish" : {
-      "comment" : "What Cue sends for Ultra AI: heading of the third call, the polish in the creator's voice",
+    "2 · Polish" : {
+      "comment" : "What Cue sends for Ultra AI: heading of the second call, the polish in the creator's voice",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3 · التنقيح"
+            "value" : "2 · التنقيح"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3 · Finpudsning"
+            "value" : "2 · Finpudsning"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3 · Feinschliff"
+            "value" : "2 · Feinschliff"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3 · Pulido"
+            "value" : "2 · Pulido"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3 · Finition"
+            "value" : "2 · Finition"
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3 · निखार"
+            "value" : "2 · निखार"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3 · Pemolesan"
+            "value" : "2 · Pemolesan"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3 · Rifinitura"
+            "value" : "2 · Rifinitura"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3 · 仕上げ"
+            "value" : "2 · 仕上げ"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3 · 다듬기"
+            "value" : "2 · 다듬기"
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3 · Finpuss"
+            "value" : "2 · Finpuss"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3 · Verfijning"
+            "value" : "2 · Verfijning"
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3 · Refinamento"
+            "value" : "2 · Refinamento"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3 · Finputs"
+            "value" : "2 · Finputs"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3 · การเกลา"
+            "value" : "2 · การเกลา"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3 · Son rötuş"
+            "value" : "2 · Son rötuş"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3 · Trau chuốt"
+            "value" : "2 · Trau chuốt"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3 · 润色"
+            "value" : "2 · 润色"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3 · 潤飾"
-          }
-        }
-      }
-    },
-    "4 · Fit to time" : {
-      "comment" : "What Cue sends for Ultra AI: heading of the optional fourth call, Fit to time on a script Ultra AI wrote",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4 · ملاءمة المدة"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4 · Tilpas længden"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4 · Auf Länge bringen"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4 · Ajustar a la duración"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4 · Ajuster à la durée"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4 · समय में फ़िट करें"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4 · Sesuaikan durasi"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4 · Adatta alla durata"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4 · 時間に合わせる"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4 · 시간에 맞추기"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4 · Tilpass til tid"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4 · Op lengte brengen"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4 · Ajustar ao tempo"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4 · Anpassa till tid"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4 · ปรับให้พอดีเวลา"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4 · Süreye sığdır"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4 · Vừa thời lượng"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4 · 适配时长"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4 · 配合時長"
+            "value" : "2 · 潤飾"
           }
         }
       }
@@ -62029,121 +61672,121 @@
         }
       }
     },
-    "Only when the script from step 3 runs well past the platform’s length: that script, the length and how you speak." : {
-      "comment" : "What Ultra AI sends, step 4: the extra call that fits a script that came back well past the platform's length",
+    "Only when the script from step 2 runs well past the platform’s length: that script, the length and how you speak." : {
+      "comment" : "What Ultra AI sends, step 3: the extra call that fits a script that came back well past the platform's length",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "فقط عندما يتجاوز النص من الخطوة 3 مدة المنصة بكثير: ذلك النص، والمدة، وطريقة كلامك."
+            "value" : "فقط عندما يتجاوز النص من الخطوة 2 مدة المنصة بكثير: ذلك النص، والمدة، وطريقة كلامك."
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kun når manuskriptet fra trin 3 bliver meget længere end platformens længde: det manuskript, længden og hvordan du taler."
+            "value" : "Kun når manuskriptet fra trin 2 bliver meget længere end platformens længde: det manuskript, længden og hvordan du taler."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nur wenn das Skript aus Schritt 3 deutlich länger ist als die Länge der Plattform: dieses Skript, die Länge und wie du sprichst."
+            "value" : "Nur wenn das Skript aus Schritt 2 deutlich länger ist als die Länge der Plattform: dieses Skript, die Länge und wie du sprichst."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Solo cuando el guion del paso 3 se pasa mucho de la duración de la plataforma: ese guion, la duración y cómo hablas."
+            "value" : "Solo cuando el guion del paso 2 se pasa mucho de la duración de la plataforma: ese guion, la duración y cómo hablas."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Seulement quand le script de l’étape 3 dépasse largement la durée de la plateforme : ce script, la durée et votre façon de parler."
+            "value" : "Seulement quand le script de l’étape 2 dépasse largement la durée de la plateforme : ce script, la durée et votre façon de parler."
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "सिर्फ़ तब जब चरण 3 की स्क्रिप्ट प्लेटफ़ॉर्म की लंबाई से काफ़ी ज़्यादा हो: वह स्क्रिप्ट, लंबाई और आप कैसे बोलते हैं।"
+            "value" : "सिर्फ़ तब जब चरण 2 की स्क्रिप्ट प्लेटफ़ॉर्म की लंबाई से काफ़ी ज़्यादा हो: वह स्क्रिप्ट, लंबाई और आप कैसे बोलते हैं।"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hanya saat naskah dari langkah 3 jauh melebihi durasi platform: naskah itu, durasinya, dan cara kamu bicara."
+            "value" : "Hanya saat naskah dari langkah 2 jauh melebihi durasi platform: naskah itu, durasinya, dan cara kamu bicara."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Solo quando il copione del passaggio 3 supera di molto la durata della piattaforma: quel copione, la durata e come parli."
+            "value" : "Solo quando il copione del passaggio 2 supera di molto la durata della piattaforma: quel copione, la durata e come parli."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ステップ3の台本がプラットフォームの長さを大きく超えたときだけ。その台本、長さ、あなたの話し方。"
+            "value" : "ステップ2の台本がプラットフォームの長さを大きく超えたときだけ。その台本、長さ、あなたの話し方。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3단계의 대본이 플랫폼 길이를 크게 넘을 때만: 그 대본, 길이, 내 말투."
+            "value" : "2단계의 대본이 플랫폼 길이를 크게 넘을 때만: 그 대본, 길이, 내 말투."
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bare når manuset fra trinn 3 blir mye lengre enn plattformens lengde: det manuset, lengden og hvordan du snakker."
+            "value" : "Bare når manuset fra trinn 2 blir mye lengre enn plattformens lengde: det manuset, lengden og hvordan du snakker."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Alleen als het script uit stap 3 ruim langer is dan de lengte van het platform: dat script, de lengte en hoe je praat."
+            "value" : "Alleen als het script uit stap 2 ruim langer is dan de lengte van het platform: dat script, de lengte en hoe je praat."
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Só quando o roteiro da etapa 3 passa bem do tempo da rede: esse roteiro, o tempo e como você fala."
+            "value" : "Só quando o roteiro da etapa 2 passa bem do tempo da rede: esse roteiro, o tempo e como você fala."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bara när manuset från steg 3 blir mycket längre än plattformens längd: det manuset, längden och hur du pratar."
+            "value" : "Bara när manuset från steg 2 blir mycket längre än plattformens längd: det manuset, längden och hur du pratar."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "เฉพาะเมื่อสคริปต์จากขั้นตอนที่ 3 ยาวเกินความยาวของแพลตฟอร์มไปมาก: สคริปต์นั้น ความยาว และวิธีพูดของคุณ"
+            "value" : "เฉพาะเมื่อสคริปต์จากขั้นตอนที่ 2 ยาวเกินความยาวของแพลตฟอร์มไปมาก: สคริปต์นั้น ความยาว และวิธีพูดของคุณ"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Yalnızca 3. adımdaki senaryo platformun süresini epey aştığında: o senaryo, süre ve nasıl konuştuğun."
+            "value" : "Yalnızca 2. adımdaki senaryo platformun süresini epey aştığında: o senaryo, süre ve nasıl konuştuğun."
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chỉ khi kịch bản ở bước 3 dài vượt xa thời lượng của nền tảng: kịch bản đó, thời lượng và cách bạn nói."
+            "value" : "Chỉ khi kịch bản ở bước 2 dài vượt xa thời lượng của nền tảng: kịch bản đó, thời lượng và cách bạn nói."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "仅当第 3 步的脚本远超平台时长时：该脚本、时长，以及你的说话方式。"
+            "value" : "仅当第 2 步的脚本远超平台时长时：该脚本、时长，以及你的说话方式。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "僅當第 3 步的腳本遠超平台時長時：該腳本、時長，以及你的說話方式。"
+            "value" : "僅當第 2 步的腳本遠超平台時長時：該腳本、時長，以及你的說話方式。"
           }
         }
       }
@@ -86323,240 +85966,121 @@
         }
       }
     },
-    "The same request and who you are, with the draft from step 1, for its claims to be checked." : {
-      "comment" : "What Cue sends for Ultra AI: what the second call (the claim check) carries",
+    "The same request, how you speak and the draft from step 1." : {
+      "comment" : "What Cue sends for Ultra AI: what the second call (the polish) carries",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "الطلب نفسه ومن أنت، مع المسودة من الخطوة 1، للتحقق من معلوماتها."
+            "value" : "الطلب نفسه، وطريقة كلامك، والمسودة من الخطوة 1."
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Den samme anmodning og hvem du er, med udkastet fra trin 1, så dets påstande kan blive tjekket."
+            "value" : "Den samme anmodning, hvordan du taler, og udkastet fra trin 1."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dieselbe Anfrage und wer du bist, mit dem Entwurf aus Schritt 1, damit seine Aussagen geprüft werden."
+            "value" : "Dieselbe Anfrage, wie du sprichst, und der Entwurf aus Schritt 1."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La misma solicitud y quién eres, con el borrador del paso 1, para comprobar sus afirmaciones."
+            "value" : "La misma solicitud, cómo hablas y el borrador del paso 1."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La même demande et qui vous êtes, avec le brouillon de l’étape 1, pour vérifier ses affirmations."
+            "value" : "La même demande, votre façon de parler et le brouillon de l’étape 1."
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "वही अनुरोध और आप कौन हैं, चरण 1 के ड्राफ़्ट के साथ, ताकि उसके दावों की जाँच हो सके।"
+            "value" : "वही अनुरोध, आप कैसे बोलते हैं, और चरण 1 का ड्राफ़्ट।"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Permintaan yang sama dan siapa kamu, dengan draf dari langkah 1, untuk memeriksa klaim di dalamnya."
+            "value" : "Permintaan yang sama, cara kamu bicara, dan draf dari langkah 1."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La stessa richiesta e chi sei, con la bozza del passaggio 1, per verificarne le affermazioni."
+            "value" : "La stessa richiesta, come parli e la bozza del passaggio 1."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "内容の正確さを確認するための、同じリクエスト、あなたについての情報、ステップ1の下書き。"
+            "value" : "同じリクエスト、あなたの話し方、ステップ1の下書き。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "내용을 확인하기 위한 같은 요청, 내가 누구인지에 대한 정보, 1단계의 초안."
+            "value" : "같은 요청, 내 말투, 1단계의 초안."
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Den samme forespørselen og hvem du er, med utkastet fra trinn 1, slik at påstandene i det blir sjekket."
+            "value" : "Den samme forespørselen, hvordan du snakker, og utkastet fra trinn 1."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hetzelfde verzoek en wie je bent, met het concept uit stap 1, om de beweringen erin te controleren."
+            "value" : "Hetzelfde verzoek, hoe je praat en het concept uit stap 1."
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O mesmo pedido e quem você é, com o rascunho da etapa 1, para verificar as afirmações dele."
+            "value" : "O mesmo pedido, como você fala e o rascunho da etapa 1."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Samma begäran och vem du är, med utkastet från steg 1, så att påståendena i det kontrolleras."
+            "value" : "Samma begäran, hur du pratar och utkastet från steg 1."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "คำขอเดิมและข้อมูลว่าคุณเป็นใคร พร้อมฉบับร่างจากขั้นตอนที่ 1 เพื่อตรวจข้อกล่าวอ้างในร่าง"
+            "value" : "คำขอเดิม วิธีพูดของคุณ และฉบับร่างจากขั้นตอนที่ 1"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aynı istek ve kim olduğun, iddiaları kontrol edilsin diye 1. adımdaki taslakla birlikte."
+            "value" : "Aynı istek, nasıl konuştuğun ve 1. adımdaki taslak."
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cùng yêu cầu đó và bạn là ai, kèm bản nháp từ bước 1, để kiểm tra các nhận định trong đó."
+            "value" : "Cùng yêu cầu đó, cách bạn nói và bản nháp từ bước 1."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "同样的请求和你是谁，以及第 1 步的草稿，用于核查其中的说法。"
+            "value" : "同样的请求、你的说话方式，以及第 1 步的草稿。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "同樣的要求和你是誰，以及第 1 步的草稿，用於查核其中的說法。"
-          }
-        }
-      }
-    },
-    "The same request, how you speak, the draft checked in step 2 and what it corrected." : {
-      "comment" : "What Cue sends for Ultra AI: what the third call (the polish) carries",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "الطلب نفسه، وطريقة كلامك، والمسودة التي تم التحقق منها في الخطوة 2 وما صحّحته."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Den samme anmodning, hvordan du taler, udkastet tjekket i trin 2 og det, der blev rettet."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dieselbe Anfrage, wie du sprichst, der in Schritt 2 geprüfte Entwurf und was dabei korrigiert wurde."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La misma solicitud, cómo hablas, el borrador comprobado en el paso 2 y lo que corrigió."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La même demande, votre façon de parler, le brouillon vérifié à l’étape 2 et ce qu’elle a corrigé."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "वही अनुरोध, आप कैसे बोलते हैं, चरण 2 में जाँचा गया ड्राफ़्ट और उसमें किए गए सुधार।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Permintaan yang sama, cara kamu bicara, draf yang diperiksa di langkah 2, dan apa yang dikoreksinya."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La stessa richiesta, come parli, la bozza verificata nel passaggio 2 e cosa ha corretto."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "同じリクエスト、あなたの話し方、ステップ2で確認した下書きと、その修正内容。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "같은 요청, 내 말투, 2단계에서 확인한 초안과 고친 내용."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Den samme forespørselen, hvordan du snakker, utkastet sjekket i trinn 2 og det som ble rettet."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hetzelfde verzoek, hoe je praat, het in stap 2 gecontroleerde concept en wat daarbij is verbeterd."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O mesmo pedido, como você fala, o rascunho verificado na etapa 2 e o que ela corrigiu."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Samma begäran, hur du pratar, utkastet som kontrollerades i steg 2 och det som rättades."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "คำขอเดิม วิธีพูดของคุณ ฉบับร่างที่ตรวจแล้วในขั้นตอนที่ 2 และสิ่งที่แก้ไข"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aynı istek, nasıl konuştuğun, 2. adımda kontrol edilen taslak ve düzeltilenler."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cùng yêu cầu đó, cách bạn nói, bản nháp đã kiểm tra ở bước 2 và những gì đã sửa."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "同样的请求、你的说话方式、第 2 步核查过的草稿，以及它改正的内容。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "同樣的要求、你的說話方式、第 2 步查核過的草稿，以及它更正的內容。"
+            "value" : "同樣的要求、你的說話方式，以及第 1 步的草稿。"
           }
         }
       }

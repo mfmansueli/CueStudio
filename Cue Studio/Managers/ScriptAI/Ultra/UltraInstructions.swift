@@ -127,7 +127,8 @@ nonisolated enum UltraInstructions {
     to the audience throughout (in Spanish, tú or vosotros, never both). Examples stay inside the creator's world: their niche, materials, \
     setting and constraints.
 
-    Return a JSON object with three keys: "title", a short title for the script in its language (at most eight words, no quotes or emoji); \
+    Return a JSON object with three keys: "title", the idea's title exactly as given after “Subject:” in the context when there is one, \
+    otherwise a short title for the script in its language (at most eight words, no quotes or emoji); \
     "script", the final speech in short paragraphs (one beat each, two to four sentences) with a blank line between them; and "changes", a \
     short list of the concrete editorial changes you made (empty if the draft already fulfils the request). The script has no titles, \
     Markdown, editor comments or em dashes. Do not return quality ratings, approvals or your reasoning.

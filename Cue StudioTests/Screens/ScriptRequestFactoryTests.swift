@@ -18,7 +18,7 @@ struct ScriptRequestFactoryTests {
         profile.profile.phrases.append("Hey fam")
         if voiceSetUp { profile.saveVoiceSetup(niches: [.tech], vocabulary: .simple, sounds: [.casual]) }
         let factory = ScriptRequestFactory(
-            rules: TestData.rulesService(), profile: profile, scriptLanguage: scriptLanguage, interfaceLanguage: .english
+            profile: profile, scriptLanguage: scriptLanguage, interfaceLanguage: .english
         )
         return (factory, profile)
     }
@@ -48,7 +48,7 @@ struct ScriptRequestFactoryTests {
         let defaults = TestDefaults()
         defer { defaults.tearDown() }
         let untouched = ScriptRequestFactory(
-            rules: TestData.rulesService(), profile: CreatorProfileService(defaults: defaults.defaults), scriptLanguage: nil,
+            profile: CreatorProfileService(defaults: defaults.defaults), scriptLanguage: nil,
             interfaceLanguage: .english
         )
         #expect(untouched.request(idea: "x", platform: nil, format: nil).voice == nil)
@@ -81,7 +81,8 @@ struct ScriptRequestFactoryTests {
         #expect(request.targetRange == 108...132)
     }
 
-    @Test func autoLengthReadsThePromptOrFollowsThePlatformsIdealRange() {
+    /// Auto is written to 1:15 to 2:30 (`writingRange`): Ultra all of it, Apple Intelligence its own part of it (`AppleScriptLength.window`).
+    @Test func autoLengthReadsThePromptOrFollowsTheWritingRange() {
         let defaults = TestDefaults()
         defer { defaults.tearDown() }
         let (factory, _) = makeFactory(defaults: defaults)
@@ -90,8 +91,9 @@ struct ScriptRequestFactoryTests {
         #expect(detected.durationPolicy == .targeted)
         #expect(factory.request(idea: "tea", platform: .shorts, format: nil).durationPolicy == .informative)
         #expect(factory.request(idea: "tea", platform: .shorts, format: nil, length: .minutes2).durationPolicy == .targeted)
-        let preset = TestData.rulesService().preset(for: .shorts, monetizationGoals: factory.profile.profile.monetizationGoals)
-        #expect(factory.request(idea: "tea", platform: .shorts, format: nil).targetRange == preset.idealRange)
+        #expect(factory.request(idea: "tea", platform: .shorts, format: nil, engine: .ultra).targetRange == ScriptRequestFactory.writingRange)
+        #expect(factory.request(idea: "tea", platform: .shorts, format: nil).targetRange
+            == AppleScriptLength.window(within: ScriptRequestFactory.writingRange))
     }
 
     @Test func theScriptLanguageWinsThenWhatWasTypedThenTheInterface() {
@@ -110,7 +112,7 @@ struct ScriptRequestFactoryTests {
         scriptLanguage: CueLanguage? = nil, interface: CueLanguage? = .english, preferred: [String], defaults: TestDefaults
     ) -> ScriptRequestFactory {
         ScriptRequestFactory(
-            rules: TestData.rulesService(), profile: CreatorProfileService(defaults: defaults.defaults),
+            profile: CreatorProfileService(defaults: defaults.defaults),
             scriptLanguage: scriptLanguage, interfaceLanguage: interface, preferredLanguages: preferred
         )
     }

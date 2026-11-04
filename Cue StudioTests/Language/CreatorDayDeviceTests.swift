@@ -61,7 +61,7 @@ struct CreatorDayDeviceTests {
         }
         print("DAY shown: \(shown)")
         let factory = ScriptRequestFactory(
-            rules: TestData.rulesService(), profile: setup.profile, scriptLanguage: nil, interfaceLanguage: .english, preferredLanguages: ["en-US"]
+            profile: setup.profile, scriptLanguage: nil, interfaceLanguage: .english, preferredLanguages: ["en-US"]
         )
         for idea in shown.prefix(2) {
             let started = ContinuousClock.now
@@ -84,7 +84,7 @@ struct CreatorDayDeviceTests {
         let setup = try setup()
         defer { setup.defaults.tearDown() }
         let factory = ScriptRequestFactory(
-            rules: TestData.rulesService(), profile: setup.profile, scriptLanguage: nil, interfaceLanguage: .english, preferredLanguages: ["en-US"]
+            profile: setup.profile, scriptLanguage: nil, interfaceLanguage: .english, preferredLanguages: ["en-US"]
         )
         let script = try await setup.writer.generate(factory.request(idea: "Why filling Italian forms takes me three tries", platform: .tiktok, format: nil))
         let before = words(script.text)

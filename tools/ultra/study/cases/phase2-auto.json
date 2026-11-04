@@ -1,0 +1,386 @@
+[
+ {
+  "id": "auto-story-education",
+  "language": "pt-BR",
+  "creator": "pt-filming",
+  "voice": "none",
+  "platform": "tiktok",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "O dia em que tive um apagão na hora da prova",
+   "angle": "Relate a experiência de travar por ansiedade e como aprendeu a respirar para recuperar o foco.",
+   "openingLine": "Eu sabia toda a matéria mas quando peguei o papel a minha mente simplesmente apagou",
+   "angleKind": "story",
+   "topicKey": "education"
+  }
+ },
+ {
+  "id": "auto-story-finance",
+  "language": "pt-BR",
+  "creator": "pt-money",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "Como quitei minhas dívidas cortando gastos supérfluos",
+   "angle": "Compartilhar a experiência prática de renegociação e sacrifício temporário para sair das dívidas.",
+   "openingLine": "Teve um dia na minha vida em que eu simplesmente cansei de receber cobranças no telefone",
+   "angleKind": "story",
+   "topicKey": "finance"
+  }
+ },
+ {
+  "id": "auto-story-business",
+  "language": "pt-BR",
+  "creator": "pt-consultant",
+  "voice": "full",
+  "platform": "linkedin",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "O reembolso que salvou minha reputação online",
+   "angle": "Relate um caso real de erro na entrega e como a devolução ágil do dinheiro fidelizou o cliente.",
+   "openingLine": "Eu perdi dinheiro naquela venda, mas ganhei um cliente fiel para o resto da vida",
+   "angleKind": "story",
+   "topicKey": "business"
+  }
+ },
+ {
+  "id": "auto-opinion-education",
+  "language": "pt-BR",
+  "creator": "pt-filming",
+  "voice": "none",
+  "platform": "tiktok",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "Por que eu proibi o uso de notebook nas minhas aulas",
+   "angle": "Argumente que digitar no computador reduz a retenção e incentiva a distração com abas abertas.",
+   "openingLine": "Computador na sala de aula serve mais para te distrair do que para te ajudar",
+   "angleKind": "opinion",
+   "topicKey": "education"
+  }
+ },
+ {
+  "id": "auto-opinion-business",
+  "language": "pt-BR",
+  "creator": "pt-consultant",
+  "voice": "half",
+  "platform": "linkedin",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "A verdade nua e crua sobre o mercado de infoprodutos",
+   "angle": "Argumente que a era das promessas fáceis acabou e que apenas quem entrega valor real vai sobreviver.",
+   "openingLine": "Cansei de ver promessas de dinheiro fácil na internet e preciso te falar a verdade real",
+   "angleKind": "opinion",
+   "topicKey": "business"
+  }
+ },
+ {
+  "id": "auto-opinion-finance",
+  "language": "pt-BR",
+  "creator": "pt-money",
+  "voice": "half",
+  "platform": "tiktok",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "Consórcio não é investimento e eu posso provar",
+   "angle": "Criticar a modalidade de consórcios sob a ótica financeira, comparando com a rentabilidade da renda fixa.",
+   "openingLine": "Vender essa modalidade como se fosse investimento é uma das maiores sacanagens com o seu dinheiro",
+   "angleKind": "opinion",
+   "topicKey": "finance"
+  }
+ },
+ {
+  "id": "auto-myth-education",
+  "language": "pt-BR",
+  "creator": "pt-filming",
+  "voice": "none",
+  "platform": "tiktok",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "O mito de que música clássica te faz estudar melhor",
+   "angle": "Mostre que o silêncio ou ruído marrom funcionam melhor para foco profundo sem distração lírica.",
+   "openingLine": "Você coloca música clássica para estudar e acaba prestando atenção nos instrumentos em vez da matéria",
+   "angleKind": "myth",
+   "topicKey": "education"
+  }
+ },
+ {
+  "id": "auto-myth-finance",
+  "language": "pt-BR",
+  "creator": "pt-money",
+  "voice": "half",
+  "platform": "tiktok",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "O cartão de crédito é sempre o vilão das finanças",
+   "angle": "Explicar que o cartão de crédito usado estrategicamente gera benefícios e milhas se houver disciplina.",
+   "openingLine": "O problema do seu cartão de crédito nunca foi o limite alto, mas a falta de estratégia",
+   "angleKind": "myth",
+   "topicKey": "finance"
+  }
+ },
+ {
+  "id": "auto-myth-tech",
+  "language": "pt-BR",
+  "creator": "pt-filming",
+  "voice": "none",
+  "platform": "tiktok",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "O mito de que a inteligência artificial tem consciência",
+   "angle": "Desmistificar a ficção de sistemas conscientes, esclarecendo que realizam apenas análise estatística complexa.",
+   "openingLine": "As máquinas não estão prestes a dominar o mundo com sentimentos e vontade própria em breve",
+   "angleKind": "myth",
+   "topicKey": "tech"
+  }
+ },
+ {
+  "id": "auto-fact-tech",
+  "language": "pt-BR",
+  "creator": "pt-filming",
+  "voice": "none",
+  "platform": "tiktok",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "A pegada hídrica oculta das consultas de inteligência",
+   "angle": "Apresentar a quantidade massiva de água necessária para resfriar as centrais de processamento desses sistemas.",
+   "openingLine": "Cada interação que você tem com modelos de linguagem gasta mais água do que parece",
+   "angleKind": "fact",
+   "topicKey": "tech"
+  }
+ },
+ {
+  "id": "auto-fact-business",
+  "language": "pt-BR",
+  "creator": "pt-consultant",
+  "voice": "half",
+  "platform": "linkedin",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "A maioria das pequenas empresas fecha por fluxo de caixa",
+   "angle": "Explique que lucrar no papel é diferente de ter dinheiro disponível para pagar as contas no dia a dia.",
+   "openingLine": "Muitas empresas que vendem muito fecham as portas simplesmente por não entenderem de fluxo de caixa",
+   "angleKind": "fact",
+   "topicKey": "business"
+  }
+ },
+ {
+  "id": "auto-fact-finance",
+  "language": "pt-BR",
+  "creator": "pt-money",
+  "voice": "half",
+  "platform": "tiktok",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "A inflação real consome seu dinheiro escondido",
+   "angle": "Explicar o conceito de perda do poder de compra e por que guardar dinheiro físico em casa gera prejuízo.",
+   "openingLine": "O dinheiro que você guardou na gaveta alguns anos atrás hoje não compra nem metade das coisas",
+   "angleKind": "fact",
+   "topicKey": "finance"
+  }
+ },
+ {
+  "id": "auto-beforeAfter-beauty",
+  "language": "pt-BR",
+  "creator": "pt-beauty",
+  "voice": "half",
+  "platform": "tiktok",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "Como recuperei a barreira da minha pele em cinco dias",
+   "angle": "Exibir a cicatrização de derme vermelha após suspender ácidos e abusar de pomadas restauradoras.",
+   "openingLine": "Minha pele estava ardendo e descascando até que eu decidi testar esse método de reparação.",
+   "angleKind": "beforeAfter",
+   "topicKey": "beauty"
+  }
+ },
+ {
+  "id": "auto-beforeAfter-food",
+  "language": "pt-BR",
+  "creator": "pt-cooking",
+  "voice": "full",
+  "platform": "reels",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "O molho pesto caseiro feito no pilão versus liquidificador",
+   "angle": "Comparar visualmente a textura rústica e a oxidação das folhas de manjericão em cada utensílio.",
+   "openingLine": "Olha a diferença de cor desse molho pesto feito à mão e o feito no liquidificador.",
+   "angleKind": "beforeAfter",
+   "topicKey": "food"
+  }
+ },
+ {
+  "id": "auto-beforeAfter-finance",
+  "language": "pt-BR",
+  "creator": "pt-money",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "O saldo da conta antes e depois de zerar taxas bancárias",
+   "angle": "Mostrar o impacto anual acumulado que a eliminação de taxas de manutenção traz para o bolso.",
+   "openingLine": "Se eu te contar quanto dinheiro eu jogava no lixo com taxas você não acreditaria",
+   "angleKind": "beforeAfter",
+   "topicKey": "finance"
+  }
+ },
+ {
+  "id": "auto-dayInLife-business",
+  "language": "pt-BR",
+  "creator": "pt-consultant",
+  "voice": "full",
+  "platform": "linkedin",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "Um dia de gravação em lote de trinta vídeos",
+   "angle": "Demonstre o processo prático de organizar roteiros, trocar de roupa e gravar todo o conteúdo do mês de uma vez.",
+   "openingLine": "Hoje eu vou te mostrar como eu gravo todo o conteúdo do mês em apenas um dia",
+   "angleKind": "dayInLife",
+   "topicKey": "business"
+  }
+ },
+ {
+  "id": "auto-dayInLife-finance",
+  "language": "pt-BR",
+  "creator": "pt-money",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "O dia de organizar as contas do mês que faço sempre",
+   "angle": "Mostrar o processo realista de conferência de extratos, pagamento de contas e alocação de investimentos.",
+   "openingLine": "Hoje é aquele dia do mês que a maioria das pessoas detesta, mas que me traz paz",
+   "angleKind": "dayInLife",
+   "topicKey": "finance"
+  }
+ },
+ {
+  "id": "auto-dayInLife-food",
+  "language": "pt-BR",
+  "creator": "pt-cooking",
+  "voice": "half",
+  "platform": "reels",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "A higienização rápida de verduras assim que chego da feira",
+   "angle": "Mostrar o processo de lavagem e secagem das folhas de alface em centrífuga para durarem mais.",
+   "openingLine": "É assim que eu faço as minhas folhas de alface durarem duas semanas sem murchar.",
+   "angleKind": "dayInLife",
+   "topicKey": "food"
+  }
+ },
+ {
+  "id": "auto-prediction-beauty",
+  "language": "pt-BR",
+  "creator": "pt-beauty",
+  "voice": "half",
+  "platform": "tiktok",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "A consagração definitiva do protetor solar em bastão",
+   "angle": "Explicar como o formato compacto facilitará a reaplicação ao longo do dia por cima da maquiagem.",
+   "openingLine": "O protetor solar em bastão veio para ficar e vai substituir os cremes tradicionais muito rápido.",
+   "angleKind": "prediction",
+   "topicKey": "beauty"
+  }
+ },
+ {
+  "id": "auto-prediction-finance",
+  "language": "pt-BR",
+  "creator": "pt-money",
+  "voice": "half",
+  "platform": "tiktok",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "Como a automação bancária vai mudar sua forma de poupar",
+   "angle": "Analisar a tendência de investimentos automáticos programados e como isso facilitará a criação de patrimônio.",
+   "openingLine": "Em poucos anos você não vai mais precisar decidir se vai investir ou não todo mês",
+   "angleKind": "prediction",
+   "topicKey": "finance"
+  }
+ },
+ {
+  "id": "auto-prediction-education",
+  "language": "pt-BR",
+  "creator": "pt-filming",
+  "voice": "none",
+  "platform": "tiktok",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "Como as salas de aula vão funcionar daqui a 5 anos",
+   "angle": "Preveja que as aulas expositivas tradicionais darão lugar a mentorias personalizadas guiadas por inteligência artificial.",
+   "openingLine": "O modelo de escola que você conhece hoje está prestes a desaparecer nos próximos anos",
+   "angleKind": "prediction",
+   "topicKey": "education"
+  }
+ },
+ {
+  "id": "auto-comparison-tech",
+  "language": "pt-BR",
+  "creator": "pt-filming",
+  "voice": "none",
+  "platform": "tiktok",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "Armazenamento em disco físico versus soluções de nuvem",
+   "angle": "Avaliar custos, segurança de dados e durabilidade entre discos rígidos físicos e serviços virtuais na nuvem.",
+   "openingLine": "Onde é mais seguro guardar as lembranças da sua família pelos próximos dez anos de vida",
+   "angleKind": "comparison",
+   "topicKey": "tech"
+  }
+ },
+ {
+  "id": "auto-comparison-finance",
+  "language": "pt-BR",
+  "creator": "pt-money",
+  "voice": "half",
+  "platform": "tiktok",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "Título público versus poupança onde render mais hoje",
+   "angle": "Comparar de forma didática o rendimento e a segurança de ambos para provar a superioridade dos títulos públicos.",
+   "openingLine": "Deixar o seu dinheiro parado na caderneta de poupança hoje é aceitar perder para a inflação",
+   "angleKind": "comparison",
+   "topicKey": "finance"
+  }
+ },
+ {
+  "id": "auto-comparison-business",
+  "language": "pt-BR",
+  "creator": "pt-consultant",
+  "voice": "half",
+  "platform": "linkedin",
+  "format": "auto",
+  "length": "auto",
+  "brief": {
+   "subject": "Tráfego pago contra produção de conteúdo orgânico",
+   "angle": "Avalie o imediatismo dos anúncios patrocinados versus a construção de autoridade a longo prazo com conteúdo gratuito.",
+   "openingLine": "Se você tem pouco dinheiro para investir, onde vale mais a pena focar seus esforços agora",
+   "angleKind": "comparison",
+   "topicKey": "business"
+  }
+ }
+]

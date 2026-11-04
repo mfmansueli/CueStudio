@@ -13,7 +13,6 @@ import Foundation
 @Observable
 final class ScriptStarter {
     private let library: ScriptLibraryService
-    private let rules: PlatformRulesService
     private let profile: CreatorProfileService
     private let languages: LanguageService
     private let presentation: PresentationService
@@ -35,7 +34,7 @@ final class ScriptStarter {
     var commentAnswered: ((_ note: (note: UUID, isNew: Bool), _ scriptID: UUID) -> Void)?
 
     init(
-        library: ScriptLibraryService, rules: PlatformRulesService, profile: CreatorProfileService,
+        library: ScriptLibraryService, profile: CreatorProfileService,
         languages: LanguageService, presentation: PresentationService, ideaDraft: IdeaDraftService,
         transition: IdeaTransitionService, writer: ScriptWriting, ultra: UltraScriptWriting? = nil, toast: ToastService
     ) {
@@ -44,7 +43,6 @@ final class ScriptStarter {
         self.toast = toast
         self.transition = transition
         self.library = library
-        self.rules = rules
         self.profile = profile
         self.languages = languages
         self.presentation = presentation
@@ -53,7 +51,7 @@ final class ScriptStarter {
 
     var factory: ScriptRequestFactory {
         ScriptRequestFactory(
-            rules: rules, profile: profile, scriptLanguage: languages.scriptLanguage,
+            profile: profile, scriptLanguage: languages.scriptLanguage,
             interfaceLanguage: languages.interfaceLanguage, preferredLanguages: languages.systemLanguages
         )
     }
@@ -112,11 +110,10 @@ final class ScriptStarter {
     func ultraPreview() -> UltraPayload {
         let typed = ideaDraft.submission?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         let text = typed.isEmpty ? String(localized: "[Your idea, exactly as you type it]") : typed
-        var request = factory.request(
+        let request = factory.request(
             idea: text, platform: ideaDraft.platform, format: ideaDraft.format, length: ideaDraft.length, brand: ideaDraft.brand,
-            brief: ideaDraft.brief, languageText: nil, formatChoice: ideaDraft.formatChoice
+            brief: ideaDraft.brief, languageText: nil, formatChoice: ideaDraft.formatChoice, engine: .ultra
         )
-        request.engine = .ultra
         return UltraPayload(request)
     }
 
@@ -158,17 +155,10 @@ final class ScriptStarter {
         let sentDock = fromDock ? ideaDraft.snapshot : nil
         // An audience comment is in the Logbook before anything is asked of it (A4): it is let go only once its reply is a script.
         let kept = comment.flatMap { keepsComment?($0) }
-        var request = IdeaSendTimeline.measure("Idea request") {
-            factory.request(
-                idea: text, platform: platform ?? (fromDock ? ideaDraft.platform : nil), format: fromDock ? ideaDraft.format : nil,
-                length: length ?? (fromDock ? ideaDraft.length : .auto), brand: fromDock ? ideaDraft.brand : nil,
-                brief: brief ?? (idea == nil ? ideaDraft.brief : nil), languageText: comment?.text,
-                formatChoice: fromDock ? ideaDraft.formatChoice : nil
-            )
-        }
         // Ultra only when it was picked and is still allowed: never as a silent stand-in for Apple Intelligence. An answered comment stays with
         // Apple Intelligence (the dock's choice is for the dock's ideas and Find inspiration's).
-        if (engine ?? ideaDraft.engine) == .ultra, comment == nil {
+        let writesWith: ScriptEngine = (engine ?? ideaDraft.engine) == .ultra && comment == nil ? .ultra : .apple
+        if writesWith == .ultra {
             guard ultraAllowed else {
                 ideaDraft.engine = .apple
                 toast.show(UltraError.consentRequired.localizedDescription, kind: .problem)
@@ -178,7 +168,14 @@ final class ScriptStarter {
                 showUltraUsedUp()
                 return nil
             }
-            request.engine = .ultra
+        }
+        let request = IdeaSendTimeline.measure("Idea request") {
+            factory.request(
+                idea: text, platform: platform ?? (fromDock ? ideaDraft.platform : nil), format: fromDock ? ideaDraft.format : nil,
+                length: length ?? (fromDock ? ideaDraft.length : .auto), brand: fromDock ? ideaDraft.brand : nil,
+                brief: brief ?? (idea == nil ? ideaDraft.brief : nil), languageText: comment?.text,
+                formatChoice: fromDock ? ideaDraft.formatChoice : nil, engine: writesWith
+            )
         }
         // What Apple Intelligence can't draft (in the request's own language) is told now, not after three seconds of star, and nothing is
         // opened: the idea stays where it was, and "Write it" makes it a draft to write by hand only when the creator asks.

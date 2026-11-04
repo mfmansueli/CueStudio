@@ -24,7 +24,7 @@ extension ScriptQualityDeviceTests {
         let creator = CreatorProfileService(defaults: defaults.defaults)
         creator.profile = profile.profile(settings.voice)
         let factory = ScriptRequestFactory(
-            rules: TestData.rulesService(), profile: creator, scriptLanguage: item.language, interfaceLanguage: item.language
+            profile: creator, scriptLanguage: item.language, interfaceLanguage: item.language
         )
         let request = factory.request(idea: item.prompt, platform: .reels, format: nil, formatChoice: item.formatChoice)
         let service = ScriptAIService(usesPrivateCloudCompute: true, preferredModel: .privateCloud, cloudReasoning: settings.reasoningLevel)

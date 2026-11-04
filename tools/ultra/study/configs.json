@@ -1,0 +1,9 @@
+{
+  "A": {"label": "Opus high (reference)", "model": "claude-opus-5-5", "draft": "high", "check": "high", "review": "high", "flow": "checked"},
+  "B": {"label": "Opus medium", "model": "claude-opus-5-5", "draft": "medium", "check": "medium", "review": "medium", "flow": "checked"},
+  "C": {"label": "Opus low", "model": "claude-opus-5-5", "draft": "low", "check": "low", "review": "low", "flow": "checked"},
+  "D": {"label": "Opus high draft, low check, medium polish", "model": "claude-opus-5-5", "draft": "high", "check": "low", "review": "medium", "flow": "checked"},
+  "E": {"label": "Opus low, two calls (no separate check)", "model": "claude-opus-5-5", "draft": "low", "check": "low", "review": "low", "flow": "polished"},
+  "F": {"label": "Sonnet high", "model": "claude-sonnet-5-5", "draft": "high", "check": "high", "review": "high", "flow": "checked"},
+  "G": {"label": "Sonnet low", "model": "claude-sonnet-5-5", "draft": "low", "check": "low", "review": "low", "flow": "checked"}
+}

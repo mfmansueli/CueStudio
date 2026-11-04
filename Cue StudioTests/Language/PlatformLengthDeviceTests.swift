@@ -39,7 +39,7 @@ struct PlatformLengthDeviceTests {
         let profileService = CreatorProfileService(defaults: defaults.defaults)
         profileService.profile = persona.profile
         let factory = ScriptRequestFactory(
-            rules: TestData.rulesService(), profile: profileService, scriptLanguage: nil, interfaceLanguage: .english, preferredLanguages: ["en-US"]
+            profile: profileService, scriptLanguage: nil, interfaceLanguage: .english, preferredLanguages: ["en-US"]
         )
         var all: [Int] = []
         let factor = ProcessInfo.processInfo.environment["CUE_LENGTH_FACTOR"].flatMap(Double.init) ?? ScriptPromptBuilder.lengthAskFactor

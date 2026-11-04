@@ -144,7 +144,7 @@ struct PCCScriptDirectionTests {
         let defaults = TestDefaults()
         defer { defaults.tearDown() }
         let factory = ScriptRequestFactory(
-            rules: TestData.rulesService(), profile: CreatorProfileService(defaults: defaults.defaults),
+            profile: CreatorProfileService(defaults: defaults.defaults),
             scriptLanguage: .english, interfaceLanguage: .english
         )
         let original = factory.request(idea: "How to start running", platform: nil, format: nil, formatChoice: .talkingHead)

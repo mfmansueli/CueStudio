@@ -19,7 +19,7 @@ extension VoicePersona {
         held.usesVoiceInAI = withVoice
         service.profile = held
         let factory = ScriptRequestFactory(
-            rules: TestData.rulesService(), profile: service, scriptLanguage: nil, interfaceLanguage: .english,
+            profile: service, scriptLanguage: nil, interfaceLanguage: .english,
             preferredLanguages: ["en-US"]
         )
         return factory.request(idea: idea, platform: .tiktok, format: nil)

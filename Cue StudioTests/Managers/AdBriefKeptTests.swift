@@ -35,7 +35,7 @@ struct AdBriefKeptTests {
         defer { defaults.tearDown() }
         let library = ScriptLibraryService(repository: FakeScriptRepository(), now: { TestData.now })
         let starter = ScriptStarter(
-            library: library, rules: TestData.rulesService(), profile: CreatorProfileService(defaults: defaults.defaults),
+            library: library, profile: CreatorProfileService(defaults: defaults.defaults),
             languages: TestData.languages(defaults: defaults.defaults), presentation: PresentationService(), ideaDraft: IdeaDraftService(),
             transition: IdeaTransitionService(), writer: FakeScriptWriter(), toast: ToastService()
         )
@@ -53,7 +53,7 @@ struct AdBriefKeptTests {
         let transition = IdeaTransitionService()
         transition.speed = 0.001
         let starter = ScriptStarter(
-            library: library, rules: TestData.rulesService(), profile: CreatorProfileService(defaults: defaults.defaults),
+            library: library, profile: CreatorProfileService(defaults: defaults.defaults),
             languages: TestData.languages(defaults: defaults.defaults), presentation: PresentationService(), ideaDraft: ideaDraft,
             transition: transition, writer: FakeScriptWriter(), toast: ToastService()
         )
