@@ -71,7 +71,7 @@ struct IdeaFocusTests {
         let service = CreatorProfileService(defaults: defaults.defaults)
         service.profile = profile
         let factory = ScriptRequestFactory(
-            rules: TestData.rulesService(), profile: service, scriptLanguage: nil, interfaceLanguage: .english, preferredLanguages: ["en-US"]
+            profile: service, scriptLanguage: nil, interfaceLanguage: .english, preferredLanguages: ["en-US"]
         )
         let request = factory.request(idea: "my daily routine with AI is not going so well", platform: .tiktok, format: nil)
         let sent = ScriptPromptBuilder.instructions(for: request) + "\n" + ScriptPromptBuilder.prompt(for: request)

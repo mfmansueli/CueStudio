@@ -16,7 +16,7 @@ final class UltraLabViewModel {
     var prompt = ""
     var length: UltraLabLength = .free
     /// The lab compares the passes by hand: the claim check on its own (the step the quality comparison measures) or folded into the polish.
-    var flow = UltraFlow.checked
+    var flow = UltraFlow.standard
 
     private(set) var run: UltraRun?
     /// What went wrong, in the creator's words; never the provider's message.
@@ -50,9 +50,7 @@ final class UltraLabViewModel {
 
     /// The idea as the Scripts screen would send it (the dock's platform, no format), for Ultra.
     var request: ScriptRequest {
-        var request = starter.factory.request(idea: trimmedPrompt.isEmpty ? prompt : trimmedPrompt, platform: starter.platform, format: nil)
-        request.engine = .ultra
-        return request
+        starter.factory.request(idea: trimmedPrompt.isEmpty ? prompt : trimmedPrompt, platform: starter.platform, format: nil, engine: .ultra)
     }
 
     /// What the two calls carry under the chosen length.

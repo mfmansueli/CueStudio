@@ -27,7 +27,7 @@ struct WritingImportScenarioTests {
 
     private func factory(_ service: CreatorProfileService) -> ScriptRequestFactory {
         ScriptRequestFactory(
-            rules: TestData.rulesService(), profile: service, scriptLanguage: nil, interfaceLanguage: .english, preferredLanguages: ["en-US"]
+            profile: service, scriptLanguage: nil, interfaceLanguage: .english, preferredLanguages: ["en-US"]
         )
     }
 

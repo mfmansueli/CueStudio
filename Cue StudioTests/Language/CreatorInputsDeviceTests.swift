@@ -209,7 +209,7 @@ struct CreatorInputsDeviceTests {
         let service = CreatorProfileService(defaults: defaults.defaults)
         service.profile = item.profile
         let factory = ScriptRequestFactory(
-            rules: TestData.rulesService(), profile: service, scriptLanguage: nil, interfaceLanguage: .english,
+            profile: service, scriptLanguage: nil, interfaceLanguage: .english,
             preferredLanguages: [item.preferredLanguage]
         )
         return factory.request(idea: idea, platform: .tiktok, format: nil)

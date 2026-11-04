@@ -125,7 +125,7 @@ struct ScriptQualityDeviceTests {
         let creator = CreatorProfileService(defaults: defaults.defaults)
         creator.profile = profile.full
         let factory = ScriptRequestFactory(
-            rules: TestData.rulesService(), profile: creator, scriptLanguage: item.language, interfaceLanguage: item.language
+            profile: creator, scriptLanguage: item.language, interfaceLanguage: item.language
         )
         var request = factory.request(idea: item.prompt, platform: .reels, format: nil, formatChoice: item.formatChoice)
         if let value = ProcessInfo.processInfo.environment["CUE_QUALITY_DURATION"] {
@@ -156,7 +156,7 @@ struct ScriptQualityDeviceTests {
         creator.profile.reach.length = nil
         let idea = "Ensine três ajustes para gravar com a luz de uma janela. Explique como conferir cada ajuste. Sem pedir para seguir."
         let factory = ScriptRequestFactory(
-            rules: TestData.rulesService(), profile: creator, scriptLanguage: .portugueseBrazil, interfaceLanguage: .portugueseBrazil
+            profile: creator, scriptLanguage: .portugueseBrazil, interfaceLanguage: .portugueseBrazil
         )
         let request = factory.request(idea: idea, platform: .tiktok, format: nil, formatChoice: .auto)
         let started = ContinuousClock.now
@@ -189,7 +189,7 @@ struct ScriptQualityDeviceTests {
         creator.profile.reach.length = nil
         let idea = "Ensine três ajustes para gravar com a luz de uma janela. Explique como conferir cada ajuste. Sem pedir para seguir."
         let factory = ScriptRequestFactory(
-            rules: TestData.rulesService(), profile: creator, scriptLanguage: .portugueseBrazil, interfaceLanguage: .portugueseBrazil
+            profile: creator, scriptLanguage: .portugueseBrazil, interfaceLanguage: .portugueseBrazil
         )
         let request = factory.request(idea: idea, platform: .tiktok, format: nil, formatChoice: .auto)
         #expect(request.targetRange == 60...90, "This regression must exercise the actual TikTok ideal")
@@ -238,7 +238,7 @@ struct ScriptQualityDeviceTests {
         let service = CreatorProfileService(defaults: defaults.defaults)
         service.profile = creator
         let factory = ScriptRequestFactory(
-            rules: TestData.rulesService(), profile: service, scriptLanguage: nil, interfaceLanguage: language, preferredLanguages: [language.rawValue]
+            profile: service, scriptLanguage: nil, interfaceLanguage: language, preferredLanguages: [language.rawValue]
         )
         return factory.request(idea: idea, platform: .tiktok, format: nil, brief: brief)
     }

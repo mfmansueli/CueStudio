@@ -16,7 +16,7 @@ struct VoiceGateTests {
         let defaults = TestDefaults()
         let service = CreatorProfileService(defaults: defaults.defaults)
         service.profile = profile
-        let factory = ScriptRequestFactory(rules: TestData.rulesService(), profile: service, scriptLanguage: nil, interfaceLanguage: .english)
+        let factory = ScriptRequestFactory(profile: service, scriptLanguage: nil, interfaceLanguage: .english)
         return (factory, service, defaults)
     }
 

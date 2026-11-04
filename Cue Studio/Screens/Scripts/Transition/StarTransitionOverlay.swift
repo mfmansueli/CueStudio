@@ -214,7 +214,7 @@ struct StarTransitionOverlay: View {
         let words = StarTransitionWords(
             isUltra: isUltra, idea: transition.idea, ideaLines: size.height < Self.shortScreen ? 2 : 3, phrase: Self.shown(currentPhrase),
             phraseShown: phraseShown, phraseWaits: phraseTurns == 0, arrival: wordsArrival, meter: transition.progress, step: shownPass,
-            steps: transition.progress?.pass?.count ?? UltraFlow.checked.calls, pulse: tickPulse
+            steps: transition.progress?.pass?.count ?? UltraFlow.standard.calls, pulse: tickPulse
         )
         .padding(.horizontal, 24)
         .frame(width: size.width)
@@ -250,7 +250,7 @@ struct StarTransitionOverlay: View {
     private var currentPhrase: String {
         if finishShown { return IdeaTransitionService.finishPhrase }
         if isTakingLong { return IdeaTransitionService.longWaitPhrase }
-        if isUltra { return Self.passPhrase(shownPass, of: transition.progress?.pass?.count ?? UltraFlow.checked.calls) }
+        if isUltra { return Self.passPhrase(shownPass, of: transition.progress?.pass?.count ?? UltraFlow.standard.calls) }
         guard !phrases.isEmpty else { return "" }
         return phrases[phraseIndex % phrases.count]
     }

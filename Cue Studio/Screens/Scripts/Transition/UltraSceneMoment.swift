@@ -19,7 +19,7 @@ struct UltraSceneMoment {
     let fall: Double
     /// The wave of light after the flash, 0…1; nil before it and once it has gone.
     let wave: Double?
-    /// The check's beam: how strong, and where it points (radians round the galaxy).
+    /// The beam of the pass that checks the claims: how strong, and where it points (radians round the galaxy).
     let beam: Double
     let beamAngle: Double
     /// How far the polish has warmed the galaxy to gold, 0…1 (from the inside out).
@@ -57,10 +57,12 @@ struct UltraSceneMoment {
             fall = 0
             wave = nil
         }
-        // The check is the middle pass of three; a run without it has no beam.
+        // The claims are checked in the middle pass of three or, with two, in the polish, which corrects them as it applies the voice (the
+        // app's flow since 04/11/2026, `UltraFlow.standard`): its beam sweeps round the galaxy while it warms, until the finish.
         let check = 1
-        if timeline.count > 2, timeline.starts.indices.contains(check) {
-            beam = timeline.entry(of: check, at: time) * (1 - timeline.entry(of: check + 1, at: time))
+        if timeline.count > 1, timeline.starts.indices.contains(check) {
+            let over = timeline.count > 2 ? timeline.entry(of: check + 1, at: time) : fall
+            beam = timeline.entry(of: check, at: time) * (1 - over)
             beamAngle = (time - timeline.starts[check]) * 2 * .pi / Self.sweep
         } else {
             beam = 0

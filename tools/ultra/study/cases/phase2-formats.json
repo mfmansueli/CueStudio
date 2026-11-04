@@ -1,0 +1,474 @@
+[
+ {
+  "id": "story-mic",
+  "language": "pt-BR",
+  "creator": "pt-filming",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "story",
+  "length": "auto",
+  "idea": "A vez que gravei um vídeo inteiro com o microfone desligado"
+ },
+ {
+  "id": "story-cake",
+  "language": "pt-BR",
+  "creator": "pt-cooking",
+  "voice": "full",
+  "platform": "reels",
+  "format": "story",
+  "length": "auto",
+  "idea": "Quando tentei impressionar minha sogra com um bolo e ele afundou"
+ },
+ {
+  "id": "story-salary",
+  "language": "pt-BR",
+  "creator": "pt-money",
+  "voice": "half",
+  "platform": "tiktok",
+  "format": "story",
+  "length": "auto",
+  "idea": "Como meu primeiro salário sumiu em uma semana"
+ },
+ {
+  "id": "story-back",
+  "language": "en-US",
+  "creator": "en-fitness",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "story",
+  "length": "auto",
+  "idea": "The day I hurt my back deadlifting with bad form"
+ },
+ {
+  "id": "tut-corner",
+  "language": "pt-BR",
+  "creator": "pt-filming",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "tutorial",
+  "length": "auto",
+  "idea": "Como montar um cantinho de gravação no quarto gastando pouco"
+ },
+ {
+  "id": "tut-eyeliner",
+  "language": "pt-BR",
+  "creator": "pt-beauty",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "tutorial",
+  "length": "auto",
+  "idea": "Como fazer delineado gatinho usando fita adesiva"
+ },
+ {
+  "id": "tut-rice",
+  "language": "pt-BR",
+  "creator": "pt-cooking",
+  "voice": "half",
+  "platform": "reels",
+  "format": "tutorial",
+  "length": "auto",
+  "idea": "Como fazer arroz soltinho na panela comum"
+ },
+ {
+  "id": "tut-cupcare",
+  "language": "es-ES",
+  "creator": "es-ceramics",
+  "voice": "full",
+  "platform": "reels",
+  "format": "tutorial",
+  "length": "auto",
+  "idea": "Cómo cuidar una taza de cerámica artesanal para que dure"
+ },
+ {
+  "id": "list-small",
+  "language": "pt-BR",
+  "creator": "pt-money",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "list",
+  "length": "auto",
+  "idea": "Gastos pequenos que viram uma fortuna no fim do ano"
+ },
+ {
+  "id": "list-pharmacy",
+  "language": "pt-BR",
+  "creator": "pt-beauty",
+  "voice": "half",
+  "platform": "reels",
+  "format": "list",
+  "length": "auto",
+  "idea": "Produtos de farmácia que substituem os caros"
+ },
+ {
+  "id": "list-tv",
+  "language": "en-US",
+  "creator": "en-fitness",
+  "voice": "half",
+  "platform": "reels",
+  "format": "list",
+  "length": "auto",
+  "idea": "Exercises you can do while watching TV"
+ },
+ {
+  "id": "list-hire",
+  "language": "pt-BR",
+  "creator": "pt-consultant",
+  "voice": "full",
+  "platform": "linkedin",
+  "format": "list",
+  "length": "auto",
+  "idea": "Sinais de que sua empresa precisa contratar a primeira pessoa"
+ },
+ {
+  "id": "myth-haircut",
+  "language": "pt-BR",
+  "creator": "pt-beauty",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "mythFact",
+  "length": "auto",
+  "idea": "Cortar o cabelo faz ele crescer mais rápido"
+ },
+ {
+  "id": "myth-savings",
+  "language": "pt-BR",
+  "creator": "pt-money",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "mythFact",
+  "length": "auto",
+  "idea": "Poupança é sempre o investimento mais seguro"
+ },
+ {
+  "id": "myth-pasta",
+  "language": "pt-BR",
+  "creator": "pt-cooking",
+  "voice": "full",
+  "platform": "reels",
+  "format": "mythFact",
+  "length": "auto",
+  "idea": "Colocar óleo na água do macarrão evita que grude"
+ },
+ {
+  "id": "myth-stretch",
+  "language": "en-US",
+  "creator": "en-fitness",
+  "voice": "none",
+  "platform": "shorts",
+  "format": "mythFact",
+  "length": "auto",
+  "idea": "You need to stretch before every workout"
+ },
+ {
+  "id": "op-light",
+  "language": "pt-BR",
+  "creator": "pt-filming",
+  "voice": "full",
+  "platform": "shorts",
+  "format": "opinion",
+  "length": "auto",
+  "idea": "Iluminação cara não salva vídeo ruim"
+ },
+ {
+  "id": "op-meetings",
+  "language": "pt-BR",
+  "creator": "pt-consultant",
+  "voice": "full",
+  "platform": "linkedin",
+  "format": "opinion",
+  "length": "auto",
+  "idea": "Reunião diária de equipe é perda de tempo na maioria das empresas"
+ },
+ {
+  "id": "op-airfryer",
+  "language": "pt-BR",
+  "creator": "pt-cooking",
+  "voice": "half",
+  "platform": "tiktok",
+  "format": "opinion",
+  "length": "auto",
+  "idea": "Air fryer não é tudo isso"
+ },
+ {
+  "id": "op-cheap",
+  "language": "es-ES",
+  "creator": "es-ceramics",
+  "voice": "half",
+  "platform": "reels",
+  "format": "opinion",
+  "length": "auto",
+  "idea": "Comprar barato sale caro con la cerámica"
+ },
+ {
+  "id": "rev-lav",
+  "language": "pt-BR",
+  "creator": "pt-filming",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "review",
+  "length": "auto",
+  "idea": "Testei um microfone de lapela de 50 reais"
+ },
+ {
+  "id": "rev-stick",
+  "language": "pt-BR",
+  "creator": "pt-beauty",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "review",
+  "length": "auto",
+  "idea": "Primeira impressão do protetor solar em bastão"
+ },
+ {
+  "id": "rev-iron",
+  "language": "pt-BR",
+  "creator": "pt-cooking",
+  "voice": "full",
+  "platform": "reels",
+  "format": "review",
+  "length": "auto",
+  "idea": "Minha opinião sincera sobre a panela de ferro depois de um mês de uso"
+ },
+ {
+  "id": "rev-dumbbells",
+  "language": "en-US",
+  "creator": "en-fitness",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "review",
+  "length": "auto",
+  "idea": "Honest review of adjustable dumbbells after 3 months"
+ },
+ {
+  "id": "ad-serum",
+  "language": "pt-BR",
+  "creator": "pt-beauty",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "ad",
+  "length": "auto",
+  "idea": "Publi do sérum de vitamina C que estou usando",
+  "brand": {
+   "name": "Pele Leve",
+   "product": "sérum de vitamina C de 30 ml",
+   "mustSay": "Fórmula vegana e sem perfume",
+   "neverSay": "Não dizer que clareia manchas",
+   "link": "peleleve.com.br",
+   "code": "RAFA15"
+  }
+ },
+ {
+  "id": "ad-app",
+  "language": "pt-BR",
+  "creator": "pt-money",
+  "voice": "full",
+  "platform": "reels",
+  "format": "ad",
+  "length": "auto",
+  "idea": "Publi do app que eu uso pra controlar meus gastos",
+  "brand": {
+   "name": "Cofrinho",
+   "product": "aplicativo de controle de gastos",
+   "mustSay": "É grátis para começar",
+   "neverSay": "Não prometer que a pessoa vai enriquecer",
+   "link": "cofrinho.app",
+   "code": ""
+  }
+ },
+ {
+  "id": "ad-ring",
+  "language": "pt-BR",
+  "creator": "pt-filming",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "ad",
+  "length": "auto",
+  "idea": "Publi do ring light que eu uso nas gravações",
+  "brand": {
+   "name": "LuzMax",
+   "product": "ring light de 18 polegadas com tripé",
+   "mustSay": "Três temperaturas de cor",
+   "neverSay": "Não dizer que substitui a luz natural",
+   "link": "luzmax.com.br",
+   "code": "SIMBORA10"
+  }
+ },
+ {
+  "id": "ad-glaze",
+  "language": "es-ES",
+  "creator": "es-ceramics",
+  "voice": "full",
+  "platform": "reels",
+  "format": "ad",
+  "length": "auto",
+  "idea": "Colaboración con la marca de esmaltes que usamos en el taller",
+  "brand": {
+   "name": "Esmaltes Sol",
+   "product": "esmaltes cerámicos para alta temperatura",
+   "mustSay": "Sin plomo y aptos para alimentos",
+   "neverSay": "No decir que son irrompibles",
+   "link": "esmaltessol.es",
+   "code": "FAMILIA10"
+  }
+ },
+ {
+  "id": "launch-blue",
+  "language": "es-ES",
+  "creator": "es-ceramics",
+  "voice": "full",
+  "platform": "reels",
+  "format": "launch",
+  "length": "auto",
+  "idea": "Lanzamos la colección de tazas azules este sábado en la tienda del taller"
+ },
+ {
+  "id": "launch-course",
+  "language": "pt-BR",
+  "creator": "pt-consultant",
+  "voice": "full",
+  "platform": "linkedin",
+  "format": "launch",
+  "length": "auto",
+  "idea": "Lancei um curso de gestão para pequenas empresas, inscrições abertas até sexta"
+ },
+ {
+  "id": "launch-ebook",
+  "language": "pt-BR",
+  "creator": "pt-cooking",
+  "voice": "full",
+  "platform": "reels",
+  "format": "launch",
+  "length": "auto",
+  "idea": "Meu ebook de receitas baratas sai na segunda-feira"
+ },
+ {
+  "id": "launch-mentor",
+  "language": "pt-BR",
+  "creator": "pt-filming",
+  "voice": "half",
+  "platform": "tiktok",
+  "format": "launch",
+  "length": "auto",
+  "idea": "Abri as inscrições da minha mentoria de gravação em casa"
+ },
+ {
+  "id": "apo-allergy",
+  "language": "pt-BR",
+  "creator": "pt-beauty",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "apology",
+  "length": "auto",
+  "idea": "Peço desculpas por ter indicado um produto que causou alergia em algumas seguidoras"
+ },
+ {
+  "id": "apo-delay",
+  "language": "es-ES",
+  "creator": "es-ceramics",
+  "voice": "full",
+  "platform": "reels",
+  "format": "apology",
+  "length": "auto",
+  "idea": "Pedimos perdón por el retraso de los pedidos de noviembre"
+ },
+ {
+  "id": "apo-math",
+  "language": "pt-BR",
+  "creator": "pt-money",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "apology",
+  "length": "auto",
+  "idea": "Errei a conta no vídeo de ontem sobre os juros do cartão"
+ },
+ {
+  "id": "apo-gone",
+  "language": "pt-BR",
+  "creator": "pt-filming",
+  "voice": "half",
+  "platform": "tiktok",
+  "format": "apology",
+  "length": "auto",
+  "idea": "Sumi por dois meses sem avisar e devo uma explicação"
+ },
+ {
+  "id": "pov-fridge",
+  "language": "pt-BR",
+  "creator": "pt-cooking",
+  "voice": "full",
+  "platform": "reels",
+  "format": "pov",
+  "length": "auto",
+  "idea": "Você mora sozinho e abre a geladeira no fim do mês"
+ },
+ {
+  "id": "pov-salary",
+  "language": "pt-BR",
+  "creator": "pt-money",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "pov",
+  "length": "auto",
+  "idea": "Você recebeu o salário e já está devendo"
+ },
+ {
+  "id": "pov-bus",
+  "language": "pt-BR",
+  "creator": "pt-beauty",
+  "voice": "half",
+  "platform": "tiktok",
+  "format": "pov",
+  "length": "auto",
+  "idea": "Você acordou atrasada e precisa se maquiar no ônibus"
+ },
+ {
+  "id": "pov-gym",
+  "language": "en-US",
+  "creator": "en-fitness",
+  "voice": "half",
+  "platform": "reels",
+  "format": "pov",
+  "length": "auto",
+  "idea": "It's your first day at the gym"
+ },
+ {
+  "id": "th-post",
+  "language": "pt-BR",
+  "creator": "pt-filming",
+  "voice": "full",
+  "platform": "tiktok",
+  "format": "talking",
+  "length": "auto",
+  "idea": "Por que você deveria postar mesmo achando que o vídeo não está perfeito"
+ },
+ {
+  "id": "th-manager",
+  "language": "pt-BR",
+  "creator": "pt-consultant",
+  "voice": "half",
+  "platform": "linkedin",
+  "format": "talking",
+  "length": "auto",
+  "idea": "O maior erro de quem vira gestor pela primeira vez"
+ },
+ {
+  "id": "th-goal",
+  "language": "pt-BR",
+  "creator": "pt-money",
+  "voice": "half",
+  "platform": "tiktok",
+  "format": "talking",
+  "length": "auto",
+  "idea": "Dinheiro guardado sem objetivo some"
+ },
+ {
+  "id": "th-year",
+  "language": "es-ES",
+  "creator": "es-ceramics",
+  "voice": "full",
+  "platform": "reels",
+  "format": "talking",
+  "length": "auto",
+  "idea": "Lo que aprendimos en nuestro primer año de taller"
+ }
+]

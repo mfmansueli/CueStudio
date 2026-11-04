@@ -26,12 +26,12 @@ struct PlatformRulesTests {
     }
 
     static let table: [Row] = [
-        Row(platform: .tiktok, aspect: .portrait, resolution: .hd1080, frameRate: .fps30, ideal: 75...105, minimum: 60, zone: [160, 480, 60, 140]),
-        Row(platform: .reels, aspect: .portrait, resolution: .hd1080, frameRate: .fps30, ideal: 75...105, minimum: nil, zone: [220, 420, 60, 120]),
-        Row(platform: .shorts, aspect: .portrait, resolution: .hd1080, frameRate: .fps60, ideal: 75...105, minimum: nil, zone: [190, 380, 60, 140]),
+        Row(platform: .tiktok, aspect: .portrait, resolution: .hd1080, frameRate: .fps30, ideal: 75...150, minimum: 60, zone: [160, 480, 60, 140]),
+        Row(platform: .reels, aspect: .portrait, resolution: .hd1080, frameRate: .fps30, ideal: 75...150, minimum: nil, zone: [220, 420, 60, 120]),
+        Row(platform: .shorts, aspect: .portrait, resolution: .hd1080, frameRate: .fps60, ideal: 75...150, minimum: nil, zone: [190, 380, 60, 140]),
         Row(platform: .youtube, aspect: .landscape, resolution: .uhd4K, frameRate: .fps24, ideal: 480...900, minimum: 480, zone: nil),
-        Row(platform: .linkedin, aspect: .vertical, resolution: .hd1080, frameRate: .fps30, ideal: 75...105, minimum: nil, zone: [0, 200, 40, 40]),
-        Row(platform: .stories, aspect: .portrait, resolution: .hd1080, frameRate: .fps30, ideal: 15...30, minimum: nil, zone: [250, 250, 60, 60]),
+        Row(platform: .linkedin, aspect: .vertical, resolution: .hd1080, frameRate: .fps30, ideal: 75...150, minimum: nil, zone: [0, 200, 40, 40]),
+        Row(platform: .stories, aspect: .portrait, resolution: .hd1080, frameRate: .fps30, ideal: 75...150, minimum: nil, zone: [250, 250, 60, 60]),
     ]
 
     @Test(arguments: table)
@@ -45,17 +45,18 @@ struct PlatformRulesTests {
         #expect(preset.safeZone.map { [$0.top, $0.bottom, $0.left, $0.right] } == row.zone)
     }
 
-    /// Most TikTok, Reels and Shorts videos run 1:15 to 1:45 (revision 4, the owner's call of 29/10/2026), with or without a monetization goal.
-    @Test func withoutMonetizationTikTokAimsForAMinuteAndAQuarterToAMinuteAndThreeQuarters() {
+    /// TikTok, Reels, Shorts and LinkedIn run 1:15 to 2:30 (revision 5, the owner's call of 04/11/2026: "é uma faixa real"), with or without a
+    /// monetization goal.
+    @Test func withoutMonetizationTikTokAimsForAMinuteAndAQuarterToTwoAndAHalf() {
         let preset = rules.preset(for: .tiktok, monetizationGoals: false)
-        #expect(preset.idealRange == 75...105)
+        #expect(preset.idealRange == 75...150)
         #expect(preset.minimum == nil)
         #expect(preset.goal == nil)
     }
 
     /// Everything Cue makes is spoken to the camera: a few words and a hook are not a spoken video, so no short-form platform goes below 30 s, and a
-    /// Story, which is a card of at most a minute, below 15. Revision 4 (the owner's call, 29/10/2026) puts TikTok, Reels, Shorts and LinkedIn at
-    /// 1:15 to 1:45, where most vertical videos run.
+    /// Story below 15. Revision 5 (the owner's call, 04/11/2026) puts TikTok, Reels, Shorts, LinkedIn and Stories at 1:15 to 2:30: how a script
+    /// is split into Stories is the creator's.
     @Test func aSpokenVideoNeedsMoreThanFifteenSecondsOnEveryPlatform() {
         for platform in Platform.allCases {
             for monetization in [true, false] {
@@ -66,8 +67,8 @@ struct PlatformRulesTests {
                 #expect(ReadTime.words(for: ideal.lowerBound) >= (platform == .stories ? 35 : 70), "\(platform)")
             }
         }
-        #expect(rules.preset(for: .reels, monetizationGoals: true).idealRange == 75...105)
-        #expect(rules.preset(for: .stories, monetizationGoals: true).idealRange == 15...30)
+        #expect(rules.preset(for: .reels, monetizationGoals: true).idealRange == 75...150)
+        #expect(rules.preset(for: .stories, monetizationGoals: true).idealRange == 75...150)
     }
 
     @Test func theRulesOfThisBuildAreNewerThanTheOnesThatCameBefore() {

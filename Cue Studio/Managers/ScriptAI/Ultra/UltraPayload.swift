@@ -86,23 +86,22 @@ nonisolated struct UltraPayload: Hashable, Sendable {
         return "Write the script in \(ScriptPromptBuilder.languageName(language, variant: request.languageVariant))."
     }
 
-    private var formatLine: String {
-        if request.formatChoice == .talkingHead { return "Format chosen by the creator: talking head (one person speaking to camera)." }
-        if let type = request.type { return "Format chosen by the creator: \(type.promptName)." }
-        return "Format: not chosen. Read the genre from the request (tutorial, story, opinion, list, review, comparison, explanation…); the "
-            + "creator's usual formats only help when the request is vague."
-    }
+    private var formatLine: String { UltraFormatGuide.line(for: request) }
 
     /// The idea's inspiration (Find inspiration), only what the creator's text still says of it (`ScriptRequestFactory`).
     private var inspiration: String? {
         guard let brief = request.brief else { return nil }
         var lines = ["Inspiration this idea came from (Find inspiration):"]
-        if !brief.subject.isEmpty { lines.append("Subject: \(brief.subject)") }
+        if !brief.subject.isEmpty { lines += ["Subject: \(brief.subject)", Self.keptTitleLine] }
         if let topic = ScriptPromptBuilder.briefTopicRule(brief) { lines.append(topic) }
         if let angle = ScriptPromptBuilder.briefAngleRule(brief) { lines.append(angle) }
         if let opening = ScriptPromptBuilder.briefOpeningRule(brief) { lines.append(opening) }
         return lines.count > 1 ? lines.joined(separator: "\n") : nil
     }
+
+    /// The idea's subject is its title on the card and stays the script's (`UltraScriptService`; the owner, 04/11/2026): in the blind study the
+    /// creator found their idea in the title every time, against 33 to 42% when the editor wrote its own, and the scripts scored the same.
+    static let keptTitleLine = "This subject stays the video's title: the script must deliver what it promises."
 
     /// The words the creator asked for literally ("say exactly …"): repeated as they are.
     private var literal: String? {

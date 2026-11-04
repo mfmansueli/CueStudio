@@ -27,7 +27,7 @@ struct UltraPassOrbit: View {
         // Thicker on a larger ring.
         let weight = max(1, min(1.4, diameter / ProgressOrbit.diameter * 0.6))
         TimelineView(.animation(minimumInterval: 1.0 / 30, paused: meter.isFinished)) { _ in
-            let count = max(1, meter.pass?.count ?? UltraFlow.checked.calls)
+            let count = max(1, meter.pass?.count ?? UltraFlow.standard.calls)
             let done = meter.isFinished ? count : (meter.pass?.index ?? 0)
             let current = meter.isFinished ? 1 : meter.passFraction
             ZStack {

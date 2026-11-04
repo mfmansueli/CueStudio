@@ -18,9 +18,13 @@ nonisolated enum PCCScriptDirection {
     /// An English keyword guess must not lock Auto into the creator's usual format before PCC reads it.
     static func automaticFormatLines(for request: ScriptRequest) -> [String] {
         guard usesAutomaticFormat(request) else { return [] }
-        return [
+        // An idea from the cards says what kind of video it is: its genre's line in place of the menu, when a measurement turns it on
+        // (`ScriptPromptBuilder.followsIdeaKind`; off by default here, measured no better on Private Cloud Compute).
+        let direction = ScriptPromptBuilder.formatNeeds(for: request).map { [$0] } ?? [
             "Format is Automatic. Read the entire current request in its own language and choose the creative direction that best serves its intent. No format has been selected for you. Usual formats are a fallback only when the request gives no direction.",
             "Choose a tutorial for teaching a process, a list for distinct tips or reasons, a story for a supplied experience, a review or comparison for evaluating options, an opinion or reply for a viewpoint or comment, an announcement for supplied news, myth vs fact for correcting a belief, POV for a requested scene, or a sincere statement for a serious situation. For a general explanation, build a clear explanatory arc. Combine compatible approaches only when the request needs it.",
+        ]
+        return direction + [
             "A product mention alone does not mean sponsorship. Use a sponsored-ad direction only when the request explicitly describes paid promotion, and disclose that paid partnership within the script (#ad). Do not invent a real brand deal or testimonial; illustrative scenarios are welcome when they serve the request. A serious statement takes priority over entertainment: no hype, jokes, promotional hook or engagement CTA.",
             "Return blocks in the order that fits the chosen direction, with short descriptive block labels. Do not force Hook / Body / CTA onto every idea, force a twist onto an explanation, or show a format-selection rationale. The chosen structure must serve the creator's request, not change its subject.",
             request.durationPolicy == .targeted

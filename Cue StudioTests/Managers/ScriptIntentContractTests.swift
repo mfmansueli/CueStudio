@@ -23,7 +23,7 @@ struct ScriptIntentContractTests {
             let profile = CreatorProfileService(defaults: defaults.defaults)
             profile.profile = try #require(QualityProfiles.all.first { $0.language == item.language }).full
             let factory = ScriptRequestFactory(
-                rules: TestData.rulesService(), profile: profile, scriptLanguage: item.language, interfaceLanguage: item.language
+                profile: profile, scriptLanguage: item.language, interfaceLanguage: item.language
             )
             let request = factory.request(idea: item.prompt, platform: .reels, format: nil, formatChoice: item.formatChoice)
             for route in [AIModelRoute.onDevice, .privateCloud] {

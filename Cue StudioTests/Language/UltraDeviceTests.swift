@@ -84,7 +84,7 @@ struct UltraDeviceTests {
     private func factory(defaults: TestDefaults) -> ScriptRequestFactory {
         let languages = TestData.languages(defaults: defaults.defaults, systemLocalization: "pt", systemLanguages: ["pt-BR"])
         return ScriptRequestFactory(
-            rules: TestData.rulesService(), profile: CreatorProfileService(defaults: defaults.defaults), scriptLanguage: .portugueseBrazil,
+            profile: CreatorProfileService(defaults: defaults.defaults), scriptLanguage: .portugueseBrazil,
             interfaceLanguage: languages.interfaceLanguage, preferredLanguages: languages.systemLanguages
         )
     }
@@ -163,9 +163,8 @@ struct UltraDeviceTests {
         guard Self.enabled(condition.rawValue) else { return }
         let defaults = TestDefaults()
         defer { defaults.tearDown() }
-        var request = factory(defaults: defaults).request(idea: Self.lengthIdea, platform: .shorts, format: nil)
+        var request = factory(defaults: defaults).request(idea: Self.lengthIdea, platform: .shorts, format: nil, engine: .ultra)
         request.voice = Self.voice
-        request.engine = .ultra
         try await write("length-\(condition.rawValue)", request: request, length: condition.length, defaults: defaults)
     }
 }

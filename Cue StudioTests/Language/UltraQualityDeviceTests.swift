@@ -327,10 +327,10 @@ struct UltraQualityDeviceTests {
         let profile = CreatorProfileService(defaults: defaults.defaults)
         profile.profile = item.creator
         let factory = ScriptRequestFactory(
-            rules: TestData.rulesService(), profile: profile, scriptLanguage: nil, interfaceLanguage: item.language,
+            profile: profile, scriptLanguage: nil, interfaceLanguage: item.language,
             preferredLanguages: [item.language.rawValue]
         )
-        return factory.request(idea: item.idea, platform: .tiktok, format: nil, length: item.length, brief: item.brief)
+        return factory.request(idea: item.idea, platform: .tiktok, format: nil, length: item.length, brief: item.brief, engine: .ultra)
     }
 
     private func ultraService(defaults: TestDefaults) throws -> UltraScriptService {

@@ -156,13 +156,13 @@ struct UltraCostDeviceTests {
             let text = FindInspirationViewModel.writingText(of: idea)
             try await measure(
                 "\(code)-\(source)", language: code, source: source, idea: text, fromModel: idea.angle != nil,
-                request: factory.request(idea: text, platform: .tiktok, format: nil, brief: idea.brief), ultra: ultra
+                request: factory.request(idea: text, platform: .tiktok, format: nil, brief: idea.brief, engine: .ultra), ultra: ultra
             )
         }
         let typed = Self.typed(language)
         try await measure(
             "\(code)-typed", language: code, source: "typed", idea: typed, fromModel: nil,
-            request: factory.request(idea: typed, platform: .tiktok, format: nil), ultra: ultra
+            request: factory.request(idea: typed, platform: .tiktok, format: nil, engine: .ultra), ultra: ultra
         )
     }
 
@@ -200,7 +200,7 @@ struct UltraCostDeviceTests {
 
     private func factory(_ language: CueLanguage, profile: CreatorProfileService) -> ScriptRequestFactory {
         ScriptRequestFactory(
-            rules: TestData.rulesService(), profile: profile, scriptLanguage: language, interfaceLanguage: language,
+            profile: profile, scriptLanguage: language, interfaceLanguage: language,
             preferredLanguages: [language.rawValue]
         )
     }

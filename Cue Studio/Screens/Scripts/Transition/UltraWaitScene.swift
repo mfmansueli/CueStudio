@@ -11,10 +11,12 @@ import SwiftUI
 /// in 26 s), brighter as the pass on now comes (`UltraSceneMoment.charge`). Each pass is a chapter (`UltraWaitTimeline`):
 /// - the draft: each step of its words makes the star pulse and sends a spark riding an arm out to a new star, so the galaxy fills as it is
 ///   written;
-/// - the claims checked: a beam sweeps round the galaxy and lights what it touches;
-/// - the polish in the creator's voice: the galaxy warms from violet to gold, from the inside out, as the polish comes.
+/// - the polish in the creator's voice, which also corrects the claims (`UltraFlow.standard`): a beam sweeps round the galaxy and lights what it
+///   touches, while the galaxy warms from violet to gold, from the inside out, as the polish comes.
+/// The lab's flow with a check of its own (`UltraFlow.checked`) gives the beam a chapter between them, before the warmth.
 ///
-/// As a pass ends, its node on the ring lets go of a moon (the draft's violet, the check's white, the voice's gold) and the galaxy gives it
+/// As the star ignites, the idea's moon (white) leaves it for an orbit of its own; as a pass ends, its node on the ring lets go of a moon (the
+/// draft's violet, the voice's gold; with the lab's check, the check's white instead of the idea's) and the galaxy gives it
 /// its light; the moon, a small world lit on the side facing the star, takes a tilted orbit of its own (drawn, fainter behind the star),
 /// passing behind the star and in front of it. Outside the ring, space goes on (`drawSky`): a field of faint stars turning slowly, a shooting
 /// star every 6 to 10 s, a meteor shower every 11 to 16 s, a comet passing every 13 to 19 s; a chapter that runs past 20 s sends a comet low
@@ -61,7 +63,7 @@ struct UltraWaitScene: View {
             let time = Self.now + context.date.timeIntervalSinceNow
             Canvas { canvas, size in
                 let moment = UltraSceneMoment(
-                    time: time, finish: finish, passStarts: meter?.passStarts ?? [], count: meter?.pass?.count ?? UltraFlow.checked.calls,
+                    time: time, finish: finish, passStarts: meter?.passStarts ?? [], count: meter?.pass?.count ?? UltraFlow.standard.calls,
                     arrivals: meter?.arrivals ?? [], pass: meter?.pass?.index, passShown: meter?.passFraction ?? 0
                 )
                 if layer == .back { drawSky(in: &canvas, size: size, moment) }
@@ -294,6 +296,38 @@ struct UltraWaitScene: View {
         return CGPoint(x: centre.x + ring * sin(turn), y: centre.y - ring * cos(turn))
     }
 
+    /// A moon on its way: its orbit and colour, when it is born and how long it takes to reach its orbit, and where it leaves from.
+    private struct MoonFlight {
+        let orbit: Int
+        let colour: Color
+        let birth: (time: TimeInterval, length: TimeInterval)
+        let from: CGPoint
+    }
+
+    /// The idea's moon leaves the star this long after it ignites.
+    private static let ideaMoonDelay: TimeInterval = 0.8
+
+    /// Every moon of the scene: each pass's, from its node, and with the app's two passes (`UltraFlow.standard`) the idea's first, white,
+    /// out of the star as it ignites into the orbit a check would take (the owner, 04/11/2026: with two passes the voice's moon is born only in
+    /// the finish, so the wait had a single moon).
+    private func flights(_ moment: UltraSceneMoment) -> [MoonFlight] {
+        let count = moment.timeline.count
+        var flights: [MoonFlight] = []
+        if count == 2 {
+            flights.append(MoonFlight(
+                orbit: 1, colour: Palette.Scripts.ultraMoons[1], birth: (began + Self.ideaMoonDelay, UltraWaitTimeline.hold), from: centre
+            ))
+        }
+        for index in 0..<count {
+            guard let birth = birth(of: index, moment) else { continue }
+            flights.append(MoonFlight(
+                orbit: Self.orbit(of: index, count: count), colour: Self.moonColour(of: index, count: count), birth: birth,
+                from: node(of: index, count: count)
+            ))
+        }
+        return flights
+    }
+
     /// When pass `index`'s moon is born, and how long it takes: as the next pass starts, or the last one in the finish (quickly).
     private func birth(of index: Int, _ moment: UltraSceneMoment) -> (time: TimeInterval, length: TimeInterval)? {
         if index == moment.timeline.count - 1 { return finish.map { ($0, 0.45) } }
@@ -303,12 +337,11 @@ struct UltraWaitScene: View {
     /// Each born moon's orbit, a fine line in its colour: fainter where it runs behind the star, brighter in front. It draws itself in as the
     /// moon flies out to it, and shrinks into the star at the finish.
     private func drawOrbits(in canvas: inout GraphicsContext, _ moment: UltraSceneMoment) {
-        let count = moment.timeline.count
         let scale = 1 - Self.ease(moment.fall)
         let steps = 96
-        for index in 0..<count {
-            guard let birth = birth(of: index, moment), moment.time >= birth.time else { continue }
-            let orbit = Self.orbit(of: index, count: count)
+        for flight in flights(moment) {
+            let birth = flight.birth, orbit = flight.orbit
+            guard moment.time >= birth.time else { continue }
             let shown = (still ? 1 : Self.ease(min(1, (moment.time - birth.time) / birth.length))) * (1 - moment.fall)
             var path = Path()
             var joined = false
@@ -324,24 +357,23 @@ struct UltraWaitScene: View {
                 joined = true
             }
             let strength = layer == .front ? 0.32 : 0.17
-            canvas.stroke(path, with: .color(Self.moonColour(of: index, count: count).opacity(strength * shown)), lineWidth: 0.9)
+            canvas.stroke(path, with: .color(flight.colour.opacity(strength * shown)), lineWidth: 0.9)
         }
     }
 
     private func drawMoons(in canvas: inout GraphicsContext, _ moment: UltraSceneMoment) {
-        let count = moment.timeline.count
         let scale = 1 - Self.ease(moment.fall)
-        for index in 0..<count {
-            guard let birth = birth(of: index, moment), moment.time >= birth.time else { continue }
-            let orbit = Self.orbit(of: index, count: count)
+        for flight in flights(moment) {
+            let birth = flight.birth, orbit = flight.orbit
+            guard moment.time >= birth.time else { continue }
             let age = moment.time - birth.time
             let born = still ? 1 : min(1, age / birth.length)
             let angle = Self.moonPhase[orbit] + (still ? 0 : Self.moonSpeed[orbit] * age) + 7 * moment.fall * moment.fall
             let depth = sin(angle)
             // Leaving its node it is over the ring; on its orbit it goes behind the star and in front of it.
             guard born < 1 ? layer == .front : belongs(depth: depth) else { continue }
-            let colour = Self.moonColour(of: index, count: count)
-            let node = node(of: index, count: count)
+            let colour = flight.colour
+            let node = flight.from
             let onOrbit = moonPoint(orbit, angle, scale: scale)
             let travel = Self.ease(born)
             let point = CGPoint(x: node.x + (onOrbit.x - node.x) * travel, y: node.y + (onOrbit.y - node.y) * travel)
@@ -351,7 +383,7 @@ struct UltraWaitScene: View {
             let size = (0.8 + 0.2 * near) * swell
             let opacity = (0.7 + 0.3 * near) * (still ? min(1, age / 0.3) : 1) * (1 - Self.smooth(0.85, 1, moment.fall))
             if !still, born < 1 {
-                // A ring of light runs out of the node as the moon leaves it.
+                // A ring of light runs out of the node (or the star) as the moon leaves it.
                 let ring = 4 + 32 * Self.ease(born)
                 canvas.stroke(Self.circle(node, ring), with: .color(colour.opacity(0.85 * (1 - born))), lineWidth: 1.3)
             }

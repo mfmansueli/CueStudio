@@ -83,8 +83,8 @@ final class UltraAIUITests: XCTestCase {
         XCTAssertFalse(editor.matches(NSPredicate(format: "value CONTAINS %@", "Ultra fitted script"), within: 1))
     }
 
-    /// A script Ultra AI wrote past the platform's ideal: the length bar says so under its track and offers Apple Intelligence's "Fit to time";
-    /// Record's "A bit long" question makes it shorter the same way.
+    /// A script Ultra AI wrote past the network's top whose own fit failed (`-uiTestUltraLong`): the length bar says so under its track and offers
+    /// Apple Intelligence's "Fit to time"; Record's "A bit long" question makes it shorter the same way.
     func testTheLengthBarSaysAnUltraScriptIsPastTheIdealAndFitsIt() {
         let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestUltra", "-uiTestUltraAllowed", "-uiTestUltraLong"])
         pickUltra(app)
@@ -302,7 +302,7 @@ final class UltraAIUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["Ultra AI · 3 of 3 free left"].exists(within: 5))
     }
 
-    /// The lab says what a script cost (its three calls, in the usage each step reported) and adds it to what this iPhone spent. With
+    /// The lab says what a script cost (its two calls, in the usage each step reported) and adds it to what this iPhone spent. With
     /// `TEST_RUNNER_CUE_FIDELITY_DIR=<folder>` it keeps the pictures for `tools/contrast/audit.py`.
     func testTheLabSaysWhatAScriptCost() throws {
         let folder = ProcessInfo.processInfo.environment["CUE_FIDELITY_DIR"].map { URL(fileURLWithPath: $0, isDirectory: true) }
@@ -340,10 +340,10 @@ final class UltraAIUITests: XCTestCase {
         let runCost = element(app, "ultraLab.runCost")
         app.scroll(to: runCost)
         XCTAssertFalse(element(app, "ultraLab.failure").exists, "The lab's script failed")
-        XCTAssertTrue(runCost.label.contains("3 calls"), "The script's cost: \(runCost.label)")
+        XCTAssertTrue(runCost.label.contains("2 calls"), "The script's cost: \(runCost.label)")
         try shot(app, "ultra_cost_02_run")
         for _ in 0..<12 where !total.isHittable { app.swipeDown() }
-        XCTAssertTrue(total.label.contains("3 calls"), "This iPhone's total: \(total.label)")
+        XCTAssertTrue(total.label.contains("2 calls"), "This iPhone's total: \(total.label)")
         XCTAssertTrue(element(app, "ultraLab.spend.scripts").exists, "What a finished script costs is missing")
         try shot(app, "ultra_cost_03_total")
     }

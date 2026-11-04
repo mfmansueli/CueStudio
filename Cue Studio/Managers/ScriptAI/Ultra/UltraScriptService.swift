@@ -7,7 +7,8 @@ import Foundation
 import os
 
 /// AI Scripts Ultra: a developed draft from Claude through Cue's server (Gemini or Claude directly in the Debug lab), then
-/// (`UltraFlow.checked`) its claims checked on their own, then its polish in the creator's way of speaking, two or three calls
+/// its polish in the creator's way of speaking, which also corrects its claims (`UltraFlow.standard`; the lab can check them in a call of
+/// their own, `UltraFlow.checked`), two or three calls
 /// (`UltraModelClient`). Apple Intelligence stays the default and is never
 /// replaced or fallen back from: a script is written here only when the creator chose Ultra for it, and only with their permission
 /// (`UltraConsentService`). Before every call it asks again whether it may go out (permission, the lab's cap, cancellation), so a revoked
@@ -18,10 +19,8 @@ import os
 @MainActor
 @Observable
 final class UltraScriptService: UltraScriptWriting {
-    /// The passes a script goes through when the caller doesn't say (the lab and the comparison pick their own). The check is in: in the blind
-    /// comparison of 29/10/2026 (15 ideas, two judges, `tools/ultra/compare.py`) the checked script won all 6 pairs against the unchecked one,
-    /// its accuracy 4.3 to 4.6 out of 5 against 3.2 to 3.5, and all 15 against Apple Intelligence.
-    var flow = UltraFlow.checked
+    /// The passes a script goes through when the caller doesn't say (the lab and the comparison pick their own).
+    var flow = UltraFlow.standard
     /// How much the model thinks in every call (the lab's comparison picks its own). The model's own choice until a cheaper level is shown to
     /// write as well (`UltraThinking`).
     var thinking = UltraThinking.model
@@ -173,8 +172,8 @@ final class UltraScriptService: UltraScriptWriting {
 
         var script = finished(reply, request: request)
         guard !script.text.isEmpty else { throw UltraError.reviewFailed(.incomplete, draft: draft) }
-        // A vertical video that came back past its range (a little over it, never past two minutes) is fitted into it, one more call. A fit
-        // that fails or may not go out leaves the polished script.
+        // A script that came back past its range (a little over a short one, never past the top of 2:30) is fitted into it, one more call. A
+        // fit that fails or may not go out leaves the polished script.
         if case .ideal(let range) = payload.length, let limit = payload.length.overflowWords(in: request.language), ReadTime.wordCount(in: script.text) > limit,
            let shorter = try? await fitted(UltraFitRequest(
                script: script.text, platform: request.platform, range: range, voice: request.voice ?? request.rules,
@@ -298,6 +297,8 @@ final class UltraScriptService: UltraScriptWriting {
         var title = UltraTitleAccents.restored(
             ScriptPromptBuilder.cleanTitle(reply.title, language: language, preserving: request.preservedPhrases), from: text
         )
+        // A script from an idea keeps the idea's title, the one the creator picked on the card (`UltraPayload.keptTitleLine`).
+        if let kept = request.ideaTitle { title = kept }
         if title.isEmpty, case .prompt(let idea) = request.source {
             title = idea.split(whereSeparator: \.isWhitespace).prefix(8).joined(separator: " ")
         }

@@ -5,10 +5,10 @@
 
 import Foundation
 
-/// How long an Ultra script is asked to run. On Auto a vertical video (every network but YouTube) is written to its platform's range, never past
-/// two minutes: most TikTok, Reels and Shorts videos run 1:15 to 1:45 (the owner's call, 29/10/2026, after free scripts came out at 2 to 3
-/// minutes). YouTube's long form is written freely: nothing useful is cut and nothing is padded. A length the creator chose on the card, or asked
-/// for in the idea, is their intent and is said.
+/// How long an Ultra script is asked to run. On Auto it is written to 1:15 to 2:30 on every network, Stories and YouTube's long form included
+/// (`ScriptRequestFactory.writingRange`), or to the creator's usual length up to 2:30, never past the top: the owner's call of 04/11/2026 ("o
+/// roteiro é sempre um rascunho inicial"; 1:15 to 1:45 since 29/10, after free scripts came out at 2 to 3 minutes; YouTube was written freely).
+/// A length the creator chose on the card, or asked for in the idea, is their intent and is said.
 nonisolated enum UltraLength: Hashable, Sendable {
     /// No time or word target.
     case free
@@ -16,28 +16,24 @@ nonisolated enum UltraLength: Hashable, Sendable {
     case reference(TimeInterval)
     /// The creator's chosen range of speaking time.
     case required(ClosedRange<TimeInterval>)
-    /// The platform's range of speaking time on Auto.
+    /// The range of speaking time on Auto: 1:15 to 2:30, or the creator's usual length.
     case ideal(ClosedRange<TimeInterval>)
 
-    /// The request's own policy: an explicit choice is required, Auto is the platform's range, or free on YouTube.
+    /// The request's own policy: an explicit choice is required, Auto is the network's range.
     init(_ request: ScriptRequest) {
-        if request.durationPolicy == .targeted {
-            self = .required(request.targetRange)
-        } else if request.platform == .youtube {
-            self = .free
-        } else {
-            self = .ideal(request.targetRange)
-        }
+        self = request.durationPolicy == .targeted ? .required(request.targetRange) : .ideal(request.targetRange)
     }
 
-    /// The longest a script on its platform's range may come back before it is fitted into it (`UltraScriptService`): a little over the range,
-    /// never past two minutes. Nil for the other policies, which are never fitted by themselves.
+    /// The longest a script on its network's range may come back before it is fitted into it (`UltraScriptService`): a little over a short range
+    /// (15%), never past the top of one that reaches the networks' 2:30 (`ScriptRequestFactory.autoCeiling`; "sem ficar estourando limite de
+    /// palavras", the owner, 04/11/2026). Nil for the other policies, which are never fitted by themselves.
     var overflowWords: Int? { overflowWords(in: nil) }
 
     /// `overflowWords` at the pace of `language` (`ReadTime.pace(for:)`: fewer words a minute in Korean, more in French).
     func overflowWords(in language: CueLanguage?) -> Int? {
         guard case .ideal(let range) = self else { return nil }
-        return ReadTime.words(for: min(range.upperBound * 1.15, ScriptRequestFactory.autoCeiling), language: language)
+        let top = range.upperBound
+        return ReadTime.words(for: min(top * 1.15, max(top, ScriptRequestFactory.autoCeiling)), language: language)
     }
 
     /// The line the prompt carries, with the words a natural pace gives (150 a minute in English, `ReadTime.pace(for:)` in other languages) so

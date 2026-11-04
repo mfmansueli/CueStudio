@@ -167,7 +167,7 @@ struct LanguageModelDeviceTests {
         profile.profile.phrases.append("Hey fam")
         profile.saveVoiceSetup(niches: [.lifestyle], vocabulary: .simple, sounds: [.casual, .confident])
         let factory = ScriptRequestFactory(
-            rules: PlatformRulesService(), profile: profile, scriptLanguage: nil, interfaceLanguage: .english,
+            profile: profile, scriptLanguage: nil, interfaceLanguage: .english,
             preferredLanguages: ["en-US"]
         )
         let idea = try #require(Self.ideas[language])

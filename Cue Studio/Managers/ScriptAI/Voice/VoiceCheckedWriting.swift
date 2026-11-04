@@ -94,6 +94,28 @@ struct VoiceCheckedWriting {
             ? [VoiceViolation(kind: .requiredPhrase, detail: "Replace any incomplete exact-wording marker with its complete assigned phrase, unchanged.")] : []
         let applicable = voice.filter { !(request.modelRoute == .privateCloud && $0.kind == .pronoun) }
         return applicable + required + unresolved + inventedResults(in: script, for: request) + agreement(in: script, for: request)
+            + brandWording(in: script, for: request)
+    }
+
+    /// A sponsored ad keeps what the brand gave word for word and says it is paid: measured on two iPhones (the Ultra study on Apple
+    /// Intelligence, 04/11/2026), Private Cloud Compute left the disclosure out of 6 ads in 8 and the device's model the brand's approved line out
+    /// of 4, although the request asks for both (`ScriptPromptBuilder.brandLines`). Written once more, told what is missing.
+    private func brandWording(in script: GeneratedScript, for request: ScriptRequest) -> [VoiceViolation] {
+        guard let brand = request.brand else { return [] }
+        let spoken = CueParser.stripCues(script.text).folding(options: [.caseInsensitive, .diacriticInsensitive], locale: nil)
+        var missing: [VoiceViolation] = []
+        if !SponsoredDisclosure.isSaid(in: script.text) {
+            missing.append(VoiceViolation(
+                kind: .brandWording, detail: "Say in a spoken block that this video is a paid partnership with \(brand.name) (#ad)."
+            ))
+        }
+        let given: [(String, String)] = [("approved line", brand.mustSay), ("link", brand.link), ("code", brand.code)]
+        for (what, words) in given {
+            let wanted = words.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !wanted.isEmpty, !spoken.contains(wanted.folding(options: [.caseInsensitive, .diacriticInsensitive], locale: nil)) else { continue }
+            missing.append(VoiceViolation(kind: .brandWording, detail: "Include the brand's \(what) exactly as given, in a spoken block: “\(wanted)”"))
+        }
+        return missing
     }
 
     /// The gender they chose, kept (the owner's B8; §11.7): a word about them in the other one is written once more.

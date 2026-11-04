@@ -28,10 +28,17 @@ struct UltraWaitTimelineTests {
         #expect(timeline.chapter(at: 10.5) == 0, "the scene runs behind; the script never waits for it")
     }
 
-    @Test func withoutTheCheckTheSecondChapterIsTheVoice() {
-        let moment = UltraSceneMoment(time: 9, finish: nil, passStarts: [0, 8], count: 2, arrivals: [], pass: 1, passShown: 0.5)
-        #expect(moment.beam == 0, "no check, no beam")
-        #expect(moment.warmth == 0.5, "the polish warms the disk as it comes")
+    /// The app's two calls: the polish corrects the claims as it applies the voice, so its beam sweeps while the galaxy warms, until the finish.
+    @Test func withTwoCallsThePolishSweepsItsBeamWhileItWarms() {
+        let drafting = UltraSceneMoment(time: 5, finish: nil, passStarts: [0, 8], count: 2, arrivals: [], pass: 0, passShown: 0.5)
+        #expect(drafting.beam == 0 && drafting.warmth == 0)
+        let polishing = UltraSceneMoment(time: 9, finish: nil, passStarts: [0, 8], count: 2, arrivals: [], pass: 1, passShown: 0.5)
+        #expect(polishing.beam == 1, "the polish checks the claims")
+        #expect(polishing.warmth == 0.5, "the polish warms the disk as it comes")
+        let falling = UltraSceneMoment(
+            time: 20 + IdeaTransitionService.ultraFlashTime / 2, finish: 20, passStarts: [0, 8], count: 2, arrivals: [], pass: 1, passShown: 1
+        )
+        #expect(abs(falling.beam - 0.5) < 1e-9, "the beam goes out as the galaxy falls into the star")
     }
 
     @Test func aLongChapterSendsACometEveryTwentySeconds() {

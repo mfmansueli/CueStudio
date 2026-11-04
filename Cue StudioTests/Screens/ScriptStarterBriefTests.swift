@@ -28,7 +28,7 @@ struct ScriptStarterBriefTests {
         let transition = IdeaTransitionService()
         transition.speed = 0.001
         let starter = ScriptStarter(
-            library: ScriptLibraryService(repository: FakeScriptRepository(), now: { TestData.now }), rules: TestData.rulesService(),
+            library: ScriptLibraryService(repository: FakeScriptRepository(), now: { TestData.now }),
             profile: CreatorProfileService(defaults: defaults.defaults), languages: TestData.languages(defaults: defaults.defaults),
             presentation: presentation, ideaDraft: ideaDraft, transition: transition,
             writer: FakeScriptWriter(), toast: ToastService()

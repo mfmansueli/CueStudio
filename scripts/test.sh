@@ -128,6 +128,8 @@ case "$mode" in
             ScriptToolsQualityDeviceTests*) export TEST_RUNNER_CUE_TOOLS_QUALITY=1 ;;
             # The same ideas by Apple Intelligence and Ultra AI (two flows), for the blind comparison (`tools/ultra/compare.py`).
             UltraQualityDeviceTests*) export TEST_RUNNER_CUE_ULTRA_QUALITY=1 ;;
+            # The Ultra study's requests written by Apple Intelligence, with and without the study's improvements (tools/ultra/study/apple_run.py).
+            AppleStudyDeviceTests*) export TEST_RUNNER_CUE_APPLE_STUDY_E2E=1 ;;
             # Text to speech heard by this iPhone's recognizer at each speed, voice effects' words and time, library tracks' decoding time.
             AudioMixDeviceTests*) export TEST_RUNNER_CUE_AUDIO_E2E=1 ;;
             ScriptFontDeviceTests*) export TEST_RUNNER_CUE_FONT_E2E=1 ;;
@@ -204,8 +206,16 @@ if [ "$mode" = full ] && [ ${#parallel[@]} -gt 0 ]; then
     exit "$status"
 fi
 
-result="$RESULTS/$mode-$(timestamp).xcresult"
-xcb "test-$mode" "${plan[@]}" -destination "$destination" "${diagnostics[@]}" \
+# Two iPhones at once (`tools/ultra/study/apple_run.py --parallel`, the owner's call, 04/11/2026): a device run that builds nothing may take
+# its iPhone's own lock instead of the Mac's (CUE_DEVICE_OWN_LOCK=1), with its log and result named by the iPhone. A build, and every other
+# run, still waits for each xcodebuild on the Mac.
+tag=""
+if [[ $mode == device && $action == test-without-building && -n ${CUE_DEVICE_OWN_LOCK:-} ]]; then
+    tag="-${CUE_DEVICE//[^A-Za-z0-9]/}"
+    LOCK="$SHARED/xcodebuild-device$tag.lock"
+fi
+result="$RESULTS/$mode$tag-$(timestamp).xcresult"
+xcb "test-$mode$tag" "${plan[@]}" -destination "$destination" "${diagnostics[@]}" \
     -resultBundlePath "$result" ${parallel[@]+"${parallel[@]}"} ${extra[@]+"${extra[@]}"} "$action" || status=$?
 summarize "$result"
 exit "$status"

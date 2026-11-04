@@ -31,13 +31,16 @@ nonisolated struct VoiceViolation: Hashable, Sendable {
         case agreement
         /// A result of the creator's that nobody gave ("Eu perdi 2 quilos em 7 dias", `AttributedResultDetector`; the owner's B12).
         case inventedResult
+        /// A sponsored ad without its paid-partnership disclosure (`SponsoredDisclosure`) or the brand's approved line, link or code, which the
+        /// brand gave word for word (`BrandBrief`).
+        case brandWording
 
         /// How much breaking it costs the creator when two drafts are compared (`RevisionChoice`): words they asked never to say are the worst, a
         /// wrong "I" or "we", an emoji they refused or a style's name read out loud are plainly wrong, a catchphrase too early is a slip. What is only
         /// counted (the habits measured from their writing) weighs nothing, and the length is judged apart (`DraftAssessment.spokenWords`).
         var severity: Int {
             switch self {
-            case .avoided, .requiredPhrase, .inventedResult: 3
+            case .avoided, .requiredPhrase, .inventedResult, .brandWording: 3
             case .pronoun, .emoji, .styleName, .agreement: 2
             case .catchphraseFirst: 1
             case .tooShort, .sentenceLength, .exclamation: 0

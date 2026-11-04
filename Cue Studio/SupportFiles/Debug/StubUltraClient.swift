@@ -9,7 +9,7 @@ import Foundation
 /// Ultra for UI tests (`-uiTestUltra`): no Firebase, no network, a predictable draft and polish. `-uiTestUltraReviewFails` makes the polish fail
 /// (the draft is never passed off as the script) and `-uiTestUltraSlow` holds each call for two seconds (Stop and Cancel between the calls).
 /// `-uiTestUltraPaced` paces each call as Gemini's usually go, a think and then its words in steps (Ultra AI's scene round the star, filmed:
-/// `UltraWaitScene`); `-uiTestUltraPacedLong` thinks 20 s more on the check (a long chapter's comet). Each answer reports the usage the iPhone
+/// `UltraWaitScene`); `-uiTestUltraPacedLong` thinks 20 s more on the polish (a long chapter's comet). Each answer reports the usage the iPhone
 /// measured for its step, so the lab's cost reads as a real script's would.
 @MainActor
 final class StubUltraClient: UltraModelClient {
@@ -18,8 +18,8 @@ final class StubUltraClient: UltraModelClient {
         case usual, long
 
         func thinking(_ stage: UltraStageRequest.Stage) -> Duration {
-            if stage == .check { return self == .long ? .seconds(22) : .seconds(3) }
-            return .seconds(2.5)
+            if stage == .review, self == .long { return .seconds(22) }
+            return stage == .check ? .seconds(3) : .seconds(2.5)
         }
     }
 
@@ -45,9 +45,10 @@ final class StubUltraClient: UltraModelClient {
     static let scriptText = "Ultra polished opening, with a reason and an example.\n\nUltra polished closing, with the consequence that follows."
     static let fittedText = "Ultra fitted script, with its reason and the consequence."
     static let title = "Ultra stub script"
-    /// 293 words: past TikTok's 1:45 at the natural pace, under the 300 that make Ultra fit it by itself (`UltraLength.overflowWords`). Each
-    /// paragraph is numbered: the same sentence twice is collapsed into one (`ScriptPromptBuilder.collapsingRepeatedSentences`).
-    static let longScriptText = ([scriptText] + (1...23).map { "Ultra long paragraph \($0), with one more reason and one more example." })
+    /// 400 words: past TikTok's 2:30 at the natural pace, which makes Ultra fit it by itself (`UltraLength.overflowWords`); with
+    /// `writesLong` that fit fails, so the page has a script past the ideal. Each paragraph is numbered: the same sentence twice is collapsed
+    /// into one (`ScriptPromptBuilder.collapsingRepeatedSentences`).
+    static let longScriptText = ([scriptText] + (1...32).map { "Ultra long paragraph \($0), with one more reason and one more example." })
         .joined(separator: "\n\n")
 
     func generate(_ request: UltraStageRequest, progress: @escaping @MainActor (Int) -> Void) async throws -> UltraModelReply {
@@ -71,6 +72,7 @@ final class StubUltraClient: UltraModelClient {
             let data = try JSONSerialization.data(withJSONObject: reply)
             return Self.metered(String(bytes: data, encoding: .utf8) ?? "", request.stage)
         case .fit:
+            if writesLong { throw UltraClientError(failure: .provider) }
             let data = try JSONSerialization.data(withJSONObject: ["script": Self.fittedText])
             return Self.metered(String(bytes: data, encoding: .utf8) ?? "", request.stage)
         case .ideas:

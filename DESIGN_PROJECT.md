@@ -358,6 +358,11 @@ não mostra número. Teste: `-uiTestWriterStalls`.
   Uma menção a produto não implica patrocínio, e uma declaração séria descarta humor e CTA de engajamento. Sem chamada separada para classificar e sem
   gravar a inferência como escolha manual. Formato escolhido manualmente mantém sua estrutura; Talking head é preservado do card ao pedido
   (`formatChoice`), mesmo sem `ScriptType` próprio, e não se confunde com Auto. O fallback local conserva a inferência medida existente.
+  **Uma ideia dos cartões, no aparelho, é escrita como o seu tipo** (`ScriptPromptBuilder.followsKind(of:)`, `ScriptFormatDefinitions`): o mito
+  nos blocos de mito vs fato com a linha do gênero, a história contada como história com a regra de honestidade da história, um tipo sem formato
+  próprio nos blocos genéricos com a sua linha; antes, o palpite em inglês (`FormatGuess`) dava a lista habitual do criador a um mito em
+  português. Medido em duas rodadas de 50 ideias com três juízes às cegas (04/11/2026): +2,9 e +4,6 de 100 nas ideias dos cartões. No PCC, que
+  já lê o pedido, não ajudou (−2,1 e −0,1) e fica desligado.
   **Mapa dos dados:** `ScriptRequestFactory` preserva o pedido digitado e resolve plataforma, duração, idioma e variante; `CreatorProfile.voice`
   seleciona os temas relevantes, exemplos e medidas do idioma. `AIRequestPolicy` aplica privacidade e orçamento por rota; `VoiceBriefBuilder`
   transforma identidade, público, motivos, objetivos, estilo e restrições em instruções. `ScriptPromptBuilder` acrescenta estrutura, plataforma,
@@ -398,10 +403,19 @@ não mostra número. Teste: `-uiTestWriterStalls`.
   reescrever "mais longo" não alonga). Guardrail recusando o que o criador digitou: uma tentativa só com o que o Cue oferece (`catalogOnly`).
 - **Tempo:** `GenerationDeadlines` corta o que nunca responde (`ScriptAIError.timedOut`), "Still drafting · taking a little longer" aparece depois de um
   tempo, e trabalho de fundo no mesmo modelo (`TopicTaggingService`, pré-busca de ideias: `IdeaRequestPriority`) sai da frente de um pedido do criador.
-- **Comprimento** (`PlatformRules.json` revisão ≥ 4 — `PlatformRulesService` só aceita revisão mais nova; `ScriptRequestFactory`, `ScriptLength`,
-  `preset.idealRange` como fonte única): TikTok (com ou sem monetização), Reels, Shorts e LinkedIn 1:15–1:45 (75–105 s, 190–260 palavras no ritmo
-  natural; decisão do dono, 29/10/2026: é onde a maioria dos vídeos verticais fica), Stories 15–30 s, YouTube 4–10 min; Auto usa o comprimento habitual
-  do criador (nunca abaixo de 25 s, `spokenFloor`, nem acima de 2 min, `autoCeiling`). O modelo escreve menos do que se pede: pede-se 1,5× as palavras e "pelo menos N frases por bloco" (`ScriptPromptBuilder.lengthRule`),
+- **Comprimento** (`PlatformRules.json` revisão ≥ 5 — `PlatformRulesService` só aceita revisão mais nova; `ScriptRequestFactory`, `ScriptLength`,
+  `preset.idealRange` como fonte única da **meta que a tela mostra**, a mesma para todo criador, escreva quem escrever): TikTok (com ou sem
+  monetização), Reels, Shorts, LinkedIn e Stories 1:15–2:30 (75–150 s, 190–375 palavras no ritmo natural; decisão do dono, 04/11/2026: "é uma faixa
+  real"), YouTube 4–10 min (8–15 com monetização). **O roteiro é escrito em 1:15–2:30 em toda rede, YouTube incluído**
+  (`ScriptRequestFactory.writingRange`; dono: "o tempo do front-end deve refletir para todos, mas o que o back-end faz no tempo fica no back-end";
+  completar um vídeo longo ou dividir em Stories é do criador, o roteiro é um rascunho). No Auto o **Apple Intelligence não recebe duração** no
+  pedido (`ScriptDurationPolicy.informative`: escreve o que a ideia pede; o dono, 04/11: "no back-end você pode pedir o que for melhor pro modelo"); a
+  faixa dele é 1:15–1:45 (`AppleScriptLength.window`) só para o teto do comprimento habitual. **Medido em dois iPhones** (04/11/2026, 50 ideias,
+  três juízes de IA às cegas com a rubrica da Ultra, `AppleStudyDeviceTests` + `tools/ultra/study/apple_run.py`): pedir 1:15–1:45 ou 1:45–2:30 no
+  texto deixou o roteiro mais longo e pior (aparelho 42,8 → 40,8 e 26,4 de 100, encheção e frases repetidas; Private Cloud Compute 73,8 → 72,3 e
+  69,7), e dizer ao modelo o que um formato escolhido precisa também piorou (aparelho −1,8, PCC −7,4); nenhum dos dois entrou. O que entrou foi
+  escrever a ideia dos cartões como o seu tipo, só no aparelho (§4.1, "Formato Automático"). A Ultra AI escreve na faixa inteira (§57). Com o comprimento habitual do criador, Auto usa o dele em qualquer rede (nunca
+  abaixo de 25 s, `spokenFloor`, nem acima de 2:30 na Ultra, `autoCeiling`, ou de 2 min no Apple Intelligence, `AppleScriptLength.ceiling`). O modelo escreve menos do que se pede: pede-se 1,5× as palavras e "pelo menos N frases por bloco" (`ScriptPromptBuilder.lengthRule`),
   e blocos curtos são alongados um a um quando o roteiro tem < 70% do mínimo (`ScriptExpansion`, `expandingIfShort`; um roteiro num bloco só vale com
   70%, `rescued`). **Vídeo curto não é esticado:** mínimo até 200 palavras (`shortFormWords`) é pedido como é, sem regra de frases nem alongar, e nunca
   mais que 300 (`shortFormCeiling`); YouTube longo é pedido como é. Cues repetidos 3+ vezes viram um (`collapsingRepeatedCues`).
@@ -592,7 +606,7 @@ realce de palavras. Ficam a linha de leitura, o trilho de seções e o chip de v
 (espelho e Remote continuam). Gravar é do Selfie. Texto `PrompterTextView` em tela cheia com a linha em `guidePosition`; um toque toca ou pausa.
 **Barra** (`StudioControlPanel`, vidro noturno, alça que guarda e ⌃ que traz): (1) Voice | Steady, ‹‹ 3 linhas, play, 3 linhas ››; (2) velocidade ou linha
 de voz e estado; (3) chips **Size · Line · Margin · Mirror · Aa More** (`StudioAdjustBar`): um slider por vez (tamanho 12–56 pt, linha 10–70%, margens 8–40 pt; o slider
-só existe aberto, `showsSlider`), Mirror para rig, Aa abre o Display. Acima do texto, "0:42 LEFT" e "1:12 · IDEAL 1:15–1:45" (`StudioTimeLine`).
+só existe aberto, `showsSlider`), Mirror para rig, Aa abre o Display. Acima do texto, "0:42 LEFT" e "1:12 · IDEAL 1:15–2:30" (`StudioTimeLine`).
 **Contagem:** play do começo usa a de Settings › Prompter (Off, 3, 5, 10 s); a barra some e um toque cancela; retomar toca na hora. Voice Following ouve
 pelo medidor do microfone.
 
@@ -642,6 +656,11 @@ ajuda um idioma, então o idioma vem antes). Escrever à mão, importar, telepro
   "Open the draft to write it yourself.". O roteiro guarda uma cópia do briefing da marca (`Script.brand`), também no rascunho aberto à mão e no Start
   from a format, salvo a marca ou não; Improve, ganchos, a versão para outra plataforma, a tradução e o ajuste de tamanho da Ultra AI recebem o #ad, o
   que a marca pediu e proibiu, o link e o cupom (estes dois ficam como estão). Um roteiro que deixou de ser anúncio é reescrito como o que é agora.
+  **O anúncio escrito pelo Apple Intelligence é conferido** (`VoiceCheckedWriting`, `VoiceViolation.Kind.brandWording`): sem o aviso de parceria
+  paga dito em qualquer idioma do app (`SponsoredDisclosure`: "parceria paga", #publi, Werbung, 광고…) ou sem a frase aprovada, o link ou o cupom
+  como a marca deu, é escrito mais uma vez dizendo o que faltou. Medido em 04/11 nos iPhones: o aparelho deixava a frase da marca de fora em 4
+  anúncios de 8 e passou a trazer tudo; o Private Cloud Compute deixava o aviso de fora em 6 de 8 e às vezes ignora a correção (o roteiro sai sem
+  ele; o **Add disclosure** da página o põe).
 - **Ferramentas da página:** no idioma do roteiro, o subtítulo do Improve diz o motivo e as ferramentas que precisam do modelo **não aparecem** (nem
   esmaecidas; dono, 01/11/2026): ficam Add disclosure e a dica do gancho, e o Improve some quando não sobra nada; Shape e o Hook (ganchos do formato)
   ficam, porque são regras; a barra da seleção não aparece; o Fit to time da barra de duração e o Shorter do aviso somem; "Make a version for…" diz o motivo antes do "Drafting…". Hooks caem nos do formato. Os
@@ -1115,7 +1134,7 @@ sentir livre para escrever como quiser). **Sem dicas embaixo do texto** (gancho 
   linha e rolando dentro da barra com degradê nas pontas quando não cabem; divisor e **Cut** (✂) fixo no fim, como o + das cues. Trabalhando,
   "DRAFTING…" com Stop (✕) no fim; com as palavras novas no texto, ✓ Keep · ↺ Undo · ✦ Try again. Sem Apple Intelligence ela não existe.
 - **Recortar** pela barra da seleção (Cut) leva uma cue inteira e deixa um espaço só entre as palavras.
-- **Duração numa linha** (`ScriptLengthBar`): "113 WORDS · ~0:45" à esquerda, "IDEAL 1:15–1:45" à direita, trilho de 5 pt; amarelo abaixo do ideal,
+- **Duração numa linha** (`ScriptLengthBar`): "113 WORDS · ~0:45" à esquerda, "IDEAL 1:15–2:30" à direita, trilho de 5 pt; amarelo abaixo do ideal,
   verde dentro (com ✓, brilha uma vez e toque leve ao entrar), laranja acima ("CUT 6S", toque firme). Acima do ideal, uma linha sob o trilho avisa
   (**⚠︎ Past the TikTok ideal**, `warnText`) com o botão que encaixa, quando o Apple Intelligence escreve o roteiro (✦ **Fit to time**, também num
   roteiro da Ultra AI; some enquanto a IA escreve ou outra ferramenta roda). Cresce numa mola; os toques são só do que o criador
@@ -1360,7 +1379,7 @@ promessa por teste) e `ScriptToolsDeviceTests` no iPhone. **Falsos alarmes do ra
   resposta limitada à janela do modelo. Roteiro já no tamanho não chama o modelo.
 - Grades de proteção para texto do próprio criador (`permissiveContentTransformations`); recusa vira "Apple Intelligence won’t work on this text. Try
   rewording it, or use another tool." (`ScriptAIError.declined`).
-- `RewriteNotice` escolhe o toast pelo que aconteceu (textos em §33): "Shorter · 132 → 53 words", "Closer to 1:15–1:45 · now 0:48", "Already within the target length · 1:15–1:45",
+- `RewriteNotice` escolhe o toast pelo que aconteceu (textos em §33): "Shorter · 132 → 53 words", "Closer to 1:15–2:30 · now 0:48", "Already within the target length · 1:15–2:30",
   "No mistakes to fix", "n of m parts left as written", "Couldn’t draft it" com o botão **Try again** (nada salvo, sem Undo). Roteiro vazio não chama o modelo.
 - **Todo retoque é do Apple Intelligence**, também num roteiro da Ultra AI (dono, 01/11/2026), primeiro no Private Cloud Compute (`AIModelRoute`). A
   qualidade é medida em `ScriptToolsQualityDeviceTests` (23 roteiros reais da Ultra AI, do Apple Intelligence e escritos à mão; o roteiro inteiro, as
@@ -3212,7 +3231,7 @@ dono, 29/10/2026). As telas de privacidade dizem que o pedido vai à **Anthropic
 `ultra` (`server/functions`, Cloud Functions 2ª geração no projeto Firebase `cuestudio-app`, `us-central1`;
 `https://us-central1-cuestudio-app.cloudfunctions.net/ultra`), que confere o **App Check** (App Attest num iPhone de verdade; o token de depuração
 registrado num build Debug), lê a chave da Anthropic no Secret Manager (`ANTHROPIC_API_KEY`), escolhe o modelo e o esforço (`server/functions/.env`:
-`ULTRA_MODEL`, hoje `claude-sonnet-5-5`; `ULTRA_EFFORT`, hoje `high`: trocar é publicar de novo, sem build novo; o dono ainda decide entre Sonnet e Opus)
+`ULTRA_MODEL` `claude-opus-5-5` e `ULTRA_EFFORT` `low`, escolhidos pelo estudo às cegas de 04/11/2026; trocar é publicar de novo, sem build novo)
 e devolve os eventos do Claude enquanto chegam (`CueServerUltraClient`, `ClaudeStreamReader`). O app manda só a etapa, as instruções e o pedido como o
 *What Cue sends* mostra, o formato JSON da etapa (`ClaudeStageShape`) e um esforço menor quando o fluxo pede (`UltraThinking`). O servidor recusa o que o
 app nunca manda (etapa desconhecida, textos acima de 40 mil caracteres, formato errado), tem teto de 32 mil tokens por resposta, refaz uma recusa de
@@ -3264,14 +3283,24 @@ chave copiada à mão para `Documents/UltraLab-AnthropicKey` (`tools/ultra/insta
 ou no terminal. Uma recusa de política é refeita no modelo recomendado da Anthropic (o Haiku não tem esse recurso). O custo do laboratório usa o preço
 de cada modelo (`UltraLabProvider.price`; pelo servidor, o do modelo que a resposta diz, `UltraPrice.server`).
 
-**Como escreve** (`UltraScriptService`, `UltraPayload`, `UltraInstructions`): três chamadas pelo servidor do Cue (no laboratório, também pelo Firebase AI
-Logic com o `gemini-3.5-flash` ou pelo Claude direto), sem nova tentativa (`UltraFlow.checked`): (1) um rascunho desenvolvido com quem o criador é e para quem
-fala, com exemplos dentro do mundo dele; (2) a **checagem das afirmações**, sem o jeito de falar: corrige o que é falso ou universal demais, mecanismo
-inventado, número, estudo, credencial ou "a ciência explica" que o pedido não deu e promessa absoluta, com a menor mudança, e mantém cenas imaginadas,
-opiniões, estrutura e fim (JSON com o roteiro e a lista do que corrigiu); (3) o polimento com o jeito de falar sobre o rascunho checado, que mantém as
-correções, revisa o texto (palavra faltando, uma só forma de tratamento) e devolve título, roteiro e mudanças em JSON. Na comparação às cegas de 29/10/2026
-(15 ideias, dois juízes de IA, `tools/ultra/compare.py`) o roteiro checado venceu os 6 pares contra o sem checagem (precisão 4,3–4,6 contra 3,2–3,5 de 5) e
-os 15 contra o Apple Intelligence; o laboratório ainda escolhe *Draft · polish* para comparar. O título volta a ter os acentos que o próprio roteiro usa
+**Como escreve** (`UltraScriptService`, `UltraPayload`, `UltraInstructions`, `UltraFormatGuide`): duas chamadas pelo servidor do Cue (no laboratório,
+também pelo Firebase AI Logic com o `gemini-3.5-flash` ou pelo Claude direto), sem nova tentativa (`UltraFlow.standard`): (1) um rascunho desenvolvido com
+quem o criador é e para quem fala, com exemplos dentro do mundo dele; (2) o polimento com o jeito de falar, que também corrige as afirmações (falso ou
+universal demais, mecanismo inventado, número, estudo, credencial ou "a ciência explica" que o pedido não deu, promessa absoluta), revisa o texto (palavra
+faltando, uma só forma de tratamento) e devolve título, roteiro e mudanças em JSON. O laboratório ainda pode pôr a **checagem das afirmações** numa chamada
+própria entre as duas (*Draft · check · polish*, `UltraFlow.checked`). **O estudo de 04/11/2026** (1.047 roteiros, três juízes de IA às cegas com a rubrica
+v2 e duas rodadas de leitura às cegas do dono; código em `tools/ultra/study` e `Cue StudioTests/UltraStudy`, dados em
+`~/Desktop/Projects/CueStudio-Research/ultra-study-2026-11`) escolheu o **Opus 5.5 no esforço baixo, em duas chamadas**: nota igual à do Opus baixo com
+checagem (89,5 e 89,9 de 100), um terço mais barato (~US$ 0,055 por roteiro, ~20 s) e o preferido do dono (6 de 10 ideias); o Opus alto escreve um pouco
+melhor (93,5) por quase três vezes o preço. **Nos outros 17 idiomas** (51 roteiros, US$ 2,97, os mesmos três juízes lendo como nativos de cada
+mercado: fluência, escrita, registro e tradução literal): 90,1 de 100 contra 92,4 em português, inglês e espanhol, nenhum para refazer, 61% para
+gravar como está; holandês 93,3, sueco 93,2, chinês simplificado 92,6, e os mais fracos tailandês 83,2, japonês 86,8 e híndi 87,9 (frases que
+soam traduzidas, híndi formal demais, japonês misturando o formal e o casual); custo médio US$ 0,061, tailandês o mais caro (0,089). **O formato** vai com o que ele pede, não só o nome (`UltraFormatGuide`: a cadeia "mas, então" de uma
+história, o resultado primeiro num tutorial, o mito uma vez e o fato duas num mito vs fato, a responsabilidade antes de tudo num pedido de desculpas…):
++5 pontos (86,0 → 91,2). No Auto, uma ideia dos cartões vai com a definição do gênero do seu tipo (`IdeaBrief.angleKind`: história contada como
+história, opinião defendida, antes e depois mostrado como contraste…), 89,6 → 92,6; uma ideia digitada lê o gênero do pedido (a lista de todos os gêneros
+não ajudou). **O título** de um roteiro que veio de uma ideia é o título da ideia, sem limite de palavras (decisão do dono, 04/11/2026; o editor o recebe e
+o app o garante); de um pedido digitado, um título curto de até oito palavras. O título volta a ter os acentos que o próprio roteiro usa
 (`UltraTitleAccents`: o modelo às vezes escreve "camera" sobre um roteiro que diz "câmera"). Só o roteiro polido vira o roteiro; uma checagem ou um
 polimento que falha é uma falha ("Ultra AI couldn’t polish the draft", com **Try again** no toast quando a falha não é de rede), sem o rascunho no lugar. A duração Auto é informação (não corta nem enche); uma escolhida no cartão ou pedida no
 texto é intenção. O pedido do criador vai palavra por palavra e vence o costume do perfil (abertura, formato, CTA). Antes de cada chamada confere permissão,
@@ -3280,16 +3309,17 @@ Crashlytics; o Console (`studio.cue` / `Ultra`) recebe só tipos, tempos, tokens
 
 **O roteiro salvo** guarda `Script.draftedBy = .ultra` e o aviso de fatos; o toast diz "Ultra AI draft ready · Check facts".
 
-**Duração e Fit to time** (decisões do dono, 29/10/2026): no Auto, um vídeo vertical (TikTok, Reels, Shorts, LinkedIn, Stories) é escrito na faixa da
-rede, nunca acima de 2 min (`UltraLength.ideal`: "Length: 75 to 105 seconds… never go past 263 words"); só o YouTube longo é escrito livre, no tamanho que
-o assunto pede (`UltraLength.free`). Um roteiro vertical que volta mais de 15% acima da faixa (ou de 2 min, `overflowWords`) é encaixado nela por mais
-uma chamada (`UltraScriptService.run`); se ela falhar ou não puder sair, fica o roteiro polido. Uma duração escolhida pelo criador é a intenção dele
+**Duração e Fit to time** (decisões do dono, 04/11/2026): no Auto, todo roteiro é escrito em 1:15–2:30, em qualquer rede, YouTube longo incluído
+(a meta da tela continua a do YouTube, §4), nunca acima do topo (`UltraLength.ideal`: "Length: 75 to 150 seconds… never go past 375 words"); com o
+comprimento habitual do criador, o dele, até 2:30 (`ScriptRequestFactory.autoCeiling`). Um roteiro que volta acima da faixa é encaixado nela por
+mais uma chamada (`UltraScriptService.run`): mais de 15% acima numa faixa curta, qualquer palavra acima do topo numa que chega a 2:30
+(`overflowWords`; "sem ficar estourando limite de palavras"); se ela falhar ou não puder sair, fica o roteiro polido e a barra de duração diz que passou. Uma duração escolhida pelo criador é a intenção dele
 (`UltraLength.required`) e não é encaixada sozinha. A Ultra AI escreve em **parágrafos curtos** (um tema cada, duas a quatro frases, linha em branco
-entre eles), pedido nas três etapas e no encaixe. **Depois de escrito, todo retoque é do Apple Intelligence** (Fit to time, Improve, a barra da
+entre eles), pedido nas duas etapas e no encaixe. **Depois de escrito, todo retoque é do Apple Intelligence** (Fit to time, Improve, a barra da
 seleção), no iPhone ou no Private Cloud Compute (dono, 01/11/2026: a Ultra AI escreve, não retoca; cada retoque com ela seria mais uma chamada paga).
 A chamada de encaixe (`UltraScriptService.fit`, `UltraFitRequest`, `UltraInstructions.fitter`) só sai durante a escrita, para o roteiro que voltou além
-da faixa: o roteiro polido, a rede, a faixa ideal em palavras e o jeito de falar; volta só o texto (JSON `{"script"}`), mantém as ressalvas que a
-checagem pôs, a primeira frase, quem fala e o fim, e corrige as contagens ("cinco passos") do que saiu. Medido no iPhone (29/10/2026, 13 roteiros de
+da faixa: o roteiro polido, a rede, a faixa ideal em palavras e o jeito de falar; volta só o texto (JSON `{"script"}`), mantém as ressalvas que o
+polimento pôs, a primeira frase, quem fala e o fim, e corrige as contagens ("cinco passos") do que saiu. Medido no iPhone (29/10/2026, 13 roteiros de
 300–480 palavras, TikTok 60–90 s): pôs os 13 entre 72 e 89 s (juiz: 8 para gravar como estão, 5 com ajustes pequenos, 0 para refazer;
 `research_notes/Ultra AI/fit-q1*.json`). "What Ultra AI sends" mostra essa chamada como o passo 4.
 
@@ -3310,7 +3340,7 @@ recebe o custo de cada chamada e de cada pedido. O gasto do projeto inteiro (os 
 catálogo, e avisa quando `UltraPrice` ficou para trás. Em 31/10/2026, depois das medições abaixo: cerca de 520 chamadas respondidas e 2 recusadas
 (429), **cerca de USD 12,2**, USD 0,023 por chamada.
 
-**Custo medido no iPhone** (31/10/2026, `UltraCostDeviceTests`, o fluxo do app, rascunho, checagem e polimento; criador sintético de finanças e
+**Custo medido no iPhone com o Gemini do laboratório** (31/10/2026, `UltraCostDeviceTests`, rascunho, checagem e polimento; criador sintético de finanças e
 hábitos). **Nos 20 idiomas** (`threeStarts`, TikTok, Auto: a ideia do card de Scripts e a próxima do Find inspiration escritas pelo Apple Intelligence
 no aparelho, e a mesma ideia digitada traduzida): 60 roteiros, **média USD 0,075** (mediana 0,069, de 0,049 a 0,131), 39 s para escrever em média;
 card 0,076, Find inspiration 0,079, digitada 0,072. Por idioma (média de três): indonésio 0,058, inglês 0,059, híndi e chinês simplificado 0,061, espanhol 0,063,
@@ -3384,10 +3414,13 @@ primeira ficava parada enquanto o modelo pensava e só andava quando chegavam pa
 começa com a etapa (nunca antes de 1,2 s depois do anterior; nada espera a cena, o roteiro nunca atrasa por ela):
 - **Rascunho:** a cada 6% das palavras que chegam (`WritingProgressMeter.arrivals`, até ~16 por etapa) a estrela pulsa e solta uma faísca ✦ que **corre por
   um braço** até acender uma estrela nova: 10 no começo, até 26 com o rascunho.
-- **Fatos:** um feixe suave varre a galáxia (uma volta a cada 2,6 s) e acende o que toca.
-- **Sua voz:** a galáxia esquenta do violeta para o dourado, de dentro para fora, conforme o polimento chega.
+- **Sua voz** (o polimento, que também confere os fatos): um feixe suave varre a galáxia (uma volta a cada 2,6 s) e acende o que toca, enquanto ela
+  esquenta do violeta para o dourado, de dentro para fora, conforme o polimento chega; o feixe se apaga quando tudo cai na estrela. Com a checagem
+  própria do laboratório, o feixe tem um capítulo seu entre o rascunho e o polimento.
 
-O nó do fim de cada arco brilha na cor da sua lua enquanto a etapa anda; quando ela termina, o nó **solta uma lua** (violeta, branca, dourada) com um anel
+Logo que a estrela acende, **a lua da ideia** (branca) sai dela e entra numa órbita própria (pedido do dono, 04/11/2026: com duas etapas a lua da voz
+só nasce no final, e a espera teria uma lua só). O nó do fim de cada arco brilha na cor da sua lua enquanto a etapa anda; quando ela termina, o nó
+**solta uma lua** (violeta do rascunho, dourada da voz; com a checagem do laboratório, a branca é a da checagem e a da ideia não sai) com um anel
 de luz e um toque leve. A lua é um **pequeno mundo** de ~11 pt (um degradê iluminado do lado que dá para a estrela, num brilho de 36 pt) e vai para uma
 **órbita inclinada própria, desenhada** (linha fina na cor dela, mais fraca atrás da estrela e mais forte na frente, que se desenha enquanto ela voa até lá),
 com um rastro curto, passando atrás e na frente da estrela. **Fora do anel, o espaço** (pedido do dono, 30/10/2026; recortado para nunca passar dentro do
@@ -3398,10 +3431,10 @@ como a de um cometa aponta para longe do sol. Um capítulo com mais de 20 s mand
 quando ele passa. Aos 45 s a frase passa a "Still drafting
 · taking a little longer". **Final** (`IdeaTransitionService.ultraFinishDuration`, 1,1 s em vez dos 0,3 s da capa, 0,8 s a mais): as luas e a galáxia caem
 em espiral na estrela com os nós do anel, que incha, **clareia aos 0,8 s** e solta uma onda dourada no plano da galáxia; `HapticPatterns.ultraFinish` (zumbido
-crescente, toque firme no clarão, assentar); depois o anel abre a página como sempre. Medido na Ultra de verdade (15 roteiros, iPhone 15 Pro): 36 s na
-mediana (25–69 s), 10–12 s por etapa. Reduzir Movimento: nada gira, voa ou cruza; galáxia e luas paradas, e o final é um fade. Contraste do texto sobre a
+crescente, toque firme no clarão, assentar); depois o anel abre a página como sempre. Com o Opus baixo em duas chamadas, um roteiro leva
+~20 s (estudo de 04/11/2026, a API do Claude medida no Mac). Reduzir Movimento: nada gira, voa ou cruza; galáxia e luas paradas, e o final é um fade. Contraste do texto sobre a
 cena medido na imagem (`UltraAIUITests.testCaptureTheUltraWaitScene` + `tools/contrast/audit.py`): título 12,3:1, ideia 11,2:1, frase 4,9:1, Cancel 12,4:1.
-Para ver sem gastar chamadas: `-uiTestUltra -uiTestUltraAllowed -uiTestUltraPaced` (cerca de 24 s) ou `-uiTestUltraPacedLong` (checagem que pensa 22 s sem palavras, com cometa; a captura confere que a galáxia muda em todos os quadros).
+Para ver sem gastar chamadas: `-uiTestUltra -uiTestUltraAllowed -uiTestUltraPaced` (cerca de 24 s) ou `-uiTestUltraPacedLong` (polimento que pensa 22 s sem palavras, com cometa; a captura confere que a galáxia muda em todos os quadros).
 
 **O Pro onde a Ultra AI existe** (§12): o destaque "✦ ULTRA AI · 30 scripts · every month" ao lado do das exportações (aparece mesmo sem o Apple
 Intelligence) e a linha sob o título "Free to try · 3 exports and 3 Ultra AI scripts included."; assinando pelo Pro da Ultra AI, o toast "Welcome to Cue

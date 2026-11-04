@@ -19,7 +19,7 @@ struct LengthZoneTests {
         #expect(zone.status == "24s to the length goal")
     }
 
-    /// TikTok's ideal is 1:15–1:45 (the owner's call, 29/10/2026): 200 words take 1:20.
+    /// TikTok's ideal is 1:15–2:30 (the owner's call, 04/11/2026): 200 words take 1:20.
     @Test func withinTheIdealRange() {
         let zone = LengthZone(text: TestData.words(200), preset: tikTok)
         #expect(zone.isInIdealRange)
@@ -33,9 +33,9 @@ struct LengthZoneTests {
     }
 
     @Test func overTheIdealRange() {
-        // Reels' ideal is 1:15–1:45: 290 words take 1:56.
-        let zone = LengthZone(text: TestData.words(290), preset: reels)
-        #expect(zone.status == "11s over ideal")
+        // Reels' ideal is 1:15–2:30: 400 words take 2:40.
+        let zone = LengthZone(text: TestData.words(400), preset: reels)
+        #expect(zone.status == "10s over ideal")
     }
 
     @Test func underTheIdealRangeWithoutMinimum() {
@@ -45,8 +45,8 @@ struct LengthZoneTests {
 
     @Test func meterScaleLeavesRoomPastTheIdealRange() {
         let zone = LengthZone(text: TestData.words(150), preset: tikTok)
-        #expect(abs(zone.scaleMax - 126) < 0.0001)
-        #expect(abs((zone.minimumFraction ?? 0) - 60.0 / 126.0) < 0.0001)
+        #expect(abs(zone.scaleMax - 180) < 0.0001)
+        #expect(abs((zone.minimumFraction ?? 0) - 60.0 / 180.0) < 0.0001)
         #expect(zone.minimumLabel == "1:00 · Creator Rewards")
     }
 

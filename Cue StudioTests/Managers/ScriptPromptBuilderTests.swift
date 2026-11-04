@@ -158,6 +158,10 @@ struct ScriptPromptBuilderTests {
 
     @Test func cleanKeepsOrdinaryColons() {
         #expect(ScriptPromptBuilder.clean("Here's the thing: it works.") == "Here's the thing: it works.")
+        // "Myth" and "Fact" are said in a myth vs fact video: without them the myth reads as the creator's claim.
+        #expect(ScriptPromptBuilder.clean("Myth: you need to stretch before every workout.\n\nFact: a warm-up is what you need.")
+            == "Myth: you need to stretch before every workout.\n\nFact: a warm-up is what you need.")
+        #expect(ScriptPromptBuilder.clean("Hook: Did you know your warm-up is wrong?") == "Did you know your warm-up is wrong?")
     }
 
     @Test func cleanTitleKeepsOneLineWithoutDecoration() {

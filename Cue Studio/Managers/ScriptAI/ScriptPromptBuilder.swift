@@ -155,8 +155,13 @@ nonisolated enum ScriptPromptBuilder {
             lines += [
                 "Write a \(guide.name) script for \(request.platform.promptName).",
                 "Blocks, in this order: \(guide.order).",
-                "What each block does: \(guide.purpose)",
             ]
+            if let needs = formatNeeds(for: request) {
+                lines.append(needs)
+                if let ending = endingPurpose(of: guide, for: request) { lines.append(ending) }
+            } else {
+                lines.append("What each block does: \(guide.purpose)")
+            }
         }
         if request.durationPolicy == .targeted {
             lines.append("Length: between \(low) and \(high) spoken words in total.")
@@ -212,12 +217,52 @@ nonisolated enum ScriptPromptBuilder {
         return lines
     }
 
+    /// Apple Intelligence gets what the chosen format needs (`ScriptFormatDefinitions.chosenLine`, the Ultra study's definitions) in place of
+    /// what each block does. Measured on two iPhones and left off (04/11/2026, `AppleStudyDeviceTests`, `tools/ultra/study/apple_run.py`): a chosen
+    /// format scored 1.8 points of 100 lower on the device and 7.4 lower on Private Cloud Compute; a task-local value, so a measurement or a test
+    /// turns it on for its own writing only (`$definesFormats.withValue`).
+    @TaskLocal static var definesFormats = false
+
+    /// On Auto, an idea from the cards is written as its kind (`ScriptRequest.ideaKind`): on the device route in its format's blocks
+    /// (`ScriptFormatDefinitions.format(for:)`) with its genre's line, on Private Cloud Compute with the genre's line in place of the menu of
+    /// every genre (`PCCScriptDirection.automaticFormatLines`). Measured on two iPhones (04/11/2026, two rounds of 50 ideas, three blind judges,
+    /// `AppleStudyDeviceTests`): the device wrote the cards' ideas better with it (+2.9 and +4.6 of 100), Private Cloud Compute no better (−2.1
+    /// and −0.1), so it is on for the device only (`followsKind(of:)`). A measurement or a test sets it for its own writing; nil is that default.
+    @TaskLocal static var followsIdeaKind: Bool?
+
+    /// Whether this request's card idea is written as its kind: what a measurement set, else on the device route only.
+    static func followsKind(of request: ScriptRequest) -> Bool {
+        followsIdeaKind ?? (request.modelRoute != .privateCloud)
+    }
+
+    /// The line that says what this script's shape needs, in place of what each block does: the chosen format's definition (`definesFormats`),
+    /// or on Auto the genre of the card's idea (`followsIdeaKind`). Nil keeps the blocks' purposes.
+    static func formatNeeds(for request: ScriptRequest) -> String? {
+        if definesFormats {
+            if request.formatChoice == .talkingHead { return ScriptFormatDefinitions.talkingHeadLine }
+            if let type = request.type { return ScriptFormatDefinitions.chosenLine(for: type) }
+        }
+        guard followsKind(of: request), request.type == nil, request.formatChoice != .talkingHead, let kind = request.ideaKind else { return nil }
+        return ScriptFormatDefinitions.ideaLine(for: kind)
+    }
+
+    /// The closing block's purpose when it is the creator's own ending (`FormatGuide.ending(for:)`): kept beside a format's definition, which
+    /// says nothing of how this creator ends.
+    private static func endingPurpose(of guide: FormatGuide, for request: ScriptRequest) -> String? {
+        guard let voice = request.structure.isSerious ? nil : request.voice, voice.decidesTheEnding,
+              let index = guide.blocks.firstIndex(where: { $0 == "CTA" || $0 == FormatGuide.closeBlock }) else { return nil }
+        return "\(guide.blocks[index]): \(guide.purposes[index])"
+    }
+
     /// The shape of the script: the chosen format, else the one a free idea asks for (or the creator films most), else the generic one.
     /// Its closing block ends as the creator does (`FormatGuide.ending(for:)`); a serious statement has no voice, so its shape stays.
     static func formatGuide(for request: ScriptRequest) -> FormatGuide {
         let voice = request.structure.isSerious ? nil : request.voice
         if let type = request.type { return FormatGuide.guide(for: type).ending(for: voice) }
         if request.formatChoice == .talkingHead { return FormatGuide.talkingHead.ending(for: voice) }
+        if followsKind(of: request), let kind = request.ideaKind {
+            return FormatGuide.guide(for: ScriptFormatDefinitions.format(for: kind)).ending(for: voice)
+        }
         guard case .prompt(let idea) = request.source else { return FormatGuide.generic.ending(for: voice) }
         return FormatGuide.guide(for: FormatGuess.format(for: idea, usual: request.voice?.formats ?? [])).ending(for: voice)
     }
@@ -407,6 +452,7 @@ nonisolated enum ScriptPromptBuilder {
     /// The storytime format (chosen, or the one `formatGuide(for:)` guesses), or a talking video that says "I" in its own language: a list or a
     /// tutorial in the first person ("Minha rotina de manhã") is advice, not a story.
     static func isFirstPersonStory(_ request: ScriptRequest) -> Bool {
+        if followsKind(of: request), request.type == nil, let kind = request.ideaKind { return ScriptFormatDefinitions.isLived(kind) }
         let format = request.type ?? FormatGuess.format(for: request.creatorText, usual: request.voice?.formats ?? [])
         if format == .story { return true }
         guard format == nil else { return false }
@@ -784,22 +830,32 @@ nonisolated enum ScriptPromptBuilder {
 
     /// A sentence said again word for word, after the first time, goes: a model that loops ("Esa es nuestra esencia. … Esa es nuestra misión. … Esa
     /// es nuestra esencia.") ran until its answer was cut off on the iPhone (1 script of 27 in a device run). Only for a script the model wrote: the
-    /// creator may repeat a line on purpose. Sentences of fewer than three words ("Save this.") stay.
+    /// creator may repeat a line on purpose. Sentences of fewer than three words ("Save this.") stay. Only the repeats leave: everything else is
+    /// kept exactly as written, so a point inside a number, a link or an abbreviation ("R$ 1.800", "panelaleve.com.br", "10 p.m.") or before a
+    /// closing quote never gains a space (it did in 46 of 1,047 Ultra scripts, "R$ 1. 800", in the study of 04/11/2026).
     static func collapsingRepeatedSentences(_ text: String) -> String {
         var seen = Set<String>()
         let paragraphs = text.components(separatedBy: "\n\n").compactMap { paragraph -> String? in
-            let sentences = paragraph.matches(of: /[^.!?…。！？]+(?:[.!?…。！？]+|$)(?:\s*\[[^\]\n]{1,40}\])*/).map { String($0.output) }
-            guard !sentences.isEmpty else { return paragraph }
-            let kept = sentences.filter { sentence in
-                let key = CueParser.stripCues(sentence).lowercased().filter { $0.isLetter || $0.isNumber || $0 == " " }
+            var repeats: [Range<String.Index>] = []
+            for sentence in paragraph.matches(of: sentencePattern) {
+                let key = CueParser.stripCues(String(sentence.output)).lowercased().filter { $0.isLetter || $0.isNumber || $0 == " " }
                     .split(separator: " ").joined(separator: " ")
-                guard key.split(separator: " ").count >= 3 else { return true }
-                return seen.insert(key).inserted
+                guard key.split(separator: " ").count >= 3 else { continue }
+                if !seen.insert(key).inserted { repeats.append(sentence.range) }
             }
-            let joined = kept.map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }.joined(separator: " ")
-            return joined.isEmpty ? nil : joined
+            guard !repeats.isEmpty else { return paragraph }
+            var kept = paragraph
+            for range in repeats.reversed() { kept.removeSubrange(range) }
+            let trimmed = kept.trimmingCharacters(in: .whitespaces)
+            return trimmed.isEmpty ? nil : trimmed
         }
         return paragraphs.joined(separator: "\n\n")
+    }
+
+    /// One sentence with the space before it and the cues after it. A point, "!", "?" or "…" ends a sentence only before a space or the end
+    /// (after its closing quotes): one inside a word or a number ("1.800", "site.com.br") goes on. Chinese and Japanese stops end it always.
+    private static var sentencePattern: Regex<Substring> {
+        /\s*(?:[^.!?…。！？]|[.!?…]+(?=[^\s.!?…”"’»)\[\]]))+(?:[.!?…]+[”"’»)]*|[。！？]+|$)(?:\s*\[[^\]\n]{1,40}\])*/
     }
 
     /// A title or a single line (hook, idea): one line, no markdown, wrapping quotes or dashes (`clean`).
@@ -821,9 +877,11 @@ nonisolated enum ScriptPromptBuilder {
         return DashRewriter.sentencesWithDashes(in: source) + (voice?.phrases ?? []) + exact
     }
 
-    /// Block names the model tends to echo as "Hook: …".
+    /// Block names the model tends to echo as "Hook: …". "Myth" and "Fact" are not among them: in a myth vs fact video they are said ("Mito:
+    /// poupança é sempre o investimento mais seguro."), and without them the myth read as the creator's claim, starting in lowercase.
     private static func isBlockLabel(_ label: String) -> Bool {
+        let spoken: Set = [String(localized: "Myth"), String(localized: "Fact")]
         let known = Set(ScriptType.allCases.flatMap { $0.structure.blocks } + ScriptStructure.generic.blocks + [FormatGuide.closeBlock])
-        return known.contains { $0.caseInsensitiveCompare(label) == .orderedSame }
+        return known.subtracting(spoken).contains { $0.caseInsensitiveCompare(label) == .orderedSame }
     }
 }
