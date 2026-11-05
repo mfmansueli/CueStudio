@@ -15,11 +15,14 @@ final class FakeReferralClient: ReferralClient {
     var joinsWith: [String: ReferralJoinOutcome] = ["P4WHNB": .joined]
     var isOffline = false
     private(set) var statusCalls = 0
+    /// The Pro proof each status call carried.
+    private(set) var proofs: [String?] = []
     private(set) var joined: [String] = []
     private(set) var activations = 0
 
-    func status(installID: UUID) async throws -> ReferralStatus {
+    func status(installID: UUID, proof: String?) async throws -> ReferralStatus {
         statusCalls += 1
+        proofs.append(proof)
         if isOffline { throw Offline() }
         return status
     }

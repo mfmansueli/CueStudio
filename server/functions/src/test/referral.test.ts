@@ -53,7 +53,9 @@ test("the creator's code is made once and kept", async () => {
   const { store } = memoryStore();
   const first = await status(store, creator, 1, () => "K7M2QX");
   const again = await status(store, creator, 2, () => "ZZZZZZ");
-  assert.deepEqual(first, { code: "K7M2QX", joined: 0, activated: 0, rewarded: 0, limit: rewardedFriends });
+  assert.deepEqual(first, {
+    code: "K7M2QX", joined: 0, activated: 0, rewarded: 0, limit: rewardedFriends, friendsAsExports: 0, friendsAsUltraScripts: 0,
+  });
   assert.equal(again.code, "K7M2QX");
 });
 
@@ -70,10 +72,14 @@ test("a friend who types the code joins once; their first export counts once for
   const { code } = await status(store, creator, 1);
   assert.equal(await redeem(store, friend(1), code.toLowerCase(), 2), "joined");
   assert.equal(await redeem(store, friend(1), code, 3), "already");
-  assert.deepEqual(await status(store, creator, 4), { code, joined: 1, activated: 0, rewarded: 0, limit: rewardedFriends });
+  assert.deepEqual(await status(store, creator, 4), {
+    code, joined: 1, activated: 0, rewarded: 0, limit: rewardedFriends, friendsAsExports: 0, friendsAsUltraScripts: 0,
+  });
   assert.equal(await activate(store, friend(1), 5), "counted");
   assert.equal(await activate(store, friend(1), 6), "already");
-  assert.deepEqual(await status(store, creator, 7), { code, joined: 1, activated: 1, rewarded: 1, limit: rewardedFriends });
+  assert.deepEqual(await status(store, creator, 7), {
+    code, joined: 1, activated: 1, rewarded: 1, limit: rewardedFriends, friendsAsExports: 1, friendsAsUltraScripts: 0,
+  });
   assert.equal(installs.get(friend(1))?.invitedBy, code);
 });
 
@@ -105,6 +111,30 @@ test("rewards stop at the limit; friends keep counting", async () => {
   assert.equal(summary.rewarded, rewardedFriends);
 });
 
+test("each rewarded friend is credited once, in the kind the creator's verified plan called for then", async () => {
+  const { store } = memoryStore();
+  const { code } = await status(store, creator, 1);
+  for (let n = 1; n <= 2; n++) {
+    await redeem(store, friend(n), code, n);
+    await activate(store, friend(n), n);
+  }
+  // Two friends while on the free plan: exports.
+  let summary = await status(store, creator, 10);
+  assert.equal(summary.friendsAsExports, 2);
+  assert.equal(summary.friendsAsUltraScripts, 0);
+  // The creator moves to Pro: those two stay exports, the next friends are Ultra AI scripts, up to the limit.
+  for (let n = 3; n <= rewardedFriends + 1; n++) {
+    await redeem(store, friend(n), code, n);
+    await activate(store, friend(n), n);
+  }
+  summary = await status(store, creator, 20, undefined, true);
+  assert.equal(summary.friendsAsExports, 2);
+  assert.equal(summary.friendsAsUltraScripts, rewardedFriends - 2);
+  // Asked again, nothing is credited twice.
+  summary = await status(store, creator, 30, undefined, false);
+  assert.equal(summary.friendsAsExports + summary.friendsAsUltraScripts, rewardedFriends);
+});
+
 test("a friend can't switch to another creator's code", async () => {
   const { store } = memoryStore();
   const first = await status(store, creator, 1);
@@ -117,10 +147,13 @@ test("a friend can't switch to another creator's code", async () => {
 test("only what the app sends is accepted, by kind", () => {
   const id = "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d";
   assert.deepEqual(parseReferralRequest({ action: "status", installId: id }), {
-    ok: true, request: { action: "status", installId: id.toUpperCase(), code: null },
+    ok: true, request: { action: "status", installId: id.toUpperCase(), code: null, proof: null },
+  });
+  assert.deepEqual(parseReferralRequest({ action: "status", installId: id, proof: "eyJ.a.b" }), {
+    ok: true, request: { action: "status", installId: id.toUpperCase(), code: null, proof: "eyJ.a.b" },
   });
   assert.deepEqual(parseReferralRequest({ action: "redeem", installId: id, code: "k7m-2qx" }), {
-    ok: true, request: { action: "redeem", installId: id.toUpperCase(), code: "k7m-2qx" },
+    ok: true, request: { action: "redeem", installId: id.toUpperCase(), code: "k7m-2qx", proof: null },
   });
   const cases: [unknown, string][] = [
     [null, "body"],
@@ -130,6 +163,8 @@ test("only what the app sends is accepted, by kind", () => {
     [{ action: "redeem", installId: id }, "code"],
     [{ action: "redeem", installId: id, code: "  " }, "code"],
     [{ action: "redeem", installId: id, code: "x".repeat(33) }, "code"],
+    [{ action: "status", installId: id, proof: 42 }, "proof"],
+    [{ action: "status", installId: id, proof: "x".repeat(16_001) }, "proof"],
   ];
   for (const [body, reason] of cases) assert.deepEqual(parseReferralRequest(body), { ok: false, reason });
 });

@@ -5370,6 +5370,125 @@
         }
       }
     },
+    "A random ID for this install and, with Cue Pro, the App Store’s proof of your subscription, so it can count your Ultra AI scripts. Never your name or what you write." : {
+      "comment" : "Row in What Ultra AI sends: what Cue's server keeps to count the creator's Ultra AI scripts (a random install ID and, on Cue Pro, the App Store's signed subscription transaction)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "معرّف عشوائي لهذا التثبيت، ومع Cue Pro إثبات App Store لاشتراكك، ليحسب نصوص Ultra AI الخاصة بك. لا يحتفظ أبدًا باسمك أو بما تكتبه."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Et tilfældigt id for denne installation og, med Cue Pro, App Storens bevis på dit abonnement, så den kan tælle dine Ultra AI-manuskripter. Aldrig dit navn eller det, du skriver."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eine zufällige ID für diese Installation und mit Cue Pro der Nachweis des App Store für dein Abo, damit er deine Ultra AI-Skripte zählen kann. Nie dein Name oder was du schreibst."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un ID aleatorio de esta instalación y, con Cue Pro, la prueba de tu suscripción de la App Store, para contar tus guiones de Ultra AI. Nunca tu nombre ni lo que escribes."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un identifiant aléatoire de cette installation et, avec Cue Pro, la preuve de votre abonnement fournie par l’App Store, pour compter vos scripts Ultra AI. Jamais votre nom ni ce que vous écrivez."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "इस इंस्टॉल की एक रैंडम ID और Cue Pro के साथ App Store से आपकी सदस्यता का प्रमाण, ताकि आपकी Ultra AI स्क्रिप्ट गिनी जा सकें। आपका नाम या आप जो लिखते हैं, वह कभी नहीं।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ID acak untuk instalasi ini dan, dengan Cue Pro, bukti langgananmu dari App Store, agar naskah Ultra AI-mu bisa dihitung. Tidak pernah namamu atau apa yang kamu tulis."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un ID casuale di questa installazione e, con Cue Pro, la prova del tuo abbonamento dell’App Store, per contare i tuoi copioni Ultra AI. Mai il tuo nome o quello che scrivi."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このインストールのランダムなIDと、Cue ProではApp Storeによるサブスクリプションの証明。Ultra AIの台本を数えるためです。名前や書いた内容は含みません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 설치의 무작위 ID와 Cue Pro에서는 App Store의 구독 증명을 보관해 Ultra AI 대본 수를 셉니다. 이름이나 작성한 내용은 절대 보관하지 않아요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En tilfeldig ID for denne installasjonen og, med Cue Pro, App Stores bevis på abonnementet ditt, så den kan telle Ultra AI-manusene dine. Aldri navnet ditt eller det du skriver."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Een willekeurige ID voor deze installatie en, met Cue Pro, het bewijs van je abonnement van de App Store, zodat je Ultra AI-scripts geteld kunnen worden. Nooit je naam of wat je schrijft."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um ID aleatório desta instalação e, com o Cue Pro, a prova da sua assinatura da App Store, para contar seus roteiros do Ultra AI. Nunca o seu nome nem o que você escreve."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ett slumpmässigt ID för den här installationen och, med Cue Pro, App Stores bevis på din prenumeration, så att dina Ultra AI-manus kan räknas. Aldrig ditt namn eller det du skriver."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ID แบบสุ่มของการติดตั้งนี้ และเมื่อใช้ Cue Pro จะมีหลักฐานการสมัครสมาชิกจาก App Store เพื่อนับสคริปต์ Ultra AI ของคุณ ไม่เก็บชื่อหรือสิ่งที่คุณเขียนเลย"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu kurulum için rastgele bir kimlik ve Cue Pro’da App Store’un aboneliğine ait kanıtı; Ultra AI senaryolarını saymak için. Asla adın ya da yazdıkların değil."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Một ID ngẫu nhiên của bản cài đặt này và, với Cue Pro, bằng chứng gói đăng ký của bạn từ App Store, để đếm kịch bản Ultra AI của bạn. Không bao giờ có tên bạn hay những gì bạn viết."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此安装的随机 ID，以及 Cue Pro 下 App Store 的订阅凭证，用于计算你的 Ultra AI 脚本数量。绝不包括你的名字或你写的内容。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "這次安裝的隨機 ID，以及 Cue Pro 下 App Store 的訂閱證明，用來計算你的 Ultra AI 腳本數量。絕不包含你的名字或你寫的內容。"
+          }
+        }
+      }
+    },
     "A short %@ story" : {
       "comment" : "Find inspiration: the title of a starter made from the creator's own topic (%@ is the topic, as they typed it)",
       "localizations" : {
@@ -51371,6 +51490,125 @@
         }
       }
     },
+    "Kept by Cue’s server" : {
+      "comment" : "Section header in What Ultra AI sends: what Cue's own server stores to count the creator's Ultra AI scripts",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ما يحتفظ به خادم Cue"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gemmes af Cues server"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auf dem Server von Cue gespeichert"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lo que guarda el servidor de Cue"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conservé par le serveur de Cue"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue के सर्वर पर रखा जाता है"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disimpan oleh server Cue"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conservato dal server di Cue"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cueのサーバーが保存するもの"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue 서버가 보관하는 정보"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lagres av Cues server"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bewaard door de server van Cue"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardado pelo servidor do Cue"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sparas av Cues server"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "สิ่งที่เซิร์ฟเวอร์ของ Cue เก็บไว้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue’nun sunucusunda tutulanlar"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Máy chủ của Cue lưu giữ"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue 服务器保存的内容"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue 伺服器保存的內容"
+          }
+        }
+      }
+    },
     "Kids’ parties" : {
       "comment" : "My Cue Voice: a more specific topic inside the theme “weddings and events” (a short chip)",
       "localizations" : {
@@ -96200,6 +96438,125 @@
         }
       }
     },
+    "Ultra AI needs a short break · Try again in a few minutes" : {
+      "comment" : "Toast when Cue's server refused an Ultra AI call because this iPhone made too many calls in the last hour",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يحتاج Ultra AI إلى استراحة قصيرة · حاول مرة أخرى بعد بضع دقائق"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI skal lige have en kort pause · Prøv igen om et par minutter"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI braucht eine kurze Pause · In ein paar Minuten noch mal versuchen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI necesita una pausa breve · Inténtalo en unos minutos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI a besoin d’une courte pause · Réessayez dans quelques minutes"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI को थोड़ा विराम चाहिए · कुछ मिनट बाद फिर से कोशिश करें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI perlu jeda sebentar · Coba lagi beberapa menit lagi"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI ha bisogno di una breve pausa · Riprova tra qualche minuto"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AIは少し休憩が必要です · 数分後にもう一度お試しください"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI가 잠시 쉬어야 해요 · 몇 분 후에 다시 시도하세요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI trenger en kort pause · Prøv igjen om noen minutter"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI heeft even een korte pauze nodig · Probeer het over een paar minuten opnieuw"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Ultra AI precisa de uma pausa curta · Tente de novo em alguns minutos"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI behöver en kort paus · Försök igen om några minuter"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI ต้องพักสักครู่ · ลองอีกครั้งในอีกไม่กี่นาที"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI kısa bir molaya ihtiyaç duyuyor · Birkaç dakika sonra tekrar dene"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI cần nghỉ một chút · Hãy thử lại sau vài phút"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI 需要短暂休息 · 请几分钟后再试"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI 需要稍作休息 · 請過幾分鐘再試一次"
+          }
+        }
+      }
+    },
     "Ultra AI needs the internet · Try again" : {
       "comment" : "Error toast: no connection while Ultra AI drafted the script",
       "localizations" : {
@@ -96315,6 +96672,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ultra AI 需要連上網路 · 請再試一次"
+          }
+        }
+      }
+    },
+    "Ultra AI reached today’s limit · Try again tomorrow" : {
+      "comment" : "Toast when Cue's server paused Ultra AI for the day because Cue's daily spending budget was reached",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بلغ Ultra AI حد اليوم · حاول مرة أخرى غدًا"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI har nået dagens grænse · Prøv igen i morgen"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI hat das heutige Limit erreicht · Morgen noch mal versuchen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI llegó al límite de hoy · Inténtalo mañana"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI a atteint la limite du jour · Réessayez demain"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI आज की सीमा तक पहुँच गया · कल फिर से कोशिश करें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI sudah mencapai batas hari ini · Coba lagi besok"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI ha raggiunto il limite di oggi · Riprova domani"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AIは今日の上限に達しました · 明日もう一度お試しください"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI가 오늘 한도에 도달했어요 · 내일 다시 시도하세요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI har nådd dagens grense · Prøv igjen i morgen"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI heeft de limiet van vandaag bereikt · Probeer het morgen opnieuw"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Ultra AI chegou ao limite de hoje · Tente de novo amanhã"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI har nått dagens gräns · Försök igen i morgon"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI ถึงขีดจำกัดของวันนี้แล้ว · ลองอีกครั้งพรุ่งนี้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI bugünkü sınıra ulaştı · Yarın tekrar dene"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI đã đạt giới hạn hôm nay · Hãy thử lại vào ngày mai"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI 已达到今天的上限 · 请明天再试"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI 已達到今天的上限 · 請明天再試一次"
           }
         }
       }

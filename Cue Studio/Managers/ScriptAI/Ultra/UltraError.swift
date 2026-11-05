@@ -16,8 +16,12 @@ nonisolated enum UltraError: LocalizedError, Equatable, Sendable {
     case consentRevoked
     /// The lab's calls are used up (`UltraCallBudget`).
     case budgetExhausted
-    /// The creator's Ultra AI scripts are used up (`UltraAllowanceService`): nothing was sent.
+    /// The creator's Ultra AI scripts are used up (`UltraAllowanceService`, or Cue's server's count): nothing was written.
     case noScriptsLeft
+    /// Cue's spend on Ultra AI reached the day's budget: it rests until the next day.
+    case paused
+    /// Too many Ultra AI calls from this iPhone in the last hour.
+    case limited
     /// The first call failed: no draft exists.
     case draftFailed(UltraFailure)
     /// The draft was written but its polish failed: there is no finished script.
@@ -32,6 +36,8 @@ nonisolated enum UltraError: LocalizedError, Equatable, Sendable {
         case .consentRevoked: String(localized: "Ultra AI was turned off · Nothing more was sent")
         case .budgetExhausted: String(localized: "Ultra AI’s test calls are used up")
         case .noScriptsLeft: String(localized: "Your Ultra AI scripts are used up")
+        case .paused: String(localized: "Ultra AI reached today’s limit · Try again tomorrow")
+        case .limited: String(localized: "Ultra AI needs a short break · Try again in a few minutes")
         case .draftFailed(.unreachable): String(localized: "Ultra AI needs the internet · Try again")
         case .draftFailed: String(localized: "Ultra AI couldn’t draft it")
         case .reviewFailed: String(localized: "Ultra AI couldn’t polish the draft")
@@ -47,7 +53,7 @@ nonisolated enum UltraError: LocalizedError, Equatable, Sendable {
         switch self {
         case .draftFailed(let failure), .reviewFailed(let failure, _), .fitFailed(let failure):
             [.timedOut, .incomplete, .provider].contains(failure)
-        case .notAvailable, .consentRequired, .consentRevoked, .budgetExhausted, .noScriptsLeft: false
+        case .notAvailable, .consentRequired, .consentRevoked, .budgetExhausted, .noScriptsLeft, .paused, .limited: false
         }
     }
 }

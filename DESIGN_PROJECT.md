@@ -3245,7 +3245,7 @@ depuração); testes do servidor: `npm test` em `server/functions`. Ainda **não
 iPhone (`UltraAllowanceService`), e o limite de gasto é o saldo da conta da Anthropic.
 
 **Onde existe:** no **TestFlight** (Release, quando o StoreKit diz que não é a App Store: `UltraDistribution`, ambiente `sandbox` ou `xcode`; na App
-Store fica escondida até o servidor guardar os créditos), em Debug com o Firebase ligado ou o laboratório configurado (`UltraLabClient.isOffered`) e num
+Store continua escondida até o dono ligar o controle do servidor e atualizar os textos de privacidade, ver "Créditos no servidor"), em Debug com o Firebase ligado ou o laboratório configurado (`UltraLabClient.isOffered`) e num
 teste de UI (`-uiTestUltra`). O Apple Intelligence continua o padrão e nunca é trocado por ela em silêncio (nem ela por ele): cada roteiro da Ultra AI
 é uma escolha explícita.
 
@@ -3375,10 +3375,10 @@ Find inspiration às vezes saem do nicho do criador (rótulos de comida para a c
 capacidade no momento; repetidas, passaram) e o polimento devolveu duas vezes o português estragado (sem acentos, ou "D%a" no lugar de "Dá"),
 uma delas na versão de hoje.
 
-**Roteiros grátis e Cue Pro** (decisões do dono, 29/10 e 30/10/2026; **prévia em Debug**, sem cobrança): todo mundo tem **3 roteiros Ultra AI grátis**
+**Roteiros grátis e Cue Pro** (decisões do dono, 29/10 e 30/10/2026): todo mundo tem **3 roteiros Ultra AI grátis**
 (`UsagePolicy.freeUltraScripts`; não há teste grátis do Pro); o Pro soma **30 por mês** (`proUltraScriptsPerMonth`); os grátis são gastos primeiro. Um roteiro só conta quando chega polido (falha ou Stop não
-contam). `UltraAllowance` (puro) e `UltraAllowanceService` (contagem em UserDefaults, mês de calendário): é **só a prévia** do que o criador verá, para o
-dono julgar o produto no iPhone; não protege créditos (a reinstalação zera, qualquer um edita). Onde aparece: o menu do chip de quem escreve ("Ultra AI ·
+contam). `UltraAllowance` (puro) e `UltraAllowanceService`: a contagem deste iPhone (UserDefaults, mês de calendário), que a reinstalação zera e qualquer
+um edita; enquanto o servidor **impõe** a dele (`enforce`, abaixo), o app mostra a do servidor (`UltraAllowanceService.server`). Onde aparece: o menu do chip de quem escreve ("Ultra AI ·
 2 of 3 free left"; Pro "Ultra AI · 28 left this month"), a folha de permissão sob o título ("Your first 3 scripts are free." / "2 of 3 free scripts
 left."), o cartão do plano no Profile (barra violeta "ULTRA AI · 2 OF 3 FREE LEFT", laranja quando acaba) e o laboratório (*Give the free scripts back*,
 *Use up the free scripts* para ver o Pro sem gastar chamadas, *Show the invitation again*; os roteiros do laboratório não contam aqui, e as chamadas de teste nunca voltam). **Sem nenhum restante:** escolher a Ultra AI
@@ -3437,6 +3437,38 @@ em espiral na estrela com os nós do anel, que incha, **clareia aos 0,8 s** e so
 crescente, toque firme no clarão, assentar); depois o anel abre a página como sempre. Com o Opus baixo em duas chamadas, um roteiro leva
 ~20 s (estudo de 04/11/2026, a API do Claude medida no Mac). Reduzir Movimento: nada gira, voa ou cruza; galáxia e luas paradas, e o final é um fade. Contraste do texto sobre a
 cena medido na imagem (`UltraAIUITests.testCaptureTheUltraWaitScene` + `tools/contrast/audit.py`): título 12,3:1, ideia 11,2:1, frase 4,9:1, Cancel 12,4:1.
+**Créditos no servidor, teto de gastos e o Pro conferido** (pedido do dono, 05/11/2026: preparar a Ultra AI para uso real, desligada na App Store
+até os controles e os textos de privacidade estarem prontos). Cada chamada diz ao servidor para quem é (`UltraCaller`, `UltraCallerSource`): o **id
+aleatório da instalação** (o mesmo dos convites, no Keychain: `ReferralService.installIdentity`), o **id da execução** (um por roteiro, igual no
+rascunho, na checagem e no polimento; nenhum no Fit) e, no Pro, a **transação assinada da App Store** (`StoreManager.proProof`, o JWS do StoreKit 2).
+Nada de nome, conta ou contato. O servidor (`server/functions/src/ultraMetering.ts`, `storeProof.ts`, `ultraPolicy.ts`):
+
+- **Créditos por instalação** (`ultraInstalls/{installId}` no Firestore): 3 grátis mais 5 por amigo creditado no Pro (os convites, §60), e o Pro
+  soma 30 por mês **por assinatura** (`ultraSubscribers/{originalTransactionId}`: um segundo iPhone do mesmo Pro divide os 30). O rascunho **reserva**
+  um crédito (15 min); o polimento que chega o **gasta, uma vez** (o mesmo id não cobra duas vezes); falha, Stop ou reserva vencida o **devolvem**.
+  A checagem e o polimento só passam com o rascunho antes (no máximo 2 chamadas por etapa); 20 chamadas por hora por instalação.
+- **O Pro conferido com a Apple:** a assinatura de cada transação é verificada até os certificados raiz da Apple (`server/functions/certs/`, a
+  biblioteca oficial `@apple/app-store-server-library`), com o bundle, o produto (`studio.cue.pro.annual`/`monthly`), sem reembolso nem revogação e
+  sem ter vencido. O servidor nunca aceita a palavra do app. Uma transação do StoreKit local do Xcode não é da Apple e conta como sem Pro. Os convites
+  usam a mesma prova: o servidor decide se cada amigo novo vira exportações ou roteiros e guarda a divisão (`creditedExports`/`creditedUltra`),
+  que o app adota (`ReferralRewards.adopt`).
+- **Teto de gastos do Cue:** cada chamada tem o custo calculado pelos tokens e preços do modelo e somado ao dia (`ultraSpend/{AAAA-MM-DD}`, UTC);
+  passado o teto (`ULTRA_DAILY_BUDGET_USD`, padrão **USD 20**), a Ultra AI descansa até o dia seguinte para todos. O log `ultra_call` passa a ter `usd`.
+- **Modos** (`ULTRA_METERING` em `server/functions/.env`): `off` (não conta nada), **`observe`** (o padrão: conta e registra `ultra_would_refuse`,
+  mas não recusa ninguém; o criador vê a contagem do iPhone; só o teto diário recusa) e `enforce` (recusa sem crédito, acima do limite por hora ou
+  sem id; o app mostra a contagem do servidor). Builds antigos, que não mandam id, continuam funcionando em `observe`.
+- **O que o app ouve:** 402 sem crédito (o app diz "Your Ultra AI scripts are used up" e mostra o Pro ou o toast do mês, como na contagem local),
+  503 com `X-Ultra-Refusal: paused` ("Ultra AI reached today’s limit · Try again tomorrow"), 429 `limited` ("Ultra AI needs a short break · Try again
+  in a few minutes"), 409 fora de ordem e 426 sem id (falhas comuns). `{"action": "allowance"}` responde quanto resta; o app pergunta antes do primeiro
+  roteiro de cada abertura e depois de cada um, só com a permissão dada.
+
+**Para ligar na App Store (falta, depende do dono):** publicar `ultra` e as regras com este código (em `observe`); ver o `ultra_would_refuse` e os
+gastos alguns dias no TestFlight; passar a `enforce` quando o build que manda os ids for o do TestFlight; textos de privacidade (a política do site e
+a etiqueta da App Store dizem que o id aleatório e a transação do Pro vão ao servidor do Cue; a folha *What Ultra AI sends* ganha essa linha);
+decidir o teto diário de verdade; e só então trocar `UltraDistribution.allows` para incluir a produção. Limites conhecidos: o período de carência de
+cobrança da Apple ainda conta como sem Pro no servidor (a transação venceu; ler o estado da assinatura pede a App Store Server API com uma chave do
+dono), e um reembolso só é visto quando a transação que o app manda já o traz (sem as App Store Server Notifications).
+
 Para ver sem gastar chamadas: `-uiTestUltra -uiTestUltraAllowed -uiTestUltraPaced` (cerca de 24 s) ou `-uiTestUltraPacedLong` (polimento que pensa 22 s sem palavras, com cometa; a captura confere que a galáxia muda em todos os quadros).
 
 **O Pro onde a Ultra AI existe** (§12): o destaque "✦ ULTRA AI · 30 scripts · every month" ao lado do das exportações (aparece mesmo sem o Apple

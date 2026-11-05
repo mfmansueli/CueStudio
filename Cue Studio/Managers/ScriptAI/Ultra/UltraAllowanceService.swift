@@ -5,11 +5,10 @@
 
 import Foundation
 
-/// Ultra AI's allowance as a preview on this iPhone (Ultra is in Debug builds only): what a creator would be shown (the free scripts, Pro's monthly
-/// ones) so the owner can judge the product before the real one exists. **Not a protection of credits**: the counts live in UserDefaults, which a
-/// reinstall clears and anyone can edit. Production keeps them on Cue's server (`reports/ULTRA_AI_NATIVE_2026-10-29.md`, Monetization). A script
-/// is counted once it is written (polished); a failed or stopped one isn't. Pro's month is the calendar month here (the App Store's billing
-/// period on the server).
+/// Ultra AI's allowance as the creator sees it: the free scripts, those invites earned on Pro, and Pro's monthly ones. This iPhone keeps its own
+/// count in UserDefaults (a reinstall clears it, anyone can edit it): **not a protection of credits**. Cue's server keeps the real one
+/// (`ultraMetering`, DESIGN_PROJECT §57) and refuses past it; while the server enforces it, its answer (`server`) is what shows. A script is
+/// counted once it is written (polished); a failed or stopped one isn't. Pro's month is the calendar month (UTC on the server).
 @MainActor
 @Observable
 final class UltraAllowanceService {
@@ -23,6 +22,8 @@ final class UltraAllowanceService {
     private var month: String
     /// Scripts the creator's invites earned on Pro (`ReferralService`).
     var bonusScripts = 0
+    /// Cue's server's count, while it enforces one (`UltraScriptService.refreshAllowance`); nil shows this iPhone's.
+    var server: UltraAllowance?
     @ObservationIgnored private let defaults: UserDefaults
     @ObservationIgnored private let membership: @MainActor () -> UltraAllowance.Membership
     @ObservationIgnored private let now: () -> Date
@@ -37,7 +38,9 @@ final class UltraAllowanceService {
         month = defaults.string(forKey: Self.monthKey) ?? ""
     }
 
-    var allowance: UltraAllowance {
+    var allowance: UltraAllowance { server ?? local }
+
+    private var local: UltraAllowance {
         UltraAllowance(
             membership: membership(), freeUsed: freeUsed, monthUsed: month == Self.monthID(now()) ? monthUsed : 0, bonus: bonusScripts
         )
@@ -47,8 +50,8 @@ final class UltraAllowanceService {
 
     /// One script was written.
     func spend() {
-        let current = allowance
-        let next = current.spending()
+        server = server?.spending()
+        let next = local.spending()
         freeUsed = next.freeUsed
         monthUsed = next.monthUsed
         month = Self.monthID(now())
@@ -59,6 +62,7 @@ final class UltraAllowanceService {
 
     /// The lab's "Give the free scripts back": every free script back, to see the first use again. Never the lab's call count (`UltraCallBudget`).
     func resetPreview() {
+        server = nil
         freeUsed = 0
         monthUsed = 0
         for key in [Self.freeUsedKey, Self.monthUsedKey, Self.monthKey] { defaults.removeObject(forKey: key) }
@@ -67,6 +71,7 @@ final class UltraAllowanceService {
     /// Sets how many free scripts are left: the UI tests (`-uiTestUltraScriptsLeft`), and the lab's "Use up the free scripts" (the used-up Pro
     /// without spending test calls).
     func setFreeLeft(_ left: Int) {
+        server = nil
         freeUsed = max(0, UsagePolicy.freeUltraScripts + bonusScripts - left)
         defaults.set(freeUsed, forKey: Self.freeUsedKey)
     }

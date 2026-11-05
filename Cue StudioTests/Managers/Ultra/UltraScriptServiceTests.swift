@@ -436,4 +436,94 @@ struct UltraScriptServiceTests {
         #expect(UltraFitReply(json: #"{"script":"Fitted.","title":"x"}"#) == nil)
         #expect(UltraFitReply(json: "Fitted.") == nil)
     }
+
+    // MARK: - Cue's server's count (DESIGN_PROJECT §57)
+
+    @Test func eachScriptNamesTheInstallAndOneRunIDForAllItsCalls() async throws {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        let install = UUID()
+        scenario.service.callerSource = UltraCallerSource(installID: { install }, proof: { "signed-pro" })
+        _ = try await scenario.service.run(request)
+        _ = try await scenario.service.run(request)
+        let callers = scenario.client.requests.map(\.caller)
+        #expect(callers.count == 4)
+        #expect(callers.allSatisfy { $0.installID == install && $0.proof == "signed-pro" })
+        #expect(callers[0].runID != nil && callers[0].runID == callers[1].runID)
+        #expect(callers[2].runID == callers[3].runID && callers[2].runID != callers[0].runID)
+    }
+
+    @Test func withoutACallerSourceNothingAboutTheCreatorIsSent() async throws {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        _ = try await scenario.service.run(request)
+        #expect(scenario.client.requests.allSatisfy { $0.caller == UltraCaller() })
+    }
+
+    @Test(arguments: [
+        (UltraFailure.outOfScripts, UltraError.noScriptsLeft), (.paused, .paused), (.limited, .limited),
+    ])
+    func theServersRefusalsSayTheirOwnWordsAtAnyStage(failure: UltraFailure, error: UltraError) async {
+        for stage in [UltraStageRequest.Stage.draft, .review] {
+            let scenario = makeScenario()
+            defer { scenario.defaults.tearDown() }
+            if stage == .draft { scenario.client.draft = .failure(UltraClientError(failure: failure)) }
+            if stage == .review { scenario.client.review = .failure(UltraClientError(failure: failure)) }
+            await #expect(throws: error) { try await scenario.service.generate(request, reporting: nil) }
+            #expect(!error.isWorthRetrying)
+        }
+    }
+
+    private func meteredScenario(_ answer: UltraServerAllowance?) -> (Scenario, UltraAllowanceService) {
+        let scenario = makeScenario()
+        let allowance = UltraAllowanceService(defaults: scenario.defaults.defaults) { .free }
+        let service = UltraScriptService(
+            isAvailable: true, consent: scenario.consent, budget: scenario.budget, allowance: allowance, spend: scenario.spend
+        ) { scenario.client.made() }
+        service.callerSource = UltraCallerSource(installID: { UUID() }, proof: { nil })
+        scenario.client.serverAllowance = answer
+        return (Scenario(
+            service: service, client: scenario.client, consent: scenario.consent, budget: scenario.budget, spend: scenario.spend,
+            defaults: scenario.defaults
+        ), allowance)
+    }
+
+    @Test func whileTheServerEnforcesItsCountIsTheOneShownAndAsked() async {
+        let usedUp = UltraServerAllowance(
+            metering: "enforce", paused: false, membership: "free", freeLeft: 0, monthLeft: 0, left: 0, freeTotal: 3, monthTotal: 0
+        )
+        let (scenario, allowance) = meteredScenario(usedUp)
+        defer { scenario.defaults.tearDown() }
+        #expect(allowance.left == 3)
+        await #expect(throws: UltraError.noScriptsLeft) { try await scenario.service.generate(request, reporting: nil) }
+        #expect(allowance.left == 0 && scenario.service.scriptsLeft == 0)
+        #expect(scenario.client.requests.isEmpty)
+        #expect(scenario.client.allowanceCallers.first?.runID == nil)
+    }
+
+    @Test func whileTheServerOnlyObservesThisiPhonesCountShows() async throws {
+        let observing = UltraServerAllowance(
+            metering: "observe", paused: false, membership: "free", freeLeft: 0, monthLeft: 0, left: 0, freeTotal: 3, monthTotal: 0
+        )
+        let (scenario, allowance) = meteredScenario(observing)
+        defer { scenario.defaults.tearDown() }
+        _ = try await scenario.service.generate(request, reporting: nil)
+        #expect(allowance.server == nil && allowance.left == 2)
+    }
+
+    @Test func anUnreachableCountLeavesThisiPhonesAndTheScriptIsWritten() async throws {
+        let (scenario, allowance) = meteredScenario(nil)
+        defer { scenario.defaults.tearDown() }
+        _ = try await scenario.service.generate(request, reporting: nil)
+        #expect(allowance.left == 2)
+        #expect(scenario.client.requests.map(\.stage) == [.draft, .review])
+    }
+
+    @Test func withoutPermissionTheCountIsNeverAsked() async {
+        let (scenario, _) = meteredScenario(nil)
+        defer { scenario.defaults.tearDown() }
+        scenario.consent.revoke()
+        await scenario.service.refreshAllowance()
+        #expect(scenario.client.madeCount == 0 && scenario.client.allowanceCallers.isEmpty)
+    }
 }

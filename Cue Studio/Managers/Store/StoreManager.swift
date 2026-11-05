@@ -183,6 +183,20 @@ final class StoreManager {
         renewalDate = renewal
     }
 
+    /// The App Store's signed transaction for the current Pro subscription (StoreKit 2's JWS), which Cue's server checks with Apple before it
+    /// counts Pro's Ultra AI scripts or credits invites as scripts (`storeProof` on the server). Nil off Pro, in a forced tier (UI tests), or
+    /// when StoreKit can't verify it. Xcode's local StoreKit testing signs with its own certificate, which the server reads as no Pro.
+    func proProof() async -> String? {
+        guard forcedTier == nil else { return nil }
+        for await entitlement in Transaction.currentEntitlements {
+            guard case .verified(let transaction) = entitlement, transaction.revocationDate == nil,
+                  ProPlan(productID: transaction.productID) != nil, (transaction.expirationDate ?? .distantFuture) > .now
+            else { continue }
+            return entitlement.jwsRepresentation
+        }
+        return nil
+    }
+
     /// Apple's billing grace period: the renewal failed and is being retried, and the creator keeps Pro meanwhile. The current
     /// entitlements don't always list such a subscription (its own expiry has passed), so its renewal state is asked too.
     private func gracePeriodPlan() async -> (plan: ProPlan, until: Date?)? {

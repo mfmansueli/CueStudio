@@ -4,7 +4,8 @@ import { newCode, normalizedCode } from "./referralCode";
  * Cue's invites (owner, 05/11/2026): a creator shares a code; a friend types it in Cue before their first export; when that friend exports
  * their first video, the creator earns a reward (three exports on the free plan). Only the creator who invites is rewarded: App Review has
  * refused apps that reward the one who downloads (DESIGN_PROJECT §60). The server alone decides who joined and who exported, so a creator
- * can't grant themselves rewards; the app turns the count into exports.
+ * can't grant themselves rewards. Each rewarded friend is credited once, in the kind the creator's plan called for when the server learned of
+ * it: three exports on the free plan (the app adds them), or five Ultra AI scripts on a verified Cue Pro (`ultraMetering` counts them).
  *
  * Every install is a random id the app keeps in the Keychain (it survives a reinstall); App Check proves each request comes from Cue.
  */
@@ -22,6 +23,9 @@ export interface InstallRecord {
   joinedAt?: number;
   /** When this install, invited, exported its first video. */
   activatedAt?: number;
+  /** Rewarded friends credited to this install as exports (free plan) and as Ultra AI scripts (Cue Pro). */
+  creditedExports?: number;
+  creditedUltra?: number;
 }
 
 /** A code and how far its creator's invites went. */
@@ -56,6 +60,9 @@ export interface ReferralStatus {
   /** Friends whose first export earned a reward (at most `rewardedFriends`). */
   rewarded: number;
   limit: number;
+  /** How the rewarded friends were credited: as exports, or as Ultra AI scripts while on Cue Pro. */
+  friendsAsExports: number;
+  friendsAsUltraScripts: number;
 }
 
 export type RedeemOutcome = "joined" | "unknown" | "own" | "already";
@@ -65,26 +72,48 @@ export type ActivateOutcome = "counted" | "notInvited" | "already";
 /** Tries for a code nobody has before giving up (a collision is one in a billion). */
 const codeAttempts = 5;
 
-/** The creator's code (made the first time) and their invites so far. */
+/**
+ * The creator's code (made the first time) and their invites so far. Friends rewarded since the last time are credited now, as Ultra AI
+ * scripts when `isPro` (a subscription the server verified) and as exports otherwise.
+ */
 export async function status(
-  store: ReferralStore, installId: string, now: number, makeCode: () => string = newCode,
+  store: ReferralStore, installId: string, now: number, makeCode: () => string = newCode, isPro = false,
 ): Promise<ReferralStatus> {
   return store.run(async (transaction) => {
     const install = (await transaction.install(installId)) ?? { createdAt: now };
     if (install.code) {
       const record = await transaction.code(install.code);
-      if (record) return summary(install.code, record);
+      if (record) return credited(transaction, installId, install, install.code, record, isPro, false);
     }
     for (let attempt = 0; attempt < codeAttempts; attempt++) {
       const code = makeCode();
       if (await transaction.code(code)) continue;
       const record: CodeRecord = { installId, createdAt: now, joined: 0, activated: 0 };
       transaction.setCode(code, record);
-      transaction.setInstall(installId, { ...install, code });
-      return summary(code, record);
+      return credited(transaction, installId, { ...install, code }, code, record, isPro, true);
     }
     throw new Error("no free code");
   });
+}
+
+/** The status, crediting the friends rewarded since last time (and saving the install when it changed). */
+function credited(
+  transaction: ReferralTransaction, installId: string, install: InstallRecord, code: string, record: CodeRecord, isPro: boolean,
+  changed: boolean,
+): ReferralStatus {
+  const rewarded = Math.min(record.activated, rewardedFriends);
+  let asExports = install.creditedExports ?? 0;
+  let asUltra = install.creditedUltra ?? 0;
+  const fresh = Math.max(0, rewarded - asExports - asUltra);
+  if (fresh > 0) {
+    if (isPro) asUltra += fresh;
+    else asExports += fresh;
+  }
+  if (fresh > 0 || changed) transaction.setInstall(installId, { ...install, creditedExports: asExports, creditedUltra: asUltra });
+  return {
+    code, joined: record.joined, activated: record.activated, rewarded, limit: rewardedFriends,
+    friendsAsExports: asExports, friendsAsUltraScripts: asUltra,
+  };
 }
 
 /**
@@ -118,14 +147,4 @@ export async function activate(store: ReferralStore, installId: string, now: num
     if (record) transaction.setCode(install.invitedBy, { ...record, activated: record.activated + 1 });
     return "counted";
   });
-}
-
-function summary(code: string, record: CodeRecord): ReferralStatus {
-  return {
-    code,
-    joined: record.joined,
-    activated: record.activated,
-    rewarded: Math.min(record.activated, rewardedFriends),
-    limit: rewardedFriends,
-  };
 }

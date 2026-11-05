@@ -35,8 +35,10 @@ final class CueServerReferralClient: ReferralClient {
         UltraAppCheck.isReady ? CueServerReferralClient() : nil
     }
 
-    func status(installID: UUID) async throws -> ReferralStatus {
-        try JSONDecoder().decode(ReferralStatus.self, from: try await call(["action": "status", "installId": installID.uuidString]))
+    func status(installID: UUID, proof: String?) async throws -> ReferralStatus {
+        var body = ["action": "status", "installId": installID.uuidString]
+        if let proof { body["proof"] = proof }
+        return try JSONDecoder().decode(ReferralStatus.self, from: try await call(body))
     }
 
     func join(installID: UUID, code: String) async throws -> ReferralJoinOutcome {
