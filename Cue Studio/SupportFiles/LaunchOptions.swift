@@ -121,6 +121,10 @@ struct LaunchOptions {
     var draftStore: QuickEditDraftStoring = QuickEditDraftStore()
     var exportCounter: ExportCountStoring = KeychainExportCountStore()
     var exportLedger: ExportLedgerStoring = FileExportLedgerStore()
+    /// The invites' install id and rewards (the Keychain; in memory under UI tests).
+    var referralStore: ReferralStateStoring = KeychainReferralStateStore()
+    /// Cue's server for the invites; nil (no invites offered) where Firebase doesn't run, and under UI tests unless `-uiTestReferral`.
+    var makeReferralClient: @MainActor () -> (any ReferralClient)? = { CueServerReferralClient.make() }
     /// Nil is the real sharing (`VideoSharingService`).
     var sharing: VideoSharing?
     /// Debug builds give a new install its free exports back (the Keychain count outlives a reinstall). Not under UI tests:
@@ -256,6 +260,24 @@ struct LaunchOptions {
         }
     }
 
+    /// `-uiTestReferral`: invites with the stub server (code K7M2QX); `-uiTestReferralFriends <n>` friends who already exported their first video,
+    /// `-uiTestReferralJoined` this iPhone already typed a friend's code. Without it, a UI test offers no invites.
+    private static func readReferral(_ arguments: [String], into options: inout LaunchOptions) {
+        var state: ReferralLocalState?
+        options.makeReferralClient = { nil }
+        if arguments.contains("-uiTestReferral") {
+            let friends = arguments.firstIndex(of: "-uiTestReferralFriends").flatMap {
+                arguments.indices.contains($0 + 1) ? Int(arguments[$0 + 1]) : nil
+            } ?? 0
+            let stub = StubReferralClient(friends: friends)
+            options.makeReferralClient = { stub }
+            if arguments.contains("-uiTestReferralJoined") {
+                state = ReferralLocalState(installID: UUID(), joinedCode: StubReferralClient.friendCode)
+            }
+        }
+        options.referralStore = InMemoryReferralStateStore(state: state)
+    }
+
     /// Voice Following is the default, but the simulator can't recognize speech: a UI test's prompter opens Steady unless the test scripts
     /// the recognition (`-uiTestVoiceFollowing`).
     private static func readPrompterMode(_ arguments: [String], into defaults: UserDefaults) {
@@ -354,6 +376,7 @@ struct LaunchOptions {
                 options.exportsUsed = max(0, UsagePolicy.freeExports - left)
             }
             options.exportCounter = InMemoryExportCountStore(count: options.exportsUsed)
+            Self.readReferral(arguments, into: &options)
             options.exportLedger = InMemoryExportLedgerStore()
             if options.appsAreInstalled { options.sharing = DemoVideoSharing() }
             // Videos written by an earlier launch stay in the temporary folder: without the flag

@@ -21,6 +21,8 @@ extension AppServices {
         options.brandRepository = InMemoryBrandRepository()
         options.draftStore = InMemoryQuickEditDraftStore()
         options.exportCounter = InMemoryExportCountStore()
+        options.referralStore = InMemoryReferralStateStore()
+        options.makeReferralClient = { StubReferralClient(friends: 2) }
         options.defaults = UserDefaults(suiteName: "studio.cue.previews") ?? .standard
         options.platformRules = PlatformRulesService(cacheURL: nil, remoteURL: nil)
         options.remoteTransport = DemoRemoteTransport(connects: false)

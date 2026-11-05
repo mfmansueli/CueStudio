@@ -14,8 +14,10 @@ struct ReviewExportFooter: View {
     /// The network left for later: its line replaces the count, and tapping it picks the queue up there.
     var later: ShareDestination?
     var onLater: () -> Void = {}
-    /// Free exports left of the five, for the little bars before the text; nil on Pro.
+    /// Free exports left, for the little bars before the text; nil on Pro.
     var left: Int?
+    /// The free exports with what invites earned.
+    var total = UsagePolicy.freeExports
     let onGoPro: () -> Void
 
     private var tint: Color {
@@ -66,16 +68,9 @@ struct ReviewExportFooter: View {
         .accessibilityIdentifier("review.exportNotice")
     }
 
-    /// Five small bars, the ones already used lit: yellow on the last export, orange when they are gone.
+    /// Small bars, the ones already used lit: yellow on the last export, orange when they are gone.
     private func meter(left: Int) -> some View {
-        let total = UsagePolicy.freeExports
-        return HStack(spacing: 3) {
-            ForEach(0..<total, id: \.self) { index in
-                Capsule()
-                    .fill(index < total - left ? (left <= 1 ? Palette.acc : Palette.warn) : Palette.fill)
-                    .frame(width: 11, height: 4)
-            }
-        }
-        .accessibilityHidden(true)
+        FreeExportBars(left: left, total: total, width: 11, height: 4, spacing: 3)
+            .accessibilityHidden(true)
     }
 }

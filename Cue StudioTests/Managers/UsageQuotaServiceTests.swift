@@ -126,4 +126,18 @@ struct UsageQuotaServiceTests {
         #expect(counter.count == 2)
         #expect(quota.exportsLeft(for: .free) == 1)
     }
+
+    /// Invites (§60): each friend's first export adds 3 free exports on top of the 3; Pro stays unlimited.
+    @Test func exportsInvitesEarnedAreAddedToTheFreeOnes() {
+        let store = TestDefaults()
+        defer { store.tearDown() }
+        let quota = UsageQuotaService(counter: FakeExportCountStore(), defaults: store.defaults)
+        for _ in 0..<3 { quota.recordExport(tier: .free) }
+        #expect(!quota.canExport(tier: .free))
+        quota.bonusExports = 6
+        #expect(quota.exportLimit(for: .free) == 9)
+        #expect(quota.exportsLeft(for: .free) == 6)
+        #expect(quota.canExport(tier: .free))
+        #expect(quota.exportLimit(for: .subscriber) == nil)
+    }
 }

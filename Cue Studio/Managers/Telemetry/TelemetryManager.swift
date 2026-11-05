@@ -80,4 +80,12 @@ enum TelemetryManager {
         guard FirebaseApp.app() != nil else { return }
         Analytics.logEvent("cue_voyage", parameters: event.parameters)
     }
+
+    /// An invite offered, opened, shared or typed, a reward credited, or the rating prompt asked, as an Analytics event: the step, the place and
+    /// whether it counted, never the code or the install's id. Only called with "Help improve Cue" on (`AppServices`); nothing when Firebase
+    /// isn't running.
+    static func record(_ event: ReferralTelemetryEvent) {
+        guard FirebaseApp.app() != nil else { return }
+        Analytics.logEvent("cue_referral", parameters: event.parameters)
+    }
 }

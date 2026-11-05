@@ -124,6 +124,8 @@ nonisolated enum DefaultsKey {
     static let helpImproveCue = "helpImproveCue"
     /// The notifications: the creator's choices, reminders and routine, and the history the caps read (`NotificationState`, JSON).
     static let notificationState = "notifications.state"
+    /// When Cue may ask for an App Store rating: the install day, videos delivered, the version asked in, the last failure (`ReviewPromptPolicy`, JSON).
+    static let reviewPrompt = "reviewPrompt.v1"
     /// v1's monthly AI counters ("aiScriptsUsed_2026-09"), removed at launch.
     static let legacyAIScriptsUsedPrefix = "aiScriptsUsed_"
 }

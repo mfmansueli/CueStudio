@@ -30,6 +30,8 @@ final class ExportLedgerService {
 
     private let store: ExportLedgerStoring
     private let quota: UsageQuotaService
+    /// A video left Cue for the first time (`ReferralService`, `ReviewPromptService`).
+    @ObservationIgnored var firstDelivered: (@MainActor () -> Void)?
     private let directory: URL
     private let files: FileManager
     private let now: () -> Date
@@ -117,7 +119,10 @@ final class ExportLedgerService {
         if !operation.isCounted { operation.countedAt = now() }
         operations[index] = operation
         persist()
-        if isFirst { quota.recordExport(tier: tier) }
+        if isFirst {
+            quota.recordExport(tier: tier)
+            firstDelivered?()
+        }
         return isFirst
     }
 

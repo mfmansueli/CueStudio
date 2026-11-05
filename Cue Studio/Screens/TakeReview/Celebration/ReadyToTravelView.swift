@@ -13,6 +13,10 @@ struct ReadyToTravelView: View {
     @Bindable var flow: ShareFlow
     let onClose: () -> Void
 
+    @Environment(ReferralService.self) private var referral
+    @State private var invites: ReferralTelemetryEvent.Place?
+    @State private var paywall: PaywallContext?
+
     var body: some View {
         VStack(spacing: 0) {
             topBar
@@ -47,6 +51,7 @@ struct ReadyToTravelView: View {
                 .padding(.bottom, 10)
             }
             exportsCard(left: review.exportsLeft).padding(.horizontal, 16)
+            invite
             buttons
                 .padding(.horizontal, 16)
                 .padding(.top, 14)
@@ -57,6 +62,30 @@ struct ReadyToTravelView: View {
         // A scene with its words placed in it: the text grows up to the first accessibility size.
         .dynamicTypeSize(...DynamicTypeSize.accessibility1)
         .accessibilityIdentifier("ready.sheet")
+        .sheet(item: $invites) { InviteFriendsSheet(place: $0) }
+        .fullScreenCover(item: $paywall) { PaywallView(context: $0) }
+    }
+
+    /// One free export left, or none: the invite (with Cue Pro first at none). Before this iPhone's first export: a friend's code.
+    @ViewBuilder
+    private var invite: some View {
+        if let left = review.exportsLeft, left <= 1, referral.isOffered, referral.status?.hasReachedLimit != true {
+            let place: ReferralTelemetryEvent.Place = left == 0 ? .exhausted : .lastExport
+            ReadyInviteCard(left: left, onInvite: { invites = place }, onPro: { paywall = .export })
+                .padding(.horizontal, 16)
+                .padding(.top, 10)
+                .transition(.opacity.combined(with: .move(edge: .bottom)))
+                .onAppear { referral.note(.offered, at: place) }
+        } else if referral.canJoin {
+            Button { invites = .firstExport } label: {
+                Text("Have a friend’s code?")
+                    .cueFont(.subheadline, weight: .semibold)
+                    .foregroundStyle(Palette.accText)
+                    .frame(minHeight: Metrics.hitTarget)
+            }
+            .buttonStyle(.plain)
+            .accessibilityIdentifier("ready.friendCode")
+        }
     }
 
     private var detailLine: String {
@@ -155,8 +184,8 @@ struct ReadyToTravelView: View {
     /// five bars; on Pro, "PRO · UNLIMITED EXPORTS".
     private func exportsCard(left: Int?) -> some View {
         let shape = RoundedRectangle(cornerRadius: 20, style: .continuous)
-        let total = UsagePolicy.freeExports
-        let label = FreeExportLabels.meter(left: left)
+        let total = review.freeExportLimit
+        let label = FreeExportLabels.meter(left: left, limit: total)
         let tint: Color = switch label.tone {
         case .quiet: Palette.ink2
         case .last: Palette.accText
@@ -172,13 +201,7 @@ struct ReadyToTravelView: View {
             .animation(.easeOut(duration: 0.25), value: label.tone)
             Spacer(minLength: 8)
             if let left {
-                HStack(spacing: 5) {
-                    ForEach(0..<total, id: \.self) { index in
-                        Capsule()
-                            .fill(index < total - left ? (left <= 1 ? Palette.acc : Palette.warn) : Palette.fill)
-                            .frame(width: 22, height: 7)
-                    }
-                }
+                FreeExportBars(left: left, total: total, width: 22, height: 7, spacing: 5)
             }
         }
         .padding(18)

@@ -122,4 +122,12 @@ struct UltraAllowanceTests {
         consent.grant()
         #expect(!make(true).showsInvite)
     }
+
+    /// Invites on Pro (§60): five scripts per friend, kept with the free ones (they don't end with the month).
+    @Test func scriptsInvitesEarnedAreFreeOnesThatOutliveTheMonth() {
+        let allowance = UltraAllowance(membership: .paid, freeUsed: 3, monthUsed: 30, bonus: 5)
+        #expect(allowance.freeTotal == 8)
+        #expect(allowance.left == 5)
+        #expect(UltraAllowanceLabels.plan(UltraAllowance(membership: .free, freeUsed: 1, monthUsed: 0, bonus: 5)) == "ULTRA AI · 7 OF 8 FREE LEFT")
+    }
 }

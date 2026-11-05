@@ -59,6 +59,10 @@ struct AppServices {
     let sharing: VideoSharing
     /// Where a free export is counted, once per exported file.
     let ledger: ExportLedgerService
+    /// Invites: the creator's code, friends' first exports and what they earned (DESIGN_PROJECT §60).
+    let referral: ReferralService
+    /// When Cue may ask for an App Store rating (`ReviewPromptPolicy`).
+    let reviewPrompt: ReviewPromptService
     let remote: RemoteControlService
     /// The Apple Watch companion: records and drives the recorder from the wrist.
     let watch: WatchLinkService
@@ -168,12 +172,6 @@ struct AppServices {
         )
         store = StoreManager()
         ledger = ExportLedgerService(store: options.exportLedger, quota: quota)
-        // A deleted take leaves nothing behind: its exported videos waiting in tmp, their records, and a "Continue posting" for a video that
-        // is gone.
-        takes.takeGone = { [ledger, shareQueue] take in
-            ledger.forget(takeID: take.id)
-            shareQueue.discard(takeID: take.id)
-        }
         presentation = PresentationService()
         toast = ToastService()
         panelNotes = PanelNoteMemory(defaults: options.defaults)
@@ -200,6 +198,8 @@ struct AppServices {
             makeClient: options.makeUltraClient
         )
         self.ultra = ultra
+        referral = Self.makeReferral(options: options, quota: quota, milestones: milestones, store: store, ultra: ultra, toast: toast)
+        reviewPrompt = ReviewPromptService(defaults: options.defaults) { [quota, store] in quota.exportsLeft(for: store.tier) }
         starter = ScriptStarter(
             library: library, profile: profile, languages: languages,
             presentation: presentation, ideaDraft: ideaDraft, transition: ideaTransition,
@@ -260,7 +260,8 @@ struct AppServices {
         privacy = PrivacyPreferencesService(defaults: options.defaults, writer: options.writer)
         draftLearning = DraftLearningService(profile: profile, toast: toast, defaults: options.defaults)
         takes.onTakeAdded = { [draftLearning] take in draftLearning.tookTake(of: take.scriptReference) }
-        Self.reportWhenHelpingImprove(privacy: privacy, voyage: voyage, profile: profile)
+        Self.reportWhenHelpingImprove(privacy: privacy, voyage: voyage, profile: profile, referral: referral, reviewPrompt: reviewPrompt)
+        Self.wireExports(ledger: ledger, takes: takes, shareQueue: shareQueue, referral: referral, reviewPrompt: reviewPrompt)
         voiceQuestions = VoiceQuestionScheduler(profile: profile, defaults: options.defaults, skipsGates: options.voiceTipSkipsGates,
                                                 invitesOnSend: options.invitesVoiceOnSend,
                                                 scriptLanguage: { [languages] in (languages.scriptLanguage ?? languages.interfaceLanguage).rawValue })
@@ -393,13 +394,57 @@ extension AppServices {
     }
 
     /// What only "Help improve Cue" sends: the first voyage's tips and the "+ Something else" counts of My Cue Voice (B14), never text.
-    private static func reportWhenHelpingImprove(privacy: PrivacyPreferencesService, voyage: FirstVoyageService, profile: CreatorProfileService) {
+    private static func reportWhenHelpingImprove(
+        privacy: PrivacyPreferencesService, voyage: FirstVoyageService, profile: CreatorProfileService, referral: ReferralService,
+        reviewPrompt: ReviewPromptService
+    ) {
         voyage.report = { [privacy] event in
             if privacy.helpsImproveCue { TelemetryManager.record(event) }
         }
         profile.reportTypedAnswer = { [privacy] event in
             if privacy.helpsImproveCue { TelemetryManager.record(event) }
         }
+        referral.report = { [privacy] event in
+            if privacy.helpsImproveCue { TelemetryManager.record(event) }
+        }
+        reviewPrompt.report = { [privacy] in
+            if privacy.helpsImproveCue { TelemetryManager.record(ReferralTelemetryEvent(step: .reviewAsked)) }
+        }
+    }
+
+    /// What the export ledger tells the rest of Cue.
+    private static func wireExports(
+        ledger: ExportLedgerService, takes: TakeLibraryService, shareQueue: ShareQueueService, referral: ReferralService,
+        reviewPrompt: ReviewPromptService
+    ) {
+        // A deleted take leaves nothing behind: its exported videos waiting in tmp, their records, and a "Continue posting" for a video that
+        // is gone.
+        takes.takeGone = { [ledger, shareQueue] take in
+            ledger.forget(takeID: take.id)
+            shareQueue.discard(takeID: take.id)
+        }
+        // A video left Cue for the first time: a friend's invite counts (§60), and a later one may ask for a rating.
+        ledger.firstDelivered = { [referral, reviewPrompt] in
+            reviewPrompt.delivered()
+            Task { await referral.exportDelivered() }
+        }
+    }
+
+    /// The invites (§60): the server's count turned into exports on the free plan and Ultra AI scripts on Pro, said with a toast.
+    private static func makeReferral(
+        options: LaunchOptions, quota: UsageQuotaService, milestones: MilestoneService, store: StoreManager, ultra: UltraScriptService,
+        toast: ToastService
+    ) -> ReferralService {
+        ReferralService(
+            store: options.referralStore, client: options.makeReferralClient(),
+            hasExported: { [quota, milestones] in quota.exportsUsed > 0 || !milestones.records.isEmpty },
+            isPro: { [store] in store.tier.isPro }, ultraOffered: { [ultra] in ultra.isAvailable },
+            apply: { [quota, ultra] rewards in
+                quota.bonusExports = rewards.bonusExports
+                ultra.allowance?.bonusScripts = rewards.bonusUltraScripts
+            },
+            announce: { [toast] message in toast.show(message) }
+        )
     }
 
     private static func makeNotifications(options: LaunchOptions, services wiring: NotificationWiring) -> NotificationService {
@@ -488,6 +533,8 @@ extension View {
             .environment(services.eraser)
             .environment(services.privacy)
             .environment(services.ultra)
+            .environment(services.referral)
+            .environment(services.reviewPrompt)
             .environment(services.permissionStatus)
             .environment(\.styleReader, services.styleReader)
             .environment(\.proOpeningFrozenAt, services.proFrozenTime)

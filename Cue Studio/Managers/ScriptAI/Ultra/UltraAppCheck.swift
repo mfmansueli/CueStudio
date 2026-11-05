@@ -7,9 +7,10 @@ import FirebaseAppCheck
 import FirebaseCore
 import Foundation
 
-/// Firebase App Check for Cue's server (`CueServerUltraClient`): the token that proves a request comes from Cue on a real iPhone. Installed with
-/// Firebase at launch (`TelemetryManager.start`), but it asks Apple and Google for nothing until Ultra AI makes its first call: no token is
-/// fetched or refreshed on its own (`FirebaseAppCheckTokenAutoRefreshEnabled` is off in Info.plist, and again here).
+/// Firebase App Check for Cue's server (`CueServerUltraClient`, and the invites' `CueServerReferralClient`): the token that proves a request
+/// comes from Cue on a real iPhone. Installed with Firebase at launch (`TelemetryManager.start`), but it asks Apple and Google for nothing until
+/// Ultra AI or the invites make their first call: no token is fetched or refreshed on its own (`FirebaseAppCheckTokenAutoRefreshEnabled` is off
+/// in Info.plist, and again here).
 nonisolated enum UltraAppCheck {
     struct Unavailable: Error {}
 

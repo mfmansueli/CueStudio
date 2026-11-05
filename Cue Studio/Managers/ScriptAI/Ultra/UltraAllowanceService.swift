@@ -21,6 +21,8 @@ final class UltraAllowanceService {
     private var monthUsed: Int
     /// The month `monthUsed` counts ("2026-10").
     private var month: String
+    /// Scripts the creator's invites earned on Pro (`ReferralService`).
+    var bonusScripts = 0
     @ObservationIgnored private let defaults: UserDefaults
     @ObservationIgnored private let membership: @MainActor () -> UltraAllowance.Membership
     @ObservationIgnored private let now: () -> Date
@@ -36,7 +38,9 @@ final class UltraAllowanceService {
     }
 
     var allowance: UltraAllowance {
-        UltraAllowance(membership: membership(), freeUsed: freeUsed, monthUsed: month == Self.monthID(now()) ? monthUsed : 0)
+        UltraAllowance(
+            membership: membership(), freeUsed: freeUsed, monthUsed: month == Self.monthID(now()) ? monthUsed : 0, bonus: bonusScripts
+        )
     }
 
     var left: Int { allowance.left }
@@ -63,7 +67,7 @@ final class UltraAllowanceService {
     /// Sets how many free scripts are left: the UI tests (`-uiTestUltraScriptsLeft`), and the lab's "Use up the free scripts" (the used-up Pro
     /// without spending test calls).
     func setFreeLeft(_ left: Int) {
-        freeUsed = max(0, UsagePolicy.freeUltraScripts - left)
+        freeUsed = max(0, UsagePolicy.freeUltraScripts + bonusScripts - left)
         defaults.set(freeUsed, forKey: Self.freeUsedKey)
     }
 

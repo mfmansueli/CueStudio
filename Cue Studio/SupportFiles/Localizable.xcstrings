@@ -1666,6 +1666,244 @@
         }
       }
     },
+    "%lld friends you invited exported their first video · +%lld exports" : {
+      "comment" : "Toast: several invited friends (2–5) exported their first video; exports earned.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "صدّر %1$lld من الأصدقاء الذين دعوتهم أول فيديو لهم · +%2$lld من عمليات التصدير"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld venner, du inviterede, har eksporteret deres første video · +%2$lld eksporter"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld eingeladene Freunde haben ihr erstes Video exportiert · +%2$lld Exporte"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld amigos que invitaste exportaron su primer video · +%2$lld exportaciones"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld amis que vous avez invités ont exporté leur première vidéo · +%2$lld exports"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपके इनवाइट किए %1$lld दोस्तों ने अपना पहला वीडियो एक्सपोर्ट किया · +%2$lld एक्सपोर्ट"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld teman yang kamu undang mengekspor video pertama mereka · +%2$lld ekspor"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld amici che hai invitato hanno esportato il loro primo video · +%2$lld esportazioni"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "招待した友だち%1$lld人が初めての動画を書き出しました · 書き出し +%2$lld回"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "초대한 친구 %1$lld명이 첫 영상을 내보냈어요 · 내보내기 +%2$lld회"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld venner du inviterte, har eksportert sin første video · +%2$lld eksporter"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld vrienden die je hebt uitgenodigd, hebben hun eerste video geëxporteerd · +%2$lld exports"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld amigos que você convidou exportaram o primeiro vídeo · +%2$lld exportações"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld vänner du bjöd in har exporterat sin första video · +%2$lld exporter"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เพื่อนที่คุณชวน %1$lld คนส่งออกวิดีโอแรกแล้ว · ส่งออก +%2$lld ครั้ง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Davet ettiğin %1$lld arkadaş ilk videosunu dışa aktardı · +%2$lld dışa aktarma"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld người bạn bạn mời đã xuất video đầu tiên · +%2$lld lượt xuất"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你邀请的 %1$lld 位朋友导出了第一个视频 · +%2$lld 次导出"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你邀請的 %1$lld 位朋友匯出了第一部影片 · +%2$lld 次匯出"
+          }
+        }
+      }
+    },
+    "%lld friends you invited exported their first video · +%lld Ultra AI scripts" : {
+      "comment" : "Toast: several invited friends (2–5) exported their first video; scripts earned.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "صدّر %1$lld من الأصدقاء الذين دعوتهم أول فيديو لهم · +%2$lld من نصوص Ultra AI"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld venner, du inviterede, har eksporteret deres første video · +%2$lld Ultra AI-manuskripter"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld eingeladene Freunde haben ihr erstes Video exportiert · +%2$lld Ultra AI-Skripte"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld amigos que invitaste exportaron su primer video · +%2$lld guiones de Ultra AI"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld amis que vous avez invités ont exporté leur première vidéo · +%2$lld scripts Ultra AI"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपके इनवाइट किए %1$lld दोस्तों ने अपना पहला वीडियो एक्सपोर्ट किया · +%2$lld Ultra AI स्क्रिप्ट"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld teman yang kamu undang mengekspor video pertama mereka · +%2$lld naskah Ultra AI"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld amici che hai invitato hanno esportato il loro primo video · +%2$lld copioni Ultra AI"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "招待した友だち%1$lld人が初めての動画を書き出しました · Ultra AIの台本 +%2$lld件"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "초대한 친구 %1$lld명이 첫 영상을 내보냈어요 · Ultra AI 대본 +%2$lld개"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld venner du inviterte, har eksportert sin første video · +%2$lld Ultra AI-manus"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld vrienden die je hebt uitgenodigd, hebben hun eerste video geëxporteerd · +%2$lld Ultra AI-scripts"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld amigos que você convidou exportaram o primeiro vídeo · +%2$lld roteiros do Ultra AI"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld vänner du bjöd in har exporterat sin första video · +%2$lld Ultra AI-manus"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เพื่อนที่คุณชวน %1$lld คนส่งออกวิดีโอแรกแล้ว · สคริปต์ Ultra AI +%2$lld รายการ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Davet ettiğin %1$lld arkadaş ilk videosunu dışa aktardı · +%2$lld Ultra AI senaryosu"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld người bạn bạn mời đã xuất video đầu tiên · +%2$lld kịch bản Ultra AI"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你邀请的 %1$lld 位朋友导出了第一个视频 · +%2$lld 个 Ultra AI 脚本"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你邀請的 %1$lld 位朋友匯出了第一部影片 · +%2$lld 份 Ultra AI 腳本"
+          }
+        }
+      }
+    },
     "%lld OF %lld · DONE" : {
       "comment" : "Eyebrow of a first voyage tip whose step was just done in place (step number of six)",
       "localizations" : {
@@ -1781,6 +2019,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld / %lld · 已完成"
+          }
+        }
+      }
+    },
+    "%lld of %lld friends" : {
+      "comment" : "Invites progress, monospaced: '2 of 5 friends' whose first export counted.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld من %2$lld أصدقاء"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld af %2$lld venner"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld von %2$lld Freunden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld de %2$lld amigos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld sur %2$lld amis"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$lld में से %1$lld दोस्त"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld dari %2$lld teman"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld di %2$lld amici"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "友だち %1$lld/%2$lld人"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "친구 %2$lld명 중 %1$lld명"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld av %2$lld venner"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld van %2$lld vrienden"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld de %2$lld amigos"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld av %2$lld vänner"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เพื่อน %1$lld จาก %2$lld คน"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$lld arkadaştan %1$lld"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld/%2$lld người bạn"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld / %2$lld 位朋友"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld / %2$lld 位朋友"
           }
         }
       }
@@ -2748,6 +3105,601 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "已分享 %1$lld 部影片 · 已解鎖 %2$@ 圖示"
+          }
+        }
+      }
+    },
+    "+%lld exports for each friend who exports their first video with Cue." : {
+      "comment" : "Card on 'Ready to travel' with one free export left (3 exports).",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld عمليات تصدير عن كل صديق يصدّر أول فيديو له مع Cue."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld eksporter for hver ven, der eksporterer sin første video med Cue."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld Exporte für jeden Freund, der sein erstes Video mit Cue exportiert."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld exportaciones por cada amigo que exporte su primer video con Cue."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld exports pour chaque ami qui exporte sa première vidéo avec Cue."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue से पहला वीडियो एक्सपोर्ट करने वाले हर दोस्त पर +%lld एक्सपोर्ट।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld ekspor untuk setiap teman yang mengekspor video pertamanya dengan Cue."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld esportazioni per ogni amico che esporta il suo primo video con Cue."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cueで初めての動画を書き出した友だち1人につき、書き出し +%lld回。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue로 첫 영상을 내보낸 친구 1명당 내보내기 +%lld회."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld eksporter for hver venn som eksporterer sin første video med Cue."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld exports voor elke vriend die voor het eerst een video met Cue exporteert."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld exportações por amigo que exportar o primeiro vídeo com o Cue."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld exporter för varje vän som exporterar sin första video med Cue."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ส่งออก +%lld ครั้งต่อเพื่อนหนึ่งคนที่ส่งออกวิดีโอแรกด้วย Cue"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue ile ilk videosunu dışa aktaran her arkadaş için +%lld dışa aktarma."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld lượt xuất cho mỗi người bạn xuất video đầu tiên với Cue."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每有一位朋友用 Cue 导出第一个视频，+%lld 次导出。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每有一位朋友用 Cue 匯出第一部影片，+%lld 次匯出。"
+          }
+        }
+      }
+    },
+    "+%lld Ultra AI scripts for each friend" : {
+      "comment" : "Profile's Invite friends row on Cue Pro: '+5 Ultra AI scripts for each friend'.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld نصوص من Ultra AI عن كل صديق"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld Ultra AI-manuskripter for hver ven"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld Ultra AI-Skripte für jeden Freund"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld guiones de Ultra AI por cada amigo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld scripts Ultra AI pour chaque ami"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "हर दोस्त पर +%lld Ultra AI स्क्रिप्ट"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld naskah Ultra AI untuk setiap teman"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld copioni Ultra AI per ogni amico"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "友だち1人につきUltra AIの台本 +%lld件"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "친구 1명당 Ultra AI 대본 +%lld개"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld Ultra AI-manus for hver venn"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld Ultra AI-scripts per vriend"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld roteiros do Ultra AI por amigo"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld Ultra AI-manus för varje vän"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "สคริปต์ Ultra AI +%lld รายการต่อเพื่อนหนึ่งคน"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Her arkadaş için +%lld Ultra AI senaryosu"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld kịch bản Ultra AI cho mỗi người bạn"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每位朋友 +%lld 个 Ultra AI 脚本"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每位朋友 +%lld 份 Ultra AI 腳本"
+          }
+        }
+      }
+    },
+    "+%lld exports for each friend" : {
+      "comment" : "Profile's Invite friends row, before any friend counted: '+3 exports for each friend'.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld عمليات تصدير عن كل صديق"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld eksporter for hver ven"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld Exporte für jeden Freund"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld exportaciones por cada amigo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld exports pour chaque ami"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "हर दोस्त पर +%lld एक्सपोर्ट"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld ekspor untuk setiap teman"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld esportazioni per ogni amico"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "友だち1人につき書き出し +%lld回"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "친구 1명당 내보내기 +%lld회"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld eksporter for hver venn"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld exports per vriend"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld exportações por amigo"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld exporter för varje vän"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ส่งออก +%lld ครั้งต่อเพื่อนหนึ่งคน"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Her arkadaş için +%lld dışa aktarma"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld lượt xuất cho mỗi người bạn"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每位朋友 +%lld 次导出"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每位朋友 +%lld 次匯出"
+          }
+        }
+      }
+    },
+    "+%lld Ultra AI scripts" : {
+      "comment" : "What invites earned so far on Cue Pro: '+5 Ultra AI scripts'.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld من نصوص Ultra AI"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld Ultra AI-manuskripter"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld Ultra AI-Skripte"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld guiones de Ultra AI"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld scripts Ultra AI"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld Ultra AI स्क्रिप्ट"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld naskah Ultra AI"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld copioni Ultra AI"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AIの台本 +%lld件"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI 대본 +%lld개"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld Ultra AI-manus"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld Ultra AI-scripts"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld roteiros do Ultra AI"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld Ultra AI-manus"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "สคริปต์ Ultra AI +%lld รายการ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld Ultra AI senaryosu"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld kịch bản Ultra AI"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld 个 Ultra AI 脚本"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld 份 Ultra AI 腳本"
+          }
+        }
+      }
+    },
+    "+%lld exports" : {
+      "comment" : "What invites earned so far, after the friends count: '+6 exports'.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld من عمليات التصدير"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld eksporter"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld Exporte"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld exportaciones"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld exports"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld एक्सपोर्ट"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld ekspor"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld esportazioni"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "書き出し +%lld回"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "내보내기 +%lld회"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld eksporter"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld exports"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld exportações"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld exporter"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ส่งออก +%lld ครั้ง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld dışa aktarma"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld lượt xuất"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld 次导出"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld 次匯出"
           }
         }
       }
@@ -4057,6 +5009,244 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "朋友拉我試了這個。"
+          }
+        }
+      }
+    },
+    "A friend you invited exported their first video · +%lld exports" : {
+      "comment" : "Toast: one invited friend exported their first video; the creator earned 3 exports.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "صديق دعوته صدّر أول فيديو له · +%lld عمليات تصدير"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En ven, du inviterede, har eksporteret sin første video · +%lld eksporter"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein eingeladener Freund hat sein erstes Video exportiert · +%lld Exporte"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un amigo que invitaste exportó su primer video · +%lld exportaciones"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un ami que vous avez invité a exporté sa première vidéo · +%lld exports"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपके इनवाइट किए एक दोस्त ने अपना पहला वीडियो एक्सपोर्ट किया · +%lld एक्सपोर्ट"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teman yang kamu undang mengekspor video pertamanya · +%lld ekspor"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un amico che hai invitato ha esportato il suo primo video · +%lld esportazioni"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "招待した友だちが初めての動画を書き出しました · 書き出し +%lld回"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "초대한 친구가 첫 영상을 내보냈어요 · 내보내기 +%lld회"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En venn du inviterte, har eksportert sin første video · +%lld eksporter"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Een vriend die je hebt uitgenodigd, heeft voor het eerst een video geëxporteerd · +%lld exports"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um amigo que você convidou exportou o primeiro vídeo · +%lld exportações"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En vän du bjöd in har exporterat sin första video · +%lld exporter"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เพื่อนที่คุณชวนส่งออกวิดีโอแรกแล้ว · ส่งออก +%lld ครั้ง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Davet ettiğin bir arkadaşın ilk videosunu dışa aktardı · +%lld dışa aktarma"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Một người bạn bạn mời đã xuất video đầu tiên · +%lld lượt xuất"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你邀请的一位朋友导出了第一个视频 · +%lld 次导出"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你邀請的一位朋友匯出了第一部影片 · +%lld 次匯出"
+          }
+        }
+      }
+    },
+    "A friend you invited exported their first video · +%lld Ultra AI scripts" : {
+      "comment" : "Toast: one invited friend exported their first video; the creator (Cue Pro) earned 5 Ultra AI scripts.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "صديق دعوته صدّر أول فيديو له · +%lld من نصوص Ultra AI"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En ven, du inviterede, har eksporteret sin første video · +%lld Ultra AI-manuskripter"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein eingeladener Freund hat sein erstes Video exportiert · +%lld Ultra AI-Skripte"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un amigo que invitaste exportó su primer video · +%lld guiones de Ultra AI"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un ami que vous avez invité a exporté sa première vidéo · +%lld scripts Ultra AI"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपके इनवाइट किए एक दोस्त ने अपना पहला वीडियो एक्सपोर्ट किया · +%lld Ultra AI स्क्रिप्ट"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teman yang kamu undang mengekspor video pertamanya · +%lld naskah Ultra AI"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un amico che hai invitato ha esportato il suo primo video · +%lld copioni Ultra AI"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "招待した友だちが初めての動画を書き出しました · Ultra AIの台本 +%lld件"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "초대한 친구가 첫 영상을 내보냈어요 · Ultra AI 대본 +%lld개"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En venn du inviterte, har eksportert sin første video · +%lld Ultra AI-manus"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Een vriend die je hebt uitgenodigd, heeft voor het eerst een video geëxporteerd · +%lld Ultra AI-scripts"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um amigo que você convidou exportou o primeiro vídeo · +%lld roteiros do Ultra AI"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En vän du bjöd in har exporterat sin första video · +%lld Ultra AI-manus"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เพื่อนที่คุณชวนส่งออกวิดีโอแรกแล้ว · สคริปต์ Ultra AI +%lld รายการ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Davet ettiğin bir arkadaşın ilk videosunu dışa aktardı · +%lld Ultra AI senaryosu"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Một người bạn bạn mời đã xuất video đầu tiên · +%lld kịch bản Ultra AI"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你邀请的一位朋友导出了第一个视频 · +%lld 个 Ultra AI 脚本"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你邀請的一位朋友匯出了第一部影片 · +%lld 份 Ultra AI 腳本"
           }
         }
       }
@@ -7865,6 +9055,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "還有"
+          }
+        }
+      }
+    },
+    "An invite to Cue Studio" : {
+      "comment" : "Title over the invite in the share sheet, and the subject of an email invite.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "دعوة إلى Cue Studio"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En invitation til Cue Studio"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eine Einladung zu Cue Studio"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una invitación a Cue Studio"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une invitation à Cue Studio"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue Studio का इनवाइट"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Undangan ke Cue Studio"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un invito a Cue Studio"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue Studioへの招待"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue Studio 초대"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En invitasjon til Cue Studio"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Een uitnodiging voor Cue Studio"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um convite para o Cue Studio"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En inbjudan till Cue Studio"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "คำชวนใช้ Cue Studio"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue Studio daveti"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lời mời dùng Cue Studio"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue Studio 邀请"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue Studio 邀請"
           }
         }
       }
@@ -20602,6 +21911,125 @@
         }
       }
     },
+    "Copied" : {
+      "comment" : "Inline state of the Copy button on the invite code card, right after copying the code; 1–2 words.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تم النسخ"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopieret"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopiert"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copié"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कॉपी हुआ"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disalin"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiato"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コピー済み"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "복사됨"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopiert"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gekopieerd"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiado"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopierad"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "คัดลอกแล้ว"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopyalandı"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đã sao chép"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已拷贝"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已拷貝"
+          }
+        }
+      }
+    },
     "Corporate professional" : {
       "comment" : "What kind of creator are you? (a chip in a long searchable list): a corporate professional sharing career lessons and industry insights",
       "localizations" : {
@@ -21193,6 +22621,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "無法起草"
+          }
+        }
+      }
+    },
+    "Couldn’t reach Cue. Check your connection and try again." : {
+      "comment" : "Cue's server couldn't be reached (invites).",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تعذّر الوصول إلى Cue. تحقق من اتصالك وحاول مرة أخرى."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kunne ikke få forbindelse til Cue. Tjek din forbindelse, og prøv igen."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Verbindung zu Cue. Prüf deine Verbindung und versuch es noch einmal."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo conectar con Cue. Revisa tu conexión y vuelve a intentarlo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible de joindre Cue. Vérifiez votre connexion et réessayez."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue से कनेक्ट नहीं हो सका। कनेक्शन जाँचें और फिर कोशिश करें।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidak bisa terhubung ke Cue. Periksa koneksimu dan coba lagi."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossibile raggiungere Cue. Controlla la connessione e riprova."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cueに接続できませんでした。接続を確認してもう一度お試しください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue에 연결할 수 없어요. 연결을 확인하고 다시 시도하세요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kunne ikke nå Cue. Sjekk tilkoblingen din og prøv igjen."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kon Cue niet bereiken. Controleer je verbinding en probeer het opnieuw."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não deu para falar com o Cue. Confira sua conexão e tente de novo."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kunde inte nå Cue. Kontrollera din anslutning och försök igen."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เชื่อมต่อ Cue ไม่ได้ ตรวจการเชื่อมต่อแล้วลองอีกครั้ง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue’ya ulaşılamadı. Bağlantını kontrol edip yeniden dene."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Không thể kết nối Cue. Hãy kiểm tra kết nối rồi thử lại."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法连接 Cue。请检查网络后重试。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無法連線到 Cue。請檢查網路連線後再試一次。"
           }
         }
       }
@@ -23454,6 +25001,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cue 會從你在「調整」中保留的內容和你認可的腳本中學習。"
+          }
+        }
+      }
+    },
+    "Cue Pro exports without limit. Or invite friends: +%lld exports for each." : {
+      "comment" : "Card on 'Ready to travel' when the free exports are gone (3 exports per friend).",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مع Cue Pro تصدّر بلا حدود. أو ادعُ أصدقاءك: +%lld عمليات تصدير عن كل صديق."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Med Cue Pro eksporterer du uden grænser. Eller inviter venner: +%lld eksporter for hver."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mit Cue Pro exportierst du ohne Limit. Oder lade Freunde ein: +%lld Exporte pro Freund."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Con Cue Pro exportas sin límite. O invita amigos: +%lld exportaciones por cada uno."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avec Cue Pro, exportez sans limite. Ou invitez des amis : +%lld exports pour chacun."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue Pro से बिना किसी सीमा के एक्सपोर्ट करें। या दोस्तों को इनवाइट करें: हर दोस्त पर +%lld एक्सपोर्ट।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dengan Cue Pro, ekspor tanpa batas. Atau undang teman: +%lld ekspor untuk masing-masing."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Con Cue Pro esporti senza limiti. Oppure invita amici: +%lld esportazioni per ognuno."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue Proなら書き出しは無制限。または友だちを招待：1人につき書き出し +%lld回。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue Pro는 내보내기가 무제한이에요. 또는 친구를 초대하세요: 1명당 내보내기 +%lld회."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Med Cue Pro eksporterer du uten grense. Eller inviter venner: +%lld eksporter for hver."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Met Cue Pro exporteer je zonder limiet. Of nodig vrienden uit: +%lld exports per vriend."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Com o Cue Pro, você exporta sem limite. Ou convide amigos: +%lld exportações por amigo."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Med Cue Pro exporterar du utan gräns. Eller bjud in vänner: +%lld exporter för varje."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue Pro ส่งออกได้ไม่จำกัด หรือชวนเพื่อน: ส่งออก +%lld ครั้งต่อคน"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue Pro ile sınırsız dışa aktar. Ya da arkadaşlarını davet et: her biri için +%lld dışa aktarma."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue Pro xuất không giới hạn. Hoặc mời bạn bè: +%lld lượt xuất cho mỗi người."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue Pro 导出不限次数。或者邀请朋友：每位 +%lld 次导出。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue Pro 匯出不限次數。或者邀請朋友：每位 +%lld 次匯出。"
           }
         }
       }
@@ -32093,6 +33759,125 @@
         }
       }
     },
+    "Export more videos" : {
+      "comment" : "Card title on 'Ready to travel' when the free exports are gone.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "صدّر المزيد من الفيديوهات"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eksporter flere videoer"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mehr Videos exportieren"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exporta más videos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportez plus de vidéos"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "और वीडियो एक्सपोर्ट करें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ekspor lebih banyak video"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esporta più video"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "もっと動画を書き出す"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "더 많은 영상 내보내기"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eksporter flere videoer"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meer video’s exporteren"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exporte mais vídeos"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportera fler videor"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ส่งออกวิดีโอเพิ่ม"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daha fazla video dışa aktar"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Xuất thêm video"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "导出更多视频"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "匯出更多影片"
+          }
+        }
+      }
+    },
     "Export original" : {
       "comment" : "Unfinished edit alert button when no edit was ever finished: exports the recording as it was",
       "localizations" : {
@@ -36734,6 +38519,125 @@
         }
       }
     },
+    "for each friend who exports their first video" : {
+      "comment" : "Under a large \"+3 exports\" headline on the Invite friends sheet; reads as its continuation, lower-case start where the language allows.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عن كل صديق يصدّر أول فيديو له"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "for hver ven, der eksporterer sin første video"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "für jeden Freund, der sein erstes Video exportiert"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "por cada amigo que exporte su primer video"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "pour chaque ami qui exporte sa première vidéo"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "पहला वीडियो एक्सपोर्ट करने वाले हर दोस्त पर"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "untuk setiap teman yang mengekspor video pertamanya"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "per ogni amico che esporta il suo primo video"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "初めての動画を書き出した友だち1人につき"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "첫 영상을 내보낸 친구 1명당"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "for hver venn som eksporterer sin første video"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "voor elke vriend die voor het eerst een video exporteert"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "por amigo que exportar o primeiro vídeo"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "för varje vän som exporterar sin första video"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ต่อเพื่อนหนึ่งคนที่ส่งออกวิดีโอแรก"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ilk videosunu dışa aktaran her arkadaş için"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "cho mỗi người bạn xuất video đầu tiên"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每位导出第一个视频的朋友"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每位匯出第一部影片的朋友"
+          }
+        }
+      }
+    },
     "Formal" : {
       "comment" : "My Cue Voice › I am › Speak to viewers: the formal you (usted, vous, Sie)",
       "localizations" : {
@@ -38634,6 +40538,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "搞笑寵物"
+          }
+        }
+      }
+    },
+    "Getting your code" : {
+      "comment" : "VoiceOver: the invite code is loading.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جارٍ جلب رمزك"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Henter din kode"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein Code wird geladen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obteniendo tu código"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Récupération de votre code"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपका कोड लाया जा रहा है"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mengambil kodemu"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recupero del tuo codice"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コードを取得中"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "코드를 가져오는 중"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Henter koden din"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je code ophalen"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscando seu código"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hämtar din kod"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "กำลังรับโค้ดของคุณ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kodun alınıyor"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đang lấy mã của bạn"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在获取你的邀请码"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在取得你的邀請碼"
           }
         }
       }
@@ -40657,6 +42680,244 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "購物分享"
+          }
+        }
+      }
+    },
+    "Have a friend’s code?" : {
+      "comment" : "Link on 'Ready to travel' before the first export: opens the field for a friend's invite code.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لديك رمز صديق؟"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Har du en vens kode?"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Code von einem Freund?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Tienes el código de un amigo?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vous avez le code d’un ami ?"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "किसी दोस्त का कोड है?"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Punya kode teman?"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hai il codice di un amico?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "友だちのコードをお持ちですか？"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "친구 코드가 있나요?"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Har du en venns kode?"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Code van een vriend?"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tem o código de um amigo?"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Har du en väns kod?"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "มีโค้ดของเพื่อนไหม"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bir arkadaşının kodu mu var?"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Có mã của bạn bè?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "有朋友的邀请码？"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "有朋友的邀請碼？"
+          }
+        }
+      }
+    },
+    "Have a friend’s code? Type it here." : {
+      "comment" : "Profile's Invite friends row when only typing a code is possible.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لديك رمز صديق؟ اكتبه هنا."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Har du en vens kode? Skriv den her."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Code von einem Freund? Gib ihn hier ein."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Tienes el código de un amigo? Escríbelo aquí."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vous avez le code d’un ami ? Saisissez-le ici."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "किसी दोस्त का कोड है? यहाँ डालें।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Punya kode teman? Masukkan di sini."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hai il codice di un amico? Inseriscilo qui."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "友だちのコードをお持ちですか？ここに入力してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "친구 코드가 있나요? 여기에 입력하세요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Har du en venns kode? Skriv den inn her."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Code van een vriend? Typ hem hier."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tem o código de um amigo? Digite aqui."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Har du en väns kod? Skriv in den här."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "มีโค้ดของเพื่อนไหม ใส่ที่นี่"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bir arkadaşının kodu mu var? Buraya yaz."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Có mã của bạn bè? Nhập ở đây."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "有朋友的邀请码？在这里输入。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "有朋友的邀請碼？在這裡輸入。"
           }
         }
       }
@@ -45064,6 +47325,244 @@
         }
       }
     },
+    "I’ve been making my videos with Cue Studio 🎬 It writes the script with you, and its teleprompter follows your voice while you record.\n\nFind Cue Studio on the App Store.\n\nBefore you export your first video, open Profile › Invite friends in Cue and type my code: %@" : {
+      "comment" : "The same invite when there is no App Store link; %@ is the 6-character code.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "صرت أصنع فيديوهاتي باستخدام Cue Studio 🎬 يكتب النص معك، وملقّنه يتبع صوتك أثناء التسجيل.\n\nتجد Cue Studio في App Store.\n\nقبل أن تصدّر أول فيديو لك، افتح الملف الشخصي › دعوة الأصدقاء في Cue واكتب رمزي: %@"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jeg har lavet mine videoer med Cue Studio 🎬 Den skriver manuskriptet sammen med dig, og dens teleprompter følger din stemme, mens du optager.\n\nFind Cue Studio i App Store.\n\nFør du eksporterer din første video, så åbn Profil › Inviter venner i Cue og skriv min kode: %@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ich mache meine Videos gerade mit Cue Studio 🎬 Es schreibt das Skript mit dir, und sein Teleprompter folgt deiner Stimme, während du aufnimmst.\n\nDu findest Cue Studio im App Store.\n\nBevor du dein erstes Video exportierst, öffne in Cue Profil › Freunde einladen und gib meinen Code ein: %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estoy haciendo mis videos con Cue Studio 🎬 Escribe el guion contigo y su teleprompter sigue tu voz mientras grabas.\n\nBusca Cue Studio en el App Store.\n\nAntes de exportar tu primer video, abre Perfil › Invitar amigos en Cue y escribe mi código: %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je fais mes vidéos avec Cue Studio 🎬 Il écrit le script avec toi, et son téléprompteur suit ta voix pendant que tu filmes.\n\nTu trouves Cue Studio sur l’App Store.\n\nAvant d’exporter ta première vidéo, ouvre Profil › Inviter des amis dans Cue et tape mon code : %@"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "मेरे वीडियो आजकल Cue Studio 🎬 से बनते हैं। यह आपके साथ स्क्रिप्ट लिखता है, और इसका टेलीप्रॉम्प्टर रिकॉर्ड करते समय आपकी आवाज़ के साथ चलता है।\n\nCue Studio आपको App Store पर मिल जाएगा।\n\nअपना पहला वीडियो एक्सपोर्ट करने से पहले, Cue में प्रोफ़ाइल › दोस्तों को इनवाइट करें खोलें और मेरा कोड डालें: %@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aku lagi bikin video pakai Cue Studio 🎬 Aplikasinya menulis naskah bersamamu, dan teleprompternya mengikuti suaramu saat merekam.\n\nCari Cue Studio di App Store.\n\nSebelum mengekspor video pertamamu, buka Profil › Undang teman di Cue dan masukkan kodeku: %@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sto facendo i miei video con Cue Studio 🎬 Scrive il copione con te, e il suo teleprompter segue la tua voce mentre registri.\n\nTrovi Cue Studio sull’App Store.\n\nPrima di esportare il tuo primo video, apri Profilo › Invita amici in Cue e inserisci il mio codice: %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最近、動画はCue Studio 🎬 で作ってるよ。一緒に台本を書いてくれて、録画中はプロンプターが声に合わせて進んでくれるんだ。\n\nCue StudioはApp Storeで見つかるよ。\n\n初めて動画を書き出す前に、Cueで「プロフィール › 友だちを招待」を開いて、私のコードを入力してね：%@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "요즘 Cue Studio 🎬로 영상을 만들고 있어요. 대본을 같이 써 주고, 녹화할 때 프롬프터가 목소리를 따라와요.\n\nApp Store에서 Cue Studio를 찾아보세요.\n\n첫 영상을 내보내기 전에 Cue에서 프로필 › 친구 초대를 열고 제 코드를 입력해 주세요: %@"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jeg har laget videoene mine med Cue Studio 🎬 Den skriver manuset sammen med deg, og teleprompteren følger stemmen din mens du tar opp.\n\nFinn Cue Studio i App Store.\n\nFør du eksporterer din første video, åpner du Profil › Inviter venner i Cue og skriver inn koden min: %@"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ik maak mijn video’s tegenwoordig met Cue Studio 🎬 Het schrijft het script met je mee, en de teleprompter volgt je stem terwijl je opneemt.\n\nJe vindt Cue Studio in de App Store.\n\nOpen voordat je je eerste video exporteert Profiel › Vrienden uitnodigen in Cue en typ mijn code: %@"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tenho feito meus vídeos com o Cue Studio 🎬 Ele escreve o roteiro com você, e o teleprompter dele segue sua voz enquanto você grava.\n\nProcure o Cue Studio na App Store.\n\nAntes de exportar seu primeiro vídeo, abra Perfil › Convidar amigos no Cue e digite meu código: %@"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jag har gjort mina videor med Cue Studio 🎬 Den skriver manuset med dig, och dess teleprompter följer din röst medan du spelar in.\n\nDu hittar Cue Studio i App Store.\n\nInnan du exporterar din första video, öppna Profil › Bjud in vänner i Cue och skriv in min kod: %@"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ช่วงนี้เราทำวิดีโอด้วย Cue Studio 🎬 แอปนี้ช่วยเขียนสคริปต์ไปกับคุณ และเทเลพรอมป์เตอร์ของแอปจะตามเสียงคุณตอนอัด\n\nหา Cue Studio ได้ใน App Store\n\nก่อนส่งออกวิดีโอแรก เปิด โปรไฟล์ › ชวนเพื่อน ใน Cue แล้วใส่โค้ดของเรา: %@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Videolarımı Cue Studio 🎬 ile yapıyorum. Senaryoyu seninle birlikte yazıyor ve teleprompter’ı kayıt yaparken sesini takip ediyor.\n\nCue Studio’yu App Store’da bulabilirsin.\n\nİlk videonu dışa aktarmadan önce Cue’da Profil › Arkadaşlarını davet et bölümünü aç ve kodumu yaz: %@"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dạo này mình làm video bằng Cue Studio 🎬 App viết kịch bản cùng bạn, và teleprompter của app theo giọng bạn khi quay.\n\nTìm Cue Studio trên App Store nhé.\n\nTrước khi xuất video đầu tiên, hãy mở Hồ sơ › Mời bạn bè trong Cue và nhập mã của mình: %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "我最近在用 Cue Studio 🎬 做视频。它和你一起写脚本，录制时提词器会跟随你的声音。\n\n在 App Store 搜索 Cue Studio 就能找到。\n\n导出第一个视频前，在 Cue 中打开“个人资料 › 邀请朋友”，输入我的邀请码：%@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "我最近在用 Cue Studio 🎬 做影片。它會和你一起寫腳本，錄影時提詞機會跟著你的聲音。\n\n在 App Store 搜尋 Cue Studio 就找得到。\n\n匯出第一部影片前，在 Cue 打開「個人檔案 › 邀請朋友」，輸入我的邀請碼：%@"
+          }
+        }
+      }
+    },
+    "I’ve been making my videos with Cue Studio 🎬 It writes the script with you, and its teleprompter follows your voice while you record.\n\nGet it here: %@\n\nBefore you export your first video, open Profile › Invite friends in Cue and type my code: %@" : {
+      "comment" : "The invite a creator shares with a friend (Messages, WhatsApp…): a short note on what Cue does, the App Store link, then where and when to type the creator's invite code. First %@ is the App Store link, second is the 6-character code.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "صرت أصنع فيديوهاتي باستخدام Cue Studio 🎬 يكتب النص معك، وملقّنه يتبع صوتك أثناء التسجيل.\n\nحمّله من هنا: %1$@\n\nقبل أن تصدّر أول فيديو لك، افتح الملف الشخصي › دعوة الأصدقاء في Cue واكتب رمزي: %2$@"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jeg har lavet mine videoer med Cue Studio 🎬 Den skriver manuskriptet sammen med dig, og dens teleprompter følger din stemme, mens du optager.\n\nHent den her: %1$@\n\nFør du eksporterer din første video, så åbn Profil › Inviter venner i Cue og skriv min kode: %2$@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ich mache meine Videos gerade mit Cue Studio 🎬 Es schreibt das Skript mit dir, und sein Teleprompter folgt deiner Stimme, während du aufnimmst.\n\nHier gibt’s die App: %1$@\n\nBevor du dein erstes Video exportierst, öffne in Cue Profil › Freunde einladen und gib meinen Code ein: %2$@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estoy haciendo mis videos con Cue Studio 🎬 Escribe el guion contigo y su teleprompter sigue tu voz mientras grabas.\n\nDescárgalo aquí: %1$@\n\nAntes de exportar tu primer video, abre Perfil › Invitar amigos en Cue y escribe mi código: %2$@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je fais mes vidéos avec Cue Studio 🎬 Il écrit le script avec toi, et son téléprompteur suit ta voix pendant que tu filmes.\n\nTu le trouves ici : %1$@\n\nAvant d’exporter ta première vidéo, ouvre Profil › Inviter des amis dans Cue et tape mon code : %2$@"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "मेरे वीडियो आजकल Cue Studio 🎬 से बनते हैं। यह आपके साथ स्क्रिप्ट लिखता है, और इसका टेलीप्रॉम्प्टर रिकॉर्ड करते समय आपकी आवाज़ के साथ चलता है।\n\nयहाँ से लें: %1$@\n\nअपना पहला वीडियो एक्सपोर्ट करने से पहले, Cue में प्रोफ़ाइल › दोस्तों को इनवाइट करें खोलें और मेरा कोड डालें: %2$@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aku lagi bikin video pakai Cue Studio 🎬 Aplikasinya menulis naskah bersamamu, dan teleprompternya mengikuti suaramu saat merekam.\n\nUnduh di sini: %1$@\n\nSebelum mengekspor video pertamamu, buka Profil › Undang teman di Cue dan masukkan kodeku: %2$@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sto facendo i miei video con Cue Studio 🎬 Scrive il copione con te, e il suo teleprompter segue la tua voce mentre registri.\n\nLo trovi qui: %1$@\n\nPrima di esportare il tuo primo video, apri Profilo › Invita amici in Cue e inserisci il mio codice: %2$@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最近、動画はCue Studio 🎬 で作ってるよ。一緒に台本を書いてくれて、録画中はプロンプターが声に合わせて進んでくれるんだ。\n\nここから入手できるよ：%1$@\n\n初めて動画を書き出す前に、Cueで「プロフィール › 友だちを招待」を開いて、私のコードを入力してね：%2$@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "요즘 Cue Studio 🎬로 영상을 만들고 있어요. 대본을 같이 써 주고, 녹화할 때 프롬프터가 목소리를 따라와요.\n\n여기서 받으세요: %1$@\n\n첫 영상을 내보내기 전에 Cue에서 프로필 › 친구 초대를 열고 제 코드를 입력해 주세요: %2$@"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jeg har laget videoene mine med Cue Studio 🎬 Den skriver manuset sammen med deg, og teleprompteren følger stemmen din mens du tar opp.\n\nHent den her: %1$@\n\nFør du eksporterer din første video, åpner du Profil › Inviter venner i Cue og skriver inn koden min: %2$@"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ik maak mijn video’s tegenwoordig met Cue Studio 🎬 Het schrijft het script met je mee, en de teleprompter volgt je stem terwijl je opneemt.\n\nDownload het hier: %1$@\n\nOpen voordat je je eerste video exporteert Profiel › Vrienden uitnodigen in Cue en typ mijn code: %2$@"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tenho feito meus vídeos com o Cue Studio 🎬 Ele escreve o roteiro com você, e o teleprompter dele segue sua voz enquanto você grava.\n\nBaixe aqui: %1$@\n\nAntes de exportar seu primeiro vídeo, abra Perfil › Convidar amigos no Cue e digite meu código: %2$@"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jag har gjort mina videor med Cue Studio 🎬 Den skriver manuset med dig, och dess teleprompter följer din röst medan du spelar in.\n\nHämta den här: %1$@\n\nInnan du exporterar din första video, öppna Profil › Bjud in vänner i Cue och skriv in min kod: %2$@"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ช่วงนี้เราทำวิดีโอด้วย Cue Studio 🎬 แอปนี้ช่วยเขียนสคริปต์ไปกับคุณ และเทเลพรอมป์เตอร์ของแอปจะตามเสียงคุณตอนอัด\n\nโหลดได้ที่นี่: %1$@\n\nก่อนส่งออกวิดีโอแรก เปิด โปรไฟล์ › ชวนเพื่อน ใน Cue แล้วใส่โค้ดของเรา: %2$@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Videolarımı Cue Studio 🎬 ile yapıyorum. Senaryoyu seninle birlikte yazıyor ve teleprompter’ı kayıt yaparken sesini takip ediyor.\n\nBuradan indir: %1$@\n\nİlk videonu dışa aktarmadan önce Cue’da Profil › Arkadaşlarını davet et bölümünü aç ve kodumu yaz: %2$@"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dạo này mình làm video bằng Cue Studio 🎬 App viết kịch bản cùng bạn, và teleprompter của app theo giọng bạn khi quay.\n\nTải ở đây: %1$@\n\nTrước khi xuất video đầu tiên, hãy mở Hồ sơ › Mời bạn bè trong Cue và nhập mã của mình: %2$@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "我最近在用 Cue Studio 🎬 做视频。它和你一起写脚本，录制时提词器会跟随你的声音。\n\n在这里下载：%1$@\n\n导出第一个视频前，在 Cue 中打开“个人资料 › 邀请朋友”，输入我的邀请码：%2$@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "我最近在用 Cue Studio 🎬 做影片。它會和你一起寫腳本，錄影時提詞機會跟著你的聲音。\n\n在這裡下載：%1$@\n\n匯出第一部影片前，在 Cue 打開「個人檔案 › 邀請朋友」，輸入我的邀請碼：%2$@"
+          }
+        }
+      }
+    },
     "Ideas · One per video" : {
       "comment" : "Adjust sheet: what changes when Too many ideas is kept in the profile",
       "localizations" : {
@@ -46849,6 +49348,601 @@
         }
       }
     },
+    "Invite" : {
+      "comment" : "Button: opens the invites.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "دعوة"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inviter"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einladen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invitar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inviter"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "इनवाइट करें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Undang"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invita"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "招待"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "초대"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inviter"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uitnodigen"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Convidar"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bjud in"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ชวน"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Davet et"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mời"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "邀请"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "邀請"
+          }
+        }
+      }
+    },
+    "Invite a friend" : {
+      "comment" : "Card title on 'Ready to travel' with one free export left.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ادعُ صديقًا"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inviter en ven"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lade einen Freund ein"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invita a un amigo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invitez un ami"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "किसी दोस्त को इनवाइट करें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Undang teman"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invita un amico"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "友だちを招待しよう"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "친구를 초대하세요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inviter en venn"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nodig een vriend uit"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Convide um amigo"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bjud in en vän"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ชวนเพื่อนสักคน"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bir arkadaşını davet et"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mời một người bạn"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "邀请一位朋友"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "邀請一位朋友"
+          }
+        }
+      }
+    },
+    "INVITE FRIENDS" : {
+      "comment" : "Profile section title over the Invite friends row (small capitals).",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "دعوة الأصدقاء"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "INVITER VENNER"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FREUNDE EINLADEN"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "INVITAR AMIGOS"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "INVITER DES AMIS"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "दोस्तों को इनवाइट करें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "UNDANG TEMAN"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "INVITA AMICI"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "友だちを招待"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "친구 초대"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "INVITER VENNER"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "VRIENDEN UITNODIGEN"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CONVIDAR AMIGOS"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BJUD IN VÄNNER"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ชวนเพื่อน"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ARKADAŞLARINI DAVET ET"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MỜI BẠN BÈ"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "邀请朋友"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "邀請朋友"
+          }
+        }
+      }
+    },
+    "Invite code" : {
+      "comment" : "Placeholder of the field where a friend's invite code is typed.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "رمز الدعوة"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invitationskode"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einladungscode"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Código de invitación"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Code d’invitation"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "इनवाइट कोड"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kode undangan"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codice invito"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "招待コード"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "초대 코드"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invitasjonskode"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uitnodigingscode"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Código de convite"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inbjudningskod"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "โค้ดเชิญ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Davet kodu"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mã mời"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "邀请码"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "邀請碼"
+          }
+        }
+      }
+    },
+    "Invite friends" : {
+      "comment" : "Title of the invites sheet and of the Profile row that opens it.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "دعوة الأصدقاء"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inviter venner"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Freunde einladen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invitar amigos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inviter des amis"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "दोस्तों को इनवाइट करें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Undang teman"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invita amici"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "友だちを招待"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "친구 초대"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inviter venner"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vrienden uitnodigen"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Convidar amigos"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bjud in vänner"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ชวนเพื่อน"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arkadaşlarını davet et"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mời bạn bè"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "邀请朋友"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "邀請朋友"
+          }
+        }
+      }
+    },
     "Invite viewers to a simple challenge and explain each step." : {
       "comment" : "Find inspiration: the angle of a starter made from the creator's own topic (an instruction to the creator)",
       "localizations" : {
@@ -47797,6 +50891,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "iOS 在匯出完成前停止了它。"
+          }
+        }
+      }
+    },
+    "Join" : {
+      "comment" : "Button next to the invite code field: use the friend's code.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "انضمام"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deltag"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beitreten"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unirse"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rejoindre"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "जुड़ें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gabung"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unisciti"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "参加"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "참여"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bli med"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meedoen"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entrar"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gå med"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เข้าร่วม"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Katıl"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tham gia"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "加入"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "加入"
           }
         }
       }
@@ -59411,6 +62624,125 @@
         }
       }
     },
+    "No one has this code. Check it with your friend." : {
+      "comment" : "Answer under the invite code field: the code typed doesn't exist.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا أحد يملك هذا الرمز. تأكّد منه مع صديقك."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingen har den kode. Tjek den med din ven."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Niemand hat diesen Code. Frag noch mal bei deinem Freund nach."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nadie tiene este código. Revísalo con tu amigo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Personne n’a ce code. Vérifiez-le avec votre ami."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "यह कोड किसी के पास नहीं है। अपने दोस्त से जाँच लें।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidak ada yang punya kode ini. Cek lagi dengan temanmu."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessuno ha questo codice. Controllalo con il tuo amico."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このコードを持っている人はいません。友だちに確認してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 코드를 가진 사람이 없어요. 친구에게 확인해 보세요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingen har denne koden. Sjekk den med vennen din."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Niemand heeft deze code. Check hem even met je vriend."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ninguém tem este código. Confira com seu amigo."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingen har den här koden. Kolla den med din vän."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ไม่มีใครมีโค้ดนี้ ลองเช็กกับเพื่อนอีกที"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu kod kimsede yok. Arkadaşınla kontrol et."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Không ai có mã này. Hãy kiểm tra lại với bạn của bạn."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没有人有这个邀请码。请和朋友核对一下。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "沒有人有這個邀請碼。請和朋友確認一下。"
+          }
+        }
+      }
+    },
     "No-code & automation" : {
       "comment" : "My Cue Voice: a more specific topic inside the theme “technology and AI” (a short chip)",
       "localizations" : {
@@ -61672,6 +65004,125 @@
         }
       }
     },
+    "Only friends new to Cue count, once per iPhone. Your friend gets Cue’s free exports, like everyone." : {
+      "comment" : "Small print at the bottom of the Invite friends sheet.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا يُحتسب إلا الأصدقاء الجدد على Cue، مرة واحدة لكل iPhone. يحصل صديقك على عمليات التصدير المجانية في Cue، مثل الجميع."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kun venner, der er nye i Cue, tæller, én gang pr. iPhone. Din ven får Cues gratis eksporter ligesom alle andre."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Es zählen nur Freunde, die neu bei Cue sind, einmal pro iPhone. Dein Freund bekommt die kostenlosen Exporte von Cue wie alle anderen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solo cuentan los amigos nuevos en Cue, una vez por iPhone. Tu amigo recibe las exportaciones gratis de Cue, como todos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seuls les amis qui découvrent Cue comptent, une fois par iPhone. Votre ami reçoit les exports gratuits de Cue, comme tout le monde."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "सिर्फ़ Cue पर नए दोस्त गिने जाते हैं, हर iPhone पर एक बार। आपके दोस्त को भी सबकी तरह Cue के मुफ़्त एक्सपोर्ट मिलते हैं।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hanya teman yang baru di Cue yang dihitung, sekali per iPhone. Temanmu mendapat ekspor gratis Cue, sama seperti semua orang."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contano solo gli amici nuovi su Cue, una volta per iPhone. Il tuo amico riceve le esportazioni gratuite di Cue, come tutti."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カウントされるのはCueを初めて使う友だちだけで、iPhone 1台につき1回です。友だちには、ほかのみんなと同じくCueの無料書き出しが付きます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue를 처음 쓰는 친구만 iPhone 1대당 한 번 인정돼요. 친구도 다른 사람들처럼 Cue의 무료 내보내기를 받아요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bare venner som er nye i Cue, teller, én gang per iPhone. Vennen din får Cues gratis eksporter, som alle andre."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alleen vrienden die nieuw zijn bij Cue tellen, één keer per iPhone. Je vriend krijgt de gratis exports van Cue, net als iedereen."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Só contam amigos novos no Cue, uma vez por iPhone. Seu amigo ganha as exportações grátis do Cue, como todo mundo."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bara vänner som är nya i Cue räknas, en gång per iPhone. Din vän får Cues gratis exporter, precis som alla andra."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "นับเฉพาะเพื่อนที่เพิ่งเริ่มใช้ Cue หนึ่งครั้งต่อ iPhone หนึ่งเครื่อง เพื่อนของคุณจะได้การส่งออกฟรีของ Cue เหมือนทุกคน"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yalnızca Cue’yu yeni kullanan arkadaşlar sayılır, iPhone başına bir kez. Arkadaşın da herkes gibi Cue’nun ücretsiz dışa aktarmalarını alır."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chỉ tính những người bạn mới dùng Cue, mỗi iPhone một lần. Bạn của bạn vẫn nhận lượt xuất miễn phí của Cue như mọi người."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "只计算初次使用 Cue 的朋友，每台 iPhone 一次。你的朋友和大家一样获得 Cue 的免费导出。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "只計算初次使用 Cue 的朋友，每支 iPhone 一次。你的朋友和大家一樣獲得 Cue 的免費匯出。"
+          }
+        }
+      }
+    },
     "Only when the script from step 2 runs well past the platform’s length: that script, the length and how you speak." : {
       "comment" : "What Ultra AI sends, step 3: the extra call that fits a script that came back well past the platform's length",
       "localizations" : {
@@ -62025,6 +65476,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "開啟 My Cue Voice 以修改你的回答。"
+          }
+        }
+      }
+    },
+    "Or invite friends · +%lld exports for each friend" : {
+      "comment" : "Link under 'Export with Cue Pro' on 'Your video is ready' (3 exports per friend).",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أو ادعُ أصدقاءك · +%lld عمليات تصدير عن كل صديق"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eller inviter venner · +%lld eksporter for hver ven"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oder lade Freunde ein · +%lld Exporte pro Freund"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O invita amigos · +%lld exportaciones por cada amigo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ou invitez des amis · +%lld exports pour chaque ami"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "या दोस्तों को इनवाइट करें · हर दोस्त पर +%lld एक्सपोर्ट"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atau undang teman · +%lld ekspor untuk setiap teman"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oppure invita amici · +%lld esportazioni per ogni amico"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "または友だちを招待 · 1人につき書き出し +%lld回"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "또는 친구 초대 · 1명당 내보내기 +%lld회"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eller inviter venner · +%lld eksporter for hver venn"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Of nodig vrienden uit · +%lld exports per vriend"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ou convide amigos · +%lld exportações por amigo"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eller bjud in vänner · +%lld exporter för varje vän"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "หรือชวนเพื่อน · ส่งออก +%lld ครั้งต่อคน"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ya da arkadaşlarını davet et · her arkadaş için +%lld dışa aktarma"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hoặc mời bạn bè · +%lld lượt xuất cho mỗi người bạn"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "或者邀请朋友 · 每位朋友 +%lld 次导出"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "或者邀請朋友 · 每位朋友 +%lld 次匯出"
           }
         }
       }
@@ -76440,6 +80010,125 @@
         }
       }
     },
+    "Share invite" : {
+      "comment" : "Button: opens the share sheet with the invite message.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شارك الدعوة"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Del invitation"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einladung teilen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compartir invitación"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Partager l’invitation"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "इनवाइट शेयर करें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bagikan undangan"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Condividi invito"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "招待を共有"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "초대 공유"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Del invitasjon"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uitnodiging delen"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compartilhar convite"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dela inbjudan"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "แชร์คำชวน"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daveti paylaş"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chia sẻ lời mời"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "分享邀请"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "分享邀請"
+          }
+        }
+      }
+    },
     "Share one prediction for the year ahead and the reason behind it." : {
       "comment" : "Find inspiration: the angle of a starter made from the creator's own topic (an instruction to the creator)",
       "localizations" : {
@@ -76793,6 +80482,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "分享一個驚人的事實，以及它為什麼重要。"
+          }
+        }
+      }
+    },
+    "Share your code" : {
+      "comment" : "First of three short steps on how an invite works.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شارك رمزك"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Del din kode"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teil deinen Code"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comparte tu código"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Partagez votre code"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अपना कोड शेयर करें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bagikan kodemu"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Condividi il tuo codice"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コードを共有する"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "코드를 공유하세요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Del koden din"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deel je code"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compartilhe seu código"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dela din kod"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "แชร์โค้ดของคุณ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kodunu paylaş"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chia sẻ mã của bạn"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "分享你的邀请码"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "分享你的邀請碼"
           }
         }
       }
@@ -84657,6 +88465,125 @@
         }
       }
     },
+    "That’s all %lld friends. Thank you for sharing Cue." : {
+      "comment" : "Invites: all 5 friends counted, no more rewards.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اكتمل عدد أصدقائك: %lld. شكرًا لأنك شاركت Cue."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Det var alle %lld venner. Tak, fordi du deler Cue."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das waren alle %lld Freunde. Danke, dass du Cue teilst."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ya son los %lld amigos. Gracias por compartir Cue."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vous avez atteint les %lld amis. Merci de partager Cue."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "सभी %lld दोस्त पूरे हो गए। Cue शेयर करने के लिए शुक्रिया।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sudah %lld teman semuanya. Terima kasih sudah membagikan Cue."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hai raggiunto tutti i %lld amici. Grazie per aver condiviso Cue."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld人すべてそろいました。Cueを広めてくれてありがとうございます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "친구 %lld명을 모두 채웠어요. Cue를 공유해 주셔서 고마워요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Det var alle %lld vennene. Takk for at du deler Cue."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dat zijn alle %lld vrienden. Bedankt dat je Cue deelt."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você chegou aos %lld amigos. Valeu por compartilhar o Cue."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Det var alla %lld vänner. Tack för att du delar Cue."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ครบทั้ง %lld คนแล้ว ขอบคุณที่แชร์ Cue"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld arkadaşın hepsi tamam. Cue’yu paylaştığın için teşekkürler."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đã đủ %lld người bạn. Cảm ơn bạn đã chia sẻ Cue."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 位朋友已满。感谢你分享 Cue。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 位朋友已滿。感謝你分享 Cue。"
+          }
+        }
+      }
+    },
     "That’s the whole routine. Ten minutes, every morning." : {
       "comment" : "My Cue Voice sample script (mornings): the ending when the creator ends with no call to action",
       "localizations" : {
@@ -84772,6 +88699,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "這就是全部流程。每天早上十分鐘。"
+          }
+        }
+      }
+    },
+    "That’s your own code. Share it with a friend." : {
+      "comment" : "Answer under the invite code field: the creator typed their own code.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "هذا رمزك أنت. شاركه مع صديق."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Det er din egen kode. Del den med en ven."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das ist dein eigener Code. Teil ihn mit einem Freund."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ese es tu propio código. Compártelo con un amigo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "C’est votre propre code. Partagez-le avec un ami."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "यह आपका अपना कोड है। इसे किसी दोस्त के साथ शेयर करें।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Itu kodemu sendiri. Bagikan ke teman."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "È il tuo codice. Condividilo con un amico."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "これはあなた自身のコードです。友だちに共有しましょう。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "내 코드예요. 친구에게 공유하세요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Det er din egen kode. Del den med en venn."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dat is je eigen code. Deel hem met een vriend."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esse é o seu código. Compartilhe com um amigo."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Det är din egen kod. Dela den med en vän."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "นี่คือโค้ดของคุณเอง แชร์ให้เพื่อนสิ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu senin kendi kodun. Bir arkadaşınla paylaş."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đây là mã của chính bạn. Hãy chia sẻ với bạn bè."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这是你自己的邀请码。分享给朋友吧。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "這是你自己的邀請碼。分享給朋友吧。"
           }
         }
       }
@@ -87037,6 +91083,244 @@
         }
       }
     },
+    "They export their first video: you get +%lld Ultra AI scripts" : {
+      "comment" : "Third step on Cue Pro; %lld is the Ultra AI scripts one friend earns (5); \"Ultra AI\" stays as is.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يصدّر صديقك أول فيديو له: تحصل على +%lld نصوص من Ultra AI"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vennen eksporterer sin første video: du får +%lld Ultra AI-manuskripter"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein Freund exportiert sein erstes Video: Du bekommst +%lld Ultra AI-Skripte"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exporta su primer video: recibes +%lld guiones de Ultra AI"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sa première vidéo exportée : vous recevez +%lld scripts Ultra AI"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "वे अपना पहला वीडियो एक्सपोर्ट करते हैं: आपको +%lld Ultra AI स्क्रिप्ट मिलती हैं"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dia mengekspor video pertamanya: kamu dapat +%lld naskah Ultra AI"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esporta il suo primo video: ricevi +%lld copioni Ultra AI"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "友だちが初めての動画を書き出す：Ultra AIの台本 +%lld件"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "친구가 첫 영상을 내보내요: Ultra AI 대본 +%lld개를 받아요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vennen eksporterer sin første video: du får +%lld Ultra AI-manus"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je vriend exporteert de eerste video: jij krijgt +%lld Ultra AI-scripts"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A pessoa exporta o primeiro vídeo: você ganha +%lld roteiros do Ultra AI"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vännen exporterar sin första video: du får +%lld Ultra AI-manus"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เพื่อนส่งออกวิดีโอแรก: คุณได้สคริปต์ Ultra AI +%lld รายการ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İlk videosunu dışa aktarır: +%lld Ultra AI senaryosu kazanırsın"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bạn ấy xuất video đầu tiên: bạn được +%lld kịch bản Ultra AI"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "朋友导出第一个视频：你获得 +%lld 个 Ultra AI 脚本"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "朋友匯出第一部影片：你獲得 +%lld 份 Ultra AI 腳本"
+          }
+        }
+      }
+    },
+    "They export their first video: you get +%lld exports" : {
+      "comment" : "Third step, bold; %lld is the exports one friend earns the inviter (3).",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يصدّر صديقك أول فيديو له: تحصل على +%lld عمليات تصدير"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vennen eksporterer sin første video: du får +%lld eksporter"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein Freund exportiert sein erstes Video: Du bekommst +%lld Exporte"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exporta su primer video: recibes +%lld exportaciones"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sa première vidéo exportée : vous recevez +%lld exports"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "वे अपना पहला वीडियो एक्सपोर्ट करते हैं: आपको +%lld एक्सपोर्ट मिलते हैं"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dia mengekspor video pertamanya: kamu dapat +%lld ekspor"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esporta il suo primo video: ricevi +%lld esportazioni"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "友だちが初めての動画を書き出す：あなたの書き出し +%lld回"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "친구가 첫 영상을 내보내요: 내보내기 +%lld회를 받아요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vennen eksporterer sin første video: du får +%lld eksporter"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je vriend exporteert de eerste video: jij krijgt +%lld exports"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A pessoa exporta o primeiro vídeo: você ganha +%lld exportações"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vännen exporterar sin första video: du får +%lld exporter"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เพื่อนส่งออกวิดีโอแรก: คุณได้ส่งออก +%lld ครั้ง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İlk videosunu dışa aktarır: +%lld dışa aktarma kazanırsın"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bạn ấy xuất video đầu tiên: bạn được +%lld lượt xuất"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "朋友导出第一个视频：你获得 +%lld 次导出"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "朋友匯出第一部影片：你獲得 +%lld 次匯出"
+          }
+        }
+      }
+    },
     "This device needs to cool down. The camera comes back in a moment." : {
       "comment" : "Detail under 'The camera is paused' when the system pauses the camera for heat or power",
       "localizations" : {
@@ -87152,6 +91436,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "此裝置需要降溫。相機稍後會恢復。"
+          }
+        }
+      }
+    },
+    "This iPhone already used a friend’s code." : {
+      "comment" : "Answer under the invite code field: a code was already used on this iPhone.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "سبق أن استُخدم رمز صديق على هذا الـiPhone."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denne iPhone har allerede brugt en vens kode."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auf diesem iPhone wurde schon der Code eines Freundes genutzt."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este iPhone ya usó el código de un amigo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cet iPhone a déjà utilisé le code d’un ami."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "इस iPhone पर किसी दोस्त का कोड पहले ही इस्तेमाल हो चुका है।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhone ini sudah memakai kode teman."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Questo iPhone ha già usato il codice di un amico."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このiPhoneでは友だちのコードをすでに使っています。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 iPhone에서는 이미 친구 코드를 사용했어요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denne iPhonen har allerede brukt en venns kode."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Op deze iPhone is al een code van een vriend gebruikt."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este iPhone já usou o código de um amigo."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Den här iPhonen har redan använt en väns kod."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhone เครื่องนี้ใช้โค้ดของเพื่อนไปแล้ว"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu iPhone’da bir arkadaş kodu zaten kullanıldı."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhone này đã dùng mã của một người bạn."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这台 iPhone 已经用过朋友的邀请码。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "這支 iPhone 已經用過朋友的邀請碼。"
           }
         }
       }
@@ -89179,6 +93582,125 @@
         }
       }
     },
+    "Try Cue Pro" : {
+      "comment" : "Button: opens the Cue Pro paywall.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جرّب Cue Pro"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prøv Cue Pro"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue Pro testen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prueba Cue Pro"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Essayer Cue Pro"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue Pro आज़माएँ"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coba Cue Pro"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prova Cue Pro"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue Proを試す"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue Pro 체험"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prøv Cue Pro"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Probeer Cue Pro"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Testar o Cue Pro"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Testa Cue Pro"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ลอง Cue Pro"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue Pro’yu dene"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dùng thử Cue Pro"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "试用 Cue Pro"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "試用 Cue Pro"
+          }
+        }
+      }
+    },
     "Try it free" : {
       "comment" : "Ultra AI's permission sheet: the main button while the first free scripts are left; it allows Ultra AI",
       "localizations" : {
@@ -89651,6 +94173,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在「隱私權與 AI 資料」中關閉 Ultra AI 後，不會再向 Anthropic 傳送任何內容。它已寫好的腳本會留在這部 iPhone 上。Apple Intelligence 不受影響。"
+          }
+        }
+      }
+    },
+    "Type it before your first export." : {
+      "comment" : "Hint under the invite code field.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اكتبه قبل أول تصدير لك."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skriv den før din første eksport."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gib ihn vor deinem ersten Export ein."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escríbelo antes de tu primera exportación."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saisissez-le avant votre premier export."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अपने पहले एक्सपोर्ट से पहले इसे डालें।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masukkan sebelum ekspor pertamamu."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inseriscilo prima della tua prima esportazione."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "初めて書き出す前に入力してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "첫 내보내기 전에 입력하세요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skriv den inn før din første eksport."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Typ hem in vóór je eerste export."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Digite antes da sua primeira exportação."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skriv in den före din första export."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ใส่ก่อนส่งออกครั้งแรก"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İlk dışa aktarmandan önce yaz."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nhập trước lần xuất đầu tiên."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请在第一次导出前输入。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請在第一次匯出前輸入。"
           }
         }
       }
@@ -100447,6 +105088,125 @@
         }
       }
     },
+    "You joined with %@. Your friend’s reward arrives when you export your first video." : {
+      "comment" : "After typing a friend's code that counted: %@ is the code.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "انضممت باستخدام %@. تصل مكافأة صديقك عندما تصدّر أول فيديو لك."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du er med via %@. Din vens belønning kommer, når du eksporterer din første video."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du bist mit %@ dabei. Die Belohnung für deinen Freund kommt, sobald du dein erstes Video exportierst."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Te uniste con %@. La recompensa de tu amigo llega cuando exportes tu primer video."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vous avez rejoint Cue avec %@. La récompense de votre ami arrive quand vous exportez votre première vidéo."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आप %@ से जुड़ गए। आपके दोस्त का इनाम तब मिलेगा जब आप अपना पहला वीडियो एक्सपोर्ट करेंगे।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamu bergabung dengan %@. Hadiah temanmu datang saat kamu mengekspor video pertamamu."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hai usato il codice %@. Il premio del tuo amico arriva quando esporti il tuo primo video."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ で参加しました。あなたが初めての動画を書き出すと、友だちに特典が届きます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 코드로 참여했어요. 첫 영상을 내보내면 친구에게 보상이 가요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du ble med via %@. Vennens belønning kommer når du eksporterer din første video."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je doet mee met %@. De beloning van je vriend komt zodra je je eerste video exporteert."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você entrou com %@. A recompensa do seu amigo chega quando você exportar seu primeiro vídeo."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du gick med via %@. Din väns belöning kommer när du exporterar din första video."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "คุณเข้าร่วมด้วย %@ แล้ว เพื่อนของคุณจะได้รางวัลเมื่อคุณส่งออกวิดีโอแรก"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ ile katıldın. Arkadaşının ödülü, ilk videonu dışa aktardığında gelir."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bạn đã tham gia bằng mã %@. Phần thưởng của bạn bè sẽ đến khi bạn xuất video đầu tiên."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你已用 %@ 加入。你导出第一个视频后，朋友的奖励就会送达。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你已用 %@ 加入。你匯出第一部影片後，朋友的獎勵就會送達。"
+          }
+        }
+      }
+    },
     "You've heard this forever. It's wrong. [pause]" : {
       "comment" : "A ready-made opening line or tone of a script format, shown as an example the creator can pick and read to camera. No dashes in any language. Keep the cue in square brackets, named in the language.",
       "localizations" : {
@@ -100923,6 +105683,125 @@
         }
       }
     },
+    "YOUR CODE" : {
+      "comment" : "Label over the creator's invite code (monospaced capitals).",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "رمزك"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DIN KODE"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DEIN CODE"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TU CÓDIGO"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "VOTRE CODE"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपका कोड"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KODEMU"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "IL TUO CODICE"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "あなたのコード"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "내 코드"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DIN KODE"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "JE CODE"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SEU CÓDIGO"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DIN KOD"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "โค้ดของคุณ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KODUN"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MÃ CỦA BẠN"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的邀请码"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的邀請碼"
+          }
+        }
+      }
+    },
     "Your first video shared · %@ icon unlocked" : {
       "comment" : "Milestone story line: the first shared video unlocked an app icon (its name)",
       "localizations" : {
@@ -101038,6 +105917,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "已分享第一部影片 · 已解鎖 %@ 圖示"
+          }
+        }
+      }
+    },
+    "Your friend types it in Cue before their first export" : {
+      "comment" : "Second step; \"it\" = the invite code; the field is in Profile › Invite friends.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يكتبه صديقك في Cue قبل أول تصدير له"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Din ven skriver den i Cue før sin første eksport"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein Freund gibt ihn in Cue ein, bevor er zum ersten Mal exportiert"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu amigo lo escribe en Cue antes de su primera exportación"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votre ami le saisit dans Cue avant son premier export"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपके दोस्त अपने पहले एक्सपोर्ट से पहले इसे Cue में डालते हैं"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temanmu memasukkannya di Cue sebelum ekspor pertamanya"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il tuo amico lo inserisce in Cue prima della sua prima esportazione"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "友だちが初めて書き出す前にCueで入力する"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "친구가 첫 내보내기 전에 Cue에서 입력해요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vennen din skriver den inn i Cue før sin første eksport"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je vriend typt hem in Cue vóór de eerste export"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seu amigo digita no Cue antes da primeira exportação"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Din vän skriver in den i Cue före sin första export"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เพื่อนใส่โค้ดใน Cue ก่อนส่งออกครั้งแรก"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arkadaşın ilk dışa aktarmasından önce kodu Cue’ya yazar"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bạn ấy nhập mã trong Cue trước lần xuất đầu tiên"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "朋友在第一次导出前在 Cue 中输入"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "朋友在第一次匯出前於 Cue 中輸入"
           }
         }
       }

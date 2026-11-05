@@ -786,11 +786,13 @@ do mundo ao tocar; o chip escolhido ganha o tom e a borda dessa cor e um oval de
 ## 11. Exportações grátis acabando (`09` "Free exports running out")
 
 São **3** (`UsagePolicy.freeExports`, decisão do dono, 30/10/2026: experimentar o Cue são as exportações grátis e os roteiros grátis da Ultra AI; **não há
-teste grátis** do Pro). Rótulos de `FreeExportLabels` (9.1 plano, 8.1 medidor, 6.3 linha sob Share): "2 OF 3 …" neutro, amarelo na última, laranja quando
-acabam. **Com 0**, Share / Save video / compartilhar abrem **"Your video is ready"** (`ExportReadySheet`: miniatura "✓ READY", "Saved in Takes · nothing is
+teste grátis** do Pro), mais **3 por amigo convidado** que exportou o primeiro vídeo (§60; `UsageQuotaService.bonusExports`, o total em
+`exportLimit(for:)`). Rótulos de `FreeExportLabels` (9.1 plano, 8.1 medidor, 6.3 linha sob Share), contados sobre esse total ("5 OF 9 …"): neutro, amarelo na
+última, laranja quando acabam; as barras (`FreeExportBars`) viram uma só, proporcional, passadas 6. **Com 0**, Share / Save video / compartilhar abrem **"Your video is ready"** (`ExportReadySheet`: miniatura "✓ READY", "Saved in Takes · nothing is
 lost. You've used your 3 free exports.", **Export with Cue Pro** com brilho e **Not now**). Fechar ou Not now deixa a take pronta (6.3: "READY · EXPORT WITH
 PRO") e toast "Saved in Takes · export with Pro anytime"; Export with Cue Pro abre o **Pro calmo** (`PaywallContext.export`, §12), que diz os preços;
-assinando, a exportação segue sozinha. Pro: "PRO · UNLIMITED EXPORTS", sem Go Pro.
+assinando, a exportação segue sozinha. Com os convites oferecidos, um link amarelo entre os dois, **Or invite friends · +3 exports for each friend**, fecha a
+folha como Not now e abre os convites (§60). Pro: "PRO · UNLIMITED EXPORTS", sem Go Pro.
 
 ## 12. Pro (11.4)
 
@@ -845,7 +847,8 @@ tipo" (o próprio, `customRole`, ou o da lista), ou, sem nenhum dos dois,
 (`ProfileUniverseRow`): o universo em miniatura ao vivo (`ProfileMiniUniverse`, 104 pt com folga da borda: o núcleo na cor escolhida respirando, três órbitas e **um planeta por
 rede** compartilhada no ano, na cor da rede, a mais usada mais perto, com uma lua), o título e uma linha ("2026 · 1 video", singular/plural no
 catálogo); conta nova: "Your universe is waiting", órbitas pontilhadas girando e um planeta tracejado esperando. Os marcos e ícones não aparecem
-no Profile (saíram a pedido do dono). Toque longo na identidade: Copy @handle · Share profile link · Edit profile. As animações ambientes (`AmbientTimeline`) já andam ao
+no Profile (saíram a pedido do dono). **Invite friends** (`ProfileInviteRow`, §60), por último, enquanto os convites são oferecidos: presente
+amarelo, o título e uma linha mono ("+3 exports for each friend"; com amigos, "2 of 5 friends · +6 exports" em amarelo); abre os convites. Toque longo na identidade: Copy @handle · Share profile link · Edit profile. As animações ambientes (`AmbientTimeline`) já andam ao
 abrir a tela: o primeiro aviso de visibilidade do scroll, que chega antes do layout dizendo "invisível", não as para mais.
 **`EditProfileSheet`** (`.large`, Cancel / Done; redesenho do dono 21/10/2026). **Tudo é opcional:** `ProfileDraft` aceita nome e usuário
 vazios (digitados, nome até 40, usuário 2–24 de a–z 0–9 . _, minúsculas, com o erro embaixo) e **Done só desliga com algo digitado fora do
@@ -3546,3 +3549,75 @@ escolher, baixadas só quando usadas.
   e vietnamita, uma voz do sistema e uma pessoa lendo (FLEURS) são legendadas pelo reconhecimento do iPhone, e a linha ouvida é desenhada nos 20
   estilos de legenda (três momentos da fala), nas 15 famílias de texto e nos 6 efeitos (três momentos da entrada), com as famílias baixadas antes:
   toda letra tem face, e a da escrita sai na face da biblioteca ou na do estilo. As folhas ficam em Documents/ScriptFontSheets do app.
+
+## 60. Convites (5 de novembro de 2026; proposta aprovada pelo dono)
+
+O criador convida amigos e ganha quando o amigo exporta o primeiro vídeo. Só quem convida ganha: o App Review recusou apps que premiavam quem
+baixa (precedente de 2021) e códigos que destravam o que se vende por compra no app (2024, regra 3.1.1); um app "may otherwise incentivize users to
+take specific actions" (3.2.2(x)). O dono marca uma consulta com o App Review (Meet with Apple Experts) antes de dar algo ao amigo.
+
+- **Recompensa** (`ReferralRewards`): no plano grátis, **+3 exportações por amigo**; no Cue Pro, onde a Ultra AI é oferecida, **+5 roteiros da Ultra
+  AI** (as exportações do Pro já são ilimitadas; `UltraAllowance.bonus`, somados aos grátis, não acabam com o mês). Até **5 amigos**; mais podem
+  entrar, a recompensa para aí. Cada amigo é creditado uma vez, no tipo que valia no plano do criador quando o Cue soube dele, e fica assim (quem
+  virou Pro guarda as exportações ganhas antes). Pro sem Ultra AI (a App Store de hoje) não vê convites: não há o que dar.
+- **O servidor conta, o app credita** (ARCHITECTURE §2.7): a função `referral` (`server/functions`, Firestore `referralInstalls` e
+  `referralCodes`, regras que recusam todo cliente) faz o código, guarda quem entrou e quem exportou; o app (`ReferralService`) transforma a contagem
+  em recompensa e guarda o que já creditou no Keychain (`KeychainReferralStateStore`, este aparelho, sobrevive a reinstalar), com o id da instalação:
+  um UUID aleatório, a única coisa que o servidor sabe do iPhone. Cada pedido leva um token do App Check (App Attest).
+- **No ar desde 05/11/2026:** banco Firestore `(default)` em nam5 no `cuestudio-app`, a função `referral` e as regras publicadas. Conferido em
+  produção: sem token do App Check ou com um falso, 401; leitura, escrita ou listagem direta no banco, 403; no iPhone de verdade (build Debug,
+  App Check de depuração), Invite friends mostra o código vindo do servidor (teste à mão do dono). Entrar com um código e a primeira exportação
+  não foram feitos em aparelho (os dois iPhones de teste já exportaram); cobertos pelos testes do servidor e do app.
+- **Quando o Cue fala com o servidor:** ao abrir os convites; ao digitar um código; na primeira exportação de quem entrou com um código (de novo
+  ao voltar ao app se não chegou); e, para quem já abriu os convites, ao abrir o app e ao voltar a ele, no máximo a cada 10 minutos. Quem nunca
+  convida nem digita um código nunca chega ao servidor. Sem Firebase (testes, previews) nada de convite aparece.
+- **O código:** 6 caracteres sem I, O, 0 e 1 (`ReferralCode`), mostrado "K7M 2QX"; o que o amigo digita é lido sem espaços, traços ou caixa. A
+  mensagem (`InviteCopy.message`, pedido do dono: um bilhete, não um link seco) vai em três parágrafos: "I’ve been making my videos with Cue Studio
+  🎬 It writes the script with you, and its teleprompter follows your voice while you record."; "Get it here: <link>" (`AppStoreLink`:
+  `https://apps.apple.com/app/id6817889695`, o Apple ID em `CUE_APP_STORE_ID` do `App.xcconfig`; vazio, "Find Cue Studio on the App Store."); e
+  "Before you export your first video, open Profile › Invite friends in Cue and type my code: K7M2QX", o código por último para copiar fácil. A
+  folha do sistema mostra o título "An invite to Cue Studio" (também o assunto de um e-mail). Apps que só aceitam link (os da Meta, como Instagram e
+  Messenger, descartam texto pronto) recebem só o link. Sem SDK de terceiros nem link que sobreviva à instalação: o amigo digita.
+- **O amigo** digita o código **uma vez, antes da primeira exportação** do iPhone (`canJoin`: nenhuma exportação contada nem vídeo compartilhado,
+  nem entrega em nenhum plano); o próprio código, um que não existe ou um segundo dizem por quê embaixo do campo. Entrou: "You joined with K7M 2QX.
+  Your friend’s reward arrives when you export your first video."
+- **Invite friends** (`InviteFriendsSheet`, `.large`, Done; redesenhada a pedido do dono, 05/11, para convencer e ficar mais limpa), de cima para
+  baixo:
+  - **A órbita** (`InviteOrbit`): o núcleo na luz do criador e uma órbita inclinada com um lugar por amigo que pode render (5); quem já contou é
+    um planeta aceso (amarelo; violeta para os roteiros da Ultra AI), os lugares abertos são tracejados; ela gira devagar (60 s), os planetas
+    passando atrás e na frente do núcleo, sob estrelas que piscam. Reduce Motion: parada.
+  - **O ganho em grande** (`InviteHero`): "+3 exports" (44, heavy, amarelo; "+5 Ultra AI scripts" em violeta no Pro), "for each friend who
+    exports their first video" e uma pílula mono "0 of 5 friends" (com amigos, "2 of 5 friends · +6 exports" na cor do ganho). Com os 5, o
+    total ("+15 exports") e "That’s all 5 friends. Thank you for sharing Cue."
+  - **O código** (`InviteCodeCard`): YOUR CODE e "K7M 2QX" grande em mono; o cartão inteiro copia, e o **Copy** vira **Copied** verde por um
+    instante, com toque de sucesso. Esperando o servidor, um indicador; sem rede, "Couldn’t reach Cue…" e **Try again**.
+  - **Três passos** (`InviteSteps`) num caminho fino, cada um com seu sinal: Share your code; Your friend types it in Cue before their first
+    export; e, em negrito com o presente amarelo, "They export their first video: you get +3 exports".
+  - **Have a friend’s code?** (`InviteJoinSection`), enquanto `canJoin`: uma linha discreta que abre o campo e Join (lado a lado; um sobre o
+    outro nos tamanhos de acessibilidade). Vindo do link de Ready to travel (ou quando só há isso para mostrar), já abre com o teclado.
+  - A letra miúda ("Only friends new to Cue count, once per iPhone. Your friend gets Cue’s free exports, like everyone.").
+  - **Share invite** amarelo fica embaixo, sobre a área segura, com a folha do sistema; some enquanto se digita um código, e o campo sobe
+    acima do teclado.
+- **Um pedido por momento** (o convite nunca disputa com o Pro nem com a avaliação):
+
+  | Momento | O que aparece |
+  |---|---|
+  | 1ª exportação | só a celebração; antes dela, em Ready to travel, o link **Have a friend’s code?** enquanto `canJoin` |
+  | Ready to travel com 1 grátis | cartão **Invite a friend** ("+3 exports for each friend who exports their first video with Cue.") com **Invite** |
+  | Ready to travel com 0 | cartão **Export more videos**: **Try Cue Pro** (o Pro calmo) primeiro e **Invite friends** ao lado |
+  | Sem exportações, ao exportar | "Your video is ready" (§11) com o link **Or invite friends · +3 exports for each friend** |
+  | Outro dia, depois do 2º vídeo | a avaliação da App Store, só pela API da Apple (`requestReview`, 5.6.1), ao fechar a celebração: uma vez por versão, nunca no dia da instalação, num dia com exportação que falhou, nem quando as grátis acabaram (`ReviewPromptPolicy`, `ReviewPromptService`); o iOS mostra no máximo 3 vezes por ano |
+  | Profile | **Invite friends** sempre (§13) |
+
+  Os cartões só aparecem enquanto um amigo ainda pode render algo (menos de 5).
+- **Recompensa chegou:** toast "A friend you invited exported their first video · +3 exports" (ou "+5 Ultra AI scripts"; vários de uma vez, "2 friends
+  you invited…").
+- **Medido** (Analytics, só com "Help improve Cue", `cue_referral`): convite oferecido e aberto (onde), código copiado e compartilhado, código
+  digitado (o resultado), recompensa (o tipo e quantos), avaliação pedida. Nunca o código nem o id.
+- **Testes:** `ReferralServiceTests` (crédito uma vez, tipo do plano, limite, entrar uma vez antes da exportação, ativação reenviada, quem não convida
+  não chega ao servidor, Keychain ilegível), `ReferralModelsTests`, `ReviewPromptServiceTests`, `npm test` no servidor (regras, transações, pedido);
+  `InviteFriendsUITests` com o servidor de teste (`-uiTestReferral`, `-uiTestReferralFriends <n>`, `-uiTestReferralJoined`); fotos e hierarquia em
+  `InviteCaptureTests` (`TEST_RUNNER_CUE_FIDELITY_DIR`). Contraste: só tokens de texto (`ink`, `ink2`, `accText`, `aiText`, `warnText`, `successText`) sobre
+  `surface`, `fill` e `sheetNight`; o par mais fraco é ink2 na pílula e no campo (5,0:1), "Copied" verde 5,9:1, o ganho amarelo 12,6:1; conferido
+  nas fotos do iPhone 17 e do SE no maior tamanho de texto (`TEST_RUNNER_CUE_AUDIT_SIZE`).
+
