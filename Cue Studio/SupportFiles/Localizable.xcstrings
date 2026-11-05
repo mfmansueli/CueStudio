@@ -20245,6 +20245,125 @@
         }
       }
     },
+    "Come create too:" : {
+      "comment" : "Invite message: the line just before the App Store link (casual, inviting the friend to join)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تعال وأبدع أنت أيضًا:"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kom og skab med:"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Komm und leg auch los:"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ven a crear tú también:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Viens créer toi aussi :"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आप भी आइए, बनाइए:"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yuk, ikut berkarya:"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vieni a creare anche tu:"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一緒に作ろう："
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "같이 만들어요:"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bli med og skap du også:"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kom ook creëren:"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vem criar também:"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kom och skapa du också:"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "มาสร้างไปด้วยกัน:"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sen de gel, üret:"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vào sáng tạo cùng mình nhé:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一起来创作吧："
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一起來創作吧："
+          }
+        }
+      }
+    },
     "Come with me through a day of %@, from morning to night." : {
       "comment" : "Find inspiration: the opening line of a starter made from the creator's own topic, said on camera (%@ is the topic, as they typed it)",
       "localizations" : {
@@ -36972,6 +37091,125 @@
         }
       }
     },
+    "Find Cue Studio on the App Store." : {
+      "comment" : "Invite message: replaces the App Store link when the build has no App Store ID",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ابحث عن Cue Studio في App Store."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Find Cue Studio i App Store."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Such Cue Studio im App Store."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Busca Cue Studio en la App Store."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cherche Cue Studio sur l’App Store."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Store पर Cue Studio खोजें।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cari Cue Studio di App Store."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerca Cue Studio nell’App Store."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App StoreでCue Studioを探してね。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Store에서 Cue Studio를 찾아보세요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finn Cue Studio i App Store."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoek Cue Studio in de App Store."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Procure o Cue Studio na App Store."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hitta Cue Studio i App Store."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ค้นหา Cue Studio ใน App Store"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue Studio’yu App Store’da ara."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tìm Cue Studio trên App Store."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 App Store 搜索 Cue Studio。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 App Store 搜尋 Cue Studio。"
+          }
+        }
+      }
+    },
     "First-time buyers" : {
       "comment" : "My Cue Voice: a more specific topic inside the theme “real estate” (a short chip)",
       "localizations" : {
@@ -47444,244 +47682,6 @@
         }
       }
     },
-    "I’ve been making my videos with Cue Studio 🎬 It writes the script with you, and its teleprompter follows your voice while you record.\n\nFind Cue Studio on the App Store.\n\nBefore you export your first video, open Profile › Invite friends in Cue and type my code: %@" : {
-      "comment" : "The same invite when there is no App Store link; %@ is the 6-character code.",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "صرت أصنع فيديوهاتي باستخدام Cue Studio 🎬 يكتب النص معك، وملقّنه يتبع صوتك أثناء التسجيل.\n\nتجد Cue Studio في App Store.\n\nقبل أن تصدّر أول فيديو لك، افتح الملف الشخصي › دعوة الأصدقاء في Cue واكتب رمزي: %@"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jeg har lavet mine videoer med Cue Studio 🎬 Den skriver manuskriptet sammen med dig, og dens teleprompter følger din stemme, mens du optager.\n\nFind Cue Studio i App Store.\n\nFør du eksporterer din første video, så åbn Profil › Inviter venner i Cue og skriv min kode: %@"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ich mache meine Videos gerade mit Cue Studio 🎬 Es schreibt das Skript mit dir, und sein Teleprompter folgt deiner Stimme, während du aufnimmst.\n\nDu findest Cue Studio im App Store.\n\nBevor du dein erstes Video exportierst, öffne in Cue Profil › Freunde einladen und gib meinen Code ein: %@"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Estoy haciendo mis videos con Cue Studio 🎬 Escribe el guion contigo y su teleprompter sigue tu voz mientras grabas.\n\nBusca Cue Studio en el App Store.\n\nAntes de exportar tu primer video, abre Perfil › Invitar amigos en Cue y escribe mi código: %@"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Je fais mes vidéos avec Cue Studio 🎬 Il écrit le script avec toi, et son téléprompteur suit ta voix pendant que tu filmes.\n\nTu trouves Cue Studio sur l’App Store.\n\nAvant d’exporter ta première vidéo, ouvre Profil › Inviter des amis dans Cue et tape mon code : %@"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "मेरे वीडियो आजकल Cue Studio 🎬 से बनते हैं। यह आपके साथ स्क्रिप्ट लिखता है, और इसका टेलीप्रॉम्प्टर रिकॉर्ड करते समय आपकी आवाज़ के साथ चलता है।\n\nCue Studio आपको App Store पर मिल जाएगा।\n\nअपना पहला वीडियो एक्सपोर्ट करने से पहले, Cue में प्रोफ़ाइल › दोस्तों को इनवाइट करें खोलें और मेरा कोड डालें: %@"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aku lagi bikin video pakai Cue Studio 🎬 Aplikasinya menulis naskah bersamamu, dan teleprompternya mengikuti suaramu saat merekam.\n\nCari Cue Studio di App Store.\n\nSebelum mengekspor video pertamamu, buka Profil › Undang teman di Cue dan masukkan kodeku: %@"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sto facendo i miei video con Cue Studio 🎬 Scrive il copione con te, e il suo teleprompter segue la tua voce mentre registri.\n\nTrovi Cue Studio sull’App Store.\n\nPrima di esportare il tuo primo video, apri Profilo › Invita amici in Cue e inserisci il mio codice: %@"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "最近、動画はCue Studio 🎬 で作ってるよ。一緒に台本を書いてくれて、録画中はプロンプターが声に合わせて進んでくれるんだ。\n\nCue StudioはApp Storeで見つかるよ。\n\n初めて動画を書き出す前に、Cueで「プロフィール › 友だちを招待」を開いて、私のコードを入力してね：%@"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "요즘 Cue Studio 🎬로 영상을 만들고 있어요. 대본을 같이 써 주고, 녹화할 때 프롬프터가 목소리를 따라와요.\n\nApp Store에서 Cue Studio를 찾아보세요.\n\n첫 영상을 내보내기 전에 Cue에서 프로필 › 친구 초대를 열고 제 코드를 입력해 주세요: %@"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jeg har laget videoene mine med Cue Studio 🎬 Den skriver manuset sammen med deg, og teleprompteren følger stemmen din mens du tar opp.\n\nFinn Cue Studio i App Store.\n\nFør du eksporterer din første video, åpner du Profil › Inviter venner i Cue og skriver inn koden min: %@"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ik maak mijn video’s tegenwoordig met Cue Studio 🎬 Het schrijft het script met je mee, en de teleprompter volgt je stem terwijl je opneemt.\n\nJe vindt Cue Studio in de App Store.\n\nOpen voordat je je eerste video exporteert Profiel › Vrienden uitnodigen in Cue en typ mijn code: %@"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tenho feito meus vídeos com o Cue Studio 🎬 Ele escreve o roteiro com você, e o teleprompter dele segue sua voz enquanto você grava.\n\nProcure o Cue Studio na App Store.\n\nAntes de exportar seu primeiro vídeo, abra Perfil › Convidar amigos no Cue e digite meu código: %@"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jag har gjort mina videor med Cue Studio 🎬 Den skriver manuset med dig, och dess teleprompter följer din röst medan du spelar in.\n\nDu hittar Cue Studio i App Store.\n\nInnan du exporterar din första video, öppna Profil › Bjud in vänner i Cue och skriv in min kod: %@"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ช่วงนี้เราทำวิดีโอด้วย Cue Studio 🎬 แอปนี้ช่วยเขียนสคริปต์ไปกับคุณ และเทเลพรอมป์เตอร์ของแอปจะตามเสียงคุณตอนอัด\n\nหา Cue Studio ได้ใน App Store\n\nก่อนส่งออกวิดีโอแรก เปิด โปรไฟล์ › ชวนเพื่อน ใน Cue แล้วใส่โค้ดของเรา: %@"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Videolarımı Cue Studio 🎬 ile yapıyorum. Senaryoyu seninle birlikte yazıyor ve teleprompter’ı kayıt yaparken sesini takip ediyor.\n\nCue Studio’yu App Store’da bulabilirsin.\n\nİlk videonu dışa aktarmadan önce Cue’da Profil › Arkadaşlarını davet et bölümünü aç ve kodumu yaz: %@"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dạo này mình làm video bằng Cue Studio 🎬 App viết kịch bản cùng bạn, và teleprompter của app theo giọng bạn khi quay.\n\nTìm Cue Studio trên App Store nhé.\n\nTrước khi xuất video đầu tiên, hãy mở Hồ sơ › Mời bạn bè trong Cue và nhập mã của mình: %@"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "我最近在用 Cue Studio 🎬 做视频。它和你一起写脚本，录制时提词器会跟随你的声音。\n\n在 App Store 搜索 Cue Studio 就能找到。\n\n导出第一个视频前，在 Cue 中打开“个人资料 › 邀请朋友”，输入我的邀请码：%@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "我最近在用 Cue Studio 🎬 做影片。它會和你一起寫腳本，錄影時提詞機會跟著你的聲音。\n\n在 App Store 搜尋 Cue Studio 就找得到。\n\n匯出第一部影片前，在 Cue 打開「個人檔案 › 邀請朋友」，輸入我的邀請碼：%@"
-          }
-        }
-      }
-    },
-    "I’ve been making my videos with Cue Studio 🎬 It writes the script with you, and its teleprompter follows your voice while you record.\n\nGet it here: %@\n\nBefore you export your first video, open Profile › Invite friends in Cue and type my code: %@" : {
-      "comment" : "The invite a creator shares with a friend (Messages, WhatsApp…): a short note on what Cue does, the App Store link, then where and when to type the creator's invite code. First %@ is the App Store link, second is the 6-character code.",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "صرت أصنع فيديوهاتي باستخدام Cue Studio 🎬 يكتب النص معك، وملقّنه يتبع صوتك أثناء التسجيل.\n\nحمّله من هنا: %1$@\n\nقبل أن تصدّر أول فيديو لك، افتح الملف الشخصي › دعوة الأصدقاء في Cue واكتب رمزي: %2$@"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jeg har lavet mine videoer med Cue Studio 🎬 Den skriver manuskriptet sammen med dig, og dens teleprompter følger din stemme, mens du optager.\n\nHent den her: %1$@\n\nFør du eksporterer din første video, så åbn Profil › Inviter venner i Cue og skriv min kode: %2$@"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ich mache meine Videos gerade mit Cue Studio 🎬 Es schreibt das Skript mit dir, und sein Teleprompter folgt deiner Stimme, während du aufnimmst.\n\nHier gibt’s die App: %1$@\n\nBevor du dein erstes Video exportierst, öffne in Cue Profil › Freunde einladen und gib meinen Code ein: %2$@"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Estoy haciendo mis videos con Cue Studio 🎬 Escribe el guion contigo y su teleprompter sigue tu voz mientras grabas.\n\nDescárgalo aquí: %1$@\n\nAntes de exportar tu primer video, abre Perfil › Invitar amigos en Cue y escribe mi código: %2$@"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Je fais mes vidéos avec Cue Studio 🎬 Il écrit le script avec toi, et son téléprompteur suit ta voix pendant que tu filmes.\n\nTu le trouves ici : %1$@\n\nAvant d’exporter ta première vidéo, ouvre Profil › Inviter des amis dans Cue et tape mon code : %2$@"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "मेरे वीडियो आजकल Cue Studio 🎬 से बनते हैं। यह आपके साथ स्क्रिप्ट लिखता है, और इसका टेलीप्रॉम्प्टर रिकॉर्ड करते समय आपकी आवाज़ के साथ चलता है।\n\nयहाँ से लें: %1$@\n\nअपना पहला वीडियो एक्सपोर्ट करने से पहले, Cue में प्रोफ़ाइल › दोस्तों को इनवाइट करें खोलें और मेरा कोड डालें: %2$@"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aku lagi bikin video pakai Cue Studio 🎬 Aplikasinya menulis naskah bersamamu, dan teleprompternya mengikuti suaramu saat merekam.\n\nUnduh di sini: %1$@\n\nSebelum mengekspor video pertamamu, buka Profil › Undang teman di Cue dan masukkan kodeku: %2$@"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sto facendo i miei video con Cue Studio 🎬 Scrive il copione con te, e il suo teleprompter segue la tua voce mentre registri.\n\nLo trovi qui: %1$@\n\nPrima di esportare il tuo primo video, apri Profilo › Invita amici in Cue e inserisci il mio codice: %2$@"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "最近、動画はCue Studio 🎬 で作ってるよ。一緒に台本を書いてくれて、録画中はプロンプターが声に合わせて進んでくれるんだ。\n\nここから入手できるよ：%1$@\n\n初めて動画を書き出す前に、Cueで「プロフィール › 友だちを招待」を開いて、私のコードを入力してね：%2$@"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "요즘 Cue Studio 🎬로 영상을 만들고 있어요. 대본을 같이 써 주고, 녹화할 때 프롬프터가 목소리를 따라와요.\n\n여기서 받으세요: %1$@\n\n첫 영상을 내보내기 전에 Cue에서 프로필 › 친구 초대를 열고 제 코드를 입력해 주세요: %2$@"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jeg har laget videoene mine med Cue Studio 🎬 Den skriver manuset sammen med deg, og teleprompteren følger stemmen din mens du tar opp.\n\nHent den her: %1$@\n\nFør du eksporterer din første video, åpner du Profil › Inviter venner i Cue og skriver inn koden min: %2$@"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ik maak mijn video’s tegenwoordig met Cue Studio 🎬 Het schrijft het script met je mee, en de teleprompter volgt je stem terwijl je opneemt.\n\nDownload het hier: %1$@\n\nOpen voordat je je eerste video exporteert Profiel › Vrienden uitnodigen in Cue en typ mijn code: %2$@"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tenho feito meus vídeos com o Cue Studio 🎬 Ele escreve o roteiro com você, e o teleprompter dele segue sua voz enquanto você grava.\n\nBaixe aqui: %1$@\n\nAntes de exportar seu primeiro vídeo, abra Perfil › Convidar amigos no Cue e digite meu código: %2$@"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jag har gjort mina videor med Cue Studio 🎬 Den skriver manuset med dig, och dess teleprompter följer din röst medan du spelar in.\n\nHämta den här: %1$@\n\nInnan du exporterar din första video, öppna Profil › Bjud in vänner i Cue och skriv in min kod: %2$@"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ช่วงนี้เราทำวิดีโอด้วย Cue Studio 🎬 แอปนี้ช่วยเขียนสคริปต์ไปกับคุณ และเทเลพรอมป์เตอร์ของแอปจะตามเสียงคุณตอนอัด\n\nโหลดได้ที่นี่: %1$@\n\nก่อนส่งออกวิดีโอแรก เปิด โปรไฟล์ › ชวนเพื่อน ใน Cue แล้วใส่โค้ดของเรา: %2$@"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Videolarımı Cue Studio 🎬 ile yapıyorum. Senaryoyu seninle birlikte yazıyor ve teleprompter’ı kayıt yaparken sesini takip ediyor.\n\nBuradan indir: %1$@\n\nİlk videonu dışa aktarmadan önce Cue’da Profil › Arkadaşlarını davet et bölümünü aç ve kodumu yaz: %2$@"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dạo này mình làm video bằng Cue Studio 🎬 App viết kịch bản cùng bạn, và teleprompter của app theo giọng bạn khi quay.\n\nTải ở đây: %1$@\n\nTrước khi xuất video đầu tiên, hãy mở Hồ sơ › Mời bạn bè trong Cue và nhập mã của mình: %2$@"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "我最近在用 Cue Studio 🎬 做视频。它和你一起写脚本，录制时提词器会跟随你的声音。\n\n在这里下载：%1$@\n\n导出第一个视频前，在 Cue 中打开“个人资料 › 邀请朋友”，输入我的邀请码：%2$@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "我最近在用 Cue Studio 🎬 做影片。它會和你一起寫腳本，錄影時提詞機會跟著你的聲音。\n\n在這裡下載：%1$@\n\n匯出第一部影片前，在 Cue 打開「個人檔案 › 邀請朋友」，輸入我的邀請碼：%2$@"
-          }
-        }
-      }
-    },
     "Ideas · One per video" : {
       "comment" : "Adjust sheet: what changes when Too many ideas is kept in the profile",
       "localizations" : {
@@ -48868,6 +48868,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "繼承與遺囑"
+          }
+        }
+      }
+    },
+    "Install the app and go to Profile › Invite friends › type the code above before you export your first video. ✨" : {
+      "comment" : "Invite message, last line: where the friend types the code. 'Profile' and 'Invite friends' must be exactly the app's own names for the Profile tab and the Invite friends row in this language",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ثبّت التطبيق وانتقل إلى الملف الشخصي › دعوة الأصدقاء › واكتب الرمز أعلاه قبل أن تصدّر أول فيديو لك. ✨"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installer appen, og gå til Profil › Inviter venner › skriv koden ovenfor, før du eksporterer din første video. ✨"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installiere die App und geh zu Profil › Freunde einladen › gib den Code oben ein, bevor du dein erstes Video exportierst. ✨"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instala la app y ve a Perfil › Invitar amigos › escribe el código de arriba antes de exportar tu primer video. ✨"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installe l’app et va dans Profil › Inviter des amis › tape le code ci-dessus avant d’exporter ta première vidéo. ✨"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ऐप इंस्टॉल करें और प्रोफ़ाइल › दोस्तों को इनवाइट करें में जाकर, अपना पहला वीडियो एक्सपोर्ट करने से पहले ऊपर वाला कोड डालें। ✨"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instal aplikasinya, lalu buka Profil › Undang teman › ketik kode di atas sebelum mengekspor video pertamamu. ✨"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installa l’app e vai su Profilo › Invita amici › inserisci il codice qui sopra prima di esportare il tuo primo video. ✨"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリを入れて、初めて動画を書き出す前に「プロフィール › 友だちを招待」で上のコードを入力してね。✨"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "앱을 설치하고 프로필 › 친구 초대로 가서, 첫 영상을 내보내기 전에 위 코드를 입력하세요. ✨"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installer appen og gå til Profil › Inviter venner › skriv inn koden over før du eksporterer din første video. ✨"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installeer de app en ga naar Profiel › Vrienden uitnodigen › typ de code hierboven voordat je je eerste video exporteert. ✨"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instale o app e vá em Perfil › Convidar amigos › digite o código acima antes de exportar seu primeiro vídeo. ✨"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installera appen och gå till Profil › Bjud in vänner › skriv koden ovan innan du exporterar din första video. ✨"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ติดตั้งแอป แล้วไปที่ โปรไฟล์ › ชวนเพื่อน › ใส่โค้ดด้านบนก่อนส่งออกวิดีโอแรกของคุณ ✨"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uygulamayı yükle, Profil › Arkadaşlarını davet et bölümüne git ve ilk videonu dışa aktarmadan önce yukarıdaki kodu yaz. ✨"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cài app rồi vào Hồ sơ › Mời bạn bè › nhập mã ở trên trước khi xuất video đầu tiên nhé. ✨"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "安装 App 后，在导出第一个视频前，打开“个人资料 › 邀请朋友”，输入上面的邀请码。✨"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "安裝 App 後，在匯出第一部影片前，打開「個人檔案 › 邀請朋友」，輸入上面的邀請碼。✨"
           }
         }
       }
@@ -61553,6 +61672,125 @@
         }
       }
     },
+    "My invite code:" : {
+      "comment" : "Invite message: the line before the creator's invite code (the code follows on its own line)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "رمز الدعوة الخاص بي:"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Min invitationskode:"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mein Einladungscode:"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mi código de invitación:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mon code d’invitation :"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "मेरा इनवाइट कोड:"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kode undanganku:"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il mio codice invito:"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "私の招待コード："
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "제 초대 코드:"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invitasjonskoden min:"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mijn uitnodigingscode:"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meu código de convite:"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Min inbjudningskod:"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "โค้ดเชิญของเรา:"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Davet kodum:"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mã mời của mình:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "我的邀请码："
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "我的邀請碼："
+          }
+        }
+      }
+    },
     "My most embarrassing moment yet." : {
       "comment" : "A ready-made opening line or tone of a script format, shown as an example the creator can pick and read to camera. No dashes in any language.",
       "localizations" : {
@@ -73211,6 +73449,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "反應影片創作者"
+          }
+        }
+      }
+    },
+    "Ready to put your ideas into orbit? 🚀 I make my videos with Cue Studio: from the first idea to the script, from recording to editing. And the teleprompter follows my voice while I record." : {
+      "comment" : "First paragraph of the invite message a creator shares with a friend (plain text, warm and casual; the owner's Portuguese is the reference)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "هيا نطلق أفكارك إلى المدار! 🚀 أصنع فيديوهاتي باستخدام Cue Studio: من الفكرة الأولى إلى النص، ومن التصوير إلى المونتاج. والملقّن يتبع صوتي أثناء التسجيل."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klar til at sende dine idéer i kredsløb? 🚀 Jeg laver mine videoer med Cue Studio: fra den første idé til manuskriptet, fra optagelse til redigering. Og teleprompteren følger min stemme, mens jeg optager."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lust, deine Ideen in den Orbit zu schießen? 🚀 Ich mache meine Videos mit Cue Studio: von der ersten Idee bis zum Skript, von der Aufnahme bis zum Schnitt. Und der Teleprompter folgt meiner Stimme, während ich aufnehme."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Te animas a poner tus ideas en órbita? 🚀 Creo mis videos con Cue Studio: de la primera idea al guion, de la grabación a la edición. Y el teleprompter sigue mi voz mientras grabo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Envie de mettre tes idées en orbite ? 🚀 Je crée mes vidéos avec Cue Studio : de la première idée au script, du tournage au montage. Et le téléprompteur suit ma voix pendant que je filme."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अपने आइडिया को ऑर्बिट में भेजने के लिए तैयार? 🚀 मेरे वीडियो Cue Studio से बनते हैं: पहले आइडिया से स्क्रिप्ट तक, रिकॉर्डिंग से एडिटिंग तक। और रिकॉर्ड करते समय टेलीप्रॉम्प्टर मेरी आवाज़ के साथ चलता है।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siap bawa idemu ke orbit? 🚀 Aku bikin video pakai Cue Studio: dari ide pertama sampai naskah, dari rekaman sampai editing. Dan teleprompternya mengikuti suaraku saat merekam."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Che ne dici di mettere le tue idee in orbita? 🚀 Creo i miei video con Cue Studio: dalla prima idea al copione, dalla registrazione al montaggio. E il teleprompter segue la mia voce mentre registro."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アイデアを軌道に乗せよう！🚀 動画はCue Studioで作ってるよ。最初のアイデアから台本まで、撮影から編集まで。しかも録画中は、プロンプターが私の声に合わせて進んでくれるんだ。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아이디어를 궤도에 올려 볼까요? 🚀 저는 Cue Studio로 영상을 만들어요. 첫 아이디어부터 대본까지, 촬영부터 편집까지요. 게다가 녹화하는 동안 프롬프터가 제 목소리를 따라와요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klar for å sende ideene dine i bane? 🚀 Jeg lager videoene mine med Cue Studio: fra den første ideen til manuset, fra opptak til redigering. Og teleprompteren følger stemmen min mens jeg tar opp."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zin om je ideeën te lanceren? 🚀 Ik maak mijn video’s met Cue Studio: van het eerste idee tot het script, van opnemen tot monteren. En de teleprompter volgt mijn stem terwijl ik opneem."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bora colocar suas ideias em órbita? 🚀 Eu crio meus vídeos com o Cue Studio: da primeira ideia ao roteiro, da gravação à edição. E o teleprompter acompanha minha voz enquanto gravo."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Redo att skicka ut dina idéer i omloppsbana? 🚀 Jag gör mina videor med Cue Studio: från första idén till manuset, från inspelning till redigering. Och telepromptern följer min röst medan jag spelar in."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "พร้อมส่งไอเดียของคุณขึ้นวงโคจรหรือยัง? 🚀 เราทำวิดีโอด้วย Cue Studio ตั้งแต่ไอเดียแรกจนเป็นสคริปต์ ตั้งแต่ถ่ายจนถึงตัดต่อ แถมเทเลพรอมป์เตอร์ยังตามเสียงเราตอนอัดด้วย"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fikirlerini yörüngeye taşımaya ne dersin? 🚀 Videolarımı Cue Studio ile yapıyorum: ilk fikirden senaryoya, çekimden kurguya. Üstelik ben kaydederken teleprompter sesimi takip ediyor."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sẵn sàng đưa ý tưởng của bạn vào quỹ đạo chưa? 🚀 Mình làm video bằng Cue Studio: từ ý tưởng đầu tiên đến kịch bản, từ quay đến dựng. Và teleprompter còn theo giọng mình khi quay."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "想把你的创意送上轨道吗？🚀 我用 Cue Studio 做视频：从第一个想法到脚本，从拍摄到剪辑。而且录制时，提词器会跟着我的声音走。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "想把你的創意送上軌道嗎？🚀 我用 Cue Studio 做影片：從第一個想法到腳本，從拍攝到剪輯。而且錄影時，提詞機會跟著我的聲音走。"
           }
         }
       }

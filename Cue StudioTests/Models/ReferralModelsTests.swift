@@ -54,18 +54,47 @@ struct ReferralModelsTests {
     @Test func theMessageCarriesTheCodeAndTheLinkWhenThereIsOne() throws {
         let link = try #require(AppStoreLink.url(appID: "6741234567"))
         #expect(link.absoluteString == "https://apps.apple.com/app/id6741234567")
-        let message = InviteCopy.message(code: "K7M2QX", link: link)
-        #expect(message.contains("K7M2QX"))
-        #expect(message.contains(link.absoluteString))
+        // The owner's text (05/11/2026), line for line, with the creator's own code where the example had UBJXD6.
+        #expect(InviteCopy.message(code: "K7M2QX", link: link) == """
+            Ready to put your ideas into orbit? 🚀 I make my videos with Cue Studio: from the first idea to the script, from recording to \
+            editing. And the teleprompter follows my voice while I record.
+
+            Come create too:
+            https://apps.apple.com/app/id6741234567
+
+            My invite code:
+
+            K7M2QX
+
+            Install the app and go to Profile › Invite friends › type the code above before you export your first video. ✨
+            """)
+        #expect(InviteCopy.message(code: " K7M2QX\n", link: nil).contains("\n\nK7M2QX\n\n"))
         #expect(InviteCopy.message(code: "K7M2QX", link: nil).contains("App Store"))
-        // A note, not a bare link: what Cue does, the link, then where and when to type the code, the code last.
-        let paragraphs = message.components(separatedBy: "\n\n")
-        #expect(paragraphs.count == 3)
-        #expect(paragraphs[0].contains("Cue Studio") && !paragraphs[0].contains("http"))
-        #expect(paragraphs[2].contains("Profile › Invite friends") && paragraphs[2].hasSuffix("K7M2QX"))
         #expect(AppStoreLink.url(appID: "") == nil)
         #expect(AppStoreLink.url(appID: "$(CUE_APP_STORE_ID)") == nil)
         #expect(AppStoreLink.url(appID: "١٢٣") == nil)
+    }
+
+    /// In every language the app speaks: the code alone on its line between blank lines, the link alone on its line, plain text (nothing a
+    /// Markdown reader would turn into formatting), and the way to the code field with the names the app shows for Profile and Invite friends.
+    @Test(arguments: ["ar", "da", "de", "en", "es", "fr", "hi", "id", "it", "ja", "ko", "nb", "nl", "pt", "sv", "th", "tr", "vi", "zh-Hans", "zh-Hant"])
+    func everyLanguageKeepsTheCodeAloneAndThePathTheAppShows(language: String) throws {
+        let cue = try #require(CueLanguage.matching(interfaceLocalization: language), "Cue has no \(language) interface")
+        let link = try #require(AppStoreLink.url(appID: "6817889695"))
+        let lines = InviteCopy.message(code: "P4WHNB", link: link, language: cue).components(separatedBy: "\n")
+        let code = try #require(lines.firstIndex(of: "P4WHNB"), "\(language): the code isn't alone on a line")
+        #expect(lines[code - 1].isEmpty && lines[code + 1].isEmpty)
+        #expect(lines.filter { $0 == link.absoluteString }.count == 1)
+        #expect(lines.count == 10)
+        #expect(!lines.joined().contains("UBJXD6"))
+        #expect(!lines.joined().contains { "*_`[]#".contains($0) })
+        let profile = String(localized: "Profile", writtenIn: cue), invite = String(localized: "Invite friends", writtenIn: cue)
+        #expect(lines[9].contains("\(profile) › \(invite)"), "\(language): \(lines[9])")
+        if language != "en" {
+            // Translated, not the English left in place.
+            let english = InviteCopy.message(code: "P4WHNB", link: link, language: .english).components(separatedBy: "\n")
+            #expect(lines[0] != english[0] && lines[2] != english[2] && lines[9] != english[9], "\(language) isn't translated")
+        }
     }
 
     @Test func everyAnswerButJoinedSaysWhatToDo() {

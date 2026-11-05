@@ -7,13 +7,23 @@ import Foundation
 
 /// The invites' words (DESIGN_PROJECT §60), in one place so the sheet, the Profile row and the moments after an export say the same thing.
 nonisolated enum InviteCopy {
-    /// The message a creator shares, in three short paragraphs so it reads as a note from a friend and survives apps that show it as typed: what
-    /// Cue does, where to get it, and how to use the code (where to type it and before what), the code last so it is easy to copy.
-    static func message(code: String, link: URL?) -> String {
-        if let link {
-            return String(localized: "I’ve been making my videos with Cue Studio 🎬 It writes the script with you, and its teleprompter follows your voice while you record.\n\nGet it here: \(link.absoluteString)\n\nBefore you export your first video, open Profile › Invite friends in Cue and type my code: \(code)")
-        }
-        return String(localized: "I’ve been making my videos with Cue Studio 🎬 It writes the script with you, and its teleprompter follows your voice while you record.\n\nFind Cue Studio on the App Store.\n\nBefore you export your first video, open Profile › Invite friends in Cue and type my code: \(code)")
+    /// The message a creator shares (the owner's words, 05/11/2026), as plain text so every app it lands in shows it as typed: what Cue does,
+    /// the App Store link on its own line, the creator's code **alone on its line with a blank line before and after** (nothing beside it, so a
+    /// long press selects just the code), and where to type it, with the names the app shows ("Profile", "Invite friends"). Built line by
+    /// line, so no translation can put anything next to the code. In the interface language picked in Cue, or `language` (the tests').
+    static func message(code: String, link: URL?, language: CueLanguage? = nil) -> String {
+        [
+            String(localized: "Ready to put your ideas into orbit? 🚀 I make my videos with Cue Studio: from the first idea to the script, from recording to editing. And the teleprompter follows my voice while I record.", writtenIn: language),
+            "",
+            String(localized: "Come create too:", writtenIn: language),
+            link?.absoluteString ?? String(localized: "Find Cue Studio on the App Store.", writtenIn: language),
+            "",
+            String(localized: "My invite code:", writtenIn: language),
+            "",
+            code.trimmingCharacters(in: .whitespacesAndNewlines),
+            "",
+            String(localized: "Install the app and go to Profile › Invite friends › type the code above before you export your first video. ✨", writtenIn: language),
+        ].joined(separator: "\n")
     }
 
     /// The share sheet's title over the message, and the subject of an email.
