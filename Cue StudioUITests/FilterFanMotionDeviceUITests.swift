@@ -49,4 +49,18 @@ final class FilterFanMotionDeviceUITests: XCTestCase {
             high.press(forDuration: 0.05, thenDragTo: low, withVelocity: 400, thenHoldForDuration: 0.2)
         }
     }
+
+    /// The list flung to its end and back, let go each time: the slowing down, the AI card folding and unfolding on the way, the title
+    /// and the filter row at the top. `… screen_frames.sh FilterFanMotionDeviceUITests/testFlingingTheListToTheEndAndBack <folder> fling 1 14`.
+    func testFlingingTheListToTheEndAndBack() {
+        let app = CueApp.launch(seeded: true, animations: true)
+        let list = app.collectionViews.firstMatch
+        XCTAssertTrue(app.buttons["scripts.filter.all"].exists(within: 20))
+        sleep(2)
+        print(String(format: "CUE-MARK %.3f %@", Date().timeIntervalSince1970, "fling"))
+        for _ in 0..<3 {
+            for _ in 0..<2 { list.swipeUp(velocity: .fast); sleep(1) }
+            for _ in 0..<2 { list.swipeDown(velocity: .fast); sleep(1) }
+        }
+    }
 }
