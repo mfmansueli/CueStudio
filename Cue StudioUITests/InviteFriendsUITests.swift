@@ -98,6 +98,23 @@ final class InviteFriendsUITests: XCTestCase {
         XCTAssertTrue(answer.exists(within: 10), "Join never answered", file: file, line: line)
     }
 
+    /// Share invite opens the system's sheet in the language picked in Cue (here Portuguese, on an English simulator), titled with the invite.
+    /// The message itself is checked line for line in `ReferralModelsTests` (the sheet runs in another process and shows no text to read).
+    func testShareInviteOpensTheSheetInCuesLanguage() {
+        let app = CueApp.launch(seeded: true, appLanguage: "pt", extraArguments: ["-uiTestReferral", "-uiTestReferralFriends", "0"])
+        let tab = app.cueTabBar.buttons["Perfil"]
+        XCTAssertTrue(tab.exists(within: 15))
+        tab.tap()
+        let row = app.buttons["profile.inviteRow"]
+        XCTAssertTrue(row.exists(within: 5))
+        app.scroll(to: row)
+        row.tap()
+        let share = app.buttons["invite.shareButton"]
+        XCTAssertTrue(share.exists(within: 8))
+        share.tap()
+        XCTAssertTrue(app.navigationBars["Um convite para o Cue Studio"].exists(within: 10), "The share sheet never opened")
+    }
+
     func testWithOneFreeExportLeftReadyToTravelOffersAnInvite() {
         let app = CueApp.launch(seeded: true, sampleVideo: true, extraArguments: ["-uiTestReferral", "-uiTestExportsLeft", "1"])
         openTake(app)
