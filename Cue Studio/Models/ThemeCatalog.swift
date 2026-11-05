@@ -416,8 +416,12 @@ nonisolated enum ThemeCatalog {
         let subjects = [nil] + topic.subtopics.map(Optional.some)
         return templates.enumerated().map { index, template in
             let subtopic = subjects[index % subjects.count]
-            let name = subtopic ?? topic.label
-            let parts = template(name)
+            // "Mitos sobre rotina", not "Mitos sobre Rotina": the topic as it reads inside a sentence, the sentence started with a capital.
+            let name = TopicCasing.inSentence(subtopic ?? topic.label, language: InterfaceLocale.current?.language.minimalIdentifier ?? interfaceLanguage)
+            var parts = template(name)
+            parts.title = TopicCasing.sentenceStart(parts.title)
+            parts.angle = TopicCasing.sentenceStart(parts.angle)
+            parts.openingLine = TopicCasing.sentenceStart(parts.openingLine)
             var idea = ThemeIdea(
                 title: parts.title, kind: parts.kind, length: parts.length, niche: topic.niche ?? .lifestyle, topic: topic.niche == nil ? topic.label : nil
             )

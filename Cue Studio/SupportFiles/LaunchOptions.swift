@@ -47,9 +47,10 @@ import Foundation
 ///   keeps UI tests from finding the app idle).
 /// - `-uiTestRemoteConnects`: with the above, a remote "connects" right after pairing starts (UI
 ///   tests have no second device). Without it the remote link stays offline.
-/// - `-uiTestDictation <speech|denied|unavailable|silence>`: dictation without a microphone or a
+/// - `-uiTestDictation <speech|denied|unavailable|silence|interrupted>`: dictation without a microphone or a
 ///   model (the simulator has neither): it hears `-uiTestDictationText <words>` a word at a time
-///   (`speech`), or is refused the microphone, can't recognize the language, or hears nothing.
+///   (`speech`), or is refused the microphone, can't recognize the language, hears nothing, or hears the words and then stops
+///   on its own (`interrupted`).
 /// - `-uiTestVoiceFollowing <listening|preparing|unavailable>`: the prompter's Voice Following recognition is scripted (the simulator
 ///   can't recognize speech): it listens and hears nothing, stays getting ready, or can't follow the words here (`ScriptedVoiceFollowing`).
 ///   It also opens the prompter in Voice Following, the app's default; without it a UI test's prompter opens in Steady, so a test that

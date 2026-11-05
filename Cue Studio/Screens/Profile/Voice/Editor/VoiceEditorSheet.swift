@@ -7,9 +7,11 @@ import SwiftUI
 
 /// The one editor of My Cue Voice (screen 2): a sheet with a line in mono capitals above the title ("Essentials · 2 of 4"), the field, and Done in
 /// yellow. Every row of the page, the topics of Settings, the dock and the tip open it, so an answer is edited the same way wherever it is reached.
-/// Answers are kept as they are given.
+/// Answers are kept as they are given. Opened from outside My Cue Voice (Find inspiration's "Topics"), the line of its progress stays out
+/// (`showsProgress`): "Essentials · 2 of 4" means nothing there.
 struct VoiceEditorSheet: View {
     let field: VoiceEditorField
+    var showsProgress = true
 
     @Environment(CreatorProfileService.self) private var profile
     @Environment(\.dismiss) private var dismiss
@@ -45,11 +47,13 @@ struct VoiceEditorSheet: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text(field.eyebrow(for: profile.profile).uppercased())
-                .monoFont(size: 10.5, weight: .bold)
-                .interfaceTracking(1)
-                .foregroundStyle(Palette.aiText)
-                .accessibilityIdentifier("voice.editor.eyebrow")
+            if showsProgress {
+                Text(field.eyebrow(for: profile.profile).uppercased())
+                    .monoFont(size: 10.5, weight: .bold)
+                    .interfaceTracking(1)
+                    .foregroundStyle(Palette.aiText)
+                    .accessibilityIdentifier("voice.editor.eyebrow")
+            }
             Text(field.title)
                 .cueFont(.title2, weight: .bold)
                 .foregroundStyle(Palette.ink)

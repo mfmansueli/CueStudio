@@ -593,7 +593,13 @@ struct ScriptsDock: View {
             .padding(.leading, 14)
             // At the bottom, by the last line, as the field grows (5 pt up: centred, as they were, while it is two lines).
             HStack(spacing: 6) {
-                if suggestion != nil { DockAnotherIdeaButton(isWaiting: suggestions.isWaiting) { suggestions.another() } }
+                if suggestion != nil {
+                    DockAnotherIdeaButton(isWaiting: suggestions.isWaiting) { suggestions.another() }
+                } else if hasAI, !dictation.isActive, ideaDraft.holdsUntouchedIdea {
+                    // An idea from Find inspiration not yet changed is a suggestion still: ↻ passes it for the next one (with any change
+                    // of the creator's it is theirs, and ↻ goes, as with typed words).
+                    DockAnotherIdeaButton(isWaiting: false) { ideaDraft.dropIdea() }
+                }
                 DictationButton(state: dictation.state, style: .plain, action: toggleDictation)
                 sendButton
             }
@@ -655,6 +661,8 @@ struct ScriptsDock: View {
             Text("Your idea")
         }
         .lineLimit(Self.minLines...(isExpanded ? Self.maxLines : Self.minLines))
+        // Folded to two lines, the third of a longer idea peeked under the second (05/11/2026): the field shows its two lines only.
+        .mask { Rectangle().padding(.vertical, isExpanded ? -400 : 0).padding(.horizontal, -12) }
         .focused($isFocused)
         .cueFont(16, weight: .medium)
         .foregroundStyle(Palette.ink)

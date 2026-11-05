@@ -18,8 +18,8 @@ final class ScriptLibraryUITests: XCTestCase {
 
     func testFilteringByDestination() {
         let app = CueApp.launch(seeded: true)
-        XCTAssertTrue(app.buttons["scripts.filter.reels"].exists(within: 15))
-        app.buttons["scripts.filter.reels"].tap()
+        XCTAssertTrue(app.buttons["scripts.filter.all"].exists(within: 15))
+        app.pickFilter("scripts.filter.reels")
         XCTAssertTrue(app.scriptRow(Self.lamp).exists)
         XCTAssertFalse(app.staticTexts["Oat & Co. · sponsored read"].exists)
     }
@@ -63,6 +63,11 @@ final class ScriptLibraryUITests: XCTestCase {
         app.alerts.buttons["Create"].tap()
 
         let chip = app.buttons["scripts.filter.folder.Brand deals"]
+        // Moving into a new folder keeps All chosen: the folder's chip waits in the folded row.
+        let all = app.buttons["scripts.filter.all"]
+        XCTAssertTrue(all.exists(within: 5))
+        all.waitUntilStill()
+        all.tap()
         XCTAssertTrue(chip.exists(within: 5), "No chip for the new folder")
         // The new folder's chip ends the sideways row: brought into the window.
         let chips = app.descendants(matching: .any)["scripts.filters"]
@@ -80,6 +85,11 @@ final class ScriptLibraryUITests: XCTestCase {
         let undo = app.buttons["Undo"].firstMatch
         XCTAssertTrue(undo.exists(within: 3))
         undo.tap()
+        // Back, but not chosen: in the row, still open where the chip was held (or folded, when the delete folded it).
+        if !chip.exists(within: 2) {
+            all.waitUntilStill()
+            all.tap()
+        }
         XCTAssertTrue(chip.exists(within: 5), "Undo didn't bring the folder back")
     }
 

@@ -21,6 +21,8 @@ final class ScriptedDictation: SpeechTranscribing, AudioLevelMetering {
         case unavailable
         /// Starts listening and hears nothing.
         case silence
+        /// Hears `words`, then the recognizer stops on its own (a call, the microphone gone).
+        case interrupted
     }
 
     let scenario: Scenario
@@ -48,6 +50,7 @@ final class ScriptedDictation: SpeechTranscribing, AudioLevelMetering {
         let (transcripts, continuation) = AsyncStream.makeStream(of: String.self, bufferingPolicy: .bufferingNewest(1))
         self.continuation = continuation
         let words = heardWords
+        let stopsOnItsOwn = scenario == .interrupted
         feed = Task {
             var heard: [String] = []
             for word in words {
@@ -55,6 +58,10 @@ final class ScriptedDictation: SpeechTranscribing, AudioLevelMetering {
                 guard !Task.isCancelled else { return }
                 heard.append(word)
                 continuation.yield(heard.joined(separator: " "))
+            }
+            if stopsOnItsOwn {
+                try? await Task.sleep(for: .milliseconds(600))
+                continuation.finish()
             }
         }
         let route = SpeechRoute(engine: .transcriber, locale: Locale(identifier: "en-US"), language: .english)

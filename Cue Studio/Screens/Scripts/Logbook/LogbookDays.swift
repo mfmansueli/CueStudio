@@ -48,14 +48,21 @@ nonisolated enum LogbookDays {
         return date.formatted(style).uppercased(with: locale)
     }
 
+    /// "NOW" for the first minute (the line is redrawn once a minute, so "2 SECONDS AGO" would stay a minute), then "5 MINUTES AGO",
+    /// "2 HOURS AGO", against `now`.
+    private static func relative(_ date: Date, now: Date, locale: Locale) -> String {
+        let formatter = RelativeDateTimeFormatter()
+        formatter.dateTimeStyle = .named
+        formatter.locale = locale
+        return formatter.localizedString(for: now.timeIntervalSince(date) < 60 ? now : date, relativeTo: now)
+    }
+
     /// "SPOKEN · 0:06 · 2 HR. AGO" or "TYPED · NOW" today; "TYPED · 9:40 PM" on an earlier day.
     static func meta(for entry: LogbookEntry, now: Date = .now, calendar: Calendar = .current, locale: Locale = .interface) -> String {
         var time = Date.FormatStyle.dateTime.hour().minute().locale(locale)
         time.calendar = calendar
         time.timeZone = calendar.timeZone
-        let when = calendar.isDate(entry.createdAt, inSameDayAs: now)
-            ? entry.createdAt.formatted(.relative(presentation: .named).locale(locale))
-            : entry.createdAt.formatted(time)
+        let when = calendar.isDate(entry.createdAt, inSameDayAs: now) ? relative(entry.createdAt, now: now, locale: locale) : entry.createdAt.formatted(time)
         let line = if let seconds = entry.spokenSeconds {
             String(localized: "Spoken · \(DurationText.clock(Double(seconds))) · \(when)")
         } else {

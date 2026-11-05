@@ -39,6 +39,22 @@ struct ScriptsViewModelTests {
         #expect(toast.message == "2 deleted")
     }
 
+    /// A chip or a search that hides picked scripts lets them go: Delete never takes what the creator can't see ("3 deleted" with one shown).
+    @Test func anotherChipOrSearchLetsTheHiddenPicksGo() {
+        let a = TestData.script(title: "Alpha", platform: .tiktok), b = TestData.script(title: "Beta", platform: .tiktok)
+        let reel = TestData.script(title: "Reel", platform: .reels)
+        let (viewModel, library, toast) = makeViewModel(scripts: [a, b, reel])
+        viewModel.toggleSelecting()
+        viewModel.selection = [a.id, b.id, reel.id]
+        viewModel.filter = .platform(.tiktok)
+        #expect(viewModel.selection == [a.id, b.id])
+        viewModel.query = "Alp"
+        #expect(viewModel.selection == [a.id])
+        viewModel.deleteSelection()
+        #expect(library.scripts.map(\.id).sorted() == [b.id, reel.id].sorted())
+        #expect(toast.message == "1 deleted")
+    }
+
     @Test func aTapOnARowPicksTheScriptAndASecondLetsItGo() {
         let a = TestData.script(title: "A"), b = TestData.script(title: "B")
         let (viewModel, _, _) = makeViewModel(scripts: [a, b])

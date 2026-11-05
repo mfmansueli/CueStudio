@@ -60,7 +60,8 @@ final class StarTransitionUITests: XCTestCase {
     }
 
     /// Once the star has landed the page writes, and it is already the page it will be (4.1): the same title, meter and state strip, the
-    /// words where they will stay. Nothing moves when the writing ends.
+    /// words where they will stay. Nothing moves when the writing ends. While the words come, nothing sits at the page's foot (no pill over
+    /// them, no Record: owner, 05/11/2026); Record rises once they have settled.
     func testTheWordsArriveWhereTheyWillStay() throws {
         let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestSlowWriting"])
         let send = app.buttons["ideaCard.submit"]
@@ -71,9 +72,12 @@ final class StarTransitionUITests: XCTestCase {
         XCTAssertTrue(app.buttons["transition.cancel"].matches(NSPredicate(format: "exists == false"), within: 10))
         waitUntilSettled(writing)
         let writingFrame = writing.frame
+        XCTAssertFalse(app.descendants(matching: .any)["page.writingPill"].firstMatch.exists, "A pill over the arriving words")
+        XCTAssertFalse(app.buttons["detail.recordButton"].exists, "Record before the words have arrived")
         try capture(app, "page_writing")
         let editor = app.descendants(matching: .any)["page.editor"].firstMatch
         XCTAssertTrue(editor.exists(within: 15), "The writing never ended")
+        XCTAssertTrue(app.buttons["detail.recordButton"].exists(within: 5), "Record never came once the words were there")
         waitUntilSettled(editor)
         try capture(app, "page_written")
         // The editor's frame holds its text view's insets (8 pt above, 5 pt at the side); the arriving words' frame is the words.

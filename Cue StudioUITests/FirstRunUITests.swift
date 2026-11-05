@@ -158,8 +158,13 @@ final class FirstRunUITests: XCTestCase {
 
         // The script is the preview: it can be compared with the one without the voice, and approved.
         XCTAssertTrue(element(app, "page.voicePreview").exists(within: 15))
-        app.buttons["page.voice.without"].tap()
-        app.buttons["page.voice.mine"].tap()
+        // "Without" is only to compare: it says so, and its tools wait.
+        let compare = app.segmentedControls["page.voice.picker"]
+        compare.buttons["Without"].tap()
+        XCTAssertTrue(element(app, "page.voice.note").exists(within: 10))
+        XCTAssertFalse(app.buttons["page.improveButton"].firstMatch.isEnabled)
+        compare.buttons["My voice"].tap()
+        XCTAssertTrue(element(app, "page.voice.note").isGone(within: 3))
         app.buttons["page.voice.approve"].tap()
         XCTAssertFalse(element(app, "page.voicePreview").exists(within: 2))
         app.pageBackButton.tap()

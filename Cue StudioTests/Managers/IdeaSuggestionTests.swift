@@ -32,6 +32,28 @@ struct IdeaSuggestionTests {
         #expect(draft.isEmpty)
     }
 
+    /// An idea from Find inspiration still as it came is a suggestion: ↻ passes it. Changed, or put over the creator's own words, it is theirs.
+    @Test func anUntouchedInspirationCanBePassedButAChangedOneCannot() {
+        var idea = ThemeIdea(title: "Saving on groceries", kind: "Tips", length: .minute1, niche: .finance)
+        idea.brief = IdeaBrief(subject: "Saving on groceries", angle: "Three swaps that cut the bill.", openingLine: "Your cart costs too much.")
+        let draft = IdeaDraftService()
+        draft.use(idea)
+        #expect(draft.holdsUntouchedIdea)
+        draft.dropIdea()
+        #expect(draft.isEmpty && draft.brief == nil)
+
+        draft.use(idea)
+        draft.text += " for students"
+        #expect(!draft.holdsUntouchedIdea, "changed, it is theirs")
+        draft.dropIdea()
+        #expect(!draft.isEmpty)
+
+        let over = IdeaDraftService()
+        over.text = "my own words"
+        over.use(idea)
+        #expect(!over.holdsUntouchedIdea, "their words wait behind it for Undo")
+    }
+
     @Test func aBrandBriefReachesTheRequestOnlyForAnAd() {
         let brand = BrandBrief(name: "Oat & Co.", product: "Milk")
         let defaults = TestDefaults()

@@ -42,6 +42,8 @@ final class ScriptDetailViewModel {
     @ObservationIgnored var measuredAt: ContinuousClock.Instant?
     /// The model writing into the page, if it is.
     var pageWritingTask: Task<Void, Never>?
+    /// The voice preview's "Without", being written (`prewriteNeutralVersion()`).
+    @ObservationIgnored var neutralTask: Task<Void, Never>?
     /// What the AI is to write into the page when it opens (an idea sent from the card), and the
     /// same request kept for "Try again".
     var pendingRequest: ScriptRequest?
@@ -172,7 +174,8 @@ final class ScriptDetailViewModel {
 
     /// Kept while the words, the platform and the pace stay the same: the page and its bar both show it.
     var zone: LengthZone {
-        let (text, preset, language) = (measuredText, preset, paceLanguage)
+        // While "Without" is on the page, the bar measures the words shown.
+        let (text, preset, language) = (previewedText ?? measuredText, preset, paceLanguage)
         if let kept = zoneKept, kept.text == text, kept.zone.preset == preset, kept.language == language { return kept.zone }
         let zone = LengthZone(text: text, preset: preset, language: language)
         zoneKept = (text, language, zone)
@@ -351,6 +354,7 @@ final class ScriptDetailViewModel {
     func touchingUp<Value: Sendable>(working: String? = nil, _ ask: @escaping @MainActor () async throws -> Value) async throws -> Value? {
         let ticket = UUID()
         touchUpTicket = ticket
+        pauseNeutralVersion()
         let version = script?.version
         let words = page.text
         let job = Task { @MainActor in try await ask() }

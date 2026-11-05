@@ -115,6 +115,20 @@ final class IdeaDraftService {
         brief = idea.brief
     }
 
+    /// The field holds an inspiration exactly as "Start with it" put it there, and nothing of the creator's was replaced for it: nothing of
+    /// theirs is in the field, so the dock's ↻ can pass it for the next idea (`dropIdea()`), as it passes a suggestion.
+    var holdsUntouchedIdea: Bool {
+        guard let brief, replacedText == nil else { return false }
+        return draft.trimmedText == brief.composerText.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    /// ↻ on an untouched inspiration: the field empties, and the dock suggests the next idea in its place.
+    func dropIdea() {
+        guard holdsUntouchedIdea else { return }
+        draft = IdeaPromptDraft()
+        brief = nil
+    }
+
     /// "Start with it" replaced text the creator had written: Undo can put it back.
     var canUndoUse: Bool { replacedText != nil }
 

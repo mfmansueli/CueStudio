@@ -20,8 +20,8 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
     /// The creator's own kind out of the long list (`CreatorKind`, by its id): "Lawyer", "Food reviewer". Nil for a profile that only has a
     /// `role` (before 03/11/2026) or none; an id a newer build added reads as absent.
     var creatorKind: String?
-    /// The creator said a script written in their voice "sounds like me" (the preview strip on the
-    /// script page stops asking).
+    /// The creator said a script written in their voice as it is now "sounds like me". A change to the voice takes it back
+    /// (`CreatorProfileService`), so the next voiced script asks again (`wantsVoiceCheck`).
     var voiceApproved: Bool
     /// "How I sound".
     var sounds: [VoiceSound]
@@ -164,6 +164,19 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         self.fingerprint = fingerprint
         self.voiceSchemaVersion = voiceSchemaVersion
         self.creatorKind = creatorKind
+    }
+
+    /// The voice preview asks "Does it sound like you?" on a voiced script: until Cue has `VoiceLimits.approvedSamples` approved scripts to
+    /// write like, and again each time the voice changes after an approval.
+    var wantsVoiceCheck: Bool {
+        !voiceApproved || approvedSamples.count < VoiceLimits.approvedSamples
+    }
+
+    /// The voice as the creator set it, without the scripts they approved: what an approval is of.
+    var approvedVoice: CreatorVoice {
+        var voice = voice
+        voice.approvedSamples = []
+        return voice
     }
 
     var voice: CreatorVoice {

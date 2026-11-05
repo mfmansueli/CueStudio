@@ -117,6 +117,8 @@ nonisolated enum DefaultsKey {
     static let voiceTipGeneration = "vq.tipGeneration"
     /// The Logbook's ideas (JSON).
     static let logbook = "logbook"
+    /// The words left in the Logbook's field when it closed, there again when it opens.
+    static let logbookDraft = "logbookDraft"
     /// How many times each teaching note of the editor was shown (`PanelNoteMemory`), by a digest of its words.
     static let panelNotesRead = "panelNotesRead"
     /// Settings › Privacy & AI data: Apple Intelligence on or off (absent = on) and the anonymous usage switch (absent = off).

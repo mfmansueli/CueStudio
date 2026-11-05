@@ -57,10 +57,10 @@ final class ButtonPromisesUITests: XCTestCase {
         button.tap()
         // A tap is not a hold, and it is not nothing: it keeps listening and says how to finish.
         XCTAssertTrue(element(app, "logbook.tapToFinish").exists(within: 5), "A tap on the button did nothing")
-        // The words arrive in the field while it listens (the Logbook of the native-bars rework), and the next tap saves them.
-        let field = element(app, "logbook.field")
-        let heard = NSPredicate(format: "value CONTAINS 'slow mornings'")
-        XCTAssertTrue(field.matches(heard, within: 10), "Nothing was heard")
+        // The words run over the field while it listens (`LogbookLiveCaption`), and the next tap saves them.
+        let caption = element(app, "logbook.liveCaption")
+        let heard = NSPredicate(format: "label CONTAINS 'slow mornings'")
+        XCTAssertTrue(caption.matches(heard, within: 10), "Nothing was heard")
         button.tap()
         XCTAssertTrue(element(app, "logbook.entry").exists(within: 10), "The idea it heard did not reach the Logbook")
         XCTAssertFalse(element(app, "logbook.tapToFinish").exists)
@@ -233,7 +233,7 @@ final class ButtonPromisesUITests: XCTestCase {
         XCTAssertTrue(ready.exists(within: 10))
         ready.tap()
         // YouTube's video is shared, none ready (a network with no videos has no chip).
-        app.buttons["takes.platform.youtube"].tap()
+        app.pickFilter("takes.platform.youtube")
         let empty = element(app, "takes.emptyStage")
         XCTAssertTrue(empty.exists(within: 5), "A list with nothing in it said nothing")
         XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS 'YouTube'")).count > 0, "It does not say which platform has nothing")

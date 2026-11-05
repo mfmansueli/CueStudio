@@ -46,6 +46,32 @@ struct LogbookServiceTests {
         #expect(again.entries[0].topic == "niche.finance" && again.entries[0].spokenSeconds == 14)
     }
 
+    /// A corrected idea keeps its place, its day and how it came in; blank words change nothing.
+    @Test func anIdeaIsCorrectedInPlace() throws {
+        let (logbook, defaults) = make()
+        defer { defaults.tearDown() }
+        let spoken = try #require(logbook.add("Slow mornigns", spokenSeconds: 6))
+        logbook.add("Desk lamps")
+        let edited = try #require(logbook.edit(spoken.id, text: "  Slow mornings "))
+        #expect(edited.text == "Slow mornings" && edited.spokenSeconds == 6 && edited.createdAt == spoken.createdAt)
+        #expect(logbook.entries.map(\.text) == ["Desk lamps", "Slow mornings"])
+        #expect(logbook.edit(spoken.id, text: "   ") == nil)
+        #expect(LogbookService(defaults: defaults.defaults).entries.last?.text == "Slow mornings")
+    }
+
+    /// The words left in the field come back the next time, across a relaunch; blank ones and "Delete my Cue data" leave nothing.
+    @Test func theFieldsWordsWaitForTheNextVisit() {
+        let (logbook, defaults) = make()
+        defer { defaults.tearDown() }
+        logbook.keepDraft("Half an idea about")
+        #expect(LogbookService(defaults: defaults.defaults).draft == "Half an idea about")
+        logbook.keepDraft("   ")
+        #expect(logbook.draft.isEmpty && LogbookService(defaults: defaults.defaults).draft.isEmpty)
+        logbook.keepDraft("Another")
+        logbook.eraseAll()
+        #expect(LogbookService(defaults: defaults.defaults).draft.isEmpty)
+    }
+
     /// A deleted idea is gone for good, across a relaunch too; "Delete my Cue data" takes every idea.
     @Test func deletingRemovesItForGood() throws {
         let (logbook, defaults) = make()

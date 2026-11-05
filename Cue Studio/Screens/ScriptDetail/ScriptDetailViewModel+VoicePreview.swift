@@ -5,56 +5,94 @@
 
 import Foundation
 
-/// The script as the preview of My Cue Voice: "My Cue Voice | Without", "Sounds like me" and "Adjust".
+/// The script as the preview of My Cue Voice: "My voice | Without", "Sounds like me" and "Adjust".
 extension ScriptDetailViewModel {
-    /// Whether the strip shows: the script was just written in the creator's voice, and they haven't
-    /// said it sounds like them. It is there (waiting) while the words arrive, so the page doesn't move when they're done.
+    /// Whether the strip shows: the script was just written in the creator's voice, and Cue still wants to hear whether it sounds like them
+    /// (`CreatorProfile.wantsVoiceCheck`). It is there (waiting) while the words arrive, so the page doesn't move when they're done.
     var showsVoicePreview: Bool {
-        page.voicePreview != nil && !profile.profile.voiceApproved
+        page.voicePreview != nil && profile.profile.wantsVoiceCheck
     }
 
-    /// The words on the page: the neutral version while "Without" is chosen.
+    /// The words on the page while "Without" is chosen and written: only to read, side by side in time with the voiced ones.
     var previewedText: String? {
         guard let preview = page.voicePreview, preview.showing == .without else { return nil }
-        return preview.without ?? ""
+        return preview.without
     }
+
+    /// "Without" is on the page (or being written): the page is only to compare, so its tools, its state and its edits wait.
+    var isComparing: Bool { page.voicePreview?.showing == .without && showsVoicePreview }
 
     /// A script written from `request` starts its preview when the voice was in it.
     func beginVoicePreview(for request: ScriptRequest) {
-        guard request.voice != nil, !profile.profile.voiceApproved else { return }
+        guard request.voice != nil, profile.profile.wantsVoiceCheck else { return }
         page.voicePreview = VoicePreview(request: request)
+    }
+
+    /// The voiced script has arrived: its neutral twin is written now, on this iPhone, so "Without" opens at once. Apple Intelligence costs
+    /// nothing (an Ultra AI script never has the preview); a tool the creator starts meanwhile goes first (`pauseNeutralVersion()`).
+    func prewriteNeutralVersion() {
+        guard showsVoicePreview, let preview = page.voicePreview, preview.without == nil, !preview.isLoadingWithout else { return }
+        neutralTask = Task { await loadNeutralVersion() }
     }
 
     func showVoice(_ showing: VoicePreview.Showing) {
         guard var preview = page.voicePreview, preview.showing != showing else { return }
+        Haptics.selection()
         preview.showing = showing
         page.voicePreview = preview
         guard showing == .without, preview.without == nil, !preview.isLoadingWithout else { return }
-        Task { await loadNeutralVersion() }
+        neutralTask = Task { await loadNeutralVersion() }
     }
 
-    /// The same idea, written with no voice: the other half of the comparison.
+    /// A tool takes the model: the neutral version written in the background stops, and is written again if "Without" is asked for.
+    func pauseNeutralVersion() {
+        guard let neutralTask, page.voicePreview?.showing != .without else { return }
+        neutralTask.cancel()
+        self.neutralTask = nil
+        page.voicePreview?.isLoadingWithout = false
+    }
+
+    /// The same idea, written with no voice: the other half of the comparison, in paragraphs as the voiced one is. When it can't be written,
+    /// the page goes back to the creator's voice and says so (never the same words shown as "Without").
     private func loadNeutralVersion() async {
         guard var preview = page.voicePreview else { return }
         preview.isLoadingWithout = true
         page.voicePreview = preview
         var request = preview.request
         request.voice = nil
-        let neutral = try? await writer.generate(request).text
-        guard var current = page.voicePreview else { return }
+        let neutral: String?
+        do {
+            neutral = try await writer.generate(request).text
+        } catch {
+            neutral = nil
+        }
+        guard !Task.isCancelled, var current = page.voicePreview else { return }
+        neutralTask = nil
         current.isLoadingWithout = false
-        current.without = neutral ?? page.text
+        guard let neutral, !neutral.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            let wasAsked = current.showing == .without
+            current.showing = .mine
+            page.voicePreview = current
+            if wasAsked {
+                toast.show(String(localized: "Couldn’t write it without your voice · Try again"), kind: .problem)
+            }
+            return
+        }
+        current.without = ScriptParagraphs.arranged(neutral)
         page.voicePreview = current
+        if current.showing == .without { Haptics.soft() }
     }
 
-    /// "Sounds like me": the voice is kept, the script's opening is learned from (kept with My Cue Voice, removable in Examples), and the strip goes.
+    /// "Sounds like me": the voiced script (back on the page if "Without" was showing) is approved, its opening learned from (kept with My Cue
+    /// Voice, removable in What Cue learned), and the strip goes. The toast says what was kept.
     func approveVoice() {
+        neutralTask?.cancel()
+        neutralTask = nil
+        let learned = profile.recordApproval(of: page.text)
         profile.profile.voiceApproved = true
-        profile.recordApproval(of: page.text)
         page.voicePreview = nil
-        // The creator's own choice that went well: ✓ (★ is for what Cue did), the same words as the voice preview's sheet.
-        // Kept as how they write, which Apple Intelligence reads on both routes (Ultra AI never gets it; the owner's D1).
-        toast.show(String(localized: "Saved · Cue learns from it"))
+        // The creator's own choice that went well: ✓ (★ is for what Cue did).
+        toast.show(learned ? String(localized: "Saved · Cue learns from it") : String(localized: "Noted · Too short to learn from"))
     }
 
     func openVoiceAdjust() {
@@ -75,6 +113,7 @@ extension ScriptDetailViewModel {
             : VoiceAdjustment.applying(adjustments, to: profile.profile, cause: cause, scriptSeconds: seconds)
         context.voice = adjusted.voice
         context.shortening = cause
+        page.voicePreview?.showing = .mine
         page.isRewriting = true
         defer { page.isRewriting = false }
         do {
@@ -84,8 +123,8 @@ extension ScriptDetailViewModel {
                 return
             }
             page.text = rewritten
+            // The neutral version doesn't depend on the voice: it stays for the next comparison.
             page.voicePreview?.showing = .mine
-            page.voicePreview?.without = nil
             commitPage()
             toast.show(keepsInProfile ? String(localized: "Profile updated · New version") : String(localized: "New version"), kind: .cue)
         } catch is CancellationError {
@@ -97,6 +136,8 @@ extension ScriptDetailViewModel {
 
     /// The preview ends with the visit: the next time the page opens, the script is just a script.
     func endVoicePreview() {
+        neutralTask?.cancel()
+        neutralTask = nil
         page.voicePreview = nil
     }
 }

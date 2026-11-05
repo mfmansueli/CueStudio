@@ -85,6 +85,28 @@ struct IdeaRouletteTests {
         print(String(format: "ROULETTE slowest tap: %.2f ms", Double(slowest.components.attoseconds) / 1e15))
     }
 
+    /// The library (and the handwritten starters) is everyone's: with the model, one of its ideas comes up after every `starterEvery` of the model's.
+    @Test func aStarterComesUpAmongTheModelsIdeasInTheRoulette() async {
+        let rig = rig()
+        defer { rig.defaults.tearDown() }
+        rig.writer.suggestionBatches = [batch("Saving", count: 12)]
+        await rig.service.refill()
+        rig.service.prepare(for: .all)
+        var kinds: [Bool] = []
+        var starters: Set<String> = []
+        // A batch is six, the card keeps the first: five of the model's ahead, so six cards before the end of what is here.
+        for _ in 0..<6 {
+            guard let idea = rig.service.current(in: .all) else { break }
+            kinds.append(idea.angle != nil)
+            if idea.angle == nil { starters.insert(idea.id) }
+            rig.service.another(in: .all)
+        }
+        let every = IdeaSuggestionService.starterEvery
+        let expected = (0..<6).map { ($0 + 1) % (every + 1) != 0 }
+        #expect(kinds == expected, "the model's \(every), then a starter: \(kinds)")
+        #expect(starters.count == 6 / (every + 1), "each starter once")
+    }
+
     @Test func theCardStaysWhenNewIdeasArriveUnderIt() async {
         let rig = rig()
         defer { rig.defaults.tearDown() }

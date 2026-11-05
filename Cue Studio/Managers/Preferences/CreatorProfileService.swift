@@ -11,6 +11,8 @@ import Foundation
 final class CreatorProfileService {
     var profile: CreatorProfile {
         didSet {
+            // The voice changed after "Sounds like me": the next script in it asks again.
+            if oldValue.voiceApproved, profile.voiceApproved, oldValue.approvedVoice != profile.approvedVoice { profile.voiceApproved = false }
             guard let data = try? JSONEncoder().encode(profile) else { return }
             defaults.set(data, forKey: DefaultsKey.creatorProfile)
         }

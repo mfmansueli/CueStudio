@@ -27,10 +27,15 @@ struct LogbookView: View {
     /// The note a notification was about: brought into view and outlined in yellow.
     @State private var focused: UUID?
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.openURL) private var openURL
 
     @State private var typed = ""
     /// What was in the field when the hold began: the heard words go after it.
     @State private var typedBeforeHold = ""
+    /// The words heard so far while it listens, shown by the caption over the field (`LogbookLiveCaption`), not in it: the field keeps its
+    /// line and the button its place.
+    @State private var heard = ""
     @State private var isHolding = false
     /// A tap, not a hold: the capture goes on after the finger is lifted, until the button is tapped again.
     @State private var isLocked = false
@@ -55,6 +60,11 @@ struct LogbookView: View {
     /// Select is on: a tap picks an idea, and the field gives its place to the bar that deletes what is picked.
     @State private var isSelecting = false
     @State private var selection = Set<UUID>()
+    /// Ideas tapped open to their whole text (a card shows three lines); a spoken one lands open, to read what was heard.
+    @State private var expanded = Set<UUID>()
+    /// The idea being corrected in the field (Edit, on holding its card), and what the field held before, back once it is done.
+    @State private var editing: UUID?
+    @State private var draftBeforeEdit = ""
     @FocusState private var typing: Bool
 
     var body: some View {
@@ -69,11 +79,18 @@ struct LogbookView: View {
                                 .listRowBackground(Color.clear)
                                 .listRowSeparator(.hidden)
                                 .listRowInsets(EdgeInsets(top: 4, leading: Metrics.gutter, bottom: 6, trailing: Metrics.gutter))
+                                // Delete at the edge (a full swipe deletes), Edit beside it in the system's grey (owner, 05/11/2026).
+                                // No menu on holding the card: its lifted copy fought the card opening under a tap.
                                 .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                                     if !isSelecting {
                                         Button(role: .destructive) { delete(entry) } label: {
                                             Label("Delete", systemImage: "trash")
                                         }
+                                        Button { startEdit(entry) } label: {
+                                            Label("Edit", systemImage: "pencil")
+                                        }
+                                        .tint(.gray)
+                                        .accessibilityIdentifier("logbook.edit")
                                     }
                                 }
                         }
@@ -138,23 +155,45 @@ struct LogbookView: View {
         }
         // A deletion's Undo shows here, in front of the sheet, not under it.
         .toastHost(inSheet: true)
-        // While typing, a swipe down doesn't close the sheet with the idea half written: a tap on the page puts the keyboard away first.
-        .interactiveDismissDisabled(typing)
+        // While typing or listening, a swipe down doesn't close the sheet with the idea half caught: a tap on the page puts the keyboard
+        // away first, the button ends the listening.
+        .interactiveDismissDisabled(typing || isHolding)
         .onChange(of: logbook.waiting.isEmpty) { _, empty in
             if empty { isSelecting = false }
         }
         .onChange(of: isSelecting) { _, selecting in
-            if selecting { typing = false } else { selection.removeAll() }
+            if selecting {
+                typing = false
+                cancelEdit()
+            } else {
+                selection.removeAll()
+            }
         }
         .onChange(of: dictation.state) { _, state in
+            // Ended, by the creator or on its own (a call, the microphone gone): what was heard is saved and the button rests, even
+            // under a finger still down.
             if state == .idle, heldSince != nil {
-                isLocked = false
+                endListening()
                 finishCapture()
             }
         }
+        .onChange(of: status) { old, new in
+            // VoiceOver hears the line too; a download's percentage only once.
+            guard let new, !(old?.isDownloading == true && new.isDownloading) else { return }
+            AccessibilityNotification.Announcement(new.message).post()
+        }
+        .onAppear {
+            // What was left in the field last time is there again; an old "Didn't catch anything" from elsewhere is not.
+            if typed.isEmpty { typed = logbook.draft }
+            if !dictation.isActive { dictation.dismissNotice() }
+        }
         .onDisappear {
+            logbook.keepDraft(unsentWords)
             isLocked = false
             dictation.cancel()
+        }
+        .onChange(of: scenePhase) { _, phase in
+            if phase != .active { logbook.keepDraft(unsentWords) }
         }
         .task {
             // Once, as it opens: the microphone breathes, to say where to tap.
@@ -163,8 +202,8 @@ struct LogbookView: View {
             inviteTurn += 1
         }
         .onChange(of: hasWords) { _, now in
-            // The button turns into the arrow that saves: felt as well as seen.
-            if now, !isHolding { Haptics.selection() }
+            // The button turns into the arrow that saves, under the creator's fingers: felt as well as seen (not as a draft comes back).
+            if now, typing, !isHolding { Haptics.selection() }
         }
         .accessibilityIdentifier("logbook.sheet")
     }
@@ -172,24 +211,36 @@ struct LogbookView: View {
     // MARK: - Parts
 
     /// The page's foot: one glass field to type an idea in, the button at its end to say it (or, with words typed, to save them), and over
-    /// them, while it listens or can't, one line saying so.
+    /// them, while it listens or can't, one line saying so (with Open Settings when the microphone is off for Cue).
     private var composer: some View {
         VStack(spacing: 8) {
-            if let line = composerLine {
-                Text(line)
-                    .cueFont(.footnote, weight: .semibold)
-                    .foregroundStyle(dictation.notice != nil && !isHolding ? Palette.warnText : Palette.ink2)
-                    .multilineTextAlignment(.center)
-                    .frame(maxWidth: .infinity)
-                    .transition(.opacity)
-                    .accessibilityIdentifier(isLocked ? "logbook.tapToFinish" : "logbook.status")
+            if let status {
+                VStack(spacing: 2) {
+                    Text(status.message)
+                        .cueFont(.footnote, weight: .semibold)
+                        .foregroundStyle(status.isWarning ? Palette.warnText : Palette.ink2)
+                        .multilineTextAlignment(.center)
+                        .accessibilityIdentifier(status.identifier)
+                    if status.offersSettings {
+                        Button("Open Settings") { openURL.openAppSettings() }
+                            .cueFont(.footnote, weight: .semibold)
+                            .foregroundStyle(Palette.accText)
+                            .frame(minHeight: Metrics.hitTarget)
+                            .accessibilityIdentifier("logbook.openSettings")
+                    }
+                }
+                .frame(maxWidth: .infinity)
+                .transition(.opacity)
             }
-            HStack(alignment: .bottom, spacing: 8) {
+            if editing != nil { editHeader }
+            // The button stays in the middle of the field's end as the field grows with typed words; while it listens the field keeps its
+            // one line (`LogbookLiveCaption`), so nothing moves under the finger (owner, 05/11/2026).
+            HStack(alignment: .center, spacing: 8) {
                 // The prompt is drawn by the page, in `ink2` (the system's grey is about 2.4:1 on the glass), and on as many lines as it
-                // needs: a field's own prompt keeps to one line and cut "Digite ou segure o microfone para…" (owner, 02/11/2026).
+                // needs (a field's own prompt keeps to one line and cuts it); short, so it is one line on the smallest iPhone in most languages.
                 ZStack(alignment: .topLeading) {
-                    if typed.isEmpty {
-                        Text("Type, or hold the mic to talk")
+                    if typed.isEmpty, !isHolding {
+                        Text("Type, or hold to talk")
                             .cueFont(17)
                             .foregroundStyle(Palette.ink2)
                             .fixedSize(horizontal: false, vertical: true)
@@ -197,7 +248,7 @@ struct LogbookView: View {
                             .accessibilityHidden(true)
                     }
                 TextField(text: $typed, prompt: Text(verbatim: ""), axis: .vertical) {
-                    Text("Type, or hold the mic to talk")
+                    Text("Type, or hold to talk")
                 }
                     .lineLimit(1...4)
                     .cueFont(17)
@@ -205,13 +256,28 @@ struct LogbookView: View {
                     .focused($typing)
                     .submitLabel(.done)
                     .onSubmit(addTyped)
-                    // The field grows to show a long idea, and Return still saves it (in a field that grows it would start a new line).
-                    .onChange(of: typed) { _, text in
-                        guard text.contains("\n"), !isHolding else { return }
-                        typed = text.replacingOccurrences(of: "\n", with: "")
-                        addTyped()
+                    // The field grows to show a long idea, and Return still saves it (in a field that grows it would start a new line); pasted
+                    // lines stay, as one paragraph (`LogbookComposerInput`).
+                    .onChange(of: typed) { old, new in
+                        guard !isHolding else { return }
+                        // The creator typing again: the line about the last capture has said its part.
+                        if typing, !new.isEmpty, dictation.notice != nil, !dictation.isActive { dictation.dismissNotice() }
+                        switch LogbookComposerInput.change(from: old, to: new) {
+                        case .keep: break
+                        case .replace(let words): typed = words
+                        case .save(let words):
+                            typed = words
+                            addTyped()
+                        }
                     }
                     .accessibilityIdentifier("logbook.field")
+                    // While it listens the heard words run over the empty field, never sizing it: the field keeps its line.
+                    .overlay(alignment: .leading) {
+                        if isHolding {
+                            LogbookLiveCaption(text: heard)
+                                .transition(.opacity)
+                        }
+                    }
                 }
                     .padding(.leading, 12)
                     .padding(.vertical, 12)
@@ -222,20 +288,51 @@ struct LogbookView: View {
             .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
             .overlay {
                 RoundedRectangle(cornerRadius: 28, style: .continuous)
-                    .strokeBorder(isHolding || typing ? Palette.accLine : .clear, lineWidth: 1)
+                    .strokeBorder(isListening || typing ? Palette.accLine : .clear, lineWidth: 1)
             }
         }
-        .animation(reduceMotion ? nil : .smooth(duration: 0.25), value: composerLine)
+        .animation(reduceMotion ? nil : .smooth(duration: 0.25), value: status)
         .padding(.horizontal, Metrics.gutter)
         .padding(.bottom, 8)
     }
 
-    /// What the line over the field says: listening, how to finish, or why nothing can listen. Nothing otherwise (the field's prompt says how).
-    private var composerLine: String? {
-        if isLocked { return String(localized: "Tap the button again to finish") }
-        if isHolding { return String(localized: "Listening…") }
-        return dictation.notice?.message
+    /// Over the field while an idea is corrected in it: what it is doing, and the way out.
+    private var editHeader: some View {
+        HStack(spacing: 8) {
+            Label("Editing idea", systemImage: "pencil")
+                .cueFont(.footnote, weight: .semibold)
+                .foregroundStyle(Palette.ink2)
+            Spacer(minLength: 8)
+            Button("Cancel", action: cancelEdit)
+                .cueFont(.footnote, weight: .semibold)
+                .foregroundStyle(Palette.accText)
+                .frame(minHeight: Metrics.hitTarget)
+                .accessibilityIdentifier("logbook.cancelEdit")
+        }
+        .padding(.horizontal, 8)
+        .padding(.bottom, -8)
+        .transition(.opacity)
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("logbook.editing")
     }
+
+    /// The field's words that aren't an idea yet: kept for the next visit. An edit left half done is not one (its idea is still there).
+    private var unsentWords: String { editing == nil ? Self.joined(typed, heard) : draftBeforeEdit }
+
+    /// What was typed, then what was heard after it.
+    private static func joined(_ typed: String, _ heard: String) -> String {
+        [typed.trimmingCharacters(in: .whitespacesAndNewlines), heard.trimmingCharacters(in: .whitespacesAndNewlines)]
+            .filter { !$0.isEmpty }.joined(separator: " ")
+    }
+
+    /// What the line over the field says: listening, how to finish, the model downloading, or why nothing can listen. Nothing otherwise
+    /// (the field's prompt says how).
+    private var status: LogbookComposerStatus? {
+        .current(isHolding: isHolding, isLocked: isLocked, isStarting: isStarting, state: dictation.state, notice: dictation.notice)
+    }
+
+    /// The button grows with its rings only while something is (about to be) listening: a hold where the microphone is off says why instead.
+    private var isListening: Bool { status?.isListening == true }
 
     /// There are words in the field to save.
     private var hasWords: Bool { !typed.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
@@ -249,7 +346,7 @@ struct LogbookView: View {
                 captureFace(saves: true)
             }
             .buttonStyle(.plain)
-            .accessibilityLabel(Text("Save to Logbook"))
+            .accessibilityLabel(editing == nil ? Text("Save to Logbook") : Text("Save"))
             .accessibilityIdentifier("logbook.save")
         } else {
             captureFace(saves: false)
@@ -271,8 +368,8 @@ struct LogbookView: View {
         ZStack {
             Circle()
                 .fill(Palette.acc)
-                .scaleEffect((isHolding ? 1.12 : 1) * (isPressed ? 0.9 : 1))
-                .shadow(color: Palette.acc.opacity(isHolding ? 0.6 : 0.25), radius: isHolding ? 16 : 8)
+                .scaleEffect((isListening ? 1.12 : 1) * (isPressed ? 0.9 : 1))
+                .shadow(color: Palette.acc.opacity(isListening ? 0.6 : 0.25), radius: isListening ? 16 : 8)
                 .keyframeAnimator(initialValue: 1.0, trigger: inviteTurn) { circle, scale in
                     circle.scaleEffect(scale)
                 } keyframes: { _ in
@@ -298,14 +395,14 @@ struct LogbookView: View {
         .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
         .overlay {
             // The rings spread past the button, over the field's edge: drawn on top, they move nothing.
-            if isHolding {
+            if isListening {
                 LogbookRipples(level: dictation.level, radius: 25)
                     .frame(width: 140, height: 140)
                     .transition(.opacity)
             }
         }
         .contentShape(Circle())
-        .animation(reduceMotion ? nil : .spring(response: 0.3, dampingFraction: 0.7), value: isHolding)
+        .animation(reduceMotion ? nil : .spring(response: 0.3, dampingFraction: 0.7), value: isListening)
         .animation(isPressed ? CueMotion.pressIn : CueMotion.pressRelease, value: isPressed)
     }
 
@@ -353,22 +450,22 @@ struct LogbookView: View {
             .accessibilityIdentifier("logbook.entry")
         } else {
             card(entry)
-                .contextMenu {
-                    Button(role: .destructive) { delete(entry) } label: { Label("Delete", systemImage: "trash") }
+                // A tap shows the whole idea (a card keeps to three lines), and another folds it.
+                .contentShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+                .onTapGesture {
+                    withAnimation(reduceMotion ? nil : .smooth(duration: 0.3)) {
+                        if expanded.remove(entry.id) == nil { expanded.insert(entry.id) }
+                    }
                 }
         }
     }
 
     /// The empty state (E): the mark, what this is for and how to start, in the middle of the page; the field below is its action.
+    /// Above the keyboard of a small iPhone the mark gives way, so the words never run under the title.
     private var emptyState: some View {
-        VStack(spacing: 14) {
-            EmptyStateMark(icon: .book)
-            Text("Your Logbook is empty")
-                .cueFont(22, weight: .bold).tracking(-0.44).foregroundStyle(Palette.ink)
-                .accessibilityAddTraits(.isHeader)
-            Text("Hold the mic to catch an idea. Write it later.")
-                .cueFont(15).foregroundStyle(Palette.ink2)
-                .multilineTextAlignment(.center)
+        ViewThatFits(in: .vertical) {
+            emptyStateWords(withMark: true)
+            emptyStateWords(withMark: false)
         }
         .padding(.horizontal, Metrics.gutter)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -376,51 +473,45 @@ struct LogbookView: View {
         .accessibilityIdentifier("logbook.empty")
     }
 
+    private func emptyStateWords(withMark: Bool) -> some View {
+        VStack(spacing: 14) {
+            if withMark { EmptyStateMark(icon: .book) }
+            Text("Your Logbook is empty")
+                .cueFont(22, weight: .bold).tracking(-0.44).foregroundStyle(Palette.ink)
+                .accessibilityAddTraits(.isHeader)
+            Text("Hold the mic to catch an idea. Write it later.")
+                .cueFont(15).foregroundStyle(Palette.ink2)
+                .multilineTextAlignment(.center)
+        }
+        .fixedSize(horizontal: false, vertical: true)
+    }
+
+    /// An idea's card: its words the whole width (three lines, or all of them once tapped), and under them one line saying how and when it
+    /// came in, with ✦ Write at its end (owner, 05/11/2026: the button at the side took the words' room). While selecting, the mark at the end.
     private func card(_ entry: LogbookEntry) -> some View {
         let shape = RoundedRectangle(cornerRadius: 22, style: .continuous)
-        return HStack(spacing: 14) {
-            Image(systemName: entry.isSpoken ? "mic.fill" : "pencil")
-                .font(.fixed(16))
-                .foregroundStyle(entry.isSpoken ? Palette.accText : Palette.ink2)
-                .frame(width: 44, height: 44)
-                .background(entry.isSpoken ? Palette.accSoft : Palette.overlayFill, in: Circle())
-            VStack(alignment: .leading, spacing: 4) {
-                Text(entry.text).cueFont(16, weight: .medium).foregroundStyle(Palette.ink).lineLimit(3)
-                HStack(spacing: 6) {
-                    Text(verbatim: LogbookDays.meta(for: entry)).hudFont().interfaceTracking(0.8).foregroundStyle(Palette.ink2)
-                    if let color = color(for: entry) { Circle().fill(color).frame(width: 9, height: 9) }
+        return HStack(spacing: 12) {
+            VStack(alignment: .leading, spacing: 8) {
+                Text(entry.text)
+                    .cueFont(16, weight: .medium)
+                    .foregroundStyle(Palette.ink)
+                    .lineLimit(expanded.contains(entry.id) ? nil : 3)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                HStack(spacing: 8) {
+                    entryMeta(entry)
+                    Spacer(minLength: 4)
+                    if !isSelecting { writeButton(entry) }
                 }
             }
-            Spacer(minLength: 6)
             if isSelecting {
                 ScriptSelectionMark(isSelected: selection.contains(entry.id))
                     .frame(width: 44, height: 40)
-            } else {
-                Button { writeIdea(entry) } label: {
-                    HStack(spacing: 4) {
-                        if aiStatus.isAvailable { Text(verbatim: "✦") }
-                        Text(aiStatus.isAvailable ? "Write" : "Write it")
-                    }
-                    .cueFont(16, weight: .semibold)
-                    .foregroundStyle(aiStatus.isAvailable ? Palette.aiTextStrong : Palette.ink)
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 4)
-                    .frame(minHeight: 40)
-                    .background(aiStatus.isAvailable ? Palette.aiFill : Palette.fill, in: Capsule())
-                    .overlay { if aiStatus.isAvailable { Capsule().strokeBorder(Palette.aiBorder, lineWidth: 0.5) } }
-                }
-                .buttonStyle(.plain)
-                .onGeometryChange(for: CGPoint.self) { proxy in
-                    let frame = proxy.frame(in: .global)
-                    return CGPoint(x: frame.midX, y: frame.midY)
-                } action: { writeCenters[entry.id] = $0 }
-                .accessibilityIdentifier("logbook.write")
             }
         }
         .padding(14)
         .background(Palette.surface, in: shape)
         .overlay {
-            if focused == entry.id || highlighted == entry.id {
+            if focused == entry.id || highlighted == entry.id || editing == entry.id {
                 shape.strokeBorder(Palette.acc, lineWidth: 1.5)
                     .shadow(color: Palette.acc.opacity(highlighted == entry.id ? 0.4 : 0), radius: 14)
                     .transition(.opacity)
@@ -439,6 +530,49 @@ struct LogbookView: View {
         .cardDepth(shape)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("logbook.entry")
+    }
+
+    /// "🎙 SPOKEN · 0:06 · 2 HR. AGO" (the microphone yellow) or "✎ TYPED · NOW", and the topic's dot. "NOW" becomes "1 MIN. AGO" while the
+    /// sheet stays open.
+    private func entryMeta(_ entry: LogbookEntry) -> some View {
+        HStack(alignment: .firstTextBaseline, spacing: 6) {
+            Image(systemName: entry.isSpoken ? "mic.fill" : "pencil")
+                .font(.fixed(11, weight: .semibold))
+                .foregroundStyle(entry.isSpoken ? Palette.accText : Palette.ink2)
+                .accessibilityHidden(true)
+            TimelineView(.everyMinute) { context in
+                Text(verbatim: LogbookDays.meta(for: entry, now: context.date)).hudFont().interfaceTracking(0.8).foregroundStyle(Palette.ink2)
+            }
+            if let color = color(for: entry) {
+                Circle().fill(color).frame(width: 8, height: 8).alignmentGuide(.firstTextBaseline) { $0[.bottom] - 1 }
+            }
+        }
+    }
+
+    /// ✦ Write, small at the end of the card's last line; its touch is the full 44 pt (without Apple Intelligence, "Write it").
+    private func writeButton(_ entry: LogbookEntry) -> some View {
+        Button { writeIdea(entry) } label: {
+            HStack(spacing: 4) {
+                if aiStatus.isAvailable { Text(verbatim: "✦") }
+                Text(aiStatus.isAvailable ? "Write" : "Write it")
+            }
+            .cueFont(14, weight: .semibold)
+            .foregroundStyle(aiStatus.isAvailable ? Palette.aiTextStrong : Palette.ink)
+            .padding(.horizontal, 12)
+            .frame(height: 30)
+            .background(aiStatus.isAvailable ? Palette.aiFill : Palette.fill, in: Capsule())
+            .overlay { if aiStatus.isAvailable { Capsule().strokeBorder(Palette.aiBorder, lineWidth: 0.5) } }
+            .frame(minHeight: Metrics.hitTarget)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .fixedSize()
+        .padding(.vertical, -7)
+        .onGeometryChange(for: CGPoint.self) { proxy in
+            let frame = proxy.frame(in: .global)
+            return CGPoint(x: frame.midX, y: frame.midY)
+        } action: { writeCenters[entry.id] = $0 }
+        .accessibilityIdentifier("logbook.write")
     }
 
     private func color(for entry: LogbookEntry) -> Color? {
@@ -498,6 +632,7 @@ struct LogbookView: View {
         isHolding = true
         // The keyboard stays while the finger holds: put away now, it would carry the mic down from under the finger (owner, 30/10/2026).
         typedBeforeHold = typed.trimmingCharacters(in: .whitespacesAndNewlines)
+        heard = ""
         heldSince = .now
         HapticPatterns.playListen()
         Self.markMotion("Logbook listen", seconds: 0.8)
@@ -505,13 +640,21 @@ struct LogbookView: View {
         let request = languages.dictationRequest(existingText: typedBeforeHold)
         isStarting = true
         Task {
-            await dictation.start(language: request) { heard in
-                typed = typedBeforeHold.isEmpty ? heard : typedBeforeHold + " " + heard
-            }
+            await dictation.start(language: request) { words in heard = words }
             isStarting = false
-            // It never reached the microphone (no speech recognition here, no permission): there is nothing to keep listening for.
-            if dictation.state == .idle, isLocked { stopCapture() }
+            // It never reached the microphone (no speech recognition here, no permission): the line says why at once, even with the
+            // finger still down, and the button rests. Nothing to keep listening for.
+            guard dictation.state == .idle, isHolding else { return }
+            endListening()
+            finishCapture()
         }
+    }
+
+    /// The button rests: no hold, no tap waiting to finish, the keyboard down (the speech that held it is over).
+    private func endListening() {
+        isLocked = false
+        isHolding = false
+        typing = false
     }
 
     private func stopCapture() {
@@ -533,23 +676,71 @@ struct LogbookView: View {
         guard let since = heldSince else { return }
         heldSince = nil
         let seconds = max(1, Int(Date.now.timeIntervalSince(since).rounded()))
-        // Nothing heard: whatever was typed stays in the field, untouched.
-        guard typed.trimmingCharacters(in: .whitespacesAndNewlines) != typedBeforeHold else { return }
-        let words = typed
+        let caught = heard.trimmingCharacters(in: .whitespacesAndNewlines)
+        heard = ""
+        // Nothing heard: whatever was typed stays in the field, untouched, and the line says why (felt too).
+        guard !caught.isEmpty else {
+            if dictation.notice != nil { Haptics.warning() }
+            return
+        }
+        let words = Self.joined(typedBeforeHold, caught)
         typed = ""
         typedBeforeHold = ""
+        // Said into an idea being corrected: the words are its new ones.
+        if let editing { return commitEdit(editing, words: words) }
         guard let entry = withAnimation(reduceMotion ? nil : .smooth(duration: 0.4), { logbook.add(words, spokenSeconds: seconds) }) else { return }
+        // It lands, then opens whole: what was heard is read on its card, never in the field. Opened in the same moment it is added,
+        // the list kept the row's folded height.
+        Task {
+            try? await Task.sleep(for: .milliseconds(reduceMotion ? 50 : 420))
+            withAnimation(reduceMotion ? nil : .smooth(duration: 0.35)) { _ = expanded.insert(entry.id) }
+        }
+        logbook.keepDraft("")
         Haptics.success()
+        justSaved = entry.id
         land(entry)
         tag(entry)
     }
 
     private func addTyped() {
         let words = typed
+        if let editing { return commitEdit(editing, words: words) }
         guard let entry = withAnimation(reduceMotion ? nil : .smooth(duration: 0.4), { logbook.add(words) }) else { return }
         typed = ""
+        logbook.keepDraft("")
         Haptics.apply()
         justSaved = entry.id
+        land(entry)
+        tag(entry)
+    }
+
+    /// Edit, on holding a card: its words go into the field to be corrected, the keyboard comes up and the card is outlined while it waits.
+    /// Return or the arrow saves them in place (its day and how it came in stay); Cancel leaves it as it was.
+    private func startEdit(_ entry: LogbookEntry) {
+        guard !isSelecting, !isHolding else { return }
+        if editing == nil { draftBeforeEdit = typed }
+        withAnimation(reduceMotion ? nil : .smooth(duration: 0.25)) { editing = entry.id }
+        typed = entry.text
+        typing = true
+        justSaved = entry.id
+    }
+
+    private func cancelEdit() {
+        guard editing != nil else { return }
+        withAnimation(reduceMotion ? nil : .smooth(duration: 0.25)) { editing = nil }
+        typed = draftBeforeEdit
+        draftBeforeEdit = ""
+    }
+
+    private func commitEdit(_ id: UUID, words: String) {
+        // Emptied: nothing to change (Delete is how an idea goes).
+        guard let entry = withAnimation(reduceMotion ? nil : .smooth(duration: 0.35), { logbook.edit(id, text: words) }) else { return cancelEdit() }
+        withAnimation(reduceMotion ? nil : .smooth(duration: 0.25)) { editing = nil }
+        typed = draftBeforeEdit
+        draftBeforeEdit = ""
+        typing = false
+        Haptics.apply()
+        justSaved = id
         land(entry)
         tag(entry)
     }
@@ -574,6 +765,7 @@ struct LogbookView: View {
     }
 
     private func remove(_ ids: Set<UUID>, message: String) {
+        if let editing, ids.contains(editing) { cancelEdit() }
         Haptics.delete()
         let removed = withAnimation(reduceMotion ? nil : .smooth(duration: 0.35)) { logbook.delete(ids) }
         guard !removed.isEmpty else { return }

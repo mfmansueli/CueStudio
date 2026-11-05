@@ -28,6 +28,8 @@ struct TakesView: View {
     @State private var reminding: TakeVideo?
     /// The video picked in "Import video".
     @State private var importing: PhotosPickerItem?
+    /// The platform row, folded into the chosen chip or open (`FilterFan`).
+    @State private var filterFan = FilterFanState()
 
     init(services: AppServices) {
         self.services = services
@@ -152,7 +154,7 @@ struct TakesView: View {
             }
             TakesFilterChips(
                 scopeYear: viewModel.scope?.year, onClearScope: { viewModel.clearScope() },
-                platform: $viewModel.filter.platform, options: viewModel.platformOptions
+                platform: $viewModel.filter.platform, fan: $filterFan, options: viewModel.platformOptions
             )
             .padding(.horizontal, -Metrics.gutter)
             .padding(.vertical, -6)
@@ -229,6 +231,7 @@ struct TakesView: View {
             }
             .padding(.bottom, 24)
         }
+        .foldsFilterFan($filterFan)
     }
 
     private func dayTitle(_ day: TakeDay) -> some View {
@@ -285,6 +288,7 @@ struct TakesView: View {
         }
         .listStyle(.insetGrouped)
         .scrollContentBackground(.hidden)
+        .foldsFilterFan($filterFan)
     }
 
     // MARK: - Peek

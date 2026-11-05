@@ -41,6 +41,8 @@ struct ScriptsView: View {
     @State private var isDockFolded = false
     /// Reads the scroll for the fold. It changes on every frame of a scroll without redrawing the screen; only `isDockFolded` does.
     @State private var dockFold = DockFold()
+    /// The filter row, folded into the chosen chip or open (`FilterFan`).
+    @State private var filterFan = FilterFanState()
     /// Whether there was ever a script: an empty library is then the returning state, not the first use.
     @State private var history: LibraryHistory
 
@@ -194,7 +196,7 @@ struct ScriptsView: View {
                     .overlay(alignment: .topTrailing) { logbookBadge }
             }
             .accessibilityLabel(Text("Logbook"))
-            .accessibilityValue(Text(logbook.waiting.isEmpty ? "" : "\(logbook.waiting.count)"))
+            .accessibilityValue(logbook.waiting.isEmpty ? Text(verbatim: "") : Text("\(logbook.waiting.count) ideas waiting"))
             .accessibilityIdentifier("scripts.logbookButton")
             Button { presentation.present(.newScript) } label: {
                 Image(systemName: "plus")
@@ -279,10 +281,9 @@ struct ScriptsView: View {
                 blockRow(top: 16, horizontal: 0) {
                     // Platform first: it is how creators think about their day.
                     PlatformFilterChips(
-                        filters: viewModel.filters, selection: $viewModel.filter, count: { viewModel.count(for: $0) },
+                        filters: viewModel.filters, selection: $viewModel.filter, fan: $filterFan, count: { viewModel.count(for: $0) },
                         deleteFolder: { viewModel.deleteFolder($0) }
                     )
-                    .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                 }
                 if let empty = viewModel.emptyResult {
                     Section { emptyResultView(empty) }
@@ -322,6 +323,7 @@ struct ScriptsView: View {
                 foldDock(dockFold.update(position, isEditing: isDockEditing))
             }
             .onScrollPhaseChange { _, phase in dockFold.phase = "\(phase)" }
+            .foldsFilterFan($filterFan)
             .onChange(of: isDockEditing) { _, editing in
                 if editing { foldDock(dockFold.unfold()) }
             }
@@ -434,31 +436,48 @@ struct ScriptsView: View {
     /// "READY TO RECORD" in green, "DRAFTS" in purple and "RECORDED" quiet: mono capitals at 12 with wide tracking, no counts (the owner,
     /// 30/10/2026); Select ends the first one in the same type.
     private func groupHeader(_ group: ScriptGroup, showsSelect: Bool) -> some View {
-        HStack(alignment: .center, spacing: 10) {
-            Text(groupTitle(group))
-                .monoFont(size: 12, weight: .semibold)
-                .textCase(.uppercase)
-                .interfaceTracking(1.4)
-                .foregroundStyle(groupColor(group))
-                .accessibilityAddTraits(.isHeader)
-                .accessibilityIdentifier("scripts.group.\(group.state.rawValue)")
-            Spacer()
-            if showsSelect {
-                Button(viewModel.isSelecting ? "Done" : "Select") {
-                    viewModel.toggleSelecting()
-                }
-                .monoFont(size: 12, weight: .semibold)
-                .textCase(.uppercase)
-                .interfaceTracking(1.4)
-                .foregroundStyle(Palette.ink2)
-                .frame(minHeight: Metrics.hitTarget)
-                .padding(.vertical, -16)
-                .accessibilityIdentifier("scripts.selectButton")
+        // Side by side while both fit on one line; at the large sizes Select goes under the name, so neither word is ever broken in two
+        // ("SELECION / AR", "PRONTO / S").
+        ViewThatFits(in: .horizontal) {
+            HStack(alignment: .center, spacing: 10) {
+                groupName(group)
+                Spacer()
+                if showsSelect { selectButton }
+            }
+            VStack(alignment: .leading, spacing: 4) {
+                groupName(group)
+                if showsSelect { selectButton }
             }
         }
         .textCase(nil)
         .padding(.horizontal, 12)
         .padding(.bottom, 8)
+    }
+
+    private func groupName(_ group: ScriptGroup) -> some View {
+        Text(groupTitle(group))
+            .monoFont(size: 12, weight: .semibold)
+            .textCase(.uppercase)
+            .interfaceTracking(1.4)
+            .foregroundStyle(groupColor(group))
+            .accessibilityAddTraits(.isHeader)
+            .accessibilityIdentifier("scripts.group.\(group.state.rawValue)")
+    }
+
+    private var selectButton: some View {
+        Button(viewModel.isSelecting ? "Done" : "Select") {
+            Haptics.selection()
+            viewModel.toggleSelecting()
+        }
+        .monoFont(size: 12, weight: .semibold)
+        .textCase(.uppercase)
+        .interfaceTracking(1.4)
+        .lineLimit(1)
+        .fixedSize()
+        .foregroundStyle(Palette.ink2)
+        .frame(minHeight: Metrics.hitTarget)
+        .padding(.vertical, -16)
+        .accessibilityIdentifier("scripts.selectButton")
     }
 
     private func groupTitle(_ group: ScriptGroup) -> String {

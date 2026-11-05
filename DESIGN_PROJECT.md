@@ -98,8 +98,21 @@ amarelo), o aviso de Pouca Energia e a dica da barra de ferramentas vestem a mes
   embaixo dele. Por que não `.searchable`: com `.searchToolbarBehavior(.minimize)` o ✕ do iOS 27 só minimizava a busca (a lista ficava filtrada e o
   dock não voltava). Dica do campo em `ink2`.
 - **Filtros** (`PlatformFilterChips`): All, só as redes que têm roteiros (nenhum chip com 0, decisão do dono, 30/10/2026; o escolhido fica enquanto
-  escolhido, mesmo que o último roteiro saia) e as pastas. Segurar o chip de uma pasta (ou a ação do VoiceOver) mostra
-  **Delete folder**: a pasta sai, os roteiros ficam (em All), e "Folder deleted" tem Undo por 4 s (volta no mesmo lugar, com os seus roteiros).
+  escolhido, mesmo que o último roteiro saia) e as pastas, numa **linha que se recolhe no escolhido** (`FilterFan`, decisão do dono, 05/11/2026,
+  efeito "líquido"): fechada, só o chip escolhido no começo e, 7 pt depois, até 4 pontinhos de 7 pt separados por 3 pt, um por opção escondida (rede na
+  cor dela, All branco, pasta `ink3`; decorativos). Tocar no escolhido abre: os outros saem de trás dele, do mais perto ao mais longe (28 ms entre eles,
+  mola 0,56 s com um leve passar), o preenchimento primeiro, como um líquido que estica e solta (`FilterFanLiquid`), e o nome só quando o chip já se
+  separou; um toque leve do iPhone por chip que solta (`HapticPatterns.fanUnfold`). Tocar numa opção escolhe e fecha: os mais longe voltam primeiro,
+  todos chegam juntos para dentro do escolhido, que vai ao começo, com um toque na hora e um firme no encaixe (`fanFold`). Fecha sem mudar: tocar no
+  escolhido, tocar fora da linha (o toque vale: um roteiro tocado abre) ou rolar a lista; mudar de aba, ir ao segundo plano ou mudar a largura também.
+  A ordem nunca muda. Dobra a partir de 2 opções (All e mais uma também, igual em toda tela, decisão do dono, 05/11/2026); com 1 opção, ou com VoiceOver ou Controle Assistivo, a linha fica aberta, lado a lado. Um nome comprido só corta
+  com "…" passando da largura da tela menos margens e pontinhos (sem pontinhos numa linha que nunca dobra); a largura de cada chip é a natural,
+  medida sem limite e cortada na caixa (medida na caixa, numa folha ficava a de um primeiro desenho estreito). O mesmo leque está nos temas do Find
+  inspiration (§30); letra até accessibility1; em árabe e hebraico tudo espelha; com Reduzir Movimento
+  os chips só aparecem e somem no lugar. Criar uma pasta escolhe ela (o chip troca); apagar a escolhida volta para All. Segurar o chip de uma pasta
+  (ou a ação do VoiceOver) mostra
+  **Delete folder**: a pasta sai, os roteiros ficam (em All), e "Folder deleted" tem Undo por 4 s (volta no mesmo lugar, com os seus roteiros, sem ser
+  escolhida).
 - **Uma lista leve (decisões do dono, 30/10/2026):** sob o título grande não há contagem. Os grupos são **READY TO RECORD** verde (`successText`),
   **DRAFTS** roxo (`Palette.Scripts.draftText`, só dele: 7,4:1 sobre `bg`, 11:1 com Aumentar Contraste) e **RECORDED** `ink2`, sem números, em mono
   semibold de 12 pt em maiúsculas com espaçamento largo (1,4); **SELECT** no fim do primeiro na mesma letra, em `ink2`. O título de um roteiro é
@@ -115,7 +128,9 @@ amarelo), o aviso de Pouca Energia e a dica da barra de ferramentas vestem a mes
   (`ScriptSelectionMark`: anel `ink2` ou o círculo amarelo com ✓, 22 pt), no lugar da ação do estado; um toque na linha marca ou desmarca (não abre o
   roteiro), sem deslize. Não usa o modo de edição da `List`: o sistema punha o círculo na borda do card. A barra de seleção substitui o dock e a tab bar:
   pasta, Duplicate, **Select all** (ao lado da lixeira, `checklist.checked`; marca todos os roteiros que o chip e a busca mostram e, com todos marcados,
-  vira **Deselect all**, `checklist.unchecked`; dono, 31/10/2026) e a lixeira.
+  vira **Deselect all**, `checklist.unchecked`; dono, 31/10/2026) e a lixeira. Trocar de chip ou buscar enquanto seleciona solta os roteiros que
+  somem da lista: Delete, Duplicate e a pasta só agem no que o criador vê marcado. Com letra grande, **Select** desce para baixo do nome do grupo
+  (nenhuma das duas palavras quebra no meio).
 - As ideias do Logbook não ficam na lista: moram na página do Logbook (o botão da barra, §22). Carregando: `ScriptRowSkeleton` (`SkeletonShine`,
   1,4 s). Vazio: §30 e §32.
 - **O dock guarda o que tem** (decisão do dono, 01/11; `DockDraft`, `DefaultsKey.dockDraft`): o texto, o briefing do Find inspiration e as escolhas
@@ -451,6 +466,19 @@ não mostra número. Teste: `-uiTestWriterStalls`.
   (Private Cloud Compute, já previsto em `AIModelRoute` e `PromptMeasuring`).
 - **Aprendizado:** "Sounds like me" (`recordApproval`) guarda o começo do roteiro como exemplo (3, o mais antigo sai); edições gravadas também ensinam
   (§33). "Delete my Cue data" apaga tudo.
+- **"✦ Does it sound like you?"** (`VoicePreviewStrip`, só em roteiros do Apple Intelligence escritos na voz; a Ultra AI nunca o mostra, então nunca há
+  custo): compacto (dono, 05/11/2026), a pergunta com **Adjust** e **✓ Sounds like me** (`cueAI`, violeta: o Gravar segue o único amarelo da página)
+  numa linha quando cabem (senão embaixo da pergunta), e **My voice | Without** no `Picker` segmentado do sistema, os mesmos nomes da prévia do Perfil.
+  O "Without" é escrito no aparelho **assim que o roteiro chega** (`prewriteNeutralVersion`), então abre na hora; uma ferramenta que o criador abre
+  antes passa na frente (a versão sem voz para e é escrita de novo se pedida). Enquanto escreve, a página mostra as palavras na voz **apagadas** e a
+  faixa diz "Writing it without your voice…" (nunca uma página vazia); se não der, volta para My voice com o toast "Couldn’t write it without your
+  voice · Try again". Em parágrafos como o roteiro (`ScriptParagraphs.arranged`). **Without é só para comparar** ("Only to compare · Your script
+  keeps your voice"): o texto não é editável e as ferramentas, o estado e o aviso de fatos esperam; a barra mede as palavras mostradas, e o Fit dela volta para My voice
+  antes de encaixar.
+  **Sounds like me** aprova sempre o roteiro na voz (mesmo tocado com Without na tela). O Adjust reescreve na voz e mantém o Without (não depende da
+  voz). A pergunta volta em cada roteiro na voz **até o Cue ter 3 roteiros aprovados**, e de novo quando a voz muda depois de uma aprovação
+  (`CreatorProfile.wantsVoiceCheck`, `approvedVoice`). A dica da primeira viagem só fala do "Sounds like me" quando a faixa está na página (senão
+  "Rewrite freely. Cue learns from what you keep.").
 - **Adjust** (`VoiceAdjustSheet`, `VoiceAdjustment`, na faixa da prévia da voz na página do roteiro): "What didn’t sound like you?" / "Cue suggests.
   You decide.", chips Too formal · Too much slang · Too over the top · "I don’t say that" · Too long (mais de um), uma linha do que muda por escolha,
   "This script only | Also my profile" (Picker segmentado) e "✦ Rewrite" ("In my voice" com a voz ajustada). **Too long com Also my profile** pergunta
@@ -559,8 +587,11 @@ para o brilho e o desfoque, o efeito sumia no meio e o editor aparecia com o tex
 
 Enquanto o roteiro é escrito, `ArrivingText` substitui o editor: cada palavra entra de blur 7 pt e 5 pt abaixo em 0,3 s, com brilho violeta (`Palette.Page.arrivalGlow`
 a 95%, some em 0,8 s), a cada 0,17 s (mais rápido quando chegam muitas, nunca > ~1 s atrás do modelo); cursor violeta de 2 pt pisca depois da última.
-Pílula **"✦ Drafting in your voice"** (`ScriptWritingPill`, 34 pt): brilho de borda 2,4 s e brilho branco a cada 1,6 s; sem a estrela por cima
-mostra a porcentagem até as palavras chegarem. **Uma escrita que falha** sai pela estrela (todo pedido do app tem a sua): ela cai, o roteiro vazio
+Pílula **"✦ Drafting in your voice"** (`ScriptWritingPill`, 34 pt): brilho de borda 2,4 s e brilho branco a cada 1,6 s, **só enquanto a página espera a
+primeira palavra** (sem a estrela por cima, com a porcentagem); quando as palavras chegam, ela sai (elas são o progresso). **Enquanto as palavras chegam,
+o pé da página fica vazio** (dono, 05/11/2026: nem pílula sobre o texto, nem a barra cortando a tela, nem Record apagado): o texto corre até a borda, e
+**Record** sobe (esmaece e desliza 0,5 s) só quando as palavras terminaram de chegar e de assentar no editor (a passagem de 0,7 s), junto com as dicas da
+primeira viagem. **Uma escrita que falha** sai pela estrela (todo pedido do app tem a sua): ela cai, o roteiro vazio
 some e o toast diz o motivo, com **Try again** quando pedir de novo pode dar certo (`ScriptFailureNotice`: falha do modelo ou da Ultra AI, resposta
 vazia ou inválida; indisponível, outro idioma ou espera dizem o motivo sem o botão). A página não tem alerta de erro (saiu em 01/11/2026, decisão do
 dono: só testes chegavam a ele); se escrevesse sem estrela, o mesmo toast diria o motivo e a página ficaria para o criador escrever. **A página escrevendo é a página escrita:** título, duração, faixa de estado (com **Stop** no lugar de
@@ -983,8 +1014,9 @@ botões parados desde o início; redes que não receberam ficam a 38%.
 **6.2 Takes:** título com **Import video** à esquerda (ícone em `Palette.ink`, como os outros botões de barra, dono 30/10/2026) e List | Grid à
 direita; sob o título, nenhuma contagem (dono, 30/10/2026); **trilha de status** (`TakePipelineCard`: quatro nós de 28 pt, TO PICK cinza, IN EDIT ciano, READY verde com
 anel que pulsa a cada 2 s, ✦ SHARED lilás; tocar filtra, de novo limpa); **Up next** (`TakeUpNextCard`: pôster 40 × 56, "UP NEXT · POST IT", botão amarelo
-Share/Edit/Pick que abre a take naquele passo); **fichas** (`TakesFilterChips`: "2026 · SHARED ✕" primeiro quando vem do universo, All e uma por rede que tem vídeos, nenhuma com 0; a
-escolhida branca com texto preto). **List | Grid** é `Picker` `.segmented` (`TakesLayoutToggle`). Card da grade (`TakeVideoCard`, 177:270): anel de 1 pt na
+Share/Edit/Pick que abre a take naquele passo); **fichas** (`TakesFilterChips`: "2026 · SHARED ✕" primeiro quando vem do universo, sempre à vista e fora do recolhimento, depois All e uma por
+rede que tem vídeos, nenhuma com 0, na mesma linha que se recolhe na escolhida de Scripts, `FilterFan`, §2; a escolhida branca com texto preto; o ✕
+tira o amarelo e, se o planeta tinha escolhido a rede, o chip volta para All). **List | Grid** é `Picker` `.segmented` (`TakesLayoutToggle`). Card da grade (`TakeVideoCard`, 177:270): anel de 1 pt na
 cor do estágio, pílula do estágio, título e "● TIKTOK · 1:02" no pé. Lista (`TakeVideoRow`, título 16 medium, §53): §24. Lista vazia por filtro: "No videos for Shorts here" + **Show every video**.
 Segurar um vídeo abre o menu de contexto (a prévia recebe `.environment(services)` e o pôster lê os serviços como opcionais: o sistema redesenha o cartão
 fora do ambiente do app). **Não feito (decisão do dono):** Select (sem seleção em massa), bolinha de tema no card; títulos de dia (Today, Yesterday) ficam.
@@ -1141,7 +1173,7 @@ sentir livre para escrever como quiser). **Sem dicas embaixo do texto** (gancho 
   verde dentro (com ✓, brilha uma vez e toque leve ao entrar), laranja acima ("CUT 6S", toque firme). Acima do ideal, uma linha sob o trilho avisa
   (**⚠︎ Past the TikTok ideal**, `warnText`) com o botão que encaixa, quando o Apple Intelligence escreve o roteiro (✦ **Fit to time**, também num
   roteiro da Ultra AI; some enquanto a IA escreve ou outra ferramenta roda). Cresce numa mola; os toques são só do que o criador
-  digita (não da IA). O título não tem contador embaixo.
+  digita (não da IA escrevendo nem das ferramentas). Com letra grande, o ideal vai para baixo da duração e quebra em duas linhas em vez de cortar. O título não tem contador embaixo.
   O tempo é sempre no **ritmo natural de fala** (150 palavras por minuto em inglês, o mesmo em que a IA escreve), não na velocidade de rolagem do
   teleprompter. **Cada idioma tem o seu ritmo** (`ReadTime.pace(for:)`, medido em 01/11/2026 com as leituras FLEURS e as frases traduzidas do app,
   `tools/pace/measure.py`): um minuto tem menos palavras em coreano (0,75×), turco (0,8×), indonésio (0,85×) e árabe (0,9×), e mais em espanhol,
@@ -1326,23 +1358,37 @@ amarelo e nada mais (o rótulo "WIDTH · LINES" sumia sob a barra; a própria ja
 **Logbook** (`LogbookView`, folha em `.large`): título grande do sistema ("Logbook", `navigationSubtitle` "Catch it now. Write it later.") e Done na
 barra (sai durante a seleção). As ideias enchem a página, **por dia** (TODAY, YESTERDAY, o dia da semana, a data; `LogbookDays`, rótulo mono `ink2`),
 numa `List`; sem nenhuma, o vazio fica **no meio** do espaço da lista (sobreposto, acima do teclado ao digitar; o livro, "Your Logbook is empty",
-"Hold the mic to catch an idea. Write it later."; entra e sai num esmaecer de 0,35 s). **Embaixo, como no Mensagens, um compositor de vidro só**
-(`.safeAreaInset(.bottom)`, `glassEffect`, raio 28): o campo, com a dica "Type, or hold the mic to talk" em `ink2` (o cinza do sistema dava ~2,4:1 no
-vidro), 17 pt, cursor amarelo, cresce até 4 linhas e Return salva; no fim dele um **botão amarelo de 44 pt**: o microfone, que **segurado** ouve (as
+"Hold the mic to catch an idea. Write it later."; entra e sai num esmaecer de 0,35 s; sem altura para tudo, acima do teclado de um iPhone pequeno,
+o livro sai e ficam as palavras). **Embaixo, como no Mensagens, um compositor de vidro só**
+(`.safeAreaInset(.bottom)`, `glassEffect`, raio 28): o campo, com a dica curta "Type, or hold to talk" em `ink2` (o cinza do sistema dava ~2,4:1 no
+vidro; curta para caber numa linha no menor iPhone na maioria dos idiomas, dono, 05/11/2026), 17 pt, cursor amarelo, cresce até 4 linhas e Return
+salva (um texto colado com quebras de linha vira um parágrafo e espera, `LogbookComposerInput`); no fim dele um **botão amarelo de 44 pt**, **sempre no
+meio da altura do campo** enquanto ele cresce com o que se digita (dono, 05/11/2026); **ouvindo, o campo não cresce**: as palavras correm na sua
+única linha como uma legenda ao vivo (`LogbookLiveCaption`: as novas no fim, as primeiras saindo por um esmaecido no começo, espelhado em árabe e
+hebraico), e nada se move sob o dedo; a ideia falada pousa no topo e logo **abre inteira** no cartão, onde se lê o que foi ouvido: o microfone, que **segurado** ouve (as
 palavras entram no campo, depois do que já estava digitado, e soltar salva) e **tocado** (menos de 0,35 s) continua ouvindo até o próximo toque; com
 palavras digitadas ele vira a **seta ↑ que salva** (troca `replace` do sistema e um tique). Ouvindo ou digitando, o vidro ganha contorno `accLine` de
-1 pt. Sobre o campo, **uma linha só quando há o que dizer** (footnote semibold, esmaece em 0,25 s): "Listening…", "Tap the button again to finish"
-ou, onde nada pode ouvir, o porquê (`warnText`). O compositor fica no tamanho até o 1º tamanho de acessibilidade (o campo cresce pelas linhas).
+1 pt. Sobre o campo, **uma linha só quando há o que dizer** (footnote semibold, esmaece em 0,25 s, `LogbookComposerStatus`; o VoiceOver a anuncia):
+"Listening…", "Tap the button again to finish", "Downloading 40%" na primeira vez de um idioma, ou, onde nada pode ouvir, o porquê (`warnText`), já com
+o dedo no botão (ele não cresce nem ondula fingindo ouvir; um toque de aviso), com **Open Settings** (`accText`) quando o microfone está desligado
+para o Cue. Uma escuta que para sozinha (uma ligação, o microfone some) salva o que ouviu, diz "Dictation stopped. What you said so far is kept." e o
+botão volta a descansar; o aviso some quando o criador volta a digitar, e um aviso antigo de outro lugar não aparece ao abrir. **O que ficou no campo**
+(digitado ou ouvido) ao fechar a folha volta na próxima vez, como no Mensagens (`LogbookService.draft`; "Delete my Cue data" apaga). O compositor fica no tamanho até o 1º tamanho de acessibilidade (o campo cresce pelas linhas).
 **Teclado** (dono, 30/10/2026): rolar não o fecha; segurar o microfone com o teclado aberto não o fecha (o botão fica sob o dedo), e ele desce quando a fala termina; um toque em qualquer lugar da página fecha (esse primeiro toque só fecha, mesmo num Delete à mostra; sem
-teclado o toque é do que está embaixo); digitando, deslizar para baixo não fecha a folha
-(`interactiveDismissDisabled`). Uma ideia salva entra no topo da lista, a lista rola até ela e ela fica com contorno amarelo por 1,4 s. **Cartão**
-(`surface`, raio 22, `cardDepth`): ícone de 44 pt (microfone amarelo se falada, lápis se digitada), o texto em **16 medium** até 3 linhas,
-"SPOKEN · 0:06 · 2 HR. AGO" ou "TYPED · 9:40 PM" com a bolinha do tópico, e **✦ Write** violeta (sem Apple Intelligence, "Write it", que abre um
-rascunho em branco com a ideia no título). **Vibração:** dois toques ao começar a ouvir (`HapticPatterns.listen`), um suave ao parar, sucesso ao salvar
+teclado o toque é do que está embaixo); digitando ou ouvindo, deslizar para baixo não fecha a folha
+(`interactiveDismissDisabled`). Return é uma quebra de linha no fim, mesmo que chegue com outras letras ou com o corretor trocando a palavra. Uma ideia salva, digitada ou falada, entra no topo da lista, a lista rola até ela e ela fica com contorno amarelo por 1,4 s. **Cartão**
+(`surface`, raio 22, `cardDepth`; dono, 05/11/2026: o ✦ Write ao lado tomava o espaço das palavras): o texto em **16 medium** na largura toda, até 3
+linhas (um toque no cartão abre a ideia inteira, outro fecha), e embaixo **uma linha só**: o microfone amarelo (falada) ou o lápis (digitada), 11 pt,
+"SPOKEN · 0:06 · 2 HOURS AGO" ou "TYPED · NOW" (NOW no primeiro minuto; atualiza a cada minuto com a folha aberta) com a bolinha do tópico, e no fim
+o **✦ Write** pequeno (cápsula de 30 pt, 14 semibold, violeta; o toque tem os 44 pt; sem Apple Intelligence, "Write it", que abre um rascunho em
+branco com a ideia no título). **Deslizar** o cartão mostra **Delete** na borda (deslizar inteiro apaga) e **Edit** ao lado, no cinza do sistema;
+segurar o cartão não abre menu (a cópia que o iOS levanta brigava com o cartão abrindo sob o toque). Edit põe as palavras no campo com
+"✎ Editing idea · Cancel" acima dele e o cartão com contorno amarelo; Return ou a seta salvam no lugar, com o mesmo dia e o mesmo jeito de entrada, e
+o tópico é refeito; falar com o campo vazio também vale; apagar o cartão ou entrar no Select cancela. **Vibração:** dois toques ao começar a ouvir (`HapticPatterns.listen`), um suave ao parar, sucesso ao salvar
 uma ideia falada, um toque ao salvar uma digitada, um tique ao travar. **Movimento:** ao abrir, o círculo respira uma vez (1,12); sob o dedo afunda
 (0,9) e volta; ouvindo, cresce (1,12) com brilho, o microfone pula (1,25) e anéis saem do botão por cima da borda do campo, sem mover nada, mais longe
 com a voz mais alta (`LogbookRipples`); ✦ Write acende o cartão em violeta e a estrela sai do próprio botão; apagar dá um toque firme e a lista fecha
-numa mola, com "Idea deleted · Undo" (4 s) mostrado na própria folha (`toastHost(inSheet:)`). Apagar: deslizar (inteiro apaga) ou segurar o cartão.
+numa mola, com "Idea deleted · Undo" (4 s) mostrado na própria folha (`toastHost(inSheet:)`). Apagar: deslizar (inteiro apaga).
 **Select** (mono em maiúsculas, à direita do primeiro dia, como em Scripts; vira **Done**): o compositor dá lugar à barra de seleção ("Select ideas" /
 "n selected", **Select all** / **Deselect all** ao lado da lixeira e a lixeira, sobe de baixo em 0,3 s), cada cartão mostra a marca (`ScriptSelectionMark`) no lugar do ✦ Write e um toque marca ou
 desmarca; a lixeira apaga o que foi escolhido com um Undo só. Reduzir Movimento: sem respiração, mudanças sem animação, e um anel parado no lugar das
@@ -1395,7 +1441,7 @@ o modelo copiá-las, então cada lote ordena ângulo e assunto ("1. uma lista so
 temperatura 1,0; quase iguais caem, dentro do lote também (`IdeaSimilarity.repeats`, `IdeaEcho`: título quase igual, ou duas de título, ângulo e
 começo da abertura no mesmo tema; temas diferentes só pelo título; as últimas 60 ficam guardadas); com menos de 4 novas, mais uma volta. **Inspiração** (`IdeaInspiration`): o Logbook e os títulos
 recentes vão como "o criador tem pensado em…", e as anotações dele aparecem no ↻ a cada quatro ideias (uma vez por sessão; enviar marca como escrita).
-**Gosto** (`IdeaTaste`, §30). O ↻ nunca volta às ideias de partida enquanto há mais a caminho: vira uma rodinha (`isWaiting`). O valor do campo é lido pelo
+**Gosto** (`IdeaTaste`, §30). Uma ideia de partida vem a cada 2 do modelo (§30). O ↻ nunca volta às ideias de partida enquanto há mais a caminho: vira uma rodinha (`isWaiting`). O valor do campo é lido pelo
 VoiceOver ("Your idea").
 **Medido** (iPhone 15 Pro): 6–10 s por lote, 18 ideias diferentes em três lotes; dia de um criador (`CreatorDayDeviceTests`): ideias 10 s, roteiro 10–16 s,
 encurtar 102 → 63 em 6 s, 3 ganchos 3 s, tradução 5 s, YouTube 102 → 563 palavras em 28 s.
@@ -1564,9 +1610,9 @@ Sistema completo em `NOTIFICATIONS.md`. Na interface:
 
 ## 30. Find inspiration
 
-Onde a Ultra AI é oferecida (§57), embaixo de *Draft it now* (que é sempre do Apple Intelligence) vem **✦ Draft with Ultra AI**: escreve a mesma ideia, com o
-brief, pela Ultra AI; na primeira vez abre antes a folha de permissão. Do segundo uso da IA em diante, um cartão acima da ideia convida a escrevê-la com a
-Ultra AI (o convite, §57); sem roteiros restantes, o Pro da Ultra AI abre sobre a folha.
+Onde a Ultra AI é oferecida (§57), ao lado de *Draft it now* (que é sempre do Apple Intelligence) vem **✦ Ultra AI**: escreve a mesma ideia, com o
+brief, pela Ultra AI; na primeira vez abre antes a folha de permissão. Do segundo uso da IA em diante, o próprio botão é o convite ("· 3 free", §57);
+sem roteiros restantes, o Pro da Ultra AI abre sobre a folha.
 
 Cada inspiração é um brief (`IdeaBrief`): título, **ângulo** (instrução curta) e **frase de abertura** (sugestão para dizer, nunca afirmação sobre o criador:
 nada de história, resultado, número ou tendência inventados).
@@ -1582,15 +1628,25 @@ nada de história, resultado, número ou tendência inventados).
   estado de Scripts**, 8 pt depois do último chip, cápsula amarela de 44 × 30 pt (`accSoft`, contorno `accLine` de 1 pt, 44 × 44 de toque), "Find
   inspiration" para o VoiceOver; dobra com a linha. Sem largura, os chips encurtam (§2) e só por último rolam com a lâmpada fixa. Sem dica de primeiro uso.
 - **A folha** (`Screens/Scripts/Inspiration/`; abre pela lâmpada, por + › Let Cue draft it e pela notificação de ideia): título, "Ideas to start from.",
-  chips de tema ("All my topics" e os salvos, escolhido em violeta; "Topics" abre o editor do My Cue Voice), **um cartão** violeta (TEMA ·
+  temas no **leque** de Scripts e Takes (`FilterFan`, §2: dobrado no escolhido com um ponto por tema escondido, na cor do mundo dele; abre e dobra com o
+  mesmo líquido e as mesmas vibrações; chips de 34 pt em 14 semibold; o escolhido em violeta `inspirationChipOn` com letra branca, porque as ideias são
+  da IA), e **Topics** (só o ícone de ajustes num chip cinza de 44 × 34, "Topics" para o VoiceOver; sem temas, "+ Add topics" escrito) sempre à vista no fim da linha, fora do leque (o leque guarda o espaço dele, `trailingInset`, e os
+  chips abertos somem num degradê antes dele; toque leve); abre o editor de temas do My Cue Voice **sem** a linha de progresso ("Essentials · 2 of 4"
+  não quer dizer nada fora do My Cue Voice, `VoiceEditorSheet(showsProgress:)`). **No máximo uma nota** acima do cartão: "Starter ideas…" sem Apple
+  Intelligence ou a da Script Language; sem temas, nenhuma (o "+ Add topics" já diz o que fazer). Depois, **um cartão** violeta (TEMA ·
   SUBTEMA · TIPO, título, a **linha do porquê** quando a ideia está ligada a algo do criador, YOUR POINT OF VIEW, OPENING LINE), e embaixo, fixos, **Another idea** (círculo de vidro ↻ de 54 pt à esquerda; não sobe
-  e desce com o tamanho da ideia; deslizar no cartão também troca) e **Start with it** em amarelo, a linha que diz que a ideia vai para o campo, e
-  "✦ Draft it now" (e "✦ Draft with Ultra AI" onde a Ultra AI é oferecida; com o convite dela em aberto, "✦ Draft with Ultra AI · 3 free", §57). A folha é
+  e desce com o tamanho da ideia; deslizar no cartão também troca) e **Start with it** em amarelo, a linha que diz que a ideia vai para o campo, e numa
+  **linha só** os caminhos diretos, em texto: "✦ Draft it now" (ou **Write it yourself**, na tinta de ação `ink`: em cinza parecia desligado) e, onde
+  a Ultra AI é oferecida, um fio e "✦ Draft with Ultra AI" se couber, senão "✦ Ultra AI" (com o convite em aberto, "· 3 free", §57; o VoiceOver
+  ouve sempre o nome inteiro); um embaixo do outro só quando nem os curtos cabem. Desligados (sem ideia) esmaecem como os outros botões (`cuePress`). A folha é
   sempre uma página inteira: nenhuma dica ou convite entra entre os chips e a ideia empurrando o cartão para baixo das ações (dono, 30/10/2026). **Arrastar:** o cartão segue o dedo para o lado, inclinando (1° a cada 24 pt); passou de 90 pt, um clique (`Haptics.rigid`) e,
-  soltando (ou jogando), ele voa para aquele lado e vem a próxima; antes disso volta numa mola. O ↻ gira a cada troca. **Vibração:** cinco ticks que
-  enfraquecem junto com os brilhos; Start with it = toque firme + um suave quando a ideia cai no campo; Draft it now = a decolagem do dock.
-  **Troca de ideia:** o cartão que sai vai para a esquerda e se desfaz em blur (−28 pt, 95%); 14 brilhos de quatro pontas acendem um
-  após o outro em volta da borda e se afastam ~7–18 pt (0,65 s; violeta, branco e um amarelo; `InspirationStarBurst`); o novo entra da direita (+36 pt,
+  soltando (ou jogando), ele voa para aquele lado e vem a próxima; antes disso volta numa mola. O ↻ gira a cada troca. **Vibração:** nove tiques leves que
+  enfraquecem como um chuvisco junto com a poeira; Start with it = toque firme + um suave quando a ideia cai no campo; Draft it now = a decolagem do dock; Topics,
+  Try again e All my topics do cartão vazio = toque leve; as ideias que se esperava chegam = um toque suave com o cartão.
+  **Troca de ideia:** o cartão que sai vai para a esquerda e se desfaz em blur (−28 pt, 95%); **poeira mágica** (dono, 05/11/2026; `InspirationStarBurst`,
+  1,1 s): 38 grãos de 0,7–1,7 pt com halo saem da borda e flutuam devagar para fora e um pouco para cima (6–24 pt), cintilando enquanto apagam; 5
+  estrelas de quatro pontas no meio piscam duas vezes e somem; 7 grãos pousam no cartão novo, entram 5–14 pt pela borda, brilham uma vez e
+  apagam (violeta, branco e um em oito amarelo; uma fumaça foi testada e recusada pelo dono); o novo entra da direita (+36 pt,
   97%) numa mola (`CueMotion.inspirationTurn`); as linhas sobem 8 pt saindo do blur, uma a cada 60 ms; uma faixa de luz cruza o cartão uma vez (0,8 s,
   `inspirationSweep`). Reduzir Movimento: só fade de 0,2 s. Estados: esqueleto, "Finding more
   ideas…", falha com **Try again**, sem temas, sem Apple Intelligence (ideias de partida para escrever à mão). As ideias são escritas no idioma da
@@ -1598,7 +1654,9 @@ nada de história, resultado, número ou tendência inventados).
   write yourself."; com a Script Language num idioma que o modelo não escreve, as ideias vêm, a nota diz o motivo + "These ideas are yours to write." e
   o botão é **Write it yourself** (§8).
 - **Do cartão ao roteiro:** *Start with it* põe o brief no campo em três linhas (título / "Angle: …" / "Open with: “…”", ≤ 200 caracteres, corta em fim de
-  palavra), cursor no fim, mantém formato, rede e voz; se havia texto, toast com **Undo**. Só vai ao modelo a parte do brief que o texto ainda diz
+  palavra), cursor no fim, mantém formato, rede e voz; se havia texto, toast com **Undo**. Enquanto o campo tem a ideia como veio (e nada do criador
+  ficou atrás dela), o **↻ do dock** continua: passa a ideia e volta à sugestão seguinte; mudada uma letra, ela é do criador e o ↻ sai. Fechado, o
+  campo mostra só as duas linhas (a terceira não espia por baixo). Só vai ao modelo a parte do brief que o texto ainda diz
   (`IdeaBrief.standing(in:)`: 70% das palavras do título, 60% do ângulo e da abertura). *Draft it now* escreve sem tocar no campo; a ideia só é gasta
 (e o gosto aprendido) quando o roteiro chega: cancelada ou com falha, continua entre as ideias. Com o brief, o roteiro
   abre com a frase e segue o ângulo (`ScriptPromptBuilder`; a checagem da voz aceita a abertura dada).
@@ -1629,9 +1687,13 @@ nada de história, resultado, número ou tendência inventados).
   sem ocupar o iPhone; tudo dos créditos do Google; filtradas por idioma, ideia fraca, repetida e porcentagem: `IdeaLibraryDeviceTests`, `tools/ideas/collect_library.py`,
   `IdeaLibraryBuildTests`; como nos roteiros, é um rascunho: cena imaginada em primeira pessoa pode, número, estudo, credencial ou resultado inventado
   não; amostra em português aprovada pelo dono, 01/11/2026; o cartão mostra a ideia inteira até 300 caracteres e o campo a encaixa em 200, como as do
-  modelo, e o roteirista recebe a ideia do cartão); para os temas digitados, 16 modelos (um por ângulo) com o nome do tema e dos subtemas. O gosto ordena as
-  de partida (as preferidas intercaladas com as outras, as passadas por último). Sem Apple Intelligence é tudo o que a folha e o ↻ mostram, sem custo
-  nenhum depois. **Gosto** (`IdeaTaste`, entre sessões, qualquer idioma): passar −0,35, usar +1,5, enviar pelo card +3, roteiro escrito +4 (o ângulo só
+  modelo, e o roteirista recebe a ideia do cartão); para os temas digitados, 16 modelos (um por ângulo) com o nome do tema e dos subtemas, que dentro da
+  frase perde a maiúscula que o campo pôs quando o dicionário do idioma conhece a palavra ("Mitos sobre rotina"; "Instagram", "YouTube" e o alemão ficam
+  como estão; a frase começa com maiúscula, `TopicCasing`). O gosto ordena as de partida (as preferidas intercaladas com as outras, as passadas por
+  último). Sem Apple Intelligence é tudo o que a folha e o ↻ mostram, sem custo nenhum depois. **A biblioteca é de todos** (dono, 05/11/2026): com o
+  modelo, depois de cada 2 ideias dele vem uma de partida ainda não vista sobre um dos temas do Cue (escrita aqui ou da biblioteca; nunca um modelo de
+  tema digitado, pior que as do modelo), no ↻ do dock e na folha (`IdeaSuggestionService.starterEvery`); a do modelo que ela antecede continua não
+  vista (a notificação pode citá-la). Assim o modelo é chamado menos (gasta menos bateria) e a variedade cresce. **Gosto** (`IdeaTaste`, entre sessões, qualquer idioma): passar −0,35, usar +1,5, enviar pelo card +3, roteiro escrito +4 (o ângulo só
   conta se ainda estava no texto); no máximo metade do lote para os ângulos preferidos, o resto para os menos vistos. Testes de UI: datas só com
   `-uiTestOccasions BR@2026-04-25`.
 - **Briefs fracos** (`IdeaSpecificity`): ângulo que só repete o título e título de palavras feitas ("5 tips") — uma fraqueza vai para o fim do lote, as
@@ -3518,7 +3580,8 @@ A metade reativa da revisão de comunicação (`reports/comunicacao-revisao-2026
 - **Checked** (decisão 9): o botão do lembrete de fatos diz "I checked" (VoiceOver: "I reviewed the claims") e grava a revisão daquela versão com a data
   (`FactReview`: um resumo do texto, a versão, a data); o toast é "Claims reviewed for this version". Uma reescrita da IA que muda as palavras traz o lembrete
   de volta, e o Undo para as palavras revisadas o tira. Esconder não é revisar: só o botão grava.
-- **"Sounds like me"** diz "Saved · Cue uses it on this iPhone" com ✓ na página (o roteiro vira exemplo) e "Saved · counts toward your voice" na
+- **"Sounds like me"** diz "Saved · Cue learns from it" com ✓ na página (o roteiro vira exemplo; curto demais para isso, "Noted · Too short to learn
+  from") e "Saved · counts toward your voice" na
   folha da prévia (a amostra não é guardada; conta no medidor). A ★ é do que o Cue fez.
 
 ## 59. Fontes para outras escritas (31 de outubro de 2026; pedido do dono)

@@ -8,9 +8,13 @@ import Foundation
 @MainActor
 @Observable
 final class ScriptsViewModel {
-    var filter: ScriptFilter = .all
+    var filter: ScriptFilter = .all {
+        didSet { keepShownSelection() }
+    }
     /// The words in the search field at the top of the list (always there).
-    var query = ""
+    var query = "" {
+        didSet { keepShownSelection() }
+    }
     var isSelecting = false {
         didSet { if !isSelecting { selection.removeAll() } }
     }
@@ -129,6 +133,15 @@ final class ScriptsViewModel {
     /// Select all beside Delete: picks every script shown, or lets them all go once they are.
     func toggleSelectAll() {
         if selectsAllShown { selection.removeAll() } else { selection.formUnion(visibleScripts.map(\.id)) }
+    }
+
+    /// Another chip or search while selecting: the scripts it hides are let go, so Delete, Duplicate and Move only ever act on what the
+    /// creator sees picked (the Logbook's ideas stay: their place at the end of the list doesn't change).
+    private func keepShownSelection() {
+        guard isSelecting, !selection.isEmpty else { return }
+        let shown = Set(visibleScripts.map(\.id))
+        let scripts = Set(library.scripts.map(\.id))
+        selection = selection.filter { shown.contains($0) || !scripts.contains($0) }
     }
 
     /// The scripts among what is picked: folders and Duplicate are theirs (an idea has neither).
