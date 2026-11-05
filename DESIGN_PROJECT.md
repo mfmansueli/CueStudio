@@ -3604,11 +3604,29 @@ take specific actions" (3.2.2(x)). O dono marca uma consulta com o App Review (M
   ao voltar ao app se não chegou); e, para quem já abriu os convites, ao abrir o app e ao voltar a ele, no máximo a cada 10 minutos. Quem nunca
   convida nem digita um código nunca chega ao servidor. Sem Firebase (testes, previews) nada de convite aparece.
 - **O código:** 6 caracteres sem I, O, 0 e 1 (`ReferralCode`), mostrado "K7M 2QX"; o que o amigo digita é lido sem espaços, traços ou caixa. A
-  mensagem (`InviteCopy.message`, pedido do dono: um bilhete, não um link seco) vai em três parágrafos: "I’ve been making my videos with Cue Studio
-  🎬 It writes the script with you, and its teleprompter follows your voice while you record."; "Get it here: <link>" (`AppStoreLink`:
-  `https://apps.apple.com/app/id6817889695`, o Apple ID em `CUE_APP_STORE_ID` do `App.xcconfig`; vazio, "Find Cue Studio on the App Store."); e
-  "Before you export your first video, open Profile › Invite friends in Cue and type my code: K7M2QX", o código por último para copiar fácil. A
-  folha do sistema mostra o título "An invite to Cue Studio" (também o assunto de um e-mail). Apps que só aceitam link (os da Meta, como Instagram e
+  mensagem (`InviteCopy.message`, o texto do dono, 05/11/2026) é texto simples, montado linha a linha (nenhuma tradução põe nada ao lado do
+  código), com as quebras de linha que o app de destino mostrar como digitadas:
+
+  ```
+  Bora colocar suas ideias em órbita? 🚀 Eu crio meus vídeos com o Cue Studio: da primeira ideia ao roteiro, da gravação à edição. E o teleprompter acompanha minha voz enquanto gravo.
+
+  Vem criar também:
+  https://apps.apple.com/app/id6817889695
+
+  Meu código de convite:
+
+  K7M2QX
+
+  Instale o app e vá em Perfil › Convidar amigos › digite o código acima antes de exportar seu primeiro vídeo. ✨
+  ```
+
+  O link é o `AppStoreLink` (o Apple ID em `CUE_APP_STORE_ID` do `App.xcconfig`; vazio, "Procure o Cue Studio na App Store."). O código é o do
+  criador, **sozinho na linha, com uma linha em branco antes e depois**, sem espaço, emoji ou pontuação junto, para um toque longo selecionar só
+  ele; sem Markdown nem botão de copiar (cada app mostra a mensagem do seu jeito). Nos 20 idiomas, com o tom do original e os nomes que o app
+  mostra para Perfil e Convidar amigos (`ReferralModelsTests` confere cada idioma). A folha do sistema recebe a mensagem como string
+  simples (`InviteShareItem` num `UIActivityViewController`, como Roteiros compartilha um roteiro), que toda extensão lê na hora: o `ShareLink` do
+  SwiftUI entregava dados carregados depois, e a do WhatsApp mostrava uma tela cinza e parava em "Avançar". O cabeçalho mostra o ícone do Cue e o
+  título "An invite to Cue Studio" (também o assunto de um e-mail); a folha oferece Copiar. Apps que só aceitam link (os da Meta, como Instagram e
   Messenger, descartam texto pronto) recebem só o link. Sem SDK de terceiros nem link que sobreviva à instalação: o amigo digita.
 - **O amigo** digita o código **uma vez, antes da primeira exportação** do iPhone (`canJoin`: nenhuma exportação contada nem vídeo compartilhado,
   nem entrega em nenhum plano); o próprio código, um que não existe ou um segundo dizem por quê embaixo do campo. Entrou: "You joined with K7M 2QX.

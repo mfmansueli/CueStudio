@@ -16,6 +16,7 @@ struct InviteFriendsSheet: View {
     @Environment(ReferralService.self) private var referral
     @Environment(\.dismiss) private var dismiss
     @State private var isTyping = false
+    @State private var isSharing = false
 
     private static let joinID = "invite.join"
 
@@ -50,6 +51,13 @@ struct InviteFriendsSheet: View {
         .presentationDetents([.large])
         .presentationBackground(Palette.sheetNight)
         .accessibilityIdentifier("invite.sheet")
+        .sheet(isPresented: $isSharing) {
+            if let status = referral.status {
+                let message = InviteCopy.message(code: status.code, link: AppStoreLink.app())
+                ActivityView(items: [InviteShareItem(message: message, title: InviteCopy.shareTitle)])
+                    .presentationDetents([.medium, .large])
+            }
+        }
         .task {
             referral.note(.opened, at: place)
             if referral.isOffered { await referral.refresh() }
@@ -79,24 +87,15 @@ struct InviteFriendsSheet: View {
         .padding(.horizontal, Metrics.gutter)
     }
 
-    /// Share invite: the system share sheet with the message and Cue's App Store link, once the code is here.
-    @ViewBuilder
+    /// Share invite: the system share sheet with the message as plain text (`InviteShareItem`), once the code is here.
     private var shareBar: some View {
-        Group {
-            if let status = referral.status {
-                ShareLink(
-                    item: InviteCopy.message(code: status.code, link: AppStoreLink.app()),
-                    subject: Text(verbatim: InviteCopy.shareTitle),
-                    preview: SharePreview(InviteCopy.shareTitle)
-                ) {
-                    Label("Share invite", systemImage: "square.and.arrow.up")
-                }
-                .simultaneousGesture(TapGesture().onEnded { referral.note(.shared, at: place) })
-            } else {
-                Button {} label: { Label("Share invite", systemImage: "square.and.arrow.up") }
-                    .disabled(true)
-            }
+        Button {
+            referral.note(.shared, at: place)
+            isSharing = true
+        } label: {
+            Label("Share invite", systemImage: "square.and.arrow.up")
         }
+        .disabled(referral.status == nil)
         .buttonStyle(.cuePrimary(.large))
         .accessibilityIdentifier("invite.shareButton")
         .padding(.horizontal, Metrics.gutter)
