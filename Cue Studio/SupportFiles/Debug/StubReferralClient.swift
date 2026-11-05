@@ -19,7 +19,7 @@ final class StubReferralClient: ReferralClient {
         self.friends = friends
     }
 
-    func status(installID: UUID) async throws -> ReferralStatus {
+    func status(installID: UUID, proof: String?) async throws -> ReferralStatus {
         ReferralStatus(code: Self.code, joined: friends, activated: friends, rewarded: min(friends, 5), limit: 5)
     }
 

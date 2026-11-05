@@ -6,8 +6,9 @@
 import SwiftUI
 
 /// Settings › Privacy & AI data › What Ultra AI sends: everything the one-line consent leaves out (App Review 5.1.2(i): where personal data goes,
-/// to which third party, for what, and how to stop it). What goes to Google and when, what never does, what Google does with it, and the
-/// requests exactly as they go out (`UltraPayloadView`). The consent stays one line (the owner, 31/10/2026); this page is the detail it points to.
+/// to which third party, for what, and how to stop it). What goes to Anthropic and when, what never does, what Cue's server keeps to count the
+/// creator's scripts (DESIGN_PROJECT §57), what Anthropic does with it, and the requests exactly as they go out (`UltraPayloadView`). The
+/// consent stays one line (the owner, 31/10/2026); this page is the detail it points to.
 struct UltraPrivacyView: View {
     @Environment(ScriptStarter.self) private var starter
 
@@ -30,6 +31,11 @@ struct UltraPrivacyView: View {
                 row("Your name and @handle, writing examples, imported excerpts, other scripts, videos, audio and photos", position: .only)
             } header: {
                 CueSectionHeader("Never sent")
+            }
+            Section {
+                row("A random ID for this install and, with Cue Pro, the App Store’s proof of your subscription, so it can count your Ultra AI scripts. Never your name or what you write.", position: .only)
+            } header: {
+                CueSectionHeader("Kept by Cue’s server")
             }
             Section {
                 row("Anthropic runs its AI model to write, check, polish or fit the script, and sends the text back.", position: .first)

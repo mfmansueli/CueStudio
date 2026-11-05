@@ -18,4 +18,10 @@ nonisolated enum UltraFailure: String, Hashable, Sendable {
     case incomplete
     /// Anything else the provider said (a 500, "high demand").
     case provider
+    /// Cue's server counted the creator's scripts and none is left.
+    case outOfScripts
+    /// Cue's spend on Ultra AI reached the day's budget: it rests until the next day (UTC).
+    case paused
+    /// Too many calls from this iPhone in the last hour.
+    case limited
 }

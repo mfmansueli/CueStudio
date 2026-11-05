@@ -18,6 +18,10 @@ nonisolated struct ReferralStatus: Codable, Equatable, Sendable {
     var rewarded: Int
     /// The most friends who earn a reward.
     var limit: Int
+    /// How the server credited the rewarded friends: as exports (free plan), or as Ultra AI scripts (a Cue Pro it verified). Nil from a server
+    /// before it decided the split; the app then credits by its own plan.
+    var friendsAsExports: Int?
+    var friendsAsUltraScripts: Int?
 
     var hasReachedLimit: Bool { rewarded >= limit }
 }

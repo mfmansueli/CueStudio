@@ -41,6 +41,7 @@ final class ReferralService {
     @ObservationIgnored private let hasExported: @MainActor () -> Bool
     @ObservationIgnored private let isPro: @MainActor () -> Bool
     @ObservationIgnored private let ultraOffered: @MainActor () -> Bool
+    @ObservationIgnored private let proof: @MainActor () async -> String?
     @ObservationIgnored private let apply: @MainActor (ReferralRewards) -> Void
     @ObservationIgnored private let announce: @MainActor (String) -> Void
     @ObservationIgnored private let now: () -> Date
@@ -50,11 +51,14 @@ final class ReferralService {
     /// - Parameters:
     ///   - client: Cue's server; nil where Firebase doesn't run (tests, previews), and then invites aren't offered.
     ///   - hasExported: whether a video of this iPhone ever left Cue (a friend joins only before that).
+    ///   - proof: the App Store's signed Pro transaction (`StoreManager.proProof`), sent where friends would be Ultra AI scripts: the server
+    ///     credits them so only on a Pro it verified.
     ///   - apply: hands the rewards to the free exports' count and to Ultra AI's allowance, at launch and whenever they grow.
     ///   - announce: says a new reward (a toast).
     init(
         store: ReferralStateStoring, client: ReferralClient?, hasExported: @escaping @MainActor () -> Bool,
         isPro: @escaping @MainActor () -> Bool, ultraOffered: @escaping @MainActor () -> Bool,
+        proof: @escaping @MainActor () async -> String? = { nil },
         apply: @escaping @MainActor (ReferralRewards) -> Void, announce: @escaping @MainActor (String) -> Void,
         now: @escaping () -> Date = Date.init
     ) {
@@ -63,6 +67,7 @@ final class ReferralService {
         self.hasExported = hasExported
         self.isPro = isPro
         self.ultraOffered = ultraOffered
+        self.proof = proof
         self.apply = apply
         self.announce = announce
         self.now = now
@@ -93,18 +98,23 @@ final class ReferralService {
         guard let client, loading != .loading, let installID = ensuredInstallID() else { return }
         loading = .loading
         do {
-            let fresh = try await client.status(installID: installID)
+            let asUltraScripts = isPro() && ultraOffered()
+            let fresh = try await client.status(installID: installID, proof: asUltraScripts ? await proof() : nil)
             lastRefresh = now()
             loading = .idle
-            let asUltraScripts = isPro() && ultraOffered()
-            var credited = 0
+            var before = ReferralRewards()
+            var after = ReferralRewards()
             update { state in
                 state.status = fresh
-                credited = state.rewards.credit(rewarded: fresh.rewarded, asUltraScripts: asUltraScripts)
+                before = state.rewards
+                state.rewards.adopt(fresh, asUltraScripts: asUltraScripts)
+                after = state.rewards
             }
-            if credited > 0 {
-                announce(Self.rewardMessage(friends: credited, asUltraScripts: asUltraScripts))
-                report?(ReferralTelemetryEvent(step: .rewarded, outcome: asUltraScripts ? "ultra" : "exports", count: credited))
+            let newExports = max(0, after.friendsAsExports - before.friendsAsExports)
+            let newUltra = max(0, after.friendsAsUltraScripts - before.friendsAsUltraScripts)
+            for (friends, asUltra) in [(newExports, false), (newUltra, true)] where friends > 0 {
+                announce(Self.rewardMessage(friends: friends, asUltraScripts: asUltra))
+                report?(ReferralTelemetryEvent(step: .rewarded, outcome: asUltra ? "ultra" : "exports", count: friends))
             }
         } catch {
             loading = .failed
@@ -160,6 +170,12 @@ final class ReferralService {
     }
 
     // MARK: - Private
+
+    /// The install's random id, made the first time: the one Ultra AI's calls name too (`UltraCallerSource`), so the scripts invites earned
+    /// and the scripts written are counted for the same install. Nil while the Keychain can't be read.
+    func installIdentity() -> UUID? {
+        ensuredInstallID()
+    }
 
     private func ensuredInstallID() -> UUID? {
         guard isReadable else { return nil }

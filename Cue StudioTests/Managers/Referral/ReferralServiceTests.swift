@@ -20,6 +20,7 @@ struct ReferralServiceTests {
         var exportsUsed = 0
         var isPro = false
         var ultraOffered = false
+        var proof: String? = "signed-pro"
         var applied = ReferralRewards()
         var toasts: [String] = []
         var now = TestData.now
@@ -27,7 +28,8 @@ struct ReferralServiceTests {
         func service(client: ReferralClient?? = nil) -> ReferralService {
             ReferralService(
                 store: store, client: client ?? self.client, hasExported: { self.exportsUsed > 0 }, isPro: { self.isPro },
-                ultraOffered: { self.ultraOffered }, apply: { self.applied = $0 }, announce: { self.toasts.append($0) }, now: { self.now }
+                ultraOffered: { self.ultraOffered }, proof: { self.proof }, apply: { self.applied = $0 },
+                announce: { self.toasts.append($0) }, now: { self.now }
             )
         }
     }
@@ -64,6 +66,28 @@ struct ReferralServiceTests {
         #expect(world.applied.bonusExports == 6)
         #expect(world.applied.bonusUltraScripts == 5)
         #expect(world.toasts.last?.contains("5") == true)
+    }
+
+    @Test func theServersVerifiedSplitIsWhatCountsAndTheProofGoesOnlyWhereScriptsAreTheReward() async {
+        let world = World()
+        let referral = world.service()
+        world.client.status = ReferralStatus(
+            code: "K7M2QX", joined: 3, activated: 3, rewarded: 3, limit: 5, friendsAsExports: 1, friendsAsUltraScripts: 0
+        )
+        await referral.refresh()
+        #expect(world.client.proofs == [nil])
+        #expect(world.applied.bonusExports == 3)
+        // On Pro with Ultra AI, the proof goes, and the server (not this iPhone) decides each new friend's kind.
+        world.isPro = true
+        world.ultraOffered = true
+        world.now = world.now.addingTimeInterval(ReferralService.refreshInterval + 1)
+        world.client.status = ReferralStatus(
+            code: "K7M2QX", joined: 4, activated: 4, rewarded: 4, limit: 5, friendsAsExports: 2, friendsAsUltraScripts: 2
+        )
+        await referral.refresh()
+        #expect(world.client.proofs.last == "signed-pro")
+        #expect(world.applied.bonusExports == 6 && world.applied.bonusUltraScripts == 10)
+        #expect(world.toasts.count == 3)
     }
 
     @Test func rewardsStopAtFiveFriends() async {

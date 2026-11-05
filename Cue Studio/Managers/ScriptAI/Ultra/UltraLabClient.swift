@@ -10,7 +10,7 @@ import Foundation
 /// picked), so the server, Gemini and Claude can be compared on the same iPhone without relaunching. A provider that isn't set up on this iPhone
 /// refuses the call (`UltraFailure.rejected`).
 @MainActor
-final class UltraLabClient: UltraModelClient {
+final class UltraLabClient: UltraModelClient, UltraAllowanceReporting {
     private var server: CueServerUltraClient?
     private var google: FirebaseUltraClient?
     private var claude: [String: AnthropicUltraClient] = [:]
@@ -36,6 +36,14 @@ final class UltraLabClient: UltraModelClient {
         guard let client = google ?? FirebaseUltraClient.make() else { throw UltraClientError(failure: .rejected) }
         google = client
         return try await client.generate(request, progress: progress)
+    }
+
+    /// The server's count when the lab writes through Cue's server; another provider counts nothing on a server.
+    func allowance(for caller: UltraCaller) async throws -> UltraServerAllowance {
+        guard UltraLabProvider.selected == .cueServer else { return UltraServerAllowance(metering: "off") }
+        guard let client = server ?? CueServerUltraClient.make() else { throw UltraClientError(failure: .rejected) }
+        server = client
+        return try await client.allowance(for: caller)
     }
 }
 #endif

@@ -34,6 +34,10 @@ final class UltraScriptService: UltraScriptWriting {
     let invite: UltraInviteService?
     /// What each request spent; nil keeps no record (tests that don't look at it).
     let spend: UltraSpendLedger?
+    /// Who the calls are for, so Cue's server counts the creator's scripts (DESIGN_PROJECT §57); nil says nothing (tests, the lab's stub).
+    @ObservationIgnored var callerSource: UltraCallerSource?
+    /// Cue's server was asked what the creator has left in this launch (`refreshAllowance`).
+    @ObservationIgnored private var askedServer = false
     /// Ultra is in this build and set up on this iPhone; read without touching the network. A TestFlight build turns it on shortly after
     /// launch (`becomeAvailable`, `UltraDistribution`).
     private(set) var isAvailable: Bool
@@ -96,12 +100,32 @@ final class UltraScriptService: UltraScriptWriting {
         invite?.noteAIUse()
     }
 
-    /// A script for the creator: counted against their scripts once it is written, never when it failed or was stopped.
+    /// A script for the creator: counted against their scripts once it is written, never when it failed or was stopped. Where Cue's server
+    /// enforces the count, it is asked first in each launch, and again after each script (its answer is what the creator sees).
     func generate(_ request: ScriptRequest, reporting meter: WritingProgressMeter?) async throws -> GeneratedScript {
+        if allowance != nil, !askedServer { await refreshAllowance() }
         if let allowance, allowance.left == 0 { throw UltraError.noScriptsLeft }
-        let script = try await run(request, reporting: meter).script
-        allowance?.spend()
-        return script
+        do {
+            let script = try await run(request, reporting: meter).script
+            allowance?.spend()
+            Task { [weak self] in await self?.refreshAllowance() }
+            return script
+        } catch UltraError.noScriptsLeft {
+            await refreshAllowance()
+            throw UltraError.noScriptsLeft
+        }
+    }
+
+    /// Asks Cue's server what the creator has left; its count replaces this iPhone's only while the server enforces one (`ULTRA_METERING`).
+    /// Only with permission, since the client starts Firebase: nothing about it runs before the creator allowed Ultra AI.
+    func refreshAllowance() async {
+        guard isReady, let allowance, let callerSource, let made = client ?? makeClient() else { return }
+        client = made
+        guard let reporter = made as? UltraAllowanceReporting else { return }
+        askedServer = true
+        let caller = UltraCaller(installID: callerSource.installID(), proof: await callerSource.proof())
+        guard caller.installID != nil, let answer = try? await reporter.allowance(for: caller) else { return }
+        allowance.server = answer.allowance
     }
 
     /// The whole run, for the lab: the polished script with its draft, the editor's changes and each call's numbers.
@@ -118,6 +142,8 @@ final class UltraScriptService: UltraScriptWriting {
         guard let client = client ?? makeClient() else { throw UltraError.notAvailable }
         self.client = client
         let payload = UltraPayload(request, length: length)
+        // One id for the draft, the check and the polish, so the server charges the script once.
+        let caller = await caller(runID: UUID())
         // Every call that goes out is spent, whether the script comes back or not.
         var cost = UltraCost()
         var done = false
@@ -126,7 +152,7 @@ final class UltraScriptService: UltraScriptWriting {
         meter?.record(.drafting)
         meter?.begin(pass: 0, of: flow.calls)
         let draftStart = clock.now
-        let draftReply = try await call(client, payload.draft, cost: &cost) { words in
+        let draftReply = try await call(client, payload.draft, for: caller, cost: &cost) { words in
             meter?.record(.wrote(words: words))
             meter?.advance(pass: Double(words) / Double(meter?.expectedWords ?? 1))
         }
@@ -143,7 +169,7 @@ final class UltraScriptService: UltraScriptWriting {
         let total = draftWords * (flow == .checked ? 2 : 1)
         var check: (reply: UltraCheckReply, seconds: Double, call: UltraModelReply)?
         if flow == .checked {
-            check = try await checked(draft, payload: payload, client: client, words: draftWords, of: total, cost: &cost, meter)
+            check = try await checked(draft, payload: payload, via: (client, caller), words: draftWords, of: total, cost: &cost, meter)
         }
 
         try mayContinue(started: true)
@@ -154,7 +180,7 @@ final class UltraScriptService: UltraScriptWriting {
         let reviewReply: UltraModelReply
         do {
             let stage = payload.review(of: check?.reply.script ?? draft, corrections: check?.reply.corrections)
-            reviewReply = try await call(client, stage, cost: &cost) {
+            reviewReply = try await call(client, stage, for: caller, cost: &cost) {
                 meter?.record(.lengthening(done: before + min($0, draftWords), of: total))
                 meter?.advance(pass: Double($0) / Double(draftWords))
             }
@@ -191,8 +217,8 @@ final class UltraScriptService: UltraScriptWriting {
 
     /// The claim check (`UltraFlow.checked`): the draft with its claims corrected, or a failure that keeps the draft apart.
     private func checked(
-        _ draft: String, payload: UltraPayload, client: any UltraModelClient, words: Int, of total: Int, cost: inout UltraCost,
-        _ meter: WritingProgressMeter?
+        _ draft: String, payload: UltraPayload, via route: (client: any UltraModelClient, caller: UltraCaller), words: Int, of total: Int,
+        cost: inout UltraCost, _ meter: WritingProgressMeter?
     ) async throws -> (reply: UltraCheckReply, seconds: Double, call: UltraModelReply) {
         try mayContinue(started: true)
         meter?.record(.lengthening(done: 0, of: total))
@@ -200,7 +226,7 @@ final class UltraScriptService: UltraScriptWriting {
         let start = clock.now
         let answer: UltraModelReply
         do {
-            answer = try await call(client, payload.check(of: draft), cost: &cost) {
+            answer = try await call(route.client, payload.check(of: draft), for: route.caller, cost: &cost) {
                 meter?.record(.lengthening(done: min($0, words), of: total))
                 meter?.advance(pass: Double($0) / Double(words))
             }
@@ -240,7 +266,7 @@ final class UltraScriptService: UltraScriptWriting {
         let start = clock.now
         let reply: UltraModelReply
         do {
-            reply = try await call(client, request.stage, cost: &cost) { _ in }
+            reply = try await call(client, request.stage, for: await caller(runID: nil), cost: &cost) { _ in }
         } catch UltraError.draftFailed(let failure) {
             throw UltraError.fitFailed(failure)
         }
@@ -264,13 +290,22 @@ final class UltraScriptService: UltraScriptWriting {
         guard consent.isGranted else { throw started ? UltraError.consentRevoked : UltraError.consentRequired }
     }
 
-    /// One counted call, added to `cost` (with Google's usage when it answered). A call that can't be counted never goes out.
+    /// Who a call is for: the install, the run (nil for a fit, which no script holds) and the Pro proof.
+    private func caller(runID: UUID?) async -> UltraCaller {
+        guard let callerSource else { return UltraCaller() }
+        return UltraCaller(installID: callerSource.installID(), runID: runID, proof: await callerSource.proof())
+    }
+
+    /// One counted call, added to `cost` (with Google's usage when it answered). A call that can't be counted never goes out. Cue's server's
+    /// own refusals (no scripts left, the day's budget, the hourly ceiling) end the run with their own words, whatever the stage.
     private func call(
-        _ client: any UltraModelClient, _ stage: UltraStageRequest, cost: inout UltraCost, progress: @escaping @MainActor (Int) -> Void
+        _ client: any UltraModelClient, _ stage: UltraStageRequest, for caller: UltraCaller, cost: inout UltraCost,
+        progress: @escaping @MainActor (Int) -> Void
     ) async throws -> UltraModelReply {
         guard budget.reserve() else { throw UltraError.budgetExhausted }
         var stage = stage
         stage.thinking = thinking
+        stage.caller = caller
         do {
             let reply = try await client.generate(stage, progress: progress)
             cost.add(reply)
@@ -282,7 +317,12 @@ final class UltraScriptService: UltraScriptWriting {
             if Task.isCancelled { throw CancellationError() }
             let failure = (error as? UltraClientError)?.failure ?? .provider
             Self.log.error("Ultra \(stage.stage.rawValue, privacy: .public) failed: \(failure.rawValue, privacy: .public)")
-            throw UltraError.draftFailed(failure)
+            switch failure {
+            case .outOfScripts: throw UltraError.noScriptsLeft
+            case .paused: throw UltraError.paused
+            case .limited: throw UltraError.limited
+            default: throw UltraError.draftFailed(failure)
+            }
         }
     }
 

@@ -34,6 +34,45 @@ struct CueServerUltraClientTests {
         #expect(Set(body.keys) == ["stage", "system", "prompt"])
     }
 
+    @Test func whoTheCallIsForGoesWithItAsTheServerReadsIt() throws {
+        let install = UUID(), run = UUID()
+        var stage = request(.review)
+        stage.caller = UltraCaller(installID: install, runID: run, proof: "signed-pro")
+        let body = CueServerUltraClient.body(for: stage)
+        #expect(body["installId"] as? String == install.uuidString)
+        #expect(body["scriptId"] as? String == run.uuidString)
+        #expect(body["proof"] as? String == "signed-pro")
+        // A fit names the install but no run; off Pro, no proof.
+        var fit = request(.fit)
+        fit.caller = UltraCaller(installID: install)
+        let fitBody = CueServerUltraClient.body(for: fit)
+        #expect(fitBody["installId"] as? String == install.uuidString && fitBody["scriptId"] == nil && fitBody["proof"] == nil)
+    }
+
+    @Test func theServersRefusalsAreReadByTheirName() {
+        #expect(ClaudeStreamReader.failure(status: 402, refusal: "noCredits") == .outOfScripts)
+        #expect(ClaudeStreamReader.failure(status: 503, refusal: "paused") == .paused)
+        #expect(ClaudeStreamReader.failure(status: 429, refusal: "limited") == .limited)
+        // Without a name, the status alone, as before metering.
+        #expect(ClaudeStreamReader.failure(status: 429) == .rejected)
+        #expect(ClaudeStreamReader.failure(status: 504) == .timedOut)
+        #expect(ClaudeStreamReader.failure(status: 409, refusal: "script") == .provider)
+    }
+
+    @Test func theServersCountBecomesTheAllowanceOnlyWhileItEnforces() throws {
+        let json = #"{"metering":"enforce","paused":false,"membership":"pro","freeLeft":2,"monthLeft":28,"left":30,"freeTotal":8,"monthTotal":30}"#
+        let answer = try JSONDecoder().decode(UltraServerAllowance.self, from: Data(json.utf8))
+        let allowance = try #require(answer.allowance)
+        #expect(allowance.membership == .paid)
+        #expect(allowance.freeLeft == 2 && allowance.monthLeft == 28 && allowance.left == 30)
+        #expect(allowance.bonus == 5 && allowance.freeTotal == 8)
+        var observing = answer
+        observing.metering = "observe"
+        #expect(observing.allowance == nil)
+        let off = try JSONDecoder().decode(UltraServerAllowance.self, from: Data(#"{"metering":"off"}"#.utf8))
+        #expect(off.allowance == nil)
+    }
+
     @Test func aJSONStageSendsItsShapeWithEveryKeyRequired() throws {
         let body = CueServerUltraClient.body(for: request(.review))
         let schema = try #require(body["schema"] as? [String: Any])

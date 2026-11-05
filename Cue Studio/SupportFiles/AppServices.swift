@@ -187,7 +187,7 @@ struct AppServices {
         // UI tests don't wait three seconds for every idea (`-uiTestStarTransition` brings the real timings back).
         if options.isInMemory, !options.keepsStarTransitionTimings { ideaTransition.speed = 0.05 }
         self.ideaTransition = ideaTransition
-        // The free scripts and Pro's monthly ones are a preview kept on this iPhone (`UltraAllowanceService`), never a protection of credits.
+        // The free scripts and Pro's monthly ones: this iPhone's count, replaced by Cue's server's while it enforces one (`UltraAllowanceService`).
         let ultra = UltraScriptService(
             isAvailable: options.ultraAvailable, checksDistribution: options.checksUltraDistribution,
             consent: UltraConsentService(defaults: options.defaults), budget: UltraCallBudget(defaults: options.ultraBudgetDefaults),
@@ -435,16 +435,23 @@ extension AppServices {
         options: LaunchOptions, quota: UsageQuotaService, milestones: MilestoneService, store: StoreManager, ultra: UltraScriptService,
         toast: ToastService
     ) -> ReferralService {
-        ReferralService(
+        let referral = ReferralService(
             store: options.referralStore, client: options.makeReferralClient(),
             hasExported: { [quota, milestones] in quota.exportsUsed > 0 || !milestones.records.isEmpty },
             isPro: { [store] in store.tier.isPro }, ultraOffered: { [ultra] in ultra.isAvailable },
+            proof: { [store] in await store.proProof() },
             apply: { [quota, ultra] rewards in
                 quota.bonusExports = rewards.bonusExports
                 ultra.allowance?.bonusScripts = rewards.bonusUltraScripts
             },
             announce: { [toast] message in toast.show(message) }
         )
+        // Ultra AI's calls name the same install, so the server counts the scripts invites earned and those written together (§57).
+        ultra.callerSource = UltraCallerSource(
+            installID: { [referral] in referral.installIdentity() },
+            proof: { [store] in store.tier.isPro ? await store.proProof() : nil }
+        )
+        return referral
     }
 
     private static func makeNotifications(options: LaunchOptions, services wiring: NotificationWiring) -> NotificationService {

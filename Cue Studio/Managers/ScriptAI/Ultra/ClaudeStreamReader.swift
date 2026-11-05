@@ -68,9 +68,16 @@ nonisolated struct ClaudeStreamReader {
 
     // MARK: - Failures
 
-    /// A status that came back before the first word, read as Cue's server and the Claude API send it.
-    static func failure(status: Int) -> UltraFailure {
-        switch status {
+    /// A status that came back before the first word, read as Cue's server and the Claude API send it. Cue's server names its own refusals in
+    /// `X-Ultra-Refusal` (`refusal`): no scripts left, the day's budget reached, too many calls this hour.
+    static func failure(status: Int, refusal: String? = nil) -> UltraFailure {
+        switch refusal {
+        case "noCredits": return .outOfScripts
+        case "paused": return .paused
+        case "limited": return .limited
+        default: break
+        }
+        return switch status {
         case 401, 403, 429: .rejected
         case 408, 504: .timedOut
         default: .provider

@@ -26,6 +26,8 @@ nonisolated struct UltraStageRequest: Hashable, Sendable {
     let prompt: String
     /// How much the model thinks before answering; set by the service for the whole script (`UltraScriptService.thinking`).
     var thinking = UltraThinking.model
+    /// Who the call is for, for Cue's server's count; set by the service (`UltraScriptService.caller`).
+    var caller = UltraCaller()
 
     /// The most the model may answer, thinking included. Generous on purpose: a developed script runs 400–700 words, and a cap the model meets
     /// ends the call without a usable script (`finishedNormally`).
