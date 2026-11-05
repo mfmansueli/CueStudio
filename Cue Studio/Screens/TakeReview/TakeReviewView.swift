@@ -4,6 +4,7 @@
 //
 
 import AVFoundation
+import StoreKit
 import SwiftUI
 
 /// Watch the take (it opens paused), compare it with the video's other takes (swipe), mark the best
@@ -50,6 +51,7 @@ struct TakeReviewView: View {
     @Environment(AppIconService.self) private var appIcon
     @Environment(StoreManager.self) private var store
     @Environment(PresentationService.self) private var presentation
+    @Environment(\.requestReview) private var requestReview
     /// The milestone a share just reached, told once the send-off is done.
     @State private var reachedMilestone: Int?
     @State private var tellsMilestone = false
@@ -295,7 +297,17 @@ struct TakeReviewView: View {
             awaitsSavedCheck = true
             showSavedCheck()
         }
-        .onChange(of: viewModel.celebration == nil) { _, _ in showSavedCheck() }
+        .onChange(of: viewModel.celebration == nil) { _, closed in
+            showSavedCheck()
+            // A calm moment after a video left Cue: Apple's rating prompt, when `ReviewPromptPolicy` allows it (iOS decides if it shows).
+            if closed, services.reviewPrompt.isPending {
+                services.reviewPrompt.markAsked()
+                requestReview()
+            }
+        }
+        .onChange(of: viewModel.exportFailure != nil) { _, failed in
+            if failed { services.reviewPrompt.failed() }
+        }
         .onDisappear {
             playback.pause()
             viewModel.leave()
@@ -469,7 +481,7 @@ struct TakeReviewView: View {
                 ReviewExportFooter(
                     label: viewModel.exportLabel, showsGoPro: viewModel.exportsLeft != nil,
                     later: services.shareQueue.later(forTake: viewModel.takeID).first?.network, onLater: { continueQueue(nil) },
-                    left: viewModel.exportsLeft,
+                    left: viewModel.exportsLeft, total: viewModel.freeExportLimit,
                     // The calm Pro is for when the free exports are gone; with some left it is just browsing.
                     onGoPro: { viewModel.paywall = viewModel.exportsExhausted ? .export : .profile }
                 )

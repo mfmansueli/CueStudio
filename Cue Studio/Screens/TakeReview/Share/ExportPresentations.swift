@@ -13,6 +13,7 @@ struct ExportPresentations: ViewModifier {
     let isActive: Bool
 
     @Environment(\.fakesShareSheet) private var fakesShareSheet
+    @Environment(ReferralService.self) private var referral
 
     func body(content: Content) -> some View {
         content
@@ -30,10 +31,17 @@ struct ExportPresentations: ViewModifier {
             )) {
                 if let take = viewModel.take {
                     ExportReadySheet(
-                        take: take, onPro: { Task { await viewModel.openProFromExportReady() } },
-                        onDecline: { viewModel.declineExport() }
+                        take: take, limit: viewModel.freeExportLimit, onPro: { Task { await viewModel.openProFromExportReady() } },
+                        onDecline: { viewModel.declineExport() }, invite: inviteLink
                     )
+                    .onAppear { if inviteLink != nil { referral.note(.offered, at: .exportReady) } }
                 }
+            }
+            .sheet(isPresented: Binding(
+                get: { isActive && viewModel.showsInvites },
+                set: { viewModel.showsInvites = $0 }
+            )) {
+                InviteFriendsSheet(place: .exportReady)
             }
             .fullScreenCover(item: Binding(
                 get: { isActive ? viewModel.paywall : nil },
@@ -41,6 +49,14 @@ struct ExportPresentations: ViewModifier {
             )) { context in
                 PaywallView(context: context) { Task { await viewModel.continueAfterPurchase() } }
             }
+    }
+
+    /// "Or invite friends · +3 exports for each friend" under Cue Pro (the free plan's, so always exports), while invites are offered and a
+    /// friend can still earn one.
+    private var inviteLink: (label: String, action: () -> Void)? {
+        guard referral.isOffered, referral.status?.hasReachedLimit != true else { return nil }
+        let label = String(localized: "Or invite friends · +\(ReferralRewards.exportsPerFriend) exports for each friend")
+        return (label, { Task { await viewModel.openInvitesFromExportReady() } })
     }
 
     @ViewBuilder

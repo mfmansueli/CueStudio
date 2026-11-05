@@ -6,7 +6,8 @@
 import Foundation
 
 /// How many Ultra AI scripts the creator may still write, as the owner set it (29/10/2026, 30/10/2026): the free ones for everyone, and with
-/// Cue Pro `UsagePolicy.proUltraScriptsPerMonth` more each month. The free ones are spent first. Pure: the
+/// Cue Pro `UsagePolicy.proUltraScriptsPerMonth` more each month, and on Pro 5 more for each invited friend's first export (`ReferralRewards`,
+/// kept with the free ones). The free ones are spent first. Pure: the
 /// counts come from `UltraAllowanceService`, the membership from `StoreManager`.
 nonisolated struct UltraAllowance: Equatable, Sendable {
     enum Membership: Equatable, Sendable {
@@ -23,8 +24,12 @@ nonisolated struct UltraAllowance: Equatable, Sendable {
     var freeUsed: Int
     /// Scripts written this month out of Pro's monthly ones.
     var monthUsed: Int
+    /// Scripts invites earned: free ones that never run out with the month.
+    var bonus = 0
 
-    var freeLeft: Int { max(0, UsagePolicy.freeUltraScripts - freeUsed) }
+    /// The free scripts with what invites earned.
+    var freeTotal: Int { UsagePolicy.freeUltraScripts + bonus }
+    var freeLeft: Int { max(0, freeTotal - freeUsed) }
     var monthLeft: Int { membership == .paid ? max(0, UsagePolicy.proUltraScriptsPerMonth - monthUsed) : 0 }
     var left: Int { freeLeft + monthLeft }
 

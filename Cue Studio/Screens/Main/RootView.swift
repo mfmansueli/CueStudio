@@ -50,6 +50,10 @@ struct RootView: View {
             .task {
                 await services.session.verify()
             }
+            // A friend's first export the server didn't hear yet, and a creator who invites: their friends' first exports.
+            .task {
+                await services.referral.refreshIfInviting()
+            }
             .onChange(of: scenePhase) { _, phase in
                 // The motion analyses run only while Cue is in front.
                 services.motion.setActive(phase == .active)
@@ -61,6 +65,7 @@ struct RootView: View {
                 Task { await services.store.refreshEntitlements() }
                 // "Stop Using Apple ID" happens in Settings, outside Cue.
                 Task { await services.session.verify() }
+                Task { await services.referral.refreshIfInviting() }
             }
             // A save that failed in front of the creator is said at once (one that failed in the background, locked, is tried
             // again on the way back first).

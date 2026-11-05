@@ -9,8 +9,12 @@ import SwiftUI
 /// Takes, nothing is lost; "Export with Cue Pro" opens the calm Pro, which subscribes and exports it, and "Not now" leaves the take as it is.
 struct ExportReadySheet: View {
     let take: Take
+    /// The free exports with what invites earned.
+    var limit = UsagePolicy.freeExports
     let onPro: () -> Void
     let onDecline: () -> Void
+    /// "Or invite friends · +3 exports for each friend", while invites are offered (§60).
+    var invite: (label: String, action: () -> Void)?
 
     var body: some View {
         VStack(spacing: 14) {
@@ -34,7 +38,7 @@ struct ExportReadySheet: View {
                     .cueFont(22, weight: .bold)
                     .tracking(-0.22)
                     .accessibilityAddTraits(.isHeader)
-                Text("Saved in Takes · nothing is lost. You've used your \(UsagePolicy.freeExports) free exports.")
+                Text("Saved in Takes · nothing is lost. You've used your \(limit) free exports.")
                     .cueFont(15)
                     .foregroundStyle(Palette.ink2)
                     .multilineTextAlignment(.center)
@@ -43,6 +47,17 @@ struct ExportReadySheet: View {
             Button(action: onPro) { Text("Export with Cue Pro").frame(maxWidth: .infinity) }
                 .buttonStyle(.cuePrimary())
                 .accessibilityIdentifier("exportReady.pro")
+            if let invite {
+                Button(action: invite.action) {
+                    Text(verbatim: invite.label)
+                        .cueFont(15, weight: .semibold)
+                        .foregroundStyle(Palette.accText)
+                        .multilineTextAlignment(.center)
+                        .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
+                }
+                .buttonStyle(.plain)
+                .accessibilityIdentifier("exportReady.invite")
+            }
             Button(action: onDecline) { Text("Not now").frame(maxWidth: .infinity, minHeight: Metrics.hitTarget) }
                 .buttonStyle(.plain)
                 .foregroundStyle(Palette.ink2)

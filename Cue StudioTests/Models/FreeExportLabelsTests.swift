@@ -42,4 +42,11 @@ struct FreeExportLabelsTests {
         #expect(FreeExportLabels.take(left: nil, declined: true).text == "PRO · UNLIMITED EXPORTS")
         #expect(FreeExportLabels.take(left: nil, declined: false).tone == .quiet)
     }
+
+    /// With exports invites earned the count is out of the new total (§60).
+    @Test func theCountIsOutOfWhatInvitesEarnedToo() {
+        #expect(FreeExportLabels.plan(left: 5, limit: 9).text == "5 OF 9 EXPORTS LEFT")
+        #expect(FreeExportLabels.meter(left: 0, limit: 6).text == "0 OF 6 LEFT · EXPORT WITH PRO")
+        #expect(FreeExportLabels.take(left: 4, declined: false, limit: 6).text == "4 OF 6 FREE EXPORTS LEFT")
+    }
 }

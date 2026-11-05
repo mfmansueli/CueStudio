@@ -1,11 +1,15 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { initializeApp } from "firebase-admin/app";
 import { getAppCheck } from "firebase-admin/app-check";
+import { getFirestore } from "firebase-admin/firestore";
 import { onRequest } from "firebase-functions/https";
 import * as logger from "firebase-functions/logger";
 import { defineSecret, defineString } from "firebase-functions/params";
 import { failureKind } from "./appStatus";
 import { claudeParams, ultraModels } from "./claudeParams";
+import { firestoreReferralStore } from "./firestoreReferralStore";
+import { parseReferralRequest } from "./referralRequest";
+import { activate, redeem, status } from "./referralRules";
 import { efforts, parseUltraRequest, type UltraEffort } from "./ultraRequest";
 
 initializeApp();
@@ -121,3 +125,57 @@ export const ultra = onRequest(
     }
   },
 );
+
+/**
+ * Cue's invites (`referralRules`): "status" gives the creator their code and how many friends joined and exported, "redeem" records the code
+ * a friend typed, "activate" counts that friend's first export for the creator who invited them. App Check proves each request comes from Cue;
+ * the body carries only the install's random id (and the typed code). The log keeps the step and how it ended, never a code or an id.
+ */
+export const referral = onRequest(
+  { region: "us-central1", timeoutSeconds: 20, memory: "256MiB", maxInstances: 5, concurrency: 40, invoker: "public" },
+  async (req, res) => {
+    if (req.method !== "POST") {
+      res.status(405).end();
+      return;
+    }
+    const token = req.header("X-Firebase-AppCheck");
+    if (!token) {
+      logger.warn("referral_refused", { reason: "appcheck_missing" });
+      res.status(401).end();
+      return;
+    }
+    try {
+      await getAppCheck().verifyToken(token);
+    } catch {
+      logger.warn("referral_refused", { reason: "appcheck_invalid" });
+      res.status(401).end();
+      return;
+    }
+    const parsed = parseReferralRequest(req.body);
+    if (!parsed.ok) {
+      logger.warn("referral_refused", { reason: parsed.reason });
+      res.status(400).end();
+      return;
+    }
+    const { action, installId, code } = parsed.request;
+    const store = firestoreReferralStore(getFirestore());
+    const now = Date.now();
+    try {
+      if (action === "status") {
+        res.status(200).json(await status(store, installId, now));
+      } else if (action === "redeem") {
+        const outcome = await redeem(store, installId, code ?? "", now);
+        logger.info("referral_redeem", { outcome });
+        res.status(200).json({ outcome });
+      } else {
+        const outcome = await activate(store, installId, now);
+        logger.info("referral_activate", { outcome });
+        res.status(200).json({ outcome });
+      }
+    } catch (error) {
+      logger.error("referral_failed", { action, error: error instanceof Error ? error.message : "unknown" });
+      res.status(503).end();
+    }
+  },
+);
+

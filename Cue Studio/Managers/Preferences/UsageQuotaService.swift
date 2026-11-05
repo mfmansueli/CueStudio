@@ -11,6 +11,8 @@ import Foundation
 @Observable
 final class UsageQuotaService {
     private(set) var exportsUsed: Int
+    /// Exports the creator's invites earned (`ReferralService`): added to the free ones, never counted down by Pro.
+    var bonusExports = 0
 
     private let counter: ExportCountStoring
     private let defaults: UserDefaults
@@ -35,9 +37,14 @@ final class UsageQuotaService {
 
     // MARK: - Reading
 
+    /// The free exports with what invites earned; nil means unlimited.
+    func exportLimit(for tier: MembershipTier) -> Int? {
+        UsagePolicy.exportLimit(for: tier).map { $0 + bonusExports }
+    }
+
     /// Nil means unlimited.
     func exportsLeft(for tier: MembershipTier) -> Int? {
-        UsagePolicy.exportLimit(for: tier).map { max(0, $0 - exportsUsed) }
+        exportLimit(for: tier).map { max(0, $0 - exportsUsed) }
     }
 
     func canExport(tier: MembershipTier) -> Bool {

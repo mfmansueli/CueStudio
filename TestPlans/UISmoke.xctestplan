@@ -43,6 +43,7 @@
         "ProfileUITests/testUpgradeOpensAndClosesThePaywall()",
         "ShareToUITests/testShareToUniverseOpensReadyAndTheNetworksWithTheScriptsOneTicked()",
         "FreeExportsUITests/testWithNoneLeftSaveAsksYourVideoIsReadyAndNotNowKeepsTheTakeReady()",
+        "InviteFriendsUITests/testProfileOpensTheCodeAndWhatFriendsEarnedWhichTheFreeExportsCount()",
         "SettingsUITests/testFontLicensesRemainReachableFromSettings()",
         "LanguageRegionUITests/testJapaneseInterfaceKeepsEnglishScripts()",
         "SettingsUITests/testChoicesMadeInRecordingShowOnTheirRow()",

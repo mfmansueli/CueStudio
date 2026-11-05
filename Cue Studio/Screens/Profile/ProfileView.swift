@@ -7,7 +7,7 @@ import StoreKit
 import SwiftUI
 
 /// 9.1 · Profile, on the night sky (owner's redesign, 21/10/2026, kept short): who this is (Edit in the card), "Your universe" live, "My Cue
-/// Voice" and the plan (those two as they were). Everything else the
+/// Voice" and the plan (those two as they were), and "Invite friends" while invites are offered (§60). Everything else the
 /// old Profile held lives one tap away: name, handle, sign in and defaults in the profile sheet (tap the first block), the
 /// fine-tuning of the voice under My Cue Voice (Edit voice), the plans in the paywall (tap the plan).
 struct ProfileView: View {
@@ -15,10 +15,12 @@ struct ProfileView: View {
     @Environment(StoreManager.self) private var store
     @Environment(MilestoneService.self) private var milestones
     @Environment(TakeLibraryService.self) private var takes
+    @Environment(ReferralService.self) private var referral
 
     @State private var showsEditProfile = false
     @State private var showsManageSubscriptions = false
     @State private var showsVoicePreview = false
+    @State private var showsInvites = false
     @State private var paywall: PaywallContext?
     /// The My Cue Voice questions opened from the card (all that is missing, or one row to edit).
     @State private var voiceSetup: ProfileVoiceSetup?
@@ -57,6 +59,11 @@ struct ProfileView: View {
 
                 ProfileBlockLabel(text: "PLAN")
                 ProfilePlanCard(onUpgrade: { paywall = .profile }, onManage: { showsManageSubscriptions = true })
+
+                if referral.isOffered || referral.canJoin {
+                    ProfileBlockLabel(text: "INVITE FRIENDS")
+                    ProfileInviteRow { showsInvites = true }
+                }
             }
             .padding(EdgeInsets(top: 4, leading: Metrics.gutter, bottom: 40, trailing: Metrics.gutter))
         }
@@ -73,6 +80,7 @@ struct ProfileView: View {
         .task { await store.loadProducts() }
         .sheet(isPresented: $showsEditProfile) { EditProfileSheet() }
         .sheet(isPresented: $showsVoicePreview) { VoicePreviewSheet() }
+        .sheet(isPresented: $showsInvites) { InviteFriendsSheet(place: .profile) }
         .sheet(item: $voiceSetup) { setup in
             VoiceSetupSheet(mode: setup.mode, profile: profile.profile, startAt: setup.startAt)
         }

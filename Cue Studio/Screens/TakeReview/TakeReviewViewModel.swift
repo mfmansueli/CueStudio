@@ -43,6 +43,8 @@ final class TakeReviewViewModel {
     var paywall: PaywallContext?
     /// The free exports are used up and the creator tapped something that exports: "Your video is ready" asks before anything else.
     var showsExportReady = false
+    /// The invites, from "Your video is ready" (§60).
+    var showsInvites = false
     /// "Not now" was answered: the take stays ready, and its line says "READY · EXPORT WITH PRO" until the next export attempt.
     private(set) var exportDeclined = false
     /// "Ready to travel" after a save, "On its way" once a platform's app has the video.
@@ -238,7 +240,10 @@ final class TakeReviewViewModel {
     var exportsLeft: Int? { quota.exportsLeft(for: tier()) }
 
     /// The line under Share (6.3): the free exports left, the last one, none, or Pro.
-    var exportLabel: FreeExportLabels.Label { FreeExportLabels.take(left: exportsLeft, declined: exportDeclined) }
+    var exportLabel: FreeExportLabels.Label { FreeExportLabels.take(left: exportsLeft, declined: exportDeclined, limit: freeExportLimit) }
+
+    /// The free exports with what invites earned.
+    var freeExportLimit: Int { quota.exportLimit(for: .free) ?? UsagePolicy.freeExports }
 
     /// "Not now", the close button or a swipe down: nothing is exported, nothing is lost.
     func declineExport() {
@@ -255,6 +260,13 @@ final class TakeReviewViewModel {
         // The sheet has to be gone before the full-screen cover can come up.
         try? await Task.sleep(for: proDelay)
         paywall = .export
+    }
+
+    /// "Or invite friends" under Cue Pro: the sheet goes (as "Not now", the take stays ready) and the invites come up.
+    func openInvitesFromExportReady() async {
+        declineExport()
+        try? await Task.sleep(for: proDelay)
+        showsInvites = true
     }
 
     /// How long the sheet takes to leave before the calm Pro comes up (a test sets it to zero).
@@ -779,28 +791,28 @@ final class TakeReviewViewModel {
     private func readyMessage(for destination: ShareDestination, tier: MembershipTier) -> String {
         let ready = String(localized: "Ready to post on \(destination.platform.label)")
         guard let left = quota.exportsLeft(for: tier) else { return ready }
-        return ready + " · " + String(localized: "\(left) of \(UsagePolicy.freeExports) free exports left")
+        return ready + " · " + String(localized: "\(left) of \(freeExportLimit) free exports left")
     }
 
     /// "Opened Reels with your video · Cue can't see if you post it", with the free exports left.
     private func openedMessage(with label: String) -> String {
         let opened = String(localized: "Opened \(label) with your video · Cue can’t see if you post it")
         guard let left = quota.exportsLeft(for: tier()) else { return opened }
-        return opened + " · " + String(localized: "\(left) of \(UsagePolicy.freeExports) free exports left")
+        return opened + " · " + String(localized: "\(left) of \(freeExportLimit) free exports left")
     }
 
     /// "Saved to Photos · Open LinkedIn to post it", with the free exports left.
     private func savedForPostingMessage(for destination: ShareDestination, tier: MembershipTier) -> String {
         let saved = String(localized: "Saved to Photos · Open \(destination.platform.label) to post it")
         guard let left = quota.exportsLeft(for: tier) else { return saved }
-        return saved + " · " + String(localized: "\(left) of \(UsagePolicy.freeExports) free exports left")
+        return saved + " · " + String(localized: "\(left) of \(freeExportLimit) free exports left")
     }
 
     /// "Shared with TikTok" (or "Shared" when the creator picked another app), with the free exports left.
     private func sharedMessage(with label: String?) -> String {
         let shared = label.map { String(localized: "Shared with \($0)") } ?? String(localized: "Shared")
         guard let left = quota.exportsLeft(for: tier()) else { return shared }
-        return shared + " · " + String(localized: "\(left) of \(UsagePolicy.freeExports) free exports left")
+        return shared + " · " + String(localized: "\(left) of \(freeExportLimit) free exports left")
     }
 
     /// The chosen cover, saved to Photos after its video: true when one was. One that couldn't be saved says so, the video being there, with

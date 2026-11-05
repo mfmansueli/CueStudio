@@ -19,6 +19,8 @@
 			</array>
 		</dict>
 	</array>
+	<key>CueAppStoreID</key>
+	<string>$(CUE_APP_STORE_ID)</string>
 	<key>FirebaseAppCheckTokenAutoRefreshEnabled</key>
 	<false/>
 	<key>MetaAppID</key>

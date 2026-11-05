@@ -33,7 +33,7 @@ struct ProfilePlanCard: View {
                 if !store.tier.isPro {
                     meter(
                         detail, tint: detailTint,
-                        fraction: Double(left) / Double(max(1, UsagePolicy.freeExports)), color: left > 0 ? Palette.ink2 : Palette.warnText
+                        fraction: Double(left) / Double(max(1, limit)), color: left > 0 ? Palette.ink2 : Palette.warnText
                     )
                 }
                 if ultra.isAvailable, let allowance = ultra.allowance?.allowance {
@@ -68,10 +68,12 @@ struct ProfilePlanCard: View {
     }
 
     private var left: Int { quota.exportsLeft(for: .free) ?? 0 }
+    /// The free exports with what invites earned.
+    private var limit: Int { quota.exportLimit(for: .free) ?? UsagePolicy.freeExports }
 
     /// What is left of the Ultra AI scripts: of the free ones, or, on Pro, of the month's with any free ones still unused.
     private func ultraFraction(_ allowance: UltraAllowance) -> Double {
-        let total = allowance.membership == .paid ? allowance.freeLeft + UsagePolicy.proUltraScriptsPerMonth : UsagePolicy.freeUltraScripts
+        let total = allowance.membership == .paid ? allowance.freeLeft + UsagePolicy.proUltraScriptsPerMonth : allowance.freeTotal
         return Double(allowance.left) / Double(max(1, total))
     }
 
@@ -80,12 +82,12 @@ struct ProfilePlanCard: View {
             guard let plan = store.activePlan else { return String(localized: "Active") }
             return plan.label.uppercased()
         }
-        return FreeExportLabels.plan(left: left).text
+        return FreeExportLabels.plan(left: left, limit: limit).text
     }
 
     /// The count turns yellow on the last free export and orange once they are gone.
     private var detailTint: Color {
-        switch FreeExportLabels.plan(left: left).tone {
+        switch FreeExportLabels.plan(left: left, limit: limit).tone {
         case .quiet: Palette.ink2
         case .last: Palette.accText
         case .exhausted: Palette.warnText
