@@ -9,6 +9,6 @@ import CoreGraphics
 /// list) folds it (`View.foldsFilterFan`).
 nonisolated struct FilterFanState: Equatable {
     var isOpen = false
-    /// The row's frame in the window.
+    /// The row's frame in the window, while it is open (`FilterFanPlace` keeps it the rest of the time).
     var frame: CGRect = .zero
 }

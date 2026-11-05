@@ -40,6 +40,7 @@ struct FilterFan<Option: Hashable, Chip: View, Leading: View>: View {
     @State private var leadingWidth: CGFloat = 0
     @State private var pressed: Option?
     @State private var scroll = ScrollPosition(edge: .leading)
+    @State private var place = FilterFanPlace()
     @Environment(\.accessibilityVoiceOverEnabled) private var voiceOver
     @Environment(\.accessibilitySwitchControlEnabled) private var switchControl
     @Environment(\.scenePhase) private var scenePhase
@@ -85,8 +86,9 @@ struct FilterFan<Option: Hashable, Chip: View, Leading: View>: View {
         .dynamicTypeSize(...DynamicTypeSize.accessibility1)
         .onGeometryChange(for: CGRect.self, of: { $0.frame(in: .global) }, action: { frame in
             if rowWidth > 0, frame.width != rowWidth { state.isOpen = false }
-            rowWidth = frame.width
-            state.frame = frame
+            if rowWidth != frame.width { rowWidth = frame.width }
+            place.frame = frame
+            if state.isOpen, state.frame != frame { state.frame = frame }
         })
         .onChange(of: selection) { _, _ in state.isOpen = false }
         .onChange(of: folds) { _, _ in state.isOpen = false }
@@ -170,6 +172,7 @@ struct FilterFan<Option: Hashable, Chip: View, Leading: View>: View {
             var open = plan
             open.isOpen = true
             HapticPatterns.playFanUnfold(releases: open.releaseTimes)
+            state.frame = place.frame
             state.isOpen = true
         } else if option == selection {
             Haptics.soft()

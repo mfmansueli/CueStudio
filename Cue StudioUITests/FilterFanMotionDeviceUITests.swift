@@ -33,4 +33,20 @@ final class FilterFanMotionDeviceUITests: XCTestCase {
             }
         }
     }
+
+    /// The list dragged up and down with the finger held on it (the row moving under it every frame): what a creator feels as the list
+    /// "resisting" when a frame is lost. `… screen_frames.sh FilterFanMotionDeviceUITests/testDraggingTheList <folder> drag 1 14`.
+    func testDraggingTheList() {
+        let app = CueApp.launch(seeded: true, animations: true)
+        let list = app.collectionViews.firstMatch
+        XCTAssertTrue(app.buttons["scripts.filter.all"].exists(within: 20))
+        sleep(2)
+        let low = list.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.75))
+        let high = list.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.3))
+        print(String(format: "CUE-MARK %.3f %@", Date().timeIntervalSince1970, "drag"))
+        for _ in 0..<6 {
+            low.press(forDuration: 0.05, thenDragTo: high, withVelocity: 400, thenHoldForDuration: 0.2)
+            high.press(forDuration: 0.05, thenDragTo: low, withVelocity: 400, thenHoldForDuration: 0.2)
+        }
+    }
 }
