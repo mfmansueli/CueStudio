@@ -75,14 +75,27 @@ final class InviteFriendsUITests: XCTestCase {
         row.tap()
         let field = app.textFields["invite.codeField"]
         XCTAssertTrue(field.exists(within: 3))
+        XCTAssertTrue(app.keyboards.firstMatch.exists(within: 5), "The row didn't bring up the keyboard for the code")
         field.typeText("abcdef")
-        app.buttons["invite.joinButton"].tap()
-        XCTAssertTrue(app.staticTexts["No one has this code. Check it with your friend."].exists(within: 5))
+        tapJoin(app, until: app.staticTexts["No one has this code. Check it with your friend."])
         field.tap()
         field.typeText(XCUIKeyboardKey.delete.rawValue.repeated(6) + "p4w-hnb")
-        app.buttons["invite.joinButton"].tap()
-        XCTAssertTrue(element(app, "invite.joined").exists(within: 5))
+        tapJoin(app, until: element(app, "invite.joined"))
         XCTAssertFalse(app.textFields["invite.codeField"].exists)
+    }
+
+    /// Join, tapped once it stops moving, and again if no answer came: the sheet glides the field above the keyboard a moment after it is
+    /// focused, and on a loaded Simulator a tap during that glide was lost (Full, 05/11/2026). Once joined the button is gone, so a code is
+    /// never sent twice.
+    private func tapJoin(_ app: XCUIApplication, until answer: XCUIElement, file: StaticString = #filePath, line: UInt = #line) {
+        let join = app.buttons["invite.joinButton"]
+        join.waitUntilStill()
+        join.tap()
+        if !answer.exists(within: 3), join.exists, join.isEnabled {
+            join.waitUntilStill()
+            join.tap()
+        }
+        XCTAssertTrue(answer.exists(within: 10), "Join never answered", file: file, line: line)
     }
 
     func testWithOneFreeExportLeftReadyToTravelOffersAnInvite() {
