@@ -31,6 +31,10 @@ Uma exportação grátis é descontada **uma vez por operação** (um arquivo ex
   **antes de qualquer trabalho** (`TakeReviewViewModel.costsNothing`): sem exportações, uma edição nova de um take já exportado abre "Your video is
   ready" sem começar a exportação (nada de "Exporting your video", render ou legendas ouvidas). Uma edição que ainda precisa ouvir as legendas
   nunca saiu (as legendas estariam no take). A conferência se repete depois das legendas feitas, que mudam o vídeo.
+- **4K é Pro** (decisão do dono, 06/11/2026): sem o Pro, todo caminho exporta em 1080p (`exportQuality`, que entra na impressão digital pelo
+  `shortSide`); a gravação e a edição não mudam. Um vídeo exportado em 4K por quem era Pro, refeito depois que o plano acabou, sai em 1080p: é
+  outro vídeo e segue a cota. A conferência e a
+  marca são um passo só na main actor (`recordDelivery`): duas entregas ao mesmo tempo de cópias do mesmo vídeo descontam uma vez.
 - O contador no Keychain (3 grátis, `UsagePolicy.freeExports`) não foi tocado: o uso existente vale, e reinstalar não devolve exportações.
 - **Limpeza:** `leave()` (ao fechar a revisão sem nada em andamento) apaga o arquivo temporário; ao abrir o app, arquivos com mais de 24 h somem,
   e registros de vídeos nunca entregues com mais de 7 dias também. **O registro de um vídeo contado não expira**: fica enquanto o take existir

@@ -4509,6 +4509,244 @@
         }
       }
     },
+    "4K export is Cue Pro" : {
+      "comment" : "Alert title when a creator without Cue Pro picks 4K in Export options",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "التصدير بدقة 4K ضمن Cue Pro"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eksport i 4K er en del af Cue Pro"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4K-Export gehört zu Cue Pro"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportar en 4K es de Cue Pro"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’export en 4K fait partie de Cue Pro"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4K एक्सपोर्ट Cue Pro में है"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ekspor 4K ada di Cue Pro"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’esportazione in 4K è di Cue Pro"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4K書き出しはCue Proの機能です"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4K 내보내기는 Cue Pro 기능입니다"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eksport i 4K er en del av Cue Pro"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exporteren in 4K hoort bij Cue Pro"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportar em 4K é do Cue Pro"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Export i 4K ingår i Cue Pro"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "การส่งออกแบบ 4K อยู่ใน Cue Pro"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4K dışa aktarma Cue Pro’da"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Xuất 4K có trong Cue Pro"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4K 导出是 Cue Pro 功能"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4K 匯出是 Cue Pro 功能"
+          }
+        }
+      }
+    },
+    "4K · Pro" : {
+      "comment" : "Export options › Quality: the 4K segment for a creator without Cue Pro (4K export is Pro)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4K · Pro"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4K · Pro"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4K · Pro"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4K · Pro"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4K · Pro"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4K · Pro"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4K · Pro"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4K · Pro"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4K · Pro"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4K · Pro"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4K · Pro"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4K · Pro"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4K · Pro"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4K · Pro"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4K · Pro"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4K · Pro"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4K · Pro"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4K · Pro"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4K · Pro"
+          }
+        }
+      }
+    },
     "A 7-day %@ challenge" : {
       "comment" : "Find inspiration: the title of a starter made from the creator's own topic (%@ is the topic, as they typed it)",
       "localizations" : {
@@ -52057,6 +52295,125 @@
         }
       }
     },
+    "Keep 1080p" : {
+      "comment" : "Alert button: keep exporting in 1080p instead of getting Cue Pro for 4K",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الإبقاء على 1080p"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Behold 1080p"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bei 1080p bleiben"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mantener 1080p"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Garder 1080p"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1080p रखें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tetap 1080p"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mantieni 1080p"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1080pのままにする"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1080p 유지"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Behold 1080p"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1080p houden"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manter 1080p"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Behåll 1080p"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ใช้ 1080p ต่อไป"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1080p’de kal"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giữ 1080p"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保持 1080p"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保持 1080p"
+          }
+        }
+      }
+    },
     "Keep exporting" : {
       "comment" : "Cancel button of the Cancel export? alert: the export goes on and the creator stays on the review",
       "localizations" : {
@@ -74730,6 +75087,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "已用 %1$@、%2$lld fps 錄影 · 此相機不支援 %3$@、%4$lld fps"
+          }
+        }
+      }
+    },
+    "Recorded in 4K · exports in 1080p without Pro" : {
+      "comment" : "Export options, under Quality: a 4K recording of a creator without Cue Pro is exported in 1080p (the recording stays 4K)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مسجَّل بدقة 4K · يُصدَّر بدقة 1080p بدون Pro"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Optaget i 4K · eksporteres i 1080p uden Pro"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In 4K aufgenommen · ohne Pro als 1080p exportiert"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grabado en 4K · se exporta en 1080p sin Pro"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filmé en 4K · exporté en 1080p sans Pro"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4K में रिकॉर्ड किया गया · Pro के बिना 1080p में एक्सपोर्ट होगा"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Direkam dalam 4K · diekspor dalam 1080p tanpa Pro"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registrato in 4K · esportato in 1080p senza Pro"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4Kで撮影 · Proなしでは1080pで書き出し"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4K로 녹화됨 · Pro 없이는 1080p로 내보내기"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tatt opp i 4K · eksporteres i 1080p uten Pro"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opgenomen in 4K · zonder Pro geëxporteerd in 1080p"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gravado em 4K · exporta em 1080p sem o Pro"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inspelad i 4K · exporteras i 1080p utan Pro"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "อัดแบบ 4K · ส่งออกเป็น 1080p หากไม่มี Pro"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4K kayıt · Pro olmadan 1080p dışa aktarılır"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quay ở 4K · xuất ở 1080p khi không có Pro"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "以 4K 录制 · 没有 Pro 时以 1080p 导出"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "以 4K 錄製 · 沒有 Pro 時以 1080p 匯出"
           }
         }
       }
@@ -105361,6 +105837,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在 %@ 的目標長度內"
+          }
+        }
+      }
+    },
+    "Without Pro, this video exports in 1080p. Your recording and edit stay as they are." : {
+      "comment" : "Alert message when a creator without Cue Pro picks 4K: the export is 1080p, nothing in the take or the edit changes",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بدون Pro، يُصدَّر هذا الفيديو بدقة 1080p. يبقى تسجيلك وتعديلك كما هما."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uden Pro eksporteres videoen i 1080p. Din optagelse og redigering forbliver, som de er."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ohne Pro wird dieses Video als 1080p exportiert. Aufnahme und Bearbeitung bleiben, wie sie sind."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin Pro, este video se exporta en 1080p. Tu grabación y tu edición quedan como están."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sans Pro, cette vidéo est exportée en 1080p. Votre enregistrement et votre montage restent tels quels."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pro के बिना यह वीडियो 1080p में एक्सपोर्ट होगा। आपकी रिकॉर्डिंग और एडिट जैसे हैं वैसे ही रहेंगे।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tanpa Pro, video ini diekspor dalam 1080p. Rekaman dan editanmu tetap seperti adanya."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Senza Pro, questo video viene esportato in 1080p. Registrazione e modifica restano come sono."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Proがない場合、この動画は1080pで書き出されます。撮影した動画と編集はそのまま残ります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pro가 없으면 이 영상은 1080p로 내보내집니다. 녹화와 편집은 그대로 유지됩니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uten Pro eksporteres videoen i 1080p. Opptaket og redigeringen din forblir som de er."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zonder Pro wordt deze video in 1080p geëxporteerd. Je opname en bewerking blijven zoals ze zijn."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem o Pro, este vídeo é exportado em 1080p. Sua gravação e sua edição ficam como estão."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utan Pro exporteras videon i 1080p. Din inspelning och redigering förblir som de är."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "หากไม่มี Pro วิดีโอนี้จะส่งออกเป็น 1080p การอัดและการแก้ไขของคุณยังคงเหมือนเดิม"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pro olmadan bu video 1080p dışa aktarılır. Kaydın ve düzenlemen olduğu gibi kalır."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Khi không có Pro, video này được xuất ở 1080p. Bản quay và bản chỉnh sửa của bạn vẫn giữ nguyên."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没有 Pro 时，此视频以 1080p 导出。你的录制和编辑保持不变。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "沒有 Pro 時，此影片以 1080p 匯出。你的錄製和編輯保持不變。"
           }
         }
       }

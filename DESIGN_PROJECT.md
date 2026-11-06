@@ -871,6 +871,12 @@ acima). Tudo cabe sem rolar do SE ao Pro Max (a rolagem só existe para o Dynami
   "ULTRA AI", "Keep writing with Ultra AI.", "Your 3 free scripts are written. Cue Pro adds 30 a month.", galáxia violeta com o anel dos 30 roteiros do mês
   aceso, o destaque da Ultra AI primeiro.
 - Onde a Ultra AI existe, a linha sob o título do Pro normal é "Free to try · 3 exports and 3 Ultra AI scripts included."
+- **Exportar em 4K é Pro** (decisão do dono, 06/11/2026; é o "up to 4K" do destaque): em Export options › Quality (§15) o segmento é **4K · Pro**
+  sem o Pro; tocá-lo não muda a qualidade e abre o alerta do sistema **"4K export is Cue Pro"** ("Without Pro, this video exports in 1080p. Your
+  recording and edit stay as they are.") com **Go Pro** (este Pro, `.profile`, por cima das opções) e **Keep 1080p**; assinando dali, a qualidade
+  passa a 4K. Uma gravação em 4K sem o Pro diz sob a qualidade "Recorded in 4K · exports in 1080p without Pro" (`ink2` sobre `surface2`). Todo
+  caminho de exportação (Save, Share, Try again, a fila, o arquivo refeito, o Download do editor) usa `TakeReviewViewModel.exportQuality`: um plano
+  que acabou com 4K escolhido exporta em 1080p. A gravação, o rascunho e a edição nunca mudam; nenhuma ferramenta do editor pede o Pro.
 - Reduzir Movimento: nada gira nem voa, a abertura é um fade de 0,3 s e a compra fecha na hora. `-uiTestProAt <s>`.
 
 ## 13. Profile (9.1) e Edit Profile
@@ -931,7 +937,8 @@ os ícones (§16), e só promete um ícone ainda não destravado; passado o últ
 
 Na revisão, o botão amarelo **Share to universe** renderiza o arquivo (1080 × 1920, sem marca d'água; nada sai do Cue, nada é contado) e abre **Ready to
 travel** com as redes (`ShareNetworkPicker`: TikTok "· from your script", Reels, Shorts, YouTube ("POSTS AS A SHORT" até 3 min na vertical), LinkedIn, "Also
-save to Photos", "Share to n networks", "Uses 1 free export · k left after this"; embaixo, legendas e qualidade). Fechado o sheet, Ready mostra **Share to
+save to Photos", "Share to n networks", "Uses 1 free export · k left after this"; atrás do ícone de ajustes, **Export options**: legendas e
+qualidade, 1080p ou 4K, que é Pro (§12)). Fechado o sheet, Ready mostra **Share to
 universe · Save video · compartilhar** (folha do sistema). **Uma exportação por envio** (um arquivo para todas as redes; reexportar na fila não gasta
 outra: `ExportLedgerService.begin(inheritingCountFrom:)`).
 **A fila** (`ShareQueue`, `ShareQueueService`, `ShareFlow`): "Posting to n networks" (com 2+, nas 2 primeiras vezes); o passo de cada rede ("1 OF 3",

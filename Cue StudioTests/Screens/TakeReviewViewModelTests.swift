@@ -240,11 +240,14 @@ struct TakeReviewViewModelTests {
         #expect(scenario.editor.captionScript == nil)
     }
 
-    @Test func fourKIsFreeToo() {
+    /// 4K export is Cue Pro (owner, 06/11/2026): without it the picker asks ("4K export is Cue Pro") and keeps 1080p, and no paywall opens by
+    /// itself.
+    @Test func fourKIsProOnly() {
         let free = makeScenario()
         defer { free.defaults.tearDown() }
         free.viewModel.setQuality(.uhd4K)
-        #expect(free.viewModel.quality == .uhd4K)
+        #expect(free.viewModel.quality == .hd1080)
+        #expect(free.viewModel.offersFourKPro)
         #expect(free.viewModel.paywall == nil)
     }
 

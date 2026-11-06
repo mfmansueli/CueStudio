@@ -7,8 +7,9 @@ import Foundation
 import Testing
 @testable import Cue_Studio
 
-/// The owner's export rules (06/11/2026): the quota is asked before any work, a corrected video is another export while the same video again
-/// costs nothing, and the editor's Done says when the last free export is the one it would use.
+/// The owner's export rules (06/11/2026): 4K export is Cue Pro, a 4K recording exports in 1080p without it (the take and its edit untouched), the
+/// quota is asked before any work, a corrected video is another export while the same video again costs nothing, and the editor's Done says when
+/// the last free export is the one it would use.
 @MainActor
 @Suite("Export · Pro rules")
 struct ExportProRulesTests {
@@ -69,6 +70,61 @@ struct ExportProRulesTests {
     private func readyVideo(_ viewModel: TakeReviewViewModel) -> ExportedVideo? {
         guard case .readyToTravel(let video)? = viewModel.celebration else { return nil }
         return video
+    }
+
+    // MARK: - 4K is Pro
+
+    /// Without Pro, 4K isn't picked: "4K export is Cue Pro" asks, and the 4K recording is saved in 1080p.
+    @Test func withoutProFourKAsksAndARecordingInFourKExportsInHD() async throws {
+        let scenario = makeScenario(resolution: .uhd4K)
+        defer { scenario.defaults.tearDown() }
+        let viewModel = scenario.viewModel
+        #expect(viewModel.exportsFourKRecordingInHD)
+        viewModel.setQuality(.uhd4K)
+        #expect(viewModel.offersFourKPro)
+        #expect(viewModel.quality == .hd1080 && viewModel.exportQuality == .hd1080)
+        await viewModel.save()
+        let options = try #require(scenario.exporter.exports.last)
+        #expect(options.shortSide == 1080)
+        #expect(readyVideo(viewModel)?.formatLabel.hasPrefix("1080P") == true)
+        // The recording stays as it was: only the file is smaller.
+        #expect(scenario.takes.take(id: scenario.take.id)?.resolution == .uhd4K)
+    }
+
+    @Test func proExportsAFourKRecordingInFourK() async throws {
+        let scenario = makeScenario(tier: .subscriber, resolution: .uhd4K)
+        defer { scenario.defaults.tearDown() }
+        let viewModel = scenario.viewModel
+        #expect(!viewModel.exportsFourKRecordingInHD)
+        viewModel.setQuality(.uhd4K)
+        #expect(!viewModel.offersFourKPro && viewModel.exportQuality == .uhd4K)
+        await viewModel.save()
+        let options = try #require(scenario.exporter.exports.last)
+        #expect(options.shortSide == nil, "4K keeps the recording's resolution")
+        #expect(readyVideo(viewModel)?.formatLabel.hasPrefix("4K") == true)
+    }
+
+    /// Pro bought from the question: the video goes in 4K. A plan that ends with 4K picked exports in 1080p, on a Try again or a share alike.
+    @Test func buyingProFromTheQuestionPicksFourKAndAnEndedPlanExportsInHD() async throws {
+        let scenario = makeScenario(resolution: .uhd4K)
+        defer { scenario.defaults.tearDown() }
+        let viewModel = scenario.viewModel
+        viewModel.setQuality(.uhd4K)
+        viewModel.fourKProPurchased()
+        #expect(viewModel.quality == .hd1080, "nothing bought, nothing changes")
+        scenario.plan.tier = .subscriber
+        viewModel.fourKProPurchased()
+        #expect(viewModel.exportQuality == .uhd4K)
+        scenario.plan.tier = .free
+        #expect(viewModel.exportQuality == .hd1080)
+        await viewModel.share(to: nil)
+        #expect(scenario.exporter.exports.last?.shortSide == 1080)
+    }
+
+    @Test func aRecordingInHDHasNoFourKNote() {
+        let scenario = makeScenario(resolution: .hd1080)
+        defer { scenario.defaults.tearDown() }
+        #expect(!scenario.viewModel.exportsFourKRecordingInHD)
     }
 
     // MARK: - The quota, before any work
