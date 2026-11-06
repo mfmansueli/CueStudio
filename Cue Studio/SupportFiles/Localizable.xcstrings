@@ -50986,6 +50986,125 @@
         }
       }
     },
+    "iOS stopped the export before it finished. Your edit is safe." : {
+      "comment" : "Export failure card: iOS ended the export (background time up, a call, the screen locked). The edit is kept; Try again sits under it.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أوقف iOS التصدير قبل أن ينتهي. تعديلك محفوظ."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS stoppede eksporten, før den var færdig. Din redigering er gemt."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS hat den Export vor dem Ende gestoppt. Deine Bearbeitung ist sicher."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS detuvo la exportación antes de que terminara. Tu edición está a salvo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS a arrêté l’exportation avant la fin. Ton montage est conservé."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS ने एक्सपोर्ट पूरा होने से पहले रोक दिया। आपका एडिट सुरक्षित है।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS menghentikan ekspor sebelum selesai. Editanmu aman."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS ha interrotto l’esportazione prima della fine. Il tuo montaggio è al sicuro."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOSが書き出しを途中で止めました。編集内容は残っています。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS가 내보내기를 끝나기 전에 멈췄어요. 편집한 내용은 그대로예요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS stoppet eksporten før den var ferdig. Redigeringen din er trygg."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS heeft het exporteren gestopt voordat het klaar was. Je bewerking is veilig."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O iOS interrompeu a exportação antes do fim. Sua edição está salva."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS stoppade exporten innan den var klar. Din redigering är kvar."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS หยุดการส่งออกก่อนเสร็จ งานตัดต่อของคุณยังอยู่ครบ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS dışa aktarmayı bitmeden durdurdu. Düzenlemen güvende."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS đã dừng việc xuất trước khi xong. Bản chỉnh sửa của bạn vẫn an toàn."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS 在导出完成前停止了它。你的编辑已保留。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS 在匯出完成前停止了它。你的編輯已保留。"
+          }
+        }
+      }
+    },
     "It comes back in a moment." : {
       "comment" : "Detail under 'The camera is paused' for any other short interruption of the camera",
       "localizations" : {
@@ -51696,125 +51815,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "日文字體"
-          }
-        }
-      }
-    },
-    "iOS stopped the export before it finished." : {
-      "comment" : "Line of the export-failed card when the system ended the export (the app went to the background for too long).",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "أوقف iOS التصدير قبل أن ينتهي."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iOS stoppede eksporten, før den var færdig."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iOS hat den Export vor dem Ende gestoppt."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iOS detuvo la exportación antes de que terminara."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iOS a arrêté l’exportation avant la fin."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iOS ने एक्सपोर्ट पूरा होने से पहले रोक दिया।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iOS menghentikan ekspor sebelum selesai."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iOS ha interrotto l’esportazione prima della fine."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iOSが書き出しを途中で止めました。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iOS가 내보내기를 끝나기 전에 멈췄어요."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iOS stoppet eksporten før den var ferdig."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iOS heeft het exporteren gestopt voordat het klaar was."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O iOS interrompeu a exportação antes do fim."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iOS stoppade exporten innan den var klar."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iOS หยุดการส่งออกก่อนเสร็จ"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iOS dışa aktarmayı bitmeden durdurdu."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iOS đã dừng việc xuất trước khi xong."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iOS 在导出完成前停止了它。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iOS 在匯出完成前停止了它。"
           }
         }
       }
