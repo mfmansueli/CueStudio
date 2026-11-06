@@ -1307,7 +1307,9 @@ adiciona nela (o que é de um item vem com o item):
   as fontes e cores do kit nos textos).
 - **Captions**, com linhas: **Show** (o interruptor do painel: aceso enquanto as linhas aparecem, olho cortado quando escondidas, um passo de desfazer),
   Add line, All lines, Style, **Translate** (o nome do idioma quando traduzidas; abre o painel com a folha de tradução, o mesmo caminho do "Try it"
-  da notificação), Find and replace, Edit by text e Delete all fixo no fim. Sem linhas: Auto captions, Write captions, Edit by text.
+  da notificação), Find and replace, Edit by text e, depois de uma linha fina, **Delete all** (lixeira com ✕, vermelha, a última das que rolam;
+  nunca no lugar fixo do Delete, que é da linha escolhida): pergunta antes, "Delete all 12 caption lines?" · "Undo brings them back.", e o toast
+  "12 lines deleted" tem Undo. Sem linhas: Auto captions, Write captions, Edit by text.
 - **Audio**: Studio Voice, Music, **Sound effects** (a folha só com os efeitos do Cue, título "Sound effects", sem a música), Voice-over, **Text to
   speech** e, depois de uma linha fina, o som do clipe sob a agulha: **Volume**, **Voice effects** e **Extract audio** (§56).
 - **Media**: as formas de pôr uma foto ou vídeo, os cartões da folha (**Split screen · Window · Full screen · In sequence**, cada uma abrindo a
@@ -2495,6 +2497,13 @@ iguais ou melhores; o fundo e o recorte num painel só, de propósito.
   nova (6–65 ms) fica fora da linha principal, uma por vez, e o lado oposto não sai do lugar quando ela chega (`TextPictureDrawer`). Redimensionado como um todo, o texto cresce sem quebrar as linhas de outro jeito. O giro gruda no reto perto de
   cada 90° (com háptico), e o arraste nas guias do centro. Cada gesto é um passo de desfazer, com os mesmos limites durante e ao soltar; com keyframes, o gesto muda o keyframe da
   agulha. VoiceOver gira de 15° em 15°; Custom › Font › Turn faz o mesmo por slider.
+- **Toque não é arraste** (`OverlayEditingLayer`, `TextTransformRecognizer.slop`): um texto, foto, vídeo ou legenda ainda não escolhido só começa a
+  andar depois de 10 pt (a distância do pan do sistema; um toque que rola um pouco escolhe, ou dá play); o escolhido anda já (4 pt no texto, 3 pt na
+  mídia e na legenda). Mover e pinçar uma foto ou vídeo no mesmo gesto é **um** passo de desfazer (`OverlaysViewModel.placeKey`).
+- **Lock vale na timeline e na prévia** (`EditorPart+Lock`): um item travado não anda, não cresce e não gira (dedo, alça, VoiceOver Move/Bigger/Turn);
+  escolhê-lo (prévia ou timeline) ou tentar movê-lo diz "Locked in place" com **Unlock** no toast, e Unlock diz "Unlocked · It moves and trims
+  again" (um passo de desfazer). Na prévia, o texto travado e escolhido troca a alça do canto por um cadeado (sem as abas laterais) e a foto ou vídeo
+  mostra um cadeado no contorno; VoiceOver lê "Locked". Lock da barra do item continua o mesmo botão.
 - **Folhas:** Translate captions fecha com o X do sistema e escolhe o idioma numa lista com check; Auto captions escolhe o idioma falado numa
   linha que abre a lista no lugar (Automatic primeiro).
 - **Estilos salvos** das legendas, dos textos e das capas: §50.
@@ -2549,9 +2558,16 @@ O editor por dentro, para milhares de criadores: nada se perde, nada some, nada 
   velocidade, quadros da capa, passos de linha, keyframe e quadro); voltar é `chevron.backward`; toasts e escolhas segmentadas usam duas linhas antes de
   cortar.
 - **VoiceOver:** textos e fotos sobre o vídeo são ativados como um toque e têm Move up/down/left/right, Bigger, Smaller; a linha do tempo anda 1 s por
-  gesto e tem Next cut / Previous cut; Desfazer e Refazer são anunciados; o título do painel recebe o foco e o escape (Z com dois dedos) fecha o painel;
+  gesto e tem Next cut / Previous cut; Desfazer e Refazer são anunciados pelo toast; o título do painel recebe o foco e o escape (Z com dois dedos) fecha o painel;
   um contador é um valor ajustável. `EditorUITests.testTheEditorPassesTheAccessibilityAudit` roda a auditoria do Xcode (tamanhos de texto limitados de
   propósito e o esmaecimento da borda da barra à parte).
+- **Desfazer diz o quê** (`QuickEditViewModel+Undo`, `EditStepSummary`): o histórico guarda estados, então o nome sai da diferença entre os dois,
+  com a palavra da ferramenta: "Undid · Split", "Undid · Clip 2", "Redid · Text", "Undid · Format", "Undid · Lock"… ("Edit" quando nada conhecido
+  mudou). Quando o que voltou está fora do que a timeline mostra (~150 pt de cada lado da agulha, na escala do zoom), a agulha vai até o começo
+  dele; o que já está à vista não pula.
+- **Done encerra o histórico:** Done grava a edição na take e descarta o rascunho, e o rascunho é o que marca o vídeo "In edit" (Takes, cartões,
+  lembretes); por isso a próxima visita abre a edição salva sem nada para desfazer. Back e Not yet guardam o rascunho com os passos.
+- **Testes do toque, do Lock e do Desfazer:** `QuickEditGestureTrustTests`; `EditorTaskUITests.testDeletingAllCaptionsAtOnceCanBeUndone` (a pergunta).
 - **Testes:** `RealMedia` (tag `.realMedia`, fora do Fast): o editor numa gravação real, com o serviço, o player e os arquivos de verdade, pelos passos de
   um criador.
 - **Ainda não feito (Fase C):** divisão do `QuickEditViewModel` por ferramenta, `RenderPlan` no lugar da chave do player, reuso das camadas da
@@ -2711,6 +2727,8 @@ de uma vez. Trocar o corte, o preset, a fonte ou o tamanho nunca pede outra tran
 - **Word timing** (Caption › More, `WordTimingStrip`): as palavras da linha lado a lado, cada uma da largura do tempo em que é dita; a alça amarela entre
   duas move onde uma acaba e a outra começa (nunca a menos de 0,1 s das outras pontas), um passo de desfazer por arraste. Tempo medido ou posto pelo
   criador é sólido; estimado é tracejado. VoiceOver: cada alça se ajusta de 0,1 em 0,1 s. Quando nenhuma palavra fica estimada, "Check timing" sai.
+  Uma linha ouvida arrastada na timeline 0,1 s ou mais para longe da fala ganha "Check timing" no mesmo passo, com o toast "Line moved · Check timing
+  in Captions" (`CaptionsViewModel.noteMovedOffTheVoice`).
   Contraste medido nos três cartões da linha (`panelCard`, `accCard`, `surface2` sobre o painel), com e sem Aumentar Contraste: palavra medida `ink`
   sobre `segmentOn`, palavra estimada e o tracejado em `ink2` (4,5:1), alça `acc` (3:1) (`PaletteContrastTests.theWordTimingStripReadsOnTheLineCard`).
 - **Traduções:** cada linha traduzida guarda o próprio texto e o próprio tempo (nunca é cortada palavra por palavra) e passa a apontar para os blocos sobre
@@ -2764,7 +2782,8 @@ muda, Desfazer ao excluir, estilo padrão, nem "voltar ao estilo"; nenhum mostra
   (`CaptionCatalogContrastTests`; números em `CaptionCatalogCaptureTests`). Adjust avisa "Hard to read on bright scenes…" quando um ajuste deixaria as
   palavras abaixo de 4,5:1 sobre branco; não muda nada sozinho.
 - **Format › Alignment** leva a legenda para o lado escolhido da área segura (Left, Right), além de alinhar as linhas dentro dela; à mão a legenda só
-  sobe e desce. **Tudo entrega:** `CaptionControlsDeliverTests` desenha cada família e cada peso dela, cada escolha de Adjust, Animation e Format e
+  sobe e desce, e move **todas** as legendas (a posição é do layout inteiro): enquanto o dedo arrasta, uma etiqueta "All captions" ↕ sobre a
+  legenda diz isso antes de soltar (decorativa, escondida do VoiceOver). **Tudo entrega:** `CaptionControlsDeliverTests` desenha cada família e cada peso dela, cada escolha de Adjust, Animation e Format e
   confere que o desenho muda.
 - **Animation** (`CaptionMotion`): **In and out** (None, Fade, Pop, Rise: sobe 10 pt enquanto aparece), **Reveal** (Whole line, Word by word; desligado
   com o formato One word, com o motivo) e **Word being said** (None, Color, Box, Sliding box: a caixa desliza de uma palavra à outra em dois estados de
@@ -3172,7 +3191,7 @@ keyframes; o Cue faz cada uma dessas coisas direto. Plano aprovado pelo dono: ht
 
 ## 55. Quick edit: todas as ferramentas na barra (26 de outubro de 2026; pedido do dono)
 
-A barra funciona como antes: uma só, que troca para as ferramentas do item escolhido, com "‹ Nome" e o Delete fixo no fim. O que mudou é o
+A barra funciona como antes: uma só, que troca para as ferramentas do item escolhido, com "‹ Nome" e o Delete do item fixo no fim. O que mudou é o
 alcance: toda ferramenta do editor está na barra principal, e a barra de qualquer item escolhido traz, depois das dele, as outras. Agrupada por
 afinidade, uma barra longa como a do InShot (decisão do dono, 26/10; o desenho com faixa de contexto, lixeira separada e catálogo "All" foi
 recusado).
@@ -3186,7 +3205,8 @@ recusado).
 - **Ferramentas do clipe sem escolher o clipe** (`QuickEditViewModel+Toolbar`): Speed, Volume, Zoom, Stabilize, Crop e Animation abrem o painel no clipe sob a
   agulha, que fica contornado como escolhido pelo painel enquanto ele está aberto (mover a agulha não troca o clipe; escolher outro é escolha da
   pessoa e vale); ✓ devolve como estava, sem nada escolhido. Duplicate, Replace, Extract audio, Copy look e Paste look escolhem o clipe sob a agulha
-  e mostram as ferramentas dele; Reverse e Freeze frame agem nele; Split divide na agulha; Reorder com um clipe só diz por quê. Num vídeo sem
+  e mostram as ferramentas dele; Reverse e Freeze frame agem nele e o escolhem (Reverse diz qual, "Clip 2 reversed" ou "Clip 2 plays forward
+  again" numa montagem; o quadro congelado fica escolhido, com a ponta para arrastar); Split divide na agulha; Reorder com um clipe só diz por quê. Num vídeo sem
   cortes, o clipe é o vídeo.
 - **Skin** abre o painel Skin (§20) do vídeo inteiro na barra principal e do clipe na barra do clipe; **Templates** e **Brand kit** abrem a aba deles no ✦ Smart.
 - **Barra do clipe** (`clipItems`, `clipShortcutGroups`; dono, 28/10/2026: estava num bloco só de 20, com o que muda o vídeo inteiro no meio),
