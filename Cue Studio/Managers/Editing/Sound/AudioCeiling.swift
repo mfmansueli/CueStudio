@@ -68,15 +68,22 @@ nonisolated enum AudioCeiling {
         let format = input.processingFormat
         let outputURL = URL.temporaryDirectory.appending(path: "Cue-level-\(UUID().uuidString.prefix(8)).caf")
         let output = try AVAudioFile(forWriting: outputURL, settings: format.settings, commonFormat: format.commonFormat, interleaved: format.isInterleaved)
-        guard let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: 16_384) else { throw AudioEnhancer.RenderError.noBuffer }
-        while input.framePosition < input.length {
-            try input.read(into: buffer)
-            guard buffer.frameLength > 0, let channels = buffer.floatChannelData else { break }
-            let layout = layout(of: buffer)
-            for channel in 0..<layout.pointers {
-                for index in 0..<layout.samples { channels[channel][index] *= gain }
+        do {
+            guard let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: 16_384) else { throw AudioEnhancer.RenderError.noBuffer }
+            while input.framePosition < input.length {
+                // A cancelled export stops here; the half-made copy goes.
+                try Task.checkCancellation()
+                try input.read(into: buffer)
+                guard buffer.frameLength > 0, let channels = buffer.floatChannelData else { break }
+                let layout = layout(of: buffer)
+                for channel in 0..<layout.pointers {
+                    for index in 0..<layout.samples { channels[channel][index] *= gain }
+                }
+                try output.write(from: buffer)
             }
-            try output.write(from: buffer)
+        } catch {
+            try? FileManager.default.removeItem(at: outputURL)
+            throw error
         }
         return outputURL
     }

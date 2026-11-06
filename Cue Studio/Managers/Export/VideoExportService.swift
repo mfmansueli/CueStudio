@@ -25,6 +25,9 @@ final class VideoExportService: VideoExporting {
     static let fontWait = Duration.seconds(15)
 
     func export(videoAt source: URL, options: ExportOptions, progress: (@MainActor (Double) -> Void)?) async throws -> URL {
+        // A cancel stops every stage (the fonts' wait, Studio Voice, the motion analysis, the mix, the frames) and leaves only what
+        // others use: Studio Voice's sounds and the motion analyses, which a retry and the preview read again.
+        try Task.checkCancellation()
         if options.needsEditRenderer {
             return try await exportEdited(videoAt: source, options: options, progress: progress)
         }
@@ -111,6 +114,7 @@ final class VideoExportService: VideoExporting {
             let needs = FontPackNeeds.needs(in: edit, han: FontPackRegistry.shared.hanReading)
             fontPacks.request(needs)
             await fontPacks.awaitDownloads(needs, timeout: Self.fontWait)
+            try Task.checkCancellation()
         }
         FontPackRegistry.shared.beginExport()
         defer { if FontPackRegistry.shared.endExport() { fontPacks?.heldFacesArrived() } }
@@ -120,21 +124,26 @@ final class VideoExportService: VideoExporting {
             purpose: .export(burnsInCaptions: options.burnsInCaptions, shortSide: options.shortSide, frameRate: options.frameRate),
             treatsSound: options.edit != nil, sounds: sounds
         )
+        try Task.checkCancellation()
         let composition: EditedComposition
         do {
             composition = try await request.build()
         } catch EditedComposition.BuildError.tooWarm {
             throw VideoExportError.tooWarm
         }
+        try Task.checkCancellation()
         progress?(0.08)
-        // More than the take's sound: mixed once through a limiter so nothing clips.
-        let mixedDown = try await Mixdown.apply(to: composition)
+        // More than the take's sound: mixed once through a limiter so nothing clips. The mix is this export's alone: it goes once the
+        // video is written, done, failed or cancelled (never Studio Voice's sounds, which the preview shares: `RecordingSoundCache`).
+        let mixed = try await Mixdown.apply(to: composition)
+        defer { if let mixed { try? FileManager.default.removeItem(at: mixed) } }
+        try Task.checkCancellation()
         guard let session = AVAssetExportSession(asset: composition.asset, presetName: AVAssetExportPresetHEVCHighestQuality) else {
             throw VideoExportError.exportUnavailable
         }
         session.videoComposition = composition.videoComposition
         // A mixed-down sound already has its volumes in it.
-        session.audioMix = mixedDown ? nil : composition.audioMix
+        session.audioMix = mixed == nil ? composition.audioMix : nil
         // Like the preview: speed changes keep the voice's pitch.
         session.audioTimePitchAlgorithm = .spectral
         let output = URL.temporaryDirectory.appending(path: "Cue-\(UUID().uuidString.prefix(8)).mov")
