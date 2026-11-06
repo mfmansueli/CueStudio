@@ -185,3 +185,20 @@ O estado de cada linha avança conforme a evidência.
 | B-Script e estudos específicos tratados como prova do fluxo inteiro | E1 (documental) |
 | Heurísticas de ritmo, zoom e legenda como regras | E1 (documental) |
 | "Nenhum app faz" como exclusividade | E1 (documental): "não encontrado" |
+
+## 9. Revisão interna de todas as ferramentas (acréscimo do dono, plano §18) — E3 ⏸
+
+Cada ferramenta do editor (painéis, folhas, menus e as decisões depois de abrir) percorrida no fluxo inteiro: achar → abrir → entender → ajustar → conferir na prévia → concluir ou cancelar → seguir editando.
+
+| Critério | Destino |
+|---|---|
+| Agrupamento, ordem e hierarquia das opções (as frequentes primeiro) | E3: correções pontuais |
+| Ajustes repetidos, nomes ambíguos, controles que fazem o mesmo | E3: correções pontuais |
+| Navegação, menus dentro de menus, folhas empilhadas | E3: correções pontuais; mudanças de estrutura com antes e depois ⏸ |
+| Alcance claro (vídeo, clipe ou objeto) | E3 |
+| ✓, Voltar, Fechar, Cancelar e Restaurar: quando entra, quando fica, como desfazer | E3 |
+| Prévia visível durante o ajuste, espaço, teclado, rolagem, tamanhos de texto | E3 |
+| Ajustes preservados ao alternar opções ou reabrir | E3 |
+| Consistência entre ferramentas parecidas, sem forma única para tudo | E3 (painel, folha ou tela maior conforme a tarefa) |
+
+Saída: uma ficha por ferramenta (o que foi visto, o que mudou, antes e depois) e um roteiro de tarefas para o iPhone. Nenhum ajuste útil é removido só para encolher a interface.
