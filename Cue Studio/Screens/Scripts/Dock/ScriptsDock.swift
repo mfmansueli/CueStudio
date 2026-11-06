@@ -81,7 +81,6 @@ struct ScriptsDock: View {
     @State private var sendHop = 0
     @State private var sendCharge = 0
     /// Where the ✦ leaves from (the invitation's, the chip's) and lands (the chip's, the arrow's), in the dock's own space.
-    @State private var inviteStar: CGPoint?
     /// The writer chip's frame, and how wide its Ultra AI look is: the ✦ sits 15 pt into that look, in the middle of the chip.
     @State private var ultraLookWidth: CGFloat = 0
     nonisolated private static let ultraSpace = "ultraDock"
@@ -164,7 +163,7 @@ struct ScriptsDock: View {
                         ultra.invite?.close()
                     }
                         .onGeometryChange(for: CGRect.self) { $0.frame(in: .named(Self.ultraSpace)) } action: {
-                            inviteStar = CGPoint(x: $0.minX + 20, y: $0.midY)
+                            places.inviteStar = CGPoint(x: $0.minX + 20, y: $0.midY)
                         }
                         .transition(.ultraFold)
                 }
@@ -173,7 +172,7 @@ struct ScriptsDock: View {
         .padding(EdgeInsets(top: 16, leading: 12, bottom: 12, trailing: 12))
         // Ultra AI allowed from the invitation: its ✦ flies to the writer chip; lit, the chip's ✦ flies on to the send arrow.
         .overlay {
-            if let inviteStar, let chipStar {
+            if let inviteStar = places.inviteStar, let chipStar {
                 UltraStarHop(from: inviteStar, to: chipStar, trigger: ultraHop)
             }
         }
@@ -368,7 +367,7 @@ struct ScriptsDock: View {
         let invited = invitesUltra
         guard lit != showsUltraLit || invited != showsUltraInvite else { return }
         let lights = lit && !showsUltraLit
-        if lights, showsUltraInvite, !reduceMotion, inviteStar != nil, chipStar != nil {
+        if lights, showsUltraInvite, !reduceMotion, places.inviteStar != nil, chipStar != nil {
             HapticPatterns.playUltraOn()
             ultraHop += 1
             withAnimation(UltraMotion.fold) { showsUltraInvite = invited }

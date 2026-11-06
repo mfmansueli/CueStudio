@@ -65,9 +65,11 @@ struct EditorToolbar: View {
             if context != .main {
                 backButton(viewModel.toolbarContextName ?? "")
             }
-            let pinned = viewModel.toolbarItems.filter(\.isPinned)
+            // Built once a drawing: each item asks for its words and state.
+            let all = viewModel.toolbarItems
+            let pinned = all.filter(\.isPinned)
             GeometryReader { proxy in
-                let items = viewModel.toolbarItems.filter { !$0.isPinned }
+                let items = all.filter { !$0.isPinned }
                 let separators = CGFloat(items.filter(\.startsGroup).count) * 4.5
                 // On an item's bar only its own tools (the first group) narrow to show whole; elsewhere the whole bar, as one.
                 let own = context.isItem ? (items.firstIndex(where: \.startsGroup) ?? items.count) : items.count

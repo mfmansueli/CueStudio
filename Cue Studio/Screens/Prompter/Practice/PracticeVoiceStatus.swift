@@ -13,19 +13,19 @@ struct PracticeVoiceStatus: View {
     let voice: PracticeVoice
     let isReading: Bool
     let isListening: Bool
-    /// 0...1, the microphone's level.
-    let level: Double
+    /// 0...1, the microphone's level, read here (it changes 20 times a second; read by the recorder, it redrew all of it).
+    let level: () -> Double
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private var listens: Bool { voice == .following || voice == .scrollsWhileTalking }
-    private var glow: Double { listens && isListening ? min(1, 0.35 + level) : 0 }
+    private var glow: Double { listens && isListening ? min(1, 0.35 + level()) : 0 }
 
     var body: some View {
         let text = voice.status(isReading: isReading, isListening: isListening)
         HStack(spacing: 10) {
             if listens {
-                PracticeVoiceWave(level: level, isHearing: isListening)
+                PracticeVoiceWave(level: level(), isHearing: isListening)
             } else {
                 Image(systemName: voice.symbolName)
                     .cueFont(15, weight: .semibold)

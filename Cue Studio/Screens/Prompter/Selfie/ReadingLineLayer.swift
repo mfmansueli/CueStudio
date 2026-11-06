@@ -13,8 +13,9 @@ struct ReadingLineLayer: View {
     /// "READING LINE" above the line, while Display is open.
     let showsTag: Bool
     let showsHandle: Bool
-    /// The voice level while recognition follows it (the horizon's glow flickers with it).
-    var level: Double?
+    /// The voice level while recognition follows it (the horizon's glow flickers with it). Read here, not by the screen: it changes
+    /// 20 times a second, and read by the recorder's body it redrew the whole recorder each time.
+    var level: () -> Double? = { nil }
     /// Specks rise from the line while the text moves.
     var showsParticles = false
     /// The camera is recording: the line is calm (`ReadingGuide.isCalm`).
@@ -33,7 +34,7 @@ struct ReadingLineLayer: View {
     var body: some View {
         let span = layout.lineSpan
         ZStack(alignment: .topLeading) {
-            ReadingGuide(level: level, showsParticles: showsParticles, isCalm: isCalm)
+            ReadingGuide(level: level(), showsParticles: showsParticles, isCalm: isCalm)
                 .frame(width: span.upperBound - span.lowerBound)
                 .position(x: (span.lowerBound + span.upperBound) / 2, y: layout.lineY)
             if showsTag {

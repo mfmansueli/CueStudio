@@ -65,8 +65,11 @@ final class ReviewPlayback {
         while !Task.isCancelled {
             let length = duration()
             let seconds = player.currentTime().seconds
-            progress = length > 0 && seconds.isFinite ? min(1, seconds / length) : 0
-            isPlaying = startTask != nil || player.timeControlStatus != .paused
+            let played = length > 0 && seconds.isFinite ? min(1, seconds / length) : 0
+            if played != progress { progress = played }
+            // Only when it changes: every write tells the review, which reads it, to draw itself again.
+            let playing = startTask != nil || player.timeControlStatus != .paused
+            if playing != isPlaying { isPlaying = playing }
             if progress >= 0.999 && !isPlaying {
                 await player.seek(to: .zero)
                 progress = 0

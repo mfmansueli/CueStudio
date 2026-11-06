@@ -442,7 +442,7 @@ struct TakeReviewView: View {
                 .frame(minHeight: 80)
                 .overlay { playButton }
             VStack(alignment: .leading, spacing: 0) {
-                ReviewScrubber(progress: playback.progress, duration: take.duration) { playback.seek(to: $0, of: take.duration) }
+                ReviewScrubber(readProgress: { playback.progress }, duration: take.duration, onSeek: { playback.seek(to: $0, of: take.duration) })
                 Rectangle().fill(Color.white.opacity(0.1)).frame(height: 0.5).padding(.top, 14)
                 ReviewInfoPanel(
                     take: take, stage: viewModel.stage, lengthFit: viewModel.lengthFit, scriptVersion: viewModel.scriptVersionLabel,
