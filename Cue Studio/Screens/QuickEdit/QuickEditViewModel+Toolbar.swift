@@ -101,7 +101,7 @@ extension QuickEditViewModel {
             overlays.mediaInsertMode = overlays.lastOverlayMode
             sheet = .media
         case .addText, .addGraphic, .addCommentCard, .styleAllTexts, .editText: performTextAction(action)
-        case .deleteAllCaptions: captions.deleteAllCaptions()
+        case .deleteAllCaptions: captions.askToDeleteAllCaptions()
         case .findInCaptions: captions.openCaptionFind()
         case .editByText:
             toolMenu = nil
@@ -298,8 +298,11 @@ extension QuickEditViewModel {
         case .reorderClips: clips.openClipOrder()
         case .freezeFrame: startJob { await self.clips.freezeFrame() }
         case .reverseClip:
-            // One at a time: a second tap never stops the first.
-            if !jobs.isRunning(.reverse) { jobs.start(.reverse) { [weak self] _ in await self?.clips.reverseClip() } }
+            // One at a time: a second tap never stops the first. From the main bar the clip under the playhead is picked, so the
+            // timeline shows which one turns around.
+            guard !jobs.isRunning(.reverse) else { return true }
+            pickClipForAction()
+            jobs.start(.reverse) { [weak self] _ in await self?.clips.reverseClip() }
         case .replaceClip:
             pickClipForAction()
             clips.askToReplaceClip()

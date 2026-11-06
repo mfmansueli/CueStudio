@@ -188,8 +188,9 @@ extension ClipsViewModel {
     static let freezeFileLength: TimeInterval = 5
 
     /// Holds the frame under the playhead: the clip is split there and the frame plays as a clip of its own, silent, with the
-    /// look of the clip it came from (the music and voice-overs keep going). One undo step; the recording is never touched. A
-    /// picked clip needs the playhead on it, as Split does: never a frame of another clip.
+    /// look of the clip it came from (the music and voice-overs keep going), and is picked, its end handle ready to hold it
+    /// longer. One undo step; the recording is never touched. A picked clip needs the playhead on it, as Split does: never a
+    /// frame of another clip.
     func freezeFrame() async {
         guard isReady, !isImportingMedia else { return }
         let time = player.currentTime
@@ -260,6 +261,9 @@ extension ClipsViewModel {
         next.sources.append(source)
         commit(EditSnapshot(next))
         player.seek(to: next.timeline.editedStart(ofSegmentAt: inserted))
+        // Picked, so its end handle is there to drag, as the toast says.
+        toolMenu = nil
+        selection = .clip(id)
         toast.show(
             String(localized: "Frame frozen for \(Int(Self.freezeLength)) seconds · drag its end to hold longer"),
             action: undoAction, ending: work
