@@ -211,6 +211,11 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     /// How something placed over `edited` (edited seconds) is pinned: to its piece in an arranged
     /// edit, else to the take's own seconds.
     func pin(_ edited: TimeSpan) -> (anchor: ClipAnchor?, span: TimeSpan) {
+        Self.pin(edited, in: timeline)
+    }
+
+    /// `pin(_:)` on `timeline`.
+    static func pin(_ edited: TimeSpan, in timeline: EditTimeline) -> (anchor: ClipAnchor?, span: TimeSpan) {
         guard timeline.isArranged else { return (nil, timeline.sourceSpan(forEdited: edited)) }
         let pinned = timeline.anchoredSpan(forEdited: edited)
         return (pinned.anchor, pinned.span)
@@ -254,6 +259,11 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     /// clip at its start through the clips of the same recording that follow it), and, laid on into another recording's
     /// clip, how long it plays on over it (`tail`).
     func pinMedia(_ edited: TimeSpan) -> (anchor: ClipAnchor?, span: TimeSpan, tail: TimeInterval?) {
+        Self.pinMedia(edited, in: timeline)
+    }
+
+    /// `pinMedia(_:)` on `timeline`.
+    static func pinMedia(_ edited: TimeSpan, in timeline: EditTimeline) -> (anchor: ClipAnchor?, span: TimeSpan, tail: TimeInterval?) {
         guard timeline.isArranged else { return (nil, timeline.sourceSpan(forEdited: edited), nil) }
         let segments = timeline.segments
         let first = timeline.segmentIndex(atEdited: edited.start)

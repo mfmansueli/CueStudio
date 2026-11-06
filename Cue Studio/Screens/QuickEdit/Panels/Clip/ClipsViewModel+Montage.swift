@@ -45,21 +45,23 @@ extension ClipsViewModel {
     func duplicateSection(_ id: UUID) {
         guard isReady else { return }
         var next = arranged(edit)
+        // What starts on it as it plays (after a split, the right part's layers still name the left part).
+        let on = next.layersStarting(onSegment: id)
         guard let copyID = next.timeline.duplicateSegment(id: id) else { return }
-        next.texts += next.texts.filter { $0.clipAnchor?.segmentID == id }.map { text in
-            var copy = text
+        next.texts += on.texts.map { index in
+            var copy = next.texts[index]
             copy.id = UUID()
             copy.clipAnchor?.segmentID = copyID
             return copy
         }
-        next.media += next.media.filter { $0.clipAnchor?.segmentID == id }.map { item in
-            var copy = item
+        next.media += on.media.map { index in
+            var copy = next.media[index]
             copy.id = UUID()
             copy.clipAnchor?.segmentID = copyID
             return copy
         }
-        next.voiceOvers += next.voiceOvers.filter { $0.clipAnchor?.segmentID == id }.map { clip in
-            var copy = clip
+        next.voiceOvers += on.voiceOvers.map { index in
+            var copy = next.voiceOvers[index]
             copy.id = UUID()
             copy.clipAnchor?.segmentID = copyID
             return copy
@@ -149,13 +151,40 @@ extension ClipsViewModel {
             return
         }
         next.sources.append(source)
+        let before = edit
         commit(EditSnapshot(next))
         let index = next.timeline.index(ofSegment: id) ?? 0
         let start = next.timeline.editedStart(ofSegmentAt: index)
         let longer = next.timeline.segments[index].duration
         player.seek(to: start)
         selection = .clip(id)
-        sayUndoable(String(localized: "\(source.title) added as clip \(index + 1), at \(DurationText.editor(start)) · the video is \(DurationText.tenths(longer)) longer"))
+        let added = String(
+            localized: "\(source.title) added as clip \(index + 1), at \(DurationText.editor(start)) · the video is \(DurationText.tenths(longer)) longer"
+        )
+        // Music stays where it is in the edit (now under the new clip); the toast offers to move what starts from here along.
+        guard !MusicClip.music(startingFrom: start, in: before.music, duration: before.editedDuration).isEmpty else {
+            sayUndoable(added)
+            return
+        }
+        let timeline = edit.timeline
+        toast.show(
+            String(localized: "\(added) · the music stays where it was", comment: "Toast after a clip is inserted before the music"),
+            action: ToastAction(title: String(localized: "Move music along")) { [weak self] in
+                self?.moveMusicAlong(from: start, by: longer, ifStill: timeline)
+            }
+        )
+    }
+
+    /// The music that starts at `time` or later plays `seconds` later (along with the clip put in there), as one undo step; not
+    /// when the video changed since.
+    func moveMusicAlong(from time: TimeInterval, by seconds: TimeInterval, ifStill timeline: EditTimeline) {
+        guard edit.timeline == timeline else {
+            toast.show(String(localized: "The video changed meanwhile · Move the music on its track"), kind: .problem)
+            return
+        }
+        let duration = edit.editedDuration - seconds
+        change { $0.music = MusicClip.moved($0.music ?? [], startingFrom: time, in: duration, by: seconds) }
+        sayUndoable(String(localized: "Music moved along"))
     }
 
     /// Reorder: the clips in a list to drag, from the clip's tools or holding a clip on the timeline. One clip: nothing to order.

@@ -18,4 +18,22 @@ nonisolated extension MusicClip {
             return moved
         }
     }
+
+    /// The music (not effects or extracted sounds, which follow the video on their own) that starts at `time` or later, in an
+    /// edit `duration` long: what a clip put in at `time` moved away from (Insert in sequence leaves music where it is, and
+    /// offers to move it along).
+    static func music(startingFrom time: TimeInterval, in clips: [MusicClip], duration: TimeInterval) -> [MusicClip] {
+        clips.filter { $0.takesMusicRoom && $0.start >= time - 0.05 && $0.start < duration - 0.05 }
+    }
+
+    /// The clips with the music that starts at `time` or later moved `seconds` later: along with a clip put in at `time`.
+    static func moved(_ clips: [MusicClip], startingFrom time: TimeInterval, in duration: TimeInterval, by seconds: TimeInterval) -> [MusicClip] {
+        let moving = Set(music(startingFrom: time, in: clips, duration: duration).map(\.id))
+        return clips.map { clip in
+            guard moving.contains(clip.id) else { return clip }
+            var moved = clip
+            moved.start += seconds
+            return moved
+        }
+    }
 }

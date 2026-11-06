@@ -78,17 +78,10 @@ final class EditDocument {
     /// A change undo can take back. Inside a gesture or a sheet (`beginChange`), the step was already taken when it began.
     /// Changes with the same `key` in a quick row (a slider, typing) are one step (`EditHistory.coalescingInterval`).
     func commit(_ next: EditSnapshot, key: String? = nil) {
-        var next = next
-        // Sound effects and extracted sounds follow the moment they were put on when the cuts change (and nothing moved them in
-        // this step). Inside a gesture, from where the gesture began, so dragging a handle out and back leaves them where they were.
         let current = snapshot
-        let origin = changeBase ?? current
-        if next.timeline != current.timeline, next.music == current.music, let music = origin.music, music.contains(where: \.followsTheVideo) {
-            let followed = MusicClip.following(music, from: origin.timeline, to: next.timeline)
-            next.music = current.music?.map { clip in
-                clip.followsTheVideo ? (followed.first { $0.id == clip.id } ?? clip) : clip
-            }
-        }
+        // The layers go where their rule says when the cuts change (`CutFollowing`). Inside a gesture, from where the gesture
+        // began, so dragging a handle out and back leaves them where they were.
+        let next = next.timeline == current.timeline ? next : next.followingCuts(from: changeBase ?? current, current: current)
         guard next != current else { return }
         if changeBase == nil { history.record(current, key: key, at: .now) }
         var changed = edit
