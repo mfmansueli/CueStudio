@@ -2160,14 +2160,22 @@ A exportação é a da revisão da take (`TakeReviewViewModel`: Save, Share to u
     progresso numa Live Activity ("Exporting your video", a take); se o iOS encerrar a tarefa, o trabalho é cancelado, o arquivo parcial é apagado
     e o cartão **Couldn’t export** da revisão diz "iOS stopped the export before it finished." com **Try again** (§58).
   - Sem GPU em segundo plano, ou com o pedido recusado, a exportação roda como antes, com o tempo que o iOS dá a um app que sai
-    (`beginBackgroundTask`). **Nunca** uma tarefa só de CPU: medida no 15 Pro, ela mantinha o Cue acordado sem desenhar os quadros e a exportação
+    (`beginBackgroundTask`), e o iPhone **não bloqueia sozinho** enquanto ela roda: `ScreenAwake` segura o `isIdleTimerDisabled` por nome
+    (o prompter, o controle remoto e cada exportação têm o seu) e só devolve o bloqueio automático quando o último solta; a exportação solta no
+    fim, seja ela concluída, falhada ou cancelada (ou se a tela some, porque quem segura é o trabalho, não a tela). Com a tarefa contínua aceita, o
+    bloqueio automático fica como está. **Nunca** uma tarefa só de CPU: medida no 15 Pro, ela mantinha o Cue acordado sem desenhar os quadros e a exportação
     não terminava.
   - **Medido no iago Lima iphone (iPhone 15 Pro, iOS 27):** `supportedResources` vazio (sem GPU em segundo plano); pedido com GPU recusado, sem GPU
     aceito. Take de 2:30 em 1080p com legendas: 37 s com o Cue aberto, e pronta na volta depois de 60 s fora (Home + Câmera). Take de 6:40: 73% na
     volta depois de 60 s fora, seguiu e terminou em 97 s, o mesmo tempo de com o Cue aberto. **Mansuelli iPhone 18 Pro Max:** também sem GPU
     em segundo plano; 2:30 em 22 s com o Cue aberto; 6:40 com 60 s fora, 88% na volta e pronta em 71 s. Medido sob XCUITest; o uso à mão
     confirma no roteiro do dono. iPhone 15 comum (A16) e o caminho com GPU e Live Activity: **não validados**.
-- **Na revisão, enquanto exporta** (`ExportProgressCard`, sobre `surface2`): "Exporting · N%" com barra; embaixo "You can leave Cue. The export goes
+- **Na revisão, enquanto exporta** (`ExportProgressCard`, sobre `surface2`): "Exporting" e, embaixo, a etapa real (`ExportProgress`): "Preparing the
+  video", "Downloading fonts" (só quando uma fonte de outra escrita ainda falta), "Analyzing motion" (Seguir rosto ou Estabilizar sem análise
+  pronta: feita antes de tudo, com a porcentagem que o analisador mede), "Preparing the sound" (Studio Voice e a mixagem de mais de um som) e
+  "Rendering the video". Só a análise de movimento e a renderização têm número e barra; uma etapa que não se mede mostra o nome e um indicador
+  girando no lugar do número, e a barra some sem mudar a altura do cartão (nada de 0% parado nem 8% inventado). A etapa nunca volta atrás. A Live
+  Activity do iOS ouve só a fração da renderização. Embaixo, "You can leave Cue. The export goes
   on." (tarefa aceita) ou "Keep Cue open until it’s done."; com o iPhone quente (`thermalState` `.serious`/`.critical`, `DeviceHeat`), "The iPhone
   is hot, so the export takes longer. Let it cool down if you can." (`warnText`). A qualidade e as animações não mudam.
 - **Sair da revisão enquanto exporta** (decisão do dono, 01/11): Voltar e a troca de take (deslizar, as setas do menu do título) passam pela
@@ -2184,9 +2192,28 @@ A exportação é a da revisão da take (`TakeReviewViewModel`: Save, Share to u
   .exportsInFlight`); marcada no lançamento seguinte vira `stoppedExports`, e a revisão dela mostra `ExportStoppedCard` (ícone, "The last export
   stopped" e × numa linha; "Cue closed before it finished. Export again to get the video."; **Save video**). Um vídeo não continua do meio:
   exportar de novo recomeça. Contraste medido na captura: título 15,7:1, texto `ink2` 5,6:1, barra amarela 11,1:1 sobre `surface2`.
-- **Interrompida pelo iOS** (`AVError.operationInterrupted` → `VideoExportError.interrupted`): o mesmo toast de tentar de novo; o arquivo parcial
-  é apagado.
-- **Testes:** `BackgroundExportRunnerTests`, `TakeReviewBackgroundExportTests`, `ContinuedTaskDeviceTests` (aparelho: o que o iOS responde),
+- **Interrompida pelo iOS** (`AVError.operationInterrupted` → `VideoExportError.interrupted`, ou a tarefa contínua encerrada): o cartão
+  **Couldn’t export** diz "iOS stopped the export before it finished. Your edit is safe." com **Try again**; o arquivo parcial é apagado. A edição
+  não muda; o que já ficou pronto é reaproveitado (a análise de movimento continua de onde parou, os sons do Studio Voice ficam no cache); os
+  quadros recomeçam do início.
+- **Cancelar** para todas as etapas: a espera das fontes, o Studio Voice que ainda não começou, a análise de movimento, a mixagem (`Mixdown`,
+  entre dois buffers), o limitador, o ajuste ao teto e a renderização. O estado da revisão volta ao normal pelo mesmo caminho do fim.
+- **Arquivos intermediários:** a mixagem em ponto flutuante (`Cue-master-`, ~384 KB/s) sai assim que o limitador termina; a mixagem limitada que o
+  vídeo toca (`Cue-mixdown-`) sai quando o arquivo é escrito, concluído, falhado ou cancelado; um render de som interrompido apaga o que escreveu.
+  Os sons do Studio Voice, as curvas e as análises de movimento **ficam** (a prévia e a próxima tentativa usam). A limpeza do lançamento
+  (`EditStorageCleaner`) continua como rede de segurança.
+- **Fontes e reaproveitamento:** uma fonte de outra escrita que não chegou em 15 s (`VideoExportService.fontWait`) e uma fonte importada que não
+  está no iPhone saem na face do sistema, **e o criador é avisado**: "Ready to travel" mostra "Some words use the system font" com "Their font
+  hadn’t downloaded. Export again when you’re online." (ou "A font you imported isn’t on this iPhone."), no mesmo estilo do aviso de legendas, e a
+  mensagem depois de enviar termina com "Some words use the system font". Um arquivo só é reaproveitado numa nova tentativa quando o que o
+  desenhou é o mesmo de agora (`ExportRenderStamp`: as fontes de outras escritas e se cada uma foi desenhada, o arquivo de cada fonte importada,
+  tamanho e data de cada mídia da edição, a versão do Cue), guardado no próprio arquivo (atributo estendido, `ExportedFileRecord`); um arquivo sem
+  esse registro não é reaproveitado. Isso não muda a contagem: para as exportações grátis, o mesmo vídeo continua sendo a mesma take, edição e
+  configuração (`ExportFingerprint`), então exportar de novo depois que a fonte chegou não gasta outra exportação. Uma edição que não pode ser
+  lida como texto nunca coincide com outra.
+- **Testes:** `BackgroundExportRunnerTests` (bloqueio automático nos três finais e com outro dono), `ScreenAwakeTests`,
+  `MixdownCancellationTests`, `RealExports/ExportIntermediatesTests`, `ExportProgressTests`, `ExportRenderStampTests`,
+  `TakeReviewExportIdentityTests`, `TakeReviewBackgroundExportTests`, `ContinuedTaskDeviceTests` (aparelho: o que o iOS responde),
   `BackgroundExportDeviceUITests` (aparelho: take real com Save e Câmera; takes longas em memória, `-uiTestLongTake <s>`), `ExportProgressUITests`
   (os dois cartões; `-uiTestSlowExport`, `-uiTestStoppedExport`).
 
@@ -3647,7 +3674,8 @@ escolher, baixadas só quando usadas.
   registrado de novo nos lançamentos seguintes sem rede. A fonte vem por `FontPackSource` (hoje `GoogleFontsPackSource`, raw.githubusercontent.com;
   testes, prévias e `-uiTestInMemory` usam `OfflineFontPackSource`). Apagar tudo (Settings) apaga também as fontes baixadas.
 - **Exportação** (`VideoExportService.fontWait`): pede as famílias que o vídeo usa e espera por elas no máximo 15 s; a que não chegou sai na face
-  do sistema da escrita (nunca um quadrado). Um arquivo que chega durante a exportação só entra depois dela, então um vídeo nunca troca de face
+  do sistema da escrita (nunca um quadrado), e "Ready to travel" avisa (§38); exportar de novo depois que ela chegou desenha outra vez, sem gastar
+  outra exportação. Um arquivo que chega durante a exportação só entra depois dela, então um vídeo nunca troca de face
   no meio.
 - **Créditos:** Settings › Acknowledgements › Fonts for other scripts (cada família por escrita, com o texto da OFL).
 - **Medido:** contraste dos chips e notas com os tokens de `Palette` já medidos (`ink`, `inkSoft`, `warnText`). Folhas de contato:

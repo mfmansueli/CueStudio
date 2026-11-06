@@ -8,7 +8,9 @@ import Foundation
 
 /// A stable name for "this take, this edit, these export settings": an exported file is reused for a retry only while
 /// the fingerprint is the same, so changing anything (a trim, the captions, the quality, the recording) never brings back
-/// stale output. `Hashable.hashValue` can't do this job: it is different on every launch.
+/// stale output. `Hashable.hashValue` can't do this job: it is different on every launch. It is also what counts as the same video for
+/// the free exports; what the file was drawn with beyond the edit (fonts, media files, Cue's build) is `ExportRenderStamp`, checked
+/// before a file is reused.
 nonisolated enum ExportFingerprint {
     static func make(takeID: UUID, source: URL, options: ExportOptions) -> String {
         var parts: [String] = [
@@ -23,7 +25,9 @@ nonisolated enum ExportFingerprint {
             let encoder = JSONEncoder()
             encoder.outputFormatting = [.sortedKeys]
             encoder.dateEncodingStrategy = .secondsSince1970
-            parts.append((try? encoder.encode(edit)).flatMap { String(bytes: $0, encoding: .utf8) } ?? "edit")
+            // An edit that can't be written as text is never the same as another one: nothing is reused, and nothing is taken as
+            // already counted.
+            parts.append((try? encoder.encode(edit)).flatMap { String(bytes: $0, encoding: .utf8) } ?? "unreadable-\(UUID().uuidString)")
         } else {
             parts.append("no-edit")
         }

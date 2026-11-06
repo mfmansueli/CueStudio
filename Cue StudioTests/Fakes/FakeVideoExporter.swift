@@ -15,18 +15,22 @@ final class FakeVideoExporter: VideoExporting {
     var beforeFinishing: (@MainActor () -> Void)?
     /// A step that doesn't hear a cancel (a font download, the composition being built): the file is made anyway.
     var ignoresCancellation = false
+    /// What the next exports say they drew in the system's face.
+    var unavailableFonts: Set<FontPackNeed> = []
+    var missingCustomFamilies: Set<String> = []
 
     /// Writes a real (tiny) file, like the real exporter: a file that is reused has to exist.
-    func export(videoAt url: URL, options: ExportOptions, progress: (@MainActor (Double) -> Void)?) async throws -> URL {
+    func export(videoAt url: URL, options: ExportOptions, progress: (@MainActor (ExportProgress) -> Void)?) async throws -> ExportResult {
         if let error { throw error }
-        progress?(0.5)
+        progress?(.preparing)
+        progress?(ExportProgress(.rendering, fraction: 0.5))
         beforeFinishing?()
         if !ignoresCancellation { try Task.checkCancellation() }
-        progress?(1)
+        progress?(ExportProgress(.rendering, fraction: 1))
         exports.append(options)
         let file = URL.temporaryDirectory.appending(path: "Cue-test-\(UUID().uuidString.prefix(8)).mov")
         try Data([0]).write(to: file)
         files.append(file)
-        return file
+        return ExportResult(url: file, unavailableFonts: unavailableFonts, missingCustomFamilies: missingCustomFamilies)
     }
 }

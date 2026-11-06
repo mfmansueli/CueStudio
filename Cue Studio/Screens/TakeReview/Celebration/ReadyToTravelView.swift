@@ -42,6 +42,9 @@ struct ReadyToTravelView: View {
             if let reason = video.missingCaptions {
                 missingCaptions(reason).padding(.horizontal, 16).padding(.bottom, 10)
             }
+            if let fallback = video.fontFallback {
+                systemFont(fallback).padding(.horizontal, 16).padding(.bottom, 10)
+            }
             // An export from here failed (Save, the queue's file): the card with Try again stays on this cover, where it was asked for.
             if let failure = review.exportFailure {
                 ExportFailedCard(
@@ -142,14 +145,31 @@ struct ReadyToTravelView: View {
 
     /// Captions were asked for and the video has none: said here, on the cover, with why (the toast that said it hid under this cover).
     private func missingCaptions(_ reason: String) -> some View {
+        notice(icon: "captions.bubble", title: String(localized: "No captions on this video"), line: reason)
+            .accessibilityIdentifier("ready.noCaptions")
+    }
+
+    /// Some words came out in the system's face because their font wasn't there: said here, with what fixes it, never left for the
+    /// creator to find in the video.
+    private func systemFont(_ fallback: ExportFontFallback) -> some View {
+        let line = switch fallback {
+        case .notDownloaded: String(localized: "Their font hadn’t downloaded. Export again when you’re online.")
+        case .notOnThisIPhone: String(localized: "A font you imported isn’t on this iPhone.")
+        }
+        return notice(icon: "textformat", title: String(localized: "Some words use the system font"), line: line)
+            .accessibilityIdentifier("ready.systemFont")
+    }
+
+    /// A line about what the video holds, over the buttons.
+    private func notice(icon: String, title: String, line reason: String) -> some View {
         let shape = RoundedRectangle(cornerRadius: Metrics.noticeRadius, style: .continuous)
         return HStack(spacing: 12) {
-            Image(systemName: "captions.bubble")
+            Image(systemName: icon)
                 .cueFont(17, weight: .semibold)
                 .foregroundStyle(Palette.warnText)
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 2) {
-                Text("No captions on this video")
+                Text(title)
                     .cueFont(.subheadline, weight: .semibold)
                     .foregroundStyle(Palette.ink)
                 Text(reason)
@@ -163,7 +183,6 @@ struct ReadyToTravelView: View {
         .background(Palette.surface, in: shape)
         .overlay(shape.strokeBorder(Palette.glassBorder, lineWidth: 0.5))
         .accessibilityElement(children: .combine)
-        .accessibilityIdentifier("ready.noCaptions")
     }
 
     private func exportsLabel(_ text: String, tint: Color, named: Bool) -> some View {

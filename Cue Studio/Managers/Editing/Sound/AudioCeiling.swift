@@ -42,10 +42,10 @@ nonisolated enum AudioCeiling {
     }
 
     /// The file itself when its peak is under the ceiling; else a copy brought down to it.
-    static func keepingUnder(_ url: URL) throws -> URL {
+    static func keepingUnder(_ url: URL, prefix: String = "Cue-level-") throws -> URL {
         let peak = try peak(of: url)
         guard peak > ceiling else { return url }
-        let scaled = try self.scaled(url, by: ceiling / peak)
+        let scaled = try self.scaled(url, by: ceiling / peak, prefix: prefix)
         try? FileManager.default.removeItem(at: url)
         return scaled
     }
@@ -63,20 +63,27 @@ nonisolated enum AudioCeiling {
     }
 
     /// A copy of the file `gain` times as loud.
-    static func scaled(_ url: URL, by gain: Float) throws -> URL {
+    static func scaled(_ url: URL, by gain: Float, prefix: String = "Cue-level-") throws -> URL {
         let input = try AVAudioFile(forReading: url)
         let format = input.processingFormat
-        let outputURL = URL.temporaryDirectory.appending(path: "Cue-level-\(UUID().uuidString.prefix(8)).caf")
+        let outputURL = URL.temporaryDirectory.appending(path: "\(prefix)\(UUID().uuidString.prefix(8)).caf")
         let output = try AVAudioFile(forWriting: outputURL, settings: format.settings, commonFormat: format.commonFormat, interleaved: format.isInterleaved)
-        guard let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: 16_384) else { throw AudioEnhancer.RenderError.noBuffer }
-        while input.framePosition < input.length {
-            try input.read(into: buffer)
-            guard buffer.frameLength > 0, let channels = buffer.floatChannelData else { break }
-            let layout = layout(of: buffer)
-            for channel in 0..<layout.pointers {
-                for index in 0..<layout.samples { channels[channel][index] *= gain }
+        do {
+            guard let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: 16_384) else { throw AudioEnhancer.RenderError.noBuffer }
+            while input.framePosition < input.length {
+                // A cancelled export stops here; the half-made copy goes.
+                try Task.checkCancellation()
+                try input.read(into: buffer)
+                guard buffer.frameLength > 0, let channels = buffer.floatChannelData else { break }
+                let layout = layout(of: buffer)
+                for channel in 0..<layout.pointers {
+                    for index in 0..<layout.samples { channels[channel][index] *= gain }
+                }
+                try output.write(from: buffer)
             }
-            try output.write(from: buffer)
+        } catch {
+            try? FileManager.default.removeItem(at: outputURL)
+            throw error
         }
         return outputURL
     }

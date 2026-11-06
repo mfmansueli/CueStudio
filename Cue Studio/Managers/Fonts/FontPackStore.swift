@@ -112,6 +112,15 @@ final class FontPackStore {
         return task
     }
 
+    /// What of `needs` isn't drawn now (not downloaded yet, or arrived while another export runs): those words come out in the
+    /// system's face of their script.
+    func unavailable(_ needs: Set<FontPackNeed>) -> Set<FontPackNeed> {
+        needs.filter { need in
+            guard let pack = manifest.pack(need.packID) else { return false }
+            return !registry.isReady(pack, pack.file(for: need.weight))
+        }
+    }
+
     /// Waits for the downloads `needs` started (none starts here), at most `timeout`: an export lets the families it uses arrive
     /// first, and goes with the system's faces for any still on its way after that.
     func awaitDownloads(_ needs: Set<FontPackNeed>, timeout: Duration) async {

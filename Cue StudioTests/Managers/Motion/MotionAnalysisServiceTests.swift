@@ -4,6 +4,7 @@
 //
 
 import Foundation
+import os
 import Testing
 @testable import Cue_Studio
 
@@ -102,6 +103,35 @@ struct MotionAnalysisServiceTests {
         )
         #expect(analyses[nil]?.isComplete == true)
         #expect(MotionAnalysisStore.complete(forRecording: take) != nil)
+    }
+
+    /// The export's card shows how far the analysis it waits for is (`ExportProgress.Stage.motion`), and nothing once it is made.
+    @Test func anExportHearsHowFarTheAnalysisIs() async throws {
+        let take = try recording()
+        defer { cleanUp([take]) }
+        var edit = TakeEdit(sourceDuration: 10, aspect: .portrait)
+        var timeline = edit.timeline
+        var clip = try #require(timeline.segments.first)
+        clip.stabilization = .standard
+        _ = timeline.replaceSegment(clip)
+        edit.timeline = timeline
+        let heard = OSAllocatedUnfairLock(initialState: [Double]())
+        _ = try await EditedComposition.motionAnalyses(
+            take: take, edit: edit, analyzesMissing: true, analyzer: FakeMotionAnalyzer(step: .milliseconds(1)), thermalState: { .nominal },
+            progress: { fraction in heard.withLock { $0.append(fraction) } }
+        )
+        let fractions = heard.withLock { $0 }
+        #expect(fractions.first == 0)
+        #expect(fractions.last == 1)
+        #expect(zip(fractions, fractions.dropFirst()).allSatisfy { $0 <= $1 })
+        #expect(fractions.contains { abs($0 - 0.5) < 0.001 })
+        // Made: an export finds it ready and has nothing to tell.
+        heard.withLock { $0 = [] }
+        _ = try await EditedComposition.motionAnalyses(
+            take: take, edit: edit, analyzesMissing: true, analyzer: FakeMotionAnalyzer(step: .milliseconds(1)), thermalState: { .nominal },
+            progress: { fraction in heard.withLock { $0.append(fraction) } }
+        )
+        #expect(heard.withLock { $0 }.isEmpty)
     }
 
     @Test func nothingIsKeptForARecordingThatWasDeleted() throws {

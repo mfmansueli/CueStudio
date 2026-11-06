@@ -71,9 +71,10 @@ final class TakeReviewViewModel {
     /// The last export failed: the review keeps a card with why and **Try again** (`ExportFailure`) until it is closed or an export starts.
     private(set) var exportFailure: ExportFailure?
     /// Operations whose cover was saved to Photos with the video ("Video and cover saved" on Ready to travel).
-    private(set) var coversSaved: Set<UUID> = []
+    /// Written by the cover's saving (`TakeReviewViewModel+Cover`).
+    var coversSaved: Set<UUID> = []
     /// **Try again** on a cover that couldn't be saved (tests wait on it).
-    @ObservationIgnored private(set) var coverRetry: Task<Void, Never>?
+    @ObservationIgnored var coverRetry: Task<Void, Never>?
     /// Where "#ad" goes for a sponsored video (the system pasteboard; a test swaps it).
     @ObservationIgnored var copiesCaption: (String) -> Void = { UIPasteboard.general.string = $0 }
     var burnsInCaptions = false
@@ -82,12 +83,14 @@ final class TakeReviewViewModel {
     var exportCaptionDisplay: CaptionDisplay = .original
     /// Why the video being exported has no captions although they were asked for.
     @ObservationIgnored private var captionNotice: String?
+    /// Some of the exported video's words came out in the system's face: the message after sending it says so.
+    @ObservationIgnored private var fontNotice: String?
     /// What the creator picked in Export options. 4K is Cue Pro (owner, 06/11/2026); the export reads `exportQuality`.
     private(set) var quality: ExportQuality = .hd1080
     /// "4K export is Cue Pro" is up: 4K was picked without Pro (Go Pro, or Keep 1080p).
     var offersFourKPro = false
-    /// How far the running export is, 0 to 1 (nil when none runs).
-    private(set) var exportProgress: Double?
+    /// Where the running export is: its stage, and how far when the stage can measure itself (nil when none runs).
+    private(set) var exportProgress: ExportProgress?
     /// Whether the running export goes on if the creator leaves Cue (nil when none runs).
     private(set) var exportMode: BackgroundExportMode?
     /// The last export of this take stopped with Cue (closed from the app switcher, or ended by iOS) before it finished.
@@ -97,20 +100,20 @@ final class TakeReviewViewModel {
     /// Share sheets already acted on: a completion heard twice counts and tells once.
     private var handledActivities: Set<UUID> = []
 
-    private let takes: TakeLibraryService
+    let takes: TakeLibraryService
     private let quota: UsageQuotaService
     private let tier: () -> MembershipTier
     private let exporter: VideoExporting
-    private let photos: PhotoSaving
+    let photos: PhotoSaving
     private let sharing: VideoSharing
     private let ledger: ExportLedgerService
-    private let editing: TakeEditing
+    let editing: TakeEditing
     private let library: ScriptLibraryService
     private let rules: PlatformRulesService
     private let profile: CreatorProfileService
     private let preferences: PreferencesService
     private let drafts: QuickEditDraftStoring
-    private let toast: ToastService
+    let toast: ToastService
     private let background: BackgroundExportRunning
     /// Bytes free on the iPhone (`StorageSpace.available`); a test gives its own.
     private let freeSpace: () -> Int64?
@@ -487,7 +490,7 @@ final class TakeReviewViewModel {
         }
         runningAction = action
         phase = .preparing
-        exportProgress = 0
+        exportProgress = .preparing
         exportFailure = nil
         dismissStoppedExport()
         // Marked while it runs: still marked when Cue opens again means it stopped with Cue.
@@ -496,13 +499,19 @@ final class TakeReviewViewModel {
         let job = Task { @MainActor in
             try await background.run(
                 title: String(localized: "Exporting your video"), subtitle: take.label, started: { self.exportMode = $0 }, work: { report in
-                guard let operation = try await self.prepareOperation(for: take, action: action, continuing: operationID, progress: { fraction in
-                    self.exportProgress = fraction
-                    report(fraction)
+                guard let operation = try await self.prepareOperation(for: take, action: action, continuing: operationID, progress: { update in
+                    // A stage never goes back: a late report of an earlier one (the motion analysis hops to the main actor) is dropped.
+                    if let shown = self.exportProgress, update.stage < shown.stage { return }
+                    self.exportProgress = update
+                    // iOS's Live Activity hears the frames being written: the stage every export has, and measures.
+                    if update.stage == .rendering, let fraction = update.fraction { report(fraction) }
                 }) else {
                     return false
                 }
                 self.preparedOperation = operation.id
+                // Words in the system's face (`ExportedFileRecord`): the message after sending says so, as the cover does.
+                let fallback = ExportedFileRecord.read(at: self.ledger.fileURL(of: operation))?.fontFallback
+                self.fontNotice = fallback.map { _ in String(localized: "Some words use the system font") }
                 // "Cancel export" before this line: nothing leaves Cue, nothing is counted. Checked and marked with no wait between them, on
                 // the main actor, so a cancel can't land halfway (`cancelExport` refuses once delivering).
                 try Task.checkCancellation()
@@ -583,12 +592,17 @@ final class TakeReviewViewModel {
     /// The file for this export: the one already made for the same edit and settings, else a new render. Nil when the
     /// free exports are used up (the paywall is open). A video already counted never needs the quota again, its file there or made again.
     private func prepareOperation(
-        for take: Take, action: ExportAction, continuing operationID: UUID?, progress: @escaping @MainActor (Double) -> Void
+        for take: Take, action: ExportAction, continuing operationID: UUID?, progress: @escaping @MainActor (ExportProgress) -> Void
     ) async throws -> ExportOperation? {
         let options = exportOptions(for: take, edit: await editForExport(take), burnsInCaptions: burnsInCaptions)
         let source = takes.videoURL(for: take)
         let fingerprint = ExportFingerprint.make(takeID: take.id, source: source, options: options)
-        let reusable = ledger.reusableOperation(fingerprint: fingerprint)
+        // The same video is reused only when it would be drawn the same now (the fonts, the media, this Cue): a file whose record says
+        // otherwise, or has none, is made again (for the free exports it is still the same video).
+        let stamp = ExportRenderStamp.current(edit: options.edit)
+        let reusable = ledger.reusableOperation(fingerprint: fingerprint).flatMap { operation in
+            ExportedFileRecord.read(at: ledger.fileURL(of: operation))?.renderStamp == stamp ? operation : nil
+        }
         let continued = operationID.flatMap { ledger.operation(id: $0) }.flatMap { $0.fingerprint == fingerprint ? $0 : nil }
         // An edit made inside a queue that already counted its export is the same export: it costs nothing more.
         let inherited = inheritedCount(for: take)
@@ -602,9 +616,13 @@ final class TakeReviewViewModel {
         if let missing = StorageSpace.shortfall(forExportOf: estimatedMegabytes(of: take), available: freeSpace()) {
             throw ExportPreflightError.notEnoughSpace(megabytes: missing)
         }
-        let url = try await exporter.export(videoAt: source, options: options, progress: progress)
+        let result = try await exporter.export(videoAt: source, options: options, progress: progress)
+        let url = result.url
+        ExportedFileRecord(renderStamp: ExportRenderStamp.drawn(edit: options.edit, result: result), fontFallback: result.fontFallback).write(to: url)
         if let continued {
-            // The same export, its file made again after the system cleared the first: not a second export.
+            // The same export, its file made again (the system cleared the first, or it was drawn differently): not a second export. An
+            // old file still there goes, unless the share sheet shows it.
+            if ledger.fileExists(for: continued), activity?.operationID != continued.id { ledger.releaseFile(of: continued.id) }
             ledger.replaceFile(of: continued.id, with: url)
             return ledger.operation(id: continued.id)
         }
@@ -774,11 +792,13 @@ final class TakeReviewViewModel {
 
     private func exported(_ take: Take, operation: ExportOperation) -> ExportedVideo {
         let currentTier = tier()
+        let url = ledger.fileURL(of: operation)
+        let fontFallback = ExportedFileRecord.read(at: url)?.fontFallback
         return ExportedVideo(
-            operationID: operation.id, take: take, url: ledger.fileURL(of: operation),
+            operationID: operation.id, take: take, url: url,
             formatLabel: "\(outputResolutionLabel(for: take).uppercased()) · \(take.outputAspect.label)",
             hasCaptions: burnsInCaptions && captionNotice == nil, missingCaptions: burnsInCaptions ? captionNotice : nil,
-            exportsLeft: quota.exportsLeft(for: currentTier), platform: take.platform
+            exportsLeft: quota.exportsLeft(for: currentTier), platform: take.platform, fontFallback: fontFallback
         )
     }
 
@@ -838,59 +858,8 @@ final class TakeReviewViewModel {
     /// A finished export's message, with why captions are missing when they were asked for. Read after the celebration took what the
     /// video holds (`exported`): before, "Ready to travel" said CAPTIONS ON for a video without them.
     private func announce(_ message: String) {
-        toast.show(captionNotice.map { message + " · " + $0 } ?? message)
+        toast.show(([message] + [captionNotice, fontNotice].compactMap { $0 }).joined(separator: " · "))
         captionNotice = nil
-    }
-
-    /// The chosen cover, saved to Photos after its video: true when one was. One that couldn't be saved says so, the video being there, with
-    /// **Try again**, which saves the cover alone (`retryCover`).
-    @discardableResult
-    private func saveCover(after operation: ExportOperation) async -> Bool {
-        do {
-            let saved = try await saveCoverIfChosen()
-            if saved { coversSaved.insert(operation.id) }
-            return saved
-        } catch {
-            if !(error is PhotoLibraryError), let failure = EditorFailureReport.make(error, operation: "cover", edit: take?.edit) {
-                reportFailure(failure)
-            }
-            offerCoverAgain(for: operation.id)
-            return false
-        }
-    }
-
-    private func offerCoverAgain(for operationID: UUID) {
-        toast.showResult(
-            String(localized: "Video saved. Couldn't save the cover image."), kind: .problem,
-            action: ToastAction(title: String(localized: "Try again")) { [weak self] in self?.retryCover(for: operationID) }
-        )
-    }
-
-    /// The cover alone, drawn and saved again: no new video, nothing counted.
-    func retryCover(for operationID: UUID) {
-        coverRetry?.cancel()
-        coverRetry = Task {
-            do {
-                guard try await saveCoverIfChosen() else { return }
-                coversSaved.insert(operationID)
-                toast.show(String(localized: "Cover saved to Photos"))
-            } catch {
-                offerCoverAgain(for: operationID)
-            }
-        }
-    }
-
-    /// Draws the take's cover and saves it to Photos. False when no cover was chosen.
-    private func saveCoverIfChosen() async throws -> Bool {
-        guard let take, let edit = take.edit, let cover = edit.cover else { return false }
-        guard let data = await editing.coverImage(cover, forVideoAt: takes.videoURL(for: take), edit: edit) else {
-            throw CoverError.unreadable
-        }
-        let url = URL.temporaryDirectory.appending(path: "Cue-cover-\(UUID().uuidString.prefix(8)).jpg")
-        try data.write(to: url, options: .atomic)
-        // Photos keeps its own copy.
-        defer { try? FileManager.default.removeItem(at: url) }
-        try await photos.saveImage(at: url)
-        return true
+        fontNotice = nil
     }
 }

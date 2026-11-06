@@ -103,7 +103,7 @@ struct TakeReviewBackgroundExportTests {
         scenario.exporter.beforeFinishing = { scheduler.task?.expire() }
         await scenario.viewModel.save()
         #expect(scenario.viewModel.phase == .failed)
-        #expect(scenario.viewModel.exportFailure?.line == "iOS stopped the export before it finished.")
+        #expect(scenario.viewModel.exportFailure?.line == "iOS stopped the export before it finished. Your edit is safe.")
         #expect(scenario.photos.savedURLs.isEmpty)
         #expect(scheduler.task?.finished == false)
         #expect(scenario.preferences.exportsInFlight.isEmpty)
