@@ -129,7 +129,8 @@ final class EditorTaskUITests: XCTestCase {
         XCTAssertTrue(deleteAll.exists(within: 5))
         deleteAll.tap()
         // It asks first; Cancel would keep every line.
-        let confirm = app.buttons["edit.captionsDeleteAllConfirm"]
+        // iOS nests the dialog's button in one of its own: the first is the one to tap.
+        let confirm = app.buttons["edit.captionsDeleteAllConfirm"].firstMatch
         XCTAssertTrue(confirm.exists(within: 5))
         XCTAssertTrue(first.exists)
         confirm.tap()

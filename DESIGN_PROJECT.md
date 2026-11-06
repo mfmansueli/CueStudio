@@ -2489,7 +2489,8 @@ iguais ou melhores; o fundo e o recorte num painel só, de propósito.
 - **Barra de ferramentas:** principal e barras de item em §55; o esmaecido só no lado onde há mais ferramentas; "Add
   line" adiciona uma linha na agulha; Text › **Motion** (antes "Animation"); Subheading e Hook com o símbolo do papel.
 - **Avisos** (`EditorPart+Toasts`, o toast do app, §1): dividir, duplicar, apagar e adicionar dizem o quê e onde ("Clip 2 deleted", "Photo added at
-  00:07.0"), com ✓ e **Undo**; o que não pode acontecer diz por quê, com !.
+  00:07.0"), com ✓ e **Undo**; o que não pode acontecer diz por quê, com !. O botão de um toast que diz o que fez ("Undid · Split", "Unlocked")
+  deixa esse toast novo no lugar (`EditorToastHost`); senão o toast sai.
 - **Dois toques** num texto ou legenda no vídeo abrem as palavras com o teclado (Text style ou a linha em Captions).
 - **Texto à mão na prévia** (`TextTransformRecognizer`, `TextHandle`, `OverlaysViewModel+TextTransform`): um dedo arrasta; dois dedos aumentam e giram
   juntos, sem saltos (a cópia sob os dedos é o mesmo desenho do vídeo; num texto com efeito, a pintura que a prévia já fez, 4–7 ms no iPhone 15 Pro);
@@ -2503,7 +2504,7 @@ iguais ou melhores; o fundo e o recorte num painel só, de propósito.
   venha (`OverlaysViewModel.placeKey`, uma chave por gesto).
 - **Lock vale na timeline e na prévia** (`EditorPart+Lock`): um item travado não anda, não cresce e não gira (dedo, alça, VoiceOver Move/Bigger/Turn);
   escolhê-lo (prévia ou timeline; uma vez, quando passa a ser o escolhido, não a cada toque nele) ou tentar movê-lo (a cada gesto) diz "Locked in
-  place" com **Unlock** no toast, e Unlock diz "Unlocked · It moves and trims
+  place" com **Unlock** no toast (o arraste continua do texto: a prévia não desliza para a tela cheia), e Unlock diz "Unlocked · It moves and trims
   again" (um passo de desfazer). Na prévia, o texto travado e escolhido troca a alça do canto por um cadeado (sem as abas laterais) e a foto ou vídeo
   mostra um cadeado no contorno; VoiceOver lê "Locked". Lock da barra do item continua o mesmo botão.
 - **Folhas:** Translate captions fecha com o X do sistema e escolhe o idioma numa lista com check; Auto captions escolhe o idioma falado numa

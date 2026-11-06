@@ -173,10 +173,11 @@ final class TextPresetsUITests: XCTestCase {
         from.press(forDuration: 0.1, thenDragTo: from.withOffset(CGVector(dx: 0, dy: 90)), withVelocity: 300, thenHoldForDuration: 0.2)
         XCTAssertTrue(EditorApp.toastSays(app, "Locked in place"))
         XCTAssertLessThan(abs(middle(settledFrame(of: handle)).y - middle(start).y), 3, "A locked text doesn't follow the finger")
-        let unlock = app.buttons["toast.action"]
-        XCTAssertTrue(unlock.exists(within: 3))
-        XCTAssertEqual(unlock.label, "Unlock")
-        unlock.tap()
+        // The editor's toast (the screen under it has a toast host of its own).
+        XCTAssertTrue(app.buttons["toast.action"].firstMatch.exists(within: 3))
+        let unlock = app.buttons.matching(identifier: "toast.action").allElementsBoundByIndex.first { $0.isHittable }
+        XCTAssertEqual(unlock?.label, "Unlock")
+        unlock?.tap()
         XCTAssertTrue(EditorApp.toastSays(app, "Unlocked"))
         from.press(forDuration: 0.1, thenDragTo: from.withOffset(CGVector(dx: 0, dy: 90)), withVelocity: 300, thenHoldForDuration: 0.2)
         XCTAssertTrue(waitFor { abs(self.middle(handle.frame).y - self.middle(start).y - 90) < 12 }, "\(handle.frame) vs \(start)")

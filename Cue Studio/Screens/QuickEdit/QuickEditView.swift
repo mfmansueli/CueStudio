@@ -434,7 +434,7 @@ struct QuickEditView: View {
         FullScreenSwipeGesture(
             isFullScreen: isFullScreen,
             isEnabled: viewModel.swipesFullScreen && viewModel.isFullScreen == isFullScreen,
-            yields: { viewModel.overlays.draggedOverlay != nil },
+            yields: { viewModel.overlays.draggedOverlay != nil || viewModel.overlays.lockedUnderFinger != nil },
             moved: { follow in
                 var transaction = Transaction()
                 transaction.disablesAnimations = true

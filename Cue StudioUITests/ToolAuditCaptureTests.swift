@@ -571,7 +571,8 @@ final class ToolAuditCaptureTests: XCTestCase {
     /// Taps the control with this identifier if it shows up; false when it doesn't.
     @discardableResult
     private func tap(_ identifier: String, within seconds: TimeInterval = 3) -> Bool {
-        let button = app.buttons[identifier]
+        // The first match: iOS nests a dialog's button in one of its own with the same identifier.
+        let button = app.buttons[identifier].firstMatch
         if button.exists(within: seconds), onScreen(button) {
             button.tap()
             return true

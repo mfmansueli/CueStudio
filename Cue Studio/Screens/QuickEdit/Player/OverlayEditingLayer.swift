@@ -186,15 +186,21 @@ struct OverlayEditingLayer: View {
     private func follow(_ recognizer: TextTransformRecognizer, at location: CGPoint) {
         switch recognizer.state {
         case .began:
-            // A locked text stays where it is, and says so once.
-            guard let text = textTarget(at: location, fingers: recognizer.fingers), !viewModel.overlays.refusesMoving(text.id) else { return }
+            guard let text = textTarget(at: location, fingers: recognizer.fingers) else { return }
+            // A locked text stays where it is and says so once; the drag stays its own, so the preview doesn't swipe.
+            guard !viewModel.overlays.refusesMoving(text.id) else {
+                viewModel.overlays.lockedUnderFinger = text.id
+                return
+            }
             begin(.body, on: text)
             update(translation: recognizer.translation, scale: recognizer.scale, rotation: recognizer.rotation)
         case .changed:
             update(translation: recognizer.translation, scale: recognizer.scale, rotation: recognizer.rotation)
         case .ended:
+            viewModel.overlays.lockedUnderFinger = nil
             commit()
         default:
+            viewModel.overlays.lockedUnderFinger = nil
             cancel()
         }
     }
