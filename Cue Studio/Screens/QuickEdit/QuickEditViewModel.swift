@@ -510,6 +510,14 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     }
 
     /// A recording's motion analysis is ready: the preview is drawn again when what it plays reads one.
+    /// "Measuring the shake · 40%" over the preview while Stabilize or Follow face waits for its analysis and the panel that says so
+    /// (Stabilize, Format) is closed: until then the clip plays as filmed, which would otherwise look like the tool did nothing.
+    var motionPendingLabel: String? {
+        guard source == .ready, !isFullScreen, panel != .stabilize, panel != .crop, EditedComposition.usesMotion(edit) else { return nil }
+        let shake = edit.timeline.segments.contains { $0.stabilization != nil }
+        return MotionAnalysisNote.text(for: look.motionAnalysisStatus, purpose: shake ? .shake : .face)
+    }
+
     func motionAnalysisDidChange() {
         // A Blur area's handles read Stabilize's and Follow face's paths from the analyses.
         blur.placements.removeAll()

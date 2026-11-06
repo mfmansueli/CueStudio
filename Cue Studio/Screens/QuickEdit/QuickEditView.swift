@@ -293,6 +293,10 @@ struct QuickEditView: View {
                         if let work = viewModel.work {
                             EditorWorkPill(viewModel: viewModel, work: work)
                         }
+                        if let motion = viewModel.motionPendingLabel {
+                            MotionPendingPill(label: motion)
+                                .transition(.opacity)
+                        }
                         if viewModel.showsMissingMediaNotice {
                             MissingMediaNotice(viewModel: viewModel)
                                 .padding(.horizontal, 16)
