@@ -205,8 +205,8 @@ extension OverlaysViewModel {
     }
 
     /// The undo key of one gesture on a photo or video on the preview: a finger that moves it and two that pinch it, letting
-    /// go together, are one undo step.
-    static func placeKey(_ id: UUID) -> String { "media.place.\(id)" }
+    /// go together, are one undo step. `gesture` is new for each gesture, so two gestures in a row are two steps however quick.
+    static func placeKey(_ id: UUID, gesture: UUID) -> String { "media.place.\(id).\(gesture)" }
 
     /// A photo or video dragged on the preview: likewise. With a `key`, a pinch that ends with it is the same undo step
     /// (`placeKey`).

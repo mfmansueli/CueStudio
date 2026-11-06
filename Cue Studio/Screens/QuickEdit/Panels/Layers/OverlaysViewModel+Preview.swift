@@ -27,9 +27,10 @@ extension OverlaysViewModel {
         }
         Haptics.selection()
         let keepsPanel = panel == .textStyle
+        let previous = selection
         selection = .text(id)
         if !keepsPanel { panel = nil }
-        sayIfLocked(.text(id))
+        sayIfLocked(.text(id), previous: previous)
     }
 
     /// A text dragged to `center` (unit coordinates), stuck to the middle when close to it.

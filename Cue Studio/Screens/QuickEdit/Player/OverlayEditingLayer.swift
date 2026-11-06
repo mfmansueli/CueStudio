@@ -49,6 +49,9 @@ struct OverlayEditingLayer: View {
     @State private var proxy: (id: UUID, image: UIImage)?
     /// The locked photo or video a finger is on: its gesture does nothing (it said so once, as it began).
     @State private var refused: UUID?
+    /// The gesture on a photo or video going on now (or the next one): its move and pinch share one undo step, and the next
+    /// gesture is another (`OverlaysViewModel.placeKey`).
+    @State private var placeGesture = UUID()
 
     @Environment(VideoThumbnailService.self) private var thumbnails
     @Environment(\.displayScale) private var displayScale
@@ -503,7 +506,7 @@ struct OverlayEditingLayer: View {
                         x: Double(rect.midX + value.translation.width) / Double(max(1, size.width)),
                         y: Double(rect.midY + value.translation.height) / Double(max(1, size.height))
                     )
-                    viewModel.overlays.moveMedia(media.id, to: OverlaysViewModel.snapped(proposed).center, key: OverlaysViewModel.placeKey(media.id))
+                    viewModel.overlays.moveMedia(media.id, to: OverlaysViewModel.snapped(proposed).center, key: placeKey(media.id))
                     endDrag()
                     finishMediaGesture()
                 }
@@ -518,7 +521,7 @@ struct OverlayEditingLayer: View {
                 .onEnded { value in
                     guard pinch?.id == media.id else { return finishMediaGesture() }
                     // The move and the pinch of one gesture land as one undo step.
-                    viewModel.overlays.resizeMedia(media.id, by: Double(value.magnification), key: OverlaysViewModel.placeKey(media.id))
+                    viewModel.overlays.resizeMedia(media.id, by: Double(value.magnification), key: placeKey(media.id))
                     pinch = nil
                     finishMediaGesture()
                 }
@@ -547,9 +550,14 @@ struct OverlayEditingLayer: View {
     /// A drag or a pinch let go: once neither holds the photo or video, the video draws it again.
     private func finishMediaGesture() {
         guard drag == nil, pinch == nil else { return }
+        placeGesture = UUID()
         refused = nil
         proxy = nil
         viewModel.overlays.endOverlayDrag()
+    }
+
+    private func placeKey(_ id: UUID) -> String {
+        OverlaysViewModel.placeKey(id, gesture: placeGesture)
     }
 
     /// A finger started moving or pinching a photo or video: it's picked, the video leaves it out and its picture follows.

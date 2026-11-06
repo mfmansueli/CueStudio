@@ -2499,9 +2499,11 @@ iguais ou melhores; o fundo e o recorte num painel só, de propósito.
   agulha. VoiceOver gira de 15° em 15°; Custom › Font › Turn faz o mesmo por slider.
 - **Toque não é arraste** (`OverlayEditingLayer`, `TextTransformRecognizer.slop`): um texto, foto, vídeo ou legenda ainda não escolhido só começa a
   andar depois de 10 pt (a distância do pan do sistema; um toque que rola um pouco escolhe, ou dá play); o escolhido anda já (4 pt no texto, 3 pt na
-  mídia e na legenda). Mover e pinçar uma foto ou vídeo no mesmo gesto é **um** passo de desfazer (`OverlaysViewModel.placeKey`).
+  mídia e na legenda). Mover e pinçar uma foto ou vídeo no mesmo gesto é **um** passo de desfazer, e o gesto seguinte é outro, por mais rápido que
+  venha (`OverlaysViewModel.placeKey`, uma chave por gesto).
 - **Lock vale na timeline e na prévia** (`EditorPart+Lock`): um item travado não anda, não cresce e não gira (dedo, alça, VoiceOver Move/Bigger/Turn);
-  escolhê-lo (prévia ou timeline) ou tentar movê-lo diz "Locked in place" com **Unlock** no toast, e Unlock diz "Unlocked · It moves and trims
+  escolhê-lo (prévia ou timeline; uma vez, quando passa a ser o escolhido, não a cada toque nele) ou tentar movê-lo (a cada gesto) diz "Locked in
+  place" com **Unlock** no toast, e Unlock diz "Unlocked · It moves and trims
   again" (um passo de desfazer). Na prévia, o texto travado e escolhido troca a alça do canto por um cadeado (sem as abas laterais) e a foto ou vídeo
   mostra um cadeado no contorno; VoiceOver lê "Locked". Lock da barra do item continua o mesmo botão.
 - **Folhas:** Translate captions fecha com o X do sistema e escolhe o idioma numa lista com check; Auto captions escolhe o idioma falado numa
@@ -2567,7 +2569,9 @@ O editor por dentro, para milhares de criadores: nada se perde, nada some, nada 
   dele; o que já está à vista não pula.
 - **Done encerra o histórico:** Done grava a edição na take e descarta o rascunho, e o rascunho é o que marca o vídeo "In edit" (Takes, cartões,
   lembretes); por isso a próxima visita abre a edição salva sem nada para desfazer. Back e Not yet guardam o rascunho com os passos.
-- **Testes do toque, do Lock e do Desfazer:** `QuickEditGestureTrustTests`; `EditorTaskUITests.testDeletingAllCaptionsAtOnceCanBeUndone` (a pergunta).
+- **Testes do toque, do Lock e do Desfazer:** `QuickEditGestureTrustTests`; `EditorTaskUITests.testDeletingAllCaptionsAtOnceCanBeUndone` (a pergunta),
+  `testUndoAndRedoSayWhatTheyTookBack`; `TextPresetsUITests.testALockedTextStaysPutOnThePreviewAndSaysHowToUnlock`. Contraste:
+  `PaletteContrastTests.theCaptionScopeAndTheLockReadOverAnyPicture` ("All captions" `ink` sobre o pill do toast 13,1:1; cadeado preto no disco branco 21:1).
 - **Testes:** `RealMedia` (tag `.realMedia`, fora do Fast): o editor numa gravação real, com o serviço, o player e os arquivos de verdade, pelos passos de
   um criador.
 - **Ainda não feito (Fase C):** divisão do `QuickEditViewModel` por ferramenta, `RenderPlan` no lugar da chave do player, reuso das camadas da

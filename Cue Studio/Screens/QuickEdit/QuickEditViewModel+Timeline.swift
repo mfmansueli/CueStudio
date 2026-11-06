@@ -283,8 +283,9 @@ extension QuickEditViewModel {
             }
             if !keeps { self.panel = nil }
         }
+        let previous = selection
         selection = item
-        sayIfLocked(item)
+        sayIfLocked(item, previous: previous)
     }
 
     /// Marks a pause to go, or to stay.

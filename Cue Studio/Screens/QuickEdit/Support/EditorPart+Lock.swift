@@ -7,7 +7,8 @@ import Foundation
 
 /// A locked layer (`TakeEdit.lockedLayers`: a text, photo or video, music or voice-over) keeps its place and size on the
 /// timeline and on the preview. A finger that tries to move, resize or turn it leaves it where it is and the toast says so, with
-/// Unlock right there; picking it by hand says the same, so the creator never wonders why it doesn't follow the finger.
+/// Unlock right there (once a gesture); picking it by hand says the same once, when it becomes the picked item (tapping it again,
+/// or the next tool on it, doesn't), so the creator never wonders why it doesn't follow the finger.
 extension EditorPart {
     func isLocked(_ id: UUID) -> Bool {
         edit.lockedLayers.contains(id)
@@ -28,9 +29,10 @@ extension EditorPart {
         )
     }
 
-    /// An item picked by hand on the timeline or the preview: a locked one says so, with Unlock.
-    func sayIfLocked(_ item: EditorSelection) {
-        guard let id = item.lockableID, isLocked(id) else { return }
+    /// An item picked by hand on the timeline or the preview, `previous` the pick before it: a locked one says so, with Unlock,
+    /// only as it becomes the picked item.
+    func sayIfLocked(_ item: EditorSelection, previous: EditorSelection?) {
+        guard previous != item, let id = item.lockableID, isLocked(id) else { return }
         sayLocked(id)
     }
 
