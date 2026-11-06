@@ -83,8 +83,8 @@ final class TakeReviewViewModel {
     /// Why the video being exported has no captions although they were asked for.
     @ObservationIgnored private var captionNotice: String?
     private(set) var quality: ExportQuality = .hd1080
-    /// How far the running export is, 0 to 1 (nil when none runs).
-    private(set) var exportProgress: Double?
+    /// Where the running export is: its stage, and how far when the stage can measure itself (nil when none runs).
+    private(set) var exportProgress: ExportProgress?
     /// Whether the running export goes on if the creator leaves Cue (nil when none runs).
     private(set) var exportMode: BackgroundExportMode?
     /// The last export of this take stopped with Cue (closed from the app switcher, or ended by iOS) before it finished.
@@ -471,7 +471,7 @@ final class TakeReviewViewModel {
         }
         runningAction = action
         phase = .preparing
-        exportProgress = 0
+        exportProgress = .preparing
         exportFailure = nil
         dismissStoppedExport()
         // Marked while it runs: still marked when Cue opens again means it stopped with Cue.
@@ -480,9 +480,12 @@ final class TakeReviewViewModel {
         let job = Task { @MainActor in
             try await background.run(
                 title: String(localized: "Exporting your video"), subtitle: take.label, started: { self.exportMode = $0 }, work: { report in
-                guard let operation = try await self.prepareOperation(for: take, action: action, continuing: operationID, progress: { fraction in
-                    self.exportProgress = fraction
-                    report(fraction)
+                guard let operation = try await self.prepareOperation(for: take, action: action, continuing: operationID, progress: { update in
+                    // A stage never goes back: a late report of an earlier one (the motion analysis hops to the main actor) is dropped.
+                    if let shown = self.exportProgress, update.stage < shown.stage { return }
+                    self.exportProgress = update
+                    // iOS's Live Activity hears the frames being written: the stage every export has, and measures.
+                    if update.stage == .rendering, let fraction = update.fraction { report(fraction) }
                 }) else {
                     return false
                 }
@@ -531,7 +534,7 @@ final class TakeReviewViewModel {
     /// The file for this export: the one already made for the same edit and settings, else a new render. Nil when the
     /// free exports are used up (the paywall is open). A video already counted never needs the quota again, its file there or made again.
     private func prepareOperation(
-        for take: Take, action: ExportAction, continuing operationID: UUID?, progress: @escaping @MainActor (Double) -> Void
+        for take: Take, action: ExportAction, continuing operationID: UUID?, progress: @escaping @MainActor (ExportProgress) -> Void
     ) async throws -> ExportOperation? {
         let options = ExportOptions(
             aspect: take.outputAspect, edit: await editForExport(take),

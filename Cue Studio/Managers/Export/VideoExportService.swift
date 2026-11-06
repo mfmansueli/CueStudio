@@ -24,10 +24,11 @@ final class VideoExportService: VideoExporting {
     /// The longest an export waits for a script's face to download before it draws those words in the system's face.
     static let fontWait = Duration.seconds(15)
 
-    func export(videoAt source: URL, options: ExportOptions, progress: (@MainActor (Double) -> Void)?) async throws -> URL {
+    func export(videoAt source: URL, options: ExportOptions, progress: (@MainActor (ExportProgress) -> Void)?) async throws -> URL {
         // A cancel stops every stage (the fonts' wait, Studio Voice, the motion analysis, the mix, the frames) and leaves only what
         // others use: Studio Voice's sounds and the motion analyses, which a retry and the preview read again.
         try Task.checkCancellation()
+        progress?(.preparing)
         if options.needsEditRenderer {
             return try await exportEdited(videoAt: source, options: options, progress: progress)
         }
@@ -67,25 +68,25 @@ final class VideoExportService: VideoExporting {
             throw VideoExportError.exportUnavailable
         }
         session.videoComposition = AVVideoComposition(configuration: configuration)
-        try await Self.run(session, to: output, progress: progress, from: 0)
+        try await Self.run(session, to: output, progress: progress)
         return output
     }
 
-    /// Exports, telling `progress` how far it is: from `start` (what came before, like the sound
-    /// being prepared) to 1.
+    /// Writes the frames, telling `progress` how far it is (`.rendering`, 0 to 1, as the session measures it).
     private static func run(
-        _ session: AVAssetExportSession, to output: URL, progress: (@MainActor (Double) -> Void)?, from start: Double
+        _ session: AVAssetExportSession, to output: URL, progress: (@MainActor (ExportProgress) -> Void)?
     ) async throws {
+        progress?(ExportProgress(.rendering, fraction: 0))
         let watcher = progress.map { progress in
             Task { @MainActor in
                 for await state in session.states(updateInterval: 0.1) {
-                    if case .exporting(let done) = state { progress(start + (1 - start) * done.fractionCompleted) }
+                    if case .exporting(let done) = state { progress(ExportProgress(.rendering, fraction: done.fractionCompleted)) }
                 }
             }
         }
         defer { watcher?.cancel() }
         try await writing(output) { try await session.export(to: output, as: .mov) }
-        progress?(1)
+        progress?(ExportProgress(.rendering, fraction: 1))
     }
 
     /// Runs `write`, which makes `output`. A stopped or failed one leaves no half-written file behind, and iOS stopping it
@@ -102,8 +103,9 @@ final class VideoExportService: VideoExporting {
 
     // MARK: - Edited
 
-    /// Quick edit, captions and quality: the same composition the preview plays, exported.
-    private func exportEdited(videoAt source: URL, options: ExportOptions, progress: (@MainActor (Double) -> Void)?) async throws -> URL {
+    /// Quick edit, captions and quality: the same composition the preview plays, exported. Its stages are told as they come
+    /// (`ExportProgress`): the fonts while they download, the motion analysis with how far it is, the sound, then the frames.
+    private func exportEdited(videoAt source: URL, options: ExportOptions, progress: (@MainActor (ExportProgress) -> Void)?) async throws -> URL {
         let asset = AVURLAsset(url: source)
         let duration = try await asset.load(.duration).seconds
         var edit = options.edit ?? TakeEdit(sourceDuration: duration, aspect: options.aspect)
@@ -112,18 +114,19 @@ final class VideoExportService: VideoExporting {
         // end, a face that arrives waits for the export to finish, so the video never changes face halfway through.
         if let fontPacks {
             let needs = FontPackNeeds.needs(in: edit, han: FontPackRegistry.shared.hanReading)
+            if !fontPacks.unavailable(needs).isEmpty { progress?(ExportProgress(.fonts)) }
             fontPacks.request(needs)
             await fontPacks.awaitDownloads(needs, timeout: Self.fontWait)
             try Task.checkCancellation()
         }
         FontPackRegistry.shared.beginExport()
         defer { if FontPackRegistry.shared.endExport() { fontPacks?.heldFacesArrived() } }
+        let purpose = EditRenderPurpose.export(burnsInCaptions: options.burnsInCaptions, shortSide: options.shortSide, frameRate: options.frameRate)
+        try await Self.analyzeMotion(of: source, drawing: RenderPlan(edit, purpose: purpose).drawn, progress: progress)
         // The preview's preparation (`EditRenderRequest`): a take never edited plays its own sound.
-        let request = try await EditRenderRequest.prepare(
-            source: source, edit: edit,
-            purpose: .export(burnsInCaptions: options.burnsInCaptions, shortSide: options.shortSide, frameRate: options.frameRate),
-            treatsSound: options.edit != nil, sounds: sounds
-        )
+        let treatsSound = options.edit != nil
+        if treatsSound { progress?(ExportProgress(.sound)) }
+        let request = try await EditRenderRequest.prepare(source: source, edit: edit, purpose: purpose, treatsSound: treatsSound, sounds: sounds)
         try Task.checkCancellation()
         let composition: EditedComposition
         do {
@@ -132,7 +135,7 @@ final class VideoExportService: VideoExporting {
             throw VideoExportError.tooWarm
         }
         try Task.checkCancellation()
-        progress?(0.08)
+        if Mixdown.isNeeded(for: composition) { progress?(ExportProgress(.sound)) }
         // More than the take's sound: mixed once through a limiter so nothing clips. The mix is this export's alone: it goes once the
         // video is written, done, failed or cancelled (never Studio Voice's sounds, which the preview shares: `RecordingSoundCache`).
         let mixed = try await Mixdown.apply(to: composition)
@@ -147,7 +150,27 @@ final class VideoExportService: VideoExporting {
         // Like the preview: speed changes keep the voice's pitch.
         session.audioTimePitchAlgorithm = .spectral
         let output = URL.temporaryDirectory.appending(path: "Cue-\(UUID().uuidString.prefix(8)).mov")
-        try await Self.run(session, to: output, progress: progress, from: 0.1)
+        try await Self.run(session, to: output, progress: progress)
         return output
+    }
+
+    /// Follow face and Stabilize's analyses the edit still needs, made before anything else with how far they are (`.motion`); the
+    /// build then finds them ready. Nothing is told when none is missing.
+    private static func analyzeMotion(
+        of source: URL, drawing edit: TakeEdit, progress: (@MainActor (ExportProgress) -> Void)?
+    ) async throws {
+        guard EditedComposition.usesMotion(edit) else { return }
+        var told: (@Sendable (Double) -> Void)?
+        if let progress {
+            told = { fraction in
+                Task { @MainActor in progress(ExportProgress(.motion, fraction: fraction)) }
+            }
+        }
+        do {
+            _ = try await EditedComposition.motionAnalyses(take: source, edit: edit, analyzesMissing: true, progress: told)
+        } catch EditedComposition.BuildError.tooWarm {
+            throw VideoExportError.tooWarm
+        }
+        try Task.checkCancellation()
     }
 }
