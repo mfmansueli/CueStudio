@@ -29,3 +29,17 @@ Canvas: https://claude.ai/artifact/UBc5myze9hKY9M3LB5JmSB (versão 4, D1–D16).
 - Toques orientam investigação, não justificam sozinhos remoção ou redesenho: comparar rolagens, clareza, erros e resultado. Receitas não são padrão obrigatório.
 - Verificar as correções anunciadas: tradução realmente exportada, aviso correto do som da mídia, texto com Pop visível ao editar sem mudar o arquivo final.
 - Entregar a nova barra e a limpeza integrada num marco utilizável no iPhone; seguir correções independentes enquanto o dono avalia, sem avançar no que depende de uma experiência ainda não aprovada.
+
+## Esclarecimentos do dono (07/11, depois das decisões)
+
+1. **D15:** "Texto por legenda" é o nome do **controle** (Uma palavra / Frase curta / Duas linhas), não da aba; a aba é **Layout**. Medir o espaço
+   nesse controle. Ajustes naturais de tradução são meus; só volta ao dono se mudar significado ou estrutura.
+2. **Marco no iPhone:** barra + limpeza integrada **junto com as correções necessárias da etapa 2** (cortes, recuperação individual, Undo).
+   Verificações técnicas antes de instalar, para o dono julgar a experiência sem falhas conhecidas.
+3. **D16:** além da escuta, medir falsos positivos, começo e fim das palavras e a segurança dos candidatos pré-marcados. **Na dúvida, deixar
+   uma pausa passar em vez de sugerir remover fala válida.**
+4. **Relatório:** distinguir alterado no código × validado. Tradução exportada e aviso do som: alterados no código (teste de unidade da
+   tradução passou, 34/34 em TakeReviewViewModelTests), **aguardam verificação** no app. Pop visível ao editar: **pendente**. Só marcar validado
+   depois da verificação correspondente.
+
+Durante a avaliação do dono: seguir as correções independentes.
