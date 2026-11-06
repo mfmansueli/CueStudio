@@ -50,6 +50,7 @@ extension OverlaysViewModel {
         let keepsPanel = panel == .media
         selection = .media(id)
         if !keepsPanel { panel = nil }
+        sayIfLocked(.media(id))
     }
 
     // MARK: - Dragging
