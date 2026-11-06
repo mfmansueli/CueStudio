@@ -227,11 +227,14 @@ struct TakeReviewView: View {
             viewModel.burnsInCaptions = shown
         }
         .fullScreenCover(item: $editingTake, onDismiss: handleEditorOutcome) { take in
-            QuickEditView(take: take, services: services, opening: editingTool) { outcome in
-                pendingOutcome = outcome
-                editingTool = nil
-                editingTake = nil
-            }
+            QuickEditView(
+                take: take, services: services, opening: editingTool, exportNote: { viewModel.doneExportNote(for: $0) },
+                onClose: { outcome in
+                    pendingOutcome = outcome
+                    editingTool = nil
+                    editingTake = nil
+                }
+            )
         }
         .fullScreenCover(item: $proposal) { proposal in
             PickBestTakeView(

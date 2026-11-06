@@ -385,6 +385,22 @@ final class EditorUITests: XCTestCase {
         XCTAssertTrue(app.buttons["edit.toolbar.edit"].exists(within: 5))
     }
 
+    /// With the last free export left, Done says so under its question (owner, 06/11/2026); with more left it says nothing.
+    func testDoneSaysWhenItIsTheLastFreeExport() {
+        let app = EditorApp.open(arguments: ["-uiTestExportsLeft", "1"])
+        app.buttons["edit.doneButton"].tap()
+        let note = app.descendants(matching: .any)["edit.done.exportNote"].firstMatch
+        XCTAssertTrue(note.exists(within: 5))
+        XCTAssertEqual(note.label, "LAST FREE EXPORT")
+        XCTAssertTrue(app.buttons["edit.done.download"].exists)
+        app.terminate()
+
+        let spare = EditorApp.open(arguments: ["-uiTestExportsLeft", "2"])
+        spare.buttons["edit.doneButton"].tap()
+        XCTAssertTrue(spare.buttons["edit.done.share"].exists(within: 5))
+        XCTAssertFalse(spare.descendants(matching: .any)["edit.done.exportNote"].firstMatch.exists)
+    }
+
     /// "Not yet, I'll come back" leaves the edit open: the review offers to continue it.
     func testNotYetKeepsTheEditOpenAndTheReviewSaysContinue() {
         let app = EditorApp.open()

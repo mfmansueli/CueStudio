@@ -25,6 +25,8 @@ struct QuickEditView: View {
     let onClose: (EditorOutcome) -> Void
     /// The tool to open on once the take is ready (a notification's "Try it"); it opens, nothing runs.
     private let opening: EditorTool?
+    /// The free exports' line on Done's question, for the edit as it is (the review knows what exporting it costs).
+    private let exportNote: (TakeEdit) -> FreeExportLabels.Label?
 
     /// The height the editor has with no keyboard (see `measuresStableHeight`).
     @State private var stableHeight: CGFloat = 0
@@ -41,7 +43,10 @@ struct QuickEditView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.forcesLowPowerMode) private var forcesLowPowerMode
 
-    init(take: Take, services: AppServices, opening: EditorTool? = nil, onClose: @escaping (EditorOutcome) -> Void) {
+    init(
+        take: Take, services: AppServices, opening: EditorTool? = nil, exportNote: @escaping (TakeEdit) -> FreeExportLabels.Label? = { _ in nil },
+        onClose: @escaping (EditorOutcome) -> Void
+    ) {
         let languages = services.languages
         _viewModel = State(initialValue: QuickEditViewModel(
             take: take, takes: services.takes, library: services.library,
@@ -57,6 +62,7 @@ struct QuickEditView: View {
         ))
         self.services = services
         self.opening = opening
+        self.exportNote = exportNote
         self.onClose = onClose
     }
 
@@ -102,6 +108,7 @@ struct QuickEditView: View {
             case .done:
                 EditorDoneSheet(
                     duration: DurationText.clock(viewModel.edit.editedDuration),
+                    exportNote: exportNote(viewModel.edit),
                     onMeasure: { doneSheetHeight = $0 + 34 },
                     onAnswer: { outcome in
                         onClose(viewModel.finish(outcome))

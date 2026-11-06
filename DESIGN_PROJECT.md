@@ -824,6 +824,14 @@ lost. You've used your 3 free exports.", **Export with Cue Pro** com brilho e **
 PRO") e toast "Saved in Takes · export with Pro anytime"; Export with Cue Pro abre o **Pro calmo** (`PaywallContext.export`, §12), que diz os preços;
 assinando, a exportação segue sozinha. Com os convites oferecidos, um link amarelo entre os dois, **Or invite friends · +3 exports for each friend**, fecha a
 folha como Not now e abre os convites (§60). Pro: "PRO · UNLIMITED EXPORTS", sem Go Pro.
+- **A pergunta vem antes de qualquer trabalho** (plano do editor, 06/11/2026): com 0, a revisão confere se **este vídeo** (o take, a edição e as opções,
+  `ExportFingerprint`) já saiu do Cue, nunca só "o take". Uma edição corrigida de um vídeo já exportado é outro vídeo (decisão do dono, 06/11: corrigir
+  custa outra exportação) e abre "Your video is ready" sem "Exporting your video", sem render e sem ouvir legendas; o mesmo vídeo de novo (o arquivo ainda
+  lá ou refeito) e uma edição dentro de uma fila de "Share to universe" que já contou (§15) seguem sem pergunta e sem contar.
+- **No Done do editor** ("Is it ready to post?", `EditorDoneSheet`), uma linha mono sob a pergunta, com as palavras e cores do medidor de Share:
+  **LAST FREE EXPORT** (amarelo, `accText`) com uma sobrando, **0 OF 3 LEFT · EXPORT WITH PRO** (laranja, `warnText`) sem nenhuma. Só quando
+  compartilhar ou baixar aquela edição gastaria (`TakeReviewViewModel.doneExportNote`): nada no Pro, com 2 ou mais, ou para um vídeo já contado.
+  Nenhum fluxo novo: as respostas são as mesmas e, sem exportações, Share e Download abrem "Your video is ready" como acima.
 
 ## 12. Pro (11.4)
 
@@ -2584,7 +2592,8 @@ InShot, Edits, Descript e Captions (pesquisa de 24/10: os apps põem a limpeza d
   mesma palavra (Subtítulo, Sous-titre); agora "Texto secundario", "Texte secondaire", "Subkop" (nl), "Underoverskrift" (da, nb), "उपशीर्षक" (hi). Em
   português continua "Subtítulo" × "Legenda".
 - **Concluir:** a folha de Done já separava as quatro saídas (compartilhar, baixar, publicar depois, continuar editando), cada uma com o destino; o de
-  Download video dizia "SAVED", que se confundia com o "EDIT SAVED" de cima: agora "IN PHOTOS". A organização dos projetos (Takes: To pick, In edit,
+  Download video dizia "SAVED", que se confundia com o "EDIT SAVED" de cima: agora "IN PHOTOS". Quando compartilhar ou baixar a edição usaria a
+  última exportação grátis, ou não há nenhuma, uma linha sob a pergunta diz "LAST FREE EXPORT" ou "0 OF 3 LEFT · EXPORT WITH PRO" (§11). A organização dos projetos (Takes: To pick, In edit,
   Ready, Shared) fica igual. Uma edição deixada aberta é achada onde ficou: o cartão "In edit", o Edit de Takes e o lembrete de terminar abrem o take
   dessa edição (a deixada por último, se há mais de uma), nunca uma edição nova no melhor take; na revisão, **Continue** aparece no take da edição
   aberta, e nos outros takes do vídeo **Edit** começa a edição deles (o que o fim do editor compartilha é sempre o take editado). **Save** e

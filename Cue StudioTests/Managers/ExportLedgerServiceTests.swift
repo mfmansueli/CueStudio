@@ -127,11 +127,9 @@ struct ExportLedgerServiceTests {
         let take = UUID()
         let operation = setup.ledger.begin(takeID: take, fingerprint: "f", file: file)
         setup.ledger.recordDelivery(.photoLibrary(assetID: nil), for: operation.id, tier: .free)
-        #expect(setup.ledger.hasCountedOperation(forTake: take))
         setup.ledger.releaseFiles(forTake: take)
         #expect(!FileManager.default.fileExists(atPath: file.path))
         // The file was only a copy: the video it made is still counted.
-        #expect(setup.ledger.hasCountedOperation(forTake: take))
         #expect(setup.ledger.isCounted(fingerprint: "f"))
         #expect(setup.ledger.operation(id: operation.id)?.isCounted == true)
     }
