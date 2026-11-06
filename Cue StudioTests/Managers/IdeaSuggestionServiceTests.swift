@@ -83,7 +83,8 @@ struct IdeaSuggestionServiceTests {
         defer { rig.defaults.tearDown() }
         let first = rig.service.current
         #expect(first?.topic != nil, "made from one of their topics, not a first-flight niche")
-        #expect(first?.title.contains(first?.topic ?? "-") == true)
+        // Inside the sentence the field's capital goes ("Daily routine: …", `TopicCasing`).
+        #expect(first?.title.localizedCaseInsensitiveContains(first?.topic ?? "-") == true)
         rig.service.another()
         #expect(rig.service.current?.topic != first?.topic, "their topics in turn")
     }
@@ -202,6 +203,39 @@ struct IdeaSuggestionServiceTests {
         let asked = rig.writer.suggestionRequests.last?.slots.map(\.angle) ?? []
         #expect(asked.contains(.prediction), "the angle they sent is asked for again")
         #expect(Set(asked).count == asked.count)
+    }
+
+    // MARK: - The library among the model's ideas
+
+    /// With the model, a starter (handwritten or the library's, the same on every iPhone) comes up after every `starterEvery` of the model's ideas,
+    /// and the model's idea it stood in front of comes next, still unseen.
+    @Test func aStarterComesUpAmongTheModelsIdeasOnTheCard() async {
+        let rig = rig { $0.niches = [.finance] }
+        defer { rig.defaults.tearDown() }
+        rig.writer.suggestionBatches = [batch("First", count: 12, niche: .finance)]
+        await rig.service.refill()
+        #expect(rig.service.current?.title == "First 1")
+        for _ in 0..<IdeaSuggestionService.starterEvery { rig.service.another() }
+        let starter = rig.service.current
+        #expect(starter?.angle == nil && starter?.brief != nil, "a starter after \(IdeaSuggestionService.starterEvery) of the model's")
+        #expect(starter?.niche == .finance)
+        #expect(rig.service.unseenModelIdeas.first?.title == "First 3", "the model's next idea is still unseen behind it")
+        rig.service.another()
+        #expect(rig.service.current?.title == "First 3")
+        for _ in 0..<IdeaSuggestionService.starterEvery { rig.service.another() }
+        #expect(rig.service.current?.angle == nil && rig.service.current != starter, "another starter, never the same one")
+    }
+
+    /// A typed topic has no starters of its own (only ones made from its name): the model's ideas are better, and come one after another.
+    @Test func aTypedTopicsTemplatesNeverComeUpAmongTheModelsIdeas() async {
+        let rig = rig { $0.customTopics = ["Daily Routine"] }
+        defer { rig.defaults.tearDown() }
+        rig.writer.suggestionBatches = [batch("First", count: 12)]
+        await rig.service.refill()
+        for _ in 0..<6 {
+            #expect(rig.service.current?.angle != nil)
+            rig.service.another()
+        }
     }
 
     // MARK: - Their own notes

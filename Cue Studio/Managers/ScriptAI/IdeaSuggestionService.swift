@@ -11,8 +11,9 @@ import CryptoKit
 /// what the ideas must be is: never the same few, about what they make, in the direction of what they have been writing, and quick. The model writes
 /// them as whole briefs (a headline, the angle to take and an opening line, `IdeaBrief`) six at a time, ahead of the taps and kept between sessions;
 /// the creator's own notes in the Logbook are what the ideas grow from and come up on the card in their own words; and what they pass, pick and
-/// write decides what is asked for next (`IdeaTaste`). The starters (`ThemeCatalog`) are what shows until the first ideas arrive, and all there is
-/// without Apple Intelligence.
+/// write decides what is asked for next (`IdeaTaste`). The starters (`ThemeCatalog`: the handwritten ones and the library Ultra AI wrote once for
+/// every iPhone, `IdeaLibrary`) are what shows until the first ideas arrive and all there is without Apple Intelligence; with it, one comes up
+/// among the model's every `starterEvery` ideas (owner, 05/11/2026), so the library is everyone's and the iPhone's model is asked less often.
 ///
 /// The card and Find inspiration share one pool, one taste and one memory: an idea shown in one is not shown again in the other, and what the
 /// creator does with an idea in either teaches both. Browsing never waits for the model: the next card is always one already here, and a topic's
@@ -42,6 +43,9 @@ final class IdeaSuggestionService {
     static let memory = 60
     /// A note from the Logbook comes up after this many ideas of the model's.
     static let logbookEvery = 4
+    /// A starter about one of Cue's themes (handwritten, or the library's) comes up after this many of the model's ideas: the model's stay two in
+    /// three, the ones that know the creator's voice. Never one made from a typed topic's name (`ThemeCatalog`'s templates): the model's are better.
+    static let starterEvery = 2
 
     private(set) var pool: [ThemeIdea] = []
     private(set) var position = 0
@@ -53,6 +57,11 @@ final class IdeaSuggestionService {
     private var logbookCard: ThemeIdea?
     private var shownLogbook: Set<UUID> = []
     private var sinceLogbook = 0
+    /// A starter the card shows now, between the model's ideas (`starterEvery`).
+    private var starterCard: ThemeIdea?
+    private var sinceStarter = 0
+    /// The model's ideas each filter of Find inspiration showed since its last starter.
+    private var sinceStarterIn: [IdeaTopicFilter: Int] = [:]
     private var starterRotation = 0
     @ObservationIgnored private var starterCache: (key: String, ideas: [ThemeIdea])?
     private var seen: [String] = []
@@ -126,13 +135,14 @@ final class IdeaSuggestionService {
     /// The idea suggested now: a note of theirs when it is its turn, else the next of the model's, else a starter about their topics.
     var current: ThemeIdea? {
         if let logbookCard { return logbookCard }
+        if let starterCard { return starterCard }
         if position < pool.count { return pool[position] }
         return starter
     }
 
     /// The ideas the model wrote that the card hasn't shown yet, kept on this iPhone: the only ideas a notification may say exist.
     var unseenModelIdeas: [ThemeIdea] {
-        pool.indices.filter { $0 > position || ($0 == position && logbookCard != nil) }.map { pool[$0] }.filter { $0.angle != nil }
+        pool.indices.filter { $0 > position || ($0 == position && (logbookCard != nil || starterCard != nil)) }.map { pool[$0] }.filter { $0.angle != nil }
     }
 
     /// The idea a notification named (`IdeaKey`), if Cue still has it.
@@ -166,9 +176,12 @@ final class IdeaSuggestionService {
     private func advance() {
         if logbookCard != nil {
             logbookCard = nil
+        } else if starterCard != nil {
+            starterCard = nil
         } else if position + 1 < pool.count {
             position += 1
             sinceLogbook += 1
+            sinceStarter += 1
         } else if position < pool.count, isFetching {
             // The last one is on the card and more are coming: wait for them rather than go back to starters.
             isWaiting = true
@@ -180,6 +193,11 @@ final class IdeaSuggestionService {
         if logbookCard == nil, sinceLogbook >= Self.logbookEvery, let note = nextNote() {
             logbookCard = note
             sinceLogbook = 0
+        } else if logbookCard == nil, starterCard == nil, !isWaiting, position < pool.count, sinceStarter >= Self.starterEvery,
+                  let starter = mixedStarter(for: .all, excluding: nil) {
+            starterCard = starter
+            shownStarters.insert(starter.id)
+            sinceStarter = 0
         }
         if let shown = current { taste.showed(shown) }
         persist()
@@ -342,7 +360,10 @@ final class IdeaSuggestionService {
     /// The next idea for `filter` that isn't `shown`: the model's first, then a starter not shown yet; with the model, an end of the starters is
     /// a wait for its ideas, and without it the starters go round again.
     private func next(in filter: IdeaTopicFilter, excluding shown: ThemeIdea?) -> ThemeIdea? {
-        if let idea = queued(filter).first(where: { $0 != shown }) { return idea }
+        if let idea = queued(filter).first(where: { $0 != shown }) {
+            if sinceStarterIn[filter, default: 0] >= Self.starterEvery, let starter = mixedStarter(for: filter, excluding: shown) { return starter }
+            return idea
+        }
         let starters = starters(for: filter)
         if let idea = starters.first(where: { !shownStarters.contains($0.id) && $0 != shown }) { return idea }
         guard !canAskModel, !starters.isEmpty else { return nil }
@@ -350,10 +371,20 @@ final class IdeaSuggestionService {
         return starters[after % starters.count]
     }
 
+    /// A starter not shown yet about one of Cue's themes, to come up among the model's ideas (`starterEvery`): never a typed topic's template.
+    private func mixedStarter(for filter: IdeaTopicFilter, excluding shown: ThemeIdea?) -> ThemeIdea? {
+        starters(for: filter).first { $0.topic == nil && !shownStarters.contains($0.id) && $0 != shown && $0 != displayed[filter] }
+    }
+
     private func show(_ idea: ThemeIdea, in filter: IdeaTopicFilter) {
         displayed[filter] = idea
         waitingFilters.remove(filter)
-        if idea.angle == nil { shownStarters.insert(idea.id) }
+        if idea.angle == nil {
+            shownStarters.insert(idea.id)
+            sinceStarterIn[filter] = 0
+        } else {
+            sinceStarterIn[filter, default: 0] += 1
+        }
         taste.showed(idea)
     }
 
@@ -647,6 +678,9 @@ final class IdeaSuggestionService {
         echoes = []
         round = 0
         logbookCard = nil
+        starterCard = nil
+        sinceStarter = 0
+        sinceStarterIn = [:]
         isWaiting = false
         displayed = [:]
         waitingFilters = []

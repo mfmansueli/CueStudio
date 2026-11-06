@@ -27,10 +27,10 @@ final class TakesUITests: XCTestCase {
         }
 
         // The platform chips filter.
-        app.buttons["takes.platform.youtube"].tap()
+        app.pickFilter("takes.platform.youtube")
         XCTAssertTrue(videoRow(app, containing: "Weekly Q&A").exists(within: 5))
         XCTAssertFalse(videoRow(app, containing: "3 morning habits").exists)
-        app.buttons["takes.platform.all"].tap()
+        app.pickFilter("takes.platform.all")
 
         // A stage in the pipeline shows only its videos; tapping it again shows everything.
         app.buttons["takes.stage.ready"].tap()

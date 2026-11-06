@@ -38,6 +38,10 @@ struct LogbookDaysTests {
         #expect(spoken.hasPrefix("SPOKEN · 0:06 · "), "\(spoken)")
         let typedEarlier = LogbookDays.meta(for: entry("Mornings", hoursAgo: 22), now: now, calendar: calendar, locale: locale)
         #expect(typedEarlier.hasPrefix("TYPED · ") && typedEarlier.contains("PM"), "\(typedEarlier)")
+        // The first minute says NOW (the line is redrawn once a minute), then the time since, against the `now` given.
+        let justNow = LogbookDays.meta(for: entry("Lamp", hoursAgo: 20.0 / 3600), now: now, calendar: calendar, locale: locale)
+        #expect(justNow == "TYPED · NOW", "\(justNow)")
+        #expect(spoken.hasSuffix("2 HOURS AGO"), "\(spoken)")
     }
 
     /// A date from another year says its year, and stays its own day even where the dates read alike.

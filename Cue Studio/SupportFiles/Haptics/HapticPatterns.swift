@@ -29,13 +29,17 @@ enum HapticPatterns {
 
     // MARK: - The patterns
 
-    /// A new idea in Find inspiration: a light tick as each group of sparkles lights around the card, fading with them (`InspirationStarBurst`).
+    /// A new idea in Find inspiration: a soft drizzle of fine ticks, closer at first and fading out with the magic dust (`InspirationStarBurst`).
     static let sparkles: [Beat] = [
-        Beat(time: 0, intensity: 0.55, sharpness: 0.9),
-        Beat(time: 0.055, intensity: 0.45, sharpness: 0.95),
-        Beat(time: 0.11, intensity: 0.38, sharpness: 1),
-        Beat(time: 0.165, intensity: 0.3, sharpness: 1),
-        Beat(time: 0.22, intensity: 0.22, sharpness: 1),
+        Beat(time: 0, intensity: 0.42, sharpness: 0.72),
+        Beat(time: 0.035, intensity: 0.36, sharpness: 0.8),
+        Beat(time: 0.08, intensity: 0.31, sharpness: 0.76),
+        Beat(time: 0.12, intensity: 0.27, sharpness: 0.84),
+        Beat(time: 0.175, intensity: 0.23, sharpness: 0.78),
+        Beat(time: 0.24, intensity: 0.19, sharpness: 0.86),
+        Beat(time: 0.32, intensity: 0.15, sharpness: 0.8),
+        Beat(time: 0.42, intensity: 0.11, sharpness: 0.88),
+        Beat(time: 0.54, intensity: 0.08, sharpness: 0.82),
     ]
 
     /// An idea sent as a star (`IdeaTransitionService.riseDuration`): a firm press as it is born on the arrow, a hum that swells as it
@@ -257,6 +261,26 @@ enum HapticPatterns {
     static func playProUnfurl() { play(proUnfurl, fallback: Haptics.medium) }
     static func playRingTicks(count: Int, every gap: TimeInterval) { play(ringTicks(count: count, every: gap), fallback: Haptics.selection) }
     static func playProWelcome() { play(proWelcome, fallback: Haptics.success) }
+
+    /// A filter row unfolding (`FilterFan`): a light tick as each chip comes free of the chosen one (`FilterFanPlan.releaseTimes`), the
+    /// nearest first, each a little lighter, like drops leaving.
+    static func fanUnfold(releases: [TimeInterval]) -> [Beat] {
+        releases.enumerated().map { index, time in
+            Beat(time: time, intensity: 0.42 - 0.2 * Float(index) / Float(max(1, releases.count - 1)), sharpness: 0.85)
+        }
+    }
+
+    /// A filter picked in the open row: a crisp tap on the touch and a firm, rounder one as the last chip lands home behind it
+    /// (`FilterFanPlan.foldLanding`).
+    static func fanFold(landing: TimeInterval) -> [Beat] {
+        [
+            Beat(time: 0, intensity: 0.5, sharpness: 0.8),
+            Beat(time: landing, intensity: 0.62, sharpness: 0.45),
+        ]
+    }
+
+    static func playFanUnfold(releases: [TimeInterval]) { play(fanUnfold(releases: releases), fallback: Haptics.light) }
+    static func playFanFold(landing: TimeInterval) { play(fanFold(landing: landing), fallback: Haptics.selection) }
 
     /// Makes the engine and starts it off the main thread, ahead of the first pattern: made and started on the spot, the takeoff held the
     /// first idea's star back by ~50 ms after each launch (measured on an iPhone 15 Pro, 26/10/2026). Haptics only (no audio), so it never

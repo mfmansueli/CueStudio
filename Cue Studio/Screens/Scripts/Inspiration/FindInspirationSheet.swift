@@ -35,6 +35,8 @@ struct FindInspirationSheet: View {
     @ScaledMetric(relativeTo: .footnote) private var noteIconSize: CGFloat = 16
 
     @State private var editsTopics = false
+    /// The topics' row, folded into the chosen one (`FilterFan`).
+    @State private var topicsFan = FilterFanState()
     /// The idea "Draft with Ultra" was tapped on before Ultra was allowed: the disclosure is open for it.
     @State private var ultraConsentFor: ThemeIdea?
     /// Allowed on the disclosure: written once the disclosure has gone.
@@ -87,7 +89,7 @@ struct FindInspirationSheet: View {
                     .padding(.horizontal, Metrics.gutter)
                     .accessibilityAddTraits(.isHeader)
                 InspirationFilterBar(
-                    options: viewModel.options, selectedID: viewModel.selectedOptionID,
+                    options: viewModel.options, selectedID: viewModel.selectedOptionID, fan: $topicsFan,
                     onSelect: { viewModel.select($0) }, onEditTopics: { editsTopics = true }
                 )
                 .padding(.top, 16)
@@ -110,6 +112,7 @@ struct FindInspirationSheet: View {
             .padding(.bottom, 20)
         }
         .scrollIndicators(.hidden)
+        .foldsFilterFan($topicsFan)
         .safeAreaBar(edge: .bottom, spacing: 0) {
             if !typeSize.isAccessibilitySize { actions }
         }
@@ -123,6 +126,10 @@ struct FindInspirationSheet: View {
             if hasAI { ultra.noteAIUse() }
         }
         .onChange(of: profile.profile.ideaTopics) { viewModel.topicsChanged() }
+        .onChange(of: contentKey) { old, _ in
+            // The ideas the creator waited for are here: a soft tap with the card.
+            if old == "waiting", viewModel.idea != nil { Haptics.soft() }
+        }
         .onDisappear {
             if focusesComposer { ideaDraft.wantsFocus = true }
             if offersUndo {
@@ -133,7 +140,7 @@ struct FindInspirationSheet: View {
                 )
             }
         }
-        .sheet(isPresented: $editsTopics) { VoiceEditorSheet(field: .topics) }
+        .sheet(isPresented: $editsTopics) { VoiceEditorSheet(field: .topics, showsProgress: false) }
         .fullScreenCover(item: $paywall) { PaywallView(context: $0) }
         .sheet(item: $ultraConsentFor, onDismiss: writeAllowedUltra) { idea in
             UltraConsentSheet(writesNow: true) {
@@ -147,18 +154,10 @@ struct FindInspirationSheet: View {
 
     // MARK: - Notes
 
-    /// What the creator should know before the card: they have no topics yet, or the ideas are starters (no Apple Intelligence).
+    /// What the creator should know before the card, one line at most so the card stays whole above the actions: the ideas are starters (no
+    /// Apple Intelligence), or theirs to write (a Script Language it can't draft in). No topics yet needs no line: "+ Add topics" says it.
     @ViewBuilder
     private var notes: some View {
-        if !viewModel.hasTopics {
-            note(
-                text: Text("Pick your topics and the ideas will be about what you make. Until then, here are a few to start."),
-                identifier: "inspiration.noTopicsNote"
-            ) {
-                Image(systemName: "sparkles").cueFont(.footnote, weight: .semibold)
-            }
-            .padding(.top, 14)
-        }
         if !hasAI {
             note(text: startersNote, identifier: "inspiration.startersNote") {
                 // The bulb's base sits on the text's first baseline.
@@ -319,6 +318,7 @@ struct FindInspirationSheet: View {
             HStack(spacing: 10) {
                 if hasAI {
                     Button {
+                        Haptics.selection()
                         viewModel.retry()
                     } label: {
                         Label("Try again", systemImage: "arrow.clockwise")
@@ -327,7 +327,10 @@ struct FindInspirationSheet: View {
                     .accessibilityIdentifier("inspiration.retry")
                 }
                 if viewModel.selectedOptionID != "all", let all = viewModel.options.first {
-                    Button("All my topics") { viewModel.select(all) }
+                    Button("All my topics") {
+                        Haptics.selection()
+                        viewModel.select(all)
+                    }
                         .buttonStyle(.cueSecondary(.compact, expands: false))
                         .accessibilityIdentifier("inspiration.showAll")
                 }
@@ -351,7 +354,10 @@ struct FindInspirationSheet: View {
                 .accessibilityHidden(true)
             Text("Couldn’t get new ideas")
                 .foregroundStyle(Palette.ink2)
-            Button("Try again") { viewModel.retry() }
+            Button("Try again") {
+                Haptics.selection()
+                viewModel.retry()
+            }
                 .foregroundStyle(Palette.aiText)
                 .fontWeight(.semibold)
                 .frame(minHeight: Metrics.hitTarget)
@@ -413,8 +419,7 @@ struct FindInspirationSheet: View {
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibilityIdentifier("inspiration.helper")
-            writeNowButton(idea)
-            if starter.offersUltra { ultraButton(idea) }
+            directWays(idea)
         }
         .frame(maxWidth: .infinity)
         .padding(.horizontal, Metrics.gutter)
@@ -422,8 +427,42 @@ struct FindInspirationSheet: View {
         .padding(.bottom, 8)
     }
 
+    /// The direct ways, quiet text actions on one line under the helper so the card keeps its room: "✦ Draft it now" (or "Write it yourself")
+    /// and, where Ultra is offered, "✦ Ultra AI" beside it, a thin rule between. "Draft with Ultra AI" whole when the line holds it; one under
+    /// the other only when even the short names don't fit (a long language, big text).
+    @ViewBuilder
+    private func directWays(_ idea: ThemeIdea?) -> some View {
+        if starter.offersUltra {
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: 0) {
+                    writeNowButton(idea)
+                    rule
+                    ultraButton(idea, short: false)
+                }
+                HStack(spacing: 0) {
+                    writeNowButton(idea)
+                    rule
+                    ultraButton(idea, short: true)
+                }
+                VStack(spacing: 0) {
+                    writeNowButton(idea)
+                    ultraButton(idea, short: false)
+                }
+            }
+        } else {
+            writeNowButton(idea)
+        }
+    }
+
+    private var rule: some View {
+        Rectangle()
+            .fill(Palette.ink3)
+            .frame(width: 1, height: 14)
+            .accessibilityHidden(true)
+    }
+
     /// The direct way, as a quiet text action so it never competes with "Start with it": "✦ Draft it now" with Apple Intelligence,
-    /// "Write it yourself" (a blank draft) without it.
+    /// "Write it yourself" (a blank draft) without it, in the ink of an action (grey read as switched off).
     private func writeNowButton(_ idea: ThemeIdea?) -> some View {
         Button {
             if let idea { writeNow(idea) }
@@ -439,14 +478,15 @@ struct FindInspirationSheet: View {
                 }
             }
             .cueFont(.subheadline, weight: .semibold)
-            .foregroundStyle(canDraft ? Palette.aiText : Palette.ink2)
+            .foregroundStyle(canDraft ? Palette.aiText : Palette.ink)
+            .lineLimit(1)
+            .fixedSize()
             .padding(.horizontal, 12)
             .frame(minHeight: Metrics.hitTarget)
             .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.cuePress)
         .disabled(idea == nil || transition.isActive)
-        .opacity(idea == nil ? 0.4 : 1)
         .onGeometryChange(for: CGPoint.self) { proxy in
             let frame = proxy.frame(in: .global)
             return CGPoint(x: frame.midX, y: frame.midY)
@@ -455,30 +495,35 @@ struct FindInspirationSheet: View {
         .accessibilityIdentifier("inspiration.writeNow")
     }
 
-    /// "✦ Draft with Ultra AI" where Ultra is offered: the same idea, written by Ultra. The first time it asks first. While the invitation to
-    /// Ultra AI is due it is the invitation here, in the same line: "· 3 free", so the sheet stays whole (the owner, 30/10/2026).
-    private func ultraButton(_ idea: ThemeIdea?) -> some View {
-        Button {
+    /// "✦ Draft with Ultra AI" where Ultra is offered (`short`: "✦ Ultra AI", beside "Draft it now"): the same idea, written by Ultra. The
+    /// first time it asks first. While the invitation to Ultra AI is due it is the invitation here, in the same line: "· 3 free", so the sheet
+    /// stays whole (the owner, 30/10/2026). VoiceOver always hears the whole name.
+    private func ultraButton(_ idea: ThemeIdea?, short: Bool) -> some View {
+        let invites = invitesUltra && ultra.showsInvite
+        let free = UsagePolicy.freeUltraScripts
+        return Button {
             if let idea { draftWithUltra(idea) }
         } label: {
             HStack(spacing: 6) {
                 Text(verbatim: "✦").accessibilityHidden(true)
-                if invitesUltra, ultra.showsInvite {
-                    Text("Draft with Ultra AI · \(UsagePolicy.freeUltraScripts) free")
-                } else {
-                    Text("Draft with Ultra AI")
+                switch (short, invites) {
+                case (false, true): Text("Draft with Ultra AI · \(free) free")
+                case (false, false): Text("Draft with Ultra AI")
+                case (true, true): Text("Ultra AI · \(free) free")
+                case (true, false): Text(verbatim: "Ultra AI")
                 }
             }
             .cueFont(.subheadline, weight: .semibold)
             .foregroundStyle(Palette.aiText)
-            .multilineTextAlignment(.center)
+            .lineLimit(1)
+            .fixedSize()
             .padding(.horizontal, 12)
             .frame(minHeight: Metrics.hitTarget)
             .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.cuePress)
         .disabled(idea == nil || transition.isActive)
-        .opacity(idea == nil ? 0.4 : 1)
+        .accessibilityLabel(invites ? Text("Draft with Ultra AI · \(free) free") : Text("Draft with Ultra AI"))
         .accessibilityHint(Text("Ultra AI drafts it now. Change anything after."))
         .accessibilityIdentifier("inspiration.writeUltra")
     }

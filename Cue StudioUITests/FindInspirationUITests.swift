@@ -78,23 +78,29 @@ final class FindInspirationUITests: XCTestCase {
 
         bulb.tap()
         XCTAssertTrue(element(app, "inspiration.sheet").exists(within: 5))
-        for id in ["all", "finance", "food", "custom.daily-routine"] {
-            XCTAssertTrue(app.buttons["inspiration.filter.\(id)"].exists, "No filter \(id)")
-        }
+        // The row is folded into the chosen chip, as in Scripts and Takes (`FilterFan`); "Topics" is always in sight.
         XCTAssertTrue(app.buttons["inspiration.filter.all"].isSelected)
+        XCTAssertFalse(app.buttons["inspiration.filter.food"].exists, "Folded, only the chosen chip is there")
+        XCTAssertTrue(app.buttons["inspiration.editTopics"].isHittable)
+        app.buttons["inspiration.filter.all"].tap()
+        for id in ["all", "finance", "food", "custom.daily-routine"] {
+            XCTAssertTrue(app.buttons["inspiration.filter.\(id)"].exists(within: 3), "No filter \(id)")
+        }
+        app.buttons["inspiration.filter.all"].tap()
+        XCTAssertTrue(app.buttons["inspiration.filter.food"].isGone(within: 3), "A tap on the chosen chip folds the row")
         XCTAssertTrue(element(app, "inspiration.card.title").exists(within: 10))
         XCTAssertTrue(app.buttons["inspiration.use"].isHittable)
         XCTAssertTrue(app.buttons["inspiration.another"].isHittable)
         try shoot(app, "03-sheet")
 
-        app.buttons["inspiration.filter.food"].tap()
+        pickFilter(app, "food")
         XCTAssertTrue(app.buttons["inspiration.filter.food"].isSelected)
-        XCTAssertFalse(app.buttons["inspiration.filter.all"].isSelected)
+        XCTAssertTrue(app.buttons["inspiration.filter.all"].isGone(within: 3), "A pick folds the row into it")
         XCTAssertTrue(element(app, "inspiration.card.category").exists(within: 5))
         XCTAssertTrue(element(app, "inspiration.card.category").label.localizedCaseInsensitiveContains("Food"))
 
         // A topic the creator typed has no starters: the model's ideas (the stub's) come, after a short wait at most.
-        app.buttons["inspiration.filter.custom.daily-routine"].tap()
+        pickFilter(app, "custom.daily-routine")
         XCTAssertTrue(element(app, "inspiration.card.title").exists(within: 10) || element(app, "inspiration.loading").exists)
     }
 
@@ -156,6 +162,25 @@ final class FindInspirationUITests: XCTestCase {
         XCTAssertTrue(app.buttons["ideaCard.submit"].isEnabled)
     }
 
+    /// An idea from Find inspiration not yet changed keeps the dock's ↻: it passes the idea for the next suggestion (owner, 05/11/2026).
+    func testTheDocksAnotherIdeaPassesAnUntouchedInspiration() {
+        let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestTopics", "finance"])
+        openSheet(app)
+        XCTAssertTrue(element(app, "inspiration.card.title").exists(within: 10))
+        app.buttons["inspiration.use"].tap()
+        let field = element(app, "ideaCard.field")
+        XCTAssertTrue(field.exists(within: 5))
+        XCTAssertFalse((field.value as? String ?? "").isEmpty)
+        let another = app.buttons["ideaCard.anotherIdea"]
+        XCTAssertTrue(another.exists(within: 5), "The idea from Find inspiration took the dock's ↻ away")
+        another.tap()
+        XCTAssertTrue(app.buttons["ideaCard.anotherIdea"].exists(within: 5), "The next suggestion has its ↻")
+        // Typed words are the creator's: no ↻.
+        field.tap()
+        field.typeText("mine")
+        XCTAssertTrue(app.buttons["ideaCard.anotherIdea"].isGone(within: 3))
+    }
+
     func testWriteTheScriptNowWritesTheIdeaAsItIsAndLeavesTheComposer() {
         let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestTopics", "food"])
         let field = element(app, "ideaCard.field")
@@ -178,8 +203,9 @@ final class FindInspirationUITests: XCTestCase {
         let app = CueApp.launch(seeded: false)
         XCTAssertTrue(app.buttons["ideaCard.inspirationButton"].exists(within: 15))
         app.buttons["ideaCard.inspirationButton"].tap()
-        XCTAssertTrue(element(app, "inspiration.noTopicsNote").exists(within: 5))
         XCTAssertTrue(element(app, "inspiration.card.title").exists(within: 10), "No general ideas without topics")
+        // One line at most above the card: "+ Add topics" says what to do (the owner, 05/11/2026).
+        XCTAssertFalse(element(app, "inspiration.noTopicsNote").exists)
         XCTAssertEqual(app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'inspiration.filter.'")).count, 1)
         let add = app.buttons["inspiration.editTopics"]
         XCTAssertTrue(add.exists)
@@ -192,7 +218,7 @@ final class FindInspirationUITests: XCTestCase {
         XCTAssertTrue(app.buttons["ideaCard.inspirationButton"].exists(within: 15), "The lightbulb is there without Apple Intelligence too")
         app.buttons["ideaCard.inspirationButton"].tap()
         XCTAssertTrue(element(app, "inspiration.startersNote").exists(within: 5))
-        app.buttons["inspiration.filter.custom.daily-routine"].tap()
+        pickFilter(app, "custom.daily-routine")
         let category = element(app, "inspiration.card.category")
         XCTAssertTrue(category.exists(within: 5))
         XCTAssertTrue(category.label.localizedCaseInsensitiveContains("Daily Routine"), category.label)
@@ -217,7 +243,7 @@ final class FindInspirationUITests: XCTestCase {
         let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestTopics", "custom:Daily Routine", "-uiTestIdeasFail"])
         XCTAssertTrue(app.buttons["ideaCard.inspirationButton"].exists(within: 15))
         app.buttons["ideaCard.inspirationButton"].tap()
-        app.buttons["inspiration.filter.custom.daily-routine"].tap()
+        pickFilter(app, "custom.daily-routine")
         // Through the starters about the topic (16 templates and the ties to posted videos), to where only the model's ideas could come: they
         // fail, and the sheet says so.
         let failed = element(app, "inspiration.failed")
@@ -237,7 +263,7 @@ final class FindInspirationUITests: XCTestCase {
         let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestTopics", "custom:Daily Routine", "-uiTestIdeasSlow"])
         XCTAssertTrue(app.buttons["ideaCard.inspirationButton"].exists(within: 15))
         app.buttons["ideaCard.inspirationButton"].tap()
-        app.buttons["inspiration.filter.custom.daily-routine"].tap()
+        pickFilter(app, "custom.daily-routine")
         let title = element(app, "inspiration.card.title")
         // The first six take 12 s and the next 48 s (`-uiTestIdeasSlow`): past the starters (16 templates and the ties to posted videos) and the
         // first six, the end of what is ready is always reached.
@@ -319,6 +345,24 @@ final class FindInspirationUITests: XCTestCase {
 
     private func element(_ app: XCUIApplication, _ id: String) -> XCUIElement {
         app.descendants(matching: .any)[id].firstMatch
+    }
+
+    /// Picks a topic in the folded row: a tap on the chosen chip opens it, a tap on the topic picks it and folds it.
+    private func pickFilter(_ app: XCUIApplication, _ id: String) {
+        let chip = app.buttons["inspiration.filter.\(id)"]
+        if !chip.exists {
+            app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'inspiration.filter.' AND selected == true")).firstMatch.tap()
+        }
+        XCTAssertTrue(chip.exists(within: 3), "No filter \(id)")
+        chip.waitUntilStill()
+        // The open row scrolls sideways, as in Scripts: a topic past the screen's edge comes into reach.
+        // (Past "Topics" a chip is under its fade: by its frame, since asking whether it can be hit throws there.)
+        let reach = app.buttons["inspiration.editTopics"].frame.minX
+        for _ in 0..<4 where chip.frame.maxX > reach {
+            element(app, "inspiration.filters").swipeLeft()
+            chip.waitUntilStill()
+        }
+        chip.tap()
     }
 
     private func openSheet(_ app: XCUIApplication) {

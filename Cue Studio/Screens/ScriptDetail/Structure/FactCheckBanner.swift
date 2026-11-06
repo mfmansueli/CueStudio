@@ -8,7 +8,7 @@ import SwiftUI
 /// On AI scripts about factual topics, and on every Ultra draft, until the creator says they reviewed the claims of this version ("I
 /// checked", recorded with the date); an AI rewrite that changes the words brings it back.
 struct FactCheckBanner: View {
-    /// Ultra's drafts say who wrote them: Google's Gemini, with nothing that checks its claims.
+    /// Ultra AI's drafts say who wrote them (the Cue server's model), with nothing that checks its claims.
     var engine: ScriptEngine = .apple
     let onChecked: () -> Void
 

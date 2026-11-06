@@ -749,17 +749,66 @@ struct ScriptPageViewModelTests {
         scenario.viewModel.write(withVoice)
         await scenario.viewModel.pageWritingTask?.value
         #expect(scenario.viewModel.showsVoicePreview)
-        // "Without" writes the same idea with no voice, once.
-        scenario.writer.generatedText = "Neutral words."
-        scenario.viewModel.showVoice(.without)
-        try? await Task.sleep(for: .milliseconds(100))
+        // "Without" is written as soon as the script has arrived (on this iPhone, free), with no voice, so it opens at once.
+        await scenario.viewModel.neutralTask?.value
         #expect(scenario.writer.lastRequest?.voice == nil)
-        #expect(scenario.viewModel.previewedText == "Neutral words.")
-        #expect(scenario.viewModel.page.text != "Neutral words.")
+        let neutral = scenario.viewModel.page.voicePreview?.without
+        #expect(neutral != nil)
+        scenario.viewModel.showVoice(.without)
+        #expect(scenario.viewModel.previewedText == neutral)
+        #expect(scenario.viewModel.isComparing)
         scenario.viewModel.showVoice(.mine)
-        #expect(scenario.viewModel.previewedText == nil)
+        #expect(scenario.viewModel.previewedText == nil && !scenario.viewModel.isComparing)
         scenario.viewModel.approveVoice()
         #expect(!scenario.viewModel.showsVoicePreview && scenario.profile.profile.voiceApproved)
+    }
+
+    /// While "Without" is still being written the page keeps the voiced words (never an empty page); when it can't be written the page goes
+    /// back to the voice and says so, never showing the same words as "Without".
+    @Test func aNeutralVersionThatFailsGoesBackToTheVoiceAndSaysSo() async {
+        let scenario = makeScenario(script: TestData.script(title: "", text: ""))
+        defer { scenario.defaults.tearDown() }
+        scenario.viewModel.write(request(voice: voice(scenario)))
+        await scenario.viewModel.pageWritingTask?.value
+        await scenario.viewModel.neutralTask?.value
+        scenario.viewModel.page.voicePreview?.without = nil
+        scenario.writer.error = ScriptAIError.emptyResponse
+        scenario.viewModel.showVoice(.without)
+        #expect(scenario.viewModel.previewedText == nil, "the voiced words stay while it is written")
+        #expect(scenario.viewModel.page.voicePreview?.isWaitingForWithout == true)
+        await scenario.viewModel.neutralTask?.value
+        #expect(scenario.viewModel.page.voicePreview?.showing == .mine)
+        #expect(scenario.viewModel.page.voicePreview?.without == nil, "asked again, it is written again")
+        #expect(scenario.toast.message == "Couldn’t write it without your voice · Try again")
+    }
+
+    /// "Sounds like me" tapped while "Without" shows approves the creator's voiced script, never the neutral one.
+    @Test func soundsLikeMeOnWithoutApprovesTheVoicedScript() async {
+        let scenario = makeScenario(script: TestData.script(title: "", text: ""))
+        defer { scenario.defaults.tearDown() }
+        scenario.viewModel.write(request(voice: voice(scenario)))
+        await scenario.viewModel.pageWritingTask?.value
+        await scenario.viewModel.neutralTask?.value
+        scenario.viewModel.page.voicePreview?.without = "Totally neutral words that nobody would ever say on camera, written to compare only."
+        scenario.viewModel.showVoice(.without)
+        let voiced = scenario.viewModel.page.text
+        scenario.viewModel.approveVoice()
+        #expect(scenario.viewModel.page.text == voiced)
+        #expect(!scenario.profile.profile.approvedSamples.contains { $0.text.contains("Totally neutral") })
+    }
+
+    /// The question comes back until Cue has three approved scripts, and again when the voice changes after an approval.
+    @Test func theVoiceQuestionComesBackUntilThreeExamplesAndWhenTheVoiceChanges() {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        _ = voice(scenario)
+        scenario.profile.profile.voiceApproved = true
+        #expect(scenario.profile.profile.wantsVoiceCheck, "one approval is not three examples")
+        scenario.profile.profile.approvedSamples = (1...3).map { VoiceExample(text: "Sample \($0)", source: "Sounds like me") }
+        #expect(!scenario.profile.profile.wantsVoiceCheck)
+        scenario.profile.profile.sounds = [.energetic]
+        #expect(!scenario.profile.profile.voiceApproved, "a changed voice is asked about again")
+        #expect(scenario.profile.profile.wantsVoiceCheck)
     }
 
     @Test func aScriptWrittenWithoutTheVoiceHasNoPreview() async {

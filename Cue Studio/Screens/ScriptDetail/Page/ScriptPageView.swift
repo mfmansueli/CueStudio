@@ -77,12 +77,14 @@ struct ScriptPageView: View {
                                 strip: strip, canBeReady: !viewModel.measuredText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
                                 isTyping: focus != nil, onReady: { viewModel.setReady($0) }, onStop: stop
                             )
+                            // "Without" is only to compare: the state is the voiced script's, and waits.
+                            .disabled(viewModel.isComparing)
                             .padding(.top, 10)
                             .dimmedWhileTyping(isTyping)
                         }
                         if viewModel.showsVoicePreview, let preview = viewModel.page.voicePreview {
                             VoicePreviewStrip(
-                                showing: preview.showing, isLoading: preview.isLoadingWithout,
+                                showing: preview.showing, isWaiting: preview.isWaitingForWithout,
                                 onShow: viewModel.showVoice, onApprove: viewModel.approveVoice, onAdjust: viewModel.openVoiceAdjust
                             )
                             .disabled(viewModel.page.isWriting)
@@ -90,14 +92,14 @@ struct ScriptPageView: View {
                             .dimmedWhileTyping(isTyping)
                         }
                         ScriptLengthBar(
-                            zone: viewModel.zone, feelsChanges: !viewModel.page.isWriting, platform: script.platform, onFit: fitToTime,
+                            zone: viewModel.zone, feelsChanges: !viewModel.page.isWriting && focus == .text, platform: script.platform, onFit: fitToTime,
                             isFitting: viewModel.runningTool == .fitToTime
                         )
                             .padding(.top, 14)
                             .dimmedWhileTyping(isTyping)
                         if viewModel.needsFactCheck {
                             FactCheckBanner(engine: script.draftedBy ?? .apple, onChecked: viewModel.markFactChecked)
-                                .disabled(viewModel.page.isWriting)
+                                .disabled(viewModel.page.isWriting || viewModel.isComparing)
                                 .padding(.top, 12)
                                 .dimmedWhileTyping(isTyping)
                         }
@@ -114,7 +116,8 @@ struct ScriptPageView: View {
                         )
                         .padding(.top, 12)
                         .dimmedWhileTyping(isTyping)
-                        .disabled(viewModel.isTouchingUp)
+                        // The tools work on the voiced script: while "Without" is on the page they wait, never changing words out of sight.
+                        .disabled(viewModel.isTouchingUp || viewModel.isComparing)
                         editor
                             .padding(.top, 8)
                         Color.clear.frame(height: 1).id(Self.writingEnd)
@@ -266,7 +269,11 @@ struct ScriptPageView: View {
     /// The length bar's fit, past the ideal: none while the AI writes, while another tool runs, or where nothing can fit it.
     private var fitToTime: (() -> Void)? {
         guard viewModel.canDraft, !viewModel.page.isWriting, viewModel.runningTool == nil || viewModel.runningTool == .fitToTime else { return nil }
-        return { Task { await viewModel.run(.fitToTime) } }
+        return {
+            // From "Without", Fit works on the creator's script: it comes back on the page first, so the change is seen.
+            if viewModel.isComparing { viewModel.showVoice(.mine) }
+            Task { await viewModel.run(.fitToTime) }
+        }
     }
 
     /// Stop, while the AI writes.
@@ -336,7 +343,7 @@ struct ScriptPageView: View {
         return ScriptTextEditor(
             text: Binding(
                 get: { viewModel.page.revealed ?? viewModel.previewedText ?? viewModel.page.text },
-                set: { if !viewModel.page.isWriting, !viewModel.isTouchingUp { viewModel.page.type($0) } }
+                set: { if !viewModel.page.isWriting, !viewModel.isTouchingUp, !viewModel.isComparing { viewModel.page.type($0) } }
             ),
             selection: $viewModel.page.selection,
             isEmpty: viewModel.previewedText.map(\.isEmpty) ?? viewModel.page.revealed.map(\.isEmpty) ?? viewModel.page.isEmpty,
@@ -344,7 +351,7 @@ struct ScriptPageView: View {
             textSize: viewModel.page.textSize,
             showsCues: viewModel.showsCues,
             // A touch-up rewriting these words: they wait for it (its Stop is the toast's or the selection bar's).
-            isLocked: viewModel.page.isWriting || viewModel.previewedText != nil || viewModel.isTouchingUp,
+            isLocked: viewModel.page.isWriting || viewModel.isComparing || viewModel.isTouchingUp,
             focus: $focus,
             onEdit: {
                 if !viewModel.page.isWriting {
@@ -355,6 +362,9 @@ struct ScriptPageView: View {
             onCaret: { viewModel.page.caret = $0 },
             undo: editorUndo
         )
+        // "Without" being written: the voiced words wait under it, dimmed (never an empty page that looks wiped).
+        .opacity(viewModel.page.voicePreview?.isWaitingForWithout == true && viewModel.showsVoicePreview ? 0.4 : 1)
+        .animation(.smooth(duration: 0.25), value: viewModel.page.voicePreview?.isWaitingForWithout)
     }
 
     /// The bar over the selection: choosing, writing, or the AI's words waiting for Keep, Undo or Try again.
@@ -365,8 +375,15 @@ struct ScriptPageView: View {
         return nil
     }
 
-    /// The bottom: the AI bar when it has something to do, the pill while the AI writes, then the cues over the keyboard while the
-    /// words have it, or the page's one Record (always there otherwise, dimmed while the AI writes).
+    /// Whether the AI's words are still coming in or settling into the editor: the page is theirs, with nothing at its foot (the owner,
+    /// 05/11/2026: no pill over the words, no bar cutting them, no Record yet).
+    private var isWordsArriving: Bool {
+        viewModel.page.isWriting || isHandingOver
+    }
+
+    /// The bottom: the AI bar when it has something to do, the pill while the page waits for the AI's first word (the only sign it is
+    /// working, with how much is written), then the cues over the keyboard while the words have it, or the page's one Record, which rises
+    /// once the words have arrived and settled.
     private var bottom: some View {
         VStack(spacing: 8) {
             if let phase = barPhase, focus != .title {
@@ -380,8 +397,8 @@ struct ScriptPageView: View {
                 )
                 .transition(.opacity.combined(with: .move(edge: .bottom)))
             }
-            if viewModel.page.isWriting {
-                // The percentage only while the model works: once the words arrive, they are the progress.
+            if viewModel.page.isWriting, viewModel.page.revealed?.isEmpty ?? true {
+                // Only before the words: once they arrive, they are the progress.
                 ScriptWritingPill(
                     inMyVoice: viewModel.profile.writesInMyVoice, engine: viewModel.pendingRequest?.engine ?? .apple, progress: viewModel.page.progress
                 )
@@ -400,26 +417,26 @@ struct ScriptPageView: View {
                     onRemove: { viewModel.removeCue($0) },
                     undo: editorUndo
                 )
-            } else if let strip = viewModel.strip {
-                if !viewModel.page.isWriting {
-                    // The first voyage: Cue's first draft is the creator's to change, then read it once. One at a time.
-                    if voyage.showsDraftTip(isCueDraft: draftLearning.isCueDraft(script.id)) {
-                        draftTip
+            } else if let strip = viewModel.strip, !isWordsArriving {
+                // The first voyage: Cue's first draft is the creator's to change, then read it once. One at a time.
+                if voyage.showsDraftTip(isCueDraft: draftLearning.isCueDraft(script.id)) {
+                    draftTip
+                        .padding(.bottom, 10)
+                        .transition(.opacity.combined(with: .move(edge: .bottom)))
+                } else {
+                    VoyageInPlaceTip(step: .practice, place: .page, isAllowed: true) { isDone in
+                        practiceTip(isDone: isDone)
                             .padding(.bottom, 10)
-                            .transition(.opacity.combined(with: .move(edge: .bottom)))
-                    } else {
-                        VoyageInPlaceTip(step: .practice, place: .page, isAllowed: true) { isDone in
-                            practiceTip(isDone: isDone)
-                                .padding(.bottom, 10)
-                        }
                     }
                 }
                 ScriptRecordButton(title: strip.recordsAgain ? "Retake" : "Record", action: record)
-                    .disabled(viewModel.page.isWriting)
+                    .transition(reduceMotion ? .opacity : .opacity.combined(with: .move(edge: .bottom)))
             }
         }
-        // The writing ending: the pill goes and Record wakes up as one soft movement, not a jump.
-        .animation(reduceMotion ? nil : .smooth(duration: 0.5), value: viewModel.page.isWriting)
+        // The pill going as the first words come, Record rising once they have settled: soft movements, never a jump.
+        .animation(reduceMotion ? .easeInOut(duration: 0.2) : .smooth(duration: 0.5), value: viewModel.page.isWriting)
+        .animation(reduceMotion ? .easeInOut(duration: 0.2) : .smooth(duration: 0.5), value: isWordsArriving)
+        .animation(reduceMotion ? .easeInOut(duration: 0.2) : .smooth(duration: 0.4), value: viewModel.page.revealed?.isEmpty ?? true)
     }
 
     private var emptySectionsMessage: String {
@@ -455,7 +472,10 @@ struct ScriptPageView: View {
     private var draftTip: some View {
         VoyageTipCard(
             step: voyage.progress.current ?? .practice, title: String(localized: "A first draft. Yours to change."),
-            message: String(localized: "Rewrite freely. Tap Sounds like me and Cue learns from it."),
+            // "Sounds like me" only where its strip is (never on an Ultra AI draft or one written without the voice).
+            message: viewModel.showsVoicePreview
+                ? String(localized: "Rewrite freely. Tap Sounds like me and Cue learns from it.")
+                : String(localized: "Rewrite freely. Cue learns from what you keep."),
             primary: (String(localized: "Edit"), {
                 withAnimation(.smooth(duration: 0.25)) { voyage.finishDraftTip(acted: true) }
                 focus = .text

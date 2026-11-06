@@ -553,6 +553,7 @@ extension ScriptDetailViewModel {
         // Written: two soft taps as the page becomes the creator's.
         if !quietly { HapticPatterns.playFinish() }
         if request?.voice != nil { voiceQuestions?.recordVoiceScript(scriptID) }
+        if !quietly { prewriteNeutralVersion() }
         draftLearning?.noteDraft(generated.text, for: scriptID)
         guard !quietly else { return }
         toast.show(generated.engine == .ultra

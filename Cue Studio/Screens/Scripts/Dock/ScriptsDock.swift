@@ -55,8 +55,8 @@ struct ScriptsDock: View {
     @State private var voiceSetup: VoiceSetupSheet.Mode?
     /// The invitation to finish My Cue Voice, on the first idea sent with questions open (`DockVoiceSheets`).
     @State private var showsVoiceInvite = false
-    /// Where the arrow is on the screen: the star leaves from there.
-    @State private var sendCenter = CGPoint.zero
+    /// Where the arrow and the writer chip are, outside the dock's state (`DockPlaces`): the star leaves from the arrow.
+    @State private var places = DockPlaces()
     /// What the dock shows of Ultra AI, a step behind the service so it moves where it is seen (`syncUltra`): the writer chip lit, and the
     /// invitation's line.
     @State private var showsUltraLit = false
@@ -83,9 +83,7 @@ struct ScriptsDock: View {
     /// Where the ✦ leaves from (the invitation's, the chip's) and lands (the chip's, the arrow's), in the dock's own space.
     @State private var inviteStar: CGPoint?
     /// The writer chip's frame, and how wide its Ultra AI look is: the ✦ sits 15 pt into that look, in the middle of the chip.
-    @State private var writerFrame: CGRect?
     @State private var ultraLookWidth: CGFloat = 0
-    @State private var sendStar: CGPoint?
     nonisolated private static let ultraSpace = "ultraDock"
     /// The height of a line of the field's text, which grows with Dynamic Type.
     @ScaledMetric(relativeTo: .body) private var lineHeight = 21.0
@@ -180,7 +178,7 @@ struct ScriptsDock: View {
             }
         }
         .overlay {
-            if let chipStar, let sendStar {
+            if let chipStar, let sendStar = places.sendStar {
                 UltraStarHop(from: chipStar, to: sendStar, trigger: sendHop)
             }
         }
@@ -352,7 +350,7 @@ struct ScriptsDock: View {
             ultraItem: ultra.allowance.map { UltraAllowanceLabels.menu($0.allowance) } ?? String(localized: "Ultra AI"),
             look: { lit, lights, stretches in writerLook(lit: lit, compact: compact, lights: lights, stretches: stretches) },
             ultraRing: ultraRing, ultraLight: ultraGlyph, appleLight: appleLight, rowHeight: Self.topRowHeight, space: Self.ultraSpace,
-            onFrame: { writerFrame = $0 }, onUltraLookWidth: { ultraLookWidth = $0 }
+            onFrame: { [places] in places.writerFrame = $0 }, onUltraLookWidth: { ultraLookWidth = $0 }
         )
     }
 
@@ -452,7 +450,7 @@ struct ScriptsDock: View {
     /// The ✦ leaves the lit chip for the send arrow (`UltraMotion.toSend`, `UltraStarHop`) and, as it lands, the arrow pops and turns Ultra
     /// AI's (`HapticPatterns.ultraSendCharged`). Without the arrow to fly to (Apple Intelligence can't write here), it only turns.
     private func chargeSend() {
-        guard chipStar != nil, sendStar != nil, hasAI else {
+        guard chipStar != nil, places.sendStar != nil, hasAI else {
             withAnimation(UltraMotion.sendTurn) { sendIsUltra = starter.writesWithUltra }
             return
         }
@@ -479,7 +477,7 @@ struct ScriptsDock: View {
 
     /// Where the writer chip's ✦ sits, for its flights (from the invitation, to the send arrow).
     private var chipStar: CGPoint? {
-        writerFrame.map { CGPoint(x: $0.midX - ultraLookWidth / 2 + 15, y: $0.midY) }
+        places.writerFrame.map { CGPoint(x: $0.midX - ultraLookWidth / 2 + 15, y: $0.midY) }
     }
 
     /// A light once round a chip of the row, the height of the chip it lights.
@@ -593,7 +591,13 @@ struct ScriptsDock: View {
             .padding(.leading, 14)
             // At the bottom, by the last line, as the field grows (5 pt up: centred, as they were, while it is two lines).
             HStack(spacing: 6) {
-                if suggestion != nil { DockAnotherIdeaButton(isWaiting: suggestions.isWaiting) { suggestions.another() } }
+                if suggestion != nil {
+                    DockAnotherIdeaButton(isWaiting: suggestions.isWaiting) { suggestions.another() }
+                } else if hasAI, !dictation.isActive, ideaDraft.holdsUntouchedIdea {
+                    // An idea from Find inspiration not yet changed is a suggestion still: ↻ passes it for the next one (with any change
+                    // of the creator's it is theirs, and ↻ goes, as with typed words).
+                    DockAnotherIdeaButton(isWaiting: false) { ideaDraft.dropIdea() }
+                }
                 DictationButton(state: dictation.state, style: .plain, action: toggleDictation)
                 sendButton
             }
@@ -655,6 +659,8 @@ struct ScriptsDock: View {
             Text("Your idea")
         }
         .lineLimit(Self.minLines...(isExpanded ? Self.maxLines : Self.minLines))
+        // Folded to two lines, the third of a longer idea peeked under the second (05/11/2026): the field shows its two lines only.
+        .mask { Rectangle().padding(.vertical, isExpanded ? -400 : 0).padding(.horizontal, -12) }
         .focused($isFocused)
         .cueFont(16, weight: .medium)
         .foregroundStyle(Palette.ink)
@@ -714,9 +720,9 @@ struct ScriptsDock: View {
             .onGeometryChange(for: CGPoint.self) { proxy in
                 let frame = proxy.frame(in: .global)
                 return CGPoint(x: frame.midX, y: frame.midY)
-            } action: { sendCenter = $0 }
+            } action: { [places] in places.sendCenter = $0 }
             .onGeometryChange(for: CGRect.self) { $0.frame(in: .named(Self.ultraSpace)) } action: {
-                sendStar = CGPoint(x: $0.midX, y: $0.midY)
+                places.sendStar = CGPoint(x: $0.midX, y: $0.midY)
             }
             .accessibilityLabel(Text("Write it"))
             .accessibilityIdentifier("ideaCard.submit")
@@ -820,7 +826,7 @@ struct ScriptsDock: View {
         let idea = hasTypedIdea ? nil : suggestion
         // An idea in a language Apple Intelligence can't draft in takes nothing off: the starter says why (with "Write it") and it stays.
         guard IdeaSendTimeline.measure("Drafting check", { starter.drafting(before: idea ?? ideaDraft.submission).isAvailable }) else {
-            starter.write(idea: idea, fromDock: true, from: sendCenter)
+            starter.write(idea: idea, fromDock: true, from: places.sendCenter)
             return
         }
         // The first idea sent while My Cue Voice still has questions open invites to finish them, once; the idea waits in the field.
@@ -831,7 +837,7 @@ struct ScriptsDock: View {
         }
         IdeaSendTimeline.measure("Takeoff haptic") { HapticPatterns.playTakeoff() }
         guard idea != nil else {
-            starter.write(idea: nil, from: sendCenter)
+            starter.write(idea: nil, from: places.sendCenter)
             return
         }
         // The card's own idea follows its angle and opening line (read before `sent()` brings the next one).
@@ -840,7 +846,7 @@ struct ScriptsDock: View {
         let note = IdeaSendTimeline.measure("Next idea") { suggestions.sent() }
         // A suggested idea used for real: its introduction stops (a note of their own is the Logbook's, not the ideas').
         if note == nil { notifications.recordUse(.ideas) }
-        starter.write(idea: idea, brief: brief, fromDock: true, from: sendCenter) { [logbook] scriptID in
+        starter.write(idea: idea, brief: brief, fromDock: true, from: places.sendCenter) { [logbook] scriptID in
             if let note { logbook.markShaped(note, as: scriptID) }
         }
     }

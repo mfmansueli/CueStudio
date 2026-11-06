@@ -101,7 +101,10 @@ final class UltraAIUITests: XCTestCase {
         XCTAssertTrue(past.label.contains("TikTok"), "The line doesn't name the platform: \(past.label)")
         let fit = app.buttons["page.lengthBar.fit"]
         XCTAssertTrue(fit.exists && !fit.label.contains("Ultra AI"), "The bar's fit still names Ultra AI: \(fit.label)")
-        app.buttons["detail.recordButton"].tap()
+        // Record rises once the words have landed (the 0.7 s hand-over): tapped mid-rise, it isn't there yet.
+        let record = app.buttons["detail.recordButton"]
+        record.waitUntilStill()
+        record.tap()
         let shorter = app.buttons["page.nudge.shorter"]
         XCTAssertTrue(shorter.exists(within: 5), "No \"A bit long\" question")
         XCTAssertFalse(shorter.label.contains("Ultra AI"), "The nudge's Make it shorter still names Ultra AI: \(shorter.label)")

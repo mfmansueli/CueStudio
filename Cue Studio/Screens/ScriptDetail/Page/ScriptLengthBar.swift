@@ -12,7 +12,7 @@ import SwiftUI
 /// under the track says so ("Past the TikTok ideal") with "Fit to time" (Apple Intelligence) when the page can.
 struct ScriptLengthBar: View {
     let zone: LengthZone
-    /// The creator's own typing moves it (not the AI writing): crossing into the ideal range or past it is felt.
+    /// The creator’s own typing moves it (not the AI writing, nor its tools landing): crossing into the ideal range or past it is felt.
     var feelsChanges = true
     /// Named in the line past the ideal; nil leaves the line out.
     var platform: Platform?
@@ -115,15 +115,18 @@ struct ScriptLengthBar: View {
                     Spacer(minLength: 8)
                     ideal
                 }
+                .lineLimit(1)
+                // Stacked, a line that still doesn't fit wraps instead of losing its end ("IDEAL 1:15 TO 2:…").
                 VStack(alignment: .leading, spacing: 2) {
                     length
                     ideal
                 }
+                .lineLimit(2)
+                .fixedSize(horizontal: false, vertical: true)
             }
             .hudFont()
             .textCase(.uppercase)
             .tracking(0.6)
-            .lineLimit(1)
             // Stacked, the two lines start where the track starts.
             .frame(maxWidth: .infinity, alignment: .leading)
             GeometryReader { proxy in

@@ -17,7 +17,7 @@ struct CaptionAdjustTab: View {
     @ScaledMetric(relativeTo: .body) private var swatchDiameter: CGFloat = 34
 
     private var captions: CaptionsViewModel { viewModel.captions }
-    private static let styleColor = String(localized: "Style's")
+    private static var styleColor: String { String(localized: "Style's") }
 
     var body: some View {
         if let settings = captions.captionAdjustSettings {

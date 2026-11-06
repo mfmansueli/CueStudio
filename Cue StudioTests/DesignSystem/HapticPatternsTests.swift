@@ -52,4 +52,22 @@ struct HapticPatternsTests {
         #expect((hum?.endIntensity ?? 0) > (hum?.intensity ?? 1), "The hum swells")
         #expect(HapticPatterns.appleOn.map { $0.time + ($0.duration ?? 0) }.max() ?? 0 <= DockChipLight.duration, "It ends with the light")
     }
+
+    /// The filter row unfolding: a tick for each chip as it comes free, the nearest first and lighter after; picking: a tap on the touch
+    /// and a firmer one as the last chip lands.
+    @Test func theFilterRowTicksAsEachChipComesFreeAndLandsWithTheLast() {
+        let plan = FilterFanPlan(widths: [60, 80, 70, 90, 75], selected: 0, isOpen: true)
+        let unfold = HapticPatterns.fanUnfold(releases: plan.releaseTimes)
+        #expect(unfold.count == 4, "One tick for each hidden chip")
+        #expect(zip(unfold, unfold.dropFirst()).allSatisfy { $0.time < $1.time && $0.intensity > $1.intensity })
+        #expect(unfold.allSatisfy { $0.duration == nil && (0...1).contains($0.intensity) })
+
+        var folded = plan
+        folded.isOpen = false
+        folded.selected = 3
+        let fold = HapticPatterns.fanFold(landing: folded.foldLanding)
+        #expect(fold.first?.time == 0, "A tap on the touch")
+        #expect(fold.last?.time == folded.foldLanding, "The firm tap as the last chip lands")
+        #expect((fold.last?.intensity ?? 0) > (fold.first?.intensity ?? 1))
+    }
 }

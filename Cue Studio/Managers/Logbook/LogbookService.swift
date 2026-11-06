@@ -11,6 +11,8 @@ import Foundation
 @Observable
 final class LogbookService {
     private(set) var entries: [LogbookEntry]
+    /// What was left in the field, typed or heard, when the Logbook closed: there again the next time, as in Messages.
+    private(set) var draft: String
 
     @ObservationIgnored private let defaults: UserDefaults
     @ObservationIgnored private let now: () -> Date
@@ -20,6 +22,15 @@ final class LogbookService {
         self.now = now
         let stored = defaults.data(forKey: DefaultsKey.logbook).flatMap { try? JSONDecoder().decode([LogbookEntry].self, from: $0) }
         entries = stored ?? []
+        draft = defaults.string(forKey: DefaultsKey.logbookDraft) ?? ""
+    }
+
+    /// The field's words as the Logbook closes (blank words keep nothing).
+    func keepDraft(_ text: String) {
+        let words = text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "" : text
+        guard words != draft else { return }
+        draft = words
+        if words.isEmpty { defaults.removeObject(forKey: DefaultsKey.logbookDraft) } else { defaults.set(words, forKey: DefaultsKey.logbookDraft) }
     }
 
     /// The ideas still waiting, newest first.
@@ -53,6 +64,19 @@ final class LogbookService {
         } else {
             markShaped(kept.note, as: scriptID)
         }
+    }
+
+    /// The creator corrected an idea (a word misheard, a better angle): it keeps its place, its day and how it came in. Blank words change
+    /// nothing. Returns the idea as it is now, nil when there is none.
+    @discardableResult
+    func edit(_ id: UUID, text: String) -> LogbookEntry? {
+        let words = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !words.isEmpty, let index = entries.firstIndex(where: { $0.id == id }) else { return nil }
+        if entries[index].text != words {
+            entries[index].text = words
+            persist()
+        }
+        return entries[index]
     }
 
     func setTopic(_ topic: String?, of id: UUID) {
@@ -89,6 +113,7 @@ final class LogbookService {
     func eraseAll() {
         entries = []
         persist()
+        keepDraft("")
     }
 
     private func persist() {
