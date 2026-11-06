@@ -45,11 +45,15 @@ nonisolated struct VoiceOverClip: Codable, Hashable, Identifiable, Sendable {
     }
 
     /// Where it plays in `timeline` (edited seconds), cut at the end of the edit; nil when none of
-    /// it is heard.
+    /// it is heard. Pinned to a clip that no longer holds its moment, it starts where the edit picks up in the same recording:
+    /// `anchor` is a second of that recording, never of the take's (`CutFollowing.voiceOver` places it when the cuts change).
     func editedSpan(in timeline: EditTimeline) -> TimeSpan? {
-        let start = clipAnchor
-            .flatMap { timeline.editedSpan(forSource: TimeSpan(start: anchor, end: anchor + 0.05), anchoredTo: $0)?.start }
-            ?? timeline.editedTime(following: anchor)
+        let start: TimeInterval = if let clipAnchor {
+            timeline.editedSpan(forSource: TimeSpan(start: anchor, end: anchor + 0.05), anchoredTo: clipAnchor)?.start
+                ?? timeline.editedTime(following: anchor, in: clipAnchor.sourceID)
+        } else {
+            timeline.editedTime(following: anchor)
+        }
         let end = min(start + playedDuration, timeline.editedDuration)
         guard end - start > 0.05 else { return nil }
         return TimeSpan(start: start, end: end)

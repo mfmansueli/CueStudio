@@ -64,20 +64,34 @@ extension ClipsViewModel {
         sayUndoable(String(localized: "\(clipName(at: index)) duplicated after it"))
     }
 
-    /// Takes a clip out of the video (never out of the recording). The last clip stays.
+    /// Takes a clip out of the video (never out of the recording), with what showed only on it (`TakeEdit.removingClip`); the
+    /// toast says what went with it, with Undo. The last clip stays.
     func deleteClip(_ id: UUID) {
         guard isReady else { return }
         guard edit.timeline.segments.count > 1 else {
             toast.show(String(localized: "Keep at least one clip"), kind: .problem)
             return
         }
-        var next = edit.timeline
         let name = clipName(at: edit.timeline.index(ofSegment: id) ?? 0)
-        guard next.removeSegment(id: id) else { return }
+        guard let removal = edit.removingClip(id) else { return }
         selection = nil
-        commit(next)
+        commit(EditSnapshot(removal.edit))
         Haptics.delete()
-        sayUndoable(String(localized: "\(name) deleted"))
+        sayUndoable(Self.deletedMessage(name, removal))
+    }
+
+    /// "Clip 2 deleted", or "Clip 2 deleted, with 1 text and 2 sounds" when layers went with it.
+    static func deletedMessage(_ name: String, _ removal: ClipRemoval) -> String {
+        guard !removal.isAlone else { return String(localized: "\(name) deleted") }
+        let parts = [
+            removal.texts > 0 ? String(localized: "\(removal.texts) texts", comment: "What went with a deleted clip") : nil,
+            removal.photos > 0 ? String(localized: "\(removal.photos) photos", comment: "What went with a deleted clip") : nil,
+            removal.videos > 0 ? String(localized: "\(removal.videos) videos over it", comment: "What went with a deleted clip") : nil,
+            removal.voiceOvers > 0 ? String(localized: "\(removal.voiceOvers) voice-overs", comment: "What went with a deleted clip") : nil,
+            removal.sounds > 0 ? String(localized: "\(removal.sounds) sounds", comment: "What went with a deleted clip") : nil,
+        ].compactMap(\.self)
+        let list = ListFormatter.localizedString(byJoining: parts)
+        return String(localized: "\(name) deleted, with \(list)", comment: "Toast: a clip deleted and what went with it (\"1 text and 2 sounds\")")
     }
 
     // MARK: - Private

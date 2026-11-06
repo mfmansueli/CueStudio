@@ -57,6 +57,24 @@ struct MediaPiecesTests {
         #expect(old.editedSpan(in: timeline) == TimeSpan(start: 2, end: 8))
     }
 
+    /// Media added before, pinned to seconds the start handle trimmed off: it shows from where the edit starts, its file from the
+    /// second it had reached there (the preview plays the trimmed start, so both show the same frame).
+    @Test func mediaAddedBeforeKeepsItsStepWhenItsStartIsTrimmed() throws {
+        var timeline = EditTimeline(sourceDuration: 4)
+        timeline.trimStart(to: 0.6)
+        let old = Self.video(span: TimeSpan(start: 0.2, end: 2.8), follows: nil)
+        let pieces = old.pieces(in: timeline)
+        #expect(pieces.count == 1)
+        #expect(abs(pieces[0].edited.start) < 0.001 && abs(pieces[0].edited.end - 2.2) < 0.001)
+        #expect(abs(pieces[0].fileStart - 0.4) < 0.001)
+        // At twice the speed, the trimmed 0.4 s of the recording played in 0.2 s: the file had reached its 0.2.
+        var fast = timeline
+        fast.setSpeed(2, forSegmentAt: 0)
+        #expect(abs((old.pieces(in: fast).first?.fileStart ?? -1) - 0.2) < 0.001)
+        // Its start still plays: from its first frame, as always.
+        #expect(old.pieces(in: EditTimeline(sourceDuration: 4)).first?.fileStart == 0)
+    }
+
     @Test func aCutOverItsStartTakesItsStartToo() throws {
         let timeline = EditTimeline(sourceDuration: 12, keeping: [TimeSpan(start: 0, end: 2), TimeSpan(start: 4, end: 12)])
         let support = Self.video(span: TimeSpan(start: 3, end: 8))

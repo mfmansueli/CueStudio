@@ -19,17 +19,34 @@ nonisolated extension MediaOverlay {
     /// a slower one more, never past its end. Laid across into another recording's clip, it plays straight on over it for
     /// as long as it was laid there (`tail`).
     ///
-    /// Media added before (`followsCuts` nil) plays straight on from its start for as long as it shows, as it always did.
+    /// Media added before (`followsCuts` nil) plays straight on from its start for as long as it shows, as it always did. When
+    /// the moment it starts on no longer plays (trimmed off, or its clip deleted), it shows from where the edit picks up, and its
+    /// file from the second it had reached there (`skippedFileSeconds`): the preview, which plays the trimmed start too, and
+    /// the export show the same frame.
     func pieces(in timeline: EditTimeline) -> [MediaPiece] {
         let pieces: [MediaPiece]
         if followsCuts == true {
             pieces = linkedPieces(in: timeline)
         } else if let span = TakeEdit.editedSpan(span, anchor: clipAnchor, in: timeline) {
-            pieces = [MediaPiece(edited: span, fileStart: startInFile)]
+            pieces = [MediaPiece(edited: span, fileStart: startInFile + skippedFileSeconds(showingFrom: span.start, in: timeline))]
         } else {
             pieces = []
         }
         return clippedToFile(pieces)
+    }
+
+    /// Seconds of the file a video that plays straight on has played before `start` (edited seconds, where it shows from) when
+    /// the moment it is pinned to was cut: the recording between that moment and the one shown at `start`, at the speed it
+    /// played there. 0 when it shows from its own moment.
+    private func skippedFileSeconds(showingFrom start: TimeInterval, in timeline: EditTimeline) -> TimeInterval {
+        guard mediaDuration != nil else { return 0 }
+        let index = timeline.segmentIndex(atEdited: start)
+        let segment = timeline.segments[index]
+        guard segment.sourceID == clipAnchor?.sourceID else { return 0 }
+        let shown = timeline.sourceTime(forEdited: start)
+        let skipped = shown - span.start
+        guard skipped > 0.000_1 else { return 0 }
+        return skipped / segment.edgeSpeed(atStart: true)
     }
 
     /// Where it shows in `timeline`, from where its first piece starts to where its last ends; nil when it doesn't show.
