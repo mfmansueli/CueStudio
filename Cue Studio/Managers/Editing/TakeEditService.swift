@@ -128,6 +128,12 @@ final class TakeEditService: TakeEditing {
         return item
     }
 
+    func mixPeak(forVideoAt url: URL, edit: TakeEdit) async throws -> Float? {
+        let purpose = EditRenderPurpose.export(burnsInCaptions: false, shortSide: nil, frameRate: nil)
+        let composition = try await EditRenderRequest.prepare(source: url, edit: edit, purpose: purpose, sounds: sounds).build()
+        return try await Mixdown.peak(of: composition)
+    }
+
     func coverImage(_ cover: VideoCover, forVideoAt url: URL, edit: TakeEdit) async -> Data? {
         let image = await CoverRenderer.image(for: cover, videoURL: url, edit: edit)
         return image?.jpegData(compressionQuality: 0.92)

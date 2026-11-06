@@ -2580,7 +2580,9 @@ O editor organizado para crescer sem quebrar: cada coisa num lugar, e a prévia 
   segue a take na prévia (`aVideoPinnedToTrimmedSecondsShowsTheSameFrameInPreviewAndFile`, `withKnownIssue`). **Som:** o AVPlayer não deixa processar a
   soma das faixas, então o limitador da exportação (`Mixdown`) não toca na prévia; medido nos arquivos renderizados (`PreviewExportSoundTests`), uma mistura
   sob o teto é igual nos dois (0,001 dB) e uma acima dele (voz alta com música a 150%) estoura na prévia (3,7% das amostras) e sai 2,5 dB mais baixa no
-  arquivo.
+  arquivo. Por isso o painel **Volume**, enquanto aberto, mistura os sons em segundo plano como a exportação (`Mixdown.peak`, 0,7 s depois que a
+  mudança para; sair do painel cancela) e, quando a soma passa do fundo da escala, diz em laranja (`warnText`) "Too loud together · the preview may
+  distort, the video won’t" (`edit.volume.loudMix`; decisão de 06/11, opção a: um aviso, não um segundo motor de prévia). Com um som só, nada é medido.
 - **Versões de leitura** (`ReadingVersion`): uma tabela para o look, o Studio Voice, os estilos de legenda, a transcrição e o Auto (versão de hoje,
   primeira, e o que vale quando a edição salva não tem o número). Uma medição do Auto feita por um Cue mais novo não é desenhada (fica salva).
 - **Vídeos longos**: as legendas cronometradas na edição são calculadas uma vez por mudança e achadas por linha ou por momento (`CaptionMap`); a lista de

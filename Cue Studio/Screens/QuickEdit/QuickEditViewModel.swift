@@ -101,6 +101,8 @@ final class QuickEditViewModel: EditorHost, EditorPart {
 
     /// The Low Power Mode notice over the preview (`QuickEditViewModel+LowPower`).
     var showsLowPowerNotice = false
+    /// The edit's sounds together go over full scale (`measureMix`): Volume says the preview may distort where the video won't.
+    var mixTooLoud = false
     /// Done was tapped while a Blur area may not cover what it hides somewhere: asked first (`+Blur`).
     var showsBlurCheck = false
     /// The creator went on despite it: not asked again until the edit changes.

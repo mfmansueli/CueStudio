@@ -52,6 +52,24 @@ nonisolated enum Mixdown {
         }
     }
 
+    /// The loudest sample of `composition`'s sound tracks mixed as an export mixes them, before the limiter: what the preview plays
+    /// (AVPlayer sums the tracks with no limiter). Nil for one sound track or none. The mixed file goes at once.
+    @concurrent
+    static func peak(of composition: EditedComposition) async throws -> Float? {
+        try await peak(of: composition.asset, audioMix: composition.audioMix)
+    }
+
+    /// `asset`'s sound tracks mixed as `audioMix` says, their loudest sample (nil for one track or none).
+    @concurrent
+    static func peak(of asset: AVAsset, audioMix: AVAudioMix?) async throws -> Float? {
+        let tracks = try await asset.loadTracks(withMediaType: .audio)
+        guard tracks.count > 1 else { return nil }
+        let mixed = try await render(asset, tracks: tracks, audioMix: audioMix, prefix: "Cue-peak-")
+        defer { try? FileManager.default.removeItem(at: mixed) }
+        try Task.checkCancellation()
+        return try AudioCeiling.peak(of: mixed)
+    }
+
     /// The composition's sound mixed down to one 48 kHz stereo file, as an export would mix it.
     @concurrent
     static func render(_ asset: AVAsset, tracks: [AVAssetTrack], audioMix: AVAudioMix?, prefix: String = "Cue-master-") async throws -> URL {

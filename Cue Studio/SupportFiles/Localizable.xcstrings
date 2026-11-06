@@ -97838,6 +97838,125 @@
         }
       }
     },
+    "Too loud together · the preview may distort, the video won’t" : {
+      "comment" : "Editor › Volume panel, orange note: the edit's sounds (voice, music, voice-over) together go over full scale. The preview plays them without a limiter and may crackle; the exported video goes through Cue's limiter and doesn't distort.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عالٍ جدًا معًا · قد يتشوه الصوت في المعاينة، لكن ليس في الفيديو"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "For højt sammen · forhåndsvisningen kan forvrænge, videoen gør ikke"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zusammen zu laut · die Vorschau kann verzerren, das Video nicht"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Demasiado alto junto · la vista previa puede distorsionar, el video no"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trop fort ensemble · l’aperçu peut saturer, la vidéo non"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "साथ में बहुत तेज़ · प्रीव्यू में आवाज़ बिगड़ सकती है, वीडियो में नहीं"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terlalu keras bersama · pratinjau bisa pecah, videonya tidak"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Troppo forte insieme · l’anteprima può distorcere, il video no"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重ねると大きすぎます · プレビューは音割れすることがありますが、ビデオは割れません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "함께 너무 커요 · 미리보기는 소리가 깨질 수 있지만 비디오는 그렇지 않아요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "For høyt sammen · forhåndsvisningen kan forvrenge, videoen gjør det ikke"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Samen te luid · de voorvertoning kan vervormen, de video niet"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alto demais junto · a prévia pode distorcer, o vídeo não"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "För högt tillsammans · förhandsvisningen kan förvrängas, videon gör det inte"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ดังเกินไปเมื่อรวมกัน · ตัวอย่างอาจเสียงแตก แต่วิดีโอไม่แตก"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Birlikte çok yüksek · önizleme bozulabilir, video bozulmaz"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quá to khi cộng lại · bản xem trước có thể bị rè, video thì không"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "叠加后太响 · 预览可能失真，视频不会"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "疊加後太響 · 預覽可能失真，影片不會"
+          }
+        }
+      }
+    },
     "Too many ideas" : {
       "comment" : "Adjust sheet: answer to What was too long? (too many points in one video)",
       "localizations" : {

@@ -31,6 +31,9 @@ protocol TakeEditing: AnyObject {
     ) async throws -> CaptionOutcome
     /// The edited take for a player, prepared for `purpose` the way the export prepares it (`EditRenderRequest`).
     func previewItem(forVideoAt url: URL, edit: TakeEdit, purpose: EditRenderPurpose) async throws -> AVPlayerItem
+    /// The loudest sample of `edit`'s sounds mixed together as an export mixes them, before its limiter (`Mixdown.peak`): over 1 the
+    /// preview distorts where the exported file doesn't. Nil when the edit plays one sound (nothing is mixed).
+    func mixPeak(forVideoAt url: URL, edit: TakeEdit) async throws -> Float?
     /// The volume at which the take's untreated sound is as loud as the Voice tool's result, for
     /// "Compare with original"; nil when the take has no speech to measure.
     func matchedOriginalVolume(forVideoAt url: URL, edit: TakeEdit) async -> Double?

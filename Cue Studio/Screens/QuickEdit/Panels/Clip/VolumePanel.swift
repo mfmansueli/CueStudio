@@ -8,15 +8,28 @@ import SwiftUI
 /// Volume, 0 to 200%, of the picked clip (with "Mute this clip"), music or voice-over; a video's own sound over the take, 0 to
 /// 100% (muted until it's turned up). A clip and music keep their fades under Advanced. Music has "Lower under voice" with who
 /// it goes down under, how far ("Lower by") and what it does in pauses, the same on every music clip at once, and ◐ to hear it
-/// without lowering.
+/// without lowering. When the sounds together go over full scale, a line says the preview may distort and the video won't.
 struct VolumePanel: View {
     @Bindable var viewModel: QuickEditViewModel
 
     var body: some View {
-        if let media = viewModel.selectedMedia {
-            mediaVolume(media)
-        } else {
-            clipVolume
+        Group {
+            if let media = viewModel.selectedMedia {
+                mediaVolume(media)
+            } else {
+                clipVolume
+            }
+        }
+        // The sounds together measured while Volume is open, again once a change rests (`QuickEditViewModel.measureMix`).
+        .task(id: viewModel.edit) { await viewModel.measureMix() }
+    }
+
+    /// The edit's sounds go over full scale together: the preview (no limiter) may distort, the exported video doesn't.
+    @ViewBuilder
+    private var loudMixNote: some View {
+        if viewModel.mixTooLoud {
+            PanelNote(text: String(localized: "Too loud together · the preview may distort, the video won’t"), tint: Palette.warnText)
+                .accessibilityIdentifier("edit.volume.loudMix")
         }
     }
 
@@ -30,6 +43,7 @@ struct VolumePanel: View {
                 onEditingChanged: { editing in editing ? viewModel.beginPanelChange() : viewModel.endPanelChange() }
             )
             PanelNote(text: String(localized: "0% keeps it muted under your voice. Turn it up to hear it."))
+            loudMixNote
         }
     }
 
@@ -56,6 +70,7 @@ struct VolumePanel: View {
                         identifier: "edit.volume.mute"
                     ) { viewModel.clips.setClipMuted(!(viewModel.targetClip?.isMuted ?? false)) }
                 }
+                loudMixNote
             }
             switch viewModel.selection {
             case .music(let id):

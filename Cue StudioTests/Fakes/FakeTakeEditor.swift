@@ -124,6 +124,15 @@ final class FakeTakeEditor: TakeEditing {
         AVPlayerItem(url: url)
     }
 
+    /// What `mixPeak` hands back, and how many times it was asked.
+    var mixPeak: Float?
+    private(set) var mixPeakRequests = 0
+
+    func mixPeak(forVideoAt url: URL, edit: TakeEdit) async throws -> Float? {
+        mixPeakRequests += 1
+        return mixPeak
+    }
+
     /// What `matchedOriginalVolume` hands back.
     var matchedVolume: Double? = 1.4
     private(set) var matchRequests = 0

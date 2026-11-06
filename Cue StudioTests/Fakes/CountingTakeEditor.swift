@@ -45,6 +45,10 @@ final class CountingTakeEditor: TakeEditing {
         return try await editing.previewItem(forVideoAt: url, edit: edit, purpose: purpose)
     }
 
+    func mixPeak(forVideoAt url: URL, edit: TakeEdit) async throws -> Float? {
+        try await editing.mixPeak(forVideoAt: url, edit: edit)
+    }
+
     func matchedOriginalVolume(forVideoAt url: URL, edit: TakeEdit) async -> Double? {
         await editing.matchedOriginalVolume(forVideoAt: url, edit: edit)
     }

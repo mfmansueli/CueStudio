@@ -75,8 +75,12 @@ struct PreviewExportSoundTests {
         defer { try? FileManager.default.removeItem(at: mixed) }
         let limited = try AudioEnhancer.limit(mixed, prefix: "Cue-test-preview-")
         defer { try? FileManager.default.removeItem(at: limited) }
+        // What Volume's notice reads (`Mixdown.peak`): the same mix's loudest sample.
+        let measured = try #require(try await Mixdown.peak(of: composition, audioMix: audioMix))
         withExtendedLifetime(sources) {}
-        return (try level(of: mixed), try level(of: limited))
+        let levels = (mixed: try level(of: mixed), exported: try level(of: limited))
+        #expect(abs(measured - levels.mixed.peak) < 0.001)
+        return levels
     }
 
     /// Voice and music at everyday levels: what the preview plays is what the file has.
@@ -86,6 +90,8 @@ struct PreviewExportSoundTests {
               + "loudness \(levels.mixed.rmsDecibels) → \(levels.exported.rmsDecibels) dB")
         #expect(levels.mixed.peak < AudioCeiling.ceiling)
         #expect(levels.mixed.overs == 0)
+        // Volume says nothing: under full scale.
+        #expect(levels.mixed.peak <= 1)
         #expect(abs(levels.mixed.rmsDecibels - levels.exported.rmsDecibels) < 0.2)
     }
 
@@ -96,6 +102,8 @@ struct PreviewExportSoundTests {
         print("MEASURE preview/export loud: preview peak \(levels.mixed.peak) with \(levels.mixed.overs * 100)% clipped samples, "
               + "file peak \(levels.exported.peak), loudness \(levels.mixed.rmsDecibels) → \(levels.exported.rmsDecibels) dB")
         #expect(levels.mixed.overs > 0)
+        // Volume says "Too loud together": over full scale.
+        #expect(levels.mixed.peak > 1)
         #expect(levels.exported.peak <= AudioCeiling.ceiling + 0.001)
         #expect(levels.exported.overs == 0)
         #expect(levels.mixed.rmsDecibels - levels.exported.rmsDecibels < 3)
