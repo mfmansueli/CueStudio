@@ -40,6 +40,18 @@ final class EditorTaskUITests: XCTestCase {
         XCTAssertEqual(EditorApp.length(app), "00:21.6")
     }
 
+    /// Undo and Redo say what they took back, in the tool's own word.
+    func testUndoAndRedoSayWhatTheyTookBack() {
+        let app = EditorApp.open(demo: true)
+        EditorApp.goToCaption(app, 3)
+        EditorApp.tapTool(app, "edit")
+        EditorApp.tapTool(app, "split")
+        app.buttons["edit.undoButton"].tap()
+        XCTAssertTrue(EditorApp.toastSays(app, "Undid · Split", timeout: 6))
+        app.buttons["edit.redoButton"].tap()
+        XCTAssertTrue(EditorApp.toastSays(app, "Redid · Split", timeout: 6))
+    }
+
     /// The same mistake with the clip's left handle: Split at the line, then drag the start of the
     /// second clip to where the next line starts (3 s at 44 points a second).
     func testCuttingAMistakeWithAHandle() {
@@ -107,7 +119,7 @@ final class EditorTaskUITests: XCTestCase {
         XCTAssertEqual(field.value as? String, "e caldo de cana do lado.")
     }
 
-    /// Every caption goes at once, and Undo in the toast brings them back.
+    /// Every caption goes at once, after asking how many, and Undo in the toast brings them back.
     func testDeletingAllCaptionsAtOnceCanBeUndone() {
         let app = EditorApp.open(demo: true)
         EditorApp.tapTool(app, "captions")
@@ -116,6 +128,11 @@ final class EditorTaskUITests: XCTestCase {
         let deleteAll = app.buttons["edit.captionsDeleteAll"]
         XCTAssertTrue(deleteAll.exists(within: 5))
         deleteAll.tap()
+        // It asks first; Cancel would keep every line.
+        let confirm = app.buttons["edit.captionsDeleteAllConfirm"]
+        XCTAssertTrue(confirm.exists(within: 5))
+        XCTAssertTrue(first.exists)
+        confirm.tap()
         XCTAssertTrue(EditorApp.toastSays(app, "lines deleted"))
         XCTAssertFalse(first.exists)
         // The editor's toast has its Undo; the app's own toast host under the editor shows one too,
