@@ -18,6 +18,8 @@ final class CaptionsViewModel: EditorPart {
     var captionState: CaptionState = .idle
     /// Asking before new captions replace lines the creator corrected or wrote.
     var confirmsCaptionReplacement = false
+    /// Asking before Delete all takes every line (`+LineByLine`).
+    var confirmsDeletingAll = false
     /// Captions › Select: the lines picked to be styled, moved or deleted together (`+Picks`); nil while lines are picked one
     /// at a time.
     var captionPicks: Set<UUID>?

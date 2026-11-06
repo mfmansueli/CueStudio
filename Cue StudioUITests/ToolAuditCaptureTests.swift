@@ -267,8 +267,7 @@ final class ToolAuditCaptureTests: XCTestCase {
         // Auto captions before there are any: delete them all first.
         EditorApp.tapTool(app, "captions")
         if tap("edit.captionsDeleteAll") {
-            let confirm = app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Delete'")).allElementsBoundByIndex.last
-            if let confirm, confirm.exists { confirm.tap() }
+            tap("edit.captionsDeleteAllConfirm")
             apply()
             EditorApp.tapTool(app, "captions")
             try tour("auto-captions")
@@ -325,6 +324,7 @@ final class ToolAuditCaptureTests: XCTestCase {
             if !deleted { drag(from: 0.9, to: 0.62) }
         }
         if deleted {
+            tap("edit.captionsDeleteAllConfirm")
             apply()
             EditorApp.tapTool(app, "captions")
             try tour("auto-captions")

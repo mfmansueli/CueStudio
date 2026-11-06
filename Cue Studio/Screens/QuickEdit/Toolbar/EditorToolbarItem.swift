@@ -12,8 +12,11 @@ struct EditorToolbarItem: Identifiable, Hashable {
         case normal
         /// Can't do its job right now; still tappable, and a toast says why.
         case dimmed
-        /// Deletes something.
+        /// Deletes the picked item: pinned at the end of the bar.
         case destructive
+        /// Deletes every item of a kind (Delete all captions): red like Delete, but last among the tools that scroll, never in
+        /// Delete's pinned place, and it asks first.
+        case destructiveAll
         /// Smart (the AI's): violet.
         case smart
     }
@@ -40,7 +43,7 @@ struct EditorToolbarItem: Identifiable, Hashable {
     /// A switch (a track bar's Show, Compare): lit while on, and VoiceOver hears it as a switch, on or off. Nil: a button.
     var isOn: Bool?
 
-    /// Delete stays at the end of the bar while the other tools scroll.
+    /// Delete (of the picked item) stays at the end of the bar while the other tools scroll.
     var isPinned: Bool { style == .destructive }
 
     /// The same tool starting a group (a thin line before it).

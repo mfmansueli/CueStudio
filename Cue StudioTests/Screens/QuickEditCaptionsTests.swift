@@ -417,8 +417,12 @@ struct QuickEditCaptionsTests {
         await finish(viewModel)
         viewModel.perform(.openMenu(.captions))
         let last = viewModel.toolbarItems.last
-        #expect(last?.id == "deleteAll" && last?.style == .destructive && last?.isPinned == true)
+        // Last among the tools that scroll, never in the picked line's pinned Delete place, and it asks first.
+        #expect(last?.id == "deleteAll" && last?.style == .destructiveAll && last?.isPinned == false)
         viewModel.perform(.deleteAllCaptions)
+        #expect(!viewModel.edit.captions.isEmpty)
+        #expect(viewModel.captions.confirmsDeletingAll)
+        viewModel.captions.deleteAllCaptions()
         #expect(viewModel.edit.captions.isEmpty)
     }
 

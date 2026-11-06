@@ -360,7 +360,8 @@ struct QuickEditToolbarTests {
         viewModel.changeEdit { $0.captions = [CaptionCue(text: "Oi", start: 1, end: 2, origin: .manual)] }
         #expect(ids(viewModel) == ["showCaptions", "addLine", "allLines", "style", "translate", "findReplace", "editByText", "deleteAll"])
         #expect(viewModel.toolbarItems.last?.action == .deleteAllCaptions)
-        #expect(viewModel.toolbarItems.last?.isPinned == true)
+        // Last of the tools that scroll: the pinned place is a picked item's own Delete.
+        #expect(viewModel.toolbarItems.last?.isPinned == false)
         // Show is the panel's switch: lit while the lines show, off and dark once hidden, in one undo step.
         viewModel.changeEdit { $0.showsCaptions = true }
         #expect(viewModel.toolbarItems.first?.isOn == true)
