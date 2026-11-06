@@ -120,6 +120,34 @@ O estado de cada linha avança conforme a evidência.
 | Aviso de remoção | "Clip 2 deleted" | Diz o que foi junto e oferece Undo, sem confirmar cada corte |
 | Undo e Redo | — | Recupera mídia, propriedades e sincronia (teste em cada caso) |
 
+### 4.1 Estado da E2 nas relações no tempo (06/11, noite; branch `e2-timing`)
+
+Regras em `CutFollowing` (toda mudança dos cortes, em `EditDocument.commit`) e `TakeEdit.removingClip` (apagar um clipe); descrição em
+`DESIGN_PROJECT.md` §37 › Relações no tempo. Evidência C + testes de unidade (nada no aparelho).
+
+| Caso | Estado | Teste |
+|---|---|---|
+| Vídeo preso a segundos aparados (prévia × arquivo) | Corrigido: o arquivo começa do segundo a que tinha chegado (`MediaOverlay.pieces`) | `PreviewMatchesExportTests` (sem `withKnownIssue`), `MediaPiecesTests` |
+| Texto em trecho apagado (simples) | Já mantinha a parte; o que estava só no clipe fica escondido e o aviso conta | `aTextOfOneTakeKeepsWhatIsLeft…` |
+| Texto em montagem, clipe inicial apagado | Corrigido: fica a parte sobre o próximo; o que estava só nele sai | `aMontageTextWhoseFirstClipIsDeleted…` |
+| Mídia que segue os cortes, clipe inicial apagado | Corrigido, no passo do arquivo | `mediaThatFollowsTheCutsKeepsThePart…` |
+| Narração em clipe apagado de outra gravação | Corrigido: começa no corte; o recurso de `VoiceOverClip.swift:52` fica na mesma gravação | `aVoiceOverOnADeletedClipOfAnotherVideo…` |
+| Narração sob remoção de fala | Já era assim (toca inteira); teste | `aVoiceOverPlaysWhole…` |
+| Efeitos sonoros em clipe apagado | Corrigido: vão junto e o aviso conta | `soundEffectsOnADeletedClipGoWithIt…` |
+| Texto sobre congelamento ou inserção | Corrigido: termina com a fala (cobre o inserido) | `aTextOverAFreezeFrameEndsWithItsSpeech` |
+| Reverter ou duplicar depois de dividir | Corrigido (`TakeEdit.layersStarting`) | `aSplitsRightPartHoldsWhatIsOnIt`, `duplicatingASplitsRightPart…` |
+| Substituir ou reverter (legendas) | Mantido de propósito; teste | `captionsOfTheSpeechStayOffAReversedClip` |
+| Música sob introdução inserida | Fica; o toast oferece **Move music along** | `musicStaysUnderAnInsertedIntro…`, `movingTheMusicAlongIsOneStep` |
+| Música empurrada para depois do fim | Corrigido: fica à vista no fim (0,5 s) | `musicPastTheNewEndStaysInView` |
+| Keyframes depois de mudar velocidade | Já certo (saída no novo fim, keyframes não esticam); teste | `aFasterClipKeepsATextsExitAndKeyframes` |
+| Mídia sobre um vão | Corrigido: keyframes ficam nos quadros | `keyframesOfMediaStayOnTheirFramesAcrossAGap` |
+| Transição ao mover o clipe para primeiro | Por desenho (o primeiro não tem transição; Undo traz); teste | `aClipMovedFirstPlaysFromAHardCut…` |
+| Edição simples × montada | Corrigido: uma regra (pausa sob o texto encurta nas duas) | `aPauseTakenOutUnderATextShortensItInBothKinds` |
+| Aviso de remoção | "Clip 2 deleted, with 1 text and 2 sounds" · Undo (20 idiomas) | `deletingAClipSaysWhatWentWithIt…` |
+| Undo e Redo | Testado por caso e na exclusão | `undoAndRedoOfADeletedClip…`, `aGestureOutAndBack…` |
+
+Limite: numa montagem, aparar com a alça sob um texto o deixa no que sobrou; arrastar de volta num gesto seguinte não o faz crescer (o Undo faz).
+
 ## 5. Confiança, previsibilidade e automação (relatório §7 e §9, itens fora de §10)
 
 | Item | Destino |

@@ -1998,6 +1998,31 @@ auditoria: `reports/editor-award-checklist.md`.
   transição e look. Textos, mídias e narrações presos ao clipe ficam no mesmo momento dele. Legendas e Studio Voice são da gravação: a nova não
   tem legendas até Auto captions ouvir de novo. A gravação antiga nunca muda; um Undo ("Clip replaced" · Undo) a traz de volta. Foto: "Pick a
   video first"; menos de 0,3 s: "Video too short to add".
+- **Relações no tempo** (`CutFollowing`, aplicado em `EditDocument.commit` a toda mudança dos cortes, a partir de onde um gesto começou;
+  `TakeEdit.removingClip` ao apagar um clipe; plano §6, matriz §4 de `reports/editor-trust-matrix.md`). Uma regra por tipo de camada, a mesma num
+  vídeo de uma take e numa montagem:
+  - **Textos e fotos ou vídeos por cima** ficam sobre o que foram postos: aparecem do primeiro ao último momento daquilo que continua no vídeo.
+    Em parte sobre o que saiu, mantêm o resto (o clipe onde começavam apagado, ficam na parte sobre o próximo); um congelamento ou clipe posto no
+    meio deles, terminam com a fala (cobrem o inserido); uma pausa tirada sob eles, encurtam. Um momento só "continua" no clipe que o tocava ou num
+    clipe feito dele nessa mudança (a parte direita de uma divisão, o que o Clean Up deixou), nunca noutra cópia dos mesmos segundos. Clipes postos
+    em outra ordem levam o que começa neles, como antes. Uma foto ou vídeo que segue os cortes guarda o passo da fala (o arquivo do segundo a que
+    tinha chegado) e seus keyframes ficam nos quadros onde foram postos quando um clipe abre um vão no meio dela; um vídeo antigo, que toca direto,
+    mostra o arquivo do segundo a que tinha chegado quando o começo dele foi aparado ou apagado (prévia e arquivo iguais,
+    `PreviewMatchesExportTests`).
+  - **Tudo sobre o clipe apagado** vai com ele e o aviso conta: textos, fotos e vídeos (num vídeo de uma take ficam presos aos segundos dela,
+    escondidos, e voltam se uma alça traz esses segundos; numa montagem saem da edição, pois só o Undo traz o clipe), efeitos e sons extraídos
+    postos nos seus momentos (nunca vão para o começo do próximo clipe).
+  - **Narração** toca inteira, nunca cortada nem comprimida com a fala sob ela; a que começava num momento que saiu começa onde a edição continua
+    (no corte), nunca no mesmo segundo de outra gravação; sem nada depois dela, vai com o clipe.
+  - **Música** fica no seu lugar da edição, inclusive sob uma introdução posta antes (decisão do dono, 06/11/2026): **In sequence** diz "· the music
+    stays where it was" e oferece **Move music along** (a música que começava dali em diante anda o tamanho do clipe novo, um passo de desfazer; se
+    o vídeo mudou antes do toque, "The video changed meanwhile · Move the music on its track"). Uma música que ficaria inteira depois do novo fim
+    fica à vista no fim (os últimos 0,5 s), para ser arrastada de volta.
+  - **Keyframes** contam do começo do item e nunca esticam: um clipe mais rápido encurta o texto, e a saída de Motion (In and out) ainda acontece no
+    novo fim. **Transição**: o clipe que passa a ser o primeiro toca de um corte seco (nada vem antes); levado ao meio, mantém a sua; Undo traz de volta.
+  - Desfazer e refazer trazem tudo junto (cortes, camadas, sons e onde estavam). Limite conhecido: numa montagem, uma alça que apara sob um texto o
+    deixa no que sobrou; arrastar a alça de volta num gesto seguinte não o faz crescer de novo (o Undo faz). Testes: `CutFollowingTests`,
+    `ClipsTimeRelationsTests`, `MediaPiecesTests`, `MusicClipTimelineTests`.
 - **Extract audio** (barra do clipe e, num vídeo com som por cima, a da mídia; `AudioViewModel+ExtractAudio`, `SoundExtractor`,
   `TakeEditing.extractSound`): o som do clipe sai para a faixa de música como um clipe próprio ("Sound · Clip 2" / "Sound · Video",
   `MusicClip.extractedFrom`), onde tocava, no volume do clipe (ou do vídeo), sem fades e sem abaixar sob a voz, e o clipe (ou o vídeo) fica mudo:
@@ -2100,11 +2125,13 @@ auditoria: `reports/editor-award-checklist.md`.
 - **Freeze frame** (barra do clipe, `StillClipWriter`, fora da thread da interface, toast "Freezing the frame…"; se os cortes mudarem enquanto o
   quadro é feito, nada entra e o toast pede para congelar de novo): o quadro da agulha vira um vídeo
   mudo de 5 s na mídia da edição e entra como clipe de 2 s ali (o clipe é dividido; colado no início de um clipe, entra antes dele), com o look e o
-  fundo do clipe de origem; a alça do fim estica até 5 s. A música e as narrações continuam; a gravação nunca muda. Numa gravação **HDR**
+  fundo do clipe de origem; a alça do fim estica até 5 s. A música e as narrações continuam; um texto sobre o ponto congelado termina com a
+  fala sobre a qual foi posto (cobre o quadro congelado e não acaba 2 s antes); a gravação nunca muda. Numa gravação **HDR**
   (`.containsHDRVideo`, como as do iPhone em HLG) o quadro congelado é o próprio quadro decodificado em 10 bits, gravado em HEVC Main 10 com as
   mesmas primárias, função de transferência e matriz e a mesma rotação da gravação, para o editor convertê-lo como os clipes vizinhos; numa SDR,
   uma imagem em pé em H.264. Se o HDR não puder ser gravado, o quadro congela em SDR (nunca falha por isso).
 - **Efeitos sonoros seguem o momento** (`MusicClip.following`): um corte antes de um efeito o traz junto, como textos e legendas; a música fica.
+  Apagar o clipe onde um efeito (ou um som extraído) foi posto o leva junto, sem amontoar no começo do próximo (relações no tempo, abaixo).
 - **Use on every cut** copia também a duração; se todos já têm, o toast diz "Every cut already has it".
 - **Edit by text numa montagem** corta só o clipe onde as palavras foram lidas (uma cópia as mantém); palavras com 44 pt; a nota diz que Undo traz
   de volta o que foi cortado.
@@ -2283,7 +2310,9 @@ Prévia e exportação passam pelo mesmo compositor (`CueVideoCompositor`), ent�
 - **Reverse** (barra do clipe, depois de Freeze frame; `ReversedClipWriter`, `ReversedSound`, `ClipReversal`): o trecho do clipe é escrito de trás
   para a frente, imagem e som, como um vídeo próprio na mídia da edição (HEVC no tamanho, quadros por segundo e orientação da gravação; alguns
   quadros por vez, no máximo ~100 MB na memória), e o clipe passa a tocá-lo, com a mesma velocidade, look e lugar; textos, mídias e voice-overs em
-  cima ficam onde estavam no vídeo. **Reverse de novo** volta ao original; mais uma vez, toca o vídeo invertido já escrito (ir e voltar nunca escreve
+  cima ficam onde estavam no vídeo (também os da parte direita de um clipe dividido, que continuam nomeando a esquerda: `TakeEdit.layersStarting`;
+  Duplicate copia os mesmos). As legendas da fala não aparecem sobre o clipe invertido (de propósito: as palavras tocam de trás para a frente)
+  e voltam quando ele toca para a frente de novo. **Reverse de novo** volta ao original; mais uma vez, toca o vídeo invertido já escrito (ir e voltar nunca escreve
   outro arquivo). Vídeos invertidos que nada toca saem da edição no Done; se o editor fecha enquanto um é escrito, ele é apagado. Até 2 minutos ("Reverse works on clips up to 2 minutes · Split it first"). Um passo
   de desfazer; a gravação nunca muda.
 - **Beats** (para música, dos Files ou da biblioteca do Cue; efeitos sonoros e sons extraídos do vídeo não têm; `BeatDetector`, `BeatTracker`, `BeatStore`, `BeatCuts`,
@@ -2487,7 +2516,8 @@ iguais ou melhores; o fundo e o recorte num painel só, de propósito.
 - **Barra de ferramentas:** principal e barras de item em §55; o esmaecido só no lado onde há mais ferramentas; "Add
   line" adiciona uma linha na agulha; Text › **Motion** (antes "Animation"); Subheading e Hook com o símbolo do papel.
 - **Avisos** (`EditorPart+Toasts`, o toast do app, §1): dividir, duplicar, apagar e adicionar dizem o quê e onde ("Clip 2 deleted", "Photo added at
-  00:07.0"), com ✓ e **Undo**; o que não pode acontecer diz por quê, com !.
+  00:07.0"), com ✓ e **Undo**; o que não pode acontecer diz por quê, com !. Apagar um clipe diz o que foi junto ("Clip 2 deleted, with 1 text
+  and 2 sounds", `ClipsViewModel.deletedMessage`), sem pedir confirmação a cada corte.
 - **Dois toques** num texto ou legenda no vídeo abrem as palavras com o teclado (Text style ou a linha em Captions).
 - **Texto à mão na prévia** (`TextTransformRecognizer`, `TextHandle`, `OverlaysViewModel+TextTransform`): um dedo arrasta; dois dedos aumentam e giram
   juntos, sem saltos (a cópia sob os dedos é o mesmo desenho do vídeo; num texto com efeito, a pintura que a prévia já fez, 4–7 ms no iPhone 15 Pro);
