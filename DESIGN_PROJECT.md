@@ -1247,7 +1247,10 @@ dedo, 22/10/2026), com um tique e "Take 2 of 3" por 1,4 s. **Estrela**: pula e s
 **Trilha**: a barra do estágio atual se preenche ao abrir e quando avança (`Haptics.success` ao subir). **Save**: gira enquanto salva e mostra ✓ verde
 "Saved" por 2,2 s quando o vídeo chega às Fotos (depois de fechar "Ready to travel"). Reduzir Movimento: sem pulos, faíscas nem preenchimento.
 
-**Quick edit:** barra do sistema (`EditorTopBar` como `ToolbarContent`, `NavigationStack` próprio): voltar, "● IN EDIT · AUTOSAVED", **Done** em
+**Quick edit:** barra do sistema (`EditorTopBar` como `ToolbarContent`, `NavigationStack` próprio): voltar, o selo do rascunho (`EditorDraftKeeper`:
+"● NO CHANGES YET", "● IN EDIT · SAVING…" até a mudança estar no disco, "● IN EDIT · AUTOSAVED" quando está, "● IN EDIT · NOT SAVED" em `warnText` quando a
+gravação falhou; onde não cabe, só a parte que importa: "SAVING…", "SAVED", "NOT SAVED"; uma gravação antiga que termina depois de uma mudança nova nunca
+diz Saved), **Done** em
 `.glassProminent` amarelo com texto `accInk` (`ink2` enquanto carrega). Some em tela cheia. `EditorLayout` usa a altura sob a barra (`EditorHeightClass`:
 regular a partir de 696, compacta de 636). Painéis: §29, §31.
 
@@ -2117,8 +2120,10 @@ auditoria: `reports/editor-award-checklist.md`.
   legendas…) são lidos item por item (`LossyList`); um item ilegível fica de fora sozinho e o arquivo como era é guardado ao lado
   (`takes-kept-…`/`scripts-kept-…`); uma biblioteca que não pôde ser lida nunca é gravada por cima. **Sair do editor só diz "salvo" quando está no
   disco:** se o Done não consegue gravar a take, a edição fica como rascunho que o Edit reabre ("Couldn't save the edits · Kept as a draft"); se nem o
-  rascunho pode ser gravado (Back, Not yet ou Done), "Couldn't save the edits · Free up space on this iPhone", nunca "Draft saved"
-  (`TakeLibraryService.applyEdit` e `QuickEditDraftStoring.save` lançam o erro). **Roteiros e takes que não puderam ser gravados** ficam na
+  rascunho pode ser gravado (Back, Not yet ou Done), o editor **fica aberto** e diz por quê, com **Leave anyway**: "Couldn't save the edits · Free up space on
+  this iPhone" só quando é falta de espaço (`QuickEditDraftSaveFailure`), senão "Couldn't save the edits · Try again"; pedir para sair de novo (ou Leave
+  anyway) sai, com o último rascunho gravado. Nunca "Draft saved" sem gravar (`TakeLibraryService.applyEdit` e `QuickEditDraftStoring.save` lançam o erro).
+  O autosalvamento que falha avisa uma vez ("· Free up space on this iPhone" ou "· Cue keeps trying") e tenta de novo a cada 5 s. **Roteiros e takes que não puderam ser gravados** ficam na
   memória (`saveFailed`): o Cue grava de novo ao voltar para a frente (`AppServices.reloadWhatCouldntBeRead`) e, com o Cue na frente, avisa
   "Couldn't save your work · Free up space on this iPhone" (`RootView`); uma falha em segundo plano (bloqueado) só avisa se a nova tentativa também
   falhar. A página do roteiro não diz "Saved as v…" sem gravar. Travamentos, CPU e escrita em disco medidos pelo MetricKit chegam ao Crashlytics como non-fatal (`DiagnosticsObserver`).
@@ -2237,7 +2242,8 @@ Prévia e exportação passam pelo mesmo compositor (`CueVideoCompositor`), ent�
   Exportar com Seguir rosto ou Estabilizar faz a análise que faltar antes de começar, fora da thread principal; se o iPhone esquenta (sério ou
   crítico) ela para, o que foi feito fica salvo e a exportação diz "Your iPhone is too warm to finish this video. Let it cool down, then export
   again." (nunca sai um vídeo diferente do que o criador pediu). Os painéis dizem quanto falta: "Finding your face · 40%", "Measuring the shake · 40%", "Waiting for the
-  iPhone to cool down · 40%", "Goes on when Cue is open · 40%", "This video couldn’t be read".
+  iPhone to cool down · 40%", "Goes on when Cue is open · 40%", "This video couldn’t be read"; com o painel fechado, a mesma frase fica sobre o pé da
+  prévia (`MotionPendingPill`), porque até lá o clipe toca como gravado.
 - **Format › Follow face** (`TakeEdit.faceFollow`, `FaceFollow`, `FollowPace`, `FaceFollowPath`): com Fill e um formato que corta (4:5, 1:1 ou 16:9 de
   uma gravação 9:16; numa montagem, qualquer um), o recorte acompanha o rosto como um operador de câmera: fica parado enquanto o rosto anda numa
   zona calma, vai atrás quando ele sai, nunca mais rápido que o ritmo, começa e para suave (caminho suavizado nos dois sentidos, sem atraso), com
@@ -2515,7 +2521,13 @@ O editor por dentro, para milhares de criadores: nada se perde, nada some, nada 
 - **Prévia:** a composição é montada fora da linha principal (§42). Dois clipes dos mesmos segundos de gravações diferentes trocados reconstroem a prévia
   (`ItemKey.sources`; teste Mirror de `EditSegment`). Um item que falha depois de tocar mostra "The preview couldn't be built · Your edit is safe" com
   **Try again**, e o Cue tenta sozinho ao voltar para a frente.
-- **Sair do editor** cancela tudo que ele começou (`startJob`, prévias curtas, comparação, tradução); o que termina depois é descartado.
+- **Sair do editor** cancela tudo que ele começou (`startJob`, prévias curtas, comparação, tradução); o que termina depois é descartado. O trabalho que muda a
+  edição quando termina (`EditorPendingWork`: legendas, tradução, Track, Desfocar área seguindo, um clipe sendo feito, Auto) segura o **Done** com a frase do
+  que falta ("Captions are still being made · Wait a moment"…); o **Back** guarda o rascunho, para o trabalho e diz qual não terminou ("Draft saved ·
+  Captions weren't finished"…). Back enquanto o vídeo carrega, ou depois de ele não abrir, deixa o rascunho de antes como estava.
+- **Rascunho que não abre inteiro** (`QuickEditDraftReading`): um rascunho ilegível (danificado, ou de um Cue mais novo) abre a edição da take com "Couldn't
+  open your draft · A copy is kept on this iPhone"; um lido em parte abre com "Draft restored · Some parts couldn't be read" e é gravado de novo. Nos dois, o
+  arquivo como era é guardado em `Kept/` antes de qualquer gravação por cima (os 3 mais novos por take; excluir a take leva os dela, `forget`).
 - **Rascunho:** gravado 600 ms depois de cada mudança numa fila em segundo plano, com os passos de desfazer finos (legendas e traduções iguais às do passo
   seguinte ficam de fora; ~5× menor num vídeo longo). Leituras, descartes e o rascunho guardado ao sair esperam a fila. As legendas que uma exportação
   ouviu enquanto o rascunho esperava (guardadas no take) entram no rascunho ao reabrir, se ele nunca teve legendas próprias, e os passos de desfazer
@@ -2523,7 +2535,9 @@ O editor por dentro, para milhares de criadores: nada se perde, nada some, nada 
 - **Falhas que o criador vê** (exportar, salvar, rascunho, prévia, importar, congelar, inverter, extrair, legendas, Clean Up, Track, traduzir, voice-over)
   vão ao Crashlytics como non-fatal `Editor.<operação>.<motivo>` com contagens e o estado do aparelho, nunca conteúdo (`EditorFailureReport`).
 - **Robustez:** mídia de edição que nada cita há 7 dias é apagada no lançamento (busca do nome em todo JSON do app; um arquivo ilegível cancela a
-  varredura); voice-over interrompido por ligação ou outro app para e guarda o que gravou ("Recording stopped · Another app took the microphone"), e um
+  varredura); voice-over interrompido por ligação ou outro app para e guarda o que gravou ("Recording stopped · Another app took the microphone");
+  a Central de Controle ou uma notificação puxada não param a gravação (o Cue segue na tela), e sair do Cue para ali, guarda o trecho como clipe e diz na
+  volta "Voice-over stopped when you left Cue · What you recorded is kept"; um
   arquivo que não grava é descartado com aviso; Cancel e "Not yet" durante a gravação guardam a narração no rascunho; foto importada já reduzida a 2160
   px pelo `CGImageSource`; erros do sistema viram frases (iPhone cheio, microfone ocupado, Fotos sem conexão; `EditorErrorMessage`), e "The microphone is off
   for Cue" tem o botão Settings.
@@ -2558,7 +2572,13 @@ O editor organizado para crescer sem quebrar: cada coisa num lugar, e a prévia 
 - **Prévia = exportação** (`EditRenderRequest`, `EditRenderPurpose`): o mesmo preparo para a prévia do editor, a da revisão e a exportação. A prévia do editor
   toca a timeline esticada até a gravação inteira (as alças mostram quadros de verdade sem reconstruir), mas o zoom de um clipe e as transições são
   medidos na edição como ela é: com o primeiro clipe aparado, o zoom se espalhava pelo clipe inteiro e uma transição ao lado de um clipe curto ficava mais
-  longa que na exportação. `PreviewMatchesExportTests` compara 18 ferramentas quadro a quadro, com as duas pontas aparadas.
+  longa que na exportação. `PreviewMatchesExportTests` compara 27 ferramentas quadro a quadro, com as duas pontas aparadas (entre elas Fundo com pessoa e
+  com chroma, Pele, Máscara, tela dividida e curva de velocidade), nos meios de quadro (na borda, qual quadro aparece depende de arredondamento). Diferença
+  conhecida, para a etapa 2: um vídeo por cima preso aos segundos da take, cujo começo o corte inicial cortou, recomeça do primeiro quadro no arquivo e
+  segue a take na prévia (`aVideoPinnedToTrimmedSecondsShowsTheSameFrameInPreviewAndFile`, `withKnownIssue`). **Som:** o AVPlayer não deixa processar a
+  soma das faixas, então o limitador da exportação (`Mixdown`) não toca na prévia; medido nos arquivos renderizados (`PreviewExportSoundTests`), uma mistura
+  sob o teto é igual nos dois (0,001 dB) e uma acima dele (voz alta com música a 150%) estoura na prévia (3,7% das amostras) e sai 2,5 dB mais baixa no
+  arquivo.
 - **Versões de leitura** (`ReadingVersion`): uma tabela para o look, o Studio Voice, os estilos de legenda, a transcrição e o Auto (versão de hoje,
   primeira, e o que vale quando a edição salva não tem o número). Uma medição do Auto feita por um Cue mais novo não é desenhada (fica salva).
 - **Vídeos longos**: as legendas cronometradas na edição são calculadas uma vez por mudança e achadas por linha ou por momento (`CaptionMap`); a lista de
@@ -2641,7 +2661,8 @@ InShot, Edits, Descript e Captions (pesquisa de 24/10: os apps põem a limpeza d
   perguntam antes com **"Missing media"** ("Some photos, videos or sounds in this edit are no longer on this iPhone. Fix them in the editor,
   or remove them and export."), **Open editor**, **Remove and export** (a edição concluída fica sem o que sumiu; o fundo volta ao original e a
   capa a um quadro do vídeo) e Cancel; quando todo clipe toca uma gravação que sumiu, só **Open editor** ("Replace it in the editor to
-  export."). O editor diz o mesmo ao abrir, num toast com **Remove** (um passo de desfazer) ou pedindo o Replace (`TakeEdit+MissingMedia`).
+  export."). O editor marca o mesmo sobre o pé da prévia enquanto faltar (`MissingMediaNotice`, no lugar do toast que sumia e escondia "Draft restored"), com
+  **Remove** (um passo de desfazer; Desfazer que traz o arquivo de volta marca de novo) ou pedindo o Replace, e ✕ que esconde nesta visita (`TakeEdit+MissingMedia`).
   Um Done cuja edição não pôde ser salva no take volta à revisão como "Not yet" (rascunho), sem compartilhar nem
   baixar o vídeo como estava. O rascunho que não pôde ser gravado quando o Cue vai para o segundo plano (iPhone cheio) é dito na hora ("Couldn't save
   the edits · Free up space on this iPhone") e gravado de novo na volta.

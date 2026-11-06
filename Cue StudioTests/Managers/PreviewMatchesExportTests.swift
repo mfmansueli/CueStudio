@@ -28,6 +28,8 @@ extension RealExports {
                 try? FileManager.default.removeItem(at: take)
             }
             let edit = try await edit(for: feature, take: take)
+            // A support or a masked window: its video was linked in for this edit.
+            defer { EditMediaFiles.remove(edit.mediaFileNames) }
             let sounds = RecordingSoundCache()
             let preview = try await EditRenderRequest.prepare(
                 source: take, edit: edit, purpose: .editorPreview(rendersCurveSound: true), sounds: sounds
@@ -36,12 +38,47 @@ extension RealExports {
                 source: take, edit: edit, purpose: .export(burnsInCaptions: true, shortSide: 1080, frameRate: 30), sounds: sounds
             ).build()
             let leadIn = edit.timeline.reachableLeadIn
-            #expect(leadIn > 0.5)
+            // The 0.6 s trimmed off the start, played at the curve's speed there.
+            #expect(leadIn > (feature == .speedCurve ? 0.2 : 0.5))
             for time in feature.times {
                 let shown = try await RenderParity.frame(preview.asset, composition: preview.videoComposition, at: leadIn + time)
                 let written = try await RenderParity.frame(export.asset, composition: export.videoComposition, at: time)
                 let difference = try RenderParity.meanDifference(shown, written, size: size)
                 #expect(difference < 2, "\(feature.rawValue) at \(time) s: \(difference)")
+            }
+        }
+
+        /// A video laid over the take's own seconds (not following the cuts) from 0.2 s, with the take's start trimmed to 0.6 s: the
+        /// preview keeps it in step with the take (at the take's second 1.05, the video's 0.85), the file starts it over from its
+        /// first frame where the edit starts (0.45). Known since 06/11/2026, to be fixed with the timing rules of stage 2 (plan §6,
+        /// matrix §4): a layer partly over what is kept keeps its timing.
+        @Test func aVideoPinnedToTrimmedSecondsShowsTheSameFrameInPreviewAndFile() async throws {
+            let take = try await footage(for: .mask)
+            defer { try? FileManager.default.removeItem(at: take) }
+            var edit = TakeEdit(sourceDuration: 4, aspect: .portrait)
+            edit.voiceEnhancement = .off
+            edit.timeline.trimStart(to: 0.6)
+            edit.timeline.trimEnd(to: 3.6)
+            var window = MediaOverlay(
+                kind: .video, fileName: try await supportVideo(), aspect: 9.0 / 16, mediaDuration: 4, span: TimeSpan(start: 0.2, end: 2.8)
+            )
+            window.layout = .fullFrame
+            window.mask = MediaMask(shape: .circle, placement: MaskPlacement(center: OverlayPoint(x: 0.5, y: 0.3), width: 0.5, height: 0.5 * 9 / 16))
+            edit.media = [window]
+            defer { EditMediaFiles.remove(edit.mediaFileNames) }
+            let sounds = RecordingSoundCache()
+            let preview = try await EditRenderRequest.prepare(
+                source: take, edit: edit, purpose: .editorPreview(rendersCurveSound: true), sounds: sounds
+            ).build()
+            let export = try await EditRenderRequest.prepare(
+                source: take, edit: edit, purpose: .export(burnsInCaptions: true, shortSide: 1080, frameRate: 30), sounds: sounds
+            ).build()
+            let leadIn = edit.timeline.reachableLeadIn
+            let shown = try await RenderParity.frame(preview.asset, composition: preview.videoComposition, at: leadIn + 0.45)
+            let written = try await RenderParity.frame(export.asset, composition: export.videoComposition, at: 0.45)
+            let difference = try RenderParity.meanDifference(shown, written, size: size)
+            withKnownIssue("The file starts a video pinned to trimmed seconds from its first frame (stage 2)") {
+                #expect(difference < 2, "\(difference)")
             }
         }
 
@@ -79,6 +116,56 @@ extension RealExports {
             return try await MovingFootage.make(seconds: 4, width: 360, height: 640, motion: motion)
         }
 
+        /// The tools laid over the take or that reshape its time: Background, Skin, Mask, split screen and speed curves.
+        private func addLayer(_ feature: RenderFeature, to edit: inout TakeEdit) async throws {
+            switch feature {
+            case .speedCurve:
+                var clip = try #require(edit.timeline.segments.first)
+                clip.speedCurve = SpeedCurvePreset.hero.curve
+                _ = edit.timeline.replaceSegment(clip)
+            case .background:
+                // The person cut out of the take (the made-up footage has none: its whole picture is background) and blurred.
+                edit.backgrounds = [RecordingBackground(sourceID: nil, effect: BackgroundEffect(style: .blur, blur: 0.8))]
+            case .backgroundKey:
+                var effect = BackgroundEffect(style: .color, cutout: .colorKey)
+                effect.color = .white
+                edit.backgrounds = [RecordingBackground(sourceID: nil, effect: effect)]
+            case .skin:
+                // Without a face in the footage, Skin must leave the picture alike in both (the face itself is checked on the
+                // iPhone, `SkinSmoothingDeviceTests`).
+                edit.skin = SkinLook(smoothing: SkinSmoothing(amount: 100, texture: 50), faceLight: 100, antiShine: 100)
+            case .mask:
+                var window = MediaOverlay(
+                    kind: .video, fileName: try await supportVideo(), aspect: 9.0 / 16, mediaDuration: 4, span: TimeSpan(start: 0.2, end: 2.8)
+                )
+                window.layout = .fullFrame
+                // Following the cuts: the mask's drawing is compared here (a video pinned to seconds the trim cut into is
+                // `aVideoPinnedToTrimmedSecondsShowsTheSameFrameInPreviewAndFile`).
+                window.followsCuts = true
+                window.mask = MediaMask(shape: .circle, placement: MaskPlacement(center: OverlayPoint(x: 0.5, y: 0.3), width: 0.5, height: 0.5 * 9 / 16))
+                edit.media = [window]
+            case .splitScreen:
+                edit.splitScreen.setLayout(SplitLayout())
+                var support = MediaOverlay(
+                    kind: .video, fileName: try await supportVideo(), aspect: 9.0 / 16, mediaDuration: 4, span: TimeSpan(start: 0.2, end: 2.8)
+                )
+                support.layout = .split
+                support.followsCuts = true
+                edit.media = [support]
+            default:
+                break
+            }
+        }
+
+        /// Another moving video, linked into the edit's files (removed after the test).
+        private func supportVideo() async throws -> String {
+            let video = try await MovingFootage.make(
+                seconds: 4, width: 360, height: 640, motion: .init(background: { index in (CGPoint(x: -Double(index) * 3, y: 0), 0) })
+            )
+            defer { try? FileManager.default.removeItem(at: video) }
+            return try EditMediaFiles.link(video)
+        }
+
         private static let facePath: @Sendable (Int) -> CGPoint = { index in CGPoint(x: 180, y: 140 + Double(min(index, 90)) * 3) }
 
         /// An edit with both ends trimmed (0.6 s off the start, 0.4 s off the end) and the tool on.
@@ -114,6 +201,8 @@ extension RealExports {
             case .speed:
                 _ = edit.timeline.split(atEdited: 1)
                 _ = edit.timeline.setSpeed(2, forSegmentAt: 1)
+            case .speedCurve, .background, .backgroundKey, .skin, .mask, .splitScreen:
+                try await addLayer(feature, to: &edit)
             case .text:
                 var title = TextOverlay(role: .title, look: TypePreset.cue.look(for: .title), preset: .cue, span: TimeSpan(start: 0.2, end: 2.8))
                 title.text = "5 comidas de SP"
@@ -188,7 +277,8 @@ extension RealExports {
 /// The tools `PreviewMatchesExportTests` compares.
 enum RenderFeature: String, CaseIterable, CustomTestStringConvertible {
     case look, crop, fit, clipZoom, shortClipTransition, slide, zoomTransition, flash, fade, push, wipe, blur, punch, speed,
-         text, textEffects, turnedText, captions, stabilize, followFace, blurArea
+         speedCurve, text, textEffects, turnedText, captions, stabilize, followFace, blurArea, background, backgroundKey, skin, mask,
+         splitScreen
 
     var testDescription: String { rawValue }
 
@@ -200,6 +290,11 @@ enum RenderFeature: String, CaseIterable, CustomTestStringConvertible {
         case .slide, .zoomTransition, .flash, .fade, .push, .wipe, .blur, .punch: [0.85, 0.92, 1.0]
         // Sped up, the edit is 2 s.
         case .speed: [0.4, 1.2, 1.8]
+        // Slow in the middle, fast at the ends: within the shortest the curve can make.
+        case .speedCurve: [0.3, 0.9, 1.5]
+        // A video over the take: halfway between two frames of both (on a frame's edge, which of the two shows depends on the last
+        // bit of a sum, in the take and in the video over it alike).
+        case .mask, .splitScreen: [0.45, 1.45, 2.45]
         // On their way in, read, on their way out.
         case .textEffects: [0.35, 0.6, 1.4, 2.6, 2.75]
         default: [0.4, 1.4, 2.6]

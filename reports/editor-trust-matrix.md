@@ -202,3 +202,19 @@ Cada ferramenta do editor (painéis, folhas, menus e as decisões depois de abri
 | Consistência entre ferramentas parecidas, sem forma única para tudo | E3 (painel, folha ou tela maior conforme a tarefa) |
 
 Saída: uma ficha por ferramenta (o que foi visto, o que mudou, antes e depois) e um roteiro de tarefas para o iPhone. Nenhum ajuste útil é removido só para encolher a interface.
+
+## 10. Estado da E1 (06/11, noite)
+
+| Item | Estado | Evidência |
+|---|---|---|
+| 10.1 Rascunho | Feito | Testes de unidade (store, keeper, view model); reabrir mantém o desfazer; selo segue o disco |
+| Trabalho pendente no Done/Back | Feito | `EditorPendingWork`; teste de legendas |
+| Narração e Central de Controle | Feito no código | Teste de unidade; falta conferir no iPhone que o AVAudioRecorder segue gravando com a cena inativa |
+| Mídia faltando persistente | Feito | `MissingMediaNotice`; teste com Desfazer |
+| Stabilize/Follow face pendente | Feito | `MotionPendingPill`; teste |
+| 10.2 Exportação (agente) | Feito no código | Testes; falta iPhone: bloqueio automático no 15 Pro, ligação no meio |
+| 10.7 Pro (agente) | Feito no código | Testes de unidade e UI; falta compra real no iPhone; perguntas ao dono no relatório |
+| 10.3 Fontes e identidade do arquivo (agente) | Feito | `ExportRenderStamp`, `ExportedFileRecord` |
+| 10.3 Prévia × arquivo, imagem | 27 ferramentas iguais | `PreviewMatchesExportTests`; nova diferença achada: vídeo preso a segundos aparados (vai para E2, primeiro item) |
+| 10.3 Prévia × arquivo, som | Medido, decisão do dono | Igual sob o teto; 2,5 dB e estouro na prévia acima dele. Proposta: aviso de nível alto no Volume, calculado de uma mistura em segundo plano; ou prévia por AVAudioEngine (grande) |
+| Testes que falham fora do editor | Relatar | `IdeaSuggestionServiceTests`, `IdeaRouletteTests` (vêm de 789a445a, já no origin/main), `NearbyLinkTests` (rede local no simulador) |
