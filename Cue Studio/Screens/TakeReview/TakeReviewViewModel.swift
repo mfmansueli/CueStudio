@@ -79,7 +79,7 @@ final class TakeReviewViewModel {
     @ObservationIgnored var copiesCaption: (String) -> Void = { UIPasteboard.general.string = $0 }
     var burnsInCaptions = false
     /// Which captions this export burns in: the original, a translation or both (one export per
-    /// language).
+    /// language). Starts from what the editor shows, so a translation picked there goes out without a second pick.
     var exportCaptionDisplay: CaptionDisplay = .original
     /// Why the video being exported has no captions although they were asked for.
     @ObservationIgnored private var captionNotice: String?
@@ -169,6 +169,7 @@ final class TakeReviewViewModel {
         self.background = background ?? BackgroundExportRunner(scheduler: nil)
         self.freeSpace = freeSpace
         burnsInCaptions = takes.take(id: takeID)?.edit?.showsCaptions ?? false
+        exportCaptionDisplay = takes.take(id: takeID)?.edit?.captionDisplay ?? .original
         exportStopped = preferences.stoppedExports.contains(takeID)
     }
 

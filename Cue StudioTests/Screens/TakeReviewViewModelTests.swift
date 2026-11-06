@@ -227,6 +227,21 @@ struct TakeReviewViewModelTests {
         #expect(!hidden.viewModel.burnsInCaptions)
     }
 
+    @Test func exportStartsWithTheCaptionLanguageTheEditorShows() {
+        var take = TestData.take(scriptID: nil)
+        var edit = TakeEdit(sourceDuration: take.duration, aspect: .portrait)
+        edit.showsCaptions = true
+        edit.captionDisplay = .translation(.english)
+        take.edit = edit
+        let translated = makeScenario(tier: .subscriber, take: take)
+        defer { translated.defaults.tearDown() }
+        #expect(translated.viewModel.exportCaptionDisplay == .translation(.english))
+        take.edit = TakeEdit(sourceDuration: take.duration, aspect: .portrait)
+        let plain = makeScenario(tier: .subscriber, take: take)
+        defer { plain.defaults.tearDown() }
+        #expect(plain.viewModel.exportCaptionDisplay == .original)
+    }
+
     @Test func burnInCaptionsKeepsTheEditsCaptions() async {
         var take = TestData.take(scriptID: nil)
         var edit = TakeEdit(sourceDuration: take.duration, aspect: .portrait)

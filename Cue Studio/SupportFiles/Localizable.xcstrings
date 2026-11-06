@@ -111910,6 +111910,125 @@
         }
       }
     },
+    "You can change it later in Volume, on the media’s bar." : {
+      "comment" : "Editor › dialog 'This video has its own sound' after adding a video with sound: where to change the choice later (the Volume tool on the bar of the picked photo/video).",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يمكنك تغييره لاحقًا من مستوى الصوت في شريط الوسائط."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du kan ændre det senere under Lydstyrke på mediets bjælke."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du kannst es später unter Lautstärke in der Leiste des Mediums ändern."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Puedes cambiarlo luego en Volumen, en la barra del clip."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vous pourrez le changer dans Volume, sur la barre du média."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "बाद में मीडिया की बार में वॉल्यूम से बदल सकते हैं।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamu bisa mengubahnya nanti di Volume, pada bilah media."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Puoi cambiarlo dopo in Volume, nella barra del contenuto."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "あとでメディアのバーの「音量」で変更できます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "나중에 미디어 바의 음량에서 바꿀 수 있어요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du kan endre det senere under Volum på mediets linje."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je kunt het later wijzigen via Volume in de balk van de media."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você pode mudar depois em Volume, na barra da mídia."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du kan ändra det senare under Volym i mediets fält."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เปลี่ยนภายหลังได้ที่ ระดับเสียง ในแถบของสื่อ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daha sonra medyanın çubuğundaki Ses düzeyi’nden değiştirebilirsin."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bạn có thể đổi sau trong Âm lượng, trên thanh của phương tiện."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "之后可在媒体栏的“音量”中更改。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你之後可以在媒體列的「音量」中變更。"
+          }
+        }
+      }
+    },
     "You joined with %@. Your friend’s reward arrives when you export your first video." : {
       "comment" : "After typing a friend's code that counted: %@ is the code.",
       "localizations" : {
@@ -577564,124 +577683,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "你可以在「設定」›「個人化」中重新開啟。"
-          }
-        }
-      }
-    },
-    "You can change it later in Media › Advanced." : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "يمكنك تغييره لاحقًا من الوسائط › متقدم."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Du kan ændre det senere i Medier › Avanceret."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Du kannst es später unter Medien › Erweitert ändern."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Puedes cambiarlo luego en Multimedia › Avanzado."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vous pourrez le changer dans Médias › Avancé."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "बाद में मीडिया › एडवांस्ड में बदल सकते हैं।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kamu bisa mengubahnya nanti di Media › Lanjutan."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Puoi cambiarlo dopo in Contenuti › Avanzate."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "あとで「メディア › 詳細」で変更できます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "나중에 미디어 › 고급에서 바꿀 수 있어요."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Du kan endre det senere i Medier › Avansert."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Je kunt het later wijzigen in Media › Geavanceerd."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Você pode mudar depois em Mídia › Avançado."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Du kan ändra det senare i Media › Avancerat."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "เปลี่ยนภายหลังได้ที่ สื่อ › ขั้นสูง"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Daha sonra Medya › Gelişmiş’ten değiştirebilirsin."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bạn có thể đổi sau trong Phương tiện › Nâng cao."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "之后可在“媒体 › 高级”中更改。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "你之後可以在「媒體 › 進階」中變更。"
           }
         }
       }

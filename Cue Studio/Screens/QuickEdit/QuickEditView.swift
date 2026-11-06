@@ -148,7 +148,7 @@ struct QuickEditView: View {
             Button("Keep its sound") { viewModel.overlays.chooseSound(for: id, keeps: true) }
             Button("Mute it") { viewModel.overlays.chooseSound(for: id, keeps: false) }
         } message: { _ in
-            Text("You can change it later in Media › Advanced.")
+            Text("You can change it later in Volume, on the media’s bar.")
         }
         .confirmationDialog(
             "A Blur area may not cover what it hides",

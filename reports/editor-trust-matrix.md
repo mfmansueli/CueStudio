@@ -232,5 +232,5 @@ O dono testou a E1 no 15 Pro (roteiro de 9 tarefas) sem apontar problema e deleg
 | Quem deixou de ser Pro | 1080p |
 | Vídeo importado | A mesma regra, pela resolução gravada |
 | Som da prévia acima do teto | Opção (a): aviso discreto no Volume; entra na E2, com roteiro para ouvir |
-| Etapa 3 | Canvas https://claude.ai/artifact/UBc5myze9hKY9M3LB5JmSB: mapa de acesso + D1–D16; vale a recomendada de cada uma salvo marcação do dono antes da E3. O dono liberou tirar o ✦ Smart e portas redundantes com ganho concreto (06/11); §18 terá um segundo canvas no início da E3 |
+| Etapa 3 | Decisões explícitas do dono em `reports/editor-e3-decisoes-2026-11-07.md` (substituem "vale a recomendada"; nada estrutural fora delas está aprovado) |
 | Full | Só no fim das 5 etapas (dono); por etapa, o que mudou e o que depende disso |

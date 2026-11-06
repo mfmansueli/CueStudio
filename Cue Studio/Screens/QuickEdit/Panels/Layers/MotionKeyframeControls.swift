@@ -5,7 +5,7 @@
 
 import SwiftUI
 
-/// Motion for the picked text (Text style › Motion) or photo or video (Media › Advanced): ◀ Add
+/// Motion for the picked text (Text style › Motion) or photo or video (Media › Edit): ◀ Add
 /// (or Remove) keyframe ▶ with how many there are, when it starts and ends, and how keyframes
 /// work.
 struct MotionKeyframeControls: View {
