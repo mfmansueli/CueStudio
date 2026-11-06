@@ -62,6 +62,20 @@ struct LocalizedStringCacheTests {
         #expect(cached * 5 < uncached, "1000 lookups: Foundation \(uncached), cached \(cached)")
     }
 
+    @Test func aScriptsWordsCountedOnceAreTheSameAndFasterAgain() {
+        let script = String(repeating: "Today I show you three ways to film yourself [pause] without a crew. ", count: 120)
+        let first = ReadTime.wordCount(in: script)
+        #expect(first == 12 * 120, "Cues aren't words")
+        #expect(ReadTime.wordCount(in: script) == first, "From what was kept")
+        #expect(ReadTime.wordCount(in: script + " One more.") == first + 2, "A changed text is counted again")
+        #expect(ReadTime.wordCount(in: "今日は三つの方法を紹介します") > 1, "Unspaced scripts still count dictionary words")
+        let clock = ContinuousClock()
+        let texts = (0..<40).map { "\(script) \($0)" }
+        let counted = clock.measure { for text in texts { _ = ReadTime.wordCount(in: text) } }
+        let again = clock.measure { for text in texts { _ = ReadTime.wordCount(in: text) } }
+        #expect(again * 5 < counted, "40 scripts: counted \(counted), again \(again)")
+    }
+
     @Test func aLanguageReadOnceIsTheSameReadAgain() {
         let text = "Ontem eu acordei cedo e fui correr na praia antes do trabalho, e foi o melhor dia da semana."
         let first = LanguageDetector.quickLanguage(in: text)
