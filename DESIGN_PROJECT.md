@@ -824,6 +824,14 @@ lost. You've used your 3 free exports.", **Export with Cue Pro** com brilho e **
 PRO") e toast "Saved in Takes · export with Pro anytime"; Export with Cue Pro abre o **Pro calmo** (`PaywallContext.export`, §12), que diz os preços;
 assinando, a exportação segue sozinha. Com os convites oferecidos, um link amarelo entre os dois, **Or invite friends · +3 exports for each friend**, fecha a
 folha como Not now e abre os convites (§60). Pro: "PRO · UNLIMITED EXPORTS", sem Go Pro.
+- **A pergunta vem antes de qualquer trabalho** (plano do editor, 06/11/2026): com 0, a revisão confere se **este vídeo** (o take, a edição e as opções,
+  `ExportFingerprint`) já saiu do Cue, nunca só "o take". Uma edição corrigida de um vídeo já exportado é outro vídeo (decisão do dono, 06/11: corrigir
+  custa outra exportação) e abre "Your video is ready" sem "Exporting your video", sem render e sem ouvir legendas; o mesmo vídeo de novo (o arquivo ainda
+  lá ou refeito) e uma edição dentro de uma fila de "Share to universe" que já contou (§15) seguem sem pergunta e sem contar.
+- **No Done do editor** ("Is it ready to post?", `EditorDoneSheet`), uma linha mono sob a pergunta, com as palavras e cores do medidor de Share:
+  **LAST FREE EXPORT** (amarelo, `accText`) com uma sobrando, **0 OF 3 LEFT · EXPORT WITH PRO** (laranja, `warnText`) sem nenhuma. Só quando
+  compartilhar ou baixar aquela edição gastaria (`TakeReviewViewModel.doneExportNote`): nada no Pro, com 2 ou mais, ou para um vídeo já contado.
+  Nenhum fluxo novo: as respostas são as mesmas e, sem exportações, Share e Download abrem "Your video is ready" como acima.
 
 ## 12. Pro (11.4)
 
@@ -863,6 +871,12 @@ acima). Tudo cabe sem rolar do SE ao Pro Max (a rolagem só existe para o Dynami
   "ULTRA AI", "Keep writing with Ultra AI.", "Your 3 free scripts are written. Cue Pro adds 30 a month.", galáxia violeta com o anel dos 30 roteiros do mês
   aceso, o destaque da Ultra AI primeiro.
 - Onde a Ultra AI existe, a linha sob o título do Pro normal é "Free to try · 3 exports and 3 Ultra AI scripts included."
+- **Exportar em 4K é Pro** (decisão do dono, 06/11/2026; é o "up to 4K" do destaque): em Export options › Quality (§15) o segmento é **4K · Pro**
+  sem o Pro; tocá-lo não muda a qualidade e abre o alerta do sistema **"4K export is Cue Pro"** ("Without Pro, this video exports in 1080p. Your
+  recording and edit stay as they are.") com **Go Pro** (este Pro, `.profile`, por cima das opções) e **Keep 1080p**; assinando dali, a qualidade
+  passa a 4K. Uma gravação em 4K sem o Pro diz sob a qualidade "Recorded in 4K · exports in 1080p without Pro" (`ink2` sobre `surface2`). Todo
+  caminho de exportação (Save, Share, Try again, a fila, o arquivo refeito, o Download do editor) usa `TakeReviewViewModel.exportQuality`: um plano
+  que acabou com 4K escolhido exporta em 1080p. A gravação, o rascunho e a edição nunca mudam; nenhuma ferramenta do editor pede o Pro.
 - Reduzir Movimento: nada gira nem voa, a abertura é um fade de 0,3 s e a compra fecha na hora. `-uiTestProAt <s>`.
 
 ## 13. Profile (9.1) e Edit Profile
@@ -923,7 +937,8 @@ os ícones (§16), e só promete um ícone ainda não destravado; passado o últ
 
 Na revisão, o botão amarelo **Share to universe** renderiza o arquivo (1080 × 1920, sem marca d'água; nada sai do Cue, nada é contado) e abre **Ready to
 travel** com as redes (`ShareNetworkPicker`: TikTok "· from your script", Reels, Shorts, YouTube ("POSTS AS A SHORT" até 3 min na vertical), LinkedIn, "Also
-save to Photos", "Share to n networks", "Uses 1 free export · k left after this"; embaixo, legendas e qualidade). Fechado o sheet, Ready mostra **Share to
+save to Photos", "Share to n networks", "Uses 1 free export · k left after this"; atrás do ícone de ajustes, **Export options**: legendas e
+qualidade, 1080p ou 4K, que é Pro (§12)). Fechado o sheet, Ready mostra **Share to
 universe · Save video · compartilhar** (folha do sistema). **Uma exportação por envio** (um arquivo para todas as redes; reexportar na fila não gasta
 outra: `ExportLedgerService.begin(inheritingCountFrom:)`).
 **A fila** (`ShareQueue`, `ShareQueueService`, `ShareFlow`): "Posting to n networks" (com 2+, nas 2 primeiras vezes); o passo de cada rede ("1 OF 3",
@@ -2584,7 +2599,8 @@ InShot, Edits, Descript e Captions (pesquisa de 24/10: os apps põem a limpeza d
   mesma palavra (Subtítulo, Sous-titre); agora "Texto secundario", "Texte secondaire", "Subkop" (nl), "Underoverskrift" (da, nb), "उपशीर्षक" (hi). Em
   português continua "Subtítulo" × "Legenda".
 - **Concluir:** a folha de Done já separava as quatro saídas (compartilhar, baixar, publicar depois, continuar editando), cada uma com o destino; o de
-  Download video dizia "SAVED", que se confundia com o "EDIT SAVED" de cima: agora "IN PHOTOS". A organização dos projetos (Takes: To pick, In edit,
+  Download video dizia "SAVED", que se confundia com o "EDIT SAVED" de cima: agora "IN PHOTOS". Quando compartilhar ou baixar a edição usaria a
+  última exportação grátis, ou não há nenhuma, uma linha sob a pergunta diz "LAST FREE EXPORT" ou "0 OF 3 LEFT · EXPORT WITH PRO" (§11). A organização dos projetos (Takes: To pick, In edit,
   Ready, Shared) fica igual. Uma edição deixada aberta é achada onde ficou: o cartão "In edit", o Edit de Takes e o lembrete de terminar abrem o take
   dessa edição (a deixada por último, se há mais de uma), nunca uma edição nova no melhor take; na revisão, **Continue** aparece no take da edição
   aberta, e nos outros takes do vídeo **Edit** começa a edição deles (o que o fim do editor compartilha é sempre o take editado). **Save** e

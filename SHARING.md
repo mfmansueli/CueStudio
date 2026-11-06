@@ -26,7 +26,14 @@ Uma exportação grátis é descontada **uma vez por operação** (um arquivo ex
   cota normal. Um arquivo que o sistema apagou é refeito **na mesma operação** quando o criador compartilha de novo a partir de "Ready to
   travel"; em qualquer outro caminho, o arquivo refeito é uma operação nova que já nasce contada.
 - **Um vídeo já contado nunca pede a cota de novo**, com o arquivo ainda lá ou não: salvar hoje e compartilhar amanhã (a revisão fechou, o
-  arquivo foi apagado) é uma exportação só, e com 0 grátis sobrando o paywall não abre para ele; uma edição diferente abre. A conferência e a
+  arquivo foi apagado) é uma exportação só, e com 0 grátis sobrando o paywall não abre para ele; uma edição diferente abre (corrigir um vídeo já
+  exportado custa outra exportação, decisão do dono, 06/11/2026). **Mesmo vídeo, não mesmo take:** a conferência é pela impressão digital, feita
+  **antes de qualquer trabalho** (`TakeReviewViewModel.costsNothing`): sem exportações, uma edição nova de um take já exportado abre "Your video is
+  ready" sem começar a exportação (nada de "Exporting your video", render ou legendas ouvidas). Uma edição que ainda precisa ouvir as legendas
+  nunca saiu (as legendas estariam no take). A conferência se repete depois das legendas feitas, que mudam o vídeo.
+- **4K é Pro** (decisão do dono, 06/11/2026): sem o Pro, todo caminho exporta em 1080p (`exportQuality`, que entra na impressão digital pelo
+  `shortSide`); a gravação e a edição não mudam. Um vídeo exportado em 4K por quem era Pro, refeito depois que o plano acabou, sai em 1080p: é
+  outro vídeo e segue a cota. A conferência e a
   marca são um passo só na main actor (`recordDelivery`): duas entregas ao mesmo tempo de cópias do mesmo vídeo descontam uma vez.
 - O contador no Keychain (3 grátis, `UsagePolicy.freeExports`) não foi tocado: o uso existente vale, e reinstalar não devolve exportações.
 - **Limpeza:** `leave()` (ao fechar a revisão sem nada em andamento) apaga o arquivo temporário; ao abrir o app, arquivos com mais de 24 h somem,
@@ -46,7 +53,8 @@ exportação de vídeo.
 
 O botão amarelo da revisão renderiza o arquivo uma vez (`ExportAction.render`: nada sai, nada conta) e a fila (`ShareQueue`) leva o **mesmo arquivo** a cada rede escolhida, pela **folha de compartilhamento do sistema**
 (`ShareIntegrationConfiguration.integrationsEnabled = false`: `ShareRouteResolver` devolve `.activitySheet` para todos). Conta **uma** exportação: quando o arquivo sai (salvo em Fotos pela opção "Also save to Photos", ou a primeira atividade
-concluída), nunca por rede; editar e reexportar dentro da fila herda a contagem (`ExportLedgerService.begin(inheritingCountFrom:)`). Uma atividade concluída pergunta "Posted on {rede}?": só **Yes, it's live** marca a rede como postada,
+concluída), nunca por rede; editar e reexportar dentro da fila herda a contagem (`ExportLedgerService.begin(inheritingCountFrom:)`), também com 0
+grátis sobrando (a fila já contou: não abre "Your video is ready"). Uma atividade concluída pergunta "Posted on {rede}?": só **Yes, it's live** marca a rede como postada,
 grava o `ShareRecord` (plataforma, data, tema) e acende o planeta; **Not yet** volta ao passo; cancelar a folha também. O Cue nunca afirma que algo foi publicado sem a resposta do criador.
 Sem exportações grátis, "Share to N networks" abre "Your video is ready"; o Pro comprado dali segue com a fila (`TakeReviewViewModel.queueResumes` chama
 `ShareFlow.start` de novo: uma cópia em Fotos, o passo da primeira rede), nunca um salvamento solto que deixaria as redes esperando.

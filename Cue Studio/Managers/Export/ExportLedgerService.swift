@@ -68,11 +68,6 @@ final class ExportLedgerService {
         operations.last { $0.fingerprint == fingerprint && fileExists(for: $0) }
     }
 
-    /// A video of this take already counted: asking again may cost nothing (whether it does is the fingerprint's, `isCounted(fingerprint:)`).
-    func hasCountedOperation(forTake takeID: UUID) -> Bool {
-        operations.contains { $0.takeID == takeID && $0.isCounted }
-    }
-
     /// This very video already counted, its file there or not.
     func isCounted(fingerprint: String) -> Bool {
         operations.contains { $0.fingerprint == fingerprint && $0.isCounted }
