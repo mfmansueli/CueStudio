@@ -49,9 +49,8 @@ extension RealExports {
         }
 
         /// A video laid over the take's own seconds (not following the cuts) from 0.2 s, with the take's start trimmed to 0.6 s: the
-        /// preview keeps it in step with the take (at the take's second 1.05, the video's 0.85), the file starts it over from its
-        /// first frame where the edit starts (0.45). Known since 06/11/2026, to be fixed with the timing rules of stage 2 (plan §6,
-        /// matrix §4): a layer partly over what is kept keeps its timing.
+        /// preview plays the trimmed start too, so at the take's second 1.05 the video is at its 0.85; the file, which starts at
+        /// 0.6, shows the video from the second it had reached there (`MediaOverlay.pieces`), so both show the same frame.
         @Test func aVideoPinnedToTrimmedSecondsShowsTheSameFrameInPreviewAndFile() async throws {
             let take = try await footage(for: .mask)
             defer { try? FileManager.default.removeItem(at: take) }
@@ -77,9 +76,7 @@ extension RealExports {
             let shown = try await RenderParity.frame(preview.asset, composition: preview.videoComposition, at: leadIn + 0.45)
             let written = try await RenderParity.frame(export.asset, composition: export.videoComposition, at: 0.45)
             let difference = try RenderParity.meanDifference(shown, written, size: size)
-            withKnownIssue("The file starts a video pinned to trimmed seconds from its first frame (stage 2)") {
-                #expect(difference < 2, "\(difference)")
-            }
+            #expect(difference < 2, "\(difference)")
         }
 
         /// The effects compared above are drawn at all: a frame with them is not the frame without them.
