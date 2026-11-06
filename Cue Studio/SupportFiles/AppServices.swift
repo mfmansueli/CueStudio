@@ -322,7 +322,7 @@ struct AppServices {
 
     /// Gives back the space past sessions' sound files take (`EditStorageCleaner`), a few seconds after launch so it never
     /// competes with it, off the main actor. The edits' media go only when nothing Cue keeps names them and they haven't
-    /// changed for a week (`EditStorageCleaner.orphanedMedia`).
+    /// changed for a week (`EditStorageCleaner.orphanedMedia`). In Debug, what UI tests left goes too (`UITestLeftovers`).
     func cleanUpStorage() {
         let launchedAt = Date()
         let libraryFolder = mediaLibrary.directory
@@ -330,6 +330,9 @@ struct AppServices {
         Task.detached(priority: .background) {
             try? await Task.sleep(for: .seconds(8))
             await EditStorageCleaner.clean(launchedAt: launchedAt)
+            #if DEBUG
+            await UITestLeftovers.removeAll()
+            #endif
             // What the creator removed from the library or the kits, past its session's Undo (`LibraryFileSweep`).
             LibraryFileSweep.sweep(libraryFolder, listName: "library.json", launchedAt: launchedAt)
             LibraryFileSweep.sweep(kitFolder, listName: "kits.json", launchedAt: launchedAt)
