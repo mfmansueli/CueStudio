@@ -219,3 +219,18 @@ Saída: uma ficha por ferramenta (o que foi visto, o que mudou, antes e depois) 
 | 10.3 Prévia × arquivo, imagem | 27 ferramentas iguais | `PreviewMatchesExportTests`; nova diferença achada: vídeo preso a segundos aparados (vai para E2, primeiro item) |
 | 10.3 Prévia × arquivo, som | Medido, decisão do dono | Igual sob o teto; 2,5 dB e estouro na prévia acima dele. Proposta: aviso de nível alto no Volume, calculado de uma mistura em segundo plano; ou prévia por AVAudioEngine (grande) |
 | Testes que falham fora do editor | Relatar | `IdeaSuggestionServiceTests`, `IdeaRouletteTests` (vêm de 789a445a, já no origin/main), `NearbyLinkTests` (rede local no simulador) |
+
+## 11. Decisões de 06/11 (noite)
+
+O dono testou a E1 no 15 Pro (roteiro de 9 tarefas) sem apontar problema e delegou: "faça suas recomendações no que você acha que tem que fazer e segue para a próxima tarefa".
+
+| Ponto | Decisão |
+|---|---|
+| Qualidade da exportação (achado do dono) | Só uma gravação em 4K escolhe; 1080p/720p mostram a própria resolução, sem "4K · Pro". Pro começa em 4K numa gravação em 4K (`choosesQuality`, `-uiTestFourKTakes`) |
+| Textos do Pro | Ficam |
+| 4K na fila depois do Pro acabar | Sai em 1080p (já é assim) |
+| Quem deixou de ser Pro | 1080p |
+| Vídeo importado | A mesma regra, pela resolução gravada |
+| Som da prévia acima do teto | Opção (a): aviso discreto no Volume; entra na E2, com roteiro para ouvir |
+| Etapa 3 | Canvas https://claude.ai/artifact/UBc5myze9hKY9M3LB5JmSB (D1–D11); vale a recomendada (A) salvo marcação do dono antes da E3 |
+| Full | Só no fim das 5 etapas (dono); por etapa, o que mudou e o que depende disso |

@@ -335,8 +335,9 @@ extension EditorRecipeUITests {
         guard element("ready.sheet").exists(within: realTake == nil ? 120 : 600) else { return "PARTIAL: Format 9:16, Done › Share never got to Ready to travel" }
         guard tapButton("shareFlow.options") else { return "PARTIAL: exported, no Export options" }
         let quality = app.segmentedControls["share.quality"]
-        let picked = quality.buttons.allElementsBoundByIndex.first { $0.isSelected }?.label ?? "?"
-        return "PARTIAL: Format › 9:16, Done › \"Yes — share\" exports, Ready to travel › Export options › Quality \(picked) (1080p or 4K). "
+        let recorded = element("share.qualityRecorded")
+        let picked = recorded.exists(within: 3) ? recorded.label : quality.buttons.allElementsBoundByIndex.first { $0.isSelected }?.label ?? "?"
+        return "PARTIAL: Format › 9:16, Done › \"Yes — share\" exports, Ready to travel › Export options › Quality \(picked) (a choice only for 4K). "
             + "No frame-rate choice: the export keeps the recording's rate"
     }
 

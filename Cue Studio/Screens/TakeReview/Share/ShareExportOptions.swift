@@ -7,7 +7,7 @@ import SwiftUI
 
 /// What the one export of "Share to universe" is made with: burned-in captions (and in which language) and the quality. The board's networks sheet has
 /// room only for the networks, so these sit one tap away, behind the sliders in its corner. 4K is Cue Pro (owner, 06/11/2026): "4K · Pro" until then,
-/// and a 4K recording says it exports in 1080p.
+/// and a 4K recording says it exports in 1080p. Only a 4K recording has a quality to pick; any other shows its own.
 struct ShareExportOptions: View {
     @Bindable var review: TakeReviewViewModel
 
@@ -35,28 +35,7 @@ struct ShareExportOptions: View {
                     .frame(minHeight: 52)
                     .accessibilityIdentifier("share.captionLanguage")
                 }
-                VStack(alignment: .leading, spacing: 6) {
-                    HStack {
-                        Text("Quality")
-                        Spacer()
-                        Picker("Quality", selection: Binding(get: { review.exportQuality }, set: { review.setQuality($0) })) {
-                            ForEach(ExportQuality.allCases) { Text(label(for: $0)).tag($0) }
-                        }
-                        .pickerStyle(.segmented)
-                        .fixedSize()
-                        .accessibilityIdentifier("share.quality")
-                    }
-                    if review.exportsFourKRecordingInHD {
-                        Text("Recorded in 4K · exports in 1080p without Pro")
-                            .cueFont(.footnote)
-                            .foregroundStyle(Palette.ink2)
-                            .fixedSize(horizontal: false, vertical: true)
-                            .accessibilityIdentifier("share.qualityNote")
-                    }
-                }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 10)
-                .frame(minHeight: 52)
+                if review.choosesQuality { qualityPicker } else { recordedQuality }
             }
             Spacer(minLength: 0)
         }
@@ -72,6 +51,46 @@ struct ShareExportOptions: View {
         .fullScreenCover(isPresented: $showsPro) {
             PaywallView(context: .profile) { review.fourKProPurchased() }
         }
+    }
+
+    /// A 4K recording: 1080p or 4K (4K is Pro).
+    private var qualityPicker: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack {
+                Text("Quality")
+                Spacer()
+                Picker("Quality", selection: Binding(get: { review.exportQuality }, set: { review.setQuality($0) })) {
+                    ForEach(ExportQuality.allCases) { Text(label(for: $0)).tag($0) }
+                }
+                .pickerStyle(.segmented)
+                .fixedSize()
+                .accessibilityIdentifier("share.quality")
+            }
+            if review.exportsFourKRecordingInHD {
+                Text("Recorded in 4K · exports in 1080p without Pro")
+                    .cueFont(.footnote)
+                    .foregroundStyle(Palette.ink2)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .accessibilityIdentifier("share.qualityNote")
+            }
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 10)
+        .frame(minHeight: 52)
+    }
+
+    /// A 1080p or 720p recording: its own resolution, nothing to pick (the file is never made larger than the recording).
+    private var recordedQuality: some View {
+        HStack {
+            Text("Quality")
+            Spacer()
+            Text(verbatim: review.recordedResolutionLabel)
+                .foregroundStyle(Palette.ink2)
+        }
+        .padding(.horizontal, 16)
+        .frame(minHeight: 52)
+        .accessibilityElement(children: .combine)
+        .accessibilityIdentifier("share.qualityRecorded")
     }
 
     /// "4K · Pro" until the creator has Pro: the one thing in this sheet that Pro adds.

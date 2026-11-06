@@ -91,6 +91,22 @@ struct ExportProRulesTests {
         #expect(scenario.takes.take(id: scenario.take.id)?.resolution == .uhd4K)
     }
 
+    /// Only a 4K recording has a quality to pick: a 1080p one shows its own, with no "4K · Pro" that the file couldn't have.
+    @Test func onlyAFourKRecordingChoosesItsQuality() {
+        let hd = makeScenario(resolution: .hd1080)
+        defer { hd.defaults.tearDown() }
+        #expect(!hd.viewModel.choosesQuality)
+        #expect(hd.viewModel.recordedResolutionLabel == "1080p")
+        let uhd = makeScenario(resolution: .uhd4K)
+        defer { uhd.defaults.tearDown() }
+        #expect(uhd.viewModel.choosesQuality)
+        // Without Pro it starts in 1080p; with Pro, in the recording's 4K.
+        #expect(uhd.viewModel.exportQuality == .hd1080)
+        let pro = makeScenario(tier: .subscriber, resolution: .uhd4K)
+        defer { pro.defaults.tearDown() }
+        #expect(pro.viewModel.exportQuality == .uhd4K)
+    }
+
     @Test func proExportsAFourKRecordingInFourK() async throws {
         let scenario = makeScenario(tier: .subscriber, resolution: .uhd4K)
         defer { scenario.defaults.tearDown() }

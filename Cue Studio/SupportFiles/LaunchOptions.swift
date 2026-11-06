@@ -73,6 +73,7 @@ import Foundation
 ///   test has none.
 /// - `-uiTestUniverse <sample|newYear|newAccount>`: what "Your universe" holds (the board's APP DATA panel; see `UniverseSeed`).
 /// - `-uiTestFakeShareSheet`: a stand-in with Complete and Cancel takes the place of the system share sheet.
+/// - `-uiTestFourKTakes`: with the sample takes, every one recorded in 4K (Export options' quality choice is only for 4K recordings).
 /// - `-uiTestLowPower`: the editor reads Low Power Mode as on (its notice shows; the Simulator can't turn the mode on).
 /// - `-uiTestDockMotionLog`: the Scripts dock counts its lights (the writer's, the network's, the send arrow's) in `dock.motionLog`.
 /// - `-uiTestShareQueue`: a "Share to universe" queue left for the sample take (the Continue posting card).
@@ -338,6 +339,29 @@ struct LaunchOptions {
     }
     #endif
 
+    #if DEBUG
+    /// The sample takes a UI test starts with (`-uiTestSeedSamples`): all recorded in 4K with `-uiTestFourKTakes`, and "3 morning habits"
+    /// Take 3 as the design's edit with `-uiTestDemoEdit`.
+    private static func sampleTakes(seeded: Bool, arguments: [String]) -> [Take] {
+        var takes = seeded ? SampleTakes.all() : []
+        // Every sample take recorded in 4K (Export options' quality choice).
+        if arguments.contains("-uiTestFourKTakes") { for index in takes.indices { takes[index].resolution = .uhd4K } }
+        // The editor's demo: "3 morning habits" Take 3 becomes the design's 21.6 s edit.
+        if arguments.contains("-uiTestDemoEdit"), let index = takes.firstIndex(where: {
+            $0.scriptID == SampleScripts.morningHabits.id && $0.number == 3
+        }) {
+            takes[index].duration = SampleEdit.duration
+            takes[index].fileName = "sample-demo-edit.mov"
+            let heard = arguments.contains("-uiTestDemoTranscript")
+            takes[index].edit = arguments.contains("-uiTestDemoSplit")
+                ? SampleEdit.demoSplit(aspect: takes[index].aspect, heard: heard)
+                : SampleEdit.demo(aspect: takes[index].aspect, heard: heard)
+            SampleEditMedia.writeMissing()
+        }
+        return takes
+    }
+    #endif
+
     static func fromProcess() -> LaunchOptions {
         var options = LaunchOptions()
         #if DEBUG
@@ -357,19 +381,7 @@ struct LaunchOptions {
             let rootName = arguments.firstIndex(of: "-uiTestAssetRoot").flatMap { arguments.indices.contains($0 + 1) ? arguments[$0 + 1] : nil }
             options.assetRoot = URL.temporaryDirectory.appending(path: "UITestAssets-\(rootName ?? UUID().uuidString)", directoryHint: .isDirectory)
             if arguments.contains("-uiTestDemoCamera") { options.recorderCamera = DemoCamera() }
-            var takes = seeded ? SampleTakes.all() : []
-            // The editor's demo: "3 morning habits" Take 3 becomes the design's 21.6 s edit.
-            if arguments.contains("-uiTestDemoEdit"), let index = takes.firstIndex(where: {
-                $0.scriptID == SampleScripts.morningHabits.id && $0.number == 3
-            }) {
-                takes[index].duration = SampleEdit.duration
-                takes[index].fileName = "sample-demo-edit.mov"
-                let heard = arguments.contains("-uiTestDemoTranscript")
-                takes[index].edit = arguments.contains("-uiTestDemoSplit")
-                    ? SampleEdit.demoSplit(aspect: takes[index].aspect, heard: heard)
-                    : SampleEdit.demo(aspect: takes[index].aspect, heard: heard)
-                SampleEditMedia.writeMissing()
-            }
+            var takes = Self.sampleTakes(seeded: seeded, arguments: arguments)
             let repository = InMemoryTakeRepository(takes: takes)
             options.takeRepository = repository
             options.draftStore = InMemoryQuickEditDraftStore()

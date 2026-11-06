@@ -262,14 +262,16 @@ struct TakeReviewViewModelTests {
         take.resolution = .uhd4K
         let scenario = makeScenario(tier: .subscriber, take: take)
         defer { scenario.defaults.tearDown() }
-        await scenario.viewModel.save()
-        #expect(scenario.exporter.exports.last?.shortSide == 1080)
-        #expect(savedFormat(scenario.viewModel) == "1080P · 9:16")
-
-        scenario.viewModel.setQuality(.uhd4K)
+        // With Pro a 4K recording starts in 4K; 1080p scales it down.
+        #expect(scenario.viewModel.exportQuality == .uhd4K)
         await scenario.viewModel.save()
         #expect(scenario.exporter.exports.last?.shortSide == nil)
         #expect(savedFormat(scenario.viewModel) == "4K · 9:16")
+
+        scenario.viewModel.setQuality(.hd1080)
+        await scenario.viewModel.save()
+        #expect(scenario.exporter.exports.last?.shortSide == 1080)
+        #expect(savedFormat(scenario.viewModel) == "1080P · 9:16")
     }
 
     @Test func fourKOfA1080pTakeStays1080p() async {

@@ -85,8 +85,12 @@ final class TakeReviewViewModel {
     @ObservationIgnored private var captionNotice: String?
     /// Some of the exported video's words came out in the system's face: the message after sending it says so.
     @ObservationIgnored private var fontNotice: String?
-    /// What the creator picked in Export options. 4K is Cue Pro (owner, 06/11/2026); the export reads `exportQuality`.
-    private(set) var quality: ExportQuality = .hd1080
+    /// What the creator picked in Export options (nil until they pick). 4K is Cue Pro (owner, 06/11/2026); the export reads `exportQuality`.
+    private var pickedQuality: ExportQuality?
+    /// The quality in Export options: the one picked, else the recording's own with Pro (a 4K recording exports in 4K) and 1080p without.
+    var quality: ExportQuality {
+        pickedQuality ?? (isPro && take?.resolution == .uhd4K ? .uhd4K : .hd1080)
+    }
     /// "4K export is Cue Pro" is up: 4K was picked without Pro (Go Pro, or Keep 1080p).
     var offersFourKPro = false
     /// Where the running export is: its stage, and how far when the stage can measure itself (nil when none runs).
@@ -289,6 +293,13 @@ final class TakeReviewViewModel {
     /// A 4K recording without Pro: Export options say it exports in 1080p.
     var exportsFourKRecordingInHD: Bool { take?.resolution == .uhd4K && !isPro }
 
+    /// Only a 4K recording has a quality to choose: a 1080p or 720p one is never made larger, so Export options show its own resolution
+    /// and nothing about Pro (a "4K · Pro" there would offer something the file can't have).
+    var choosesQuality: Bool { take?.resolution == .uhd4K }
+
+    /// "1080p": what a recording that has no choice exports in.
+    var recordedResolutionLabel: String { take?.resolution.label ?? ExportQuality.hd1080.label }
+
     /// 4K keeps the recording's resolution (a 1080p take isn't upscaled); 1080p scales 4K down.
     /// About 2.2 MB a second at 1080p and 6.5 at 4K (the export's HEVC), for the space check.
     private func estimatedMegabytes(of take: Take) -> Double {
@@ -301,18 +312,18 @@ final class TakeReviewViewModel {
     }
 
     private func outputResolutionLabel(for take: Take) -> String {
-        exportQuality == .uhd4K ? take.resolution.label : exportQuality.label
+        exportQuality == .uhd4K || take.resolution != .uhd4K ? take.resolution.label : exportQuality.label
     }
 
     /// The Quality picker. 4K without Pro isn't picked: "4K export is Cue Pro" asks first. Only the 4K file is Pro; the editor's creative tools
     /// never are.
     func setQuality(_ quality: ExportQuality) {
-        if quality == .uhd4K && !isPro { offersFourKPro = true } else { self.quality = quality }
+        if quality == .uhd4K && !isPro { offersFourKPro = true } else { pickedQuality = quality }
     }
 
     /// Pro bought from "4K export is Cue Pro": the video exports in 4K.
     func fourKProPurchased() {
-        if isPro { quality = .uhd4K }
+        if isPro { pickedQuality = .uhd4K }
     }
 
     // MARK: - Best take
