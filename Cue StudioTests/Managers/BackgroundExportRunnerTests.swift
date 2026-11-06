@@ -18,8 +18,15 @@ struct BackgroundExportRunnerTests {
         var ended = 0
     }
 
-    private func runner(_ scheduler: FakeContinuedTaskScheduler?, grace: Grace = Grace()) -> BackgroundExportRunner {
-        BackgroundExportRunner(scheduler: scheduler) {
+    /// What the screen's auto-lock was told, in order (true: held off).
+    private final class AutoLock {
+        var applied: [Bool] = []
+    }
+
+    private func runner(
+        _ scheduler: FakeContinuedTaskScheduler?, grace: Grace = Grace(), screen: ScreenAwake = ScreenAwake { _ in }
+    ) -> BackgroundExportRunner {
+        BackgroundExportRunner(scheduler: scheduler, screenAwake: screen) {
             grace.begun += 1
             return { grace.ended += 1 }
         }
@@ -95,5 +102,66 @@ struct BackgroundExportRunnerTests {
             })
         }
         #expect(scheduler.task?.finished == false)
+    }
+
+    // MARK: - Auto-lock
+
+    /// Cue has to stay open: the iPhone doesn't lock by itself while the work runs, and locks again once it ends, done, failed or
+    /// cancelled.
+    @Test(arguments: ["done", "failed", "cancelled"])
+    func keepingCueOpenHoldsAutoLockOffUntilTheWorkEnds(ending: String) async throws {
+        let scheduler = FakeContinuedTaskScheduler()
+        scheduler.supportsBackgroundGPU = false
+        let lock = AutoLock()
+        let screen = ScreenAwake { lock.applied.append($0) }
+        var heldWhileWorking = false
+        let running = Task { @MainActor in
+            try await runner(scheduler, screen: screen).run(title: "t", subtitle: "s", started: { _ in }, work: { _ -> Int in
+                heldWhileWorking = screen.isHeld
+                switch ending {
+                case "failed": throw VideoExportError.exportUnavailable
+                case "cancelled":
+                    try await Task.sleep(for: .seconds(10))
+                    return 0
+                default: return 1
+                }
+            })
+        }
+        if ending == "cancelled" {
+            while !heldWhileWorking { await Task.yield() }
+            running.cancel()
+        }
+        _ = try? await running.value
+        #expect(heldWhileWorking)
+        #expect(lock.applied == [true, false])
+        #expect(!screen.isHeld)
+    }
+
+    /// iOS carries the export outside Cue: the screen may lock as usual.
+    @Test func goingOnOutsideCueLeavesAutoLockAlone() async throws {
+        let lock = AutoLock()
+        let screen = ScreenAwake { lock.applied.append($0) }
+        _ = try await runner(FakeContinuedTaskScheduler(), screen: screen).run(title: "t", subtitle: "s", started: { _ in }, work: { _ in 1 })
+        #expect(lock.applied.isEmpty)
+    }
+
+    /// The prompter (or the remote) holds the screen too: an export ending doesn't give auto-lock back under it, and the prompter
+    /// closing doesn't give it back under a running export.
+    @Test func anotherOwnerKeepsTheScreenOnAfterTheExportEnds() async throws {
+        let scheduler = FakeContinuedTaskScheduler()
+        scheduler.supportsBackgroundGPU = false
+        let lock = AutoLock()
+        let screen = ScreenAwake { lock.applied.append($0) }
+        screen.hold("prompter")
+        _ = try await runner(scheduler, screen: screen).run(title: "t", subtitle: "s", started: { _ in }, work: { _ in
+            screen.release("prompter")
+            #expect(screen.isHeld)
+            return 1
+        })
+        #expect(lock.applied == [true, false])
+        screen.hold("prompter")
+        _ = try await runner(scheduler, screen: screen).run(title: "t", subtitle: "s", started: { _ in }, work: { _ in 1 })
+        #expect(screen.isHeld)
+        #expect(lock.applied == [true, false, true])
     }
 }

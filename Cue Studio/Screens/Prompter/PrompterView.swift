@@ -4,7 +4,6 @@
 //
 
 import SwiftUI
-import UIKit
 
 /// Full-screen prompter session: Selfie or Studio mode, then the review of each take.
 struct PrompterView: View {
@@ -101,11 +100,11 @@ struct PrompterView: View {
         .toastHost()
         .task {
             // Reading a long script must not let the screen sleep.
-            UIApplication.shared.isIdleTimerDisabled = true
+            ScreenAwake.shared.hold("prompter")
             await viewModel.appear()
         }
         .onDisappear {
-            UIApplication.shared.isIdleTimerDisabled = false
+            ScreenAwake.shared.release("prompter")
             Task { await viewModel.disappear() }
         }
         // The session's camera: the Creator Setup, an accepted recommendation or a change for this take.
