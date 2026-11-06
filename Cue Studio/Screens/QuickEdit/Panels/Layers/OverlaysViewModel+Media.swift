@@ -94,8 +94,8 @@ extension OverlaysViewModel {
         updateMedia(id) { $0.audioVolume = clamped > 0.001 ? clamped : nil }
     }
 
-    func updateMedia(_ id: UUID, _ update: (inout MediaOverlay) -> Void) {
-        change { snapshot in
+    func updateMedia(_ id: UUID, key: String? = nil, _ update: (inout MediaOverlay) -> Void) {
+        change(key: key) { snapshot in
             guard let index = snapshot.media.firstIndex(where: { $0.id == id }) else { return }
             update(&snapshot.media[index])
         }

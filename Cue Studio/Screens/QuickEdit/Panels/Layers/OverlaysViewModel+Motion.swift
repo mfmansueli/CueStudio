@@ -15,6 +15,12 @@ extension OverlaysViewModel {
     enum MotionItem: Equatable {
         case text(UUID)
         case media(UUID)
+
+        var id: UUID {
+            switch self {
+            case .text(let id), .media(let id): id
+            }
+        }
     }
 
     /// The picked text, else the picked photo or video.
@@ -198,26 +204,31 @@ extension OverlaysViewModel {
         setAtPlayhead(of: .text(id)) { $0.center = center }
     }
 
-    /// A photo or video dragged on the preview: likewise.
-    func moveMedia(_ id: UUID, to center: OverlayPoint) {
+    /// The undo key of one gesture on a photo or video on the preview: a finger that moves it and two that pinch it, letting
+    /// go together, are one undo step.
+    static func placeKey(_ id: UUID) -> String { "media.place.\(id)" }
+
+    /// A photo or video dragged on the preview: likewise. With a `key`, a pinch that ends with it is the same undo step
+    /// (`placeKey`).
+    func moveMedia(_ id: UUID, to center: OverlayPoint, key: String? = nil) {
         guard edit.media.first(where: { $0.id == id })?.keyframes?.isEmpty == false else {
-            updateMedia(id) { $0.center = center }
+            updateMedia(id, key: key) { $0.center = center }
             return
         }
-        setAtPlayhead(of: .media(id)) { $0.center = center }
+        setAtPlayhead(of: .media(id), key: key) { $0.center = center }
     }
 
     /// A photo or video pinched on the preview by `factor`: its keyframe's scale when it moves,
     /// else its width.
-    func resizeMedia(_ id: UUID, by factor: Double) {
+    func resizeMedia(_ id: UUID, by factor: Double, key: String? = nil) {
         guard let media = edit.media.first(where: { $0.id == id }) else { return }
         guard media.keyframes?.isEmpty == false else {
             let width = min(max(media.width * factor, MediaOverlay.widthRange.lowerBound), MediaOverlay.widthRange.upperBound)
-            updateMedia(id) { $0.width = width }
+            updateMedia(id, key: key) { $0.width = width }
             return
         }
         let current = motionState(of: .media(id)).scale
-        setAtPlayhead(of: .media(id)) {
+        setAtPlayhead(of: .media(id), key: key) {
             $0.scale = min(max(current * factor, OverlayKeyframe.scaleRange.lowerBound), OverlayKeyframe.scaleRange.upperBound)
         }
     }
@@ -246,11 +257,11 @@ extension OverlaysViewModel {
 
     /// Changes the keyframe at the playhead of the picked item, adding it first when there's none.
     /// Changes the item's keyframe at the playhead, adding it first (where the item is now) when there's none.
-    func setAtPlayhead(of item: MotionItem, _ update: (inout OverlayKeyframe) -> Void) {
+    func setAtPlayhead(of item: MotionItem, key: String? = nil, _ update: (inout OverlayKeyframe) -> Void) {
         guard let local = localTime(of: item) else { return }
         var keyframe = keyframeAtPlayhead(of: item) ?? keyframeHere(of: item, at: local)
         update(&keyframe)
-        updateKeyframes(of: item) { keyframes in
+        updateKeyframes(of: item, key: key) { keyframes in
             if let index = keyframes.firstIndex(where: { $0.id == keyframe.id }) {
                 keyframes[index] = keyframe
             } else {
@@ -259,15 +270,15 @@ extension OverlaysViewModel {
         }
     }
 
-    func updateKeyframes(of item: MotionItem, _ update: (inout [OverlayKeyframe]) -> Void) {
+    func updateKeyframes(of item: MotionItem, key: String? = nil, _ update: (inout [OverlayKeyframe]) -> Void) {
         switch item {
         case .text(let id):
-            updateText(id) { text in
+            updateText(id, key: key) { text in
                 update(&text.keyframes)
                 text.keyframes.sort { $0.time < $1.time }
             }
         case .media(let id):
-            updateMedia(id) { media in
+            updateMedia(id, key: key) { media in
                 var keyframes = media.keyframes ?? []
                 update(&keyframes)
                 media.keyframes = keyframes.isEmpty ? nil : keyframes.sorted { $0.time < $1.time }
