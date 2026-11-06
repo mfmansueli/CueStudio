@@ -3,7 +3,6 @@
 //  Cue Studio
 //
 
-import Accessibility
 import CoreGraphics
 import Foundation
 
@@ -563,22 +562,6 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         case .text, .caption, .media: selection = nil
         default: break
         }
-    }
-
-    // MARK: - Undo
-
-    func undo() {
-        guard canUndo, document.undo() else { return }
-        // Edit by text picks words by their place in the list, which an undone cut changes.
-        clips.transcriptSelection = nil
-        // VoiceOver hears it happen, as a sighted creator sees the edit change.
-        AccessibilityNotification.Announcement(String(localized: "Undone")).post()
-    }
-
-    func redo() {
-        guard canRedo, document.redo() else { return }
-        clips.transcriptSelection = nil
-        AccessibilityNotification.Announcement(String(localized: "Redone")).post()
     }
 
     /// Old takes use a matching version only; a newer script is never an alignment reference.
