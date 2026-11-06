@@ -127,6 +127,11 @@ final class EditorJobs {
         running[kind] != nil
     }
 
+    /// Whether a job of a kind `matches` picks is running (tools' and imports' jobs each have their own kind).
+    func isRunning(where matches: (Kind) -> Bool) -> Bool {
+        running.keys.contains(where: matches)
+    }
+
     /// Waits for the job of `kind` running now, if there is one.
     func finished(_ kind: Kind) async {
         await running[kind]?.task.value

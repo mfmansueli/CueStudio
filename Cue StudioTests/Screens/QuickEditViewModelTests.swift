@@ -708,6 +708,28 @@ struct QuickEditViewModelTests {
         #expect(partial.viewModel.draftKeeper.state == .saving)
     }
 
+    /// Done waits for work that changes the edit when it ends and says which; Back keeps the draft, stops it and says so.
+    @Test func doneWaitsForCaptionsAndBackSaysTheyStopped() async {
+        let drafts = FakeDraftStore()
+        let scenario = await makeScenario(drafts: drafts)
+        dragHandle(.end, to: 30, on: scenario.viewModel)
+        scenario.viewModel.captions.captionState = .working(.preparing)
+        scenario.viewModel.askIfReadyToPost()
+        #expect(scenario.viewModel.sheet == nil)
+        #expect(scenario.toast.message == "Captions are still being made · Wait a moment")
+        #expect(scenario.viewModel.pendingWork == .captions)
+
+        #expect(scenario.viewModel.finish(.back) == .back)
+        #expect(scenario.toast.message == "Draft saved · Captions weren't finished")
+        #expect(drafts.drafts.count == 1)
+
+        let plain = await makeScenario()
+        dragHandle(.end, to: 30, on: plain.viewModel)
+        #expect(plain.viewModel.pendingWork == nil)
+        plain.viewModel.askIfReadyToPost()
+        #expect(plain.viewModel.sheet == .done)
+    }
+
     /// The chip follows what is on disk: Saving… after a change, Saved once the draft is written, nothing to say with no change.
     @Test func theChipSaysSavedOnlyOnceTheDraftIsWritten() async {
         let scenario = await makeScenario()

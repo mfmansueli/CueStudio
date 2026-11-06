@@ -625,9 +625,10 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         guard isReady else { return }
         endAllChanges()
         player.pause()
-        // A Blur area still being tracked hasn't covered anything yet.
-        if blur.isFollowing {
-            toast.show(String(localized: "A Blur area is still being tracked · Wait a moment"), kind: .problem)
+        // Work that changes the edit when it ends (a Blur area still being tracked hasn't covered anything yet): the video
+        // would go out without it.
+        if let work = pendingWork {
+            toast.show(work.waitMessage, kind: .problem)
             return
         }
         // A Blur area that may not cover what it hides: one frame is enough to show someone.
@@ -638,6 +639,24 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         selection = nil
         panel = nil
         sheet = .done
+    }
+
+    /// Work started here that changes the edit when it ends, the first that runs (`EditorPendingWork`).
+    var pendingWork: EditorPendingWork? {
+        if captions.captionState.isWorking { return .captions }
+        if captions.translationState.isWorking { return .translation }
+        if overlays.isTracking { return .tracking }
+        if blur.isFollowing { return .blurArea }
+        if jobs.isRunning(where: Self.makesAClip) { return .clip }
+        if jobs.isRunning(.auto) { return .auto }
+        return nil
+    }
+
+    private nonisolated static func makesAClip(_ kind: EditorJobs.Kind) -> Bool {
+        switch kind {
+        case .reverse, .importing, .tool: true
+        default: false
+        }
     }
 
     /// Leaves the editor the way the creator answered: the edit is saved on the take (share, download,
@@ -690,8 +709,16 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         }
         let kept = saveDraft()
         guard kept || leavesUnkept(.back) else { return false }
+        // Read before closing stops it: what didn't finish is said, the rest is in the draft.
+        let stopped = pendingWork
         close(keepingDraft: true)
-        toast.show(kept ? String(localized: "Draft saved") : notSavedMessage, kind: kept ? .done : .problem)
+        if !kept {
+            toast.show(notSavedMessage, kind: .problem)
+        } else if let stopped {
+            toast.show(stopped.stoppedMessage, kind: .problem)
+        } else {
+            toast.show(String(localized: "Draft saved"))
+        }
         return true
     }
 
