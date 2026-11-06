@@ -108,6 +108,7 @@ struct QuickEditView: View {
                 EditorDoneSheet(
                     duration: DurationText.clock(viewModel.edit.editedDuration),
                     exportNote: exportNote(viewModel.edit),
+                    fontNote: viewModel.fontsNotReady.map(EditorDoneFontNote.text),
                     onMeasure: { doneSheetHeight = $0 + 34 },
                     onAnswer: { outcome in
                         if let left = viewModel.finish(outcome) { onClose(left) }

@@ -2647,7 +2647,10 @@ InShot, Edits, Descript e Captions (pesquisa de 24/10: os apps põem a limpeza d
   português continua "Subtítulo" × "Legenda".
 - **Concluir:** a folha de Done já separava as quatro saídas (compartilhar, baixar, publicar depois, continuar editando), cada uma com o destino; o de
   Download video dizia "SAVED", que se confundia com o "EDIT SAVED" de cima: agora "IN PHOTOS". Quando compartilhar ou baixar a edição usaria a
-  última exportação grátis, ou não há nenhuma, uma linha sob a pergunta diz "LAST FREE EXPORT" ou "0 OF 3 LEFT · EXPORT WITH PRO" (§11). A organização dos projetos (Takes: To pick, In edit,
+  última exportação grátis, ou não há nenhuma, uma linha sob a pergunta diz "LAST FREE EXPORT" ou "0 OF 3 LEFT · EXPORT WITH PRO" (§11). Quando
+  algumas palavras sairiam na fonte do sistema, outra linha laranja (`warnText`) diz o que resolve, antes de escolher a saída
+  (`QuickEditViewModel.fontsNotReady`, `EditorDoneFontNote`): "A FONT YOU IMPORTED ISN’T ON THIS IPHONE · IMPORT IT AGAIN OR PICK ANOTHER" ou
+  "A FONT IS STILL DOWNLOADING · STAY ONLINE TO EXPORT IT" (a exportação ainda espera até 15 s por ela). A organização dos projetos (Takes: To pick, In edit,
   Ready, Shared) fica igual. Uma edição deixada aberta é achada onde ficou: o cartão "In edit", o Edit de Takes e o lembrete de terminar abrem o take
   dessa edição (a deixada por último, se há mais de uma), nunca uma edição nova no melhor take; na revisão, **Continue** aparece no take da edição
   aberta, e nos outros takes do vídeo **Edit** começa a edição deles (o que o fim do editor compartilha é sempre o take editado). **Save** e

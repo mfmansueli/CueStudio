@@ -5580,6 +5580,244 @@
         }
       }
     },
+    "A font you imported isn’t on this iPhone · import it again or pick another" : {
+      "comment" : "Editor's 'Is it ready to post?' sheet, small capitals line under the question: an imported font the video's words use is no longer on this iPhone; those words would export in the system font.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "خط استوردته ليس على هذا الـiPhone · استورده مجددًا أو اختر غيره"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En skrifttype, du har importeret, er ikke på denne iPhone · importér den igen, eller vælg en anden"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eine importierte Schrift ist nicht auf diesem iPhone · importiere sie erneut oder wähle eine andere"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una fuente que importaste no está en este iPhone · impórtala de nuevo o elige otra"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une police que tu as importée n’est pas sur cet iPhone · importe-la à nouveau ou choisis-en une autre"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपका इम्पोर्ट किया फ़ॉन्ट इस iPhone पर नहीं है · इसे फिर इम्पोर्ट करें या दूसरा चुनें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Font yang kamu impor tidak ada di iPhone ini · impor lagi atau pilih yang lain"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un font che hai importato non è su questo iPhone · importalo di nuovo o scegline un altro"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "読み込んだフォントがこのiPhoneにありません · もう一度読み込むか別のものを選択"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "가져온 서체가 이 iPhone에 없어요 · 다시 가져오거나 다른 서체를 고르세요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En skrifttype du importerte, er ikke på denne iPhonen · importer den på nytt eller velg en annen"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Een lettertype dat je hebt geïmporteerd, staat niet op deze iPhone · importeer het opnieuw of kies een ander"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uma fonte que você importou não está neste iPhone · importe de novo ou escolha outra"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ett teckensnitt du importerade finns inte på den här iPhonen · importera det igen eller välj ett annat"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ฟอนต์ที่คุณนำเข้าไม่ได้อยู่ใน iPhone เครื่องนี้ · นำเข้าอีกครั้งหรือเลือกฟอนต์อื่น"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İçe aktardığın bir yazı tipi bu iPhone’da yok · yeniden içe aktar ya da başka birini seç"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Một phông chữ bạn đã nhập không có trên iPhone này · hãy nhập lại hoặc chọn phông khác"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你导入的一款字体不在这台 iPhone 上 · 请重新导入或换一款"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你匯入的一款字體不在這支 iPhone 上 · 請重新匯入或換一款"
+          }
+        }
+      }
+    },
+    "A font is still downloading · stay online to export it" : {
+      "comment" : "Editor's 'Is it ready to post?' sheet, small capitals line under the question: a script font the video's words use hasn't downloaded yet; exporting offline would draw those words in the system font.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "خط لا يزال قيد التنزيل · ابقَ متصلًا لتصديره"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En skrifttype hentes stadig · bliv online for at eksportere den"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eine Schrift lädt noch · bleib online, um sie zu exportieren"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una fuente aún se está descargando · sigue conectado para exportarla"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une police est encore en téléchargement · reste en ligne pour l’exporter"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "एक फ़ॉन्ट अभी डाउनलोड हो रहा है · इसे एक्सपोर्ट करने के लिए ऑनलाइन रहें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Satu font masih diunduh · tetap online untuk mengekspornya"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un font si sta ancora scaricando · resta online per esportarlo"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フォントをダウンロード中 · 書き出すまでオンラインのままに"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "서체를 아직 내려받는 중이에요 · 내보내려면 온라인을 유지하세요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En skrifttype lastes fortsatt ned · hold deg på nett for å eksportere den"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Een lettertype wordt nog gedownload · blijf online om het te exporteren"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uma fonte ainda está baixando · fique on-line para exportar com ela"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ett teckensnitt laddas fortfarande ned · var online för att exportera det"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ฟอนต์ยังดาวน์โหลดอยู่ · ออนไลน์ไว้เพื่อส่งออกพร้อมฟอนต์นี้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bir yazı tipi hâlâ indiriliyor · dışa aktarmak için çevrimiçi kal"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Một phông chữ vẫn đang tải · hãy giữ kết nối để xuất cùng phông này"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一款字体仍在下载 · 保持联网以便用它导出"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一款字體仍在下載 · 保持連網以便用它輸出"
+          }
+        }
+      }
+    },
     "A font you imported isn’t on this iPhone." : {
       "comment" : "Ready to travel, under \"Some words use the system font\": a font the creator imported was removed from this iPhone.",
       "localizations" : {

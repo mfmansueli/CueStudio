@@ -8,13 +8,17 @@ import SwiftUI
 /// "Is it ready to post?": asked every time the creator taps Done. Four answers, each saying where
 /// the video goes (SHARED, IN PHOTOS, READY, IN EDIT). The first, the way most videos end, is yellow.
 /// No platform names: sharing is generic, the app is picked in the share sheet. With the last free export (or none) left, one line under
-/// the question says so, where the creator decides (owner, 06/11/2026: no new flow). Swiping the sheet down goes back to the editor.
+/// the question says so, where the creator decides (owner, 06/11/2026: no new flow); so does a font that isn't here
+/// (`EditorDoneFontNote`). Swiping the sheet down goes back to the editor.
 struct EditorDoneSheet: View {
     /// "1:02": the edit's length, under "EDIT SAVED".
     let duration: String
     /// "LAST FREE EXPORT" or "0 OF 3 LEFT · EXPORT WITH PRO" under the question, when sharing or downloading this edit would use the last free
     /// export or needs Pro (`TakeReviewViewModel.doneExportNote`); nil on Pro, with more left, or for a video already out.
     var exportNote: FreeExportLabels.Label?
+    /// "A font is still downloading · …" when some words would come out in the system's face (`EditorDoneFontNote`); nil when every
+    /// word has its font.
+    var fontNote: String?
     /// The height the content needs, so the sheet is exactly that tall (the four answers always show).
     var onMeasure: (CGFloat) -> Void = { _ in }
     let onAnswer: (EditorOutcome) -> Void
@@ -56,6 +60,16 @@ struct EditorDoneSheet: View {
                         .fixedSize(horizontal: false, vertical: true)
                         .padding(.top, 2)
                         .accessibilityIdentifier("edit.done.exportNote")
+                }
+                if let fontNote {
+                    Text(fontNote)
+                        .textCase(.uppercase)
+                        .monoFont(.caption2, weight: .heavy)
+                        .interfaceTracking(1)
+                        .foregroundStyle(Palette.warnText)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.top, 2)
+                        .accessibilityIdentifier("edit.done.fontNote")
                 }
             }
             .padding(.horizontal, 4)

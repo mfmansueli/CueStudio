@@ -215,6 +215,7 @@ Saída: uma ficha por ferramenta (o que foi visto, o que mudou, antes e depois) 
 | 10.2 Exportação (agente) | Feito no código | Testes; falta iPhone: bloqueio automático no 15 Pro, ligação no meio |
 | 10.7 Pro (agente) | Feito no código | Testes de unidade e UI; falta compra real no iPhone; perguntas ao dono no relatório |
 | 10.3 Fontes e identidade do arquivo (agente) | Feito | `ExportRenderStamp`, `ExportedFileRecord` |
+| §15 Checagem antes de exportar | Feito | No Done: fonte importada ausente ou fonte de escrita ainda baixando (`fontsNotReady`, linha laranja com o que resolve); mídia ausente (aviso na prévia + Remove); processamento pendente (o Done espera); Desfocar área não conferida (pede um quadro). `QuickEditFontCheckTests` |
 | 10.3 Prévia × arquivo, imagem | 27 ferramentas iguais | `PreviewMatchesExportTests`; nova diferença achada: vídeo preso a segundos aparados (vai para E2, primeiro item) |
 | 10.3 Prévia × arquivo, som | Medido, decisão do dono | Igual sob o teto; 2,5 dB e estouro na prévia acima dele. Proposta: aviso de nível alto no Volume, calculado de uma mistura em segundo plano; ou prévia por AVAudioEngine (grande) |
 | Testes que falham fora do editor | Relatar | `IdeaSuggestionServiceTests`, `IdeaRouletteTests` (vêm de 789a445a, já no origin/main), `NearbyLinkTests` (rede local no simulador) |
