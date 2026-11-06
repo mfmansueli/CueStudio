@@ -303,7 +303,7 @@ final class TakeLibraryService {
         var names = take.edit?.mediaFileNames ?? []
         if let drafts {
             names.formUnion(drafts.draft(for: take.id)?.edit.mediaFileNames ?? [])
-            drafts.discard(takeID: take.id)
+            drafts.forget(takeID: take.id)
         }
         if !names.isEmpty { EditMediaFiles.remove(names) }
     }

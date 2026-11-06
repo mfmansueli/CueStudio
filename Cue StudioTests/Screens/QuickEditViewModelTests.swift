@@ -24,7 +24,8 @@ struct QuickEditViewModelTests {
         editor: FakeTakeEditor = FakeTakeEditor(),
         drafts: FakeDraftStore = FakeDraftStore(),
         takes: TakeLibraryService? = nil,
-        repository: FakeTakeRepository? = nil
+        repository: FakeTakeRepository? = nil,
+        prepares: Bool = true
     ) async -> Scenario {
         var take = TestData.take(scriptID: script?.id, number: 3)
         take.duration = 64
@@ -41,7 +42,7 @@ struct QuickEditViewModelTests {
             take: takes.takes[0], takes: takes, library: library, editing: editor,
             drafts: drafts, toast: toast, player: player
         )
-        await viewModel.prepare()
+        if prepares { await viewModel.prepare() }
         return Scenario(viewModel: viewModel, takes: takes, editor: editor, player: player, drafts: drafts, toast: toast)
     }
 
@@ -609,29 +610,114 @@ struct QuickEditViewModelTests {
         #expect(second.toast.message == "Draft restored")
     }
 
-    @Test func doneThatCantSaveAnywhereSaysNothingWasSaved() async {
+    /// Nowhere to keep the edit: the editor stays open and says why, with Leave anyway; asked again, it leaves.
+    @Test func doneThatCantSaveAnywhereStaysAndSaysWhy() async {
         let repository = FakeTakeRepository()
         let drafts = FakeDraftStore()
         let scenario = await makeScenario(drafts: drafts, repository: repository)
         repository.failsToSave = true
         drafts.failsToSave = true
         dragHandle(.start, to: 4, on: scenario.viewModel)
-        scenario.viewModel.done()
+        #expect(scenario.viewModel.finish(.share) == nil)
         #expect(scenario.toast.message == "Couldn't save the edits · Free up space on this iPhone")
+        #expect(scenario.toast.action?.title == "Leave anyway")
+        #expect(!scenario.player.isStopped)
+        #expect(scenario.viewModel.draftKeeper.state == .failed(.noSpace))
+        #expect(scenario.viewModel.finish(.share) == .notYet)
+        #expect(scenario.player.isStopped)
     }
 
-    @Test func cancelThatCantWriteTheDraftNeverSaysDraftSaved() async {
+    @Test func cancelThatCantWriteTheDraftNeverSaysDraftSavedAndStaysOnce() async {
         let drafts = FakeDraftStore()
         drafts.failsToSave = true
         let scenario = await makeScenario(drafts: drafts)
         dragHandle(.end, to: 30, on: scenario.viewModel)
-        scenario.viewModel.cancel()
+        #expect(!scenario.viewModel.cancel())
         #expect(drafts.drafts.isEmpty)
         #expect(scenario.toast.message == "Couldn't save the edits · Free up space on this iPhone")
+        #expect(!scenario.player.isStopped)
+        // Space freed: Back now keeps the draft and leaves.
+        drafts.failsToSave = false
+        #expect(scenario.viewModel.cancel())
+        #expect(drafts.drafts.count == 1)
+        #expect(scenario.toast.message == "Draft saved")
 
+        drafts.failsToSave = true
         let notYet = await makeScenario(drafts: drafts)
-        notYet.viewModel.finish(.notYet)
+        #expect(notYet.viewModel.finish(.notYet) == nil)
         #expect(notYet.toast.message == "Couldn't save the edits · Free up space on this iPhone")
+        notYet.toast.action?.perform()
+        #expect(notYet.player.isStopped)
+    }
+
+    /// A failure that isn't a full iPhone isn't blamed on space.
+    @Test func aWriteThatFailsForAnotherReasonSaysTryAgain() async {
+        let drafts = FakeDraftStore()
+        drafts.failsToSave = true
+        drafts.saveError = CocoaError(.fileWriteNoPermission)
+        let scenario = await makeScenario(drafts: drafts)
+        dragHandle(.end, to: 30, on: scenario.viewModel)
+        scenario.viewModel.cancel()
+        #expect(scenario.toast.message == "Couldn't save the edits · Try again")
+    }
+
+    /// Back while the video is still opening, or after it couldn't be opened, leaves the draft from before as it was.
+    @Test func backBeforeTheVideoOpensKeepsTheDraft() async {
+        let drafts = FakeDraftStore()
+        let first = await makeScenario(drafts: drafts)
+        dragHandle(.end, to: 30, on: first.viewModel)
+        first.viewModel.cancel()
+        #expect(drafts.drafts.count == 1)
+
+        let loading = await makeScenario(drafts: drafts, takes: first.takes, prepares: false)
+        #expect(loading.viewModel.finish(.back) == .back)
+        #expect(drafts.drafts.count == 1)
+
+        let editor = FakeTakeEditor()
+        editor.duration = nil
+        let unavailable = await makeScenario(editor: editor, drafts: drafts, takes: first.takes)
+        #expect(unavailable.viewModel.source == .unavailable)
+        unavailable.viewModel.cancel()
+        #expect(drafts.drafts.count == 1)
+
+        let reopened = await makeScenario(drafts: drafts, takes: first.takes)
+        #expect(reopened.viewModel.edit.timeline.trimEnd == 30)
+        #expect(reopened.viewModel.canUndo)
+    }
+
+    /// A draft that can't be read opens the take's own edit and says a copy is kept; one read in part says so and is written again.
+    @Test func aDraftThatDidntReadWholeIsSaid() async {
+        let drafts = FakeDraftStore()
+        let first = await makeScenario(drafts: drafts)
+        let takeID = first.takes.takes[0].id
+        drafts.readings[takeID] = .unreadable
+        let unreadable = await makeScenario(drafts: drafts, takes: first.takes)
+        #expect(unreadable.toast.message == "Couldn't open your draft · A copy is kept on this iPhone")
+        #expect(unreadable.viewModel.draftKeeper.state == .clean)
+
+        dragHandle(.end, to: 30, on: first.viewModel)
+        first.viewModel.cancel()
+        guard let kept = drafts.drafts[takeID] else {
+            Issue.record("Back should have kept a draft")
+            return
+        }
+        drafts.readings[takeID] = .draft(kept, partial: true)
+        let partial = await makeScenario(drafts: drafts, takes: first.takes)
+        #expect(partial.toast.message == "Draft restored · Some parts couldn't be read")
+        #expect(partial.viewModel.edit.timeline.trimEnd == 30)
+        #expect(partial.viewModel.draftKeeper.state == .saving)
+    }
+
+    /// The chip follows what is on disk: Saving… after a change, Saved once the draft is written, nothing to say with no change.
+    @Test func theChipSaysSavedOnlyOnceTheDraftIsWritten() async {
+        let scenario = await makeScenario()
+        #expect(scenario.viewModel.draftKeeper.state == .clean)
+        dragHandle(.end, to: 30, on: scenario.viewModel)
+        #expect(scenario.viewModel.draftKeeper.state == .saving)
+        #expect(scenario.viewModel.saveDraft())
+        #expect(scenario.viewModel.draftKeeper.state == .saved)
+        scenario.viewModel.undo()
+        #expect(scenario.viewModel.draftKeeper.state == .clean)
     }
 
     /// "Yes, share" or "Download" whose edit couldn't be saved on the take: the review goes on as "Not yet" (the edit is a draft), never

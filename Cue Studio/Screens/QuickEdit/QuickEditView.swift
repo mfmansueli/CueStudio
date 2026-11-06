@@ -73,8 +73,7 @@ struct QuickEditView: View {
                     EditorTopBar(
                         viewModel: viewModel,
                         onBack: {
-                            viewModel.finish(.back)
-                            onClose(.back)
+                            if let left = viewModel.finish(.back) { onClose(left) }
                         },
                         onDone: { viewModel.askIfReadyToPost() }
                     )
@@ -104,7 +103,7 @@ struct QuickEditView: View {
                     duration: DurationText.clock(viewModel.edit.editedDuration),
                     onMeasure: { doneSheetHeight = $0 + 34 },
                     onAnswer: { outcome in
-                        onClose(viewModel.finish(outcome))
+                        if let left = viewModel.finish(outcome) { onClose(left) }
                     }
                 )
                 .presentationDetents([.height(doneSheetHeight)])
@@ -182,6 +181,7 @@ struct QuickEditView: View {
         .onChange(of: scenePhase) { _, phase in
             if phase == .active { viewModel.becameActive() } else { viewModel.pauseAndKeepDraft() }
         }
+        .onAppear { viewModel.leaveScreen = { onClose($0) } }
         .onDisappear { viewModel.pauseAndKeepDraft() }
         .animation(reduceMotion ? nil : .easeOut(duration: 0.22), value: viewModel.panel)
         .animation(reduceMotion ? nil : .easeInOut(duration: 0.28), value: viewModel.stylePanelIsExpanded)

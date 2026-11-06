@@ -107,6 +107,12 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     @ObservationIgnored var blurCheckAccepted = false
     /// The draft kept as Cue went to the background couldn't be written (a full iPhone): tried again on the way back.
     @ObservationIgnored private var draftNotKept = false
+    /// Whether the edit on screen is on disk, for the top bar (`EditorDraftKeeper`).
+    let draftKeeper: EditorDraftKeeper
+    /// Leaving was asked while the edit couldn't be kept anywhere: the editor stayed and said so; asked again, it leaves.
+    @ObservationIgnored private var warnedNotKept = false
+    /// How the screen goes away when the creator leaves from a toast ("Leave anyway"), set by the screen.
+    @ObservationIgnored var leaveScreen: (EditorOutcome) -> Void = { _ in }
     /// The creator's handle, for the "@handle" graphic and the cover's series (set by the screen).
     var creatorHandle: String {
         get { session.creatorHandle }
@@ -172,6 +178,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         self.library = library
         self.editing = editing
         self.drafts = drafts
+        draftKeeper = EditorDraftKeeper(store: drafts, takeID: take.id)
         self.toast = toast
         document = EditDocument(Self.startingEdit(for: take))
         let player = player ?? QuickEditPlayer(videoURL: takes.videoURL(for: take), editing: editing)
@@ -239,14 +246,30 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         guard !isClosed else { return }
         // The file's own length wins over the take's saved one; a draft left behind comes back with its undo steps.
         var playhead: TimeInterval = 0
-        let draft = drafts.draft(for: take.id)
-        if document.open(sourceDuration: duration, draft: draft), let draft {
-            playhead = draft.playhead
+        let reading = drafts.reading(for: take.id)
+        let restored = document.open(sourceDuration: duration, draft: reading.draft)
+        if restored, let draft = reading.draft { playhead = draft.playhead }
+        switch reading {
+        case .unreadable:
+            // The take's own edit opens; the draft's file is kept aside before a new draft can be written over it.
+            toast.show(String(localized: "Couldn't open your draft · A copy is kept on this iPhone"), kind: .problem)
+        case .draft(_, partial: true) where restored:
+            toast.show(String(localized: "Draft restored · Some parts couldn't be read"), kind: .problem)
+        case .draft where restored:
             toast.show(String(localized: "Draft restored"))
+        case .draft, .none:
+            break
         }
+        let partial = if case .draft(_, partial: true) = reading { restored } else { false }
+        draftKeeper.opened(onDraft: restored && !partial)
         sayMissingMedia()
         clips.opened()
         source = .ready
+        // What was read in part is written again as it now is (the file as it was is kept), so the chip says Saved truly.
+        if partial {
+            draftKeeper.changed(hasChanges: hasUnsavedChanges)
+            scheduleDraftSave()
+        }
         player.show(edit)
         player.seek(to: playhead)
         cover.drawCover()
@@ -303,6 +326,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         player.show(playedEdit)
         cover.editChanged()
         brand.requestFontPacks()
+        draftKeeper.changed(hasChanges: hasUnsavedChanges)
         scheduleDraftSave()
     }
 
@@ -489,7 +513,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     func becameActive() {
         if draftNotKept {
             draftNotKept = !saveDraft()
-            if draftNotKept { toast.show(Self.notSaved, kind: .problem) }
+            if draftNotKept { toast.show(notSavedMessage, kind: .problem) }
         }
         guard source == .ready, player.state == .failed else { return }
         player.retry()
@@ -542,9 +566,10 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     // MARK: - Leaving
 
     /// Saves the edit on the take (its new length, marked Edited) when anything changed.
-    /// - Returns: false when the edit couldn't be saved on the take (it stays a draft).
+    /// - Returns: true when the edit is on the take, false when it couldn't be and stays a draft, nil when it couldn't be kept anywhere
+    ///   and the editor stays open (said once, with Leave anyway).
     @discardableResult
-    func done() -> Bool {
+    func done() -> Bool? {
         endAllChanges()
         audio.stopRecordingIfNeeded()
         // Reversed videos nothing plays any more (a clip reversed and put back) were kept for undo; they go now.
@@ -556,11 +581,11 @@ final class QuickEditViewModel: EditorHost, EditorPart {
                 try takes.applyEdit(saved, to: take.id)
             } catch {
                 noteFailure(error, "save")
-                // Not on disk: the edit stays a draft (and its files with it) that Edit opens again, or, when even that
-                // can't be written, the creator hears it wasn't saved.
-                let kept = saveDraft(forced: true)
+                // Not on disk: the edit stays a draft (and its files with it) that Edit opens again; when even that can't be written,
+                // the editor stays open and says so.
+                guard saveDraft(forced: true) || leavesUnkept(.notYet) else { return nil }
                 close(keepingDraft: true)
-                toast.show(kept ? String(localized: "Couldn't save the edits · Kept as a draft") : Self.notSaved, kind: .problem)
+                toast.show(draftKeeper.isFailing ? notSavedMessage : String(localized: "Couldn't save the edits · Kept as a draft"), kind: .problem)
                 return false
             }
             toast.show(String(localized: "Edits saved to this take"))
@@ -570,8 +595,30 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         return true
     }
 
-    /// The edit couldn't be written anywhere: a full iPhone is the likely reason.
-    private static var notSaved: String { String(localized: "Couldn't save the edits · Free up space on this iPhone") }
+    /// Why the edit couldn't be written, said so the creator can act: a full iPhone, or try again (anything else isn't blamed on space).
+    private var notSavedMessage: String {
+        if case .failed(.other) = draftKeeper.state { return String(localized: "Couldn't save the edits · Try again") }
+        return String(localized: "Couldn't save the edits · Free up space on this iPhone")
+    }
+
+    /// The edit couldn't be kept anywhere and the creator asked to leave. The first time the editor stays and says so, with Leave
+    /// anyway; asked again (or Leave anyway), it goes, keeping whatever draft was last written.
+    /// - Returns: true when it leaves now.
+    private func leavesUnkept(_ outcome: EditorOutcome) -> Bool {
+        if warnedNotKept { return true }
+        warnedNotKept = true
+        toast.show(
+            notSavedMessage, kind: .problem,
+            action: ToastAction(title: String(localized: "Leave anyway")) { [weak self] in self?.leaveAnyway(outcome) }
+        )
+        return false
+    }
+
+    private func leaveAnyway(_ outcome: EditorOutcome) {
+        guard !isClosed else { return }
+        close(keepingDraft: true)
+        leaveScreen(outcome)
+    }
 
     /// Done: pauses and asks "Is it ready to post?" (`EditorDoneSheet`); the answer is `finish(_:)`.
     func askIfReadyToPost() {
@@ -596,42 +643,56 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     /// Leaves the editor the way the creator answered: the edit is saved on the take (share, download,
     /// ready later), kept as a draft the video stays in edit with (not yet), or kept as a draft
     /// without asking (back).
-    /// - Returns: what the review carries on with: an edit that couldn't be saved on the take is a draft, never shared or saved as it was.
+    /// - Returns: what the review carries on with (an edit that couldn't be saved on the take is a draft, never shared or saved as it
+    ///   was), or nil when the editor stays open because the edit couldn't be kept anywhere.
     @discardableResult
-    func finish(_ outcome: EditorOutcome) -> EditorOutcome {
+    func finish(_ outcome: EditorOutcome) -> EditorOutcome? {
         sheet = nil
         switch outcome {
-        case .share, .download, .ready: return done() ? outcome : .notYet
-        case .notYet: keepForLater()
-        case .back: cancel()
+        case .share, .download, .ready:
+            guard let saved = done() else { return nil }
+            return saved ? outcome : .notYet
+        case .notYet: return keepForLater() ? outcome : nil
+        case .back: return cancel() ? outcome : nil
         }
-        return outcome
     }
 
     /// "Not yet, I'll come back": the draft stays even if nothing changed, so the video is in edit.
-    private func keepForLater() {
+    /// - Returns: false when the editor stays open (the draft couldn't be written).
+    private func keepForLater() -> Bool {
         endAllChanges()
         // A narration being recorded is kept with the draft.
         audio.stopRecordingIfNeeded()
         let kept = saveDraft(forced: true)
+        guard kept || leavesUnkept(.notYet) else { return false }
         close(keepingDraft: true)
-        if !kept { toast.show(Self.notSaved, kind: .problem) }
+        if !kept { toast.show(notSavedMessage, kind: .problem) }
+        return true
     }
 
-    /// Leaves without saving on the take. Changes stay in a draft that Edit picks up again; the take
-    /// is as it was.
-    func cancel() {
+    /// Leaves without saving on the take. Changes stay in a draft that Edit picks up again; the take is as it was. A draft
+    /// left from before stays too while the video is still opening or couldn't be opened: nothing here replaced it.
+    /// - Returns: false when the editor stays open (the changes couldn't be written).
+    @discardableResult
+    func cancel() -> Bool {
         endAllChanges()
         // A narration being recorded is kept with the draft, like every other change.
         audio.stopRecordingIfNeeded()
-        guard source == .ready, hasUnsavedChanges else {
+        guard source == .ready else {
+            removeUnusedImports(keeping: document.original.mediaFileNames)
+            close(keepingDraft: true)
+            return true
+        }
+        guard hasUnsavedChanges else {
             removeUnusedImports(keeping: document.original.mediaFileNames)
             close(keepingDraft: false)
-            return
+            return true
         }
         let kept = saveDraft()
+        guard kept || leavesUnkept(.back) else { return false }
         close(keepingDraft: true)
-        toast.show(kept ? String(localized: "Draft saved") : Self.notSaved, kind: kept ? .done : .problem)
+        toast.show(kept ? String(localized: "Draft saved") : notSavedMessage, kind: kept ? .done : .problem)
+        return true
     }
 
     /// Leaving the app or the screen without Done or Cancel: the draft keeps everything.
@@ -641,7 +702,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         // Not written: said now (an edit iOS may end in the background shouldn't go unnoticed) and tried again on the way back.
         guard !saveDraft() else { return }
         draftNotKept = true
-        toast.show(Self.notSaved, kind: .problem)
+        toast.show(notSavedMessage, kind: .problem)
     }
 
     /// Files copied in during this visit that nothing kept names: the take's saved edit (and the
@@ -677,24 +738,46 @@ final class QuickEditViewModel: EditorHost, EditorPart {
 
     // MARK: - Draft
 
-    private func scheduleDraftSave() {
+    private func scheduleDraftSave(after delay: Duration = .milliseconds(600)) {
         jobs.start(.draft) { [weak self] _ in
-            try? await Task.sleep(for: .milliseconds(600))
+            try? await Task.sleep(for: delay)
             guard !Task.isCancelled else { return }
             self?.autosaveDraft()
         }
     }
 
-    /// 600 ms after a change: the draft written off the main thread (`QuickEditDraftStoring.saveSoon`), or dropped when
-    /// nothing is changed any more.
+    /// The draft as the editor has it now.
+    private var currentDraft: QuickEditDraft {
+        QuickEditDraft(takeID: take.id, edit: edit, playhead: player.currentTime, history: document.draftHistory, savedAt: .now)
+    }
+
+    /// 600 ms after a change: the draft written off the main thread (`EditorDraftKeeper.saveSoon`), or dropped when nothing is
+    /// changed any more. A write that fails is said once and tried again every few seconds until one works.
     private func autosaveDraft() {
         guard source == .ready, !isClosed else { return }
         if hasUnsavedChanges {
-            drafts.saveSoon(QuickEditDraft(takeID: take.id, edit: edit, playhead: player.currentTime, history: document.draftHistory, savedAt: .now))
+            draftKeeper.saveSoon(currentDraft) { [weak self] failure, first in self?.autosaveFailed(failure, first: first) }
         } else {
-            drafts.discard(takeID: take.id)
+            draftKeeper.discard()
         }
     }
+
+    private func autosaveFailed(_ failure: QuickEditDraftSaveFailure, first: Bool) {
+        guard !isClosed else { return }
+        if first {
+            noteFailure(failure, "draft")
+            toast.show(
+                failure == .noSpace
+                    ? String(localized: "Couldn't save the edits · Free up space on this iPhone")
+                    : String(localized: "Couldn't save the edits · Cue keeps trying"),
+                kind: .problem
+            )
+        }
+        scheduleDraftSave(after: Self.draftRetryDelay)
+    }
+
+    /// How long a failed autosave waits before it tries again.
+    static let draftRetryDelay: Duration = .seconds(5)
 
     /// Keeps the edit, the playhead and the undo steps now (on leaving, or the app going away), or drops the draft when
     /// nothing changed. False when the draft couldn't be written (the store logs why).
@@ -702,14 +785,13 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     func saveDraft(forced: Bool = false) -> Bool {
         guard source == .ready, !isClosed else { return true }
         if hasUnsavedChanges || forced {
-            do {
-                try drafts.save(QuickEditDraft(takeID: take.id, edit: edit, playhead: player.currentTime, history: document.draftHistory, savedAt: .now))
-            } catch {
+            if let error = draftKeeper.saveNow(currentDraft) {
                 noteFailure(error, "draft")
                 return false
             }
+            warnedNotKept = false
         } else {
-            drafts.discard(takeID: take.id)
+            draftKeeper.discard()
         }
         return true
     }

@@ -90,7 +90,7 @@ final class DataEraserService {
 
     func eraseEverything() {
         for take in takes.takes {
-            drafts.discard(takeID: take.id)
+            drafts.forget(takeID: take.id)
             ledger?.forget(takeID: take.id)
             takes.delete(take.id)
         }

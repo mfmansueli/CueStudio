@@ -8,22 +8,33 @@ import Foundation
 /// Where Quick edit keeps an edit in progress, one per take.
 protocol QuickEditDraftStoring: AnyObject {
     func draft(for takeID: UUID) -> QuickEditDraft?
+    /// The draft and how it read (`QuickEditDraftReading`): what the editor opens on, and says when a draft came back in part or not at
+    /// all.
+    func reading(for takeID: UUID) -> QuickEditDraftReading
     /// Whether an edit is open on the take: what puts its video "In edit" in Takes. Cheap, so lists
     /// can ask for every take.
     func hasDraft(for takeID: UUID) -> Bool
     /// Throws when the draft couldn't be written (the iPhone full): the edit is then only in memory.
     func save(_ draft: QuickEditDraft) throws
     /// Keeps the draft without making the caller wait (the autosave while editing): written off the main thread, after every
-    /// write or discard asked for before it, so an older draft never lands over a newer one or over a discard. A draft that
-    /// can't be written is logged; the next autosave, or the draft kept on leaving (`save`), tries again.
-    func saveSoon(_ draft: QuickEditDraft)
+    /// write or discard asked for before it, so an older draft never lands over a newer one or over a discard. `then` hears, on the
+    /// main actor, whether this write made it (nil) or why not.
+    func saveSoon(_ draft: QuickEditDraft, then: @escaping @MainActor @Sendable (QuickEditDraftSaveFailure?) -> Void)
     func discard(takeID: UUID)
+    /// The take is gone: its draft and the copies kept of drafts that couldn't be read.
+    func forget(takeID: UUID)
     /// "Delete my Cue data": every draft, the ones of takes already gone too.
     func discardAll()
 }
 
 extension QuickEditDraftStoring {
     func hasDraft(for takeID: UUID) -> Bool { draft(for: takeID) != nil }
+
+    func reading(for takeID: UUID) -> QuickEditDraftReading {
+        draft(for: takeID).map { .draft($0, partial: false) } ?? .none
+    }
+
+    func forget(takeID: UUID) { discard(takeID: takeID) }
 
     /// The take of `takes` whose edit was left open last, if one has an open edit: what "In edit", "Continue" and the reminder to finish
     /// open, so the creator finds the edit where they left it (reads the drafts: for a tap, not for every frame).
@@ -47,7 +58,14 @@ extension QuickEditDraftStoring {
         return left == start ? nil : draft
     }
 
-    func saveSoon(_ draft: QuickEditDraft) { try? save(draft) }
+    func saveSoon(_ draft: QuickEditDraft, then: @escaping @MainActor @Sendable (QuickEditDraftSaveFailure?) -> Void) {
+        do {
+            try save(draft)
+            then(nil)
+        } catch {
+            then(QuickEditDraftSaveFailure(error))
+        }
+    }
 
     /// The same pieces of the same recording, whatever they are called.
     private static func sameCuts(_ one: EditTimeline, _ other: EditTimeline) -> Bool {
