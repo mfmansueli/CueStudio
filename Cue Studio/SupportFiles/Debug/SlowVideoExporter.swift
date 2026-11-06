@@ -17,7 +17,7 @@ final class SlowVideoExporter: VideoExporting {
         self.inner = inner
     }
 
-    func export(videoAt url: URL, options: ExportOptions, progress: (@MainActor (ExportProgress) -> Void)?) async throws -> URL {
+    func export(videoAt url: URL, options: ExportOptions, progress: (@MainActor (ExportProgress) -> Void)?) async throws -> ExportResult {
         let preparing = 7
         for step in 0..<steps {
             let rendered = Double(step - preparing) / Double(steps - preparing) * 0.9

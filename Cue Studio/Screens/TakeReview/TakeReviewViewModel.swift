@@ -82,6 +82,8 @@ final class TakeReviewViewModel {
     var exportCaptionDisplay: CaptionDisplay = .original
     /// Why the video being exported has no captions although they were asked for.
     @ObservationIgnored private var captionNotice: String?
+    /// Some of the exported video's words came out in the system's face: the message after sending it says so.
+    @ObservationIgnored private var fontNotice: String?
     private(set) var quality: ExportQuality = .hd1080
     /// Where the running export is: its stage, and how far when the stage can measure itself (nil when none runs).
     private(set) var exportProgress: ExportProgress?
@@ -490,6 +492,9 @@ final class TakeReviewViewModel {
                     return false
                 }
                 self.preparedOperation = operation.id
+                // Words in the system's face (`ExportedFileRecord`): the message after sending says so, as the cover does.
+                let fallback = ExportedFileRecord.read(at: self.ledger.fileURL(of: operation))?.fontFallback
+                self.fontNotice = fallback.map { _ in String(localized: "Some words use the system font") }
                 // "Cancel export" before this line: nothing leaves Cue, nothing is counted. Checked and marked with no wait between them, on
                 // the main actor, so a cancel can't land halfway (`cancelExport` refuses once delivering).
                 try Task.checkCancellation()
@@ -542,7 +547,12 @@ final class TakeReviewViewModel {
         )
         let source = takes.videoURL(for: take)
         let fingerprint = ExportFingerprint.make(takeID: take.id, source: source, options: options)
-        let reusable = ledger.reusableOperation(fingerprint: fingerprint)
+        // The same video is reused only when it would be drawn the same now (the fonts, the media, this Cue): a file whose record says
+        // otherwise, or has none, is made again (for the free exports it is still the same video).
+        let stamp = ExportRenderStamp.current(edit: options.edit)
+        let reusable = ledger.reusableOperation(fingerprint: fingerprint).flatMap { operation in
+            ExportedFileRecord.read(at: ledger.fileURL(of: operation))?.renderStamp == stamp ? operation : nil
+        }
         let continued = operationID.flatMap { ledger.operation(id: $0) }.flatMap { $0.fingerprint == fingerprint ? $0 : nil }
         if action != .render, !ledger.isCounted(fingerprint: fingerprint), !quota.canExport(tier: tier()) {
             pendingAction = action
@@ -555,9 +565,13 @@ final class TakeReviewViewModel {
         if let missing = StorageSpace.shortfall(forExportOf: estimatedMegabytes(of: take), available: freeSpace()) {
             throw ExportPreflightError.notEnoughSpace(megabytes: missing)
         }
-        let url = try await exporter.export(videoAt: source, options: options, progress: progress)
+        let result = try await exporter.export(videoAt: source, options: options, progress: progress)
+        let url = result.url
+        ExportedFileRecord(renderStamp: ExportRenderStamp.drawn(edit: options.edit, result: result), fontFallback: result.fontFallback).write(to: url)
         if let continued {
-            // The same export, its file made again after the system cleared the first: not a second export.
+            // The same export, its file made again (the system cleared the first, or it was drawn differently): not a second export. An
+            // old file still there goes, unless the share sheet shows it.
+            if ledger.fileExists(for: continued), activity?.operationID != continued.id { ledger.releaseFile(of: continued.id) }
             ledger.replaceFile(of: continued.id, with: url)
             return ledger.operation(id: continued.id)
         }
@@ -729,11 +743,13 @@ final class TakeReviewViewModel {
 
     private func exported(_ take: Take, operation: ExportOperation) -> ExportedVideo {
         let currentTier = tier()
+        let url = ledger.fileURL(of: operation)
+        let fontFallback = ExportedFileRecord.read(at: url)?.fontFallback
         return ExportedVideo(
-            operationID: operation.id, take: take, url: ledger.fileURL(of: operation),
+            operationID: operation.id, take: take, url: url,
             formatLabel: "\(outputResolutionLabel(for: take).uppercased()) · \(take.outputAspect.label)",
             hasCaptions: burnsInCaptions && captionNotice == nil, missingCaptions: burnsInCaptions ? captionNotice : nil,
-            exportsLeft: quota.exportsLeft(for: currentTier), platform: take.platform
+            exportsLeft: quota.exportsLeft(for: currentTier), platform: take.platform, fontFallback: fontFallback
         )
     }
 
@@ -787,8 +803,9 @@ final class TakeReviewViewModel {
     /// A finished export's message, with why captions are missing when they were asked for. Read after the celebration took what the
     /// video holds (`exported`): before, "Ready to travel" said CAPTIONS ON for a video without them.
     private func announce(_ message: String) {
-        toast.show(captionNotice.map { message + " · " + $0 } ?? message)
+        toast.show(([message] + [captionNotice, fontNotice].compactMap { $0 }).joined(separator: " · "))
         captionNotice = nil
+        fontNotice = nil
     }
 
     private func readyMessage(for destination: ShareDestination, tier: MembershipTier) -> String {

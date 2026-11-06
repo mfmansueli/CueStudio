@@ -19,14 +19,14 @@ struct ExportProgressTests {
         var shown: [ExportProgress?] = []
         var review: TakeReviewViewModel?
 
-        func export(videoAt url: URL, options: ExportOptions, progress: (@MainActor (ExportProgress) -> Void)?) async throws -> URL {
+        func export(videoAt url: URL, options: ExportOptions, progress: (@MainActor (ExportProgress) -> Void)?) async throws -> ExportResult {
             for stage in stages {
                 progress?(stage)
                 shown.append(review?.exportProgress)
             }
             let file = URL.temporaryDirectory.appending(path: "Cue-test-\(UUID().uuidString.prefix(8)).mov")
             try Data([0]).write(to: file)
-            return file
+            return ExportResult(url: file)
         }
     }
 

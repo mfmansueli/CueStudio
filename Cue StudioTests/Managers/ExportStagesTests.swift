@@ -28,9 +28,9 @@ extension RealExports {
             music.volume = 1
             edit.music = [music]
             var heard: [ExportProgress] = []
-            let output = try await VideoExportService().export(videoAt: clip, options: ExportOptions(aspect: .portrait, edit: edit)) {
-                heard.append($0)
-            }
+            let output = try await VideoExportService().export(
+                videoAt: clip, options: ExportOptions(aspect: .portrait, edit: edit), progress: { heard.append($0) }
+            ).url
             defer { try? FileManager.default.removeItem(at: output) }
             #expect(heard.first == .preparing)
             #expect(heard.contains(ExportProgress(.sound)))
@@ -45,7 +45,7 @@ extension RealExports {
             let clip = try await TestClip.make(seconds: 2, loudSeconds: [])
             defer { try? FileManager.default.removeItem(at: clip) }
             var heard: [ExportProgress] = []
-            let output = try await VideoExportService().export(videoAt: clip, options: ExportOptions(aspect: .vertical)) { heard.append($0) }
+            let output = try await VideoExportService().export(videoAt: clip, options: ExportOptions(aspect: .vertical), progress: { heard.append($0) }).url
             defer { try? FileManager.default.removeItem(at: output) }
             #expect(heard.first == .preparing)
             #expect(!heard.contains { $0.stage == .sound })

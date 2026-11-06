@@ -5223,6 +5223,125 @@
         }
       }
     },
+    "A font you imported isn’t on this iPhone." : {
+      "comment" : "Ready to travel, under \"Some words use the system font\": a font the creator imported was removed from this iPhone.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "خط استوردته ليس على هذا الـiPhone."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En skrifttype, du har importeret, er ikke på denne iPhone."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eine importierte Schrift ist nicht auf diesem iPhone."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una fuente que importaste no está en este iPhone."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une police que tu as importée n’est pas sur cet iPhone."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपका इम्पोर्ट किया फ़ॉन्ट इस iPhone पर नहीं है।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Font yang kamu impor tidak ada di iPhone ini."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un font che hai importato non è su questo iPhone."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "読み込んだフォントがこのiPhoneにありません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "가져온 서체가 이 iPhone에 없어요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En skrifttype du importerte, er ikke på denne iPhonen."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Een lettertype dat je hebt geïmporteerd, staat niet op deze iPhone."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uma fonte que você importou não está neste iPhone."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ett teckensnitt du importerade finns inte på den här iPhonen."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ฟอนต์ที่คุณนำเข้าไม่ได้อยู่ใน iPhone เครื่องนี้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İçe aktardığın bir yazı tipi bu iPhone’da yok."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Một phông chữ bạn đã nhập không có trên iPhone này."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你导入的一款字体不在这台 iPhone 上。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你匯入的一款字體不在這支 iPhone 上。"
+          }
+        }
+      }
+    },
     "A friend made me try this." : {
       "comment" : "A ready-made opening line or tone of a script format, shown as an example the creator can pick and read to camera. No dashes in any language.",
       "localizations" : {
@@ -85099,6 +85218,125 @@
         }
       }
     },
+    "Some words use the system font" : {
+      "comment" : "Ready to travel, notice title (and the end of the message after sending): some of the video's words were drawn in the iPhone's own font because theirs wasn't there.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بعض الكلمات بخط النظام"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nogle ord bruger systemets skrifttype"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einige Wörter in der Systemschrift"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Algunas palabras usan la fuente del sistema"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Certains mots utilisent la police du système"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कुछ शब्द सिस्टम फ़ॉन्ट में हैं"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beberapa kata memakai font sistem"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alcune parole usano il font di sistema"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一部の文字がシステムフォントです"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "일부 단어가 시스템 서체로 표시돼요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noen ord bruker systemets skrifttype"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sommige woorden gebruiken het systeemlettertype"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Algumas palavras estão na fonte do sistema"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vissa ord har systemets teckensnitt"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "บางคำใช้ฟอนต์ของระบบ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bazı kelimeler sistem yazı tipinde"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Một số chữ dùng phông chữ hệ thống"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "部分文字使用了系统字体"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "部分文字使用了系統字體"
+          }
+        }
+      }
+    },
     "Something else true" : {
       "comment" : "My Cue Voice › Stories and facts: any other true moment",
       "localizations" : {
@@ -92598,6 +92836,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "舞台劇"
+          }
+        }
+      }
+    },
+    "Their font hadn’t downloaded. Export again when you’re online." : {
+      "comment" : "Ready to travel, under \"Some words use the system font\": the font of another script hadn't arrived in time; exporting again once online fixes it.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لم يكتمل تنزيل خطها. صدّر مرة أخرى عند الاتصال بالإنترنت."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deres skrifttype var ikke downloadet. Eksportér igen, når du er online."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ihre Schrift war noch nicht geladen. Exportiere erneut, wenn du online bist."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Su fuente no se había descargado. Exporta de nuevo cuando tengas conexión."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leur police n’était pas téléchargée. Exporte à nouveau une fois en ligne."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "उनका फ़ॉन्ट डाउनलोड नहीं हुआ था। ऑनलाइन होने पर फिर से एक्सपोर्ट करें।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Font-nya belum terunduh. Ekspor lagi saat kamu online."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il loro font non era ancora scaricato. Esporta di nuovo quando sei online."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フォントのダウンロードが終わっていませんでした。オンラインのときにもう一度書き出してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "서체가 아직 다운로드되지 않았어요. 온라인일 때 다시 내보내세요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skrifttypen var ikke lastet ned. Eksporter på nytt når du er på nett."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hun lettertype was nog niet gedownload. Exporteer opnieuw als je online bent."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A fonte delas não tinha baixado. Exporte de novo quando estiver online."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deras teckensnitt hade inte hämtats. Exportera igen när du är online."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ฟอนต์ของคำเหล่านี้ยังดาวน์โหลดไม่เสร็จ ส่งออกอีกครั้งเมื่อออนไลน์"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yazı tipleri inmemişti. Çevrimiçiyken yeniden dışa aktar."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Phông chữ của chúng chưa tải xong. Hãy xuất lại khi có mạng."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "它们的字体还没下载好。联网后再导出一次。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "它們的字體還沒下載好。連上網路後再匯出一次。"
           }
         }
       }
