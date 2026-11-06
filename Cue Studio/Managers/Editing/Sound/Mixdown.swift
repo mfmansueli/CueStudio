@@ -54,7 +54,7 @@ nonisolated enum Mixdown {
 
     /// The composition's sound mixed down to one 48 kHz stereo file, as an export would mix it.
     @concurrent
-    static func render(_ asset: AVAsset, tracks: [AVAssetTrack], audioMix: AVAudioMix?) async throws -> URL {
+    static func render(_ asset: AVAsset, tracks: [AVAssetTrack], audioMix: AVAudioMix?, prefix: String = "Cue-master-") async throws -> URL {
         let reader = try AVAssetReader(asset: asset)
         let settings: [String: Any] = [
             AVFormatIDKey: kAudioFormatLinearPCM,
@@ -73,7 +73,7 @@ nonisolated enum Mixdown {
         guard let format = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: 48_000, channels: 2, interleaved: true) else {
             throw AudioEnhancer.RenderError.noBuffer
         }
-        let url = URL.temporaryDirectory.appending(path: "Cue-master-\(UUID().uuidString.prefix(8)).caf")
+        let url = URL.temporaryDirectory.appending(path: "\(prefix)\(UUID().uuidString.prefix(8)).caf")
         let file = try AVAudioFile(forWriting: url, settings: format.settings, commonFormat: .pcmFormatFloat32, interleaved: true)
         do {
             try reader.start()

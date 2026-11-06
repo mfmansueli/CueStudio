@@ -42,10 +42,10 @@ nonisolated enum AudioCeiling {
     }
 
     /// The file itself when its peak is under the ceiling; else a copy brought down to it.
-    static func keepingUnder(_ url: URL) throws -> URL {
+    static func keepingUnder(_ url: URL, prefix: String = "Cue-level-") throws -> URL {
         let peak = try peak(of: url)
         guard peak > ceiling else { return url }
-        let scaled = try self.scaled(url, by: ceiling / peak)
+        let scaled = try self.scaled(url, by: ceiling / peak, prefix: prefix)
         try? FileManager.default.removeItem(at: url)
         return scaled
     }
@@ -63,10 +63,10 @@ nonisolated enum AudioCeiling {
     }
 
     /// A copy of the file `gain` times as loud.
-    static func scaled(_ url: URL, by gain: Float) throws -> URL {
+    static func scaled(_ url: URL, by gain: Float, prefix: String = "Cue-level-") throws -> URL {
         let input = try AVAudioFile(forReading: url)
         let format = input.processingFormat
-        let outputURL = URL.temporaryDirectory.appending(path: "Cue-level-\(UUID().uuidString.prefix(8)).caf")
+        let outputURL = URL.temporaryDirectory.appending(path: "\(prefix)\(UUID().uuidString.prefix(8)).caf")
         let output = try AVAudioFile(forWriting: outputURL, settings: format.settings, commonFormat: format.commonFormat, interleaved: format.isInterleaved)
         do {
             guard let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: 16_384) else { throw AudioEnhancer.RenderError.noBuffer }

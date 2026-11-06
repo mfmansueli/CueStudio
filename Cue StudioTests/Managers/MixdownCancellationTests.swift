@@ -38,7 +38,8 @@ struct MixdownCancellationTests {
             try? FileManager.default.removeItem(at: first)
             try? FileManager.default.removeItem(at: second)
         }
-        let before = files(prefixed: "Cue-master-")
+        // Its own name, so a sound other tests make at the same time is not taken for its.
+        let prefix = "Cue-test-master-\(UUID().uuidString.prefix(6))-"
         let task = Task {
             let composition = AVMutableComposition()
             var sources: [AVURLAsset] = []
@@ -52,30 +53,30 @@ struct MixdownCancellationTests {
             // Cancelled with the mix ready to render.
             withUnsafeCurrentTask { $0?.cancel() }
             defer { withExtendedLifetime(sources) {} }
-            return try await Mixdown.render(composition, tracks: composition.tracks.filter { $0.mediaType == .audio }, audioMix: nil)
+            return try await Mixdown.render(composition, tracks: composition.tracks.filter { $0.mediaType == .audio }, audioMix: nil, prefix: prefix)
         }
         var thrown: Error?
         do { _ = try await task.value } catch { thrown = error }
         #expect(thrown is CancellationError)
-        #expect(files(prefixed: "Cue-master-").subtracting(before).isEmpty)
+        #expect(files(prefixed: prefix).isEmpty)
     }
 
     @Test func aCancelledLimiterStopsAndLeavesNoFile() async throws {
         let mix = try TestTone.make(seconds: 3, amplitude: 0.9)
         defer { try? FileManager.default.removeItem(at: mix) }
-        let before = files(prefixed: Mixdown.filePrefix)
-        let error = await cancelled { try AudioEnhancer.limit(mix, prefix: Mixdown.filePrefix) }
+        let prefix = "Cue-test-mixdown-\(UUID().uuidString.prefix(6))-"
+        let error = await cancelled { try AudioEnhancer.limit(mix, prefix: prefix) }
         #expect(error is CancellationError)
-        #expect(files(prefixed: Mixdown.filePrefix).subtracting(before).isEmpty)
+        #expect(files(prefixed: prefix).isEmpty)
     }
 
     @Test func bringingAMixUnderTheCeilingHearsACancelToo() async throws {
         let loud = try TestTone.make(seconds: 3, amplitude: 1.4)
         defer { try? FileManager.default.removeItem(at: loud) }
-        let before = files(prefixed: "Cue-level-")
-        let error = await cancelled { try AudioCeiling.keepingUnder(loud) }
+        let prefix = "Cue-test-level-\(UUID().uuidString.prefix(6))-"
+        let error = await cancelled { try AudioCeiling.keepingUnder(loud, prefix: prefix) }
         #expect(error is CancellationError)
-        #expect(files(prefixed: "Cue-level-").subtracting(before).isEmpty)
+        #expect(files(prefixed: prefix).isEmpty)
         // The file it was asked to bring down is the caller's: still there.
         #expect(FileManager.default.fileExists(atPath: loud.path(percentEncoded: false)))
     }
@@ -86,7 +87,7 @@ struct MixdownCancellationTests {
         defer { try? FileManager.default.removeItem(at: mix) }
         let limited = try AudioEnhancer.limit(mix, prefix: Mixdown.filePrefix)
         defer { try? FileManager.default.removeItem(at: limited) }
-        #expect(limited.lastPathComponent.hasPrefix(Mixdown.filePrefix) || limited.lastPathComponent.hasPrefix("Cue-level-"))
+        #expect(limited.lastPathComponent.hasPrefix(Mixdown.filePrefix))
         #expect(try AudioCeiling.peak(of: limited) <= AudioCeiling.ceiling + 0.001)
     }
 }

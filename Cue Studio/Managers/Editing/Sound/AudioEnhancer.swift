@@ -67,13 +67,13 @@ nonisolated enum AudioEnhancer {
     /// A whole mix through the peak limiter, then kept under the ceiling: the last step of an
     /// export that mixes more than the take's sound. The file's name starts with `prefix`.
     static func limit(_ source: URL, prefix: String = "Cue-mix-") throws -> URL {
-        try keptUnder(render(source, through: [limiter()], prefix: prefix))
+        try keptUnder(render(source, through: [limiter()], prefix: prefix), prefix: prefix)
     }
 
     /// `rendered` under the ceiling (`AudioCeiling.keepingUnder`); when that stops (a cancel, a failure), `rendered` goes too.
-    private static func keptUnder(_ rendered: URL) throws -> URL {
+    private static func keptUnder(_ rendered: URL, prefix: String = "Cue-level-") throws -> URL {
         do {
-            return try AudioCeiling.keepingUnder(rendered)
+            return try AudioCeiling.keepingUnder(rendered, prefix: prefix)
         } catch {
             try? FileManager.default.removeItem(at: rendered)
             throw error
