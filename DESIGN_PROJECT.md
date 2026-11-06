@@ -871,7 +871,9 @@ acima). Tudo cabe sem rolar do SE ao Pro Max (a rolagem só existe para o Dynami
   "ULTRA AI", "Keep writing with Ultra AI.", "Your 3 free scripts are written. Cue Pro adds 30 a month.", galáxia violeta com o anel dos 30 roteiros do mês
   aceso, o destaque da Ultra AI primeiro.
 - Onde a Ultra AI existe, a linha sob o título do Pro normal é "Free to try · 3 exports and 3 Ultra AI scripts included."
-- **Exportar em 4K é Pro** (decisão do dono, 06/11/2026; é o "up to 4K" do destaque): em Export options › Quality (§15) o segmento é **4K · Pro**
+- **Exportar em 4K é Pro** (decisão do dono, 06/11/2026; é o "up to 4K" do destaque). Só uma gravação em 4K tem qualidade para escolher: uma em
+  1080p ou 720p mostra em Export options › Quality a própria resolução, sem escolha nem Pro (`share.qualityRecorded`; o arquivo nunca é maior que a
+  gravação), e com o Pro uma gravação em 4K já começa em 4K. Numa gravação em 4K (§15) o segmento é **4K · Pro**
   sem o Pro; tocá-lo não muda a qualidade e abre o alerta do sistema **"4K export is Cue Pro"** ("Without Pro, this video exports in 1080p. Your
   recording and edit stay as they are.") com **Go Pro** (este Pro, `.profile`, por cima das opções) e **Keep 1080p**; assinando dali, a qualidade
   passa a 4K. Uma gravação em 4K sem o Pro diz sob a qualidade "Recorded in 4K · exports in 1080p without Pro" (`ink2` sobre `surface2`). Todo
