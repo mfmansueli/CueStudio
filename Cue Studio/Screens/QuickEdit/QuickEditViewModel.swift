@@ -107,6 +107,8 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     @ObservationIgnored var blurCheckAccepted = false
     /// The draft kept as Cue went to the background couldn't be written (a full iPhone): tried again on the way back.
     @ObservationIgnored private var draftNotKept = false
+    /// A narration was being recorded as Cue left the screen: it stopped there (what was recorded is a clip), said on the way back.
+    @ObservationIgnored private var narrationStoppedAway = false
     /// Whether the edit on screen is on disk, for the top bar (`EditorDraftKeeper`).
     let draftKeeper: EditorDraftKeeper
     /// Leaving was asked while the edit couldn't be kept anywhere: the editor stayed and said so; asked again, it leaves.
@@ -511,6 +513,10 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     /// Cue is in front again: a preview that failed meanwhile (iOS resets its media services in the background) is built
     /// again on its own.
     func becameActive() {
+        if narrationStoppedAway {
+            narrationStoppedAway = false
+            toast.show(String(localized: "Voice-over stopped when you left Cue · What you recorded is kept"), kind: .problem)
+        }
         if draftNotKept {
             draftNotKept = !saveDraft()
             if draftNotKept { toast.show(notSavedMessage, kind: .problem) }
@@ -722,8 +728,23 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         return true
     }
 
-    /// Leaving the app or the screen without Done or Cancel: the draft keeps everything.
+    /// Control Center, a notification pulled down, the app switcher on its way: Cue is still on screen and the microphone still
+    /// its own, so a narration being recorded goes on (and the video under it); anything else pauses. The draft is written now,
+    /// in case iOS ends Cue next (a call taking the microphone is said by the recorder).
+    func becameInactive() {
+        if audio.recorder.isRecording {
+            guard !saveDraft() else { return }
+            draftNotKept = true
+            toast.show(notSavedMessage, kind: .problem)
+            return
+        }
+        pauseAndKeepDraft()
+    }
+
+    /// Leaving the app or the screen without Done or Cancel: the draft keeps everything. A narration being recorded stops there
+    /// and becomes its clip, said when Cue is back.
     func pauseAndKeepDraft() {
+        if audio.recorder.isRecording, !isClosed { narrationStoppedAway = true }
         audio.stopRecordingIfNeeded()
         player.pause()
         // Not written: said now (an edit iOS may end in the background shouldn't go unnoticed) and tried again on the way back.

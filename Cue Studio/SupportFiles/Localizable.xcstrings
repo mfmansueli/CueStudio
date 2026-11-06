@@ -103870,6 +103870,125 @@
         }
       }
     },
+    "Voice-over stopped when you left Cue · What you recorded is kept" : {
+      "comment" : "Editor toast on coming back: a voice-over being recorded stopped as Cue went to the background; the part recorded is a clip on the timeline",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "توقّف التعليق الصوتي عند مغادرتك Cue · ما سجّلته محفوظ"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voiceoveren stoppede, da du forlod Cue · Det, du optog, er gemt"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voice-over gestoppt, als du Cue verlassen hast · Das Aufgenommene bleibt"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La voz en off se detuvo al salir de Cue · Lo que grabaste se conserva"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La voix off s’est arrêtée quand vous avez quitté Cue · Ce que vous avez enregistré est conservé"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue छोड़ने पर वॉइस-ओवर रुक गया · जो रिकॉर्ड हुआ वह रखा गया है"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sulih suara berhenti saat kamu keluar dari Cue · Yang sudah direkam tetap disimpan"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La voce fuori campo si è fermata quando hai lasciato Cue · Ciò che hai registrato resta"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cueを離れたためボイスオーバーを停止しました · 録音した分は残っています"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue를 나가서 보이스오버가 멈췄어요 · 녹음한 부분은 남아 있어요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voiceoveren stoppet da du forlot Cue · Det du tok opp, er beholdt"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voice-over gestopt toen je Cue verliet · Wat je opnam, blijft bewaard"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A narração parou quando você saiu do Cue · O que foi gravado ficou guardado"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voiceovern stoppades när du lämnade Cue · Det du spelade in finns kvar"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เสียงพากย์หยุดเมื่อคุณออกจาก Cue · ส่วนที่บันทึกไว้ยังอยู่"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue’dan çıkınca seslendirme durdu · Kaydettiğin kısım saklandı"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lồng tiếng đã dừng khi bạn rời Cue · Phần đã ghi vẫn được giữ"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "离开 Cue 时配音已停止 · 已录下的部分已保留"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "離開 Cue 時旁白錄製已停止 · 已錄下的部分已保留"
+          }
+        }
+      }
+    },
     "Volleyball" : {
       "comment" : "My Cue Voice: a more specific topic inside the theme “sports” (a short chip)",
       "localizations" : {

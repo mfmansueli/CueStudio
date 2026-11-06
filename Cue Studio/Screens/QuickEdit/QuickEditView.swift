@@ -179,7 +179,11 @@ struct QuickEditView: View {
             )
         }
         .onChange(of: scenePhase) { _, phase in
-            if phase == .active { viewModel.becameActive() } else { viewModel.pauseAndKeepDraft() }
+            switch phase {
+            case .active: viewModel.becameActive()
+            case .inactive: viewModel.becameInactive()
+            default: viewModel.pauseAndKeepDraft()
+            }
         }
         .onAppear { viewModel.leaveScreen = { onClose($0) } }
         .onDisappear { viewModel.pauseAndKeepDraft() }
