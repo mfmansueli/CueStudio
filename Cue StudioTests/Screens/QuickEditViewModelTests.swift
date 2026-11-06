@@ -730,6 +730,29 @@ struct QuickEditViewModelTests {
         #expect(plain.viewModel.sheet == .done)
     }
 
+    /// A file the edit names that is gone stays marked over the preview (never only a toast that hid "Draft restored"), until it
+    /// is removed; Undo bringing it back marks it again.
+    @Test func missingMediaStaysMarkedUntilRemoved() async {
+        var take = TestData.take(scriptID: nil, number: 3)
+        take.duration = 64
+        var edit = TakeEdit(sourceDuration: 64, aspect: .portrait)
+        edit.music = [MusicClip(fileName: "gone-\(UUID().uuidString).m4a", title: "Loop", fileDuration: 60, start: 0, length: 10)]
+        take.edit = edit
+        let takes = TakeLibraryService(repository: FakeTakeRepository(takes: [take]))
+        takes.load()
+        let scenario = await makeScenario(script: nil, takes: takes)
+        #expect(scenario.viewModel.showsMissingMediaNotice)
+        #expect(scenario.viewModel.canRemoveMissingMedia)
+        #expect(scenario.toast.message == nil)
+        scenario.viewModel.removeMissingMedia(scenario.viewModel.missingMedia)
+        #expect(scenario.viewModel.edit.music.isEmpty)
+        #expect(!scenario.viewModel.showsMissingMediaNotice)
+        scenario.viewModel.undo()
+        #expect(scenario.viewModel.showsMissingMediaNotice)
+        scenario.viewModel.hideMissingMediaNotice()
+        #expect(!scenario.viewModel.showsMissingMediaNotice)
+    }
+
     /// The chip follows what is on disk: Saving… after a change, Saved once the draft is written, nothing to say with no change.
     @Test func theChipSaysSavedOnlyOnceTheDraftIsWritten() async {
         let scenario = await makeScenario()

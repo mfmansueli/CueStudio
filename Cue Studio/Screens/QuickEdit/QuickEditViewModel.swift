@@ -109,6 +109,11 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     @ObservationIgnored private var draftNotKept = false
     /// A narration was being recorded as Cue left the screen: it stopped there (what was recorded is a clip), said on the way back.
     @ObservationIgnored private var narrationStoppedAway = false
+    /// Files the edit names that are no longer on this iPhone, looked for at opening and when the edit's files change.
+    private(set) var missingMedia: Set<String> = []
+    /// Taking `missingMedia` out leaves a video (else only replacing the clip helps).
+    private(set) var canRemoveMissingMedia = false
+    private var missingMediaNoticeHidden = false
     /// Whether the edit on screen is on disk, for the top bar (`EditorDraftKeeper`).
     let draftKeeper: EditorDraftKeeper
     /// Leaving was asked while the edit couldn't be kept anywhere: the editor stayed and said so; asked again, it leaves.
@@ -285,22 +290,22 @@ final class QuickEditViewModel: EditorHost, EditorPart {
 
     /// Files the edit names that are gone from the iPhone, said as it opens (never a silent black stretch), with Remove as one undo step
     /// when that fixes it; else Replace on the clip does (the review won't export it as it is).
+    /// Looks again for the files the edit names that are no longer on this iPhone (`MissingMediaNotice`, over the preview).
     private func sayMissingMedia() {
-        let missing = edit.missingMedia()
-        guard !missing.isEmpty else { return }
-        guard edit.canDropMedia(missing) else {
-            toast.show(String(localized: "A clip in this edit is no longer on this iPhone. Replace it to export."), kind: .problem)
-            return
-        }
-        toast.show(
-            String(localized: "Some photos, videos or sounds in this edit are no longer on this iPhone."), kind: .problem,
-            action: ToastAction(title: String(localized: "Remove")) { [weak self] in self?.removeMissingMedia(missing) }
-        )
+        missingMedia = edit.missingMedia()
+        canRemoveMissingMedia = !missingMedia.isEmpty && edit.canDropMedia(missingMedia)
     }
 
     func removeMissingMedia(_ missing: Set<String>) {
         document.changeEdit { $0 = $0.withoutMedia(missing) }
     }
+
+    /// ✕ on the notice: hidden for this visit (the review still asks before exporting past what is missing).
+    func hideMissingMediaNotice() {
+        missingMediaNoticeHidden = true
+    }
+
+    var showsMissingMediaNotice: Bool { !missingMedia.isEmpty && !missingMediaNoticeHidden && !isFullScreen }
 
     /// The edit changed: what was picked and is gone is let go, and the preview, the draft and the cover follow.
     private func editChanged(from previous: TakeEdit) {
@@ -315,6 +320,8 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         if let id = reviewedVoiceOverID, !edit.voiceOvers.contains(where: { $0.id == id }) { reviewedVoiceOverID = nil }
         if let id = selectedMusicID, !edit.music.contains(where: { $0.id == id }) { selectedMusicID = nil }
         if let id = selectedBlurID, !edit.blurRegions.contains(where: { $0.id == id }) { selectedBlurID = nil }
+        // A file put back by Undo, or taken out: whether something is missing is looked for again.
+        if edit.mediaFileNames != previous.mediaFileNames { sayMissingMedia() }
         overlays.editChanged()
         blur.editChanged()
         blur.growWithClips(from: previous)

@@ -280,10 +280,16 @@ struct QuickEditView: View {
                     }
                 }
                 .overlay(alignment: .bottom) {
-                    // At the preview's foot, clear of the toasts at its top: a reverse or an import with Cancel, and Low Power Mode.
+                    // At the preview's foot, clear of the toasts at its top: a reverse or an import with Cancel, media no longer on
+                    // this iPhone, and Low Power Mode.
                     VStack(spacing: 8) {
                         if let work = viewModel.work {
                             EditorWorkPill(viewModel: viewModel, work: work)
+                        }
+                        if viewModel.showsMissingMediaNotice {
+                            MissingMediaNotice(viewModel: viewModel)
+                                .padding(.horizontal, 16)
+                                .transition(reduceMotion ? .opacity : .opacity.combined(with: .move(edge: .bottom)))
                         }
                         if viewModel.showsLowPowerNotice {
                             LowPowerNoticeBanner(viewModel: viewModel)
@@ -295,6 +301,7 @@ struct QuickEditView: View {
                     .padding(.bottom, viewModel.swipesFullScreen ? 40 : 10)
                 }
                 .animation(reduceMotion ? .easeOut(duration: 0.15) : .easeOut(duration: 0.25), value: viewModel.showsLowPowerNotice)
+                .animation(reduceMotion ? .easeOut(duration: 0.15) : .easeOut(duration: 0.25), value: viewModel.showsMissingMediaNotice)
                 .task {
                     viewModel.lowPowerModeChanged(isLowPower)
                     for await _ in NotificationCenter.default.notifications(named: .NSProcessInfoPowerStateDidChange) {
