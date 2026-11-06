@@ -7,8 +7,8 @@ import UIKit
 
 /// One gesture for a text on the preview, the way layers are handled in photo editors: one finger moves it; two move,
 /// resize and turn it at once; a finger put down or lifted midway carries on from where the text is, so it never jumps.
-/// It starts once the fingers move (a tap fails it, so the text's own tap still works) and only where `shouldStart` says the
-/// fingers came down on a text. It never stops another gesture.
+/// It starts once the fingers move past `slop` (a tap fails it, so the text's own tap still works) and only where `shouldStart`
+/// says the fingers came down on a text. It never stops another gesture.
 final class TextTransformRecognizer: UIGestureRecognizer, UIGestureRecognizerDelegate {
     /// Moved since the gesture began, in window points (the fingers' middle).
     private(set) var translation: CGSize = .zero
@@ -22,9 +22,14 @@ final class TextTransformRecognizer: UIGestureRecognizer, UIGestureRecognizerDel
     /// Asked once, at the first move, with how many fingers there are: is this gesture a text's (the caller reads where
     /// the fingers are)? No, and it fails.
     var shouldStart: (_ fingers: Int) -> Bool = { _ in true }
+    /// How far the fingers move before it starts, asked at each move until it does (the caller reads where they are).
+    var slop: (_ fingers: Int) -> CGFloat = { _ in pickedSlop }
 
-    /// Movement under this many points is still a tap.
-    private static let slop: CGFloat = 4
+    /// On the picked text, movement under this many points is still a tap: a deliberate drag starts at once.
+    static let pickedSlop: CGFloat = 4
+    /// On a text not picked yet, where a tap that rolls a little (to pick it, or to play) must not push it: the system's own
+    /// pan distance.
+    static let unpickedSlop: CGFloat = 10
     /// Two fingers closer than this measure their spread from here, so a pinch that starts tight doesn't leap.
     private static let shortestSpread: CGFloat = 8
     /// The angle between two fingers closer than this jitters: they turn the text once they're this far apart.
@@ -64,7 +69,7 @@ final class TextTransformRecognizer: UIGestureRecognizer, UIGestureRecognizerDel
         follow()
         switch state {
         case .possible:
-            guard hasMoved else { return }
+            guard hasMoved(beyond: slop(tracked.count)) else { return }
             state = shouldStart(tracked.count) ? .began : .failed
         case .began, .changed:
             state = .changed
@@ -102,8 +107,8 @@ final class TextTransformRecognizer: UIGestureRecognizer, UIGestureRecognizerDel
 
     // MARK: - Private
 
-    private var hasMoved: Bool {
-        hypot(translation.width, translation.height) > Self.slop || spreadChange > Self.slop || abs(rotation) > 0.06
+    private func hasMoved(beyond slop: CGFloat) -> Bool {
+        hypot(translation.width, translation.height) > slop || spreadChange > slop || abs(rotation) > 0.06
     }
 
     /// The fingers' middle, how far apart the first two are and at what angle.

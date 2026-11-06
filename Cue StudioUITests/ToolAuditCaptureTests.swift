@@ -267,8 +267,7 @@ final class ToolAuditCaptureTests: XCTestCase {
         // Auto captions before there are any: delete them all first.
         EditorApp.tapTool(app, "captions")
         if tap("edit.captionsDeleteAll") {
-            let confirm = app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Delete'")).allElementsBoundByIndex.last
-            if let confirm, confirm.exists { confirm.tap() }
+            tap("edit.captionsDeleteAllConfirm")
             apply()
             EditorApp.tapTool(app, "captions")
             try tour("auto-captions")
@@ -325,6 +324,7 @@ final class ToolAuditCaptureTests: XCTestCase {
             if !deleted { drag(from: 0.9, to: 0.62) }
         }
         if deleted {
+            tap("edit.captionsDeleteAllConfirm")
             apply()
             EditorApp.tapTool(app, "captions")
             try tour("auto-captions")
@@ -571,7 +571,8 @@ final class ToolAuditCaptureTests: XCTestCase {
     /// Taps the control with this identifier if it shows up; false when it doesn't.
     @discardableResult
     private func tap(_ identifier: String, within seconds: TimeInterval = 3) -> Bool {
-        let button = app.buttons[identifier]
+        // The first match: iOS nests a dialog's button in one of its own with the same identifier.
+        let button = app.buttons[identifier].firstMatch
         if button.exists(within: seconds), onScreen(button) {
             button.tap()
             return true

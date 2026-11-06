@@ -442,6 +442,23 @@ extension CaptionsViewModel {
         }
     }
 
+    /// A line dragged along the timeline let go (`original`: where it played before, edited seconds). Its words carry the
+    /// voice's times with it, so once it plays a tenth or more away from them it asks for a timing check ("Check timing" on its
+    /// card, in the drag's own undo step), and the toast says where to fix it. A line whose times were only estimated never
+    /// followed the voice: it says nothing.
+    func noteMovedOffTheVoice(line lineID: UUID, from original: TimeSpan) {
+        let cueID = captionCueID(forLine: lineID)
+        guard let now = editedSpan(ofCaption: lineID), abs(now.start - original.start) >= 0.1,
+              let cue = edit.captions.first(where: { $0.id == cueID }), !cue.needsTimingReview,
+              cue.words.contains(where: { !$0.isEstimated }) else { return }
+        updateCaption(cueID) { cue in
+            var moved = cue
+            moved.needsTimingReview = true
+            return moved
+        }
+        sayUndoable(String(localized: "Line moved · Check timing in Captions"))
+    }
+
     /// Splits a line before its word at `index`. Both parts were cut by hand: a caption format leaves them as they are.
     func splitCaption(_ id: UUID, beforeWord index: Int) {
         change { snapshot in

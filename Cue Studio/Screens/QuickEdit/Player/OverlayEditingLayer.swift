@@ -11,14 +11,19 @@ import SwiftUI
 /// (anywhere on the preview once a text is picked) move, resize and turn it at once, and lifting or adding a finger midway
 /// carries on without a jump (`TextTransformRecognizer`). It sticks to the middle lines and to straight, with a tick; the
 /// platform's safe area shows dashed, and its turn in degrees while it turns. With keyframes, the gesture sets the one at the
-/// playhead. Dragging the caption moves every caption up or down (sticking to top, middle and
-/// bottom). Each photo or video in a window showing at the playhead has its handle, stacked as the video draws them (the
-/// picked one on top, so it can be moved even where another covers it); a tap goes to the one under the finger, and tapping
-/// again where several overlap goes to the next one down (`QuickEditViewModel.tapMedia`). It moves (with the same guides) and
-/// pinches. A split screen's areas are under all of it (`SplitAreaLayer`).
+/// playhead. Dragging the caption moves every caption up or down (sticking to top, middle and bottom), and a label on it
+/// says so while it moves, before it lands. Each photo or video in a window showing at the playhead has its handle, stacked
+/// as the video draws them (the picked one on top, so it can be moved even where another covers it); a tap goes to the one
+/// under the finger, and tapping again where several overlap goes to the next one down (`QuickEditViewModel.tapMedia`). It
+/// moves (with the same guides) and pinches. A split screen's areas are under all of it (`SplitAreaLayer`).
 ///
 /// Texts, photos and videos are drawn into the video exactly as they export; while a finger moves one, the video leaves it
-/// out (`beginOverlayDrag`) and a copy follows the finger, so it never shows twice; the change lands when it lifts.
+/// out (`beginOverlayDrag`) and a copy follows the finger, so it never shows twice; the change lands when it lifts, one undo
+/// step a gesture.
+///
+/// A tap is never a move: what isn't picked yet starts moving only past the system's pan distance (a tap that rolls a little
+/// picks it, or plays), the picked one at once. A locked text or photo (`EditorPart+Lock`) doesn't move, resize or turn: a
+/// finger on it says so, with Unlock.
 struct OverlayEditingLayer: View {
     let viewModel: QuickEditViewModel
     let size: CGSize
@@ -42,6 +47,11 @@ struct OverlayEditingLayer: View {
     @State private var pinch: (id: UUID, scale: CGFloat)?
     /// The picture of the photo or video under the finger, while one moves.
     @State private var proxy: (id: UUID, image: UIImage)?
+    /// The locked photo or video a finger is on: its gesture does nothing (it said so once, as it began).
+    @State private var refused: UUID?
+    /// The gesture on a photo or video going on now (or the next one): its move and pinch share one undo step, and the next
+    /// gesture is another (`OverlaysViewModel.placeKey`).
+    @State private var placeGesture = UUID()
 
     @Environment(VideoThumbnailService.self) private var thumbnails
     @Environment(\.displayScale) private var displayScale
@@ -75,9 +85,12 @@ struct OverlayEditingLayer: View {
         }
         .frame(width: size.width, height: size.height)
         .coordinateSpace(name: Self.space)
-        .gesture(TextTransformGesture(space: Self.space, shouldStart: { location, fingers in
-            textTarget(at: location, fingers: fingers) != nil
-        }, onChange: follow))
+        .gesture(TextTransformGesture(
+            space: Self.space,
+            shouldStart: { location, fingers in textTarget(at: location, fingers: fingers) != nil },
+            slop: { location, fingers in textSlop(at: location, fingers: fingers) },
+            onChange: follow
+        ))
     }
 
     private static let space = "edit.preview.space"
@@ -137,6 +150,13 @@ struct OverlayEditingLayer: View {
         return picked
     }
 
+    /// How far fingers at `point` move before they take a text: at once for the picked one, past a tap's roll for another.
+    private func textSlop(at point: CGPoint, fingers: Int) -> CGFloat {
+        let target = textTarget(at: point, fingers: fingers)
+        let isPicked = target.map { viewModel.selection == .text($0.id) } ?? false
+        return isPicked ? TextTransformRecognizer.pickedSlop : TextTransformRecognizer.unpickedSlop
+    }
+
     /// `point` falls on the text's box (turned as it is, 44 points at least each way).
     private func contains(_ point: CGPoint, _ text: TextOverlay) -> Bool {
         let frame = viewModel.overlays.frame(ofText: text, in: size)
@@ -167,13 +187,20 @@ struct OverlayEditingLayer: View {
         switch recognizer.state {
         case .began:
             guard let text = textTarget(at: location, fingers: recognizer.fingers) else { return }
+            // A locked text stays where it is and says so once; the drag stays its own, so the preview doesn't swipe.
+            guard !viewModel.overlays.refusesMoving(text.id) else {
+                viewModel.overlays.lockedUnderFinger = text.id
+                return
+            }
             begin(.body, on: text)
             update(translation: recognizer.translation, scale: recognizer.scale, rotation: recognizer.rotation)
         case .changed:
             update(translation: recognizer.translation, scale: recognizer.scale, rotation: recognizer.rotation)
         case .ended:
+            viewModel.overlays.lockedUnderFinger = nil
             commit()
         default:
+            viewModel.overlays.lockedUnderFinger = nil
             cancel()
         }
     }
@@ -184,6 +211,8 @@ struct OverlayEditingLayer: View {
             commit()
             return
         }
+        // A locked text shows no handles; a grip still under a finger as it locked does nothing.
+        guard !viewModel.overlays.isLocked(text.id) else { return }
         if manipulation == nil { begin(grip, on: text) }
         guard let manipulation, manipulation.grip == grip else { return }
         let center = manipulation.center
@@ -364,13 +393,14 @@ struct OverlayEditingLayer: View {
                 .contentShape(Rectangle())
                 .frame(width: max(frame.width, Metrics.hitTarget), height: max(frame.height, Metrics.hitTarget))
                 .onTapGesture { viewModel.captions.tapCaption(id) }
-                .gesture(captionGesture(id))
+                .gesture(captionGesture(id, isSelected: isSelected))
             if isSelected || draggedY != nil {
                 RoundedRectangle(cornerRadius: Metrics.editorHandleRadius, style: .continuous)
                     .strokeBorder(Palette.acc, lineWidth: 2)
                     .frame(width: frame.width + 8, height: frame.height + 8)
                     .allowsHitTesting(false)
             }
+            if draggedY != nil { captionScopeLabel(above: frame.midY + offset > size.height * 0.3, captionHeight: frame.height) }
         }
         .position(x: frame.midX, y: frame.midY + offset)
         .accessibilityElement(children: .ignore)
@@ -380,8 +410,24 @@ struct OverlayEditingLayer: View {
         .accessibilityIdentifier("edit.captionHandle")
     }
 
-    private func captionGesture(_ id: UUID) -> some Gesture {
-        DragGesture(minimumDistance: 3, coordinateSpace: .named(Self.space))
+    /// While a caption moves: "All captions", on the side of it with room, so the creator knows what lands before letting go
+    /// (the place is the captions' layout, one for the whole video, DESIGN_PROJECT §50).
+    private func captionScopeLabel(above: Bool, captionHeight: CGFloat) -> some View {
+        Label("All captions", systemImage: "arrow.up.and.down")
+            .font(.footnote.weight(.semibold))
+            .foregroundStyle(Palette.ink)
+            .lineLimit(1)
+            .padding(.horizontal, 10)
+            .frame(minHeight: 26)
+            .toastSurface(in: Capsule())
+            .fixedSize()
+            .offset(y: (above ? -1 : 1) * (captionHeight / 2 + 24))
+            .allowsHitTesting(false)
+            .accessibilityHidden(true)
+    }
+
+    private func captionGesture(_ id: UUID, isSelected: Bool) -> some Gesture {
+        DragGesture(minimumDistance: isSelected ? Self.pickedDragDistance : Self.unpickedDragDistance, coordinateSpace: .named(Self.space))
             .onChanged { value in
                 if drag == nil {
                     viewModel.player.pause()
@@ -403,9 +449,15 @@ struct OverlayEditingLayer: View {
 
     // MARK: - Media
 
+    /// What a finger moves before the drag of a picked caption, photo or video starts: at once.
+    private static let pickedDragDistance = TextTransformRecognizer.pickedSlop - 1
+    /// What it moves first on one not picked yet: a tap that rolls a little picks it (or plays) and never pushes it.
+    private static let unpickedDragDistance = TextTransformRecognizer.unpickedSlop
+
     private func mediaHandle(_ media: MediaOverlay) -> some View {
         let rect = viewModel.overlays.frame(ofMedia: media, in: size)
         let isSelected = viewModel.selection == .media(media.id)
+        let isLocked = viewModel.overlays.isLocked(media.id)
         let offset: CGSize = if case .media(media.id, let moved) = drag { moved } else { .zero }
         let scale: CGFloat = pinch?.id == media.id ? pinch?.scale ?? 1 : 1
         let isMoving = offset != .zero || scale != 1
@@ -424,11 +476,23 @@ struct OverlayEditingLayer: View {
                 .shadow(color: Palette.Editor.overlayOutlineHalo, radius: 1.5)
                 .frame(width: rect.width * scale, height: rect.height * scale)
                 .contentShape(Rectangle())
+            if isSelected, isLocked {
+                // Locked: it stays where it is (a finger on it says so, with Unlock).
+                Image(systemName: "lock.fill")
+                    .font(.editorGlyph(EditorGlyph.small, weight: .bold))
+                    .foregroundStyle(Color.black)
+                    .frame(width: 24, height: 24)
+                    .background(Color.white, in: Circle())
+                    .shadow(color: Palette.textShadow, radius: 2, y: 1)
+                    .offset(x: rect.width / 2, y: rect.height / 2)
+                    .allowsHitTesting(false)
+            }
         }
         .onTapGesture(coordinateSpace: .named(Self.space)) { location in viewModel.overlays.tapMedia(at: location, in: size) }
         .gesture(
-            DragGesture(minimumDistance: 3, coordinateSpace: .named(Self.space))
+            DragGesture(minimumDistance: isSelected ? Self.pickedDragDistance : Self.unpickedDragDistance, coordinateSpace: .named(Self.space))
                 .onChanged { value in
+                    guard admits(media) else { return }
                     if drag == nil { beginMoving(media) }
                     let proposed = OverlayPoint(
                         x: Double(rect.midX + value.translation.width) / Double(max(1, size.width)),
@@ -443,32 +507,35 @@ struct OverlayEditingLayer: View {
                     ))
                 }
                 .onEnded { value in
+                    guard case .media(media.id, _) = drag else { return finishMediaGesture() }
                     let proposed = OverlayPoint(
                         x: Double(rect.midX + value.translation.width) / Double(max(1, size.width)),
                         y: Double(rect.midY + value.translation.height) / Double(max(1, size.height))
                     )
-                    viewModel.overlays.moveMedia(media.id, to: OverlaysViewModel.snapped(proposed).center)
+                    viewModel.overlays.moveMedia(media.id, to: OverlaysViewModel.snapped(proposed).center, key: placeKey(media.id))
                     endDrag()
-                    proxy = nil
-                    viewModel.overlays.endOverlayDrag()
+                    finishMediaGesture()
                 }
         )
         .simultaneousGesture(
             MagnifyGesture()
                 .onChanged { value in
+                    guard admits(media) else { return }
                     if pinch?.id != media.id { beginMoving(media) }
                     pinch = (media.id, value.magnification)
                 }
                 .onEnded { value in
-                    viewModel.overlays.resizeMedia(media.id, by: Double(value.magnification))
+                    guard pinch?.id == media.id else { return finishMediaGesture() }
+                    // The move and the pinch of one gesture land as one undo step.
+                    viewModel.overlays.resizeMedia(media.id, by: Double(value.magnification), key: placeKey(media.id))
                     pinch = nil
-                    proxy = nil
-                    viewModel.overlays.endOverlayDrag()
+                    finishMediaGesture()
                 }
         )
         .position(x: rect.midX + offset.width, y: rect.midY + offset.height)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(media.kind == .photo ? Text("Photo") : Text("Video"))
+        .accessibilityValue(isLocked ? Text("Locked") : Text(verbatim: ""))
         .accessibilityHint(
             isSelected ? Text("Drag to move, pinch to resize, or use the actions. Tap where another overlaps to pick it.") : Text("Tap to select")
         )
@@ -476,6 +543,27 @@ struct OverlayEditingLayer: View {
         .accessibilityAction { viewModel.overlays.tapMedia(at: CGPoint(x: rect.midX, y: rect.midY), in: size) }
         .accessibilityActions { placingActions(.media(media.id)) }
         .accessibilityIdentifier("edit.mediaHandle")
+    }
+
+    /// A finger on a photo or video may move it: not a locked one, which says so once and does nothing until the fingers lift.
+    private func admits(_ media: MediaOverlay) -> Bool {
+        if refused == media.id { return false }
+        guard viewModel.overlays.refusesMoving(media.id) else { return true }
+        refused = media.id
+        return false
+    }
+
+    /// A drag or a pinch let go: once neither holds the photo or video, the video draws it again.
+    private func finishMediaGesture() {
+        guard drag == nil, pinch == nil else { return }
+        placeGesture = UUID()
+        refused = nil
+        proxy = nil
+        viewModel.overlays.endOverlayDrag()
+    }
+
+    private func placeKey(_ id: UUID) -> String {
+        OverlaysViewModel.placeKey(id, gesture: placeGesture)
     }
 
     /// A finger started moving or pinching a photo or video: it's picked, the video leaves it out and its picture follows.

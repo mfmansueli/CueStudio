@@ -15,8 +15,8 @@ extension OverlaysViewModel {
 
     // MARK: - Texts
 
-    /// A tap on a text in the preview: picks it; a second tap opens Text style with the keyboard on its words, ready to fix
-    /// one (the way CapCut's double tap does).
+    /// A tap on a text in the preview: picks it (a locked one says so, with Unlock); a second tap opens Text style with the
+    /// keyboard on its words, ready to fix one (the way CapCut's double tap does).
     func tapText(_ id: UUID) {
         guard isReady else { return }
         player.pause()
@@ -27,8 +27,10 @@ extension OverlaysViewModel {
         }
         Haptics.selection()
         let keepsPanel = panel == .textStyle
+        let previous = selection
         selection = .text(id)
         if !keepsPanel { panel = nil }
+        sayIfLocked(.text(id), previous: previous)
     }
 
     /// A text dragged to `center` (unit coordinates), stuck to the middle when close to it.

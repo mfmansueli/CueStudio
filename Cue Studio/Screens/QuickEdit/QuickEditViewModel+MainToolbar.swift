@@ -102,7 +102,8 @@ extension QuickEditViewModel {
         ]
     }
 
-    /// With lines: Show (the panel's switch), add one, the list, the style, Translate. Without: make them, or write them.
+    /// With lines: Show (the panel's switch), add one, the list, the style, Translate, and, after a line, Delete all (no line is
+    /// picked here: nothing takes Delete's pinned place, and it asks first). Without: make them, or write them.
     var captionsMenuItems: [EditorToolbarItem] {
         if edit.captions.isEmpty {
             return [
@@ -129,7 +130,8 @@ extension QuickEditViewModel {
             ),
             item(.editByText),
             EditorToolbarItem(
-                id: "deleteAll", label: String(localized: "Delete all"), systemImage: "trash", style: .destructive, action: .deleteAllCaptions
+                id: "deleteAll", label: String(localized: "Delete all"), systemImage: "xmark.bin", style: .destructiveAll,
+                action: .deleteAllCaptions, startsGroup: true
             ),
         ]
     }

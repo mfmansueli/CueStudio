@@ -273,8 +273,8 @@ struct CaptionsPanel: View {
         .buttonStyle(.plain)
         .accessibilityIdentifier("edit.captionsAddButton")
         if hasLines {
-            // Every line at once; Undo in the toast brings them back.
-            Button(action: viewModel.captions.deleteAllCaptions) {
+            // Every line at once, after asking; Undo in the toast brings them back.
+            Button(action: viewModel.captions.askToDeleteAllCaptions) {
                 Label("Delete all captions", systemImage: "trash")
                     .font(.system(.subheadline, weight: .semibold))
                     .foregroundStyle(Palette.dangerText)

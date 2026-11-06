@@ -8,7 +8,7 @@ import Foundation
 
 /// VoiceOver's way to place what lies on the video, where a finger drags, pinches and turns: a step up, down, left or right,
 /// bigger or smaller, a text turned either way (the actions of a text's or a photo's handle), each an undo step, and where it
-/// landed said aloud.
+/// landed said aloud. A locked one stays and says so, as it does under a finger (`EditorPart+Lock`).
 extension OverlaysViewModel {
     /// One step: a twentieth of the frame.
     static let overlayStep = 0.05
@@ -18,6 +18,7 @@ extension OverlaysViewModel {
     static let rotationStep = 15 * Double.pi / 180
 
     func nudgeOverlay(_ item: MotionItem, x: Double, y: Double) {
+        guard !refusesMoving(item.id) else { return }
         let center = motionState(of: item).center
         let moved = OverlayPoint(x: min(max(center.x + x, 0), 1), y: min(max(center.y + y, 0), 1))
         switch item {
@@ -28,6 +29,7 @@ extension OverlaysViewModel {
     }
 
     func resizeOverlay(_ item: MotionItem, bigger: Bool) {
+        guard !refusesMoving(item.id) else { return }
         let factor = bigger ? Self.overlayScaleStep : 1 / Self.overlayScaleStep
         switch item {
         case .text(let id): scaleText(id, factor: factor)
@@ -38,7 +40,7 @@ extension OverlaysViewModel {
 
     /// A text turned a step clockwise or back, stuck to straight when it lands near it.
     func turnText(_ id: UUID, clockwise: Bool) {
-        guard let text = edit.texts.first(where: { $0.id == id }) else { return }
+        guard !refusesMoving(id), let text = edit.texts.first(where: { $0.id == id }) else { return }
         let now = text.graphic.map(\.rotation) ?? rotation(ofText: text)
         let turned = Self.snappedRotation(now + (clockwise ? Self.rotationStep : -Self.rotationStep)).rotation
         let center = text.keyframes.isEmpty ? text.center : motionState(of: .text(id)).center

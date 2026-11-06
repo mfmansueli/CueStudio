@@ -37,6 +37,14 @@ extension CaptionsViewModel {
 
     // MARK: - Clearing
 
+    /// Delete all (the Captions bar, the panel's foot): asks first, naming how many lines go, so it never reads as the picked
+    /// line's Delete (`confirmsDeletingAll`; the answer is `deleteAllCaptions`).
+    func askToDeleteAllCaptions() {
+        guard isReady, !edit.captions.isEmpty else { return }
+        player.pause()
+        confirmsDeletingAll = true
+    }
+
     /// Every line at once, without picking and deleting them one by one. The transcript of what
     /// was heard stays, so Auto captions can make them again; Undo brings them back.
     func deleteAllCaptions() {

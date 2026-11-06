@@ -37,6 +37,8 @@ final class OverlaysViewModel: EditorPart {
     /// The text or photo or video a finger is moving on the preview: the video leaves it out meanwhile
     /// (`hidingDraggedOverlay(in:)`).
     var draggedOverlay: EditorSelection?
+    /// A locked text a finger is on: it stays put, and the drag is still the text's, never the preview's swipe to full screen.
+    var lockedUnderFinger: UUID?
     /// The text looks the creator saved, with favorites and the one new texts start in (`+TextLibrary`).
     var textStyles: StyleLibrary<TextLook>
     /// Track: how far following the picked item's object is, 0 to 1; nil when it isn't (`+Track`).

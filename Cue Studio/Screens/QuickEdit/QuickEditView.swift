@@ -174,6 +174,17 @@ struct QuickEditView: View {
         } message: {
             Text("New captions from your voice replace the lines you corrected or wrote.")
         }
+        .confirmationDialog(
+            "Delete all \(viewModel.edit.captions.count) caption lines?",
+            isPresented: Bindable(viewModel.captions).confirmsDeletingAll,
+            titleVisibility: .visible
+        ) {
+            Button("Delete all", role: .destructive) { viewModel.captions.deleteAllCaptions() }
+                .accessibilityIdentifier("edit.captionsDeleteAllConfirm")
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Undo brings them back.")
+        }
         .sheet(isPresented: Bindable(viewModel.captions).showsTranslation) {
             CaptionTranslationSheet(viewModel: viewModel)
         }
@@ -423,7 +434,7 @@ struct QuickEditView: View {
         FullScreenSwipeGesture(
             isFullScreen: isFullScreen,
             isEnabled: viewModel.swipesFullScreen && viewModel.isFullScreen == isFullScreen,
-            yields: { viewModel.overlays.draggedOverlay != nil },
+            yields: { viewModel.overlays.draggedOverlay != nil || viewModel.overlays.lockedUnderFinger != nil },
             moved: { follow in
                 var transaction = Transaction()
                 transaction.disablesAnimations = true

@@ -156,15 +156,17 @@ struct QuickEditCaptionStyleCopyTests {
         viewModel.captions.askToCopyStyleToCaptions()
         viewModel.captions.copyStyleToCaptions()
         let after = viewModel.edit
-        viewModel.undo()
+        // The toast's Undo is the same step as the bar's.
+        scenario.toast.action?.perform()
         #expect(viewModel.edit == before)
         #expect(viewModel.captions.captionTheme == .cue)
         viewModel.redo()
         #expect(viewModel.edit == after)
         #expect(viewModel.captions.captionTheme == nil)
-        // The toast's Undo is the same step.
-        scenario.toast.action?.perform()
+        viewModel.undo()
         #expect(viewModel.edit == before)
+        // Undo says what it took back, in the toast's place.
+        #expect(scenario.toast.message == "Undid · Caption style")
     }
 
     @Test func theTextAndTheCaptionsArentLinkedAfterwards() async {

@@ -8,7 +8,8 @@ import SwiftUI
 /// A text on the preview, in its place and turned as it is. Tapped, it's picked (again: Text style opens); picked, its box
 /// shows in yellow, turned with it, with ✕ at one corner, the handle that resizes and turns it at the opposite one and a tab
 /// on each side that makes its lines longer or shorter. Moving it with one or two fingers is the preview's gesture
-/// (`OverlayEditingLayer`); while any gesture has it, its picture follows (`TextManipulation`).
+/// (`OverlayEditingLayer`); while any gesture has it, its picture follows (`TextManipulation`). Locked, it keeps ✕ and shows a
+/// lock where the resize handle was, and no side tabs: a tap on the lock says how to unlock it.
 struct TextHandle: View {
     let viewModel: QuickEditViewModel
     let text: TextOverlay
@@ -45,6 +46,7 @@ struct TextHandle: View {
                 // VoiceOver: the text itself, activated like a tap, placed with its actions; Delete and Resize stay apart.
                 .accessibilityElement()
                 .accessibilityLabel(Text(text.isEmpty ? text.role.label : text.displayText))
+                .accessibilityValue(viewModel.overlays.isLocked(text.id) ? Text("Locked") : Text(verbatim: ""))
                 .accessibilityHint(isSelected ? Text("Tap to style") : Text("Tap to select"))
                 .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : .isButton)
                 .accessibilityAction { viewModel.overlays.tapText(text.id) }
@@ -69,9 +71,17 @@ struct TextHandle: View {
             viewModel.overlays.deleteText(text.id)
         }
         .offset(x: -(box.width / 2 + 5), y: -(box.height / 2 + 5))
-        cornerGrip
+        if viewModel.overlays.isLocked(text.id) {
+            cornerButton("lock.fill", label: Text("Locked"), id: "edit.textLocked") {
+                viewModel.overlays.sayLocked(text.id)
+            }
+            .accessibilityHint(Text("Unlock it to move, resize or turn it"))
             .offset(x: box.width / 2 + 5, y: box.height / 2 + 5)
-        if text.graphic == nil, box.width >= Self.shortestWithTabs {
+        } else {
+            cornerGrip
+                .offset(x: box.width / 2 + 5, y: box.height / 2 + 5)
+        }
+        if text.graphic == nil, box.width >= Self.shortestWithTabs, !viewModel.overlays.isLocked(text.id) {
             sideTab(.leading).offset(x: -(box.width / 2 + 5))
             sideTab(.trailing).offset(x: box.width / 2 + 5)
         }

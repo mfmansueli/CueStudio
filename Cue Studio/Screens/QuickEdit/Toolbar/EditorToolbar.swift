@@ -198,13 +198,13 @@ struct EditorToolbar: View {
         let tint: Color = switch item.style {
         case .normal: Palette.ink
         case .dimmed: Palette.ink3
-        case .destructive: Palette.dangerText
+        case .destructive, .destructiveAll: Palette.dangerText
         case .smart: Palette.aiText
         }
         let labelTint: Color = switch item.style {
         case .normal: Palette.ink2
         case .dimmed: Palette.ink2
-        case .destructive: Palette.dangerText
+        case .destructive, .destructiveAll: Palette.dangerText
         case .smart: Palette.aiTextStrong
         }
         // A switch that is on is lit as the panels' ◐ is: the icon on the accent, its name in the accent's text colour.

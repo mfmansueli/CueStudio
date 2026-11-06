@@ -270,7 +270,7 @@ extension QuickEditViewModel {
         pickJoin(edit.timeline.segments[nearest.index].id)
     }
 
-    /// Picks an item; a panel that can't work on it closes, one that can stays.
+    /// Picks an item (a locked one says so, with Unlock); a panel that can't work on it closes, one that can stays.
     private func pick(_ item: EditorSelection) {
         Haptics.selection()
         if let panel {
@@ -283,7 +283,9 @@ extension QuickEditViewModel {
             }
             if !keeps { self.panel = nil }
         }
+        let previous = selection
         selection = item
+        sayIfLocked(item, previous: previous)
     }
 
     /// Marks a pause to go, or to stay.
@@ -392,12 +394,14 @@ extension QuickEditViewModel {
         }
     }
 
-    /// The finger lifted: one undo step, and the playhead goes back where it was.
+    /// The finger lifted: one undo step, and the playhead goes back where it was. A caption line moved off its voice says so.
     func endTimelineHandle() {
         guard let drag = handleDrag else { return }
         handleDrag = nil
         lastHandleSnap = nil
         clips.updateCurveSoundStepping()
+        // A caption line moved off its voice asks for a timing check, in the same step.
+        if case .move(.caption, let line) = drag.target, let bar = drag.bar { captions.noteMovedOffTheVoice(line: line, from: bar.span) }
         endChange()
         player.endScrub()
         player.seek(to: min(drag.playhead, edit.editedDuration))

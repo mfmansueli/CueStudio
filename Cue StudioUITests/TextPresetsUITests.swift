@@ -156,6 +156,33 @@ final class TextPresetsUITests: XCTestCase {
         XCTAssertTrue(waitFor { abs(handle.frame.width - start.width) < 3 }, "Undo takes the pinch alone: \(handle.frame) vs \(start)")
     }
 
+    /// Lock holds on the preview: a locked text dragged stays where it is, the toast says so with Unlock, and unlocked it moves.
+    func testALockedTextStaysPutOnThePreviewAndSaysHowToUnlock() {
+        let app = EditorApp.open(demo: true)
+        addTitle(app)
+        app.buttons["edit.panel.apply"].tap()
+        let handle = app.descendants(matching: .any)["edit.textHandle"].firstMatch
+        XCTAssertTrue(handle.exists(within: 5))
+        EditorApp.tapTool(app, "lock")
+        XCTAssertTrue(EditorApp.toastSays(app, "Locked in place"))
+        // A picked, locked text has a lock where its corner handle was.
+        XCTAssertTrue(app.buttons["edit.textLocked"].exists(within: 3))
+        XCTAssertFalse(app.buttons["edit.textScale"].exists)
+        let start = settledFrame(of: handle)
+        let from = handle.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+        from.press(forDuration: 0.1, thenDragTo: from.withOffset(CGVector(dx: 0, dy: 90)), withVelocity: 300, thenHoldForDuration: 0.2)
+        XCTAssertTrue(EditorApp.toastSays(app, "Locked in place"))
+        XCTAssertLessThan(abs(middle(settledFrame(of: handle)).y - middle(start).y), 3, "A locked text doesn't follow the finger")
+        // The editor's toast (the screen under it has a toast host of its own).
+        XCTAssertTrue(app.buttons["toast.action"].firstMatch.exists(within: 3))
+        let unlock = app.buttons.matching(identifier: "toast.action").allElementsBoundByIndex.first { $0.isHittable }
+        XCTAssertEqual(unlock?.label, "Unlock")
+        unlock?.tap()
+        XCTAssertTrue(EditorApp.toastSays(app, "Unlocked"))
+        from.press(forDuration: 0.1, thenDragTo: from.withOffset(CGVector(dx: 0, dy: 90)), withVelocity: 300, thenHoldForDuration: 0.2)
+        XCTAssertTrue(waitFor { abs(self.middle(handle.frame).y - self.middle(start).y - 90) < 12 }, "\(handle.frame) vs \(start)")
+    }
+
     func testOneFingerMovesATextAndTheCornerTurnsIt() {
         let app = EditorApp.open(demo: true)
         addTitle(app)

@@ -17,8 +17,10 @@ struct EditorToastHost: ViewModifier {
             .overlay(alignment: .top) {
                 if let message = toast.message {
                     ToastView(message: message, kind: toast.kind, action: toast.action) {
+                        // Its button may say what it did ("Undid · Split", "Unlocked"): that toast stays, else this one goes.
+                        let shown = toast.pill
                         toast.action?.perform()
-                        toast.dismiss()
+                        if toast.pill == shown { toast.dismiss() }
                     }
                     .padding(.horizontal, 16)
                     .padding(.top, 10)

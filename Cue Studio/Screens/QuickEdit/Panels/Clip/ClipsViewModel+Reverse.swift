@@ -26,7 +26,7 @@ extension ClipsViewModel {
             let span = written.reversal.map { TimeSpan(start: $0.span.end - clip.sourceEnd, end: $0.span.end - clip.sourceStart) }
                 ?? TimeSpan(start: 0, end: clip.sourceLength)
             replace(clip, at: index, with: written.id, duration: written.duration, span: span, adding: nil)
-            toast.show(String(localized: "Reversed"), action: undoAction)
+            sayReversed(at: index)
             return
         }
         guard clip.sourceLength <= Self.longestReverse + 0.001 else {
@@ -68,16 +68,22 @@ extension ClipsViewModel {
         var source = ClipSource(fileName: name, duration: clip.sourceLength, title: String(localized: "\(title(ofClip: clip)) · Reversed"))
         source.reversal = ClipReversal(sourceID: clip.sourceID, span: clip.span)
         replace(clip, at: index, with: source.id, duration: source.duration, span: TimeSpan(start: 0, end: clip.sourceLength), adding: source)
-        toast.show(
-            String(localized: "Reversed"),
-            action: undoAction
-        )
+        sayReversed(at: index)
+    }
+
+    /// "Clip 2 reversed" in a montage ("Reversed" while the video is one clip), with Undo: the toast says which clip, as the
+    /// timeline shows it picked (Reverse from the main bar picks the clip under the playhead).
+    private func sayReversed(at index: Int) {
+        sayUndoable(edit.timeline.segments.count > 1 ? String(localized: "Clip \(index + 1) reversed") : String(localized: "Reversed"))
     }
 
     /// The clip plays its original again.
     private func putBack(_ clip: EditSegment, at index: Int, from reversal: ClipReversal) {
         playForward(clip, at: index, from: reversal)
-        toast.show(String(localized: "Plays forward again"))
+        toast.show(
+            edit.timeline.segments.count > 1 ? String(localized: "Clip \(index + 1) plays forward again") : String(localized: "Plays forward again"),
+            action: undoAction
+        )
     }
 
     /// The reversed clip at `index` plays its original stretch forward again, as one step.
