@@ -279,11 +279,17 @@ struct CueSlider: View {
                 value = new
                 feedback(from: old, to: new)
             }
-            .onEnded { _ in
+            .onEnded { drag in
                 dragAnchor = nil
                 isHeld = false
                 onEditingChanged(false)
                 precision = .full
+                // A tap in the thumb's touch area but beside the drawn thumb: the thumb goes there, as anywhere on the track
+                // (it used to do nothing: the touch area around the thumb took it).
+                let thumbX = thumb / 2 + length * math.fraction(of: value)
+                if abs(drag.translation.width) < 4, abs(drag.translation.height) < 4, abs(drag.startLocation.x - thumbX) > thumb / 2 {
+                    jump(toX: drag.startLocation.x, length: length)
+                }
             }
     }
 
