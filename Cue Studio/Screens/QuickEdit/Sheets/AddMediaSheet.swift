@@ -88,10 +88,12 @@ struct AddMediaSheet: View {
         .presentationDragIndicator(.visible)
         // With picks at stake a swipe down doesn't throw them away: Cancel asks first. With none, it closes at once.
         .interactiveDismissDisabled(atStake > 0)
-        .confirmationDialog(
+        // An alert, not a confirmation dialog: on the iPhone the dialog hides its cancel button (a tap outside cancels), and
+        // "Keep picking" has to be in sight beside "Discard 3".
+        .alert(
             String(localized: "Discard what you picked?"),
             isPresented: Binding(get: { asksToDiscard != nil }, set: { if !$0 { asksToDiscard = nil } }),
-            titleVisibility: .visible, presenting: asksToDiscard
+            presenting: asksToDiscard
         ) { reason in
             Button(String(localized: "Discard \(atStake)"), role: .destructive) { discard(reason) }
             Button(String(localized: "Keep picking"), role: .cancel) {}

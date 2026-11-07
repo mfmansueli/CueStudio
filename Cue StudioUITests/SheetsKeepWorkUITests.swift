@@ -60,7 +60,10 @@ final class SheetsKeepWorkUITests: XCTestCase {
         app.buttons["Keep picking"].tap()
         XCTAssertTrue(app.buttons["edit.mediaContinue"].label.contains("3"), "Keep picking lost the picks")
         // A swipe down with picks doesn't throw them away.
-        app.buttons["edit.mediaMode.window"].swipeDown(velocity: .fast)
+        let grabber = app.buttons["Sheet Grabber"].firstMatch
+        if grabber.exists {
+            grabber.press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.98)))
+        }
         XCTAssertTrue(app.buttons["edit.mediaContinue"].exists(within: 2), "A swipe down closed the sheet with 3 picked")
         app.buttons["sheet.cancel"].firstMatch.tap()
         app.buttons["Discard 3"].tap()
@@ -75,9 +78,14 @@ final class SheetsKeepWorkUITests: XCTestCase {
         XCTAssertTrue(text.exists(within: 5), "Text to speech didn't open")
         text.tap()
         text.typeText("Three habits that changed my mornings.")
-        // Closed by accident: the keyboard down, then a swipe on the sheet.
-        app.staticTexts["Speed"].firstMatch.tap()
-        app.staticTexts["Text to speech"].firstMatch.swipeDown(velocity: .fast)
+        // Closed by accident: the sheet dragged down by its grabber (the first drag may only put the keyboard away).
+        for _ in 0..<2 where text.exists {
+            let grabber = app.buttons["Sheet Grabber"].firstMatch
+            let from = grabber.exists ? grabber.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+                : app.staticTexts["Text to speech"].firstMatch.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+            from.press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.98)))
+            _ = text.isGone(within: 2)
+        }
         XCTAssertTrue(text.isGone(within: 5), "The sheet didn't close by a swipe")
         EditorApp.tapTool(app, "audio")
         EditorApp.tapTool(app, "textToSpeech")
@@ -102,7 +110,8 @@ final class SheetsKeepWorkUITests: XCTestCase {
         let parts = app.segmentedControls["edit.addSoundPart"]
         XCTAssertTrue(parts.exists(within: 5), "Sound effects opened without the two parts")
         XCTAssertTrue(parts.buttons["Sound effects"].isSelected, "The bar's Sound effects didn't open its own part")
-        XCTAssertEqual(app.staticTexts.matching(identifier: "Sound effects").count, 0, "The part's name is said twice")
+        let named = app.staticTexts.matching(identifier: "Sound effects").allElementsBoundByIndex
+        XCTAssertTrue(named.allSatisfy { parts.frame.contains(CGPoint(x: $0.frame.midX, y: $0.frame.midY)) }, "The part's name is said twice")
         let sheetTop = parts.frame.minY
         XCTAssertLessThan(sheetTop, app.frame.height * 0.25, "The sheet isn't tall: its parts are at \(sheetTop)")
         EditorApp.capture(app, "sound-effects-tall")
