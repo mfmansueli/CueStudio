@@ -46,10 +46,7 @@ final class BrandLibraryUITests: XCTestCase {
     func testAKitFromThisVideoIsSavedAndPutOnInOneStep() {
         let root = "kits-\(UUID().uuidString)"
         var app = EditorApp.open(demo: true, arguments: ["-uiTestSeedLibrary", "-uiTestAssetRoot", root])
-        EditorApp.tapTool(app, "smart")
-        let brandTab = app.buttons["edit.smart.section.brand"]
-        XCTAssertTrue(brandTab.exists(within: 5))
-        brandTab.tap()
+        EditorApp.tapTool(app, "brandKit")
         EditorApp.capture(app, "brand-empty")
         app.buttons["edit.brand.newKit"].tap()
         let name = app.textFields["edit.brand.kitName"]
@@ -73,8 +70,7 @@ final class BrandLibraryUITests: XCTestCase {
         // Closed and opened again: the kit and the library are still there.
         app.terminate()
         app = EditorApp.open(demo: true, arguments: ["-uiTestAssetRoot", root])
-        EditorApp.tapTool(app, "smart")
-        app.buttons["edit.smart.section.brand"].tap()
+        EditorApp.tapTool(app, "brandKit")
         XCTAssertTrue(app.buttons["edit.brand.kit.Acme"].exists(within: 5), "The kit didn't survive reopening")
     }
 
@@ -84,8 +80,8 @@ final class BrandLibraryUITests: XCTestCase {
         let app = EditorApp.open(arguments: [
             "-uiTestAppLanguage", "pt", "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL",
         ])
-        EditorApp.tapTool(app, "smart")
-        let tab = app.buttons["edit.smart.section.brand"]
+        EditorApp.tapTool(app, "brandKit")
+        let tab = app.buttons["edit.templates.section.brand"]
         XCTAssertTrue(tab.exists(within: 5))
         XCTAssertEqual(tab.label, "Kit de marca")
         XCTAssertTrue(tab.isHittable)

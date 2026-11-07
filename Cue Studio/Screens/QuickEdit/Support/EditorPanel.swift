@@ -24,15 +24,15 @@ enum EditorPanel: String, CaseIterable, Identifiable {
     case blur
     // The cut between two clips
     case transition
-    // ✦ Smart: the one-tap tools
-    case smart
+    // Templates and the creator's brand kits
+    case templates
 
     var id: String { rawValue }
 
     var size: EditorPanelSize {
         switch self {
         case .zoom, .volume, .filters, .voiceOver, .autoCaptions: .mini
-        case .speed, .voice, .pauses, .captions, .adjust, .skin, .background, .media, .smart, .transition, .crop, .stabilize, .beats: .medium
+        case .speed, .voice, .pauses, .captions, .adjust, .skin, .background, .media, .templates, .transition, .crop, .stabilize, .beats: .medium
         case .voiceEffects: .medium
         case .clipCrop, .clipAnimation: .medium
         case .mask, .blur, .motion: .medium
@@ -129,7 +129,7 @@ enum EditorPanel: String, CaseIterable, Identifiable {
         case .motion: String(localized: "Motion")
         case .blur: String(localized: "Blur area")
         case .transition: String(localized: "Transition")
-        case .smart: String(localized: "✦ Smart")
+        case .templates: String(localized: "Templates")
         }
     }
 }

@@ -614,7 +614,7 @@ final class EditorFluidityDeviceUITests: XCTestCase {
             left.press(forDuration: 0.05, thenDragTo: right, withVelocity: 1500, thenHoldForDuration: 0)
             rest(0.8)
         }
-        for id in ["edit", "text", "audio", "captions", "smart", "filters"] {
+        for id in ["edit", "text", "audio", "captions", "pauses", "filters"] {
             guard tool(app, id) else { continue }
             rest(0.9)
             backToMainTools(app)

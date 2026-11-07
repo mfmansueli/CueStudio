@@ -127,7 +127,7 @@ struct QuickEditView: View {
             }
         }
         .background {
-            // ✦ Smart › Brand: which parts of a kit go on, and a kit made or changed.
+            // Templates › Brand: which parts of a kit go on, and a kit made or changed.
             Color.clear.sheet(item: Bindable(viewModel.brand).kitToApply) { kit in
                 BrandKitApplySheet(viewModel: viewModel, kit: kit)
                     .environment(\.brandColors, viewModel.edit.brandKit?.colors ?? [])

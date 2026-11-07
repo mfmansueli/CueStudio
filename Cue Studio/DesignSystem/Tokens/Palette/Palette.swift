@@ -104,7 +104,7 @@ enum Palette {
 
     // MARK: - AI (violet)
 
-    /// Violet is the AI's color: ✦, "My Cue Voice", Smart, suggestions. Text and icons: 4.5:1 on every
+    /// Violet is the AI's color: ✦, "My Cue Voice", suggestions. Text and icons: 4.5:1 on every
     /// surface.
     static let aiText = Color(normal: Color(hex: 0xB4A7FF), increasedContrast: Color(hex: 0xCFC6FF))
     /// The stronger violet for a title or a value on an AI fill.

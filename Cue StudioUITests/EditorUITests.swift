@@ -19,9 +19,10 @@ final class EditorUITests: XCTestCase {
         XCTAssertTrue(app.buttons["edit.backButton"].exists)
         XCTAssertFalse(app.buttons["edit.exportButton"].exists)
         XCTAssertTrue(app.buttons["edit.playButton"].exists)
-        // The owner's order (2026-10-16): Edit, Captions, Text, ✦ Smart, Media, Audio, Format, Filters, Cover; Adjust and
+        // The owner's order (2026-10-16; Clean up where ✦ Smart was, 07/11): Edit, Captions, Text, Clean up, Media, Audio, Format,
+        // Filters, Cover; Adjust and
         // Background are Edit's clip tools, and the old Crop and Overlay are gone (Format and Media replace them).
-        for tool in ["edit", "captions", "text", "smart", "addMedia", "audio", "format", "filters", "cover"] {
+        for tool in ["edit", "captions", "text", "pauses", "addMedia", "audio", "format", "filters", "cover"] {
             XCTAssertTrue(app.buttons["edit.toolbar.\(tool)"].exists, tool)
         }
         for tool in ["adjust", "crop", "background", "media"] {
@@ -37,7 +38,7 @@ final class EditorUITests: XCTestCase {
         XCTAssertTrue(app.buttons["edit.toolbar.speed"].exists)
         XCTAssertTrue(app.buttons["edit.toolbar.zoom"].exists)
         EditorApp.tapTool(app, "back")
-        XCTAssertTrue(app.buttons["edit.toolbar.smart"].exists(within: 5))
+        XCTAssertTrue(app.buttons["edit.toolbar.pauses"].exists(within: 5))
     }
 
     func testAdjustPicksASettingAndMovesItsRuler() {
@@ -310,8 +311,7 @@ final class EditorUITests: XCTestCase {
     func testFixCaptionTextOpensTheLineReadyToType() {
         // The demo's words were heard already: the Simulator can't recognize speech.
         let app = EditorApp.open(demo: true, arguments: ["-uiTestDemoTranscript"])
-        EditorApp.tapTool(app, "smart")
-        app.buttons["edit.smart.editByText"].tap()
+        EditorApp.tapTool(app, "editByText")
         let first = app.buttons["edit.transcript.word.2"]
         XCTAssertTrue(first.exists(within: 5), "No words in Edit by text")
         first.tap()
@@ -474,17 +474,17 @@ final class EditorUITests: XCTestCase {
 
     // MARK: - Timeline
 
-    /// ✦ Smart keeps its tools and its templates apart: Templates is a tab of its own; a template applies to the whole video,
-    /// is marked as the one in use and comes off with one Undo.
-    func testSmartHasTemplatesInATabOfTheirOwn() {
+    /// Templates opens on its tab, apart from the brand kits; a template applies to the whole video, is marked as the one in use
+    /// and comes off with one Undo.
+    func testTemplatesOpenOnTheirTabApartFromBrandKits() {
         let app = EditorApp.open()
-        EditorApp.tapTool(app, "smart")
-        XCTAssertTrue(app.buttons["edit.smart.voice"].exists(within: 5))
+        EditorApp.tapTool(app, "brandKit")
+        XCTAssertTrue(app.buttons["edit.brand.newKit"].exists(within: 5))
         XCTAssertFalse(app.buttons["edit.template.boldHook"].exists)
-        app.buttons["edit.smart.section.templates"].tap()
+        app.buttons["edit.templates.section.templates"].tap()
         let boldHook = app.buttons["edit.template.boldHook"]
         XCTAssertTrue(boldHook.exists(within: 5))
-        XCTAssertFalse(app.buttons["edit.smart.voice"].exists)
+        XCTAssertFalse(app.buttons["edit.brand.newKit"].exists)
         boldHook.tap()
         XCTAssertTrue(EditorApp.toastSays(app, "Bold hook on the whole video"))
         XCTAssertTrue(boldHook.isSelected)
@@ -541,7 +541,7 @@ final class EditorUITests: XCTestCase {
         EditorApp.mainTrack(app, at: 0.75).tap()
         XCTAssertTrue(app.buttons["edit.toolbar.split"].exists(within: 5))
         timeline.coordinate(withNormalizedOffset: CGVector(dx: 0.75, dy: 0.97)).tap()
-        XCTAssertTrue(app.buttons["edit.toolbar.smart"].exists(within: 5))
+        XCTAssertTrue(app.buttons["edit.toolbar.pauses"].exists(within: 5))
     }
 
     func testTheClipsLeftHandleTrimsItsStart() {

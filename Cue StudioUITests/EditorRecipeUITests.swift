@@ -117,7 +117,7 @@ extension EditorRecipeUITests {
 
     func removePauses() -> String {
         let before = seconds(EditorApp.length(app))
-        guard tool("smart"), tapButton("edit.smart.pauses") else { return "GAP: no Remove pauses in ✦ Smart" }
+        guard tool("pauses") else { return "GAP: no Clean up on the bar" }
         let listening = element("edit.pauses.listening")
         _ = listening.isGone(within: realTake == nil ? 30 : 180)
         let value = element("edit.pauses.threshold.value")
@@ -778,7 +778,6 @@ extension EditorRecipeUITests {
         backToMain()
         guard tool("captions") else { return false }
         if button("edit.captionsStyleButton").exists(within: 3) { return true }
-        if button("edit.toolbar.autoCaptions").exists { tool("autoCaptions") }
         guard tapButton("edit.captionsMakeButton", within: 5) else { return false }
         _ = button("edit.captionsMakeButton").isGone(within: 300)
         backToMain()

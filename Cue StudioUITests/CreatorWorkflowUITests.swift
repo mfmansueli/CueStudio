@@ -25,9 +25,8 @@ final class CreatorWorkflowUITests: XCTestCase {
         let flow = CreatorWorkflow("talking-head", app: app)
         let fullLength = EditorApp.length(app)
 
-        flow.step("✦ Smart › Remove pauses")
-        flow.tool("smart")
-        flow.tap(app.buttons["edit.smart.pauses"], "the Remove pauses tile")
+        flow.step("Clean up › Pauses")
+        flow.tool("pauses")
         let firstPause = flow.element("edit.pause.0")
         let none = flow.element("edit.pauses.empty")
         XCTAssertTrue(flow.waits(for: firstPause, timeout: 10, "the pauses") || none.exists, "The Pauses panel found nothing to show")
@@ -127,9 +126,8 @@ final class CreatorWorkflowUITests: XCTestCase {
         let flow = CreatorWorkflow("edit-by-text", app: app)
         let fullLength = EditorApp.length(app)
 
-        flow.step("✦ Smart › Edit by text")
-        flow.tool("smart")
-        flow.tap(app.buttons["edit.smart.editByText"], "the Edit by text tile")
+        flow.step("Edit by text")
+        flow.tool("editByText")
         XCTAssertTrue(flow.waits(for: flow.element("edit.transcript"), "Edit by text"), "Edit by text didn't open")
         let first = app.buttons["edit.transcript.word.2"]
         if !first.exists(within: 3) {
@@ -254,9 +252,8 @@ final class CreatorWorkflowUITests: XCTestCase {
         let app = EditorApp.open(demo: true)
         let flow = CreatorWorkflow("quick-style", app: app)
 
-        flow.step("✦ Smart › Templates › Bold hook")
-        flow.tool("smart")
-        flow.tap(app.buttons["edit.smart.section.templates"], "the Templates tab")
+        flow.step("Templates › Bold hook")
+        flow.tool("templates")
         let boldHook = app.buttons["edit.template.boldHook"]
         flow.tap(boldHook, "Bold hook")
         XCTAssertTrue(flow.toastSays("Bold hook on the whole video"))

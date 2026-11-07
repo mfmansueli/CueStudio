@@ -8,7 +8,7 @@ import Foundation
 /// The script libraries in the editor: beside the Latin families, a picker shows the families of the scripts the words being
 /// styled are in, or the creator writes in (`ScriptLibraryOffer`); never for a creator who only writes Latin. A family
 /// downloads when the creator picks it, or when a style lands on words in its script (`FontPackNeeds`); until it is here the
-/// words draw in the system's face of the script. Downloaded families sit with the imported ones in ✦ Smart › Brand, where
+/// words draw in the system's face of the script. Downloaded families sit with the imported ones in Templates › Brand, where
 /// they can be removed.
 extension BrandViewModel {
     /// The libraries a picker styling `text` shows, Latin families first (the picker's own).

@@ -62,7 +62,15 @@ extension QuickEditViewModel {
         case .motion: String(localized: "Ready-made motion, Track and keyframes")
         case .blur: blurSubtitle
         case .transition: transitionSubtitle
-        case .smart: String(localized: "Quick fixes, made on your iPhone")
+        case .templates: templatesSubtitle
+        }
+    }
+
+    /// What the open tab of the Templates panel changes.
+    private var templatesSubtitle: String {
+        switch templatesSection {
+        case .templates: String(localized: "Whole video · Undo puts it back")
+        case .brand: String(localized: "Your fonts, colors and logo")
         }
     }
 

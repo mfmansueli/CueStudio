@@ -7,28 +7,30 @@ import Foundation
 
 /// The main toolbar (nothing picked) and the menus it opens. Every tool the editor has is on it, grouped by what they work on
 /// (owner's decision, 26/10/2026, after InShot's one long bar), in the picked clip's order so a tool sits among the same ones
-/// on both bars (owner, 28/10/2026): the basics, the five on screen with ✦ Smart fifth; the clip under the playhead's essentials;
+/// on both bars (owner, 28/10/2026): the basics, the five on screen with Clean up fifth (owner, 07/11/2026: ✦ Smart went, each of its
+/// tiles had its own button); the clip under the playhead's essentials;
 /// its picture; the montage; the whole video, the cover last. A clip tool works on the clip under the playhead without picking
 /// it first (`QuickEditViewModel+Toolbar`).
 extension QuickEditViewModel {
     /// The groups of the main bar, a thin line between them.
     static let mainToolGroups: [[EditorToolbarTool]] = [
-        [.edit, .split, .captions, .text, .smart, .media, .audio],
+        [.edit, .split, .captions, .text, .pauses, .media, .audio],
         [.speed, .volume, .zoom],
         [.adjust, .skin, .filters, .background, .crop, .stabilize, .blurArea, .copyLook, .pasteLook],
         [.animation, .duplicate, .freeze, .reverse, .replace, .reorder, .extractAudio],
-        [.editByText, .pauses, .studioVoice, .format, .templates, .brandKit, .cover],
+        [.editByText, .studioVoice, .format, .templates, .brandKit, .cover],
     ]
 
+    /// Adjust, Skin, Filters and Background carry the whole video's badge here too: a clip's bar has a tool with the same name
+    /// for only that clip (owner, 07/11/2026: the badge only where the same word changes reach).
     var mainItems: [EditorToolbarItem] {
-        Self.grouped(Self.mainToolGroups.map { $0.map { item($0) } })
+        Self.grouped(Self.mainToolGroups.map { $0.map { $0.hasClipVersion ? item($0).reachingWholeVideo() : item($0) } })
     }
 
     /// `tool` as a button: dimmed where it can't work right now (a tap still says why). Nothing here reads the playhead, so the
     /// bar never redraws while the video plays (Split on the main bar says at the tap when the playhead is too close to a cut).
     func item(_ tool: EditorToolbarTool) -> EditorToolbarItem {
         let style: EditorToolbarItem.Style = switch tool {
-        case .smart: .smart
         case .reorder: edit.timeline.segments.count > 1 ? .normal : .dimmed
         case .pasteLook: look.canPasteLook ? .normal : .dimmed
         default: .normal
@@ -63,7 +65,7 @@ extension QuickEditViewModel {
             )
         }
         if overlays.commentForCard != nil {
-            items.append(EditorToolbarItem(id: "comment", label: String(localized: "Comment"), systemImage: "text.bubble.fill", action: .addCommentCard))
+            items.append(EditorToolbarItem(id: "comment", label: String(localized: "Comment"), systemImage: "quote.bubble", action: .addCommentCard))
         }
         if !edit.texts.isEmpty {
             items.append(EditorToolbarItem(id: "styleAll", label: String(localized: "Style all"), systemImage: "square.grid.2x2", action: .styleAllTexts))
@@ -90,64 +92,19 @@ extension QuickEditViewModel {
         ]
     }
 
-    /// An area over a face (the faces in the frame to tap), or one drawn; Compare shows the video without them while it's on.
-    var blurMenuItems: [EditorToolbarItem] {
-        [
-            EditorToolbarItem(id: "blurFace", label: String(localized: "Blur area"), systemImage: "eye.slash", action: .addBlurArea),
-            EditorToolbarItem(id: "blurDraw", label: String(localized: "Draw an area"), systemImage: "rectangle.dashed", action: .drawBlurArea),
-            EditorToolbarItem(
-                id: "blurCompare", label: String(localized: "Compare"), systemImage: "circle.lefthalf.filled", action: .compareBlur,
-                startsGroup: true, isOn: blur.comparesOriginal
-            ),
-        ]
-    }
-
-    /// With lines: Show (the panel's switch), add one, the list, the style, Translate, and, after a line, Delete all (no line is
-    /// picked here: nothing takes Delete's pinned place, and it asks first). Without: make them, or write them.
-    var captionsMenuItems: [EditorToolbarItem] {
-        if edit.captions.isEmpty {
-            return [
-                EditorToolbarItem(id: "autoCaptions", label: String(localized: "Auto captions"), systemImage: "captions.bubble", action: .openCaptions),
-                EditorToolbarItem(
-                    id: "writeCaptions", label: String(localized: "Write captions"), systemImage: "pencil", action: .writeCaptionsByHand
-                ),
-                item(.editByText),
-            ]
-        }
-        return [
-            EditorToolbarItem(
-                id: "showCaptions", label: String(localized: "Show"), systemImage: edit.showsCaptions ? "eye" : "eye.slash",
-                action: .toggleCaptionsShown, isOn: edit.showsCaptions
-            ),
-            EditorToolbarItem(id: "addLine", label: String(localized: "Add line"), systemImage: "plus.bubble", action: .addCaptionLine),
-            EditorToolbarItem(id: "allLines", label: String(localized: "All lines"), systemImage: "list.bullet", action: .openCaptions),
-            EditorToolbarItem(id: "style", label: String(localized: "Style"), systemImage: "textformat.alt", action: .open(.captionStyle)),
-            EditorToolbarItem(
-                id: "translate", label: captions.captionTranslationLabel, systemImage: "translate", action: .openCaptionTranslation
-            ),
-            EditorToolbarItem(
-                id: "findReplace", label: String(localized: "Find and replace"), systemImage: "text.magnifyingglass", action: .findInCaptions
-            ),
-            item(.editByText),
-            EditorToolbarItem(
-                id: "deleteAll", label: String(localized: "Delete all"), systemImage: "xmark.bin", style: .destructiveAll,
-                action: .deleteAllCaptions, startsGroup: true
-            ),
-        ]
-    }
-
-    /// The voice, music, sound effects, voice-over and a voice-over spoken from text; then the clip under the playhead's sound:
-    /// its volume, a voice effect on it, or on a track of its own.
+    /// What goes on top first: music, sound effects, a voice-over and one spoken from text (owner, 07/11/2026: Music first);
+    /// then what works on the sound already there: Studio Voice on the whole video, and the clip under the playhead's volume,
+    /// a voice effect on it, or its sound on a track of its own.
     var audioMenuItems: [EditorToolbarItem] {
         [
-            item(.studioVoice),
             EditorToolbarItem(id: "music", label: String(localized: "Music"), systemImage: "music.note", action: .openMusic),
             EditorToolbarItem(id: "soundEffects", label: String(localized: "Sound effects"), systemImage: "speaker.wave.2.bubble", action: .openSoundEffects),
             EditorToolbarItem(id: "voiceOver", label: String(localized: "Voice-over"), systemImage: "mic", action: .open(.voiceOver)),
-            EditorToolbarItem(id: "textToSpeech", label: String(localized: "Text to speech"), systemImage: "text.bubble", action: .openTextToSpeech),
-            item(.volume).startingGroup(),
+            EditorToolbarItem(id: "textToSpeech", label: String(localized: "Text to speech"), systemImage: "person.wave.2", action: .openTextToSpeech),
+            item(.studioVoice).startingGroup(),
+            item(.volume),
             EditorToolbarItem(
-                id: "voiceEffects", label: String(localized: "Voice effects"), systemImage: "waveform.badge.magnifyingglass", action: .open(.voiceEffects)
+                id: "voiceEffects", label: String(localized: "Voice effects"), systemImage: "waveform.and.person.filled", action: .open(.voiceEffects)
             ),
             item(.extractAudio),
         ]

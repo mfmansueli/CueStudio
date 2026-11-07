@@ -16,7 +16,8 @@ struct BlurPanel: View {
     var body: some View {
         let blur = viewModel.blur
         if let picking = blur.picking {
-            PanelFrame(viewModel: viewModel, panel: .blur) {
+            // ◐ compares the whole video without its areas, so it is here too once there are some (owner, 07/11/2026).
+            PanelFrame(viewModel: viewModel, panel: .blur, compare: viewModel.edit.blurRegions.isEmpty ? nil : blur.blurCompare) {
                 choosing(picking)
             }
         } else if let region = viewModel.selectedBlur {

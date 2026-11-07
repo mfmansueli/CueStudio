@@ -17,9 +17,7 @@ final class CaptionToolsUITests: XCTestCase {
     func testFindAndReplaceFixesAWordInEveryLine() {
         let app = EditorApp.open(demo: true)
         EditorApp.tapTool(app, "captions")
-        let find = app.buttons["edit.captionsFind"]
-        XCTAssertTrue(find.exists(within: 5), "No Find and replace in Captions")
-        find.tap()
+        EditorApp.captionsMenu(app, "edit.captionsFind").tap()
         let query = app.textFields["edit.captionFind.query"]
         XCTAssertTrue(query.exists(within: 5))
         query.typeText("caudo")
@@ -51,9 +49,7 @@ final class CaptionToolsUITests: XCTestCase {
     func testSelectedLinesAreStyledAndDeletedTogether() {
         let app = EditorApp.open(demo: true)
         EditorApp.tapTool(app, "captions")
-        let select = app.buttons["edit.captionsSelect"]
-        XCTAssertTrue(select.exists(within: 5), "No Select lines in Captions")
-        select.tap()
+        EditorApp.captionsMenu(app, "edit.captionsSelect").tap()
         let count = app.staticTexts["edit.captionPicks.count"]
         XCTAssertTrue(count.exists(within: 5))
         XCTAssertEqual(count.label, "0 selected")

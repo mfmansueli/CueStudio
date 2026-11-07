@@ -58,10 +58,8 @@ extension QuickEditViewModel {
         if let selection { return items(for: selection) }
         switch toolMenu {
         case .text: return textMenuItems
-        case .captions: return captionsMenuItems
         case .audio: return audioMenuItems
         case .media: return mediaMenuItems
-        case .blur: return blurMenuItems
         case nil: return mainItems
         }
     }
@@ -94,9 +92,6 @@ extension QuickEditViewModel {
         if performOnSelection(action) || performOpening(action) || performOnTrackBar(action) { return }
         switch action {
         case .selectClipAtPlayhead: clips.selectClipAtPlayhead()
-        case .addCaptionLine:
-            openCaptions()
-            captions.addCaptionAtPlayhead()
         case .addMedia, .addMediaChoice:
             overlays.mediaInsertMode = overlays.lastOverlayMode
             sheet = .media
@@ -108,17 +103,14 @@ extension QuickEditViewModel {
             panel = nil
             clips.transcriptSelection = nil
             sheet = .transcript
-        case .writeCaptionsByHand:
-            toolMenu = nil
-            captions.writeCaptionsByHand()
         case .openMusic, .replaceMusic: openMusicSheet(replacing: action == .replaceMusic)
         case .openCoverStudio: cover.openCoverStudio()
         default: break
         }
     }
 
-    /// The track bars' own tools (`EditorToolMenu`): the ways to add a photo or video, Show and Translate for captions, Sound
-    /// effects, Compare for Blur areas. False when `action` isn't one of them.
+    /// The track bars' own tools (`EditorToolMenu`): the ways to add a photo or video, Sound effects, Text to speech. False when
+    /// `action` isn't one of them.
     private func performOnTrackBar(_ action: EditorAction) -> Bool {
         switch action {
         case .addMediaAs(let mode):
@@ -128,8 +120,6 @@ extension QuickEditViewModel {
             overlays.mediaInsertMode = overlays.lastOverlayMode
             brand.showsLibrary = true
             sheet = .media
-        case .toggleCaptionsShown: captions.toggleCaptions()
-        case .openCaptionTranslation: open(.captionTranslation)
         case .openSoundEffects:
             audio.musicReplacementID = nil
             sheet = .soundEffects
@@ -140,9 +130,6 @@ extension QuickEditViewModel {
             guard let id = selection?.voiceOverID else { return true }
             audio.spokenReplacementID = id
             sheet = .textToSpeech
-        case .compareBlur:
-            guard !edit.blurRegions.isEmpty else { return true }
-            blur.comparesOriginal.toggle()
         default: return false
         }
         return true
@@ -157,7 +144,7 @@ extension QuickEditViewModel {
         case .openCaptions: openCaptions()
         case .open(let panel): open(panel)
         case .openLook(let tool, let wholeVideo): openLook(tool, wholeVideo: wholeVideo)
-        case .openSmart(let section): openSmart(on: section)
+        case .openTemplates(let section): openTemplates(on: section)
         default: return false
         }
         return true
@@ -180,10 +167,10 @@ extension QuickEditViewModel {
         panel = tool.panel
     }
 
-    /// ✦ Smart on `section` (Templates and Brand kit straight on theirs), also when Smart is already open.
-    private func openSmart(on section: SmartPanelSection) {
-        smartSection = section
-        panel = .smart
+    /// The Templates panel on `section` (Templates or Brand kit, each from its own button), also when it is already open.
+    private func openTemplates(on section: TemplatesPanelSection) {
+        templatesSection = section
+        panel = .templates
     }
 
     /// The Text menu's actions and Edit on a picked text.
@@ -266,7 +253,6 @@ extension QuickEditViewModel {
     private func performOnBlur(_ action: EditorAction) -> Bool {
         switch action {
         case .addBlurArea: blur.startAdding(onMainVideo: isSplitMainAreaPicked)
-        case .drawBlurArea: blur.startDrawing(onMainVideo: isSplitMainAreaPicked)
         case .followBlur: blur.follow()
         case .reviewBlur: blur.review()
         case .deleteBlur: selectedBlurID.map(blur.delete)

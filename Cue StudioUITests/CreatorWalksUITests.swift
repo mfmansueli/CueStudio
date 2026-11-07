@@ -187,8 +187,7 @@ final class CreatorWalksUITests: XCTestCase {
 
         // Back from the Media bar the logo came from.
         backToMainTools()
-        EditorApp.tapTool(app, "smart")
-        app.buttons["edit.smart.section.brand"].tap()
+        EditorApp.tapTool(app, "brandKit")
         app.buttons["edit.brand.newKit"].tap()
         let name = app.textFields["edit.brand.kitName"]
         waitFor(name, "The kit's name")
@@ -223,8 +222,7 @@ final class CreatorWalksUITests: XCTestCase {
         XCTAssertTrue(EditorApp.toastSays(app, "Acme saved", timeout: 5), "The kit wasn't saved")
 
         openThePreviousTake()
-        EditorApp.tapTool(app, "smart")
-        app.buttons["edit.smart.section.brand"].tap()
+        EditorApp.tapTool(app, "brandKit")
         let card = app.buttons["edit.brand.kit.Acme"]
         waitFor(card, "The kit in another video")
         card.tap()

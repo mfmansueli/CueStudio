@@ -14,11 +14,6 @@ struct EditorToolbarItem: Identifiable, Hashable {
         case dimmed
         /// Deletes the picked item: pinned at the end of the bar.
         case destructive
-        /// Deletes every item of a kind (Delete all captions): red like Delete, but last among the tools that scroll, never in
-        /// Delete's pinned place, and it asks first.
-        case destructiveAll
-        /// Smart (the AI's): violet.
-        case smart
     }
 
     /// The badge on a tool that reaches past the picked item, so a tool shown with a clip never looks like the clip's own.

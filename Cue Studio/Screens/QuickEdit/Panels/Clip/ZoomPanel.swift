@@ -16,8 +16,8 @@ struct ZoomPanel: View {
             PanelTiles(
                 options: [
                     PanelOption(SectionZoom?.none, String(localized: "None"), systemImage: "circle.slash", key: "none"),
-                    PanelOption(SectionZoom?.some(.pushIn), SectionZoom.pushIn.label, systemImage: "arrow.down.right.and.arrow.up.left", key: "pushIn"),
-                    PanelOption(SectionZoom?.some(.pullOut), SectionZoom.pullOut.label, systemImage: "arrow.up.left.and.arrow.down.right", key: "pullOut"),
+                    PanelOption(SectionZoom?.some(.pushIn), SectionZoom.pushIn.label, systemImage: "plus.magnifyingglass", key: "pushIn"),
+                    PanelOption(SectionZoom?.some(.pullOut), SectionZoom.pullOut.label, systemImage: "minus.magnifyingglass", key: "pullOut"),
                     PanelOption(SectionZoom?.some(.punchIn), SectionZoom.punchIn.label, systemImage: "plus.viewfinder", key: "punchIn"),
                 ],
                 selection: clip?.zoom, identifier: "edit.zoom"

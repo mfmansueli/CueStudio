@@ -155,12 +155,20 @@ enum EditorApp {
         option.tap()
     }
 
-    /// ✦ Smart › Remove pauses: opens the Pauses panel the way a creator reaches it now.
+    /// Clean up (the fifth tool): opens the speech clean-up the way a creator reaches it now.
     static func openPauses(_ app: XCUIApplication) {
-        tapTool(app, "smart")
-        let tile = app.buttons["edit.smart.pauses"]
-        XCTAssertTrue(tile.exists(within: 5))
-        tile.tap()
+        tapTool(app, "pauses")
+    }
+
+    /// Captions › ••• › the tool `id` (Find and replace, Select lines, Edit by text, Add a line, Delete all).
+    @discardableResult
+    static func captionsMenu(_ app: XCUIApplication, _ id: String) -> XCUIElement {
+        let more = app.buttons["edit.captionsMore"]
+        XCTAssertTrue(more.exists(within: 5), "No ••• in Captions")
+        more.tap()
+        let button = app.buttons[id].firstMatch
+        XCTAssertTrue(button.exists(within: 5), "No \(id) in Captions ›  •••")
+        return button
     }
 
     /// Captions › the line at `index`: the playhead goes to its start. Closes the panel after.

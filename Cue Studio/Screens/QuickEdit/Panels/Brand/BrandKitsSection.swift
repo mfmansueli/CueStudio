@@ -5,7 +5,7 @@
 
 import SwiftUI
 
-/// ✦ Smart › Brand: the creator's brand kits, one card each (its colors, fonts and logo, what it holds; the one this video
+/// Templates › Brand: the creator's brand kits, one card each (its colors, fonts and logo, what it holds; the one this video
 /// wears is checked). A tap asks which parts go on (`BrandKitApplySheet`); holding a card edits, copies or deletes it (Undo).
 /// "New kit from this video" starts one from what the video wears. Under them, the fonts the creator imported.
 struct BrandKitsSection: View {
