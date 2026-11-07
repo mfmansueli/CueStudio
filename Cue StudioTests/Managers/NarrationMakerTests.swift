@@ -57,14 +57,13 @@ struct NarrationMakerTests {
         #expect(narrationFiles().subtracting(before).isEmpty)
     }
 
-    /// The files a narration can leave: voice-overs in the edit's media and its sound in the temporary folder. Only those, since
-    /// other suites running alongside add their own videos and sounds to the same folders.
+    /// The files a cancelled narration could leave: its sound in the temporary folder ("Cue-speech-", a name only the narration
+    /// uses). The voice-over file in the edit's media is made only after the speaking, once a cancel was checked, so a cancel
+    /// while it speaks never reaches it; counting that folder's .m4a files failed whenever another suite running alongside added
+    /// its own sound there.
     private func narrationFiles() -> Set<String> {
-        func names(in folder: URL) -> [String] {
-            (try? FileManager.default.contentsOfDirectory(atPath: folder.path(percentEncoded: false))) ?? []
-        }
-        return Set(names(in: EditMediaFiles.directory).filter { $0.hasSuffix(".m4a") })
-            .union(names(in: URL.temporaryDirectory).filter { $0.hasPrefix("Cue-speech-") })
+        let folder = URL.temporaryDirectory.path(percentEncoded: false)
+        return Set(((try? FileManager.default.contentsOfDirectory(atPath: folder)) ?? []).filter { $0.hasPrefix("Cue-speech-") })
     }
 
     @Test func voicesAreOfferedBestFirst() {
