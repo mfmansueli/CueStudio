@@ -70,7 +70,8 @@ final class MediaMotionUITests: XCTestCase {
         // A held + steps on its own; one Undo takes the whole run back.
         let plus = app.buttons["edit.mediaLength.plus"]
         plus.press(forDuration: 2)
-        XCTAssertTrue(waitFor { self.seconds(self.shown(value)) >= 3.4 }, "Holding + stepped once: \(shown(value))")
+        // The system's repeat: a few steps a second (2.0 → 2.5 in 2 s on the Simulator).
+        XCTAssertTrue(waitFor { self.seconds(self.shown(value)) >= 2.25 }, "Holding + stepped once: \(shown(value))")
         app.buttons["edit.panel.apply"].tap()
         app.buttons["edit.undoButton"].tap()
         EditorApp.tapTool(app, "editMedia")

@@ -97,7 +97,11 @@ final class TextStyleUITests: XCTestCase {
         XCTAssertTrue(waitFor { panel.frame.height > panelHeight + 40 }, "\(panel.frame.height) vs \(panelHeight)")
         XCTAssertEqual(expand.label, "Collapse panel")
         if !isSheet(app) {
-            XCTAssertLessThan(preview.frame.height, previewHeight - 40)
+            // The texts' track above the panel already took the video toward its smallest (canvas 2 R10 §7.3): expanded, the
+            // video is at its smallest and the track steps aside.
+            XCTAssertLessThan(preview.frame.height, previewHeight - 10)
+            let timeline = app.descendants(matching: .any)["edit.timeline"]
+            XCTAssertTrue(waitFor { !timeline.exists || timeline.frame.height < 30 }, "The track stayed over the expanded panel")
         }
         // Every tab in view and a full target; the panel's controls stop above the Home Indicator.
         for tab in ["styles", "font", "color", "motion"] {
