@@ -174,7 +174,7 @@ extension OverlaysViewModel {
         player.pause()
         if let existing = keyframeAtPlayhead(of: item) {
             updateKeyframes(of: item) { $0.removeAll { $0.id == existing.id } }
-            toast.show(String(localized: "Keyframe removed"))
+            sayUndoable(String(localized: "Keyframe removed"))
             return
         }
         let keyframe = keyframeHere(of: item, at: local)

@@ -121,7 +121,7 @@ final class EditDocument {
 
     /// What listening found: the part of the edit no undo step keeps.
     private static func findings(of edit: TakeEdit) -> [AnyHashable] {
-        [edit.cleanUpAnalyzed, edit.cleanUpAnalyzedSources, edit.captionTranscript, edit.sourceTranscripts]
+        [edit.cleanUpAnalyzed, edit.cleanUpAnalyzedSources, edit.cleanUpHearing, edit.captionTranscript, edit.sourceTranscripts]
     }
 
     /// A gesture, a panel's control or a sheet starts changing something, maybe many times: all of it is one undo step,
@@ -177,15 +177,16 @@ final class EditDocument {
         return true
     }
 
-    /// Goes back (or forward) to a step. Suggestions found since keep their place and take the step's decision, or wait for
-    /// review when the step didn't know them yet.
+    /// Goes back (or forward) to a step. Suggestions found since keep their place and take the step's decision (and what a
+    /// removal took out, `removedSpan`), or wait for review when the step didn't know them yet.
     private func restore(_ step: EditSnapshot) {
-        let decisions = Dictionary(step.suggestions.map { ($0.id, $0.status) }, uniquingKeysWith: { first, _ in first })
+        let decisions = Dictionary(step.suggestions.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
         var changed = edit
         changed.apply(step)
         changed.suggestions = edit.suggestions.map { suggestion in
             var restored = suggestion
-            restored.status = decisions[suggestion.id] ?? .pending
+            restored.status = decisions[suggestion.id]?.status ?? .pending
+            restored.removedSpan = decisions[suggestion.id]?.removedSpan
             return restored
         }
         edit = changed

@@ -104,10 +104,9 @@ extension QuickEditViewModel {
         case .deleteAllCaptions: captions.askToDeleteAllCaptions()
         case .findInCaptions: captions.openCaptionFind()
         case .editByText:
+            // Edit by text is Clean up's Text tab (D6): the same panel, grown for reading, never a sheet over it.
             toolMenu = nil
-            panel = nil
-            clips.transcriptSelection = nil
-            sheet = .transcript
+            clips.openCleanUp(on: .transcript)
         case .writeCaptionsByHand:
             toolMenu = nil
             captions.writeCaptionsByHand()

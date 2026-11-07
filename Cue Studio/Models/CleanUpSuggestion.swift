@@ -25,12 +25,31 @@ nonisolated struct CleanUpSuggestion: Codable, Hashable, Identifiable, Sendable 
     /// 0 to 1: how sure the detector is.
     var confidence: Double
     var status: CleanUpStatus = .pending
+    /// What a removal took out of the recording, set when it was removed: a pause's cut depends on "Gap left" at that moment,
+    /// so Put back, the Removed list and the time it saved use this, and a later change of the gap never moves it. Nil for one
+    /// removed before the gap existed (its `span`) and while it isn't removed.
+    var removedSpan: TimeSpan?
+    /// One of the tries at a line of the script (`ScriptRetakeDetector`); nil for every other suggestion.
+    var attempt: Attempt?
+
+    /// A try at a script line said more than once: which group of tries it is in, its place among them and the line.
+    struct Attempt: Codable, Hashable, Sendable {
+        /// Shared by every try at the same line.
+        var group: UUID
+        /// 1 for the first try said.
+        var number: Int
+        /// How many tries the group has.
+        var count: Int
+        /// The line of the script they all try, as written there.
+        var line: String
+    }
 
     init(
         id: UUID = UUID(), kind: CleanUpKind, span: TimeSpan, text: String? = nil, confidence: Double, status: CleanUpStatus = .pending,
-        sourceID: UUID? = nil
+        sourceID: UUID? = nil, attempt: Attempt? = nil
     ) {
         self.id = id
+        self.attempt = attempt
         self.sourceID = sourceID
         self.kind = kind
         self.span = span
@@ -62,7 +81,7 @@ nonisolated struct CleanUpSuggestion: Codable, Hashable, Identifiable, Sendable 
     // MARK: - Coding
 
     private enum CodingKeys: String, CodingKey {
-        case id, kind, span, text, confidence, status, sourceID
+        case id, kind, span, text, confidence, status, sourceID, removedSpan, attempt
         /// Before statuses: kept or not.
         case isKept
     }
@@ -75,6 +94,8 @@ nonisolated struct CleanUpSuggestion: Codable, Hashable, Identifiable, Sendable 
         text = try container.decodeIfPresent(String.self, forKey: .text)
         confidence = try container.decode(Double.self, forKey: .confidence)
         sourceID = try? container.decodeIfPresent(UUID.self, forKey: .sourceID)
+        removedSpan = try? container.decodeIfPresent(TimeSpan.self, forKey: .removedSpan)
+        attempt = try? container.decodeIfPresent(Attempt.self, forKey: .attempt)
         if let status = try container.decodeIfPresent(CleanUpStatus.self, forKey: .status) {
             self.status = status
         } else {
@@ -91,5 +112,7 @@ nonisolated struct CleanUpSuggestion: Codable, Hashable, Identifiable, Sendable 
         try container.encode(confidence, forKey: .confidence)
         try container.encode(status, forKey: .status)
         try container.encodeIfPresent(sourceID, forKey: .sourceID)
+        try container.encodeIfPresent(removedSpan, forKey: .removedSpan)
+        try container.encodeIfPresent(attempt, forKey: .attempt)
     }
 }

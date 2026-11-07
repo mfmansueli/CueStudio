@@ -68,19 +68,23 @@ final class TakeEditService: TakeEditing {
         return Double(rate)
     }
 
-    func cleanUpSuggestions(forVideoAt url: URL, language: SpeechLanguageRequest) async throws -> [CleanUpSuggestion] {
+    func cleanUpFindings(forVideoAt url: URL, language: SpeechLanguageRequest, script: String) async throws -> CleanUpFindings {
         let audio: URL
         do {
             audio = try await audioFile(for: url)
         } catch AudioTrackExtractor.ExtractError.noAudio {
             // Without sound there is nothing to find; that isn't a failure.
-            return []
+            return CleanUpFindings(suggestions: [])
         }
         let levels = try await Task.detached { try AudioLevelReader.levels(of: audio, interval: 0.05) }.value
         let silences = SilenceDetector.silences(levels: levels, interval: 0.05)
         // Without a speech model Clean Up still offers the pauses.
         let heard = try? await transcript(of: audio, language: language)
-        return CleanUpAnalyzer.suggestions(silences: silences, transcript: heard)
+        // The noise estimate (D16) sets `isInconclusive` here when the background is too loud to tell pauses from speech.
+        return CleanUpFindings(
+            suggestions: CleanUpAnalyzer.suggestions(silences: silences, transcript: heard, script: script),
+            hearing: CleanUpHearing(wordsLanguage: heard?.languageCode)
+        )
     }
 
     func captions(

@@ -14,7 +14,7 @@ import Testing
 @Suite("Undo keeps every decision")
 struct EditSnapshotCompletenessTests {
     /// What listening found: never an undo step (`QuickEditViewModel.updateFindings`).
-    static let findings: Set<String> = ["cleanUpAnalyzed", "cleanUpAnalyzedSources", "captionTranscript", "sourceTranscripts"]
+    static let findings: Set<String> = ["cleanUpAnalyzed", "cleanUpAnalyzedSources", "cleanUpHearing", "captionTranscript", "sourceTranscripts"]
 
     @Test func everyPartIsChangedHere() {
         let blank = Self.parts(of: Self.blank())

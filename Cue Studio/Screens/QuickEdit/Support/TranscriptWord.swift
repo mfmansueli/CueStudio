@@ -17,7 +17,8 @@ struct TranscriptWord: Identifiable, Hashable {
     let span: TimeSpan
     /// Its place in that recording's transcript.
     let index: Int
-    /// The clip it plays in; nil for a word that was cut.
+    /// The clip it plays in. For a word that was cut: in a montage, the clip it was cut after (where Put back brings it); nil
+    /// in the take's own edit.
     let segmentID: UUID?
     /// Edited seconds where it plays; nil for a word that was cut.
     let editedStart: TimeInterval?

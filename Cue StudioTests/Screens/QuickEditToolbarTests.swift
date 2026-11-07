@@ -187,7 +187,7 @@ struct QuickEditToolbarTests {
         // The clip stays picked: ✓ brings its tools back.
         #expect(viewModel.selection?.clipID != nil)
         viewModel.perform(.editByText)
-        #expect(viewModel.sheet == .transcript)
+        #expect(viewModel.panel == .pauses && viewModel.panelTab == .transcript)
     }
 
     /// The back button says which item the tools change: the clip's number in a montage, a photo or a video, a text's kind.

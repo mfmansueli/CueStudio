@@ -25,6 +25,13 @@ extension QuickEditViewModel {
         return panel.size
     }
 
+    /// The open panel takes all the room but the smallest preview's: a styling panel expanded, or Clean up grown (its own
+    /// height, kept apart from the styling panels').
+    var panelIsExpanded: Bool {
+        guard let panel, panel.isExpandable else { return false }
+        return panel == .pauses ? clips.cleanUpIsExpanded : stylePanelIsExpanded
+    }
+
     /// The narration's script is over the preview now: Voice-over open, a script, the switch on, the preview not full screen.
     var showsNarrationScriptOverlay: Bool {
         panel == .voiceOver && audio.showsNarrationScript && !isFullScreen && audio.offersNarrationScript

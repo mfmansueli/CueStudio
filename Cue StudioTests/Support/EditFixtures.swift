@@ -28,6 +28,8 @@ enum EditFixtures {
         edit.cleanUpAnalyzed = true
         edit.cleanUpAnalyzedSources = [source.id]
         edit.pauseThreshold = 1.2
+        edit.pauseGap = .tight
+        edit.cleanUpHearing = CleanUpHearing(wordsLanguage: "en", isInconclusive: true)
         edit.volume = 0.5
         edit.enhancesVoice = false
         edit.reducesNoise = true

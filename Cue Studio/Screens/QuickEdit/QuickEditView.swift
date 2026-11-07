@@ -101,7 +101,6 @@ struct QuickEditView: View {
             case .soundEffects: AddMusicSheet(viewModel: viewModel, effectsOnly: true)
             case .textToSpeech: TextToSpeechSheet(viewModel: viewModel)
             case .media: AddMediaSheet(viewModel: viewModel)
-            case .transcript: TranscriptEditSheet(viewModel: viewModel)
             case .findInCaptions: CaptionFindSheet(viewModel: viewModel)
             case .clipOrder: ClipOrderSheet(viewModel: viewModel, thumbnails: services.thumbnails)
             case .done:
@@ -208,6 +207,7 @@ struct QuickEditView: View {
         .onDisappear { viewModel.pauseAndKeepDraft() }
         .animation(reduceMotion ? nil : .easeOut(duration: 0.22), value: viewModel.panel)
         .animation(reduceMotion ? nil : .easeInOut(duration: 0.28), value: viewModel.stylePanelIsExpanded)
+        .animation(reduceMotion ? nil : .easeInOut(duration: 0.28), value: viewModel.clips.cleanUpIsExpanded)
         .animation(reduceMotion ? nil : .easeInOut(duration: 0.25), value: viewModel.isFullScreen)
         // A track coming or going, or every track out or away: the video gives or takes back its room smoothly.
         .animation(reduceMotion ? nil : .smooth(duration: 0.3), value: viewModel.timelineLanes)
@@ -272,7 +272,7 @@ struct QuickEditView: View {
             panel: viewModel.openPanelSize,
             panelFocusesLane: viewModel.panel?.focusedLane != nil,
             largeText: dynamicTypeSize >= .xxLarge,
-            panelIsExpanded: viewModel.stylePanelIsExpanded && viewModel.panel?.isExpandable == true,
+            panelIsExpanded: viewModel.panelIsExpanded,
             typesInHeaderField: viewModel.panel == .textStyle && viewModel.selectedText?.graphic == nil
                 && TextStylePanel.hidesControlsWhileTyping(dynamicTypeSize),
             timelineLanes: viewModel.timelineLanes, collapsesTimeline: !viewModel.tracks.isExpanded,

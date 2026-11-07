@@ -34,7 +34,7 @@ O estado de cada linha avança conforme a evidência.
 | 10.2 | Exportação que não para nem parece travada | E1 | C | Bloqueio automático só no modo "Keep Cue open", restaurado em todos os finais; etapas reais; cancelar a mixagem; limpar intermediários sem apagar o que outra operação usa |
 | 10.3 | Prévia e arquivo iguais (limitador, fontes, mídia faltando) | E1 | C | Áudio comparado no arquivo renderizado, não por gravação de tela; identidade do resultado inclui fontes e mídia |
 | 10.4 | Camadas sobre conteúdo apagado + 3 erros pontuais | E2 | C | Regras do plano §6; ver a seção 4 desta matriz |
-| 10.5 | Remover pausas revisável e natural | E3 ⏸ | C | Undo no aviso, Put back por item, respiro separado do limite, mensagens distintas; padrão de 0,7 s só muda depois de ouvir |
+| 10.5 | Remover pausas revisável e natural | E3 ⏸ · alterado no código (`e3-cleanup`) | C, testes | Undo no aviso, Put back por item, respiro separado do limite, mensagens distintas; padrão de 0,7 s só muda depois de ouvir |
 | 10.6 | Gestos previsíveis e avisos que dizem onde | E2 | C | Reverter nomeia o clipe, Undo nomeia a ação, Delete all distinto, Bloquear na prévia, toque leve não move |
 | 10.7 | Pro dito com verdade | E1 | C | 4K só Pro (decisão 06/11); quem não é Pro exporta 1080p com explicação; "última exportação grátis" no momento útil; cota antes do render; sem paywall nas ferramentas |
 | 10.8 | Um jeito de repetir o próprio estilo | E4 ⏸ | C | Sem quarto sistema; distinguir estilo, template, kit, copiar ajustes e preferências de limpeza, zoom e áudio |
@@ -46,22 +46,36 @@ O estado de cada linha avança conforme a evidência.
 | # | Proposta | Destino | Notas |
 |---|---|---|---|
 | 12.1 | Zoom nos cortes | E4 ⏸ | Opcional, intensidade ajustável, um Undo; nada em trechos muito curtos; preserva zooms manuais. Inclui `red-punch` (uma recomendação de "punch", sem tirar a transição) |
-| 12.2 | Tela única para enxugar a fala (`tighten-screen`) | E3 ⏸ | Integra pausas, hesitações e repetições com Editar pelo texto; reaproveita componentes; sem régua única de "intensidade" |
-| 12.3 | Repetições pelo roteiro (`retake-picker`) | E3 ⏸ | Sugestões incertas não viram corte; ouvir e escolher a tentativa; não presume a última; vídeos sem roteiro mantêm o fluxo atual; idiomas só anunciados com testes |
+| 12.2 | Tela única para enxugar a fala (`tighten-screen`) | E3 ⏸ · alterado no código (D6-A) | Integra pausas, hesitações e repetições com Editar pelo texto; reaproveita componentes; sem régua única de "intensidade" |
+| 12.3 | Repetições pelo roteiro (`retake-picker`) | E3 ⏸ · alterado no código, só com palavras de teste | Sugestões incertas não viram corte; ouvir e escolher a tentativa; não presume a última; vídeos sem roteiro mantêm o fluxo atual; idiomas só anunciados com testes |
 | 12.4 | Legendas posicionadas com assistência (`captions-place-themselves`, `caption-per-line-position`) | E4 ⏸ | Ajuste por trecho respeitando posições manuais; estável, sem pular |
 | 12.5 | Volume final das redes (`loudness`) | Validar (E4) | Medição apropriada, true peak no arquivo codificado; sem chamar −14 LUFS de padrão oficial; sem medidores obrigatórios (`loudness-readout` rejeitado) |
 | 12.6 | Zoom no rosto e zoom numa frase (`face-zoom-sentence`, `face-punch`) | E4 ⏸ | Só com detecção confiável; não troca de pessoa; reaproveita Follow face |
-| 12.7 | Começar na primeira palavra (`first-word`) | E3 | Com prévia e Undo, protegendo o começo da fala |
+| 12.7 | Começar na primeira palavra (`first-word`) | E3 · alterado no código (D9-A, sem o fim) | Com prévia e Undo, protegendo o começo da fala |
 | 12.8 | Ênfase automática (`auto-emphasis`) | E4 ⏸ | Opcional, poucas palavras, corrigível; não só números e nomes |
 | 12.9 | Guia das áreas seguras por botão (`safe-zones`) | E4 | Aproximação, não garantia; sem faixa permanente |
 | 12.10 | Pessoa recortada posicionável sobre foto ou vídeo (`cutout-layer`, `video-background`) | E5 ⏸ | A simulação confirmou o GAP (R4.3): a pessoa não move nem escala e o fundo não aceita vídeo |
+
+### 2.1 Estado da E3 na limpeza da fala (07/11; branch `e3-cleanup`)
+
+"Alterado no código" = feito e coberto por testes de unidade e de UI no simulador; "validado" = ouvido ou medido no iPhone. Nada desta lista está
+validado ainda.
+
+| Item | Estado | O que falta |
+|---|---|---|
+| D6-A: Clean up com Pauses · Words · Text, um painel que cresce no lugar; ✓ fecha sem aplicar | alterado no código | o dono no iPhone (SE e Pro Max, texto grande) |
+| D7-A: Removed com Put back por item, montagem movida/acelerada/copiada; Put back do Edit by text na montagem reordenada | alterado no código | conferir camadas presas (`CutFollowing`) no aparelho |
+| D8-A: Gap left Tight · Natural · Relaxed (0,12 · 0,24 · 0,40 s) | alterado no código | ouvir os três em pt, en e es, fala rápida e lenta, com ventilador |
+| D9-A modificada: Starts at "…" · Trim, margem de 0,2 s antes do som | alterado no código | ouvir se 0,2 s protege consoantes suaves |
+| §10: tentativas pelo roteiro, ouvir cada uma, escolher | alterado no código | medir em takes reais com roteiro (falsos positivos; o caso "A B … A B" não é achado) |
+| "Já faço": Undo nos toasts de Removed e Keyframe removed; mensagens de nada achado, falha, idioma sem hesitações, sala barulhenta | alterado no código | — |
 
 ## 3. Demais propostas do painel (relatório §11, rodadas 1 e 2)
 
 | Proposta | Destino | Motivo |
 |---|---|---|
 | `auto-edit-pass`, `auto-edit-review` | E5 ⏸ | Depois das bases; entrada no Smart, sem cartão obrigatório; etapas revisáveis e desligáveis sem apagar o resto |
-| `pause-defaults` | E3 (controle do respiro) + Validar (novo padrão) | O plano proíbe impor 0,4 s sem ouvir |
+| `pause-defaults` | E3 (controle do respiro: alterado no código, D8-A) + Validar (novo padrão; os três valores ainda sem escuta) | O plano proíbe impor 0,4 s sem ouvir |
 | `fillers-all` | Validar | "Remover as marcadas" já existe; idiomas além de en/pt/es só com testes |
 | `breaths`, `de-esser` | Validar (E4) | Só com benefício audível, sem piorar a voz |
 | `split-on-word` | E3 | Assistência discreta; nunca muda corte manual nem impede precisão por quadro |
@@ -165,7 +179,7 @@ Limite: numa montagem, aparar com a alça sob um texto o deixa no que sobrou; ar
 | Um arrasto de legenda move todas | E2 (alcance claro antes da mudança) |
 | Mover uma legenda na timeline sem "Check timing" | E2 |
 | Alongar uma legenda limitado pela vizinha | E4 |
-| Sala barulhenta com mensagem enganosa | E3 |
+| Sala barulhenta com mensagem enganosa | E3 · mensagem e gancho no código (`CleanUpHearing.isInconclusive`); a detecção é a D16 |
 | Template depois de um kit troca o visual calado; música sempre em 0,5; sem salvar template próprio | E4 (dentro de 10.8; salvar template = Validar) |
 | Máscara treme no tempo | E5 |
 
