@@ -15,7 +15,7 @@ import Testing
 struct EditSnapshotCompletenessTests {
     /// What listening found: never an undo step (`QuickEditViewModel.updateFindings`).
     static let findings: Set<String> = [
-        "cleanUpAnalyzed", "cleanUpAnalyzedSources", "pauseHearings", "captionTranscript", "sourceTranscripts",
+        "cleanUpAnalyzed", "cleanUpAnalyzedSources", "cleanUpHearing", "pauseHearings", "captionTranscript", "sourceTranscripts",
     ]
 
     @Test func everyPartIsChangedHere() {

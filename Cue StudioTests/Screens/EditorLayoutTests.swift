@@ -125,11 +125,16 @@ struct EditorLayoutTests {
         }
     }
 
-    @Test func onlyStylingPanelsExpand() {
+    /// Which panels expand is the panel's (`EditorPanel.isExpandable`: the styling panels and Clean up, whose Text tab needs the
+    /// room); the layout gives an expanded one, whatever its size, all but the smallest preview, and no panel is no expansion.
+    @Test @MainActor func onlyExpandablePanelsExpand() {
         let usable = Screen.iPhone16Pro.rawValue
-        for size in [EditorPanelSize.mini, .medium] {
-            #expect(EditorLayout(usableHeight: usable, panel: size, panelIsExpanded: true) == EditorLayout(usableHeight: usable, panel: size))
-        }
+        let expandable = EditorPanel.allCases.filter(\.isExpandable)
+        #expect(expandable.contains(.pauses) && expandable.contains(.textStyle) && expandable.contains(.captionStyle))
+        #expect(expandable.allSatisfy { $0.size == .full || $0 == .pauses })
+        let medium = EditorLayout(usableHeight: usable, panel: .medium, panelIsExpanded: true)
+        #expect(abs(medium.preview - EditorLayout.previewMinimum(for: usable)) < 0.01)
+        #expect(medium.panel > EditorLayout(usableHeight: usable, panel: .medium).panel)
         #expect(EditorLayout(usableHeight: usable, panelIsExpanded: true) == EditorLayout(usableHeight: usable))
     }
 

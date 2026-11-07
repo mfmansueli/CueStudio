@@ -40,8 +40,9 @@ enum EditorPanel: String, CaseIterable, Identifiable {
         }
     }
 
-    /// The styling panels can be expanded, giving their controls the room the video gives up.
-    var isExpandable: Bool { size == .full }
+    /// The styling panels can be expanded, giving their controls the room the video gives up, and so can Clean up (its Text
+    /// tab reads the whole take), in place, at its own height otherwise.
+    var isExpandable: Bool { size == .full || self == .pauses }
 
     /// The panels with many rows to scroll (the styling ones, and Background with its green screen's settings): their content stops further
     /// above the Home Indicator and fades under it while it scrolls.
@@ -111,7 +112,7 @@ enum EditorPanel: String, CaseIterable, Identifiable {
         case .clipAnimation: String(localized: "Animation")
         case .volume: String(localized: "Volume")
         case .voice: String(localized: "Studio Voice")
-        case .pauses: String(localized: "Pauses")
+        case .pauses: String(localized: "Clean up")
         case .adjust: String(localized: "Adjust")
         case .skin: EditorLookTool.skin.label
         case .filters: String(localized: "Filters")

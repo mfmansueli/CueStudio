@@ -13,6 +13,25 @@ nonisolated extension EditTimeline {
         editedSpan(forSource: suggestion.span, in: suggestion.sourceID)
     }
 
+    /// Every place the suggestions play in the edit (edited seconds): a moment of a copied clip plays twice, and removing it
+    /// takes it out of both (`remove`), so both count. In play order; overlapping ones are not joined.
+    func editedSpans(ofEvery suggestions: [CleanUpSuggestion]) -> [TimeSpan] {
+        var result: [TimeSpan] = []
+        var elapsed: TimeInterval = 0
+        for segment in segments {
+            defer { elapsed += segment.duration }
+            for suggestion in suggestions where suggestion.sourceID == segment.sourceID {
+                let from = max(segment.sourceStart, suggestion.span.start), until = min(segment.sourceEnd, suggestion.span.end)
+                guard until - from > 0.000_1 else { continue }
+                result.append(TimeSpan(
+                    start: elapsed + segment.editedOffset(forSource: from - segment.sourceStart),
+                    end: elapsed + segment.editedOffset(forSource: until - segment.sourceStart)
+                ))
+            }
+        }
+        return result
+    }
+
     func isRemoved(_ suggestion: CleanUpSuggestion) -> Bool {
         isRemoved(suggestion.span, in: suggestion.sourceID)
     }

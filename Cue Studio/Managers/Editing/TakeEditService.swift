@@ -68,7 +68,7 @@ final class TakeEditService: TakeEditing {
         return Double(rate)
     }
 
-    func cleanUpFindings(forVideoAt url: URL, language: SpeechLanguageRequest) async throws -> CleanUpFindings {
+    func cleanUpFindings(forVideoAt url: URL, language: SpeechLanguageRequest, script: String) async throws -> CleanUpFindings {
         let audio: URL
         do {
             audio = try await audioFile(for: url)
@@ -80,7 +80,7 @@ final class TakeEditService: TakeEditing {
         let pauses = SilenceDetector.pauses(levels: levels, interval: 0.05)
         // Without a speech model Clean Up still offers the pauses.
         let heard = try? await transcript(of: audio, language: language)
-        return CleanUpAnalyzer.findings(pauses: pauses, transcript: heard)
+        return CleanUpAnalyzer.findings(pauses: pauses, transcript: heard, script: script)
     }
 
     func captions(

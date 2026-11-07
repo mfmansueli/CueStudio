@@ -40,8 +40,12 @@ struct PanelFrame<Fixed: View, Content: View, Footer: View>: View {
         }
     }
 
+    /// Clean up keeps its own height; the styling panels share theirs.
     private var expansion: Binding<Bool> {
-        Binding(get: { viewModel.stylePanelIsExpanded }, set: { viewModel.stylePanelIsExpanded = $0 })
+        guard panel == .pauses else {
+            return Binding(get: { viewModel.stylePanelIsExpanded }, set: { viewModel.stylePanelIsExpanded = $0 })
+        }
+        return Binding(get: { viewModel.clips.cleanUpIsExpanded }, set: { viewModel.clips.cleanUpIsExpanded = $0 })
     }
 }
 

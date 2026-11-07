@@ -65,7 +65,7 @@ nonisolated extension FeatureID {
         case .ideas: String(localized: "Ideas for your topics")
         case .logbook: String(localized: "Logbook")
         case .voiceFollowing: String(localized: "Voice Following")
-        case .cleanUp: String(localized: "Clean Up")
+        case .cleanUp: String(localized: "Clean up")
         case .autoCaptions: String(localized: "Auto captions")
         case .captionTranslation: String(localized: "Translated captions")
         case .studioVoice: String(localized: "Studio Voice")

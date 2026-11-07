@@ -9,11 +9,13 @@ import Foundation
 /// creator's own, made in Custom's Font, Color and Motion) and Caption style (Styles, Format, Animation, Adjust: the look to
 /// pick, where the captions sit and how they are cut, how they move, and the look's details); and the split screen's (Layout,
 /// Framing, Sound, Part: where the two contents go, how each sits in its area, the two sounds, and the support's part and
-/// timing). `presets` is no panel's: the tab a panel opens on when nothing asked for one (its first, or what it shows).
+/// timing); and Clean up's (Pauses, Words, Text: the silences, the hesitations and repeats, and Edit by text with both marked
+/// in the words). `presets` is no panel's: the tab a panel opens on when nothing asked for one (its first, or what it shows).
 enum EditorPanelTab: String, CaseIterable, Identifiable {
     case presets, animated, custom, font, color, motion
     case styles, format, animation, adjust
     case layout, framing, sound, part
+    case pauses, words, transcript
 
     var id: String { rawValue }
 
@@ -22,6 +24,7 @@ enum EditorPanelTab: String, CaseIterable, Identifiable {
     static let textCustom: [EditorPanelTab] = [.font, .color, .motion]
     static let captionStyle: [EditorPanelTab] = [.styles, .format, .animation, .adjust]
     static let splitScreen: [EditorPanelTab] = [.layout, .framing, .sound, .part]
+    static let cleanUp: [EditorPanelTab] = [.pauses, .words, .transcript]
 
     var label: String {
         switch self {
@@ -42,6 +45,10 @@ enum EditorPanelTab: String, CaseIterable, Identifiable {
         case .framing: String(localized: "Framing")
         case .sound: String(localized: "Sound")
         case .part: String(inInterfaceLanguage: LocalizedStringResource("splitScreen.part", defaultValue: "Part"))
+        case .pauses: String(localized: "Pauses")
+        // Clean up's hesitations and repeats (pt "Palavras"), and its Edit by text: what was said, to read and cut (pt "Texto").
+        case .words: String(localized: "Words")
+        case .transcript: String(localized: "Text")
         }
     }
 }

@@ -2108,10 +2108,10 @@ auditoria: `reports/editor-award-checklist.md`.
   −3 dBFS).
 - **Gráficos no vídeo** (`TextOverlay.graphic`, desenhados por `CoverCompositionRenderer` como na capa): o menu de texto ganha **Arrow, Circle e
   Tag**; mover, pinçar, girar, cor e animação como um texto (`GraphicStylePanel`); "Style all" não muda gráficos.
-- **Edit by text** (`TranscriptEditSheet`, `TranscriptEditing`, menu de legendas): **Listen to the video** transcreve no aparelho (Speech, nada sai
+- **Edit by text** (Clean up › **Text**, §61; `CleanUpTextTab`, `TranscriptEditing`, menu de legendas): **Listen to the video** transcreve no aparelho (Speech, nada sai
   do iPhone); tocar uma palavra e outra escolhe o intervalo. **Cut N words from the video** corta o vídeo (com 0,05 s antes e 0,15 s depois, sem
   invadir as palavras vizinhas); **Fix caption text** muda só o texto da legenda; palavras cortadas aparecem riscadas, com **Put back**. A
-  explicação "Cut removes the words from the video. Fix caption text only changes what the caption says." fica na folha. Na fala corrida o
+  explicação "Cut removes the words from the video. Fix caption text only changes what the caption says." fica no rodapé da aba. Na fala corrida o
   reconhecedor dá a duas palavras coladas uma borda só; ao transcrever, essa borda vai para a pausa entre elas (12 dB mais baixa, até 80 ms;
   `WordBoundaries`), e o corte não leva mais a palavra vizinha (inglês lido por pessoas: 5 de 5). Quando o modelo do ditado já está no iPhone,
   ele ouve a take junto, na mesma passada, e as palavras do transcritor ficam com os tempos dele (`DictationTiming`): o transcritor começa as
@@ -2132,7 +2132,7 @@ auditoria: `reports/editor-award-checklist.md`.
   linhas próprias; segmentos (Speed) com
   mais de 3 opções vão em linhas de 3 nos tamanhos de acessibilidade; os cartões de **Filters** se alinham pelo topo e alargam com o texto (até
   96 pt). **Pauses:** cartão em duas linhas (duração e Remove/Keep; quando e o círculo de Listen, 44 pt de toque), a 8 pt do "Pauses longer than",
-  inteiro no SE; a largura deixa o próximo cartão aparecendo na borda quando há mais (`PausesPanel.cardWidth`); com texto grande o botão "Remove N
+  inteiro no SE; a largura deixa o próximo cartão aparecendo na borda quando há mais (`CleanUpCardRow.cardWidth`); com texto grande o botão "Remove N
   pauses" desce para uma linha própria. **Volume:** sem os rótulos 0%/200% (o valor fica escrito em cima), e "Mute this clip" a 8 pt do slider,
   inteiro acima do Home Indicator.
 - **Templates** (`VideoTemplate`, painel Templates: Bold hook, Tutorial, Story, Clean, Interview): legendas (tema e revelação, mantendo linhas,
@@ -2161,8 +2161,8 @@ auditoria: `reports/editor-award-checklist.md`.
 - **Efeitos sonoros seguem o momento** (`MusicClip.following`): um corte antes de um efeito o traz junto, como textos e legendas; a música fica.
   Apagar o clipe onde um efeito (ou um som extraído) foi posto o leva junto, sem amontoar no começo do próximo (relações no tempo, abaixo).
 - **Use on every cut** copia também a duração; se todos já têm, o toast diz "Every cut already has it".
-- **Edit by text numa montagem** corta só o clipe onde as palavras foram lidas (uma cópia as mantém); palavras com 44 pt; a nota diz que Undo traz
-  de volta o que foi cortado.
+- **Edit by text numa montagem** corta só o clipe onde as palavras foram lidas (uma cópia as mantém); palavras com 44 pt; as cortadas aparecem
+  riscadas depois do clipe onde tocavam e **Put back** as devolve ali (`EditTimeline.putBack`); sem lugar, o toast diz por quê.
 - **iPhone quente e espaço:** ficam na exportação da revisão (§38).
 - **Arquivos:** no lançamento, `EditStorageCleaner` apaga os sons temporários de sessões passadas, ao lado das gravações as análises
   `.cueeyes` que nada lê mais, e as mídias das edições que nenhum JSON do Cue nomeia há uma semana (`orphanedMedia`).
@@ -2712,8 +2712,8 @@ encaixe, Desfazer, rascunho automático, a grade de presets das legendas). O que
 InShot, Edits, Descript e Captions (pesquisa de 24/10: os apps põem a limpeza da fala junto das legendas ou logo depois de importar; o iMovie pergunta
 "por cima ou na sequência" a partir da agulha; o Edits deixa dúvida se o trabalho foi salvo ao sair).
 - **Cortar erros de qualquer barra:** as ferramentas do clipe (Edit, a tesoura) trazem **Clean up** e **Edit by text** no grupo do vídeo
-  inteiro, a mesma limpeza da barra principal (Clean up é a 5ª dela; §55). Pauses
-  diz o escopo: "Whole video · marked in yellow on the timeline", e o clipe continua escolhido (✓ devolve as ferramentas dele).
+  inteiro, a mesma limpeza da barra principal (Clean up é a 5ª dela; §55), o mesmo painel (§61: Clean up abre na aba Pauses, Edit by
+  text na Text). Pauses diz o escopo: "Whole video · marked in yellow on the timeline", e o clipe continua escolhido (✓ devolve as ferramentas dele).
 - **O ‹ diz o que está escolhido** (`toolbarContextName`): "Clip 2" numa montagem ("Clip" com um só), "Photo" ou "Video", o tipo do texto ("Title",
   "Subheading", "Hook", "Callout") ou do gráfico ("Arrow", "Circle", "Tag"); "Caption", "Music", "Voice-over", "Transition"; o menu aberto. O tipo
   continua sendo a identidade das ferramentas (`toolbarContextLabel`): escolher outro clipe não volta a barra para o começo.
@@ -3901,3 +3901,52 @@ take specific actions" (3.2.2(x)). O dono marca uma consulta com o App Review (M
   `surface`, `fill` e `sheetNight`; o par mais fraco é ink2 na pílula e no campo (5,0:1), "Copied" verde 5,9:1, o ganho amarelo 12,6:1; conferido
   nas fotos do iPhone 17 e do SE no maior tamanho de texto (`TEST_RUNNER_CUE_AUDIT_SIZE`).
 
+## 61. Clean up (Limpar fala; etapa 3 do plano do editor, D6–D9, 7 de novembro de 2026; decisão do dono)
+
+Um painel só (`CleanUpPanel`, `EditorPanel.pauses`, título **Clean up**, pt "Limpar fala"; `ClipsViewModel+CleanUpPanel`) com três abas,
+**Pauses · Words · Text** (pt Pausas · Palavras · Texto, `EditorPanelTab.cleanUp`). A ferramenta Pauses abre na aba Pauses; **Edit by text** (barra,
+menu de legendas, ✦ Smart) abre o mesmo painel na aba Text, já alto. As marcas (Remove/Keep) são as mesmas nas três abas e na timeline (amarelo
+vai, cinza fica); **Remove** tira tudo o que está marcado nas três; **✓ fecha sem tirar nada**, e o que só estava marcado é esquecido (reabrir volta
+ao padrão: pausas marcadas, palavras só quando o Clean up tem certeza, tentativas nunca). O painel é médio (nunca vira folha, nem no SE) e cresce no
+mesmo lugar pelo botão de expandir ou ao ir para Text (o vídeo fica no mínimo, tocando); trocar de aba não o encolhe e mantém a aba, as marcas e a
+escolha de palavras.
+
+- **Pauses** (`CleanUpPausesTab`): "Pauses longer than" (0,3 a 3 s, padrão 0,7) e **Gap left: Tight · Natural · Relaxed** (pt Respiro: Curto ·
+  Natural · Longo; 0,12 · 0,24 · 0,40 s de silêncio, metade de cada lado; Natural é o corte de antes; `PauseGap`, `TakeEdit.pauseGap`, passo de
+  Desfazer). Uma pausa só entra se sobra algo a cortar (nunca alonga uma pausa mais curta que o respiro); lista, marcas, Listen, tempo economizado e
+  corte leem a mesma regra (`CleanUpSuggestion.cut(leaving:)`). Mudar o respiro não mexe no que já foi cortado (o corte fica em `removedSpan`).
+  Depois, a **linha do começo** quando o take abre com pelo menos 0,3 s de silêncio antes da primeira palavra (`CleanUpStart`): "Starts at
+  “Today…” · 1.8s before the first word", Listen (só ao tocar; toca o novo começo) e **Trim −1.8s**, que apara até 0,2 s antes do primeiro som
+  (o silêncio vem da escuta, a palavra só pode adiantar), a partir de onde a edição começa agora, com toast "Starts at “Today” · −1.8s" e Undo.
+  Um texto, foto ou vídeo que o criador pôs nesse começo o mantém ("Kept: your text or video starts there"). Só o começo (o fim, não). Depois os
+  cartões de pausa e **Removed**: cada pausa tirada, em cada lugar onde pode voltar ("Pause · 1.2s", "00:04.1", **Put back**).
+- **Words** (`CleanUpWordsTab`): "Ums, uhs and words said twice. Tap one to keep it.", os cartões de hesitação e repetição e as **linhas do
+  roteiro ditas mais de uma vez** (`ScriptRetakeDetector`, plano §10): "Said 3 times", a linha, e cada tentativa ("Try 2 of 3") com Listen (toca
+  só ela) e **Keep this one** (marca as outras para sair); nada vem marcado e a última não é escolhida sozinha. Sem roteiro, só repetições
+  seguidas ("This take has no script…"). Avisos: palavras não ouvidas ("Cue couldn't hear the words of this take on this iPhone. Pauses still
+  work.") e idioma sem hesitações conhecidas ("Ums: English, Portuguese and Spanish. Pauses work in every language."). Removed como em Pauses.
+- **Text** (`CleanUpTextTab`, `CleanUpTextActions`): o Edit by text (§37), com as hesitações sublinhadas (amarelo quando marcadas) e cada pausa como
+  uma marca com a duração entre as palavras; tocar numa marca alterna Remove/Keep. Com palavras escolhidas, o rodapé é o delas (Cut, Fix caption
+  text, Put back); sem escolha, o Remove de sempre. Corrigir o texto da legenda continua separado de cortar o vídeo.
+- **Remove** diz o que tira: "Remove 3 pauses", "Remove hesitations", "Remove repeats", "Remove pauses and hesitations", … , "Nothing selected"
+  (texto `ink2`, não `ink3`). O tempo economizado conta cada segundo uma vez, por mais que as marcas se sobreponham, em cada lugar que toca (um
+  clipe copiado conta duas vezes, porque o corte sai dos dois). Toast "Removed 4 pauses · 4.1s" (ou "Speech cleaned up · 4.1s") **com Undo**.
+- **Put back** (`EditTimeline+PutBack`, `ClipsViewModel+PutBack`): devolve só aquele trecho, ao lado do clipe que tocava logo antes dele (ou logo
+  depois, quando o de antes saiu); um clipe movido ou com outra velocidade não impede (volta na velocidade do clipe ao lado); um clipe copiado é
+  um lugar a mais. O resto da edição, as camadas presas (`CutFollowing`) e o histórico ficam; toast "Pause put back · +1.2s" com Undo. Sem lugar, a
+  linha diz por quê e o que fazer: "Can't put back · the clips around it were deleted. Undo brings them back." ou "…it's past where the video now
+  starts or ends. Drag that edge to bring it back." Nunca devolve aproximado. Não cobre: um trecho cortado à mão (Split/Delete), que não é uma
+  sugestão; uma pausa cujos clipes dos dois lados foram apagados; um clipe com curva de velocidade volta como clipe próprio na velocidade da borda.
+- **Mensagens:** nada achado "No pauses longer than 0.7s · Your take flows." com **Try 0.5s** (some no mínimo, 0,3 s); falha "Couldn't listen to
+  this take · Nothing was changed." com Try again. Sala barulhenta (D16, `ClipsViewModel.cleanUpPauseHearing`, o caso mais cauteloso das
+  gravações tocadas): com `tooMuchBackgroundSound`, um cartão com o `title` e o `detail` de `PauseHearing` ("Too much background sound ·
+  Pauses can’t be found reliably here. Try Edit by text.") e o botão **Edit by text** (vai à aba Text), nunca "Your take flows"; com
+  `overBackgroundSound` ou `softVoice`, uma linha acima dos cartões ("Heard over background sound · Listen first · none is marked") e as pausas
+  dela listadas sem marca (`isMarkedByDefault`). "Gap left" nunca estreita as bordas de uma pausa assim (Tight vale Natural nela; Relaxed alarga).
+- **Escuta** (`TakeEditing.cleanUpFindings`): pausas pelo volume (todo idioma), palavras pelo transcritor, tentativas pelo roteiro do take; o que ela
+  soube das palavras fica em `TakeEdit.cleanUpHearing` e o que soube das pausas em `TakeEdit.pauseHearings` (os dois fora do histórico).
+- **Contraste:** só tokens de texto (`ink`, `ink2`, `accText`, `accInk` sobre `acc`, `warnText`) sobre `Palette.Editor.panelCard` e `fill`;
+  nenhum token novo.
+- **Testes:** `QuickEditCleanUpPanelTests`, `EditTimelinePutBackTests`, `PauseGapTests`, `CleanUpStartTests`, `ScriptRetakeDetectorTests`,
+  `QuickEditTranscriptEditTests` (montagem reordenada), `QuickEditPausesPanelTests`; `CleanUpUITests` (abrir por Pauses e por Edit by text, abas,
+  Remove com Undo, Put back).

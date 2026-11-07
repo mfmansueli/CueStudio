@@ -30,6 +30,11 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     var pauseHearings: [RecordingPauseHearing] = []
     /// Pauses: only silences at least this long are listed ("Pauses longer than").
     var pauseThreshold: TimeInterval = 0.7
+    /// Pauses: how much silence a removed pause leaves ("Gap left"); what was already removed keeps its own.
+    var pauseGap: PauseGap = .natural
+    /// What Clean up learned listening to the take besides its suggestions (whether its words were heard, and in what
+    /// language); nil before it listened, or for an edit saved before it was kept.
+    var cleanUpHearing: CleanUpHearing?
 
     // MARK: Audio
     /// 0 to 1.5 (150%): the take's own sound.
@@ -405,7 +410,7 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         case timeline, sources, suggestions, cleanUpAnalyzed, cleanUpAnalyzedSources, pauseHearings, volume, enhancesVoice, reducesNoise,
         audioVersion, voiceEnhancement, noiseReduction, voiceReach, evensOutVoices, music, backgrounds, exposure, contrast, warmth, filter
         case snapsToBeats, lockedLayers
-        case saturation, highlights, shadows, sharpness, filterAmount, cropFit, pauseThreshold
+        case saturation, highlights, shadows, sharpness, filterAmount, cropFit, pauseThreshold, pauseGap, cleanUpHearing
         case vibrance, tint, autoCorrection, autoAmount, lookVersion, skin, faceFollow
         case aspect, cropOffset, showsCaptions, captionStyle, captionLook, captionPreset, captionPosition, captions
         case captionTranscript, sourceTranscripts, captionLanguage, captionAnimation, captionTranslations, captionDisplay
@@ -470,6 +475,9 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         faceFollow = container.decodeLenient(FaceFollow.self, forKey: .faceFollow, report: report)
         // An "eyeContact" key that edits saved with Eye Contact (removed 22/10/2026) still hold is left unread.
         pauseThreshold = (try? container.decodeIfPresent(TimeInterval.self, forKey: .pauseThreshold)) ?? 0.7
+        // Added with "Gap left": edits saved before left the natural gap.
+        pauseGap = container.decodeChoice(PauseGap.self, forKey: .pauseGap, unknown: .natural, report: report) ?? .natural
+        cleanUpHearing = try? container.decodeIfPresent(CleanUpHearing.self, forKey: .cleanUpHearing)
         aspect = try container.decode(AspectRatio.self, forKey: .aspect)
         cropOffset = try container.decodeIfPresent(Double.self, forKey: .cropOffset) ?? 0
         showsCaptions = try container.decodeIfPresent(Bool.self, forKey: .showsCaptions) ?? false

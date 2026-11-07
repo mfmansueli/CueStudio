@@ -21,7 +21,9 @@ extension ClipsViewModel {
 
     /// Listens to each recording the edit plays the first time Clean Up opens on it (the take, then a montage's other takes
     /// and videos): loudness for pauses, the transcript (in the Voice Following language, or the script's) for filler words and
-    /// retakes. Nothing is removed. A recording that can't be listened to leaves the others' suggestions in.
+    /// retakes, and the take's script for its lines said more than once. Nothing is removed. A recording that can't be listened
+    /// to leaves the others' suggestions in. What it learned about the take's words is kept (`TakeEdit.cleanUpHearing`), and how
+    /// sure it could be of each recording's pauses (`TakeEdit.pauseHearings`, D16).
     func analyzeIfNeeded() async {
         guard isReady, analysis != .running else { return }
         let pending = edit.recordingsToCleanUp
@@ -33,18 +35,22 @@ extension ClipsViewModel {
         let urls = clipSourceURLs
         var found: [CleanUpSuggestion] = []
         var listened: [UUID?] = []
+        var hearing: CleanUpHearing?
         var hearings: [RecordingPauseHearing] = []
         var failed = false
         for source in pending {
             let file: URL? = if let source { urls[source] } else { videoURL }
             guard let url = file else { continue }
             do {
-                let heard = try await editing.cleanUpFindings(forVideoAt: url, language: speechLanguage)
+                // The take's own script finds the lines said more than once; another recording is heard without one.
+                let script = source == nil ? captionScript?.text ?? "" : ""
+                let heard = try await editing.cleanUpFindings(forVideoAt: url, language: speechLanguage, script: script)
                 found += heard.suggestions.map { suggestion in
                     var mine = suggestion
                     mine.sourceID = source
                     return mine
                 }
+                if source == nil { hearing = heard.hearing }
                 listened.append(source)
                 if heard.pauseHearing != .clear { hearings.append(RecordingPauseHearing(sourceID: source, hearing: heard.pauseHearing)) }
             } catch {
@@ -65,6 +71,7 @@ extension ClipsViewModel {
             for source in listened {
                 if let source { analyzed.cleanUpAnalyzedSources.append(source) } else { analyzed.cleanUpAnalyzed = true }
             }
+            if let hearing { analyzed.cleanUpHearing = hearing }
         }
         if failed, listened.isEmpty {
             analysis = .failed

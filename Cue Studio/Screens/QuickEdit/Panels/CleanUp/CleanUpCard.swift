@@ -5,7 +5,7 @@
 
 import SwiftUI
 
-/// A pause, filler word or possible retake in Pauses: how long and Remove or Keep on top, when and Listen under it. Tapping
+/// A pause, filler word or repeat in Clean up: how long and Remove or Keep on top, when and Listen under it. Tapping
 /// the card switches Remove and Keep; the marked one is outlined in yellow. Two lines, so the whole card shows in the panel
 /// with the length stepper above it, even on an iPhone SE.
 struct CleanUpCard: View {

@@ -15,8 +15,10 @@ protocol TakeEditing: AnyObject {
     func frameRate(ofVideoAt url: URL) async -> Double?
     /// Clean Up's findings: pauses from the take's loudness (the silence level following a loud background or a soft voice, and
     /// saying how sure it could be: `CleanUpFindings.pauseHearing`), and filler words and possible retakes from its transcript in
-    /// `language` (pauses only when no speech model can listen). None for a take without sound. Throws when the sound can't be read.
-    func cleanUpFindings(forVideoAt url: URL, language: SpeechLanguageRequest) async throws -> CleanUpFindings
+    /// `language` (pauses only when no speech model can listen), with the lines of `script` ("" for none) said more than once;
+    /// and whether the words were heard, and in what language (`CleanUpFindings.hearing`). None for a take without sound. Throws
+    /// when the sound can't be read.
+    func cleanUpFindings(forVideoAt url: URL, language: SpeechLanguageRequest, script: String) async throws -> CleanUpFindings
     /// Captions from what is said in the take, heard in `language`. The voice decides the words and
     /// when; `script` (empty for a take without one) only lends its spelling where it reliably
     /// matches. Nothing is ever spread over the take: without sound, speech or a model for the
@@ -53,11 +55,6 @@ protocol TakeEditing: AnyObject {
 }
 
 extension TakeEditing {
-    /// Clean Up's suggestions alone (`cleanUpFindings`).
-    func cleanUpSuggestions(forVideoAt url: URL, language: SpeechLanguageRequest) async throws -> [CleanUpSuggestion] {
-        try await cleanUpFindings(forVideoAt: url, language: language).suggestions
-    }
-
     /// The edited take for a take's review: the edit as it is.
     func previewItem(forVideoAt url: URL, edit: TakeEdit) async throws -> AVPlayerItem {
         try await previewItem(forVideoAt: url, edit: edit, purpose: .reviewPreview)

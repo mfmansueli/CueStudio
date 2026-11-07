@@ -28,8 +28,8 @@ final class CountingTakeEditor: TakeEditing {
         await editing.frameRate(ofVideoAt: url)
     }
 
-    func cleanUpFindings(forVideoAt url: URL, language: SpeechLanguageRequest) async throws -> CleanUpFindings {
-        try await editing.cleanUpFindings(forVideoAt: url, language: language)
+    func cleanUpFindings(forVideoAt url: URL, language: SpeechLanguageRequest, script: String) async throws -> CleanUpFindings {
+        try await editing.cleanUpFindings(forVideoAt: url, language: language, script: script)
     }
 
     func captions(

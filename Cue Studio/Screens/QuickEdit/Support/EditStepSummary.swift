@@ -45,7 +45,7 @@ nonisolated struct EditStepSummary: Equatable, Sendable {
             start: later.timeline.editedStart(ofSegmentAt: shown),
             end: later.timeline.editedStart(ofSegmentAt: shown) + after[shown].duration
         )
-        if earlier.suggestions != later.suggestions { return EditStepSummary(name: String(localized: "Clean Up"), span: span) }
+        if earlier.suggestions != later.suggestions { return EditStepSummary(name: String(localized: "Clean up"), span: span) }
         if isSplit(more: more, fewer: fewer, at: index) { return EditStepSummary(name: String(localized: "Split"), span: span) }
         let name = more.count > 1 ? String(localized: "Clip \(index + 1)") : String(localized: "The clip")
         return EditStepSummary(name: name, span: span)
@@ -157,7 +157,7 @@ nonisolated struct EditStepSummary: Equatable, Sendable {
         if before.textLook != after.textLook || before.textPreset != after.textPreset || before.creatorStyle != after.creatorStyle {
             return String(localized: "Style")
         }
-        if before.suggestions != after.suggestions { return String(localized: "Clean Up") }
+        if before.suggestions != after.suggestions { return String(localized: "Clean up") }
         return String(localized: "Edit")
     }
 }
