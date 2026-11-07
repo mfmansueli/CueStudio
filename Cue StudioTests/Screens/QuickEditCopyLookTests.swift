@@ -145,7 +145,7 @@ struct QuickEditCopyLookTests {
         // What reaches past the clip is together in the bar's last group (owner, 28/10/2026), Studio Voice too, and carries the
         // whole video's badge.
         #expect(!items.contains { $0.id == "crop" })
-        #expect(items.filter { $0.scopeBadge != nil }.map(\.id) == ["editByText", "pauses", "voice", "captions", "format", "templates", "brandKit"])
+        #expect(items.filter { $0.scopeBadge != nil }.map(\.id) == ["pauses", "editByText", "voice", "captions", "format", "templates", "brandKit"])
         #expect(items.first { $0.id == "pasteLook" }?.style == .dimmed)
         viewModel.perform(.pasteLook)
         #expect(!viewModel.look.showsPasteLook)

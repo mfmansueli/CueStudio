@@ -157,7 +157,7 @@ struct QuickEditGestureTrustTests {
         #expect(scenario.toast.message == "Redid · Split")
         viewModel.look.setAspect(.square)
         viewModel.undo()
-        #expect(scenario.toast.message == "Undid · Format")
+        #expect(scenario.toast.message == "Undid · Aspect ratio")
     }
 
     @Test func undoShowsAChangeOutOfSightAndNeverJumpsForOneInView() async throws {
