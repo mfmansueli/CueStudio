@@ -3,6 +3,7 @@
 //  Cue Studio
 //
 
+import CoreGraphics
 import Foundation
 
 /// Export options (D11): one state for this video, read by Save, Share and Done's answers alike, and shown by one component
@@ -33,9 +34,47 @@ extension TakeReviewViewModel {
         take.map(outputResolutionLabel(for:)) ?? exportQuality.label
     }
 
-    /// "1080p · captions on": what exporting `edit` is made with, for the quiet lines that open Export options.
+    /// "1080p · captions on" (or "606×1080 · captions on" when the format's crop makes the file smaller than its quality): what exporting
+    /// `edit` is made with, for the quiet lines that open Export options.
     func outputSummary(for edit: TakeEdit?) -> String {
         let captions = output(for: edit).burnsInCaptions ? String(localized: "captions on") : String(localized: "no captions")
-        return "\(effectiveQualityLabel) · \(captions)"
+        return "\(outputSizeLabel(for: edit)) · \(captions)"
+    }
+
+    // MARK: - The file's real size
+
+    /// The pixels exporting `edit` makes when they are fewer than its quality says: a landscape 1080p recording at 9:16 is 606×1080, never
+    /// enlarged to 1080×1920 (`ExportFrameSize`). Nil when the quality's name is true, or while an imported video's frame isn't read yet.
+    func reducedOutputSize(for edit: TakeEdit?) -> CGSize? {
+        guard let take, let upright = recordingFrame(of: take) else { return nil }
+        let shortSide = outputShortSide(for: take)
+        return ExportFrameSize.reducedByCrop(
+            uprightSize: upright, aspect: edit?.aspect ?? take.aspect, shortSide: shortSide,
+            nominalShortSide: shortSide ?? CGFloat(take.resolution.landscapeHeight)
+        )
+    }
+
+    /// "606×1080" when the file is smaller than its quality, else "1080p" (`effectiveQualityLabel`).
+    func outputSizeLabel(for edit: TakeEdit?) -> String {
+        reducedOutputSize(for: edit).map(ExportFrameSize.label) ?? effectiveQualityLabel
+    }
+
+    /// "This format exports at 606×1080 · never enlarged": under Quality when the file is smaller than its quality.
+    func outputSizeNote(for edit: TakeEdit?) -> String? {
+        reducedOutputSize(for: edit).map(ExportFrameSize.note)
+    }
+
+    /// Reads the recording's upright frame from its file, once.
+    func loadRecordingFrame() async {
+        guard recordingUprightSize == nil, let url = videoURL, let shape = await EditFraming.shape(of: url) else { return }
+        recordingUprightSize = shape.uprightSize
+    }
+
+    /// The frame the export crops: the file's, once read; before that a Cue recording's (always the whole portrait sensor), and nothing
+    /// for an imported video, whose shape only its file knows.
+    private func recordingFrame(of take: Take) -> CGSize? {
+        if let recordingUprightSize { return recordingUprightSize }
+        guard !take.isImported else { return nil }
+        return CGSize(width: take.resolution.landscapeHeight, height: take.resolution.landscapeWidth)
     }
 }

@@ -5,8 +5,10 @@
 
 import SwiftUI
 
-/// Crop: the format for where you post (9:16, 4:5, 1:1, 16:9) and Fill or Fit. The preview takes
-/// the new shape at once; dragging the video moves a Fill crop. Follow face moves it with the face, at a pace.
+/// Aspect ratio: the format for where you post (9:16, 4:5, 1:1, 16:9) in low tiles, Fill or Fit, and Follow face, all in view when the
+/// panel opens (F16). The preview takes the new shape at once; dragging the video moves a Fill crop. Follow face moves it with the face, at
+/// a pace, and only when the creator turns it on. Reset (the header) goes back to the video as recorded. When the format's crop leaves
+/// fewer pixels than the quality, a line says what the file will be ("This format exports at 606×1080 · never enlarged").
 struct CropPanel: View {
     @Bindable var viewModel: QuickEditViewModel
 
@@ -14,8 +16,12 @@ struct CropPanel: View {
         PanelFrame(viewModel: viewModel, panel: .crop) {
             PanelTiles(
                 options: AspectRatio.allCases.map { PanelOption($0, $0.label, systemImage: Self.symbol($0), key: $0.rawValue) },
-                selection: viewModel.edit.aspect, identifier: "edit.crop"
+                selection: viewModel.edit.aspect, isCompact: true, identifier: "edit.crop"
             ) { viewModel.look.setAspect($0) }
+            if let size = viewModel.look.exportSizeNote {
+                PanelNote(text: size)
+                    .accessibilityIdentifier("edit.crop.exportSize")
+            }
             PanelSegmented(
                 label: String(localized: "Framing"), options: CropFit.allCases.map { PanelOption($0, $0.label) },
                 selection: viewModel.edit.cropFit, identifier: "edit.crop.fit"

@@ -831,7 +831,8 @@ folha como Not now e abre os convites (§60). Pro: "PRO · UNLIMITED EXPORTS", s
 - **No Done do editor** ("Is it ready to post?", `EditorDoneSheet`), uma linha mono sob a pergunta, com as palavras e cores do medidor de Share:
   **LAST FREE EXPORT** (amarelo, `accText`) com uma sobrando, **0 OF 3 LEFT · EXPORT WITH PRO** (laranja, `warnText`) sem nenhuma. Só quando
   compartilhar ou baixar aquela edição gastaria (`TakeReviewViewModel.doneExportNote`): nada no Pro, com 2 ou mais, ou para um vídeo já contado.
-  Nenhum fluxo novo: as respostas são as mesmas e, sem exportações, Share e Download abrem "Your video is ready" como acima.
+  Nenhum fluxo novo: as respostas são as mesmas e, sem exportações, Share e Download abrem "Your video is ready" como acima. A linha discreta das
+  opções sob as respostas (§12) abre a segunda página da mesma folha, sem esses avisos: eles ficam com as respostas, num nível próprio.
 
 ## 12. Pro (11.4)
 
@@ -879,11 +880,20 @@ acima). Tudo cabe sem rolar do SE ao Pro Max (a rolagem só existe para o Dynami
   passa a 4K. Uma gravação em 4K sem o Pro diz sob a qualidade "Recorded in 4K · exports in 1080p without Pro" (`ink2` sobre `surface2`). Todo
   caminho de exportação (Save, Share, Try again, a fila, o arquivo refeito, o Download do editor) usa `TakeReviewViewModel.exportQuality`: um plano
   que acabou com 4K escolhido exporta em 1080p. A gravação, o rascunho e a edição nunca mudam; nenhuma ferramenta do editor pede o Pro.
-- **Export options, um estado e um componente** (D11, `ShareExportOptions`, `TakeReviewViewModel+ExportOptions`, `ExportOutputChoice`): as
+- **Export options, um estado e um componente** (D11, `ExportOptionsForm`, `TakeReviewViewModel+ExportOptions`, `ExportOutputChoice`): as
   mesmas opções (legendas no vídeo, idioma delas, qualidade) para Save, Share e as respostas do Done, abertas de três lugares: **Options · 1080p**
   em Share to universe, a linha discreta **"Export options · 1080p · captions on ›"** sob o rodapé de exportações da revisão (`review.exportOptions`,
-  quem salva sem passar por Share) e a mesma linha sob as quatro respostas do Done do editor (`edit.done.exportOptions`; sobre a edição que o
-  Done vai salvar). Linha em `footnote`, `ink2`, alvo de 44 pt (`ExportOptionsLine`). As legendas começam do editor (mostradas ou não, no
+  quem salva sem passar por Share), as duas numa folha própria (`ShareExportOptions`: título e o formulário), e a mesma linha sob as quatro respostas
+  do Done do editor (`edit.done.exportOptions`; sobre a edição que o Done vai salvar), que **vira a própria folha do Done para a segunda página**
+  (F19, nenhuma folha sobre outra): "‹ Export options" (`edit.done.optionsBack` volta às respostas, o VoiceOver vai ao título e de volta à linha) e
+  o formulário, só ele (os avisos de exportações grátis e de fonte ficam na página das respostas, em mono e cor; as opções em texto comum `ink2`).
+  A página desliza da direita (só esmaece com Reduzir Movimento) e a folha toma a altura da página que mostra. Linha em `footnote`, `ink2`, alvo de
+  44 pt (`ExportOptionsLine`). **Tamanho real** (erro 10, `ExportFrameSize`, a regra da própria exportação: o recorte do formato na gravação em pé,
+  reduzido à qualidade, nunca ampliado): quando o recorte do formato deixa o arquivo com menos pixels do que a qualidade diz (e do que a gravação
+  inteira teria; uma gravação menor que o nome da qualidade não é obra do recorte e não aparece aqui), a linha e "Options ·" dizem o tamanho
+  ("606×1080 · captions on", um vídeo deitado de 1080p em 9:16; "1080×606" de uma gravação do Cue em 16:9) e sob Quality aparece "This format
+  exports at 606×1080 · never enlarged" (`share.outputSize`); o "Ready to travel" diz "606×1080 · 9:16". A revisão lê a forma da gravação no
+  arquivo ao abrir; antes disso uma gravação do Cue conta como o sensor em pé inteiro e um vídeo importado não diz tamanho. As legendas começam do editor (mostradas ou não, no
   idioma que ele mostra, tradução incluída); uma escolha diferente vale só para a exportação daquela versão e diz isso sob o cartão
   ("Captions in this export only · your edit stays as it is", "No captions in this export · your edit keeps them", "Caption language for this
   export only · your edit keeps its own"); a edição salva nunca muda. Se o editor muda as legendas dele, a exportação volta a partir dele. A
@@ -2123,7 +2133,9 @@ auditoria: `reports/editor-award-checklist.md`.
 - **Texto grande** (tamanhos de acessibilidade, conferido no iPhone SE em AX L): blocos de opção em 3 colunas, subtítulo do painel em até 2 linhas;
   no Cover Studio, "Next" sem o nome da etapa, "Video" no lugar de "Frame from video" e a barra de etapas só com ícones. Na linha de cima das
   legendas, quando não cabe numa linha (SE, texto grande): a chave e Style em cima, idioma e tradução embaixo; no cartão da linha, More desce
-  para baixo de ‹ 3/12 ›. "Is it ready to post?" rola quando passa da altura da tela (começa pelo "EDIT SAVED"). O título "Cover" do Cover
+  para baixo de ‹ 3/12 ›. "Is it ready to post?" rola quando passa da altura da tela (começa pelo "EDIT SAVED"); nos tamanhos de acessibilidade
+  cada resposta dá a largura inteira ao título e ao detalhe (quebram entre palavras) e o selo (SHARED, IN PHOTOS…) desce para baixo deles, com
+  altura que cresce com o texto (F17: ao lado, o selo deixava "Download" uma letra por linha). O título "Cover" do Cover
   Studio só aparece quando cabe inteiro (no SE, não).
 - **Painéis com texto grande e em telas estreitas** (`EditorLayout.largeTextPanelGrowth`, controles de `Panels/Controls`): de xxLarge para cima um
   painel mini ou médio cresce até 1,5× a sua altura e o vídeo cede até o mínimo (régua e trilha do vídeo ficam); os painéis de estilo não mudam.
@@ -2301,13 +2313,24 @@ Prévia e exportação passam pelo mesmo compositor (`CueVideoCompositor`), ent�
   again." (nunca sai um vídeo diferente do que o criador pediu). Os painéis dizem quanto falta: "Finding your face · 40%", "Measuring the shake · 40%", "Waiting for the
   iPhone to cool down · 40%", "Goes on when Cue is open · 40%", "This video couldn’t be read"; com o painel fechado, a mesma frase fica sobre o pé da
   prévia (`MotionPendingPill`), porque até lá o clipe toca como gravado.
-- **Format › Follow face** (`TakeEdit.faceFollow`, `FaceFollow`, `FollowPace`, `FaceFollowPath`): com Fill e um formato que corta (4:5, 1:1 ou 16:9 de
-  uma gravação 9:16; numa montagem, qualquer um), o recorte acompanha o rosto como um operador de câmera: fica parado enquanto o rosto anda numa
+- **Aspect ratio** (`CropPanel`, F16, dono 07/11/2026): os quatro formatos em blocos baixos (44 pt, o ícone ao lado do nome; empilhados de novo
+  quando o nome não cabe ao lado, nos maiores tamanhos de texto; `PanelTiles(isCompact:)`), Framing Fill · Fit e Follow face à vista ao abrir.
+  **Reset** no cabeçalho (`LookViewModel+Format`) aparece quando o formato difere de como o vídeo começou e volta à proporção da gravação
+  (`Take.aspect`), Fill, sem deslocamento e Follow face desligado, num passo de desfazer. Quando o recorte deixa menos pixels que a qualidade, uma
+  linha sob os blocos diz o arquivo de verdade: **"This format exports at 606×1080 · never enlarged"** (um vídeo deitado de 1080p em 9:16;
+  `ExportFrameSize`, a mesma regra da exportação, pela qualidade e o Pro da revisão de onde o editor abriu; sem revisão, nada).
+- **Format › Follow face** (`TakeEdit.faceFollow`, `FaceFollow`, `FollowPace`, `FaceFollowPath`): com Fill e um formato que corta (qualquer um que não
+  seja o da gravação; numa montagem, qualquer um), o recorte acompanha o rosto como um operador de câmera: fica parado enquanto o rosto anda numa
   zona calma, vai atrás quando ele sai, nunca mais rápido que o ritmo, começa e para suave (caminho suavizado nos dois sentidos, sem atraso), com
   os olhos um pouco acima do meio e sem sair da gravação. **Pace:** Calm · Natural · Quick. Segue o rosto mais próximo do que vinha seguindo (o
-  maior no começo); sem rosto, a cabeça do corpo. Arrastar o vídeo desliga ("Follow face is off · You moved the frame"). Sem espaço: "Pick 4:5,
-  1:1 or 16:9 to follow your face"; com Fit: "Follow face works with Fill"; sem rosto: "No face found in this video". A capa feita de um quadro
-  usa o recorte daquele momento. Um passo de desfazer (`EditLook`). O painel Format passou a `.medium`.
+  maior no começo); sem rosto, a cabeça do corpo. **Só liga pelo botão** (dono, 07/11/2026): escolher um formato, também de um vídeo deitado para
+  vertical, nunca o liga. Arrastar o vídeo desliga ("Follow face is off · You moved the frame"). Sem espaço, a nota oferece os formatos com espaço
+  para aquela gravação, nunca o escolhido ("Pick 4:5, 1:1, or 16:9 to follow your face" numa 9:16, "Pick 9:16, 4:5, or 1:1 …" numa 16:9;
+  `LookViewModel.formatsWithRoom`); com Fit: "Follow face works with Fill". Ligado e com a análise pronta, o que ele não garante naquele vídeo
+  (`FaceFollowLimit`, pelos rostos de cada momento; a confiança do Vision não fica na análise, um rosto abaixo de 0,5 nem é guardado): sem
+  ninguém, "No face found in this video"; dois rostos ou mais em 25% dos momentos com alguém, "More than one face in this video · the frame follows
+  one"; alguém em menos de 60% dos momentos, "Your face is found in part of the video · the frame holds still where it’s lost". Nenhuma nota muda o
+  enquadramento. A capa feita de um quadro usa o recorte daquele momento. Um passo de desfazer (`EditLook`). O painel Format passou a `.medium`.
 - **Stabilize** (barra do clipe, entre Volume e Duplicate; `EditSegment.stabilization`, `StabilizationLevel`, `StabilizationPath`, `StabilizePanel`):
   **Off · Gentle · Standard · Strong** (suavização de 0,25 / 0,6 / 1,2 s; zoom de no máximo 5 / 9 / 14%). O caminho da câmera é suavizado nos
   dois sentidos; o zoom é o **menor** que esconde as bordas em 9 de cada 10 quadros; onde a câmera mexe mais (uma panorâmica), o caminho é mantido

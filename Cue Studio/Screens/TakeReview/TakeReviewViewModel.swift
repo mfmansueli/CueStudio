@@ -112,6 +112,9 @@ final class TakeReviewViewModel {
     }
     /// "4K export is Cue Pro" is up: 4K was picked without Pro (Go Pro, or Keep 1080p).
     var offersFourKPro = false
+    /// The recording's upright frame in pixels, read from its file once the review opens (`loadRecordingFrame()`): what the export crops,
+    /// so Done and Export options can say "606×1080" when that is the file. Nil until read.
+    var recordingUprightSize: CGSize?
     /// Where the running export is: its stage, and how far when the stage can measure itself (nil when none runs).
     private(set) var exportProgress: ExportProgress?
     /// Whether the running export goes on if the creator leaves Cue (nil when none runs).
@@ -325,7 +328,8 @@ final class TakeReviewViewModel {
         return max(1, ((take.edit?.editedDuration ?? take.duration) * perSecond).rounded())
     }
 
-    private func outputShortSide(for take: Take) -> CGFloat? {
+    /// The short side the export scales down to (a 4K recording in 1080p); nil keeps the crop's own.
+    func outputShortSide(for take: Take) -> CGFloat? {
         take.resolution == .uhd4K && exportQuality == .hd1080 ? ExportQuality.hd1080.shortSide : nil
     }
 
@@ -825,7 +829,7 @@ final class TakeReviewViewModel {
         let fontFallback = ExportedFileRecord.read(at: url)?.fontFallback
         return ExportedVideo(
             operationID: operation.id, take: take, url: url,
-            formatLabel: "\(outputResolutionLabel(for: take).uppercased()) · \(take.outputAspect.label)",
+            formatLabel: "\(outputSizeLabel(for: take.edit).uppercased()) · \(take.outputAspect.label)",
             hasCaptions: burnsInCaptions && captionNotice == nil, missingCaptions: burnsInCaptions ? captionNotice : nil,
             exportsLeft: quota.exportsLeft(for: currentTier), platform: take.platform, fontFallback: fontFallback
         )
