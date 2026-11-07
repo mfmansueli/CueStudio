@@ -67,7 +67,7 @@ struct QuickEditTextStyleTests {
         let viewModel = await makeViewModel()
         _ = twoTexts(viewModel)
         viewModel.overlays.textStyleScope = .allTexts
-        #expect(viewModel.overlays.textStyleScopeLabel(.allTexts) == "All texts · 2")
+        #expect(viewModel.overlays.textStyleScopeLabel(.allTexts) == "All 2 texts")
         #expect(viewModel.panelSubtitle(.textStyle) == "All 2 texts change together")
         viewModel.overlays.restyleText(.color(.yellow))
         #expect(viewModel.edit.texts.allSatisfy { $0.color == .yellow })
@@ -83,7 +83,7 @@ struct QuickEditTextStyleTests {
         _ = twoTexts(viewModel)
         #expect(OverlaysViewModel.textStyleScopes == [.selected, .allTexts])
         #expect(viewModel.overlays.textStyleScopeLabel(.selected) == "This title")
-        #expect(viewModel.overlays.textStyleScopeLabel(.allTexts) == "All texts · 2")
+        #expect(viewModel.overlays.textStyleScopeLabel(.allTexts) == "All 2 texts")
     }
 
     @Test func noScopeChangesTheCaptions() async {
@@ -126,37 +126,60 @@ struct QuickEditTextStyleTests {
         #expect(viewModel.panelSubtitle(.textStyle) == "All 2 texts change together")
         viewModel.panelTab = .motion
         #expect(!viewModel.overlays.textStyleTabChangesLook)
-        #expect(viewModel.panelSubtitle(.textStyle) == "Motion and timing change only this text")
+        #expect(viewModel.panelSubtitle(.textStyle) == "Only this text moves")
     }
 
-    @Test func aTabFromAnotherPanelShowsWhatTheTextWearsInBothTheTabsAndTheContent() async {
+    @Test func aTabFromAnotherPanelShowsStylesInBothTheTabsAndTheContent() async {
         let viewModel = await makeViewModel()
         _ = twoTexts(viewModel)
         viewModel.panelTab = .animation
         #expect(viewModel.overlays.textStyleTab == .styles)
         #expect(viewModel.overlays.textStyleTabChangesLook)
+        // An animated style keeps the tab: Animated is a filter of Styles (canvas 2 R3).
         viewModel.overlays.pickTextPreset(.neon)
-        #expect(viewModel.overlays.textStyleTab == .animated)
+        #expect(viewModel.overlays.textStyleTab == .styles)
         viewModel.panelTab = .font
-        #expect(viewModel.overlays.textStyleTab == .custom)
-        #expect(viewModel.overlays.textCustomSection == .font)
+        #expect(viewModel.overlays.textStyleTab == .font)
         viewModel.panelTab = .motion
         #expect(viewModel.captions.captionStyleTab == .styles)
     }
 
-    @Test func customOpensOnTheSectionItLastShowed() async {
+    @Test func fourTabsOneLevelAndMotionIsTheTextsAlone() async {
         let viewModel = await makeViewModel()
         _ = twoTexts(viewModel)
-        viewModel.overlays.showTextStyleTab(.custom)
-        #expect(viewModel.panelTab == .font)
+        #expect(EditorPanelTab.textStyle == [.styles, .font, .color, .motion])
         viewModel.overlays.showTextStyleTab(.color)
-        viewModel.overlays.showTextStyleTab(.styles)
-        #expect(viewModel.overlays.textStyleTab == .styles)
-        viewModel.overlays.showTextStyleTab(.custom)
-        #expect(viewModel.overlays.textStyleTab == .custom && viewModel.overlays.textCustomSection == .color)
-        // Motion from the toolbar lands in Custom › Motion, which changes this text alone.
-        viewModel.panelTab = .motion
-        #expect(viewModel.overlays.textStyleTab == .custom && !viewModel.overlays.textStyleTabChangesLook)
+        #expect(viewModel.panelTab == .color && viewModel.overlays.textStyleTabChangesLook)
+        viewModel.overlays.showTextStyleTab(.motion)
+        #expect(viewModel.overlays.textStyleTab == .motion && !viewModel.overlays.textStyleTabChangesLook)
+    }
+
+    /// R2: "All 2 texts" lights both on the timeline; Motion from the bar keeps the scope, so Font or Color after it still reach
+    /// every text.
+    @Test func allTextsLightsThemOnTheTimelineAndMotionFromTheBarKeepsTheScope() async {
+        let viewModel = await makeViewModel()
+        let ids = twoTexts(viewModel)
+        viewModel.panel = .textStyle
+        #expect(viewModel.overlays.textStyleScopeLabel(.allTexts) == "All 2 texts")
+        #expect(viewModel.overlays.offersTextStyleScope)
+        #expect(viewModel.overlays.textsStyledTogether.isEmpty)
+        viewModel.overlays.textStyleScope = .allTexts
+        #expect(viewModel.overlays.textsStyledTogether == [ids.title, ids.subtitle])
+        #expect(viewModel.timelineInput(heightClass: .regular).alsoSelected == [ids.title, ids.subtitle])
+        viewModel.perform(.openTextAnimation)
+        #expect(viewModel.panelTab == .motion)
+        #expect(viewModel.overlays.textsStyledTogether.isEmpty, "Motion is this text's: only it is lit")
+        viewModel.overlays.showTextStyleTab(.color)
+        #expect(viewModel.overlays.textStyleScope == .allTexts)
+        #expect(viewModel.overlays.textsStyledTogether == [ids.title, ids.subtitle])
+    }
+
+    @Test func aGraphicIsNeverCountedAmongTheTextsStyledTogether() async {
+        let viewModel = await makeViewModel()
+        _ = twoTexts(viewModel)
+        viewModel.overlays.addGraphic(.arrow)
+        #expect(viewModel.overlays.textsStyledAlike.count == 2)
+        #expect(!viewModel.overlays.offersTextStyleScope, "A graphic offers a scope")
     }
 
     @Test func theExpandedPanelIsKeptBetweenTheStylingPanels() async {

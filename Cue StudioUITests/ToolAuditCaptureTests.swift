@@ -109,7 +109,9 @@ final class ToolAuditCaptureTests: XCTestCase {
         apply()
         EditorApp.tapTool(app, "templates")
         try tour("templates")
-        if tap("edit.templates.section.brand") { try tour("brand-kits") }
+        apply()
+        EditorApp.tapTool(app, "brandKit")
+        try tour("brand-kits")
         apply()
         EditorApp.tapTool(app, "editByText")
         try tour("clean-up-text")
@@ -341,12 +343,12 @@ final class ToolAuditCaptureTests: XCTestCase {
             EditorApp.tapTool(app, "text")
             if tap("edit.toolbar.title") {
                 dismissKeyboard()
-                for tab in ["custom", "color"] where tap("edit.panel.tab.\(tab)") { try capture("\(size)-text-\(tab == "custom" ? "font" : tab)") }
+                for tab in ["font", "color"] where tap("edit.panel.tab.\(tab)") { try capture("\(size)-text-\(tab)") }
                 apply()
             }
             tap("edit.toolbar.back", within: 2)
             EditorApp.tapTool(app, "captions")
-            if tap("edit.captionsStyleButton"), tap("edit.panel.tab.custom") {
+            if tap("edit.captionsStyleButton"), tap("edit.panel.tab.adjust") {
                 try captureScrolling("\(size)-caption-custom")
             }
             closeOpenPanel()
@@ -374,7 +376,7 @@ final class ToolAuditCaptureTests: XCTestCase {
             try capture("\(language)-text-menu")
             if tap("edit.toolbar.title") {
                 dismissKeyboard()
-                if tap("edit.panel.tab.custom"), tap("edit.panel.tab.motion") { try captureScrolling("\(language)-text-motion") }
+                if tap("edit.panel.tab.motion") { try captureScrolling("\(language)-text-motion") }
                 apply()
                 if tap("edit.toolbar.delete", within: 2) { try capture("\(language)-toast") }
             }

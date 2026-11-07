@@ -74,20 +74,17 @@ final class BrandLibraryUITests: XCTestCase {
         XCTAssertTrue(app.buttons["edit.brand.kit.Acme"].exists(within: 5), "The kit didn't survive reopening")
     }
 
-    /// In Portuguese the tab is "Kit de marca" (the owner's word), in Cue's own language even where the iPhone's differs, and with
-    /// the largest text it takes two lines in its segment rather than being cut.
-    func testTheBrandTabSaysKitDeMarcaInPortugueseAtTheLargestText() {
+    /// In Portuguese the panel is "Kit de marca" (the owner's word), in Cue's own language even where the iPhone's differs, with
+    /// the largest text its title whole, and it opens on its own: no tab to Templates (canvas 2 R3).
+    func testTheBrandPanelSaysKitDeMarcaInPortugueseAtTheLargestText() {
         let app = EditorApp.open(arguments: [
             "-uiTestAppLanguage", "pt", "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL",
         ])
         EditorApp.tapTool(app, "brandKit")
-        let tab = app.buttons["edit.templates.section.brand"]
-        XCTAssertTrue(tab.exists(within: 5))
-        XCTAssertEqual(tab.label, "Kit de marca")
-        XCTAssertTrue(tab.isHittable)
-        EditorApp.capture(app, "brand-tab-pt-xxxl")
-        tab.tap()
         XCTAssertTrue(app.buttons["edit.brand.newKit"].exists(within: 5))
+        XCTAssertTrue(app.staticTexts["Kit de marca"].exists, "The panel isn't called Kit de marca")
+        XCTAssertFalse(app.buttons["edit.templates.section.templates"].exists, "Templates is still a tab of the brand kits")
+        EditorApp.capture(app, "brand-panel-pt-xxxl")
     }
 }
 

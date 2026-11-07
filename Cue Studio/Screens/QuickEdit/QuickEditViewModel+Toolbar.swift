@@ -266,7 +266,8 @@ extension QuickEditViewModel {
         case .toggleKeyframe: overlays.toggleKeyframe()
         case .trackItem: overlays.trackSelectedItem()
         case .openTextAnimation:
-            overlays.textStyleScope = .selected
+            // Motion is the picked text's whatever the scope: the scope stays, so Font or Color after it still reach every text
+            // when they did before (owner, canvas 2 R2).
             panel = .textStyle
             panelTab = .motion
         default: return false

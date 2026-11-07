@@ -25,7 +25,7 @@ final class TextPresetsUITests: XCTestCase {
             field.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: current.count))
         }
         field.typeText("ola tudo bem")
-        app.buttons["edit.panel.tab.animated"].tap()
+        EditorApp.showTextTab(app, "animated")
         XCTAssertTrue(app.keyboards.firstMatch.isGone(within: 3))
     }
 
@@ -92,7 +92,7 @@ final class TextPresetsUITests: XCTestCase {
         XCTAssertTrue(app.descendants(matching: .any)["edit.textEffect.colorNote"].exists)
         EditorApp.capture(app, "text-custom-color")
         app.buttons["edit.textEffect.tone.rose"].tap()
-        app.buttons["edit.panel.tab.animated"].tap()
+        EditorApp.showTextTab(app, "animated")
         // Off again: the type stays, the effect's settings go.
         let remove = app.buttons["edit.textEffect.remove"]
         XCTAssertTrue(remove.exists(within: 3))
@@ -119,7 +119,7 @@ final class TextPresetsUITests: XCTestCase {
         XCTAssertTrue(app.descendants(matching: .any)["edit.motion.effectNote"].exists(within: 3))
         XCTAssertTrue(app.buttons["edit.panel.preview"].exists)
         EditorApp.capture(app, "text-custom-motion")
-        app.buttons["edit.panel.tab.animated"].tap()
+        EditorApp.showTextTab(app, "animated")
         XCTAssertTrue(app.buttons["edit.textEffect.motion.still"].exists(within: 3))
         XCTAssertTrue(app.buttons["edit.textEffect.motion.still"].isSelected)
         // A card that moves plays as it shows: the Motion goes, with Undo.

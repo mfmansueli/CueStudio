@@ -88,6 +88,7 @@ extension QuickEditViewModel {
         }
         if panel == .pauses { input.pauses = timelinePauses }
         input.selection = selection
+        input.alsoSelected = overlays.textsStyledTogether
         input.selectedJoin = selectedJoinID
         input.panelIsOpen = panel != nil
         input.focusedLane = panel?.focusedLane

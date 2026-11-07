@@ -100,19 +100,12 @@ final class TextStyleUITests: XCTestCase {
             XCTAssertLessThan(preview.frame.height, previewHeight - 40)
         }
         // Every tab in view and a full target; the panel's controls stop above the Home Indicator.
-        for tab in ["animated", "styles", "custom"] {
+        for tab in ["styles", "font", "color", "motion"] {
             let button = app.buttons["edit.panel.tab.\(tab)"]
             XCTAssertTrue(button.isHittable, tab)
             assertFullTarget(button, tab)
         }
-        // Custom's sections too.
-        EditorApp.showTextTab(app, "font")
-        for section in ["font", "color", "motion"] {
-            let button = app.buttons["edit.panel.tab.\(section)"]
-            XCTAssertTrue(button.isHittable, section)
-            assertFullTarget(button, section)
-        }
-        // The text's colors are in Custom › Color.
+        // The text's colors are in Color.
         EditorApp.showTextTab(app, "color")
         let swatch = app.buttons["edit.textColor.white"]
         scrollPanel(app, to: swatch)
@@ -160,26 +153,55 @@ final class TextStyleUITests: XCTestCase {
         XCTAssertEqual(size.value as? String, value)
     }
 
+    /// The scope is in the header, in the subtitle's place, beside the title (canvas 2 R2): "This title | All 2 texts". Motion is
+    /// the picked text's: the header says so, and back on a look's tab the scope is where it was left.
     func testTheScopeIsForTheLookAndMotionIsThisTextsAlone() {
         let app = EditorApp.open(demo: true)
         _ = openTextStyle(app)
-        let subtitle = app.staticTexts["edit.panel.subtitle"]
-        XCTAssertEqual(subtitle.label, "Only this title changes")
-        XCTAssertFalse(app.staticTexts["edit.style.scopeNote"].exists)
-        app.buttons["edit.style.scope.allTexts"].tap()
-        XCTAssertEqual(subtitle.label, "All 2 texts change together")
-        XCTAssertTrue(app.staticTexts["edit.style.scopeNote"].exists(within: 3))
+        let all = app.buttons["edit.style.scope.allTexts"]
+        XCTAssertEqual(all.label, "All 2 texts")
+        let panel = app.descendants(matching: .any)["edit.panel.textStyle"]
+        XCTAssertLessThan(all.frame.minY - panel.frame.minY, 110, "The scope isn't in the header")
+        XCTAssertLessThanOrEqual(all.frame.maxY, app.textFields["edit.textField"].frame.minY + 1, "The scope isn't above the words")
+        all.tap()
+        XCTAssertTrue(all.isSelected)
+        EditorApp.capture(app, "text-scope-in-header")
         // Motion is the picked text's: no scope, no captions action, and the header says so.
         EditorApp.showTextTab(app, "motion")
-        XCTAssertTrue(waitFor { subtitle.label == "Motion and timing change only this text" }, subtitle.label)
-        XCTAssertFalse(app.buttons["edit.style.scope.allTexts"].exists)
+        let subtitle = app.staticTexts["edit.panel.subtitle"]
+        XCTAssertTrue(waitFor { subtitle.exists && subtitle.label == "Only this text moves" })
+        XCTAssertFalse(all.exists)
         XCTAssertFalse(app.buttons["edit.style.copyToCaptions"].exists)
         XCTAssertTrue(app.buttons["edit.keyframe.toggle"].exists)
         // Back on a look's tab, the scope is where it was left.
         EditorApp.showTextTab(app, "color")
-        XCTAssertTrue(app.buttons["edit.style.scope.allTexts"].exists(within: 3))
-        XCTAssertTrue(app.buttons["edit.style.scope.allTexts"].isSelected)
-        XCTAssertEqual(subtitle.label, "All 2 texts change together")
+        XCTAssertTrue(all.exists(within: 3))
+        XCTAssertTrue(all.isSelected)
+    }
+
+    /// Four tabs and nothing under them but the tab's own (canvas 2 R3 and F3): Animated is a filter of Styles, its settings
+    /// right under its cards, and a card's ••• sits clear of the sample.
+    func testFourTabsAndAnimatedIsAFilterOfStyles() {
+        let app = EditorApp.open(demo: true)
+        _ = openTextStyle(app)
+        for id in ["styles", "font", "color", "motion"] {
+            XCTAssertTrue(app.buttons["edit.panel.tab.\(id)"].exists, id)
+        }
+        XCTAssertFalse(app.buttons["edit.panel.tab.custom"].exists)
+        XCTAssertFalse(app.buttons["edit.panel.tab.animated"].exists)
+        EditorApp.showTextTab(app, "animated")
+        let neon = app.buttons["edit.style.neon"]
+        XCTAssertTrue(neon.exists(within: 5), "No animated style under the filter")
+        XCTAssertFalse(app.buttons["edit.style.orbit"].exists, "The Animated filter shows a still style")
+        neon.tap()
+        let more = app.buttons["edit.style.neon.more"]
+        XCTAssertTrue(more.exists)
+        XCTAssertGreaterThan(more.frame.midY, neon.frame.minY + 74 - 30, "••• isn't in the picture's bottom corner")
+        EditorApp.capture(app, "text-animated-filter")
+        // The font is a tab of its own: no tab inside a tab.
+        EditorApp.showTextTab(app, "font")
+        XCTAssertTrue(app.descendants(matching: .any)["edit.textSize"].exists(within: 3))
+        XCTAssertFalse(app.buttons["edit.textFilter.animated"].exists)
     }
 
     /// Typing shows the words and the tabs over the keyboard, so the video keeps the room the controls would take; a tab puts
@@ -196,7 +218,7 @@ final class TextStyleUITests: XCTestCase {
         keyboard.waitUntilStill()
         app.buttons["edit.panel.apply"].waitUntilStill()
         let top = keyboard.frame.minY
-        for id in ["edit.panel.apply", "edit.panel.tab.styles", "edit.panel.tab.custom"] {
+        for id in ["edit.panel.apply", "edit.panel.tab.styles", "edit.panel.tab.motion"] {
             XCTAssertLessThanOrEqual(app.buttons[id].frame.maxY, top + 1, id)
         }
         XCTAssertFalse(app.buttons["edit.style.copyToCaptions"].exists)

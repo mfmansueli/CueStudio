@@ -62,7 +62,8 @@ final class SheetsKeepWorkUITests: XCTestCase {
         // A swipe down with picks doesn't throw them away.
         let grabber = app.buttons["Sheet Grabber"].firstMatch
         if grabber.exists {
-            grabber.press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.98)))
+            grabber.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+                .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.98)))
         }
         XCTAssertTrue(app.buttons["edit.mediaContinue"].exists(within: 2), "A swipe down closed the sheet with 3 picked")
         app.buttons["sheet.cancel"].firstMatch.tap()
@@ -72,8 +73,7 @@ final class SheetsKeepWorkUITests: XCTestCase {
 
     func testTextToSpeechKeepsItsTextWhenSwipedAwayAndCancelDiscardsIt() {
         app = EditorApp.open(demo: true)
-        EditorApp.tapTool(app, "audio")
-        EditorApp.tapTool(app, "textToSpeech")
+        openTextToSpeech()
         var text = textField()
         XCTAssertTrue(text.exists(within: 5), "Text to speech didn't open")
         text.tap()
@@ -87,8 +87,7 @@ final class SheetsKeepWorkUITests: XCTestCase {
             _ = text.isGone(within: 2)
         }
         XCTAssertTrue(text.isGone(within: 5), "The sheet didn't close by a swipe")
-        EditorApp.tapTool(app, "audio")
-        EditorApp.tapTool(app, "textToSpeech")
+        openTextToSpeech()
         text = textField()
         XCTAssertTrue(text.exists(within: 5))
         XCTAssertEqual(text.value as? String, "Three habits that changed my mornings.", "The text didn't come back")
@@ -96,8 +95,7 @@ final class SheetsKeepWorkUITests: XCTestCase {
         EditorApp.capture(app, "tts-draft-back")
         app.buttons["sheet.cancel"].firstMatch.tap()
         XCTAssertTrue(text.isGone(within: 5))
-        EditorApp.tapTool(app, "audio")
-        EditorApp.tapTool(app, "textToSpeech")
+        openTextToSpeech()
         text = textField()
         XCTAssertTrue(text.exists(within: 5))
         XCTAssertNotEqual(text.value as? String, "Three habits that changed my mornings.", "Cancel kept the text")
@@ -110,8 +108,11 @@ final class SheetsKeepWorkUITests: XCTestCase {
         let parts = app.segmentedControls["edit.addSoundPart"]
         XCTAssertTrue(parts.exists(within: 5), "Sound effects opened without the two parts")
         XCTAssertTrue(parts.buttons["Sound effects"].isSelected, "The bar's Sound effects didn't open its own part")
+        // Between the two parts and the effects' groups, no second "Sound effects" (the bar's button behind the sheet doesn't count).
+        let groups = app.descendants(matching: .any)["edit.effectGroup.all"]
+        XCTAssertTrue(groups.exists(within: 3))
         let named = app.staticTexts.matching(identifier: "Sound effects").allElementsBoundByIndex
-        XCTAssertTrue(named.allSatisfy { parts.frame.contains(CGPoint(x: $0.frame.midX, y: $0.frame.midY)) }, "The part's name is said twice")
+        XCTAssertFalse(named.contains { $0.frame.midY > parts.frame.maxY && $0.frame.midY < groups.frame.minY }, "The part's name is said twice")
         let sheetTop = parts.frame.minY
         XCTAssertLessThan(sheetTop, app.frame.height * 0.25, "The sheet isn't tall: its parts are at \(sheetTop)")
         EditorApp.capture(app, "sound-effects-tall")
@@ -122,6 +123,12 @@ final class SheetsKeepWorkUITests: XCTestCase {
         XCTAssertLessThan(search.frame.maxY, files.frame.minY)
         XCTAssertLessThan(files.frame.maxY, app.buttons["edit.library.play.morningNotes"].frame.minY, "Browse Files isn't before Cue's tracks")
         EditorApp.capture(app, "music-files-first")
+    }
+
+    /// Audio › Text to speech; the bar stays on Audio after the sheet closes.
+    private func openTextToSpeech() {
+        if !app.buttons["edit.toolbar.textToSpeech"].exists(within: 2) { EditorApp.tapTool(app, "audio") }
+        EditorApp.tapTool(app, "textToSpeech")
     }
 
     private func textField() -> XCUIElement {

@@ -59,16 +59,16 @@ extension QuickEditViewModel {
         case .speed, .zoom, .volume, .stabilize, .clipCrop, .clipAnimation: clipSubtitle(panel)
         case .voice: audio.voiceScopeLabel
         case .adjust, .skin, .filters, .background: look.lookSubtitle(for: panel)
-        case .pauses: String(localized: "Whole video · marked in yellow on the timeline")
-        case .crop: String(localized: "Whole video · format for where you post")
+        case .pauses: String(localized: "Whole video · marked in yellow")
+        case .crop: String(localized: "Whole video · where you post")
         case .captions, .autoCaptions, .captionStyle: captionSubtitle(panel)
         case .textStyle: textStyleSubtitle
-        case .voiceOver: String(localized: "Records from the playhead · the video plays muted")
+        case .voiceOver: String(localized: "From the playhead · video muted")
         case .beats: audio.beatsSubtitle
         case .voiceEffects: audio.voiceEffectsSubtitle
         case .media: selectedMedia?.layout == .split ? splitSubtitle : String(localized: "On top of the video")
         case .mask: maskSubtitle
-        case .motion: String(localized: "Ready-made motion, Track and keyframes")
+        case .motion: String(localized: "\(selectedMedia?.kind == .photo ? String(localized: "Photo") : String(localized: "Video")) · how it moves")
         case .blur: blurSubtitle
         case .transition: transitionSubtitle
         case .templates: templatesSubtitle
@@ -83,16 +83,16 @@ extension QuickEditViewModel {
         }
     }
 
-    /// "Video · only what's inside shows", or "· what's outside shows" when inverted.
+    /// "Video · inside shows", or "· outside shows" when inverted.
     private var maskSubtitle: String {
         let kind = selectedMedia?.kind == .photo ? String(localized: "Photo") : String(localized: "Video")
         guard let mask = selectedMedia?.mask else { return String(localized: "\(kind) · pick a shape") }
-        return mask.inverted ? String(localized: "\(kind) · what's outside shows") : String(localized: "\(kind) · only what's inside shows")
+        return mask.inverted ? String(localized: "\(kind) · outside shows") : String(localized: "\(kind) · inside shows")
     }
 
     /// "Face · 00:03.0–00:07.0" (where it first shows), or the first step's instruction.
     private var blurSubtitle: String {
-        if blur.picking != nil { return String(localized: "Tap a face in the video, or draw an area") }
+        if blur.picking != nil { return String(localized: "Tap a face, or draw an area") }
         guard let region = selectedBlur, let shown = edit.editedSpans(of: region, in: edit.timeline).first else {
             return String(localized: "Hides a face, a plate or a name")
         }
@@ -106,10 +106,10 @@ extension QuickEditViewModel {
             let from = DurationText.editor(clip?.sourceLength ?? 0)
             let to = DurationText.editor(clip?.duration ?? 0)
             return String(localized: "\(clipScope) · \(from) → \(to)")
-        case .zoom: return String(localized: "\(clipScope) · camera move while it plays")
-        case .stabilize: return String(localized: "\(clipScope) · steadies the camera’s shake")
-        case .clipCrop: return String(localized: "\(clipScope) · turn it and choose what fills the frame")
-        case .clipAnimation: return String(localized: "\(clipScope) · how it comes in and goes out")
+        case .zoom: return String(localized: "\(clipScope) · camera move")
+        case .stabilize: return String(localized: "\(clipScope) · steadies shake")
+        case .clipCrop: return String(localized: "\(clipScope) · turn and frame")
+        case .clipAnimation: return String(localized: "\(clipScope) · in and out")
         default:
             switch selection {
             case .music(let id):
@@ -126,11 +126,11 @@ extension QuickEditViewModel {
 
     private func captionSubtitle(_ panel: EditorPanel) -> String {
         switch panel {
-        case .autoCaptions: return String(localized: "Cue drafts the lines. Fix any word.")
+        case .autoCaptions: return String(localized: "Cue drafts · fix any word")
         case .captionStyle: return String(localized: "Applies to all \(captions.editedCaptionLines.count) lines")
         default:
             guard edit.showsCaptions else { return String(localized: "Hidden in the video") }
-            return String(localized: "\(captions.editedCaptionLines.count) lines · tap one to jump there")
+            return String(localized: "\(captions.editedCaptionLines.count) lines · tap one to go")
         }
     }
 
@@ -139,7 +139,7 @@ extension QuickEditViewModel {
     private var textStyleSubtitle: String {
         // A graphic (arrow, circle, tag) has its own panel and is always changed alone.
         if selectedText?.graphic != nil { return String(localized: "Only this graphic changes") }
-        guard overlays.textStyleTabChangesLook else { return String(localized: "Motion and timing change only this text") }
+        guard overlays.textStyleTabChangesLook else { return String(localized: "Only this text moves") }
         switch overlays.textStyleScope {
         case .selected, .allCaptions:
             switch selectedText?.role ?? .title {
@@ -148,7 +148,7 @@ extension QuickEditViewModel {
             case .hook: return String(localized: "Only this hook changes")
             case .callout: return String(localized: "Only this callout changes")
             }
-        case .allTexts: return String(localized: "All \(edit.texts.count) texts change together")
+        case .allTexts: return String(localized: "All \(overlays.textsStyledAlike.count) texts change together")
         }
     }
 
@@ -159,7 +159,7 @@ extension QuickEditViewModel {
 
     /// What the split screen panel's tab changes: the layout of every split screen, or this support's framing, sound or part.
     private var splitSubtitle: String {
-        if overlays.splitTab == .layout { return String(localized: "Every split screen in the video") }
+        if overlays.splitTab == .layout { return String(localized: "Every split screen") }
         if overlays.splitTab == .framing, overlays.selectedArea == .main { return String(localized: "Main video · its recording") }
         return String(localized: "This support")
     }

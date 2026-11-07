@@ -5,11 +5,11 @@
 
 import SwiftUI
 
-/// Text style › Animated, under the effect cards, for a text that wears an effect: whether it plays its way in and out
+/// Text style › Styles, under the animated cards, for a text that wears an effect: whether it plays its way in and out
 /// (Animated, which takes a Motion off the text) or keeps its finish still, its own strength (named for what it changes:
 /// Shine, Depth, Glow…), how long its way in takes and which way it goes, and Remove effect (▶ PREVIEW in the panel's
 /// header plays the text's first seconds on the video, as it will export). Only what the effect uses shows; its colors are
-/// Custom › Color's.
+/// Color tab's.
 struct TextEffectControls: View {
     let viewModel: QuickEditViewModel
     let effect: TextEffect

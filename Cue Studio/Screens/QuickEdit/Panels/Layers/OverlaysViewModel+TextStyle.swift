@@ -13,7 +13,7 @@ extension OverlaysViewModel {
     /// The scopes Text style offers.
     static let textStyleScopes: [TextStyleScope] = [.selected, .allTexts]
 
-    /// "This title", "All texts · 3".
+    /// "This title", "All 3 texts".
     func textStyleScopeLabel(_ scope: TextStyleScope) -> String {
         switch scope {
         case .selected:
@@ -23,32 +23,38 @@ extension OverlaysViewModel {
             case .hook: String(localized: "This hook")
             case .callout: String(localized: "This callout")
             }
-        case .allTexts: String(localized: "All texts · \(edit.texts.count)")
+        case .allTexts: String(localized: "All \(textsStyledAlike.count) texts")
         case .allCaptions: String(localized: "Captions")
         }
     }
 
-    /// The tab Text style shows: Animated or Styles when picked, Custom for any of its sections; opened with none of them, what
-    /// the picked text wears (Animated for an effect, else Styles). The tabs and what shows under them never disagree.
+    /// The tab Text style shows: the one picked, else Styles. The tabs and what shows under them never disagree.
     var textStyleTab: EditorPanelTab {
-        if EditorPanelTab.textCustom.contains(panelTab) { return .custom }
-        if panelTab == .animated || panelTab == .styles { return panelTab }
-        return selectedText?.effect != nil ? .animated : .styles
+        EditorPanelTab.textStyle.contains(panelTab) ? panelTab : .styles
     }
 
-    /// Custom's section on show: the one picked, or the one Custom last showed.
-    var textCustomSection: EditorPanelTab {
-        EditorPanelTab.textCustom.contains(panelTab) ? panelTab : lastTextCustomSection
-    }
-
-    /// Shows a Text style tab, or one of Custom's sections; Custom itself opens on the section it last showed.
+    /// Shows a Text style tab.
     func showTextStyleTab(_ tab: EditorPanelTab) {
-        if EditorPanelTab.textCustom.contains(tab) { lastTextCustomSection = tab }
-        panelTab = tab == .custom ? lastTextCustomSection : tab
+        panelTab = tab
     }
 
-    /// Animated, Styles, Font and Color change the look, on the scope; Motion is the picked text's.
-    var textStyleTabChangesLook: Bool { !(textStyleTab == .custom && textCustomSection == .motion) }
+    /// Styles, Font and Color change the look, on the scope; Motion is the picked text's.
+    var textStyleTabChangesLook: Bool { textStyleTab != .motion }
+
+    /// The texts a look on every text reaches: all but the graphics, which have their own panel.
+    var textsStyledAlike: [TextOverlay] { edit.texts.filter { $0.graphic == nil } }
+
+    /// The scope choice is worth showing: there is another text to style with this one.
+    var offersTextStyleScope: Bool {
+        selectedText?.graphic == nil && textsStyledAlike.count > 1
+    }
+
+    /// The texts the timeline lights as picked: every one while Text style's look changes all of them ("All 3 texts"), so what
+    /// the next change reaches is in sight (owner, canvas 2 R2); else none beyond the picked one.
+    var textsStyledTogether: Set<UUID> {
+        guard panel == .textStyle, textStyleScope == .allTexts, textStyleTabChangesLook, offersTextStyleScope else { return [] }
+        return Set(textsStyledAlike.map(\.id))
+    }
 
     /// "Type your title".
     var textFieldPlaceholder: String {

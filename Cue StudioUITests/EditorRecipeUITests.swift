@@ -209,7 +209,6 @@ extension EditorRecipeUITests {
         let field = app.textFields["edit.textField"]
         guard field.exists(within: 5) else { return "PARTIAL: Hook added, no text field" }
         type(words, into: field)
-        tapButton("edit.panel.tab.animated")
         EditorApp.showTextTab(app, "font")
         taps += 2
         let weights = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'edit.textWeight.'"))

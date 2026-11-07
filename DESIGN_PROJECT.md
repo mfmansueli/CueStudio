@@ -1600,17 +1600,20 @@ Sistema completo em `NOTIFICATIONS.md`. Na interface:
   painéis enquanto o editor está aberto (`stylePanelIsExpanded`). Altura normal de um painel `.full`: metade da tela (330–420 pt). No iPhone SE o painel é
   folha e o botão troca as duas alturas. O conteúdo para 18 pt acima do Home Indicator (`Metrics.editorStylePanelBottomClearance`) e some em degradê
   (`scrollEdgeEffectStyle(.soft)`).
-- **Abas na largura toda** (Text style: **Animated · Styles · Custom**; Caption style: Styles · Format · Animation · Adjust, §50), 44 pt, com pelo menos 16 pt entre os nomes (sem esse espaço, rolam de lado); campo e abas
+- **Abas na largura toda** (Text style: **Styles · Font · Color · Motion**, um nível só, dono, canvas 2 R3; um gráfico: **Style · Motion**; Caption style: Styles · Format · Animation · Adjust, §50), 44 pt, com pelo menos 16 pt entre os nomes (sem esse espaço, rolam de lado); campo e abas
   fixos, só o resto rola; trocar de aba volta ao topo (`contentKey`), menos Styles do Caption style, que volta onde estava (`keptOffset`). Cada
   painel volta na aba e com o Advanced como foi deixado neste vídeo (`PanelMemory`, dono, canvas 2 R7); os de um item (Volume, Text, Mask…) por
   item: outro clipe ou texto abre como foi deixado para ele, ou como o painel começa. Um caminho que pede uma aba (Animation pela barra de um
-  texto) continua abrindo nela. Em tamanhos de acessibilidade só as abas ficam fixas: o campo rola com o resto
-  e os controles da aba vêm antes de "Style applies to". Cores (`PanelSwatches`) de 34 pt, a paleta em linhas (§44), segmentos de 38 pt.
+  texto) continua abrindo nela. Em tamanhos de acessibilidade só as abas ficam fixas: o campo rola com o resto. Cores (`PanelSwatches`) de 34 pt, a paleta em linhas (§44), segmentos de 38 pt.
 - **Digitando** (teclado no campo): só cabeçalho, campo e abas sobre o teclado (`EditorLayout.typingPanelHeight`, 180 pt); o vídeo fica com o resto
   e mostra o texto mudando. Tocar numa aba guarda o teclado e mostra os controles dela (como no CapCut). Com texto grande (xxLarge ou
   mais) isso não caberia: os controles ficam e rolam sobre o teclado (`TextStylePanel.hidesControlsWhileTyping`).
 - **Os estilos do Caption style em grade** (colunas de 104 pt: três por linha no iPhone), por grupo, com filtros (§50).
-- **Text style abre na aba do que o texto veste** (efeito → Animated; senão Styles); Custom volta à seção em que estava (`lastTextCustomSection`).
+- **Text style abre em Styles** (ou na aba em que foi deixado para aquele texto, `PanelMemory`). **Styles** tem os filtros **All · Animated · Mine**
+  (`TextStyleFilter`, `edit.textFilter.*`, guardado enquanto o vídeo está aberto): em All, **Mine** (os salvos, com **Save style** no fim; some sem
+  nenhum), **Animated** (os seis, com os ajustes do escolhido logo abaixo dos cartões) e **Made by Cue** (os clássicos; Save style no fim quando não há
+  Mine). Animated era uma aba e virou filtro de Styles (dono, canvas 2 R3 e F3: são estilos prontos como os outros). Mine vazio diz "Save the look on
+  screen to use it in your next videos." com Save style.
   - **Animated:** grade (104 pt) dos seis efeitos de texto (`TextEffectKind`, `TypePreset.effectPresets`), cada cartão animando nas palavras do
     criador (`TextEffectCardSamples`; com Reduzir Movimento o cartão fica parado): **Gold metal** (metal com brilho e faíscas curtas), **Type wave**
     (letras chegam em onda), **Pop 3D** (letras com profundidade que saltam), **Neon** (tubo aceso num halo), **Editorial reveal** (palavras sobem sobre
@@ -1618,14 +1621,14 @@ Sistema completo em `NOTIFICATIONS.md`. Na interface:
     nome do que muda (Shine, Wave height, Depth, Glow, Band height, Sheen), **Duration** da entrada (só animado), **Direction** (Pop 3D: Depth
     direction, também parado) e **Remove effect** (a tipografia fica). O efeito vai nas palavras do criador, nunca inventa texto; trocar de efeito
     mantém palavras, lugar, tamanho posto à mão, giro, tempo, âncora e keyframes. Legendas e gráficos nunca levam efeito.
-  - **Styles:** Save style, os salvos e os estilos clássicos (sem efeito; escolher um tira o efeito).
-  - **Custom:** segmentado **Font · Color · Motion**. Font: **Size** e **Turn** no topo (uma linha cada, sempre à vista), depois as fontes, Import e o
-    peso. Color: as cores e Glow; com efeito, o metal (Gold) ou a cor do texto e a segunda cor, e a nota de que o efeito faz a própria luz e sombra
-    (sem fundo nem contorno). Motion: `MotionKeyframeControls`.
+  - Os clássicos não têm efeito: escolher um tira o efeito.
+  - **Font:** **Size** e **Turn** no topo (uma linha cada, sempre à vista), depois as fontes, Import e o
+    peso. **Color:** as cores e Glow; com efeito, o metal (Gold) ou a cor do texto e a segunda cor, e a nota "The effect makes its own light and
+    shadow. Pick a style without it to use a background or an outline." **Motion:** `MotionKeyframeControls`.
   - **Um jeito de entrar por vez:** o efeito animado faz o que o cartão promete. Escolher em Animated um efeito que se move, ou pôr **Animated** nele,
-    tira o Motion do texto no mesmo passo, com toast e Undo ("Gold metal on this text · Motion removed, the style moves it"). Em Custom › Motion, um
+    tira o Motion do texto no mesmo passo, com toast e Undo ("Gold metal on this text · Motion removed, the style moves it"). Em Motion, um
     texto com efeito tem **None · Effect's own · os Motions**, um marcado por vez: um Motion (ou None) deixa o efeito **parado** com o acabamento (a
-    aba Animated mostra Still); Effect's own devolve a entrada do efeito. Keyframes convivem com tudo.
+    filtro Animated mostra Still); Effect's own devolve a entrada do efeito. Keyframes convivem com tudo.
   - Prévia = exportação em qualquer instante (o mesmo `TextEffectComposer`, determinístico); Reduzir Movimento só para os cartões e a interface,
     nunca o vídeo. Letras por grafema (acento e emoji inteiros); árabe, hindi e tailandês por palavra (nunca quebra a ligação).
   - **Desenho:** cada camada de cada letra é pintada uma vez (Core Graphics, `TextEffectPainter`) e guardada na GPU; cada quadro só posiciona esses
@@ -1638,8 +1641,12 @@ Sistema completo em `NOTIFICATIONS.md`. Na interface:
   e contorno (uma caixa com sombra projeta a própria). O que precisa de espaço além da caixa vai na sangria do desenho (`Drawing.bleed`), nunca na
   caixa. Textos e estilos salvos antes leem `centered` e continuam desenhados como eram (`LegacyCaptionLookTests`); escolher um estilo hoje passa a
   desenhar do jeito novo.
-- **Escopo só do visual:** "Style applies to" **This title | All texts · N** em Animated, Styles, Font e Color ("Words, timing and motion stay with each
-  text."); em Custom › Motion: "Motion and timing change only this text".
+- **Escopo só do visual, no cabeçalho** (`TextScopeChoice`, dono, canvas 2 R2): no lugar do subtítulo, **This title | All 3 texts** em Styles, Font e
+  Color, sempre à vista e a um toque (ocupava uma linha entre as abas e os estilos); grande demais ao lado dos botões, o cabeçalho põe os botões numa
+  linha só deles. Só aparece com mais de um texto (gráficos não contam: têm painel próprio; com um texto só, o subtítulo "Only this title changes").
+  Com **All 3 texts** a timeline acende os três como escolhidos (`TimelineGeometry.Input.alsoSelected`). Em Motion o cabeçalho diz "Only this text
+  moves" e a escolha some; o alcance fica como estava, então o Motion da barra (que abre direto em Motion) não o troca e Font ou Color depois dele
+  ainda valem para todos se valiam antes. O **Style all** do menu Text continua como atalho (abre com All).
 - **Apply this style to captions** (`PanelButton` no fim de Animated, Styles, Font e Color, quando há legendas): pergunta antes (alerta: o que troca, o que fica, e
   a nova cor de destaque se a atual sumiria, `CaptionAccent.standingOut`); copia **uma vez** (`CaptionStyleCopy`), um passo de desfazer, toast "Captions use
   this style" com Undo; nada fica ligado. A cópia vira mudanças sobre o estilo (`CaptionSettings.adjustments`, `withoutCopiedLook`), desenhadas pelo
@@ -2122,7 +2129,8 @@ auditoria: `reports/editor-award-checklist.md`.
   download. Ouvir antes, adicionar na agulha; entram na faixa de música como clipes curtos (mínimo 0,5 s, mesma intensidade percebida, pico até
   −3 dBFS).
 - **Gráficos no vídeo** (`TextOverlay.graphic`, desenhados por `CoverCompositionRenderer` como na capa): o menu de texto ganha **Arrow, Circle e
-  Tag**; mover, pinçar, girar, cor e animação como um texto (`GraphicStylePanel`); "Style all" não muda gráficos.
+  Tag**; mover, pinçar, girar, cor e animação como um texto (`GraphicStylePanel`, em duas abas, dono, canvas 2 F4: **Style** com as palavras de
+  uma etiqueta fixas em cima, cor, tamanho e giro; **Motion**, o mesmo do texto); "Style all" não muda gráficos.
 - **Edit by text** (Clean up › **Text**, §61; `CleanUpTextTab`, `TranscriptEditing`, menu de legendas): **Listen to the video** transcreve no aparelho (Speech, nada sai
   do iPhone); tocar uma palavra e outra escolhe o intervalo. **Cut N words from the video** corta o vídeo (com 0,05 s antes e 0,15 s depois, sem
   invadir as palavras vizinhas); **Fix caption text** muda só o texto da legenda; palavras cortadas aparecem riscadas, com **Put back**. A
@@ -2345,7 +2353,7 @@ Prévia e exportação passam pelo mesmo compositor (`CueVideoCompositor`), ent�
   dois sentidos; o zoom é o **menor** que esconde as bordas em 9 de cada 10 quadros; onde a câmera mexe mais (uma panorâmica), o caminho é mantido
   dentro do corredor que esse zoom permite e suavizado de novo, então nunca aparece borda nem tranco. Cada quadro da gravação tem a sua
   correção, mesmo quando a edição o segura (câmera lenta, gravação de 15 ou 24 quadros por segundo). Mostra "Zoomed in 6% to hide the edges",
-  "Steady already · no zoom needed" ou "No shake found in this clip"; **Use on every clip** num passo.
+  "Steady already · no zoom needed" ou "No shake found in this clip"; **Use on all 3 clips** num passo, com Undo no aviso ("Stabilize on all 3 clips"; o número diz o que muda antes do toque, dono, canvas 2 R2).
 - **Track** (texto, gráfico ou mídia: barra do item e o painel de movimento; `ObjectTracker`, `FramePlacement`, `TrackedMotion`): o criador põe o
   item em cima do que ele deve seguir, na agulha, e toca **Track**; o Cue segue, com o Vision, o que está sob o centro do item (um quadrado de 14%
   da largura do vídeo) para a frente e para trás, enquanto o item aparece no clipe da agulha ("Tracking · 40%", Cancel). O caminho vira
@@ -2522,7 +2530,9 @@ Excluir fixo no canto da barra, o ✓ amarelo, o ‹ do contexto, as marcas no c
 dono achou a versão redesenhada pior). Comparado com CapCut, Edits e InShot (página "Referências" do canvas): 11 de 13 convenções
 iguais ou melhores; o fundo e o recorte num painel só, de propósito.
 - **Cabeçalho de painel** (`EditorPanelContainer`): título, **escopo** na linha de baixo ("Clip 2 of 3" numa montagem, "This clip" com um
-  clipe, "Whole video"), **Reset** à esquerda de ◐ e ✓ assim que algo mudou (`QuickEditViewModel+PanelReset`: Speed, Zoom, Volume, Stabilize,
+  clipe, "Whole video"), curto, numa linha, dizendo qual clipe e o que muda (dono, canvas 2 R1: "Clip 1 of 2 · camera move", "Clip 1 of 2 · only
+  this clip", "Whole video · marked in yellow", "From the playhead · video muted"); no Text style o lugar do subtítulo é a escolha do alcance
+  (`subtitleChoice`, abaixo). Botões na ordem de sempre (Reset, ◐ ou ▶ PREVIEW, expandir, ✓ amarelo por último); **Reset** à esquerda de ◐ e ✓ assim que algo mudou (`QuickEditViewModel+PanelReset`: Speed, Zoom, Volume, Stabilize,
   Crop, Animation, Transition e Studio Voice; Adjust, Skin, Filters, Background, Mask e Caption style com o seu), num passo de desfazer. Com
   alcance definido (dono, canvas 2 R5; `QuickEditViewModel+LayerReset`): **Text** (um texto) volta ao visual com que um texto do papel dele
   começa neste vídeo e sem movimento, ficando palavras, lugar, tempo e giro; **Graphic** volta à cor do tipo, 100%, sem giro e sem movimento;
@@ -2869,7 +2879,8 @@ muda, Desfazer ao excluir, estilo padrão, nem "voltar ao estilo"; nenhum mostra
   os quatro do Cue só apareceriam em All), lembrado entre vídeos (`TextStyleStoring.captionCatalogFilter`); a rolagem volta onde estava ao voltar de outra
   aba. Em All: o cartão **This video** (quando nenhum estilo é o das legendas: um ajuste, um texto copiado, um estilo de antes do catálogo), **Mine** com
   "Save style" primeiro, e os 20 por grupo. O cartão escolhido tem anel amarelo **e** ✓ (não só cor), o favorito ★, o padrão "Default" embaixo do nome; o VoiceOver
-  lê nome, o que o estilo é (`CaptionTheme.summary`), as marcas e "Selected". **•••** no canto de baixo da amostra (`ItemMoreMenu`, em todo cartão, fora
+  lê nome, o que o estilo é (`CaptionTheme.summary`), as marcas e "Selected". **•••** no canto de baixo da imagem, com a amostra desenhada acima dele, sem
+  nunca cobrir as palavras (dono, canvas 2 F3; `ItemMoreMenu`, em todo cartão, fora
   do botão do cartão: abre o menu sem escolher o estilo; dono 07/11/2026), segurar ou as ações do VoiceOver abrem o mesmo menu: Add to favorites, Use for
   new videos, Save a copy as mine e, nos do criador, Rename, Update with this look, Delete. Os estilos de texto e os looks da capa têm o mesmo •••;
   Favorites vazio diz "Tap ••• on a style to add it".
@@ -3327,8 +3338,8 @@ recusado).
   e mostram as ferramentas dele; Reverse e Freeze frame agem nele e o escolhem (Reverse diz qual, "Clip 2 reversed" ou "Clip 2 plays forward
   again" numa montagem; o quadro congelado fica escolhido, com a ponta para arrastar); Split divide na agulha; Reorder com um clipe só diz por quê. Num vídeo sem
   cortes, o clipe é o vídeo.
-- **Skin** abre o painel Skin (§20) do vídeo inteiro na barra principal e do clipe na barra do clipe; **Templates** e **Brand kit** abrem o painel
-  Templates (`TemplatesPanel`, abas Templates · Kit de marca) na aba deles.
+- **Skin** abre o painel Skin (§20) do vídeo inteiro na barra principal e do clipe na barra do clipe; **Templates** e **Brand kit** abrem cada um
+  o seu painel (`TemplatesPanel` com `templatesSection`), sem abas entre eles (dono, canvas 2 R3: as abas rolavam com o conteúdo e sumiam).
 - **Faixas:** tocar a faixa de texto, de mídia ou de áudio abre a barra dela (`EditorToolMenu`); tocar a de **legendas** ou a de **Blur area** abre
   o mesmo painel que o botão da barra principal abre (o painel de legendas; os rostos do quadro), e um segundo toque fecha (dono, 07/11/2026: uma
   porta, uma tela). No painel de legendas, **•••** no cabeçalho, antes do ✓, guarda Find and replace, Select lines, Edit by text, Add a line e Delete all (que
@@ -3440,7 +3451,7 @@ som, decisões técnicas e limites: `AUDIO_LIBRARY.md`.
   ~1,2 s). As rampas são suaves (em dB, começam 0,4 s antes da voz e voltam em 1 s; em Comes back up, 0,25 e 0,4 s). Conta como voz a fala dos
   clipes que tocam (um clipe mudo, a 0% ou cujo som foi para uma faixa não conta) e cada voice-over, gravado ou falado a partir de texto, onde ele
   realmente tem som. **◐** toca aquela música sem abaixar, a partir de um pouco antes da primeira voz sob ela (as outras músicas continuam como
-  estão); apaga ao sair do painel. **Use on all music** aparece quando outra música abaixa diferente e copia o interruptor, a profundidade e as
+  estão); apaga ao sair do painel. **Use on all 3 music clips** (com o número, canvas 2 R2) aparece quando outra música abaixa diferente e copia o interruptor, a profundidade e as
   pausas para todas (efeitos sonoros e sons extraídos ficam de fora), num passo de desfazer, "Used on all 3 music clips". Música nova entra
   com 12 dB e Stays low. Uma música de uma edição salva antes continua abaixando como sempre (a 25%, rampas de 0,25 s, só sob a fala da
   gravação) até alguém mexer num desses controles; aí passa aos novos com o que tinha (12 dB). Volume, fades, cortes e sincronia não mudam.

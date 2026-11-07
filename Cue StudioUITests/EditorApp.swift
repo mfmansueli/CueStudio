@@ -42,17 +42,16 @@ enum EditorApp {
         XCTAssertTrue(app.descendants(matching: .any)["edit.opening"].isGone(within: 5), "Opening your edit stayed", file: file, line: line)
     }
 
-    /// Shows a tab of Text style (`animated`, `styles`, `custom`) or one of Custom's sections (`font`, `color`, `motion`), Custom
-    /// first when it isn't open.
+    /// Shows a tab of Text style (`styles`, `font`, `color`, `motion`), or `animated`: Styles filtered to the six that play their
+    /// way in (a filter of Styles since canvas 2 R3).
     static func showTextTab(_ app: XCUIApplication, _ id: String, file: StaticString = #filePath, line: UInt = #line) {
-        let button = app.buttons["edit.panel.tab.\(id)"]
-        if ["font", "color", "motion"].contains(id), !button.exists {
-            let custom = app.buttons["edit.panel.tab.custom"]
-            XCTAssertTrue(custom.exists(within: 5), "Custom", file: file, line: line)
-            custom.tap()
-        }
-        XCTAssertTrue(button.exists(within: 5), id, file: file, line: line)
-        button.tap()
+        let tab = app.buttons["edit.panel.tab.\(id == "animated" ? "styles" : id)"]
+        XCTAssertTrue(tab.exists(within: 5), id, file: file, line: line)
+        tab.tap()
+        guard id == "animated" else { return }
+        let filter = app.buttons["edit.textFilter.animated"]
+        XCTAssertTrue(filter.exists(within: 5), "The Animated filter", file: file, line: line)
+        filter.tap()
     }
 
     /// Taps a toolbar tool, scrolling the toolbar to it first when it's off screen.
