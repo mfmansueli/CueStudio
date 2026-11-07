@@ -126,7 +126,7 @@ struct CaptionStylesTab: View {
     @ViewBuilder
     private func emptyNote(_ filter: CaptionCatalogFilter) -> some View {
         switch filter {
-        case .favorites: PanelNote(text: String(localized: "No favorites yet. Hold a style to add it."))
+        case .favorites: PanelNote(text: String(localized: "No favorites yet. Tap ••• on a style to add it."))
         case .mine: PanelNote(text: String(localized: "Your styles go here. Style the captions, then Save style."))
         default: EmptyView()
         }

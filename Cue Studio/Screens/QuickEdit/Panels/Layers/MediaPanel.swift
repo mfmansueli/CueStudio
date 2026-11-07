@@ -23,7 +23,7 @@ struct MediaPanel: View {
                 ) { layout in Task { await viewModel.overlays.setMediaLayout(media.id, layout) } }
                 if media.layout == .window {
                     PanelSegmented(
-                        label: String(localized: "Ratio"), options: MediaShape.allCases.map { PanelOption($0, $0.label) },
+                        label: String(localized: "Window ratio"), options: MediaShape.allCases.map { PanelOption($0, $0.label) },
                         selection: media.shape, identifier: "edit.mediaShape"
                     ) { shape in viewModel.overlays.updateMedia(media.id) { $0.shape = shape } }
                     PanelSlider(

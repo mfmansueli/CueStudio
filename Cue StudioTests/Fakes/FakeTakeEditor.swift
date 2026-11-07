@@ -97,18 +97,21 @@ final class FakeTakeEditor: TakeEditing {
 
     /// The script Clean Up was given to find the lines said more than once.
     private(set) var cleanUpGivenScript: String?
-    /// The background is too loud to tell pauses from speech (the noise estimate's outcome).
-    var cleanUpInconclusive = false
+    /// What the silence level heard in a recording, when a test says (a noisy room, D16); the others are heard clearly: `silences`.
+    var pauseDetections: [URL: PauseDetection] = [:]
 
     func cleanUpFindings(forVideoAt url: URL, language: SpeechLanguageRequest, script: String) async throws -> CleanUpFindings {
         guard !cleanUpFails, url != cleanUpFailsFor else { throw EditSourceError.noDuration }
         cleanUpVideos.append(url)
         cleanUpLanguage = language
         cleanUpGivenScript = script
-        return CleanUpFindings(
-            suggestions: CleanUpAnalyzer.suggestions(silences: silences, transcript: transcript, script: script),
-            hearing: CleanUpHearing(wordsLanguage: transcript?.languageCode, isInconclusive: cleanUpInconclusive)
-        )
+        guard let detection = pauseDetections[url] else {
+            return CleanUpFindings(
+                suggestions: CleanUpAnalyzer.suggestions(silences: silences, transcript: transcript, script: script),
+                hearing: CleanUpHearing(wordsLanguage: transcript?.languageCode)
+            )
+        }
+        return CleanUpAnalyzer.findings(pauses: detection, transcript: transcript, script: script)
     }
 
     func captions(

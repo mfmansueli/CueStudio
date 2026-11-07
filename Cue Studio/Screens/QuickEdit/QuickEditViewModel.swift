@@ -44,13 +44,11 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     /// The clip a clip panel picked when it opened with nothing picked (`EditorPanel.pinsClip`): the panel lets go of it when it
     /// closes, unless the creator picked something else meanwhile.
     @ObservationIgnored private var panelPick: EditorSelection?
-    /// A track's own toolbar (Text, Captions, Audio, Media, Blur area), opened from the main one or by tapping the track, with
-    /// nothing selected. Its track becomes the timeline's current one.
+    /// A track's own toolbar (Text, Audio, Media), opened from the main one or by tapping the track, with nothing selected. Its
+    /// track becomes the timeline's current one.
     var toolMenu: EditorToolMenu? {
         didSet {
             if let toolMenu, toolMenu != oldValue { bringTrack(toolMenu.lanes) }
-            // The Blur area bar's Compare lasts while the bar is open (its panel has its own ◐).
-            if oldValue == .blur, toolMenu != .blur, panel != .blur, blur.comparesOriginal { blur.comparesOriginal = false }
         }
     }
     /// The timeline's current track and whether every track is out (`TimelineTrackChoice`); the current one is kept for the take.
@@ -66,8 +64,8 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     var panelTab: EditorPanelTab = .presets
     /// The open panel's "Advanced" section is expanded.
     var showsAdvanced = false
-    /// ✦ Smart's tab: Tools when it opens, unless Templates or Brand kit on a toolbar asked for theirs (`openSmart(on:)`).
-    var smartSection: SmartPanelSection = .tools
+    /// The Templates panel's tab: the one its button on a bar asked for (`openTemplates(on:)`).
+    var templatesSection: TemplatesPanelSection = .templates
     /// Which whole-video tools already said, on which kind of item's bar, that they change the whole video (once each while the
     /// editor is open, `tap(_:)`).
     @ObservationIgnored var scopeNoticesSaid: [EditorToolbarContext: Set<String>] = [:]
@@ -392,8 +390,6 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         pinClip(for: next)
         showsAdvanced = false
         panelTab = .presets
-        // ✦ Smart opens on Tools next time unless a toolbar asks for another tab.
-        if previous == .smart { smartSection = .tools }
         audio.panelChanged(from: previous)
         // Auto, Compare, the recordings' analysis for Format and Stabilize, a clip's scope.
         look.panelChanged(to: next)
@@ -409,6 +405,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         captions.panelChanged(to: next)
         blur.panelChanged(to: next)
         if next != .mask { overlays.comparesWithoutMask = false }
+        if next == .textStyle { overlays.showPickedTextWhole() }
     }
 
     /// A clip panel opened with nothing picked picks the clip under the playhead, and lets go of it when it closes (or gives way

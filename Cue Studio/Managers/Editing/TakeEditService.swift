@@ -77,14 +77,10 @@ final class TakeEditService: TakeEditing {
             return CleanUpFindings(suggestions: [])
         }
         let levels = try await Task.detached { try AudioLevelReader.levels(of: audio, interval: 0.05) }.value
-        let silences = SilenceDetector.silences(levels: levels, interval: 0.05)
+        let pauses = SilenceDetector.pauses(levels: levels, interval: 0.05)
         // Without a speech model Clean Up still offers the pauses.
         let heard = try? await transcript(of: audio, language: language)
-        // The noise estimate (D16) sets `isInconclusive` here when the background is too loud to tell pauses from speech.
-        return CleanUpFindings(
-            suggestions: CleanUpAnalyzer.suggestions(silences: silences, transcript: heard, script: script),
-            hearing: CleanUpHearing(wordsLanguage: heard?.languageCode)
-        )
+        return CleanUpAnalyzer.findings(pauses: pauses, transcript: heard, script: script)
     }
 
     func captions(

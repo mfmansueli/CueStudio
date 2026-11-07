@@ -237,10 +237,7 @@ struct QuickEditGestureTrustTests {
                 CaptionCue(words: [CaptionWord(text: "two", start: 2, end: 2.4)]),
             ]
         }
-        viewModel.perform(.openMenu(.captions))
-        let deleteAll = viewModel.toolbarItems.first { $0.id == "deleteAll" }
-        #expect(deleteAll?.style == .destructiveAll && deleteAll?.isPinned == false && deleteAll?.systemImage == "xmark.bin")
-        #expect(viewModel.toolbarItems.allSatisfy { !$0.isPinned })
+        // Captions › ••• › Delete all (owner, 07/11/2026): never on a bar, so never in Delete's pinned place.
         viewModel.perform(.deleteAllCaptions)
         #expect(viewModel.captions.confirmsDeletingAll)
         #expect(viewModel.edit.captions.count == 2)

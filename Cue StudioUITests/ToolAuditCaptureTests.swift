@@ -105,15 +105,13 @@ final class ToolAuditCaptureTests: XCTestCase {
         if tap("edit.crop.4:5") || tap("edit.crop.fourByFive") { try capture("format-4x5") }
         if tap("edit.crop.followFace") { try tour("format-follow-face") }
         apply()
-        EditorApp.tapTool(app, "smart")
-        try tour("smart-tools")
-        if tap("edit.smart.section.templates") { try tour("smart-templates") }
+        EditorApp.tapTool(app, "templates")
+        try tour("templates")
+        if tap("edit.templates.section.brand") { try tour("brand-kits") }
         apply()
-        EditorApp.tapTool(app, "smart")
-        if tap("edit.smart.editByText") {
-            try tour("sheet-edit-by-text")
-            closeSheet()
-        }
+        EditorApp.tapTool(app, "editByText")
+        try tour("sheet-edit-by-text")
+        closeSheet()
         EditorApp.tapTool(app, "captions")
         try tour("captions")
         for (button, name) in [("edit.captionsLanguage", "language"), ("edit.captionsTranslateButton", "translate"), ("edit.captionMore", "line-more")]
@@ -121,7 +119,7 @@ final class ToolAuditCaptureTests: XCTestCase {
             try tour("captions-\(name)")
             tap(button, within: 1)
         }
-        if tap("edit.captionsFind") {
+        if tap("edit.captionsMore"), tap("edit.captionsFind") {
             try tour("sheet-find-replace")
             closeSheet()
         }
@@ -237,7 +235,7 @@ final class ToolAuditCaptureTests: XCTestCase {
         }
         // Find and replace, and the translation sheet, from the Captions panel.
         EditorApp.tapTool(app, "captions")
-        if tap("edit.captionsFind") {
+        if tap("edit.captionsMore"), tap("edit.captionsFind") {
             try tour("sheet-find")
             closeSheet()
         }
@@ -266,7 +264,7 @@ final class ToolAuditCaptureTests: XCTestCase {
         }
         // Auto captions before there are any: delete them all first.
         EditorApp.tapTool(app, "captions")
-        if tap("edit.captionsDeleteAll") {
+        if tap("edit.captionsMore"), tap("edit.captionsDeleteAll") {
             tap("edit.captionsDeleteAllConfirm")
             apply()
             EditorApp.tapTool(app, "captions")
@@ -317,12 +315,8 @@ final class ToolAuditCaptureTests: XCTestCase {
             tap("edit.captionsTranslateButton", within: 1)
         }
         scrollBack()
-        // Auto captions: with every line deleted (the button ends the list), Captions offers to make them.
-        var deleted = false
-        for _ in 0..<8 where !deleted {
-            deleted = tap("edit.captionsDeleteAll", within: 1)
-            if !deleted { drag(from: 0.9, to: 0.62) }
-        }
+        // Auto captions: with every line deleted (Captions › •••), Captions offers to make them.
+        let deleted = tap("edit.captionsMore") && tap("edit.captionsDeleteAll")
         if deleted {
             tap("edit.captionsDeleteAllConfirm")
             apply()
@@ -357,8 +351,8 @@ final class ToolAuditCaptureTests: XCTestCase {
             EditorApp.tapTool(app, "adjustVideo")
             try capture("\(size)-adjust")
             apply()
-            EditorApp.tapTool(app, "smart")
-            try capture("\(size)-smart")
+            EditorApp.tapTool(app, "pauses")
+            try capture("\(size)-clean-up")
             apply()
             EditorApp.tapTool(app, "cover")
             if app.buttons["cover.done"].exists(within: 8), tap("cover.step.text") {

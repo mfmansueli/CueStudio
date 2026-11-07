@@ -5,14 +5,11 @@
 
 import Foundation
 
-/// What listening to one recording gives Clean up (`TakeEditing.cleanUpFindings`): its suggestions, and what it learned on the
-/// way (`CleanUpHearing`: the words' language, or that the sound was inconclusive).
+/// What Clean up found in one recording (`TakeEditing.cleanUpFindings`): its suggestions, how sure it could be of the pauses among
+/// them (`PauseHearing`, so Pauses can tell "no long pauses" from "too much background sound to tell"), and what it learned about
+/// the words (`CleanUpHearing`: whether they were heard, and in which language).
 nonisolated struct CleanUpFindings: Hashable, Sendable {
     var suggestions: [CleanUpSuggestion]
-    var hearing: CleanUpHearing
-
-    init(suggestions: [CleanUpSuggestion], hearing: CleanUpHearing = CleanUpHearing()) {
-        self.suggestions = suggestions
-        self.hearing = hearing
-    }
+    var pauseHearing: PauseHearing = .clear
+    var hearing = CleanUpHearing()
 }

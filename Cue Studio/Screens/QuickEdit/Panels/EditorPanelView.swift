@@ -37,7 +37,7 @@ struct EditorPanelView: View {
         case .mask: MaskPanel(viewModel: viewModel)
         case .motion: MediaMotionPanel(viewModel: viewModel)
         case .blur: BlurPanel(viewModel: viewModel)
-        case .smart: SmartPanel(viewModel: viewModel)
+        case .templates: TemplatesPanel(viewModel: viewModel)
         }
     }
 }

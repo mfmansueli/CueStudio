@@ -87,6 +87,27 @@ final class ShareToUITests: XCTestCase {
         XCTAssertFalse(app.segmentedControls["share.quality"].exists)
     }
 
+    /// D11: the options say the quality the file is made in, and Save reaches the same options from the review, without Share.
+    func testOptionsNameTheQualityAndSaveReachesThemFromTheReview() {
+        let app = openShare()
+        XCTAssertTrue(app.buttons["shareFlow.options"].label.contains("Options · 1080p"))
+        app.buttons["sheet.closeButton"].tap()
+        XCTAssertTrue(app.buttons["ready.closeButton"].exists(within: 5))
+        app.buttons["ready.closeButton"].tap()
+        let line = app.buttons["review.exportOptions"]
+        XCTAssertTrue(line.exists(within: 5))
+        XCTAssertTrue(line.label.contains("1080p"))
+        line.tap()
+        let captions = app.switches["share.captionsToggle"]
+        XCTAssertTrue(captions.exists(within: 5))
+        XCTAssertTrue(element(app, "share.qualityRecorded").exists)
+        // Captions the editor doesn't show: for this export only, and said.
+        if (captions.value as? String) == "0" {
+            captions.switches.firstMatch.tap()
+            XCTAssertTrue(element(app, "share.outputDifference").exists(within: 5))
+        }
+    }
+
     func testClosingTheNetworksLeavesReadyWithItsThreeWaysOut() {
         let app = openShare()
         app.buttons["sheet.closeButton"].tap()

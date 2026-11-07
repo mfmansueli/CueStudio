@@ -7,7 +7,7 @@ import Foundation
 import PhotosUI
 import SwiftUI
 
-/// The creator's own things in the editor (`EditorPart`): the media library (in Add photo or video), brand kits (✦ Smart ›
+/// The creator's own things in the editor (`EditorPart`): the media library (in Add photo or video), brand kits (Templates ›
 /// Brand), imported fonts and the script libraries' downloaded ones (in every font picker).
 /// The library, the kits and the fonts live in their stores, outside any
 /// video; what this part puts on a video becomes the video's own (its link to a file, a copy of a style), one undo step each.

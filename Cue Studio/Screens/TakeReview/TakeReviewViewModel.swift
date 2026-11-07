@@ -77,10 +77,29 @@ final class TakeReviewViewModel {
     @ObservationIgnored var coverRetry: Task<Void, Never>?
     /// Where "#ad" goes for a sponsored video (the system pasteboard; a test swaps it).
     @ObservationIgnored var copiesCaption: (String) -> Void = { UIPasteboard.general.string = $0 }
-    var burnsInCaptions = false
+    /// What Export options picked (D11), with the editor's captions it was picked against: while the edit shows the same captions in the same
+    /// language, the pick holds for every way out (Save, Share, Done's answers); once the editor changes them, the export starts from the editor
+    /// again. Nil until the creator picks. Written by `setOutput(_:for:)` (`TakeReviewViewModel+ExportOptions`).
+    var pickedOutput: (editor: ExportOutputChoice, choice: ExportOutputChoice)?
+    /// Whether this export burns its captions in: the editor's (`output(for:)`).
+    var burnsInCaptions: Bool {
+        get { output(for: take?.edit).burnsInCaptions }
+        set {
+            var choice = output(for: take?.edit)
+            choice.burnsInCaptions = newValue
+            setOutput(choice, for: take?.edit)
+        }
+    }
     /// Which captions this export burns in: the original, a translation or both (one export per
     /// language). Starts from what the editor shows, so a translation picked there goes out without a second pick.
-    var exportCaptionDisplay: CaptionDisplay = .original
+    var exportCaptionDisplay: CaptionDisplay {
+        get { output(for: take?.edit).captionDisplay }
+        set {
+            var choice = output(for: take?.edit)
+            choice.captionDisplay = newValue
+            setOutput(choice, for: take?.edit)
+        }
+    }
     /// Why the video being exported has no captions although they were asked for.
     @ObservationIgnored private var captionNotice: String?
     /// Some of the exported video's words came out in the system's face: the message after sending it says so.
@@ -168,8 +187,6 @@ final class TakeReviewViewModel {
         self.toast = toast
         self.background = background ?? BackgroundExportRunner(scheduler: nil)
         self.freeSpace = freeSpace
-        burnsInCaptions = takes.take(id: takeID)?.edit?.showsCaptions ?? false
-        exportCaptionDisplay = takes.take(id: takeID)?.edit?.captionDisplay ?? .original
         exportStopped = preferences.stoppedExports.contains(takeID)
     }
 
@@ -312,7 +329,7 @@ final class TakeReviewViewModel {
         take.resolution == .uhd4K && exportQuality == .hd1080 ? ExportQuality.hd1080.shortSide : nil
     }
 
-    private func outputResolutionLabel(for take: Take) -> String {
+    func outputResolutionLabel(for take: Take) -> String {
         exportQuality == .uhd4K || take.resolution != .uhd4K ? take.resolution.label : exportQuality.label
     }
 
@@ -817,11 +834,6 @@ final class TakeReviewViewModel {
     /// "Ready to travel" → "Share to TikTok": the same exported file, so a video that was saved is not counted again.
     func send(_ video: ExportedVideo, to destination: ShareDestination) async {
         await export(.share(destination), continuing: video.operationID)
-    }
-
-    /// The take's caption translations, for the export's caption language.
-    var captionTranslations: [CaptionTranslation] {
-        take?.edit?.captionTranslations ?? []
     }
 
     /// Captions to burn in come from the edit; a take never captioned gets them now from its voice

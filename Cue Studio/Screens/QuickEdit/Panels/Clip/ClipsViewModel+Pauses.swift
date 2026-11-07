@@ -37,11 +37,12 @@ extension ClipsViewModel {
         cleanUpSuggestions.filter { $0.kind != .pause && $0.status != .removed && !edit.timeline.isRemoved($0) }
     }
 
-    /// Whether a suggestion is marked to go: pauses by default, words when Clean Up is sure (never a try at a script line).
+    /// Whether a suggestion is marked to go: pauses heard clearly by default, words when Clean Up is sure, never a try at a script
+    /// line; a pause heard over background sound or under a soft voice waits for the creator (`CleanUpSuggestion.isMarkedByDefault`).
     func isMarked(_ suggestion: CleanUpSuggestion) -> Bool {
         if let mark = cleanUpMarks[suggestion.id] { return mark }
         guard suggestion.status == .pending else { return false }
-        return suggestion.kind == .pause || suggestion.isSure
+        return suggestion.attempt == nil && suggestion.isMarkedByDefault
     }
 
     func toggleMark(_ id: UUID) {
@@ -182,7 +183,7 @@ extension ClipsViewModel {
 
     /// "1.2s" for a card: the silence's whole length for a pause, the word's for a word.
     func cardLength(_ suggestion: CleanUpSuggestion) -> String {
-        let length = suggestion.kind == .pause ? SilenceDetector.silenceLength(ofCut: suggestion.span) : suggestion.span.duration
+        let length = suggestion.kind == .pause ? SilenceDetector.silenceLength(of: suggestion) : suggestion.span.duration
         return DurationText.tenths(length)
     }
 

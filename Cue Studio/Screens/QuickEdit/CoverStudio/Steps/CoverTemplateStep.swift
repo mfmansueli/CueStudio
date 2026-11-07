@@ -117,22 +117,18 @@ struct CoverTemplateStep: View {
                             .padding(4)
                     }
                 }
-                .overlay(alignment: .bottom) {
-                    if isDefault {
-                        Text("Default", comment: "A style card's mark: new work starts in this style")
-                            .font(.system(.caption2, weight: .bold))
-                            .foregroundStyle(Palette.chipOn)
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 2)
-                            .background(Palette.Editor.presetCardBadge, in: Capsule())
-                            .padding(.bottom, 4)
-                    }
-                }
                 // Whole on two lines between words ("Mang tính / giáo dục"), smaller only past that (owner, 02/11/2026: no label
                 // is ever cut).
                 WholeWordsLabel(text: name, minimumScale: 0.8)
                     .font(.system(.footnote, weight: .semibold))
                     .foregroundStyle(isOn ? Palette.accText : Palette.ink)
+                if isDefault {
+                    Text("Default", comment: "A style card's mark: new work starts in this style")
+                        .font(.system(.caption2, weight: .bold))
+                        .foregroundStyle(Palette.accText)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
             .frame(width: width)
             .contentShape(Rectangle())
@@ -145,5 +141,10 @@ struct CoverTemplateStep: View {
             .compactMap { $0 }.joined(separator: ", ")))
         .accessibilityAddTraits(isOn ? [.isSelected] : [])
         .accessibilityIdentifier(identifier)
+        // ••• beside the card's button (never picks the look), on the picture's bottom corner, clear of the ★ and the check.
+        .overlay(alignment: .topTrailing) {
+            ItemMoreMenu(identifier: "\(identifier).more") { menu }
+                .padding(.top, min(height, 164) - 40)
+        }
     }
 }

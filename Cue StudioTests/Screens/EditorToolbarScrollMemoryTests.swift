@@ -42,6 +42,6 @@ struct EditorToolbarScrollMemoryTests {
         _ = memory.enter(.main)
         #expect(memory.enter(.clip) == nil)
         // A menu is its own kind too.
-        #expect(memory.enter(.menu(.captions)) == nil)
+        #expect(memory.enter(.menu(.audio)) == nil)
     }
 }

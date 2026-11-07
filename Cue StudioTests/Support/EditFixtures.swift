@@ -27,9 +27,10 @@ enum EditFixtures {
         edit.suggestions = [CleanUpSuggestion(kind: .pause, span: TimeSpan(start: 1, end: 2), confidence: 0.9)]
         edit.cleanUpAnalyzed = true
         edit.cleanUpAnalyzedSources = [source.id]
+        edit.pauseHearings = [RecordingPauseHearing(sourceID: source.id, hearing: .overBackgroundSound)]
         edit.pauseThreshold = 1.2
         edit.pauseGap = .tight
-        edit.cleanUpHearing = CleanUpHearing(wordsLanguage: "en", isInconclusive: true)
+        edit.cleanUpHearing = CleanUpHearing(wordsLanguage: "en")
         edit.volume = 0.5
         edit.enhancesVoice = false
         edit.reducesNoise = true

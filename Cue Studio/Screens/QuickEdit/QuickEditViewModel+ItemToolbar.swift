@@ -7,22 +7,22 @@ import Foundation
 
 /// A picked item's toolbar: its own tools first, as they always were (the four on screen are the ones a creator uses most on it),
 /// then, after a thin line, the editor's other tools, so any of them is reached without going back to the main bar (owner's
-/// decision, 26/10/2026): Captions, Text, Media, Audio and ✦ Smart first. A tool that changes the whole video carries the
+/// decision, 26/10/2026): Captions, Text, Media, Audio and Clean up first. A tool that changes the whole video carries the
 /// "All" badge, and none that would read as the item's own is added (no Split, Speed, Volume or Zoom of the video next to
 /// a text), nor one the item's tools already reach. Delete stays pinned at the end (`EditorToolbarItem.isPinned`).
 extension QuickEditViewModel {
     /// What a clip's bar adds after its own tools (owner, 28/10/2026): what goes on top of it, then everything that changes the
     /// whole video, together, so no "All" sits among the clip's own.
     static let clipShortcutGroups: [[EditorToolbarTool]] = [
-        [.text, .media, .audio, .smart],
-        [.editByText, .pauses, .studioVoice, .captions, .format, .templates, .brandKit, .cover],
+        [.text, .media, .audio],
+        [.pauses, .editByText, .studioVoice, .captions, .format, .templates, .brandKit, .cover],
     ]
 
     /// What every other item's bar adds: the clip under the playhead's tools first.
     static let itemShortcutGroups: [[EditorToolbarTool]] = [
         [.clip],
-        [.captions, .text, .media, .audio, .smart],
-        [.pauses, .editByText],
+        [.captions, .text, .media, .audio, .pauses],
+        [.editByText],
         [.format, .adjust, .skin, .filters, .background, .blurArea],
         [.templates, .brandKit, .cover],
     ]
@@ -71,7 +71,7 @@ extension QuickEditViewModel {
             // A spoken voice-over changes its text and says it again; a recorded one records again.
             let isSpoken = edit.voiceOvers.first { $0.id == id }?.spoken != nil
             let again = isSpoken
-                ? EditorToolbarItem(id: "editSpoken", label: String(localized: "Edit text"), systemImage: "text.bubble", action: .editSpokenText)
+                ? EditorToolbarItem(id: "editSpoken", label: String(localized: "Edit text"), systemImage: "character.cursor.ibeam", action: .editSpokenText)
                 : EditorToolbarItem(id: "reRecord", label: String(localized: "Re-record"), systemImage: "mic.badge.plus", action: .reRecordVoiceOver)
             let own = [
                 EditorToolbarItem(id: "volume", label: String(localized: "Volume"), systemImage: "speaker.wave.2", action: .open(.volume)),
@@ -106,7 +106,7 @@ extension QuickEditViewModel {
 
     private var voiceEffectsItem: EditorToolbarItem {
         EditorToolbarItem(
-            id: "voiceEffects", label: String(localized: "Voice effects"), systemImage: "waveform.badge.magnifyingglass", action: .open(.voiceEffects)
+            id: "voiceEffects", label: String(localized: "Voice effects"), systemImage: "waveform.and.person.filled", action: .open(.voiceEffects)
         )
     }
 
@@ -170,7 +170,7 @@ extension QuickEditViewModel {
     private var mainAreaItems: [EditorToolbarItem] {
         [
             EditorToolbarItem(id: "framing", label: EditorPanelTab.framing.label, systemImage: "crop", action: .openSplitTab(.framing)),
-            EditorToolbarItem(id: "swap", label: String(localized: "Swap places"), systemImage: "arrow.up.arrow.down", action: .swapSplit),
+            EditorToolbarItem(id: "swap", label: String(localized: "Swap places"), systemImage: "rectangle.2.swap", action: .swapSplit),
             EditorToolbarItem(id: "layout", label: EditorPanelTab.layout.label, systemImage: "rectangle.split.1x2", action: .openSplitTab(.layout)),
             item(.clip),
             item(.blurArea),
@@ -183,7 +183,7 @@ extension QuickEditViewModel {
         var items = [
             EditorToolbarItem(id: "layout", label: EditorPanelTab.layout.label, systemImage: "rectangle.split.1x2", action: .openSplitTab(.layout)),
             EditorToolbarItem(id: "sound", label: EditorPanelTab.sound.label, systemImage: "speaker.wave.2", action: .openSplitTab(.sound)),
-            EditorToolbarItem(id: "swap", label: String(localized: "Swap places"), systemImage: "arrow.up.arrow.down", action: .swapSplit),
+            EditorToolbarItem(id: "swap", label: String(localized: "Swap places"), systemImage: "rectangle.2.swap", action: .swapSplit),
             EditorToolbarItem(id: "replaceMedia", label: String(localized: "Replace"), systemImage: "arrow.left.arrow.right", action: .replaceMedia),
             EditorToolbarItem(id: "part", label: EditorPanelTab.part.label, systemImage: "film", action: .openSplitTab(.part)),
             EditorToolbarItem(

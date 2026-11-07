@@ -45,7 +45,7 @@ nonisolated enum CleanUpStart {
         let tolerance = 0.05
         guard let quiet = pauses
             .filter({ $0.kind == .pause && $0.sourceID == nil })
-            .map(\.silence)
+            .map(\.heardSilence)
             .first(where: { $0.start <= start + tolerance && $0.end > start }) else { return nil }
         let heard = words.sorted { $0.start < $1.start }.first { $0.end > start + tolerance }
         // Speech already under way where the edit starts: nothing to trim.

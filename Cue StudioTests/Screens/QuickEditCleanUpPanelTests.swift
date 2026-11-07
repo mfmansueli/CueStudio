@@ -257,12 +257,30 @@ struct QuickEditCleanUpPanelTests {
         #expect(other.clips.wordsNote == "Ums: English, Portuguese and Spanish. Pauses work in every language.")
     }
 
-    @Test func aNoisyTakeIsInconclusive() async {
+    /// D16's outcome in the Pauses tab: too much background sound says so (with Edit by text), never "Your take flows"; pauses
+    /// heard over a background are listed for a listen, none marked, under what was heard.
+    @Test func aNoisyTakeSaysWhatWasHeard() async throws {
         let editor = FakeTakeEditor()
-        editor.cleanUpInconclusive = true
         let viewModel = await makeScenario({ $0.cleanUpAnalyzed = false }, editor: editor).viewModel
+        editor.pauseDetections[viewModel.videoURL] = PauseDetection(hearing: .tooMuchBackgroundSound, pauses: [])
         await viewModel.clips.analyzeIfNeeded()
         #expect(viewModel.clips.cleanUpIsInconclusive)
+        #expect(viewModel.clips.cleanUpHearingNote?.title == PauseHearing.tooMuchBackgroundSound.title)
+
+        let fan = FakeTakeEditor()
+        let heard = await makeScenario({ $0.cleanUpAnalyzed = false }, editor: fan).viewModel
+        fan.pauseDetections[heard.videoURL] = PauseDetection(hearing: .overBackgroundSound, pauses: [
+            PauseDetection.Pause(cut: TimeSpan(start: 4.3, end: 4.9), silence: TimeSpan(start: 4.1, end: 5.1), isClear: false),
+        ])
+        await heard.clips.analyzeIfNeeded()
+        heard.perform(.open(.pauses))
+        #expect(!heard.clips.cleanUpIsInconclusive)
+        #expect(heard.clips.cleanUpHearingNote?.detail == PauseHearing.overBackgroundSound.detail)
+        let pause = try #require(heard.clips.pauseCandidates.first)
+        #expect(!heard.clips.isMarked(pause))
+        // Tight never narrows the margins of a pause heard against a background.
+        heard.clips.pauseGap = .tight
+        #expect(heard.clips.removal(of: pause)?.span == TimeSpan(start: 4.3, end: 4.9))
     }
 
     @Test func nothingFoundOffersAShorterLength() async {

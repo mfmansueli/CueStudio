@@ -24,15 +24,15 @@ enum EditorPanel: String, CaseIterable, Identifiable {
     case blur
     // The cut between two clips
     case transition
-    // ✦ Smart: the one-tap tools
-    case smart
+    // Templates and the creator's brand kits
+    case templates
 
     var id: String { rawValue }
 
     var size: EditorPanelSize {
         switch self {
         case .zoom, .volume, .filters, .voiceOver, .autoCaptions: .mini
-        case .speed, .voice, .pauses, .captions, .adjust, .skin, .background, .media, .smart, .transition, .crop, .stabilize, .beats: .medium
+        case .speed, .voice, .pauses, .captions, .adjust, .skin, .background, .media, .templates, .transition, .crop, .stabilize, .beats: .medium
         case .voiceEffects: .medium
         case .clipCrop, .clipAnimation: .medium
         case .mask, .blur, .motion: .medium
@@ -112,11 +112,11 @@ enum EditorPanel: String, CaseIterable, Identifiable {
         case .clipAnimation: String(localized: "Animation")
         case .volume: String(localized: "Volume")
         case .voice: String(localized: "Studio Voice")
-        case .pauses: String(localized: "Clean up", comment: "The tool and panel that take pauses, ums and repeats out of the speech (pt: Limpar fala)")
+        case .pauses: String(localized: "Clean up")
         case .adjust: String(localized: "Adjust")
         case .skin: EditorLookTool.skin.label
         case .filters: String(localized: "Filters")
-        case .crop: String(localized: "Format")
+        case .crop: String(localized: "Aspect ratio")
         case .background: String(localized: "Background")
         case .captions: String(localized: "Captions")
         case .autoCaptions: String(localized: "Auto captions")
@@ -130,7 +130,7 @@ enum EditorPanel: String, CaseIterable, Identifiable {
         case .motion: String(localized: "Motion")
         case .blur: String(localized: "Blur area")
         case .transition: String(localized: "Transition")
-        case .smart: String(localized: "✦ Smart")
+        case .templates: String(localized: "Templates")
         }
     }
 }

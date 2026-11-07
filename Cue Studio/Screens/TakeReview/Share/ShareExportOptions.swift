@@ -5,11 +5,15 @@
 
 import SwiftUI
 
-/// What the one export of "Share to universe" is made with: burned-in captions (and in which language) and the quality. The board's networks sheet has
-/// room only for the networks, so these sit one tap away, behind the sliders in its corner. 4K is Cue Pro (owner, 06/11/2026): "4K · Pro" until then,
-/// and a 4K recording says it exports in 1080p. Only a 4K recording has a quality to pick; any other shows its own.
+/// What the video's exports are made with: burned-in captions (and in which language) and the quality. One component and one state for every
+/// way out (D11): Ready to travel's "Options · 1080p", the review's quiet line under Share (for Save) and the editor's Done open it, all on
+/// the review's `TakeReviewViewModel`. The captions start from the editor; a choice that differs from it says it is for the export only, and
+/// the saved edit never changes. 4K is Cue Pro (owner, 06/11/2026): "4K · Pro" until then, and a 4K recording says it exports in 1080p. Only a
+/// 4K recording has a quality to pick; any other shows its own.
 struct ShareExportOptions: View {
     @Bindable var review: TakeReviewViewModel
+    /// The version the options are about: the saved edit, or the one the editor's Done is about to save.
+    let edit: TakeEdit?
 
     /// The regular Pro, from "4K export is Cue Pro" › Go Pro.
     @State private var showsPro = false
@@ -18,15 +22,15 @@ struct ShareExportOptions: View {
         VStack(spacing: 14) {
             Text("Export options").cueFont(.headline, weight: .semibold)
             GroupedCard(background: Palette.surface2, radius: 22) {
-                Toggle("Burn in captions", isOn: $review.burnsInCaptions)
+                Toggle("Burn in captions", isOn: captionsBinding)
                     .tint(Palette.success)
                     .padding(.horizontal, 16)
                     .frame(minHeight: 52)
                     .accessibilityIdentifier("share.captionsToggle")
-                if review.burnsInCaptions, !review.captionTranslations.isEmpty {
-                    Picker("Captions", selection: $review.exportCaptionDisplay) {
+                if review.output(for: edit).burnsInCaptions, let translations = edit?.captionTranslations, !translations.isEmpty {
+                    Picker("Captions", selection: languageBinding) {
                         Text("Original").tag(CaptionDisplay.original)
-                        ForEach(review.captionTranslations) { translation in
+                        ForEach(translations) { translation in
                             Text(verbatim: translation.language.nativeName).tag(CaptionDisplay.translation(translation.language))
                             Text("Both · \(translation.language.nativeName)").tag(CaptionDisplay.bilingual(translation.language))
                         }
@@ -36,6 +40,16 @@ struct ShareExportOptions: View {
                     .accessibilityIdentifier("share.captionLanguage")
                 }
                 if review.choosesQuality { qualityPicker } else { recordedQuality }
+            }
+            if let difference = review.outputDifference(for: edit) {
+                // Only the export changes: said where the choice is made.
+                Text(difference.text)
+                    .cueFont(.footnote)
+                    .foregroundStyle(Palette.ink2)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.horizontal, 4)
+                    .accessibilityIdentifier("share.outputDifference")
             }
             Spacer(minLength: 0)
         }
@@ -51,6 +65,22 @@ struct ShareExportOptions: View {
         .fullScreenCover(isPresented: $showsPro) {
             PaywallView(context: .profile) { review.fourKProPurchased() }
         }
+    }
+
+    private var captionsBinding: Binding<Bool> {
+        Binding(get: { review.output(for: edit).burnsInCaptions }, set: { shown in
+            var choice = review.output(for: edit)
+            choice.burnsInCaptions = shown
+            review.setOutput(choice, for: edit)
+        })
+    }
+
+    private var languageBinding: Binding<CaptionDisplay> {
+        Binding(get: { review.output(for: edit).captionDisplay }, set: { display in
+            var choice = review.output(for: edit)
+            choice.captionDisplay = display
+            review.setOutput(choice, for: edit)
+        })
     }
 
     /// A 4K recording: 1080p or 4K (4K is Pro).

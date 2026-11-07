@@ -15,9 +15,9 @@ import CoreGraphics
 nonisolated enum EditorHeightClass: Equatable, Sendable {
     /// iPhone 16, 16 Pro, Pro Max: the prototype's layout.
     case regular
-    /// mini, or a regular screen with large text: smaller tracks and toolbar labels.
+    /// mini, or a regular screen with large text: smaller tracks.
     case compact
-    /// iPhone SE: icon-only toolbar, full panels as sheets.
+    /// iPhone SE: narrower tools, full panels as sheets.
     case veryCompact
 
     static let regularMinimum: CGFloat = 696
@@ -74,16 +74,16 @@ nonisolated enum EditorHeightClass: Equatable, Sendable {
     /// Room for the time labels above the tracks.
     var rulerHeight: CGFloat { self == .regular ? 28 : 24 }
 
-    /// Labels under the toolbar icons; the SE keeps only the icons (the label stays for VoiceOver
-    /// and a long press).
-    var toolbarShowsLabels: Bool { self != .veryCompact }
-    var toolbarLabelSize: CGFloat { self == .regular ? 11 : 10 }
-    /// Icons only on the SE, so more of them fit; still past the 44 pt touch target.
+    /// The name under every tool's icon, on every iPhone and at every text size (owner, 07/11/2026: never icons alone, never
+    /// smaller with large text). The bar keeps its height; at the accessibility sizes a long press shows the name large, as
+    /// the system's tab bars do.
+    var toolbarLabelSize: CGFloat { 11 }
+    /// A little narrower on the SE so more tools fit, each wide enough for its name; past the 44 pt touch target.
     var toolbarItemWidth: CGFloat {
         switch self {
         case .regular: 64
         case .compact: 60
-        case .veryCompact: 52
+        case .veryCompact: 56
         }
     }
 

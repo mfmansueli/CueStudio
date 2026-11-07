@@ -32,6 +32,13 @@ nonisolated struct CleanUpSuggestion: Codable, Hashable, Identifiable, Sendable 
     /// One of the tries at a line of the script (`ScriptRetakeDetector`); nil for every other suggestion.
     var attempt: Attempt?
 
+    /// A pause heard with a silence level that followed the background or a soft voice (`PauseHearing`): listed for a listen,
+    /// never marked to go. Nil for every other suggestion (and every one saved before, D16).
+    var hearing: PauseHearing?
+    /// The silence such a pause was heard as, when its cut keeps more than the usual breath on each side (an edge heard against a
+    /// background could be the end of a word): "Pauses longer than" and its card go by this length. Nil: `span` and the breath.
+    var silence: TimeSpan?
+
     /// A try at a script line said more than once: which group of tries it is in, its place among them and the line.
     struct Attempt: Codable, Hashable, Sendable {
         /// Shared by every try at the same line.
@@ -46,7 +53,7 @@ nonisolated struct CleanUpSuggestion: Codable, Hashable, Identifiable, Sendable 
 
     init(
         id: UUID = UUID(), kind: CleanUpKind, span: TimeSpan, text: String? = nil, confidence: Double, status: CleanUpStatus = .pending,
-        sourceID: UUID? = nil, attempt: Attempt? = nil
+        sourceID: UUID? = nil, attempt: Attempt? = nil, hearing: PauseHearing? = nil, silence: TimeSpan? = nil
     ) {
         self.id = id
         self.attempt = attempt
@@ -56,14 +63,35 @@ nonisolated struct CleanUpSuggestion: Codable, Hashable, Identifiable, Sendable 
         self.text = text
         self.confidence = confidence
         self.status = status
+        self.hearing = hearing
+        self.silence = silence
     }
 
     var isSure: Bool { confidence >= Self.sureConfidence }
 
+    /// Whether Pauses marks it to go before the creator decides: a pause heard clearly, or a word Clean Up is sure of. A pause
+    /// heard over background sound or under a soft voice waits for a listen (D16: no doubtful cut is marked for the creator).
+    var isMarkedByDefault: Bool {
+        switch kind {
+        case .pause: hearing == nil
+        case .filler, .retake: isSure
+        }
+    }
+
+    /// A pause clearly heard is long when it is sure (`CleanUpAnalyzer.longPause`); one heard against a background, which is never
+    /// sure, by the silence it was heard as.
+    private var isLongPause: Bool {
+        guard hearing != nil, let silence else { return isSure }
+        return silence.duration >= Self.longPauseLength
+    }
+
+    /// A silence at least this long is a long pause: sure enough for "Remove all" when heard clearly. Shorter ones may be for emphasis.
+    static let longPauseLength: TimeInterval = 0.8
+
     /// "Long pause", "“um”", "Possible retake".
     var title: String {
         switch kind {
-        case .pause: if isSure { String(localized: "Long pause") } else { String(localized: "Short pause") }
+        case .pause: if isLongPause { String(localized: "Long pause") } else { String(localized: "Short pause") }
         case .filler: text.map { "“\($0)”" } ?? kind.label
         case .retake: kind.label
         }
@@ -72,6 +100,7 @@ nonisolated struct CleanUpSuggestion: Codable, Hashable, Identifiable, Sendable 
     /// Why a suggestion deserves a listen, or what was said in a retake.
     var note: String? {
         switch kind {
+        case .pause where hearing != nil: hearing?.detail
         case .pause: isSure ? nil : String(localized: "May be intentional, for emphasis")
         case .filler: isSure ? nil : String(localized: "Might carry meaning · listen first")
         case .retake: text.map { "“\($0)”" }
@@ -81,7 +110,7 @@ nonisolated struct CleanUpSuggestion: Codable, Hashable, Identifiable, Sendable 
     // MARK: - Coding
 
     private enum CodingKeys: String, CodingKey {
-        case id, kind, span, text, confidence, status, sourceID, removedSpan, attempt
+        case id, kind, span, text, confidence, status, sourceID, removedSpan, attempt, hearing, silence
         /// Before statuses: kept or not.
         case isKept
     }
@@ -96,6 +125,8 @@ nonisolated struct CleanUpSuggestion: Codable, Hashable, Identifiable, Sendable 
         sourceID = try? container.decodeIfPresent(UUID.self, forKey: .sourceID)
         removedSpan = try? container.decodeIfPresent(TimeSpan.self, forKey: .removedSpan)
         attempt = try? container.decodeIfPresent(Attempt.self, forKey: .attempt)
+        hearing = try? container.decodeIfPresent(PauseHearing.self, forKey: .hearing)
+        silence = try? container.decodeIfPresent(TimeSpan.self, forKey: .silence)
         if let status = try container.decodeIfPresent(CleanUpStatus.self, forKey: .status) {
             self.status = status
         } else {
@@ -114,5 +145,7 @@ nonisolated struct CleanUpSuggestion: Codable, Hashable, Identifiable, Sendable 
         try container.encodeIfPresent(sourceID, forKey: .sourceID)
         try container.encodeIfPresent(removedSpan, forKey: .removedSpan)
         try container.encodeIfPresent(attempt, forKey: .attempt)
+        try container.encodeIfPresent(hearing, forKey: .hearing)
+        try container.encodeIfPresent(silence, forKey: .silence)
     }
 }

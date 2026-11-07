@@ -18,23 +18,26 @@ struct TransitionPanel: View {
                 options: EditTransition.allCases.map { PanelOption($0, $0.label, systemImage: $0.systemImage, key: $0.rawValue) },
                 selection: viewModel.selectedTransition, identifier: "edit.transition"
             ) { viewModel.clips.setTransition($0) }
-            if let duration = viewModel.clips.selectedTransitionDuration {
-                PanelSlider(
-                    label: String(localized: "Duration"), value: duration, range: EditTransition.durationRange, step: 0.05,
-                    defaultValue: viewModel.selectedTransition?.duration, format: .seconds, identifier: "edit.transition.duration",
-                    onChange: { viewModel.clips.setTransitionDuration($0) }
-                )
-            }
             if let note = viewModel.clips.transitionNote {
                 PanelNote(text: note)
             }
         } footer: {
-            // Always in reach, under the scrolling choices: the panel is short on a small iPhone.
-            if viewModel.clips.cuts.count > 1, let transition = viewModel.selectedTransition {
-                PanelButton(
-                    label: String(localized: "Use on every cut"), systemImage: "square.on.square",
-                    identifier: "edit.transition.everyCut"
-                ) { viewModel.clips.setTransitionOnEveryCut(transition) }
+            // Always in reach, under the scrolling choices: the panel is short on a 6.1" iPhone, and Duration sat under the
+            // tiles, out of sight below "Use on every cut".
+            VStack(spacing: 8) {
+                if let duration = viewModel.clips.selectedTransitionDuration {
+                    PanelSlider(
+                        label: String(localized: "Duration"), value: duration, range: EditTransition.durationRange, step: 0.05,
+                        defaultValue: viewModel.selectedTransition?.duration, format: .seconds, identifier: "edit.transition.duration",
+                        onChange: { viewModel.clips.setTransitionDuration($0) }
+                    )
+                }
+                if viewModel.clips.cuts.count > 1, let transition = viewModel.selectedTransition {
+                    PanelButton(
+                        label: String(localized: "Use on every cut"), systemImage: "square.on.square",
+                        identifier: "edit.transition.everyCut"
+                    ) { viewModel.clips.setTransitionOnEveryCut(transition) }
+                }
             }
         }
     }

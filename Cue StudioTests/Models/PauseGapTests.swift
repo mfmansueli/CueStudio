@@ -30,9 +30,9 @@ struct PauseGapTests {
     @Test func eachGapLeavesItsSilenceHalfOnEachSide() throws {
         for gap in PauseGap.allCases {
             let cut = try #require(pause.cut(leaving: gap))
-            let left = (cut.start - pause.silence.start) + (pause.silence.end - cut.end)
+            let left = (cut.start - pause.heardSilence.start) + (pause.heardSilence.end - cut.end)
             #expect(abs(left - gap.seconds) < 0.000_1)
-            #expect(abs((cut.start - pause.silence.start) - (pause.silence.end - cut.end)) < 0.000_1)
+            #expect(abs((cut.start - pause.heardSilence.start) - (pause.heardSilence.end - cut.end)) < 0.000_1)
         }
     }
 

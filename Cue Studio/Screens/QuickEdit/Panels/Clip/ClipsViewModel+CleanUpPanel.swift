@@ -39,8 +39,17 @@ extension ClipsViewModel {
 
     // MARK: - What the tabs say
 
-    /// The take was heard as too noisy to tell its pauses from its speech (`CleanUpHearing.isInconclusive`).
-    var cleanUpIsInconclusive: Bool { edit.cleanUpHearing?.isInconclusive ?? false }
+    /// A recording the edit plays was too noisy to tell its pauses from its speech (`PauseHearing.isInconclusive`, D16): "no
+    /// pauses" isn't "your take flows".
+    var cleanUpIsInconclusive: Bool { cleanUpPauseHearing.isInconclusive }
+
+    /// What Pauses says about how its pauses were heard (`PauseHearing.title`, `.detail`): nil when every recording was heard
+    /// clearly.
+    var cleanUpHearingNote: (title: String, detail: String)? {
+        let hearing = cleanUpPauseHearing
+        guard let title = hearing.title, let detail = hearing.detail else { return nil }
+        return (title, detail)
+    }
 
     /// "No pauses longer than 0.7s".
     var noPausesTitle: String {

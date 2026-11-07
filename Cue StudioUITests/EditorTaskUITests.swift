@@ -125,9 +125,7 @@ final class EditorTaskUITests: XCTestCase {
         EditorApp.tapTool(app, "captions")
         let first = app.descendants(matching: .any)["edit.captionLine.1"]
         XCTAssertTrue(first.exists(within: 5))
-        let deleteAll = app.buttons["edit.captionsDeleteAll"]
-        XCTAssertTrue(deleteAll.exists(within: 5))
-        deleteAll.tap()
+        EditorApp.captionsMenu(app, "edit.captionsDeleteAll").tap()
         // It asks first; Cancel would keep every line.
         // iOS nests the dialog's button in one of its own: the first is the one to tap.
         let confirm = app.buttons["edit.captionsDeleteAllConfirm"].firstMatch

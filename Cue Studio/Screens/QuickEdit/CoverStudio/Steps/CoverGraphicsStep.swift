@@ -71,7 +71,7 @@ struct CoverGraphicsStep: View {
                 onChange: { value in viewModel.updateItem(item.id) { $0.rotation = value * .pi / 180 } }, onEditingChanged: gesture
             )
             HStack(spacing: 8) {
-                action(String(localized: "Copy"), "plus.square.on.square", id: "cover.itemDuplicate") { viewModel.duplicateItem(item.id) }
+                action(String(localized: "Duplicate"), "plus.square.on.square", id: "cover.itemDuplicate") { viewModel.duplicateItem(item.id) }
                 action(String(localized: "In front"), "square.2.layers.3d.top.filled", id: "cover.itemForward",
                        isEnabled: viewModel.canRestack(item.id, forward: true)) { viewModel.restackItem(item.id, forward: true) }
                 action(String(localized: "Behind"), "square.2.layers.3d.bottom.filled", id: "cover.itemBackward",

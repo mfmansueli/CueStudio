@@ -190,19 +190,30 @@ extension QuickEditViewModel {
         }
     }
 
-    /// A track's strip: its tools replace the toolbar's (every track has its own, `EditorToolMenu`), and a second tap puts the
-    /// toolbar back. While every track is out, a tap chooses the track and puts the others away, and the track comes with its
-    /// tools open, lit in its colour (owner, 28/10/2026); under a panel it only chooses. An item picked on another track is
-    /// let go.
+    /// A track's strip: its tools replace the toolbar's (`EditorToolMenu`), and a second tap puts the toolbar back; the captions
+    /// and Blur area tracks open the panel their main-bar button opens, and a second tap closes it (owner, 07/11/2026). While
+    /// every track is out, a tap chooses the track and puts the others away, and the track comes with its tools open, lit in
+    /// its colour (owner, 28/10/2026); under a panel it only chooses. An item picked on another track is let go.
     private func tapLane(_ lane: TimelineLane) {
         if tracks.isExpanded {
             if let item = selection, item.lane != .main, item.lane != lane { selection = nil }
             Haptics.selection()
             tracks.choose(lane)
-            guard panel == nil, let menu = EditorToolMenu(lane: lane) else { return }
+            guard panel == nil else { return }
+            if openPanel(ofLane: lane) { return }
+            guard let menu = EditorToolMenu(lane: lane) else { return }
             player.pause()
             selection = nil
             toolMenu = menu
+            return
+        }
+        if lane == .captions || lane == .blur {
+            if [.captions, .autoCaptions, .blur].contains(panel) {
+                closePanel()
+            } else {
+                _ = openPanel(ofLane: lane)
+            }
+            Haptics.selection()
             return
         }
         guard let menu = EditorToolMenu(lane: lane) else { return }
@@ -211,6 +222,21 @@ extension QuickEditViewModel {
         panel = nil
         toolMenu = toolMenu == menu ? nil : menu
         Haptics.selection()
+    }
+
+    /// The captions or Blur area track's panel, as its main-bar button opens it; false for the other tracks.
+    private func openPanel(ofLane lane: TimelineLane) -> Bool {
+        let tool: EditorToolbarTool
+        switch lane {
+        case .captions: tool = .captions
+        case .blur: tool = .blurArea
+        default: return false
+        }
+        player.pause()
+        selection = nil
+        toolMenu = nil
+        perform(tool.action)
+        return true
     }
 
     /// The first of `lanes` the edit has (else the first of them) becomes the timeline's current track, and the others go away.

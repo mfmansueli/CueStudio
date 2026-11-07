@@ -36,9 +36,8 @@ final class RealTakeWorkflowUITests: XCTestCase {
         XCTAssertTrue(app.buttons["edit.toolbar.edit"].exists(within: 20), "The editor didn't open")
         let start = Date()
 
-        flow.step("✦ Smart › Remove pauses")
-        flow.tool("smart")
-        flow.tap(app.buttons["edit.smart.pauses"], "Remove pauses")
+        flow.step("Clean up › Pauses")
+        flow.tool("pauses")
         let apply = app.buttons["edit.pauses.apply"]
         if apply.exists(within: 60), apply.isEnabled {
             flow.tap(apply, "Remove the pauses")
@@ -57,9 +56,8 @@ final class RealTakeWorkflowUITests: XCTestCase {
         flow.capture("captions")
         closePanel(app)
 
-        flow.step("✦ Smart › Edit by text › cut two words")
-        flow.tool("smart")
-        flow.tap(app.buttons["edit.smart.editByText"], "Edit by text")
+        flow.step("Edit by text › cut two words")
+        flow.tool("editByText")
         let firstWord = app.buttons["edit.transcript.word.4"]
         if !firstWord.exists(within: 5) {
             let listen = app.buttons["edit.transcript.listen"]
@@ -84,9 +82,8 @@ final class RealTakeWorkflowUITests: XCTestCase {
         flow.tap(app.buttons["sheet.closeButton"].firstMatch, "Edit by text's ×")
         XCTAssertFalse(firstWord.exists(within: 2), "Edit by text stayed open")
 
-        flow.step("✦ Smart › Templates › Bold hook")
-        flow.tool("smart")
-        flow.tap(app.buttons["edit.smart.section.templates"], "Templates")
+        flow.step("Templates › Bold hook")
+        flow.tool("templates")
         flow.tap(app.buttons["edit.template.boldHook"], "Bold hook")
         XCTAssertTrue(flow.toastSays("Bold hook", timeout: 5))
         flow.capture("bold-hook")

@@ -44,23 +44,22 @@ struct QuickEditTrackChoiceTests {
         #expect(viewModel.tracks.isExpanded)
         viewModel.tapTimeline(.lane(.captions))
         #expect(viewModel.tracks == TimelineTrackChoice(current: .captions))
-        // It comes with its tools open (lit in its colour), nothing added.
-        #expect(viewModel.toolMenu == .captions)
-        #expect(viewModel.timelineInput(heightClass: .regular).activeLanes == [.captions])
-        #expect(viewModel.panel == nil)
-        #expect(viewModel.sheet == nil)
-        // The next tap puts the toolbar back, as on any track.
-        viewModel.tapTimeline(.lane(.captions))
+        // It comes with its panel open, the one the main bar's Captions opens, nothing added.
         #expect(viewModel.toolMenu == nil)
+        #expect(viewModel.panel == .captions || viewModel.panel == .autoCaptions)
+        #expect(viewModel.sheet == nil)
+        // Under the panel, a tap only chooses.
+        viewModel.tapTimeline(.lane(.captions))
+        #expect(viewModel.tracks.current == .captions)
         // ▴ puts the tracks away as they were.
         viewModel.tapTimeline(.trackChooser)
         viewModel.tapTimeline(.trackChooser)
         #expect(viewModel.tracks == TimelineTrackChoice(current: .captions))
     }
 
-    /// Every track has its own bar: Photos and videos and Blur areas too (owner, 28/10/2026). The library opens from the
-    /// Media bar, never from the track itself.
-    @Test func theMediaAndBlurTracksOpenTheirOwnBars() async {
+    /// Photos and videos have their own bar (owner, 28/10/2026); the library opens from it, never from the track itself. The Blur
+    /// area track opens what the main bar's Blur area opens: the faces in the frame (owner, 07/11/2026).
+    @Test func theMediaTrackOpensItsBarAndTheBlurTrackItsPanel() async {
         let viewModel = await makeViewModel()
         viewModel.tapTimeline(.trackChooser)
         viewModel.tapTimeline(.lane(.media))
@@ -73,8 +72,9 @@ struct QuickEditTrackChoiceTests {
         viewModel.tapTimeline(.lane(.media))
         #expect(viewModel.toolMenu == .media)
         viewModel.tapTimeline(.lane(.blur))
-        #expect(viewModel.toolMenu == .blur)
-        #expect(viewModel.toolbarItems.map(\.id) == ["blurFace", "blurDraw", "blurCompare"])
+        #expect(viewModel.toolMenu == nil)
+        #expect(viewModel.panel == .blur)
+        #expect(viewModel.blur.picking != nil)
         #expect(viewModel.tracks.current == .blur)
     }
 

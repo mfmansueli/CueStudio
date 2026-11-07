@@ -9,7 +9,8 @@ import SwiftUI
 /// the video goes (SHARED, IN PHOTOS, READY, IN EDIT). The first, the way most videos end, is yellow.
 /// No platform names: sharing is generic, the app is picked in the share sheet. With the last free export (or none) left, one line under
 /// the question says so, where the creator decides (owner, 06/11/2026: no new flow); so does a font that isn't here
-/// (`EditorDoneFontNote`). Swiping the sheet down goes back to the editor.
+/// (`EditorDoneFontNote`). Under the answers, a quiet "Export options · 1080p · captions on" opens the review's Export options for this edit
+/// (D11), the ones Share and Download use. Swiping the sheet down goes back to the editor.
 struct EditorDoneSheet: View {
     /// "1:02": the edit's length, under "EDIT SAVED".
     let duration: String
@@ -19,6 +20,9 @@ struct EditorDoneSheet: View {
     /// "A font is still downloading · …" when some words would come out in the system's face (`EditorDoneFontNote`); nil when every
     /// word has its font.
     var fontNote: String?
+    /// "1080p · captions on": what Share and Download make this edit with (`TakeReviewViewModel.outputSummary(for:)`); nil hides the line.
+    var exportOptions: String?
+    var onExportOptions: () -> Void = {}
     /// The height the content needs, so the sheet is exactly that tall (the four answers always show).
     var onMeasure: (CGFloat) -> Void = { _ in }
     let onAnswer: (EditorOutcome) -> Void
@@ -79,6 +83,11 @@ struct EditorDoneSheet: View {
                 option(.ready, title: "Ready, I’ll post later", detail: "Goes to Ready in Takes", result: .ready)
                 option(.notYet, title: "Not yet, I’ll come back", detail: "Stays in edit · autosaved", result: .edit)
             }
+            if let exportOptions {
+                ExportOptionsLine(summary: exportOptions, identifier: "edit.done.exportOptions", action: onExportOptions)
+                    .frame(maxWidth: .infinity)
+                    .padding(.top, -6)
+            }
         }
         .padding(EdgeInsets(top: 22, leading: Metrics.gutter, bottom: 24, trailing: Metrics.gutter))
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -138,7 +147,7 @@ struct EditorDoneSheet: View {
 
 #if DEBUG
 #Preview {
-    EditorDoneSheet(duration: "1:02", exportNote: FreeExportLabels.meter(left: 1), onAnswer: { _ in })
+    EditorDoneSheet(duration: "1:02", exportNote: FreeExportLabels.meter(left: 1), exportOptions: "1080p · captions on", onAnswer: { _ in })
         .background(Palette.surface)
 }
 #endif

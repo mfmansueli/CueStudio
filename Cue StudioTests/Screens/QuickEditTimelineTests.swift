@@ -110,11 +110,12 @@ struct QuickEditTimelineTests {
 
     @Test func aTrackOpensItsToolsAndASecondTapPutsTheMainOnesBack() async {
         let viewModel = await makeScenario().viewModel
-        viewModel.tapTimeline(.lane(.captions))
-        #expect(viewModel.toolMenu == .captions)
-        #expect(viewModel.timelineInput(heightClass: .regular).activeLanes == [.captions])
+        // The captions track opens the panel the main bar's Captions opens; a second tap closes it (owner, 07/11/2026).
         viewModel.tapTimeline(.lane(.captions))
         #expect(viewModel.toolMenu == nil)
+        #expect(viewModel.panel == .captions || viewModel.panel == .autoCaptions)
+        viewModel.tapTimeline(.lane(.captions))
+        #expect(viewModel.panel == nil)
         // Music, voice-over and the audio shortcut all open Audio, which lights all three.
         viewModel.tapTimeline(.lane(.voiceOver))
         #expect(viewModel.toolMenu == .audio)

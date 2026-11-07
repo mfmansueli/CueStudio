@@ -34,7 +34,7 @@ final class CreatorWorkflow {
 
     /// The editor's main tools are back: nothing picked, no panel.
     func isOnMainTools(timeout: TimeInterval = 5) -> Bool {
-        waits(for: app.buttons["edit.toolbar.smart"], timeout: timeout, "the main tools")
+        waits(for: app.buttons["edit.toolbar.pauses"], timeout: timeout, "the main tools")
             && app.buttons["edit.toolbar.addMedia"].exists && !app.buttons["edit.toolbar.back"].exists
     }
 

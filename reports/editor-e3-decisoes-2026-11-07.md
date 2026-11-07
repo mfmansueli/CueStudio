@@ -43,3 +43,23 @@ Canvas: https://claude.ai/artifact/UBc5myze9hKY9M3LB5JmSB (versão 4, D1–D16).
    depois da verificação correspondente.
 
 Durante a avaliação do dono: seguir as correções independentes.
+
+## Estado no código (07/11, feature/editor-trust)
+
+Alterado no código ≠ validado. "Testes de unidade" e "UI no Simulator" dizem o que rodou; nada aqui foi visto no iPhone ainda.
+
+| D | O que está no código | Verificado |
+|---|---|---|
+| D1 | Smart saiu; Clean up (Limpar fala) no 5º; painel Templates com abas Templates · Kit de marca, cada botão abre a sua | testes de unidade; UI no Simulator (rodando) |
+| D2 | Nome sob todo ícone em todo iPhone, 11 pt fixo; item de 56 pt no SE; segurar mostra o nome grande nos tamanhos de acessibilidade | testes de unidade do layout; **falta** conferir AX no aparelho |
+| D3 | ••• (`ItemMoreMenu`) em estilos de legenda e texto, looks da capa, kits e biblioteca, fora do botão do cartão (não aplica); "Default" desceu para baixo do nome; alvo de 40–44 pt | compila; **falta** UI e aparelho |
+| D4 | Faixas de Legendas e Blur area abrem o painel da barra; segundo toque fecha; ••• no topo do painel de legendas (Find, Select, Edit by text, Add a line, Delete all); ◐ no passo dos rostos quando há áreas | testes de unidade; UI no Simulator (rodando). Custo da edição de traduções: não medido |
+| D5 | Aspect ratio (Proporção) na barra e no painel; Window ratio (Proporção da janela) na mídia; Crop (Recorte) no clipe | compila; **falta** UI |
+| D6–D9 | Agente da limpeza integrada (branch `e3-cleanup`) | aguardando o relatório do agente |
+| D11 | Agente das opções de exportação (branch `e3-noise-export`) | aguardando o relatório do agente |
+| D12 | Ícones trocados (Zoom, Voice effects, Text to speech, Comment, Swap places, Edit text, Clean up; Duplicate na capa) | **falta** conferir no tamanho real e contraste |
+| D13 | Selo do vídeo inteiro só em Adjust, Skin, Filters, Background na barra principal | testes de unidade |
+| D14 | Audio: Music, Sound effects, Voice-over, Text to speech \| Studio Voice, Volume, Voice effects, Extract audio | testes de unidade |
+| D15 | Abas Layout e Custom (Personalizar); controle "Text per caption" (Texto por legenda) | compila; **falta** medir o espaço do controle |
+| D16 | Agente do piso de ruído (branch `e3-noise-export`) | aguardando o relatório do agente |
+| Pop | Abrir o painel do texto, ou escolher Motion / Effect's own, com a agulha na entrada leva a agulha a onde o texto já entrou; o vídeo não muda | teste de unidade escrito; **falta** rodar e ver no aparelho |

@@ -36,12 +36,15 @@ struct CleanUpPausesTab: View {
     @ViewBuilder private var found: some View {
         let clips = viewModel.clips
         if let start = clips.cleanUpStart { CleanUpStartRow(viewModel: viewModel, proposal: start) }
-        if clips.cleanUpIsInconclusive {
-            inconclusive
-        } else if clips.pauseCandidates.isEmpty {
-            empty
-        } else {
+        if let note = clips.cleanUpHearingNote, clips.cleanUpIsInconclusive {
+            inconclusive(note)
+        } else if let note = clips.cleanUpHearingNote {
+            hearingNote(note)
+        }
+        if !clips.pauseCandidates.isEmpty {
             CleanUpCardRow(viewModel: viewModel, suggestions: clips.pauseCandidates, kind: "pause")
+        } else if !clips.cleanUpIsInconclusive {
+            empty
         }
         let removed = clips.removedPauses
         if !removed.isEmpty { CleanUpRemovedList(viewModel: viewModel, items: removed, kind: "pause") }
@@ -70,11 +73,11 @@ struct CleanUpPausesTab: View {
         .accessibilityIdentifier("edit.pauses.empty")
     }
 
-    /// Too much sound around the voice to tell where it stops: cut by the words instead.
-    private var inconclusive: some View {
+    /// Too much sound around the voice to tell where it stops (D16): said so, never "Your take flows", with Edit by text.
+    private func inconclusive(_ note: (title: String, detail: String)) -> some View {
         VStack(spacing: 4) {
-            Text("Too much background sound to find pauses").cueFont(.subheadline, weight: .semibold).foregroundStyle(Palette.ink)
-            Text("Cut by the words instead.").cueFont(.footnote).foregroundStyle(Palette.ink2)
+            Text(note.title).cueFont(.subheadline, weight: .semibold).foregroundStyle(Palette.ink)
+            Text(note.detail).cueFont(.footnote).foregroundStyle(Palette.ink2)
             Button(String(localized: "Edit by text")) { viewModel.clips.showCleanUpTab(.transcript) }
                 .cueFont(.subheadline, weight: .semibold)
                 .foregroundStyle(Palette.accText)
@@ -86,5 +89,18 @@ struct CleanUpPausesTab: View {
         .editorCard()
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("edit.pauses.inconclusive")
+    }
+
+    /// The pauses were heard over a background or under a soft voice (D16): what follows is listed for a listen, none marked.
+    private func hearingNote(_ note: (title: String, detail: String)) -> some View {
+        HStack(alignment: .firstTextBaseline, spacing: 6) {
+            Image(systemName: "ear").accessibilityHidden(true)
+            Text(verbatim: "\(note.title) · \(note.detail)")
+        }
+        .cueFont(.footnote)
+        .foregroundStyle(Palette.ink2)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .accessibilityElement(children: .combine)
+        .accessibilityIdentifier("edit.pauses.hearing")
     }
 }

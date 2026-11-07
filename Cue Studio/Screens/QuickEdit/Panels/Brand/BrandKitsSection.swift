@@ -5,7 +5,7 @@
 
 import SwiftUI
 
-/// ✦ Smart › Brand: the creator's brand kits, one card each (its colors, fonts and logo, what it holds; the one this video
+/// Templates › Brand: the creator's brand kits, one card each (its colors, fonts and logo, what it holds; the one this video
 /// wears is checked). A tap asks which parts go on (`BrandKitApplySheet`); holding a card edits, copies or deletes it (Undo).
 /// "New kit from this video" starts one from what the video wears. Under them, the fonts the creator imported.
 struct BrandKitsSection: View {
@@ -64,24 +64,33 @@ struct BrandKitsSection: View {
                         .accessibilityHidden(true)
                 }
             }
-            .padding(.horizontal, 12)
+            .padding(.leading, 12)
+            // Room for •••, which sits over the card beside its button (owner, 07/11/2026: it never applies the kit).
+            .padding(.trailing, 4 + Metrics.hitTarget)
             .padding(.vertical, 10)
             .frame(minHeight: Metrics.hitTarget)
             .editorCard(isOn ? .picked : .plain)
             .contentShape(.editorCard)
         }
         .buttonStyle(.cuePressCard)
-        .contextMenu {
-            Button { brand.kitBeingEdited = kit } label: { Label("Edit kit", systemImage: "pencil") }
-            Button { brand.kits.duplicate(kit.id) } label: { Label("Duplicate", systemImage: "plus.square.on.square") }
-            Button(role: .destructive) { brand.deleteKit(kit.id) } label: { Label("Delete kit", systemImage: "trash") }
-        }
+        .contextMenu { kitMenu(kit) }
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(isOn ? .isSelected : [])
         .accessibilityHint(Text("Choose which parts go on this video. Undo puts it back."))
         .accessibilityAction(named: Text("Edit kit")) { brand.kitBeingEdited = kit }
         .accessibilityAction(named: Text("Delete kit")) { brand.deleteKit(kit.id) }
         .accessibilityIdentifier("edit.brand.kit.\(kit.name)")
+        .overlay(alignment: .trailing) {
+            ItemMoreMenu(look: .onCard, identifier: "edit.brand.kit.\(kit.name).more") { kitMenu(kit) }
+                .padding(.trailing, 4)
+        }
+    }
+
+    @ViewBuilder
+    private func kitMenu(_ kit: BrandKit) -> some View {
+        Button { brand.kitBeingEdited = kit } label: { Label("Edit kit", systemImage: "pencil") }
+        Button { brand.kits.duplicate(kit.id) } label: { Label("Duplicate", systemImage: "plus.square.on.square") }
+        Button(role: .destructive) { brand.deleteKit(kit.id) } label: { Label("Delete kit", systemImage: "trash") }
     }
 }
 

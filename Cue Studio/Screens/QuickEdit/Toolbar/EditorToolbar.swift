@@ -19,8 +19,6 @@ struct EditorToolbar: View {
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     /// The label shown by a long press when labels are hidden.
-    @State private var tooltip: String?
-    @State private var tooltipTask: Task<Void, Never>?
     /// Where the tools are scrolled: whether some wait on the left, and on the right.
     @State private var scrollEdges = ScrollEdges()
 
@@ -42,18 +40,6 @@ struct EditorToolbar: View {
         .background(Palette.bg)
         .overlay(alignment: .top) {
             Rectangle().fill(Palette.Editor.separator).frame(height: 0.5)
-        }
-        .overlay(alignment: .top) {
-            if let tooltip {
-                Text(tooltip)
-                    .font(.footnote.weight(.semibold))
-                    .padding(.horizontal, 12)
-                    .frame(height: 30)
-                    .toastSurface(in: Capsule())
-                    .offset(y: -38)
-                    .allowsHitTesting(false)
-                    .transition(.opacity)
-            }
         }
         .disabled(!viewModel.isReady || viewModel.audio.isRecordingVoiceOver)
         .accessibilityElement(children: .contain)
@@ -183,10 +169,10 @@ struct EditorToolbar: View {
     /// The room each tool takes, its side padding included (`EditorToolbarFit`): the class's width, a little less when that
     /// lets the first `count` tools show whole.
     private func itemWidths(_ items: [EditorToolbarItem], fittingFirst count: Int, available: CGFloat) -> [CGFloat] {
-        let padding: CGFloat = heightClass.toolbarShowsLabels ? 4 : 0
+        let padding: CGFloat = 4
         let font = UIFont.systemFont(ofSize: heightClass.toolbarLabelSize, weight: .medium)
         let labels = items.map { item in
-            heightClass.toolbarShowsLabels ? ceil((item.label as NSString).size(withAttributes: [.font: font]).width) : 0
+            ceil((item.label as NSString).size(withAttributes: [.font: font]).width)
         }
         return EditorToolbarFit.widths(
             labels: labels, fittingFirst: count, preferred: heightClass.toolbarItemWidth + padding,
@@ -198,14 +184,12 @@ struct EditorToolbar: View {
         let tint: Color = switch item.style {
         case .normal: Palette.ink
         case .dimmed: Palette.ink3
-        case .destructive, .destructiveAll: Palette.dangerText
-        case .smart: Palette.aiText
+        case .destructive: Palette.dangerText
         }
         let labelTint: Color = switch item.style {
         case .normal: Palette.ink2
         case .dimmed: Palette.ink2
-        case .destructive, .destructiveAll: Palette.dangerText
-        case .smart: Palette.aiTextStrong
+        case .destructive: Palette.dangerText
         }
         // A switch that is on is lit as the panels' ◐ is: the icon on the accent, its name in the accent's text colour.
         let isLit = item.isOn == true
@@ -238,23 +222,17 @@ struct EditorToolbar: View {
                                 .accessibilityHidden(true)
                         }
                     }
-                if heightClass.toolbarShowsLabels {
-                    Text(item.label)
-                        .font(.system(size: heightClass.toolbarLabelSize, weight: .medium))
-                        .foregroundStyle(isLit ? Palette.accText : labelTint)
-                        .lineLimit(1)
-                        .fixedSize()
-                }
+                Text(item.label)
+                    .font(.system(size: heightClass.toolbarLabelSize, weight: .medium))
+                    .foregroundStyle(isLit ? Palette.accText : labelTint)
+                    .lineLimit(1)
+                    .fixedSize()
             }
-            .frame(minWidth: width - (heightClass.toolbarShowsLabels ? 4 : 0), maxHeight: .infinity)
-            .padding(.horizontal, heightClass.toolbarShowsLabels ? 2 : 0)
+            .frame(minWidth: width - 4, maxHeight: .infinity)
+            .padding(.horizontal, 2)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .simultaneousGesture(LongPressGesture(minimumDuration: 0.4).onEnded { _ in
-            guard !heightClass.toolbarShowsLabels else { return }
-            show(tooltip: item.label)
-        })
         .accessibilityShowsLargeContentViewer { Label(item.label, systemImage: item.systemImage) }
         .accessibilityLabel(item.scopeBadge == nil ? Text(item.label) : Text("\(item.label), whole video"))
         .accessibilityHint(item.style == .dimmed ? Text("Not available here") : Text(""))
@@ -263,13 +241,4 @@ struct EditorToolbar: View {
         .accessibilityIdentifier("edit.toolbar.\(item.id)")
     }
 
-    private func show(tooltip label: String) {
-        tooltipTask?.cancel()
-        withAnimation(.easeOut(duration: 0.15)) { tooltip = label }
-        tooltipTask = Task {
-            try? await Task.sleep(for: .seconds(1.5))
-            guard !Task.isCancelled else { return }
-            withAnimation(.easeOut(duration: 0.15)) { tooltip = nil }
-        }
-    }
 }

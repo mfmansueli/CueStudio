@@ -25,6 +25,9 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     var cleanUpAnalyzed = false
     /// The montage's other recordings Clean Up has listened to (`ClipSource.id`).
     var cleanUpAnalyzedSources: [UUID] = []
+    /// The recordings whose pauses Clean Up couldn't hear clearly (a loud background, a soft voice), and how (D16): Pauses says so
+    /// again when the editor reopens. A recording heard clearly isn't listed.
+    var pauseHearings: [RecordingPauseHearing] = []
     /// Pauses: only silences at least this long are listed ("Pauses longer than").
     var pauseThreshold: TimeInterval = 0.7
     /// Pauses: how much silence a removed pause leaves ("Gap left"); what was already removed keeps its own.
@@ -404,7 +407,7 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     // MARK: - Coding
 
     private enum CodingKeys: String, CodingKey {
-        case timeline, sources, suggestions, cleanUpAnalyzed, cleanUpAnalyzedSources, volume, enhancesVoice, reducesNoise,
+        case timeline, sources, suggestions, cleanUpAnalyzed, cleanUpAnalyzedSources, pauseHearings, volume, enhancesVoice, reducesNoise,
         audioVersion, voiceEnhancement, noiseReduction, voiceReach, evensOutVoices, music, backgrounds, exposure, contrast, warmth, filter
         case snapsToBeats, lockedLayers
         case saturation, highlights, shadows, sharpness, filterAmount, cropFit, pauseThreshold, pauseGap, cleanUpHearing
@@ -433,6 +436,7 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
             suggestions = container.decodeLossy([CleanUpSuggestion].self, forKey: .suggestions)
             cleanUpAnalyzed = try container.decodeIfPresent(Bool.self, forKey: .cleanUpAnalyzed) ?? false
             cleanUpAnalyzedSources = (try? container.decodeIfPresent([UUID].self, forKey: .cleanUpAnalyzedSources)) ?? []
+            pauseHearings = container.decodeLossy([RecordingPauseHearing].self, forKey: .pauseHearings)
         } else {
             (timeline, suggestions) = try Self.legacyTimeline(from: decoder)
         }

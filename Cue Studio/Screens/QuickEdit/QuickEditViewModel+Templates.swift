@@ -5,7 +5,7 @@
 
 import Foundation
 
-/// ✦ Smart › Templates: a whole look for a kind of video (`VideoTemplate`) in one undo step. Captions get the template's look
+/// Templates: a whole look for a kind of video (`VideoTemplate`) in one undo step. Captions get the template's look
 /// and way of showing words (their lines stay), every text but graphics gets its type and motion (the words stay), new texts
 /// start in it, and with no text yet a hook with the script's title opens the video.
 extension QuickEditViewModel {

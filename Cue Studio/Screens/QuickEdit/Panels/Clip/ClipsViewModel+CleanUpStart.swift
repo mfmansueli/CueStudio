@@ -24,8 +24,8 @@ extension ClipsViewModel {
         let timeline = edit.timeline
         guard let first = timeline.segments.first, first.sourceID == nil else { return nil }
         return edit.suggestions.first { suggestion in
-            suggestion.kind == .pause && suggestion.sourceID == nil && suggestion.silence.start <= first.sourceStart + 0.05
-                && suggestion.silence.end > first.sourceStart
+            suggestion.kind == .pause && suggestion.sourceID == nil && suggestion.heardSilence.start <= first.sourceStart + 0.05
+                && suggestion.heardSilence.end > first.sourceStart
         }?.id
     }
 
