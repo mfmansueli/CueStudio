@@ -156,9 +156,10 @@ final class CaptionStyleCatalogUITests: XCTestCase {
         let rise = app.buttons["edit.captionEntry.rise"]
         XCTAssertTrue(rise.exists(within: 5), "No In and out choices")
         rise.tap()
-        XCTAssertTrue(rise.isSelected)
+        // On an iPhone the choice reads as selected a moment after the tap.
+        XCTAssertTrue(rise.waitForSelected())
         app.buttons["edit.captionSpoken.glide"].tap()
-        XCTAssertTrue(app.buttons["edit.captionSpoken.glide"].isSelected)
+        XCTAssertTrue(app.buttons["edit.captionSpoken.glide"].waitForSelected())
         // The highlight's color is in Custom, with the look's other colors (owner, canvas 2 F2).
         XCTAssertFalse(app.buttons["edit.captionAccent.lavender"].exists, "Animation repeats Custom's highlight color")
         EditorApp.capture(app, "caption-animation")
@@ -265,5 +266,17 @@ final class CaptionStyleCatalogUITests: XCTestCase {
         openCaptionStyle(app)
         tab(app, "adjust")
         reveal(app, app.buttons["edit.captionEmphasisSize.bigger"])
+    }
+}
+
+private extension XCUIElement {
+    /// Selected within `timeout` seconds.
+    func waitForSelected(timeout: TimeInterval = 3) -> Bool {
+        let deadline = Date().addingTimeInterval(timeout)
+        while Date() < deadline {
+            if isSelected { return true }
+            RunLoop.current.run(until: Date().addingTimeInterval(0.1))
+        }
+        return isSelected
     }
 }

@@ -115,15 +115,15 @@ final class MediaMotionUITests: XCTestCase {
         XCTAssertTrue(pop.exists(within: 5))
         pop.tap()
         XCTAssertTrue(waitFor { pop.isSelected })
-        // The title comes in at 0.2 s: the playhead 0.1 s into its way in.
+        // The title comes in at 0.2 s: › a frame at a time to 0.3 s, 0.1 s into its way in (› keeps the title picked; a drag on
+        // the timeline could let go of it).
         let label = app.staticTexts["edit.timeLabel"]
-        for _ in 0..<4 where !(label.value as? String ?? "").hasPrefix("00:00.3") {
-            let time = (label.value as? String ?? "").components(separatedBy: " / ").first ?? ""
-            let now = Double(time.split(separator: ":").last.map(String.init)?.replacingOccurrences(of: ",", with: ".") ?? "") ?? 0
-            EditorApp.scrub(app, points: max(4, (0.3 - now) * 44))
-        }
+        let next = app.buttons["edit.nextFrame"]
+        XCTAssertTrue(next.exists(within: 3))
+        for _ in 0..<20 where !(label.value as? String ?? "").hasPrefix("00:00.3") { next.tap() }
+        XCTAssertTrue(app.descendants(matching: .any)["edit.panel.textStyle"].exists, "Stepping let go of the title")
         EditorApp.capture(app, "text-pop-paused-whole")
-        XCTAssertTrue((label.value as? String ?? "").hasPrefix("00:00."), "Not in the title's way in: \(label.value ?? "")")
+        XCTAssertTrue((label.value as? String ?? "").hasPrefix("00:00.3"), "Not in the title's way in: \(label.value ?? "")")
     }
 
     private func scrollPanelUp(_ app: XCUIApplication, to element: XCUIElement) {
