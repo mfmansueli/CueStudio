@@ -27,6 +27,11 @@ struct QuickEditView: View {
     private let opening: EditorTool?
     /// The free exports' line on Done's question, for the edit as it is (the review knows what exporting it costs).
     private let exportNote: (TakeEdit) -> FreeExportLabels.Label?
+    /// The review the editor opened from: Done's "Export options" line shows and changes its export options (D11), the ones its Save and
+    /// Share use. Nil where nothing exports from here.
+    private let review: TakeReviewViewModel?
+    /// Done's "Export options", over its question.
+    @State private var showsDoneExportOptions = false
 
     /// The height the editor has with no keyboard (see `measuresStableHeight`).
     @State private var stableHeight: CGFloat = 0
@@ -45,7 +50,7 @@ struct QuickEditView: View {
 
     init(
         take: Take, services: AppServices, opening: EditorTool? = nil, exportNote: @escaping (TakeEdit) -> FreeExportLabels.Label? = { _ in nil },
-        onClose: @escaping (EditorOutcome) -> Void
+        review: TakeReviewViewModel? = nil, onClose: @escaping (EditorOutcome) -> Void
     ) {
         let languages = services.languages
         _viewModel = State(initialValue: QuickEditViewModel(
@@ -63,6 +68,7 @@ struct QuickEditView: View {
         self.services = services
         self.opening = opening
         self.exportNote = exportNote
+        self.review = review
         self.onClose = onClose
     }
 
@@ -109,11 +115,20 @@ struct QuickEditView: View {
                     duration: DurationText.clock(viewModel.edit.editedDuration),
                     exportNote: exportNote(viewModel.edit),
                     fontNote: viewModel.fontsNotReady.map(EditorDoneFontNote.text),
+                    exportOptions: review.map { $0.outputSummary(for: viewModel.edit) },
+                    onExportOptions: { showsDoneExportOptions = true },
                     onMeasure: { doneSheetHeight = $0 + 34 },
                     onAnswer: { outcome in
                         if let left = viewModel.finish(outcome) { onClose(left) }
                     }
                 )
+                .sheet(isPresented: $showsDoneExportOptions) {
+                    if let review {
+                        ShareExportOptions(review: review, edit: viewModel.edit)
+                            .presentationDetents([.medium])
+                            .presentationBackground(Palette.sheetNight)
+                    }
+                }
                 .presentationDetents([.height(doneSheetHeight)])
                 .presentationCornerRadius(Metrics.editorSheetRadius)
                 .presentationBackground(Palette.surface)

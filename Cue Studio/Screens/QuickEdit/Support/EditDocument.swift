@@ -121,7 +121,7 @@ final class EditDocument {
 
     /// What listening found: the part of the edit no undo step keeps.
     private static func findings(of edit: TakeEdit) -> [AnyHashable] {
-        [edit.cleanUpAnalyzed, edit.cleanUpAnalyzedSources, edit.captionTranscript, edit.sourceTranscripts]
+        [edit.cleanUpAnalyzed, edit.cleanUpAnalyzedSources, edit.pauseHearings, edit.captionTranscript, edit.sourceTranscripts]
     }
 
     /// A gesture, a panel's control or a sheet starts changing something, maybe many times: all of it is one undo step,

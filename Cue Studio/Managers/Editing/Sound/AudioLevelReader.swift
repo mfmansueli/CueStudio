@@ -17,14 +17,30 @@ nonisolated enum AudioLevelReader {
         while file.framePosition < file.length {
             try file.read(into: buffer, frameCount: framesPerReading)
             guard let channel = buffer.floatChannelData?[0], buffer.frameLength > 0 else { break }
-            var sum: Float = 0
-            for index in 0..<Int(buffer.frameLength) {
-                sum += channel[index] * channel[index]
-            }
-            let rms = sqrt(sum / Float(buffer.frameLength))
-            levels.append(rms > 0 ? 20 * log10(rms) : -120)
+            levels.append(level(of: UnsafeBufferPointer(start: channel, count: Int(buffer.frameLength))))
         }
         return levels
+    }
+
+    /// One reading every `interval` seconds of `samples` (one channel at `sampleRate`), as `levels(of:)` reads a file.
+    static func levels(ofSamples samples: [Float], sampleRate: Double, interval: TimeInterval = 0.05) -> [Float] {
+        let count = max(1, Int(sampleRate * interval))
+        return samples.withUnsafeBufferPointer { all in
+            stride(from: 0, to: all.count, by: count).map { start in
+                level(of: UnsafeBufferPointer(rebasing: all[start..<min(all.count, start + count)]))
+            }
+        }
+    }
+
+    /// The loudness of a reading's samples: their RMS in dBFS, −120 for digital silence.
+    static func level(of samples: UnsafeBufferPointer<Float>) -> Float {
+        guard !samples.isEmpty else { return -120 }
+        var sum: Float = 0
+        for sample in samples {
+            sum += sample * sample
+        }
+        let rms = sqrt(sum / Float(samples.count))
+        return rms > 0 ? 20 * log10(rms) : -120
     }
 
     /// Readings `count` at a time, as one: the mean of their power, in dBFS (what reading every `count` times the interval gives).

@@ -95,11 +95,17 @@ final class FakeTakeEditor: TakeEditing {
     /// A recording Clean Up can't listen to.
     var cleanUpFailsFor: URL?
 
-    func cleanUpSuggestions(forVideoAt url: URL, language: SpeechLanguageRequest) async throws -> [CleanUpSuggestion] {
+    /// What the silence level heard in a recording, when a test says (a noisy room, D16); the others are heard clearly: `silences`.
+    var pauseDetections: [URL: PauseDetection] = [:]
+
+    func cleanUpFindings(forVideoAt url: URL, language: SpeechLanguageRequest) async throws -> CleanUpFindings {
         guard !cleanUpFails, url != cleanUpFailsFor else { throw EditSourceError.noDuration }
         cleanUpVideos.append(url)
         cleanUpLanguage = language
-        return CleanUpAnalyzer.suggestions(silences: silences, transcript: transcript)
+        guard let detection = pauseDetections[url] else {
+            return CleanUpFindings(suggestions: CleanUpAnalyzer.suggestions(silences: silences, transcript: transcript))
+        }
+        return CleanUpAnalyzer.findings(pauses: detection, transcript: transcript)
     }
 
     func captions(

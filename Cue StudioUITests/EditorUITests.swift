@@ -385,6 +385,18 @@ final class EditorUITests: XCTestCase {
         XCTAssertTrue(app.buttons["edit.toolbar.edit"].exists(within: 5))
     }
 
+    /// D11: under Done's answers, a quiet line opens the same Export options Share and Download use, with the quality the file is made in.
+    func testDoneReachesTheExportOptions() {
+        let app = EditorApp.open()
+        app.buttons["edit.doneButton"].tap()
+        let line = app.buttons["edit.done.exportOptions"]
+        XCTAssertTrue(line.exists(within: 5))
+        XCTAssertTrue(line.label.contains("1080p"))
+        line.tap()
+        XCTAssertTrue(app.switches["share.captionsToggle"].exists(within: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["share.qualityRecorded"].firstMatch.exists)
+    }
+
     /// With the last free export left, Done says so under its question (owner, 06/11/2026); with more left it says nothing.
     func testDoneSaysWhenItIsTheLastFreeExport() {
         let app = EditorApp.open(arguments: ["-uiTestExportsLeft", "1"])

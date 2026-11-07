@@ -33,18 +33,20 @@ extension ClipsViewModel {
         let urls = clipSourceURLs
         var found: [CleanUpSuggestion] = []
         var listened: [UUID?] = []
+        var hearings: [RecordingPauseHearing] = []
         var failed = false
         for source in pending {
             let file: URL? = if let source { urls[source] } else { videoURL }
             guard let url = file else { continue }
             do {
-                let heard = try await editing.cleanUpSuggestions(forVideoAt: url, language: speechLanguage)
-                found += heard.map { suggestion in
+                let heard = try await editing.cleanUpFindings(forVideoAt: url, language: speechLanguage)
+                found += heard.suggestions.map { suggestion in
                     var mine = suggestion
                     mine.sourceID = source
                     return mine
                 }
                 listened.append(source)
+                if heard.pauseHearing != .clear { hearings.append(RecordingPauseHearing(sourceID: source, hearing: heard.pauseHearing)) }
             } catch {
                 // Stopped by leaving the editor: not a failure to report.
                 guard !Task.isCancelled, !isClosed else { return }
@@ -58,6 +60,8 @@ extension ClipsViewModel {
             let kept = analyzed.suggestions.filter { !listened.contains($0.sourceID) }
             let heard = analyzed.suggestions.filter { listened.contains($0.sourceID) }
             analyzed.suggestions = kept + CleanUpAnalyzer.merged(found, into: heard)
+            // How each recording heard now was heard replaces what was kept about it; the cuts already made stay as they are.
+            analyzed.pauseHearings = analyzed.pauseHearings.filter { !listened.contains($0.sourceID) } + hearings
             for source in listened {
                 if let source { analyzed.cleanUpAnalyzedSources.append(source) } else { analyzed.cleanUpAnalyzed = true }
             }
@@ -82,8 +86,16 @@ extension ClipsViewModel {
                 guard let extent = timeline.playedExtent(of: suggestion.sourceID) else { return false }
                 return suggestion.span.start >= extent.start - 0.001 && suggestion.span.end <= extent.end + 0.001
             }
-            .filter { $0.kind != .pause || SilenceDetector.silenceLength(ofCut: $0.span) >= pauseThreshold - 0.001 }
+            .filter { $0.kind != .pause || SilenceDetector.silenceLength(of: $0) >= pauseThreshold - 0.001 }
             .sorted { playOrder($0) < playOrder($1) }
+    }
+
+    /// How sure Clean Up could be of the pauses of the recordings the edit plays (D16): the most careful of them, so a montage with
+    /// one take recorded beside a fan says so. `.tooMuchBackgroundSound` means "no pauses" isn't "the take flows"; with
+    /// `.overBackgroundSound` or `.softVoice` the pauses it lists wait for a listen, none marked (`PauseHearing.title`, `.detail`).
+    var cleanUpPauseHearing: PauseHearing {
+        let played = edit.playedRecordingIDs
+        return edit.pauseHearings.filter { played.contains($0.sourceID) }.map(\.hearing).max { $0.caution < $1.caution } ?? .clear
     }
 
     /// Where a suggestion comes in the edit, for the list's order: where it plays, or where it would (a removed one).
