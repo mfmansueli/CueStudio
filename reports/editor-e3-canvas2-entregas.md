@@ -113,6 +113,40 @@ modos saíram do catálogo.
 
 **Falta:** nada desta entrega.
 
+## Entrega 5 · Legendas (F1, F2) — `b1df835a` (ajudante), merge `b67e3ce9`
+
+**Decisões:** F1, F2 e os resets do Caption style (R5 B).
+
+**O que muda para o criador**
+- **Ênfase (F1):** o chip da linha inteira diz "Emphasize line". Em Caption style › Custom, **"Choose words to emphasize"** abre Legendas na linha
+  sob o playhead, já escolhida, com More aberto e as palavras à vista. O botão de estilo vira **"‹ Style"**: ele ou ✓ voltam ao Custom no mesmo ponto
+  da rolagem, com o mesmo playhead e a mesma escolha. Sem legendas, o botão não aparece.
+- **Styles abre nos estilos (F2):** a primeira vista tem Size numa fileira compacta, os filtros e uma fileira de cartões inteiros, com o atual
+  marcado (e o grupo dele no topo quando não é o primeiro). Mine só aparece com estilos; **Save style é o último cartão**. Size completo segue em Layout.
+- **Cada coisa no seu lugar (F2):** One word fica em Layout; palavra a palavra e o destaque da palavra dita em Animation; a cor de destaque só em
+  Custom (Animation avisa quando a palavra dita não se destaca). Os resets dizem o que voltam: "Style's color"; o Reset do cabeçalho mostra
+  "Back to the whole X style: look, size and position" com Undo.
+- **"Text per caption" medido nos 20 idiomas** na largura do SE: o nome cabe numa linha em todos; em de, fr, it, nl e tr, no maior tamanho de texto
+  (fora os de acessibilidade), o detalhe quebra para uma 2ª linha. Nada a propor.
+
+**Três defeitos achados pelo teste de ida e volta, corrigidos aqui**
+- Ao voltar, o painel perdia o ponto da rolagem (o topo em que o conteúdo nasce apagava o lugar guardado). Vale para todo painel que guarda a rolagem.
+- Marcar uma palavra pulava o playhead para o começo da linha; agora só pula quando o playhead não está nela.
+- Um playhead um quadro antes do começo de uma linha agora conta como estando nela.
+
+**Evidência**
+- Código + Simulator (unidade): `QuickEditCaptionStyleGalleryTests`, `CaptionLayoutLabelFitTests` (as medidas acima) e as suítes de legendas, 91/91
+  (ajudante).
+- Simulator (UI): `CaptionStyleCatalogUITests`, `CaptionToolsUITests`, `EditorRecipeUITests` 14/14 (ajudante). Integrado na `feature/editor-trust`
+  com as entregas 3, 4, 6, 7, 9 e 10: 70/70 (galeria, medidas, memória dos painéis, layout, ⌄ do SE, catálogo, ferramentas de legenda, receitas,
+  Text style, cabeçalho).
+- Aparelho: entrega 11.
+
+**Decisões tomadas sem o dono:** a cor de destaque saiu de Animation de vez (o quadro A dizia "só em Custom"); Size virou uma fileira compacta em vez
+de sair de Styles; entre duas linhas, Choose words abre a seguinte e o playhead volta depois.
+
+**Falta:** a primeira vista conferida no SE (só rodou no iPhone 17).
+
 ## Entrega 6 · Mídia, Motion e prévia que segura — `fb682db4`, correções `c41be45c`, merge `c6c4529a`
 
 **Decisões:** F15, F5, R12, R6, bugs 9 e 12.
@@ -267,3 +301,49 @@ escolhido, as alças vêm primeiro); no SE a folha sai por ⌄ em vez de ficar b
 
 **Falta:** conferência no SE e no aparelho.
 
+
+## Entrega 11 · No iPhone 15 Pro (iago Lima), 07/11 à noite
+
+**O que rodou no aparelho** (XCUITest no iPhone, edição de demonstração em memória, nada dos vídeos do dono tocado): `MediaMotionUITests` 3/3,
+`TextStyleUITests` 8/8, `CleanUpUITests` 4/4, `CaptionStyleCatalogUITests` 7/7, `MyFontsUITests` 1/1, com capturas no resultado.
+
+**Validado no aparelho**
+- **Prévia que segura o quadro (F15, entrega 6):** pausado em 0,4 s, 0,2 s dentro do Pop de 0,5 s do título escolhido, a prévia mostra o título
+  inteiro, com as alças. O Simulator não desenha a composição, então isto só podia ser visto aqui.
+- **Faixa acima do Text style (R10 §7.3, entrega 10):** a régua e a faixa de Texto ficam acima do painel no 15 Pro; o teste de tocar o subtítulo na
+  faixa e o painel passar a ele passou.
+- Legendas (entrega 5: galeria, Choose words e volta ao mesmo ponto), Clean up (marca → cartão → troca), Minhas fontes, Show | Part.
+
+**Achado no aparelho e corrigido:** Text › Style all escolhia o 1º texto com o playhead antes dele (0,0 s, o título entra em 0,2 s), e a prévia não
+mostrava o texto que se estilizava. Agora, sem texto sob o playhead, ele vai ao início do texto escolhido (pausado, inteiro pela prévia que segura).
+Teste de unidade em `QuickEditToolbarTests`.
+
+**Falhas da 1ª rodada que eram dos testes:** o iPhone está em português e os testes leem inglês (agora abrem o app em inglês quando não pedem idioma; a
+região, com a vírgula decimal, segue a do iPhone); a automação de interface estava desligada (o dono ligou); no aparelho a escolha marcada chega um
+instante depois do toque, e o rótulo do tempo também.
+
+**Não validado:** o ⌄ do SE (sem SE à mão e sem criar simulador); importar uma fonte de verdade pelo Arquivos; o ritmo do segurar + no dedo (no
+Simulator, ~5 passos em 2 s).
+
+**Ainda falta desta entrega (§5.3–5.5 do plano):** o fluxo talking head com uma take de verdade no iPhone, projeto existente, fechar e reabrir; o
+vídeo curto e o roteiro para o dono. O que rodou no aparelho foi a edição de demonstração.
+
+
+## Full e ajustes depois (07/11, noite)
+
+**Full uma vez** em `feature/editor-trust` (9184fc94): unidade 5.278 passaram / 5 falharam, interface 466 / 2; `check-warnings` sem nenhum warning.
+
+| Falha | O que era | Feito |
+|---|---|---|
+| `QuickEditTimelineTests/whilePausesIsOpenOnlyPausesAnswer` | teste da regra antiga: desde a entrega 7 (F10) o 1º toque na marca acende o cartão, o 2º desmarca | teste segue a regra nova |
+| `SplitScreenUITests/testMediaSaysWhereEachPlaceGoesBeforePicking`, `CreatorWorkflowUITests/testTalkingHeadFromPausesToPosting` | procuravam as frases longas da folha de mídia, encurtadas na entrega 3 (F14) | leem as frases novas |
+| `LocalizedStringCacheTests/aScriptsWordsCountedOnceAreTheSameAndFasterAgain` | medida de tempo; o cache é do processo e os testes ao lado o esvaziam no meio | conta de novo antes de cada medida, a melhor de três |
+| `PrompterPracticeTests/theLineWaitsThroughTheCountIn…` | contagem regressiva em tempo real sob a carga do Full; passa sozinho; código fora desta branch | nada |
+| `NearbyLinkTests`, `IdeaSuggestionServiceTests` | já falhavam antes (rede local do Simulator; casing do tópico) | nada |
+
+Erro meu: as entregas 3 e 7 não rodaram `SplitScreenUITests`, `CreatorWorkflowUITests` e `QuickEditTimelineTests`, que eram relacionados.
+
+**N1 desfeito a pedido do dono:** ele não gostou da pilha "▤ 4" (que também não cabia no quadrado, cortando o ícone e o número) e preferiu a seta
+antiga. Volta o **▾** (gira para ▴ com as faixas para fora); fica o alcance de 44 pt nas marcas de corte sem clipe escolhido.
+
+Rodados sozinhos depois: as 7 suítes/testes acima e `TimelineGeometryTests`, 61/61 e 6/6.
