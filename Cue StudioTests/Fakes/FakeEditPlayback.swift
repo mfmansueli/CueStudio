@@ -37,6 +37,13 @@ final class FakeEditPlayback: EditPlayback {
         redraws += 1
     }
 
+    /// How many times the paused frame was drawn again (`PreviewMotionHold`).
+    private(set) var pausedRedraws = 0
+
+    func redrawPausedFrame() {
+        pausedRedraws += 1
+    }
+
     /// How many times the edit was built again after a failure.
     private(set) var retries = 0
 

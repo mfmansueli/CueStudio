@@ -33,11 +33,12 @@ struct VolumePanel: View {
         }
     }
 
-    /// A video laid over the take: its own sound, the same level Media › Edit had.
+    /// A video laid over the take: the volume of its own sound, named as its bar button and the panel's title are (owner,
+    /// canvas 2 R6 and bug 9).
     private func mediaVolume(_ media: MediaOverlay) -> some View {
         PanelFrame(viewModel: viewModel, panel: .volume) {
             PanelSlider(
-                label: String(localized: "Sound"), value: (media.audioVolume ?? 0) * 100, range: 0...100, format: .percent,
+                label: String(localized: "Volume"), value: (media.audioVolume ?? 0) * 100, range: 0...100, format: .percent,
                 identifier: "edit.mediaSound",
                 onChange: { viewModel.overlays.setMediaSoundVolume(media.id, $0 / 100) },
                 onEditingChanged: { editing in editing ? viewModel.beginPanelChange() : viewModel.endPanelChange() }

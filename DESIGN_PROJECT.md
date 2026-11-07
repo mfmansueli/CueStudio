@@ -2096,8 +2096,8 @@ auditoria: `reports/editor-award-checklist.md`.
   (em português **Proporção**, dono 07/11/2026) abre o painel do mesmo nome ("Whole video · format for where you post"); numa foto ou vídeo por cima,
   a forma da janela é **Window ratio** (Proporção da janela), e o que aparece dentro dela é Crop (Recorte).
   Clipe: as dele em três grupos, o essencial primeiro (§55; Stabilize e Reverse: §39; Blur area: §54), depois o que vai por cima e, por último,
-  tudo o que muda o vídeo inteiro, com o selo "All"; Delete fixo no fim. Texto ganha **Motion** (Style › Motion; escolher uma, ou abrir o painel do texto com a agulha na entrada dele, leva a agulha a onde ele já
-  entrou, para o Pop ou o Fade não o esconderem enquanto é editado; o vídeo não muda, e Preview mostra a entrada; dono 07/11/2026); mídia ganha **Mask** e **Blur area** (§54), **Split** (em dois na agulha), **Replace**,
+  tudo o que muda o vídeo inteiro, com o selo "All"; Delete fixo no fim. Texto ganha **Motion** (Style › Motion; com o texto escolhido e o vídeo parado, a prévia o mostra inteiro mesmo na entrada ou na saída, sem a agulha
+  pular, `PreviewMotionHold`; Play e Preview mostram a entrada, e a exportação nunca lê isso; dono, canvas 2 F15); mídia ganha **Mask** e **Blur area** (§54), **Split** (em dois na agulha), **Replace**,
   **Track** (§39), **Duplicate** (por cima, mesmo arquivo) e, num vídeo com som, **Extract audio**; um apoio da tela dividida não tem Track nem
   Duplicate nem Mask e ganha **Close gap** quando há espaço antes dele (§51).
 - **Reordenar clipes** (`ClipOrderSheet`): **segurar um clipe** na timeline (0,45 s, toque háptico) ou **Reorder** na barra do clipe abre a lista dos
@@ -2122,15 +2122,27 @@ auditoria: `reports/editor-award-checklist.md`.
   time: becomes a clip of its own at the playhead, and the video gets longer. Videos only.") — e diz, antes de escolher, onde e por quanto tempo
   (§48). **Your library** (`.addMediaFromLibrary`) abre na última sobreposição usada, já na biblioteca.
 - **Animações prontas** (`MotionPreset`, `OverlayAnimation`, `MotionPresetPicker` no topo do painel de movimento de textos, gráficos e mídias):
-  Fade, Slide up, Slide in, Gentle zoom, Pop e In and out, com **Duration** (0,2–1,5 s) e **Strength**; **Preview** no cabeçalho a toca. A animação é calculada por
-  cima dos keyframes (base + animação), então a edição manual em **Keyframes** ("To move it your own way") continua valendo junto.
+  **Pop** primeiro, depois Fade, Slide up, Slide in, Gentle zoom e In and out (`MotionPreset.panelOrder`; o que já está salvo não muda), com
+  **Duration** (0,2–1,5 s) e **Strength**; **Preview** no cabeçalho a toca. O painel segue a ordem de uso (dono, canvas 2 F15): as prontas com a
+  duração, **Track**, **Keyframes** ("To move it your own way") e, em **Advanced**, **Starts** e **Ends**. A animação é calculada por cima dos keyframes
+  (base + animação), então a edição manual continua valendo junto. Escolher uma deixa a agulha onde está (fora do item, vai para o começo dele).
+- **Item inteiro na prévia parada** (`PreviewMotionHold`): com um texto, gráfico, foto ou vídeo escolhido e o vídeo parado, a prévia o desenha como
+  ele fica entre a entrada e a saída (o primeiro quadro de um Pop, o fim de um In and out, a entrada de um efeito que se move), para a pessoa ver o que
+  está editando sem a agulha pular a animação. Só a prévia do editor lê isso (`EditedComposition.Options.showsPickedWhole`): a revisão e a
+  exportação desenham o movimento como ele é, e Play o solta antes de tocar. O compositor lê a cada quadro, então pausar e tocar não reconstroem a
+  prévia; ao mudar, o quadro parado é pedido de novo (`redrawPausedFrame`). O Simulator do iOS 27 não toca composições de vídeo, então esse
+  desenho só se confere no aparelho.
 - **Copiar e colar o look** (`CopiedClipLook`, `ClipLookPart`, `PasteLookSheet`): **Copy look** na barra do clipe guarda Adjust, Filter,
   Background e Zoom do clipe; **Paste look** abre a folha para escolher as partes ("The words, sound and timing stay") e colar no clipe ou em
   **Every clip**, num passo de desfazer. Em todos os clipes, o look vai para os ajustes do vídeo e cada clipe perde a cópia própria das partes
   coladas (Filters, Adjust e Background do vídeo inteiro continuam valendo); num clipe, ele guarda só o que difere do vídeo.
-- **Trecho do B-roll** (`MediaOverlay.mediaStart`, `MediaTrimStrip`): escolhido antes de entrar (§51) e, depois, no painel da mídia: **Part of the
+- **Painel da foto ou vídeo** (`MediaPanel`, dono, canvas 2 F5): um vídeo tem **Show | Part**. Show: Show as, Window ratio e Size (na janela),
+  Opacity, Bring forward e Send backward; Part: o trecho abaixo. Uma foto não tem trecho, então fica só com Show, sem abas. Volume, Motion e Mask
+  continuam ferramentas próprias na barra do item.
+- **Trecho do B-roll** (`MediaOverlay.mediaStart`, `MediaTrimStrip`): escolhido antes de entrar (§51) e, depois, no painel da mídia (aba Part): **Part of the
   video** mostra a faixa do arquivo com o trecho ("0:03 to 0:05 of 0:06"); arrastar escolhe de onde começa sem mudar onde ele está no vídeo,
-  **Plays for** muda a duração; nunca passa do fim do arquivo. Mover a barra mantém o trecho; aparar o começo dela apara o começo do trecho junto
+  **Duration** muda quanto toca (− e + repetem ao segurar, e a sequência é um passo de desfazer; tocar no valor oferece 1, 2, 3, 5 e 10 s, até o que
+  o arquivo tem; abrir a lista sozinha não muda nada; dono, canvas 2 R12); nunca passa do fim do arquivo. Mover a barra mantém o trecho; aparar o começo dela apara o começo do trecho junto
   (o que aparece em cada momento que fica não muda), como no CapCut. Edições antigas: do 0.
 - **Efeitos sonoros** (`SoundEffect`, `SoundEffectSynth`, parte **Sound effects** da folha "Add music or a sound"): 25 sons **sintetizados no
   aparelho pelo próprio Cue**, em cinco grupos por uso (§56) — "Made by Cue · free to use in your videos": nenhum arquivo de terceiros, nenhum
@@ -2364,7 +2376,8 @@ Prévia e exportação passam pelo mesmo compositor (`CueVideoCompositor`), ent�
   "Steady already · no zoom needed" ou "No shake found in this clip"; **Use on all 3 clips** num passo, com Undo no aviso ("Stabilize on all 3 clips"; o número diz o que muda antes do toque, dono, canvas 2 R2).
 - **Track** (texto, gráfico ou mídia: barra do item e o painel de movimento; `ObjectTracker`, `FramePlacement`, `TrackedMotion`): o criador põe o
   item em cima do que ele deve seguir, na agulha, e toca **Track**; o Cue segue, com o Vision, o que está sob o centro do item (um quadrado de 14%
-  da largura do vídeo) para a frente e para trás, enquanto o item aparece no clipe da agulha ("Tracking · 40%", Cancel). O caminho vira
+  da largura do vídeo) para a frente e para trás, enquanto o item aparece no clipe da agulha ("Tracking · 40%", **Stop**: para ali e guarda o que já seguiu, num passo que o Undo tira,
+  "Stopped · 12 keyframes kept", como o Stop do Blur area; dono, canvas 2 R6). O caminho vira
   **keyframes editáveis** (os mínimos que ficam a 0,4% do caminho, em ritmo constante, mantendo tamanho e opacidade), num passo de desfazer;
   os keyframes que havia no trecho seguido saem, os outros ficam. Se perde o objeto: "Lost it after 3.2 s · It holds from there". O Vision roda
   fora da thread principal; o ponto do vídeo leva em conta a correção do Stabilize do clipe (`FramePlacement.steady`). Um resultado só entra se é
@@ -3393,7 +3406,9 @@ recusado).
   out espera a rampa de abertura do clipe (a do silêncio, a do corte ou a que leva ao volume dele): uma rampa que começa dentro de outra faz o
   AVFoundation encerrar o app (o fade out no máximo do slider começava 5 ms depois da rampa ao volume do clipe), e `VolumeRamp` ainda as põe uma
   depois da outra no relógio da composição. O Reset do Volume zera os fades também. Numa foto ou vídeo por cima, o Reset do Volume mexe só no som
-  dela e o volta a como entrou: mudo, ou 100% se a pessoa disse para manter o som (`MediaOverlay.keptSoundWhenAdded`); o clipe embaixo fica.
+  dela e o volta a como entrou: mudo, ou 100% se a pessoa disse para manter o som (`MediaOverlay.keptSoundWhenAdded`); o clipe embaixo fica. Ali,
+  barra, título e controle dizem **Volume** ("Video · its own volume"; dono, canvas 2 R6 e erro 9). Ao entrar um vídeo com som, a pergunta diz onde
+  mudar depois: Volume na barra dele, ou **Sound** na barra de um apoio da tela dividida (`soundChoiceHint`, erro 12).
 - **Reset clip** (`ClipsViewModel+Reset`): num passo de desfazer, o clipe volta como gravado: 1×, sem curva, som em 100% e ligado, sem Zoom,
   Adjust, Skin, filtro e fundo (os próprios e também os do vídeo inteiro e da gravação, desligados só nele: `ClipLook.asFilmed`; dono 29/10/2026,
   o Studio do vídeo inteiro ficava e o aviso dizia que o clipe já estava como gravado), Stabilize, Crop, Rotate, Mirror, Animation e fades, e

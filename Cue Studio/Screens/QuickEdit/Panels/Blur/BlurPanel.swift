@@ -104,11 +104,13 @@ struct BlurPanel: View {
         if let first = viewModel.edit.editedSpans(of: region, in: viewModel.edit.timeline).first, !viewModel.edit.isOnPhoto(region) {
             PanelStepper(
                 label: String(localized: "Starts"), value: DurationText.editor(first.start), identifier: "edit.blur.starts",
+                onEditingChanged: { $0 ? viewModel.beginPanelChange() : viewModel.endPanelChange() },
                 onDecrease: { blur.resizeBar(region.id, instance: first, edge: .start, to: first.start - 0.1) },
                 onIncrease: { blur.resizeBar(region.id, instance: first, edge: .start, to: first.start + 0.1) }
             )
             PanelStepper(
                 label: String(localized: "Ends"), value: DurationText.editor(first.end), identifier: "edit.blur.ends",
+                onEditingChanged: { $0 ? viewModel.beginPanelChange() : viewModel.endPanelChange() },
                 onDecrease: { blur.resizeBar(region.id, instance: first, edge: .end, to: first.end - 0.1) },
                 onIncrease: { blur.resizeBar(region.id, instance: first, edge: .end, to: first.end + 0.1) }
             )

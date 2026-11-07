@@ -15,7 +15,7 @@ import Foundation
 enum EditorPanelTab: String, CaseIterable, Identifiable {
     case presets, font, color, motion, style
     case styles, format, animation, adjust
-    case layout, framing, sound, part
+    case layout, framing, sound, part, show
     case pauses, words, transcript
 
     var id: String { rawValue }
@@ -25,6 +25,8 @@ enum EditorPanelTab: String, CaseIterable, Identifiable {
     static let graphic: [EditorPanelTab] = [.style, .motion]
     static let captionStyle: [EditorPanelTab] = [.styles, .format, .animation, .adjust]
     static let splitScreen: [EditorPanelTab] = [.layout, .framing, .sound, .part]
+    /// A video over the take, in a window or full screen: how it shows, and which part of it plays (a photo has no part).
+    static let media: [EditorPanelTab] = [.show, .part]
     static let cleanUp: [EditorPanelTab] = [.pauses, .words, .transcript]
 
     var label: String {
@@ -44,6 +46,7 @@ enum EditorPanelTab: String, CaseIterable, Identifiable {
         case .framing: String(localized: "Framing")
         case .sound: String(localized: "Sound")
         case .part: String(inInterfaceLanguage: LocalizedStringResource("splitScreen.part", defaultValue: "Part"))
+        case .show: String(localized: "Show")
         case .pauses: String(localized: "Pauses")
         // Clean up's hesitations and repeats (pt "Palavras"), and its Edit by text: what was said, to read and cut (pt "Texto").
         case .words: String(localized: "Words")

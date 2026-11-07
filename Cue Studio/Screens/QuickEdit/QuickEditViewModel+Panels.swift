@@ -118,7 +118,7 @@ extension QuickEditViewModel {
                 }
                 return "\(music.title) · \(DurationText.editor(span.start))–\(DurationText.editor(span.end))"
             case .voiceOver: return String(localized: "Voice-over")
-            case .media: return String(localized: "Video · its own sound")
+            case .media: return String(localized: "Video · its own volume")
             default: return clipScope
             }
         }

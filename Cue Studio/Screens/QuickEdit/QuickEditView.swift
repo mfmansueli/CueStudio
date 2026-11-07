@@ -102,6 +102,8 @@ struct QuickEditView: View {
         }
         .onChange(of: services.motion.completed) { viewModel.motionAnalysisDidChange() }
         .onChange(of: services.fontPacks.generation) { viewModel.fontPacksChanged() }
+        // Paused on a picked item that a Motion hides in its way in or out, the preview shows it whole (`PreviewMotionHold`).
+        .onChange(of: viewModel.overlays.previewHold, initial: true) { viewModel.overlays.holdPickedWhole() }
         .sheet(item: $viewModel.sheet) { sheet in
             switch sheet {
             case .music: AddMusicSheet(viewModel: viewModel)
@@ -157,8 +159,8 @@ struct QuickEditView: View {
         ) { id in
             Button("Keep its sound") { viewModel.overlays.chooseSound(for: id, keeps: true) }
             Button("Mute it") { viewModel.overlays.chooseSound(for: id, keeps: false) }
-        } message: { _ in
-            Text("You can change it later in Volume, on the media’s bar.")
+        } message: { id in
+            Text(viewModel.overlays.soundChoiceHint(for: id))
         }
         .confirmationDialog(
             "A Blur area may not cover what it hides",
@@ -215,7 +217,10 @@ struct QuickEditView: View {
             }
         }
         .onAppear { viewModel.leaveScreen = { onClose($0) } }
-        .onDisappear { viewModel.pauseAndKeepDraft() }
+        .onDisappear {
+            viewModel.pauseAndKeepDraft()
+            PreviewMotionHold.shared.set(nil)
+        }
         .animation(reduceMotion ? nil : .easeOut(duration: 0.22), value: viewModel.panel)
         .animation(reduceMotion ? nil : .easeInOut(duration: 0.28), value: viewModel.stylePanelIsExpanded)
         .animation(reduceMotion ? nil : .easeInOut(duration: 0.28), value: viewModel.clips.cleanUpIsExpanded)

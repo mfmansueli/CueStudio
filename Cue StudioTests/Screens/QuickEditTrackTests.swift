@@ -67,6 +67,25 @@ struct QuickEditTrackTests {
         #expect(viewModel.edit.texts.first { $0.id == id }?.keyframes.isEmpty == true)
     }
 
+    /// Stop (owner, canvas 2 R6): the run ends there and what it followed until then stays, in one undo step that Undo takes
+    /// away, as Blur area's Stop.
+    @Test func stopKeepsWhatWasTrackedInOneUndoStep() async throws {
+        let scenario = try await makeScenario()
+        defer { try? FileManager.default.removeItem(at: scenario.footage) }
+        let viewModel = scenario.viewModel, id = scenario.textID
+        let steps = viewModel.document.history.past.count
+        viewModel.perform(.trackItem)
+        await Wait.until(timeout: .seconds(120)) { (viewModel.overlays.trackingProgress ?? 1) > 0.1 }
+        viewModel.overlays.stopTracking()
+        await Wait.until(timeout: .seconds(120)) { !viewModel.overlays.isTracking }
+        let keyframes = viewModel.edit.texts.first { $0.id == id }?.keyframes ?? []
+        #expect(keyframes.count >= 2, "\(keyframes.count) keyframes kept")
+        #expect(viewModel.document.history.past.count == steps + 1)
+        #expect(scenario.toast.message?.hasPrefix("Stopped") == true, "\(scenario.toast.message ?? "no toast")")
+        viewModel.undo()
+        #expect(viewModel.edit.texts.first { $0.id == id }?.keyframes.isEmpty == true)
+    }
+
     @Test func aCancelledOrOutdatedRunLeavesNothingBehind() async throws {
         let scenario = try await makeScenario()
         defer { try? FileManager.default.removeItem(at: scenario.footage) }

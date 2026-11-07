@@ -409,7 +409,6 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         captions.panelChanged(to: next)
         blur.panelChanged(to: next)
         if next != .mask { overlays.comparesWithoutMask = false }
-        if next == .textStyle { overlays.showPickedTextWhole() }
     }
 
     /// A clip panel opened with nothing picked picks the clip under the playhead, and lets go of it when it closes (or gives way

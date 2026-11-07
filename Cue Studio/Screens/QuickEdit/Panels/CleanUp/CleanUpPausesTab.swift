@@ -18,6 +18,7 @@ struct CleanUpPausesTab: View {
                 canDecrease: clips.pauseThreshold > ClipsViewModel.pauseThresholdRange.lowerBound + 0.001,
                 canIncrease: clips.pauseThreshold < ClipsViewModel.pauseThresholdRange.upperBound - 0.001,
                 identifier: "edit.pauses.threshold",
+                onEditingChanged: { $0 ? viewModel.beginPanelChange() : viewModel.endPanelChange() },
                 onDecrease: clips.lowerPauseThreshold, onIncrease: clips.raisePauseThreshold
             )
             PanelSegmented(

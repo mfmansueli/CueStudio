@@ -51,6 +51,8 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         /// Renders curved clips' sound along their curves (`CurveSoundRenderer`); off, it's stretched in steps like the picture,
         /// which is instant: the preview while a finger shapes a curve or drags a handle.
         var rendersCurveSound = true
+        /// The editor's preview shows the picked text, photo or video whole while paused (`PreviewMotionHold`); never an export.
+        var showsPickedWhole = false
     }
 
     /// A volume ramp on the edited timeline.
@@ -159,10 +161,13 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         let crop = framing.crop
         let renderSize = outputSize(for: crop.size, shortSide: options.shortSide)
         var overlays = TextOverlayRenderer.overlays(shownTexts(of: edit, window: plan.window), frame: crop.size)
+        if options.showsPickedWhole { for index in overlays.indices { overlays[index].readsPreviewHold = true } }
         if options.burnsInCaptions, edit.showsCaptions {
             overlays += captionOverlays(for: edit, frame: crop.size)
         }
-        let (mediaTracks, mediaFrames, mediaSounds) = await placeMedia(of: edit, frame: crop.size, in: composition, duration: cursor)
+        let (mediaTracks, placedMedia, mediaSounds) = await placeMedia(of: edit, frame: crop.size, in: composition, duration: cursor)
+        var mediaFrames = placedMedia
+        if options.showsPickedWhole { for index in mediaFrames.indices { mediaFrames[index].readsPreviewHold = true } }
         let videoMedia = mediaFrames.filter(\.isVideo).flatMap(\.shownSpans)
         let voices = try await placeVoiceOvers(of: edit, in: composition)
         let window = plan.window ?? TimeSpan(start: 0, end: cursor.seconds)

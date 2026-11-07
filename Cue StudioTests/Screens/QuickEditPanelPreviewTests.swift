@@ -44,38 +44,62 @@ struct QuickEditPanelPreviewTests {
         return try #require(scenario.viewModel.overlays.editedSpan(ofText: id))
     }
 
-    /// A text with Pop shows whole while it's edited (owner, 07/11/2026): its panel opened on its first moments, where Pop still
-    /// hides it, moves the playhead to where it has come in; the video keeps its Pop, and a slow zoom (which never hides it) or a
-    /// playhead past the way in stays put.
-    @Test func aTextWithPopShowsWholeWhileItsPanelIsOpen() async throws {
+    /// A text with Pop shows whole while it's edited without the playhead jumping past its way in (owner, canvas 2 F15,
+    /// 07/11/2026): picking Pop, opening its panel on its first frame, closing the panel with it still picked and bringing the
+    /// playhead back to its start all leave the playhead where it is, and the preview holds it whole there (`previewHold`);
+    /// playing lets go, the video keeps its Pop, and a slow zoom (which never hides it) holds nothing.
+    @Test func aTextWithPopIsHeldWholeWhilePausedAndThePlayheadStays() async throws {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         let overlays = viewModel.overlays
         let span = try addTitle(scenario, at: 10)
         let id = try #require(viewModel.selectedTextID)
-        overlays.setMotionPreset(.pop)
-        // Picking Pop puts the playhead where the title has come in, not on its first frame.
-        #expect(abs(scenario.player.currentTime - (span.start + 0.55)) < 0.001)
-        viewModel.show(nil)
-        viewModel.selection = .text(id)
         scenario.player.seek(to: span.start)
-        viewModel.show(.textStyle)
-        #expect(abs(scenario.player.currentTime - (span.start + 0.55)) < 0.001)
+        overlays.setMotionPreset(.pop)
+        #expect(scenario.player.currentTime == span.start, "Picking Pop leaves the playhead on its first frame")
         #expect(!scenario.player.isPlaying)
-        #expect(viewModel.edit.texts.first { $0.id == id }?.animation?.preset == .pop, "The video keeps its Pop")
-        // Past the way in: the playhead stays where it is.
-        viewModel.show(nil)
-        viewModel.selection = .text(id)
-        scenario.player.seek(to: span.start + 1)
-        viewModel.show(.textStyle)
-        #expect(scenario.player.currentTime == span.start + 1)
-        // A slow zoom never hides it.
-        overlays.setMotionPreset(.gentleZoom)
+        let hold = try #require(overlays.previewHold)
+        #expect(hold.id == id)
+        #expect(abs(hold.whole.lowerBound - 0.5) < 0.001 && hold.whole.upperBound == span.duration, "Whole once Pop has come in")
+        // The panel opened on its first frame: the playhead stays, still held.
         viewModel.show(nil)
         viewModel.selection = .text(id)
         scenario.player.seek(to: span.start)
         viewModel.show(.textStyle)
         #expect(scenario.player.currentTime == span.start)
+        #expect(overlays.previewHold == hold)
+        // Closed with the text still picked, and the playhead back on its start: held.
+        viewModel.show(nil)
+        viewModel.selection = .text(id)
+        scenario.player.seek(to: span.start + 2)
+        scenario.player.seek(to: span.start)
+        #expect(overlays.previewHold == hold)
+        // Playing shows the Pop as it is.
+        scenario.player.play()
+        #expect(overlays.previewHold == nil)
+        scenario.player.pause()
+        #expect(viewModel.edit.texts.first { $0.id == id }?.animation?.preset == .pop, "The video keeps its Pop")
+        // Nothing picked: nothing held.
+        viewModel.selection = nil
+        #expect(overlays.previewHold == nil)
+        // A slow zoom never hides it.
+        viewModel.selection = .text(id)
+        overlays.setMotionPreset(.gentleZoom)
+        #expect(overlays.previewHold == nil)
+    }
+
+    /// A Motion picked with the playhead off the text brings it to the text's start (where the preview shows it whole); on it,
+    /// the playhead stays.
+    @Test func aMotionPickedOffTheTextBringsThePlayheadToItsStart() async throws {
+        let scenario = await makeScenario()
+        let overlays = scenario.viewModel.overlays
+        let span = try addTitle(scenario, at: 10)
+        scenario.player.seek(to: span.end + 5)
+        overlays.setMotionPreset(.fade)
+        #expect(scenario.player.currentTime == span.start)
+        scenario.player.seek(to: span.start + 1)
+        overlays.setMotionPreset(.slideUp)
+        #expect(scenario.player.currentTime == span.start + 1)
     }
 
     @Test func aTextPlaysItsWayInOnlyWhenSomethingMovesIt() async throws {
