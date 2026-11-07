@@ -21,6 +21,8 @@ final class ToolAuditCaptureTests: XCTestCase {
             throw XCTSkip("Set TEST_RUNNER_CUE_SCREENSHOT_DIR to capture the tools")
         }
         continueAfterFailure = true
+        // A tour photographs every panel from its top to its end: the clip tools alone take longer than the default 5 minutes.
+        executionTimeAllowance = 900
     }
 
     /// Opens the editor on the demo take; each part starts here.
@@ -110,8 +112,8 @@ final class ToolAuditCaptureTests: XCTestCase {
         if tap("edit.templates.section.brand") { try tour("brand-kits") }
         apply()
         EditorApp.tapTool(app, "editByText")
-        try tour("sheet-edit-by-text")
-        closeSheet()
+        try tour("clean-up-text")
+        apply()
         EditorApp.tapTool(app, "captions")
         try tour("captions")
         for (button, name) in [("edit.captionsLanguage", "language"), ("edit.captionsTranslateButton", "translate"), ("edit.captionMore", "line-more")]
@@ -179,6 +181,7 @@ final class ToolAuditCaptureTests: XCTestCase {
                 }
             }
         }
+        if app.buttons["sheet.closeButton"].exists { closeSheet() }
         tap("edit.toolbar.back", within: 2)
         EditorApp.tapTool(app, "addMedia")
         try tour("menu-media")
@@ -343,10 +346,10 @@ final class ToolAuditCaptureTests: XCTestCase {
             }
             tap("edit.toolbar.back", within: 2)
             EditorApp.tapTool(app, "captions")
-            if tap("edit.captionsStyleButton"), tap("edit.panel.tab.font") {
-                try captureScrolling("\(size)-caption-font")
-                apply()
+            if tap("edit.captionsStyleButton"), tap("edit.panel.tab.custom") {
+                try captureScrolling("\(size)-caption-custom")
             }
+            closeOpenPanel()
             tap("edit.toolbar.back", within: 2)
             EditorApp.tapTool(app, "adjustVideo")
             try capture("\(size)-adjust")
@@ -416,6 +419,7 @@ final class ToolAuditCaptureTests: XCTestCase {
             try captureWithHierarchy("\(name)-bar-clip")
             scrollToolbar(toEnd: true, rightToLeft: rightToLeft)
             try captureWithHierarchy("\(name)-bar-clip-end")
+            scrollToolbar(toEnd: false, rightToLeft: rightToLeft)
             EditorApp.tapTool(app, "format")
             try captureWithHierarchy("\(name)-bar-clip-format-notice")
             app.terminate()
@@ -472,10 +476,10 @@ final class ToolAuditCaptureTests: XCTestCase {
             try capture("demo-voiceover-picked")
             tap("edit.toolbar.back", within: 2)
         }
-        if tapTrack(2, secondsAfterPlayhead: 1), app.buttons["edit.toolbar.editCaption"].exists(within: 3) {
-            try capture("demo-caption-picked")
-            if scrollToolbarToEnd() { try capture("demo-caption-picked-end") }
-            tap("edit.toolbar.back", within: 2)
+        // The captions lane opens the Captions panel (D4), with the line under the playhead in it.
+        if tapTrack(2, secondsAfterPlayhead: 1), app.buttons["edit.panel.apply"].exists(within: 3) {
+            try capture("demo-captions-lane")
+            closeOpenPanel()
         }
         // The B-roll plays from 4.2 s: the playhead goes there, and its window on the preview picks it.
         EditorApp.scrub(app, points: 250)
@@ -596,6 +600,16 @@ final class ToolAuditCaptureTests: XCTestCase {
 
     private func apply() {
         tap("edit.panel.apply", within: 2)
+    }
+
+    /// ✓ until no panel is open (a panel opened from another, like Caption style from Captions, closes back to the first).
+    private func closeOpenPanel() {
+        var closes = 0
+        while app.buttons["edit.panel.apply"].exists, closes < 3 {
+            app.buttons["edit.panel.apply"].tap()
+            closes += 1
+            sleep(1)
+        }
     }
 
     private func closeSheet() {
