@@ -71328,6 +71328,125 @@
         }
       }
     },
+    "More than one face in this video · the frame follows one" : {
+      "comment" : "Follow face note: the analysis often found two faces or more; the crop keeps to one of them",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أكثر من وجه في هذا الفيديو · يتتبّع الإطار وجهًا واحدًا"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mere end ét ansigt i denne video · billedet følger ét"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mehr als ein Gesicht in diesem Video · der Ausschnitt folgt einem"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hay más de una cara en este video · el encuadre sigue a una"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plus d’un visage dans cette vidéo · le cadre en suit un"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "इस वीडियो में एक से ज़्यादा चेहरे हैं · फ़्रेम एक के साथ चलता है"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ada lebih dari satu wajah di video ini · bingkai mengikuti satu"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Più di un viso in questo video · l’inquadratura ne segue uno"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この動画には複数の顔があります · 1つの顔を追います"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 영상에 얼굴이 둘 이상 있어요 · 한 얼굴만 따라가요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mer enn ett ansikt i denne videoen · utsnittet følger ett"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meer dan één gezicht in deze video · het beeld volgt er één"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mais de um rosto neste vídeo · o enquadramento segue um"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mer än ett ansikte i den här videon · bilden följer ett"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "วิดีโอนี้มีมากกว่าหนึ่งใบหน้า · เฟรมจะตามใบหน้าเดียว"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu videoda birden fazla yüz var · kadraj birini takip eder"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Video này có nhiều khuôn mặt · khung hình theo một khuôn mặt"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此视频中有多张人脸 · 画面跟随其中一张"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此影片中有多張人臉 · 畫面跟隨其中一張"
+          }
+        }
+      }
+    },
     "Mother’s Day" : {
       "comment" : "An occasion ideas can be tied to: shown on Find inspiration's card as “Coming up: %@” and in a starter's title",
       "localizations" : {
@@ -82647,6 +82766,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "物理治療師"
+          }
+        }
+      }
+    },
+    "Pick %@ to follow your face" : {
+      "comment" : "Follow face note when the crop has no room; %@ is a list of aspect ratios joined with 'or' (e.g. 4:5, 1:1, or 16:9), never the one picked",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اختر %@ لتتبّع وجهك"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vælg %@ for at følge dit ansigt"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle %@, damit dein Gesicht verfolgt wird"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige %@ para seguir tu cara"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisissez %@ pour suivre votre visage"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "चेहरे के साथ चलने के लिए %@ चुनें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pilih %@ untuk mengikuti wajahmu"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scegli %@ per seguire il tuo viso"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "顔を追うには%@を選んでください"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "얼굴을 따라가려면 %@를 고르세요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Velg %@ for å følge ansiktet"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kies %@ om je gezicht te volgen"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha %@ para seguir seu rosto"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Välj %@ för att följa ditt ansikte"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เลือก %@ เพื่อให้ตามใบหน้า"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yüzünü takip etmek için %@ seç"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chọn %@ để theo khuôn mặt"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择 %@ 来跟随人脸"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選擇 %@ 來跟隨人臉"
           }
         }
       }
@@ -108492,6 +108730,125 @@
         }
       }
     },
+    "This format exports at %@ · never enlarged" : {
+      "comment" : "Aspect ratio and Export options: the file's real width×height (e.g. 606×1080) when the format's crop leaves fewer pixels than the quality; the video is never scaled up",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يُصدَّر هذا التنسيق بدقة %@ · دون تكبير"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dette format eksporteres i %@ · aldrig forstørret"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieses Format wird in %@ exportiert · nie vergrößert"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este formato se exporta en %@ · nunca se amplía"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce format s’exporte en %@ · jamais agrandi"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "यह फ़ॉर्मैट %@ में एक्सपोर्ट होता है · कभी बड़ा नहीं किया जाता"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Format ini diekspor dalam %@ · tidak pernah diperbesar"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Questo formato si esporta in %@ · mai ingrandito"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この比率では %@ で書き出されます · 拡大はしません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 비율은 %@로 내보내져요 · 확대하지 않아요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dette formatet eksporteres i %@ · aldri forstørret"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deze verhouding exporteert in %@ · nooit vergroot"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta proporção exporta em %@ · sem ampliar"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Det här formatet exporteras i %@ · aldrig förstorat"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "อัตราส่วนนี้ส่งออกที่ %@ · ไม่ขยายภาพ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu oran %@ olarak dışa aktarılır · asla büyütülmez"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tỷ lệ này xuất ở %@ · không bao giờ phóng to"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此比例导出为 %@ · 不会放大"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此比例匯出為 %@ · 不會放大"
+          }
+        }
+      }
+    },
     "This iPhone already used a friend’s code." : {
       "comment" : "Answer under the invite code field: a code was already used on this iPhone.",
       "localizations" : {
@@ -125654,6 +126011,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "你的邀請碼"
+          }
+        }
+      }
+    },
+    "Your face is found in part of the video · the frame holds still where it’s lost" : {
+      "comment" : "Follow face note: a face (or a person) was found in only part of the video; where it isn't, the crop stays where it was",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يظهر وجهك في جزء من الفيديو فقط · يثبت الإطار حيث يختفي"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dit ansigt findes kun i en del af videoen · billedet står stille, hvor det forsvinder"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein Gesicht ist nur in einem Teil des Videos zu finden · wo es fehlt, bleibt der Ausschnitt stehen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu cara aparece solo en parte del video · donde se pierde, el encuadre se queda quieto"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votre visage n’est trouvé que sur une partie de la vidéo · là où il est perdu, le cadre reste fixe"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपका चेहरा वीडियो के कुछ हिस्से में ही मिला · जहाँ नहीं मिलता, वहाँ फ़्रेम रुका रहता है"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wajahmu hanya ditemukan di sebagian video · saat hilang, bingkai diam di tempat"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il tuo viso si trova solo in parte del video · dove si perde, l’inquadratura resta ferma"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "顔が見つかるのは動画の一部だけです · 見失った所では画面は止まったままです"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "영상 일부에서만 얼굴을 찾았어요 · 놓친 곳에서는 화면이 그대로 있어요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ansiktet ditt finnes bare i deler av videoen · der det forsvinner, står utsnittet stille"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je gezicht is maar in een deel van de video gevonden · waar het kwijt is, blijft het beeld stil"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seu rosto aparece só em parte do vídeo · onde ele some, o enquadramento fica parado"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ditt ansikte hittas bara i en del av videon · där det försvinner står bilden still"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "พบใบหน้าคุณเพียงบางช่วงของวิดีโอ · ช่วงที่หาไม่เจอ เฟรมจะอยู่นิ่ง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yüzün videonun yalnızca bir kısmında bulundu · kaybolduğu yerde kadraj sabit kalır"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chỉ thấy khuôn mặt bạn ở một phần video · chỗ mất dấu, khung hình đứng yên"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "只在视频的部分画面中找到你的脸 · 找不到时画面保持不动"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "只在影片的部分畫面中找到你的臉 · 找不到時畫面保持不動"
           }
         }
       }
@@ -411322,125 +411798,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "挑選"
-          }
-        }
-      }
-    },
-    "Pick 4:5, 1:1 or 16:9 to follow your face" : {
-      "comment" : "Follow face note when the crop has no room",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "اختر 4:5 أو 1:1 أو 16:9 لتتبّع وجهك"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vælg 4:5, 1:1 eller 16:9 for at følge dit ansigt"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wähle 4:5, 1:1 oder 16:9, damit dein Gesicht verfolgt wird"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Elige 4:5, 1:1 o 16:9 para seguir tu cara"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Choisissez 4:5, 1:1 ou 16:9 pour suivre votre visage"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "चेहरे के साथ चलने के लिए 4:5, 1:1 या 16:9 चुनें"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pilih 4:5, 1:1, atau 16:9 untuk mengikuti wajahmu"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Scegli 4:5, 1:1 o 16:9 per seguire il tuo viso"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "顔を追うには4:5、1:1、16:9を選んでください"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "얼굴을 따라가려면 4:5, 1:1 또는 16:9를 고르세요"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Velg 4:5, 1:1 eller 16:9 for å følge ansiktet"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kies 4:5, 1:1 of 16:9 om je gezicht te volgen"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Escolha 4:5, 1:1 ou 16:9 para seguir seu rosto"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Välj 4:5, 1:1 eller 16:9 för att följa ditt ansikte"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "เลือก 4:5, 1:1 หรือ 16:9 เพื่อให้ตามใบหน้า"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Yüzünü takip etmek için 4:5, 1:1 veya 16:9 seç"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chọn 4:5, 1:1 hoặc 16:9 để theo khuôn mặt"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "选择 4:5、1:1 或 16:9 来跟随人脸"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "選擇 4:5、1:1 或 16:9 來跟隨人臉"
           }
         }
       }

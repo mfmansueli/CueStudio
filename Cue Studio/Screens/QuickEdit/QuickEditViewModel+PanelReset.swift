@@ -24,8 +24,15 @@ extension QuickEditViewModel {
         case .textStyle: textReset
         case .motion: motionReset
         case .media: mediaReset
+        case .crop: formatReset
         default: nil
         }
+    }
+
+    /// Aspect ratio back to the video as recorded: its ratio, Fill, centered, Follow face off.
+    private var formatReset: (() -> Void)? {
+        guard look.formatIsChanged else { return nil }
+        return { [weak self] in self?.look.resetFormat() }
     }
 
     private var speedReset: (() -> Void)? {

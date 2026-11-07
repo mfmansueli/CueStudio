@@ -10,8 +10,8 @@ import Foundation
 /// for the whole take or the picked clip, and the recordings' motion analysis that Follow face and Stabilize read. What it keeps
 /// is its panels' state; the look itself is in the edit, and every change is an undo step through the session.
 ///
-/// Each part of the work is in its own extension (`+Adjust`, `+Auto`, `+Skin`, `+ClipScope`, `+Background`, `+CopyLook`, `+FaceFollow`,
-/// `+Stabilize`, `+MotionAnalysis`).
+/// Each part of the work is in its own extension (`+Adjust`, `+Auto`, `+Skin`, `+ClipScope`, `+Background`, `+CopyLook`, `+Format`,
+/// `+FaceFollow`, `+Stabilize`, `+MotionAnalysis`).
 @MainActor
 @Observable
 final class LookViewModel: EditorPart {
@@ -50,6 +50,10 @@ final class LookViewModel: EditorPart {
     @ObservationIgnored var motionRequestedURLs: [URL] = []
     /// The take's upright frame in pixels, read when the recording opens (Follow face needs a format other than it).
     @ObservationIgnored var recordingUprightSize: CGSize?
+    /// The pixels exporting an edit makes when its format's crop leaves fewer than its quality says ("606×1080"), by the rule of the
+    /// review the editor opened from (`TakeReviewViewModel.reducedOutputSize(for:)`: the quality, Pro, the recording's frame); nil
+    /// otherwise, and always nil where nothing exports from the editor.
+    @ObservationIgnored var reducedExportSize: (TakeEdit) -> CGSize? = { _ in nil }
 
     let session: EditorSession
     /// Measures Auto.
