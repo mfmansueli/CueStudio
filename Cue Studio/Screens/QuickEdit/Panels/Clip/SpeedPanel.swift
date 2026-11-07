@@ -6,8 +6,9 @@
 import SwiftUI
 
 /// Speed (this clip): Normal (0.5× to 2× in one tap, the picked one in yellow; with one clip, "Split at playhead to change one
-/// part"; Advanced: any speed from 0.5× to 3×) or Curve (ready-made curves drawn as they play, and the curve to shape by its
-/// points). "Keep voice pitch" for both. Off 1×, "Preview" in the header plays the clip's first seconds as they play now.
+/// part"; "Keep voice pitch"; Advanced: any speed from 0.5× to 3×) or Curve (ready-made curves drawn as they play, the curve
+/// to shape by its points, then "Keep voice pitch"). Normal | Curve only switches the view; a speed picked in Normal replaces
+/// a curve (none is lit then, so even 1× can be picked). Off 1×, "Preview" in the header plays the clip's first seconds as they play now.
 struct SpeedPanel: View {
     @Bindable var viewModel: QuickEditViewModel
 
@@ -22,21 +23,25 @@ struct SpeedPanel: View {
             ) { viewModel.clips.showSpeedCurves($0) }
             if viewModel.clips.showsCurveTab {
                 SpeedCurvePanel(viewModel: viewModel)
+                keepsPitch(clip)
             } else {
-                normal(speed: speed)
+                normal(speed: speed, hasCurve: clip?.speedCurve != nil)
             }
-            PanelToggleRow(
-                label: String(localized: "Keep voice pitch"), detail: String(localized: "No chipmunk effect when sped up"),
-                isOn: clip?.keepsPitch ?? true, identifier: "edit.speed.keepPitch"
-            ) { viewModel.clips.setKeepsPitch(!(clip?.keepsPitch ?? true)) }
         }
     }
 
+    private func keepsPitch(_ clip: EditSegment?) -> some View {
+        PanelToggleRow(
+            label: String(localized: "Keep voice pitch"), detail: String(localized: "No chipmunk effect when sped up"),
+            isOn: clip?.keepsPitch ?? true, identifier: "edit.speed.keepPitch"
+        ) { viewModel.clips.setKeepsPitch(!(clip?.keepsPitch ?? true)) }
+    }
+
     @ViewBuilder
-    private func normal(speed: Double) -> some View {
+    private func normal(speed: Double, hasCurve: Bool) -> some View {
         PanelSegmented(
             options: ClipsViewModel.quickSpeeds.map { PanelOption($0, SpeedScale.label(forMultiple: $0), key: Self.key($0)) },
-            selection: ClipsViewModel.quickSpeeds.first { abs($0 - speed) < 0.001 },
+            selection: hasCurve ? nil : ClipsViewModel.quickSpeeds.first { abs($0 - speed) < 0.001 },
             accent: true, identifier: "edit.speed"
         ) { viewModel.clips.setClipSpeed($0) }
         if viewModel.edit.timeline.segments.count == 1 {
@@ -46,6 +51,7 @@ struct SpeedPanel: View {
                 action: viewModel.clips.splitToChangeOnePart
             )
         }
+        keepsPitch(viewModel.targetClip)
         PanelAdvancedButton(
             isOpen: viewModel.showsAdvanced,
             detail: ClipsViewModel.quickSpeeds.contains { abs($0 - speed) < 0.001 } ? nil : PanelAdvancedButton.changed(1)

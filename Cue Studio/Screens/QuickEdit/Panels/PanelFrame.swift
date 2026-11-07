@@ -27,7 +27,8 @@ struct PanelFrame<Fixed: View, Content: View, Footer: View>: View {
             title: viewModel.panelTitle(panel), subtitle: viewModel.panelSubtitle(panel), onReset: onReset ?? viewModel.panelReset(panel),
             compare: compare, play: play, accessory: accessory,
             expansion: panel.isExpandable ? expansion : nil, clearsHomeIndicator: panel.scrollsClearOfHomeIndicator, contentKey: viewModel.panelTab,
-            keptOffset: keptOffset, onApply: viewModel.closePanel, fixed: { keepTheirOwn; fixed }, content: { content }, footer: { footer }
+            keptOffset: keptOffset, revealsAdvanced: viewModel.showsAdvanced,
+            onApply: viewModel.closePanel, fixed: { keepTheirOwn; fixed }, content: { content }, footer: { footer }
         )
         .accessibilityIdentifier("edit.panel.\(panel.rawValue)")
     }

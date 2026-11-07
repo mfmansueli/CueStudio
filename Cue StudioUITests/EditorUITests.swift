@@ -60,7 +60,7 @@ final class EditorUITests: XCTestCase {
         XCTAssertFalse(app.buttons["edit.adjust.resetOne"].exists)
     }
 
-    /// Skin is a panel of its own: opening it applies nothing; Natural sets every control at once; moving one makes it Custom; Refine
+    /// Skin is a panel of its own: opening it applies nothing; Natural sets every control at once; moving one makes it Custom; Texture
     /// waits for the smoothing; each control has its own Reset and the panel's Reset turns everything off. Adjust has no smoothing.
     func testSkinIsItsOwnPanelWithPresetsControlsAndReset() {
         let app = EditorApp.open()
@@ -71,7 +71,7 @@ final class EditorUITests: XCTestCase {
         XCTAssertEqual(smooth.value as? String, "0", "opening Skin applies nothing")
         let state = app.descendants(matching: .any)["edit.skin.state"]
         XCTAssertEqual(state.label, "Off")
-        // Refine waits for the smoothing, in the ruler's room.
+        // Texture waits for the smoothing, in the ruler's room.
         app.buttons["edit.skin.texture"].tap()
         XCTAssertTrue(app.descendants(matching: .any)["edit.skin.textureNote"].exists(within: 5))
         XCTAssertFalse(app.descendants(matching: .any)["edit.skin.ruler"].exists)

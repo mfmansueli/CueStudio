@@ -85,7 +85,11 @@ extension OverlaysViewModel {
     /// Answers "keep its sound?" for a video just added: kept at full volume, or muted.
     func chooseSound(for id: UUID, keeps: Bool) {
         if soundChoiceMediaID == id { soundChoiceMediaID = nil }
-        if keeps { setMediaSoundVolume(id, 1) }
+        guard keeps else { return }
+        updateMedia(id) {
+            $0.audioVolume = 1
+            $0.keptSoundWhenAdded = true
+        }
     }
 
     /// A video's own sound: 0 mutes it.

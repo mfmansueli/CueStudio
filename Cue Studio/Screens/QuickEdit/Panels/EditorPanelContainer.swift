@@ -37,6 +37,9 @@ struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
     /// Where the content was scrolled to, kept for when it shows again (Caption style › Styles: back from another tab, the cards
     /// are where they were); nil starts at the top.
     var keptOffset: Binding<CGFloat>?
+    /// True while the panel's Advanced is open: as it opens, the content scrolls to put Advanced at the top with its controls under
+    /// it, so they show whole without a search (owner, canvas 2: Volume › Advanced reached whole; the panel grows at the same time).
+    var revealsAdvanced = false
     let onApply: () -> Void
     @ViewBuilder var fixed: Fixed
     @ViewBuilder var content: Content
@@ -53,6 +56,7 @@ struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
         VStack(spacing: 0) {
             header
             fixed
+            ScrollViewReader { proxy in
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
                     content
@@ -61,6 +65,12 @@ struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
                 .padding(.top, 10)
                 .padding(.bottom, 12)
                 .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .task(id: revealsAdvanced) {
+                guard revealsAdvanced else { return }
+                // After the panel has grown and the new controls are laid out: Advanced at the top, its controls under it.
+                try? await Task.sleep(for: .milliseconds(350))
+                withAnimation(.smooth) { proxy.scrollTo(PanelAdvancedButton.scrollID, anchor: .top) }
             }
             .scrollPosition($position)
             .onScrollGeometryChange(
@@ -79,6 +89,7 @@ struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
             .scrollIndicators(.hidden)
             .scrollBounceBehavior(.basedOnSize)
             .scrollEdgeEffectStyle(isRoomy ? .soft : nil, for: .bottom)
+            }
             footer
                 .padding(.horizontal, 16)
                 .padding(.bottom, Footer.self == EmptyView.self ? 0 : 10)

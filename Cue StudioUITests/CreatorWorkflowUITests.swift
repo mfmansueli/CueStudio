@@ -239,7 +239,7 @@ final class CreatorWorkflowUITests: XCTestCase {
         let everyCut = app.buttons["edit.transition.everyCut"]
         flow.reveal(everyCut, "Use on every cut")
         flow.tap(everyCut, "Use on every cut")
-        XCTAssertTrue(flow.toastSays("Zoom on every cut"), "No toast after Use on every cut")
+        XCTAssertTrue(flow.toastSays("Zoom on all"), "No toast after Use on every cut")
         flow.tap(app.buttons["edit.panel.apply"], "✓ on the transition")
         flow.backToMainTools()
         flow.report()

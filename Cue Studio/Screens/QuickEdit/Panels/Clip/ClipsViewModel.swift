@@ -39,8 +39,9 @@ final class ClipsViewModel: EditorPart {
     var cleanUpIsExpanded = false
     /// Edit by text: the picked words (indices in `transcriptWords`).
     var transcriptSelection: ClosedRange<Int>?
-    /// Speed shows its Curve tab (`+SpeedCurve`).
-    var showsSpeedCurves = false
+    /// Speed's view per clip, once the creator picked one (`+SpeedCurve`): true shows Curve, false Normal. A clip with no
+    /// entry opens on the view that matches it (Curve when it has a curve).
+    var speedShowsCurve: [UUID: Bool] = [:]
     /// A point of the speed curve is being dragged (`+SpeedCurve`).
     @ObservationIgnored var shapesCurve = false
     /// A clip's handle is held on the timeline (the editor says so): curved clips' sound steps meanwhile, like a curve's point.

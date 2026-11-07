@@ -29,11 +29,6 @@ extension LookViewModel {
             }
         }
 
-        /// The chip's name: Texture is under Refine.
-        var chipLabel: String {
-            self == .texture ? String(localized: "Refine", comment: "Video editor › Skin: the chip with the smoothing's finer settings (Texture)") : label
-        }
-
         /// What VoiceOver adds.
         var hint: String {
             switch self {

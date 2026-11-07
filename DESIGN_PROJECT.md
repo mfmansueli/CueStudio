@@ -1068,8 +1068,9 @@ mínima (9.2).
 **Painel próprio** (`SkinPanel`, `LookViewModel+Skin`), fora do Adjust: do vídeo inteiro pela barra principal (numa barra de item, com o selo ALL,
 §55), do clipe pela barra do clipe (`LookViewModel+ClipScope`). Em cima, **Natural** e **Studio** (`SkinPreset`) põem todos os controles de uma vez;
 ao lado, "Custom" quando um controle sai do preset e "Off" com tudo em 0 (o lugar fica reservado: o painel não pula). Chips **Smooth** · **Face
-light** · **Anti-shine** · **Refine** (a Texture da suavização), cada um com o valor quando ligado; embaixo, o nome, o valor, o Reset daquele
-controle e a régua 0–100. Refine espera a suavização ("Turn up Smooth to refine its texture"). O Reset do painel desliga tudo; ◐ segurado mostra o
+light** · **Anti-shine** · **Texture** (a textura da suavização; o mesmo nome no chip e na régua), cada um com o valor quando age; embaixo, o
+nome, o valor, o Reset daquele controle e a régua 0–100. Texture espera a suavização ("Turn up Smooth to refine its texture"). Tocar num preset
+aplica; tocar num chip só escolhe a régua. O Reset do painel desliga tudo; ◐ segurado mostra o
 vídeo sem Skin (cor, filtro, fundo e textos ficam; selo "Without Skin"). **Abrir não aplica nada**: tudo começa em 0, e o "Try it" da descoberta
 (`EditorTool.skinSmoothing`, nome mantido para notificações já agendadas) abre o painel do vídeo inteiro em Smooth. Cada mudança é um passo de
 desfazer (os movimentos rápidos de uma régua são um). VoiceOver: nome, valor e uma dica por controle. Presets: **Natural** Smooth 40 · Texture 60 ·
@@ -2081,7 +2082,8 @@ auditoria: `reports/editor-award-checklist.md`.
 - **Arrastar no tempo:** com um texto, mídia, legenda ou som escolhido, arrastar o **corpo** do bloco o move (o tamanho fica), grudando nos cortes e
   bordas com toque háptico; as pontas amarelas continuam aparando (`TimelineGeometry.bodies`, `HandleTarget.move`).
 - **Marcas de corte sempre à mão:** com um clipe escolhido, os outros cortes mantêm a marca (tocar abre Transitions); só as bordas do clipe
-  escolhido a cedem às alças. **Use on every cut** fica num rodapé fixo do painel de transição (sempre visível, mesmo no SE).
+  escolhido a cedem às alças. Os dez estilos de transição ficam numa fileira que rola para o lado (o próximo aparece na borda); a régua de
+  **Duration**, inteira, e **Use on all N cuts** (o número de cortes) ficam num rodapé fixo (sempre visível, mesmo no SE).
 - **Nada termina em silêncio:** Paste look que não muda nada diz "Every clip already looks like this" / "This clip already looks like this";
   Edit by text que não ouviu palavras mostra o motivo (`CaptionState.message`, em `warnText`) e só oferece **Try again** quando pode ajudar.
 - **Edit by text à vista:** na barra principal, no ••• do painel de legendas ("Edit by text · cut words from the video") e nas ferramentas do
@@ -2130,11 +2132,12 @@ auditoria: `reports/editor-award-checklist.md`.
   Nenhum rótulo quebra no meio da palavra nem botão empilha letras: **Adjust** põe nome, valor, ◐ e Auto numa linha; a nota de um clipe ("From the
   whole take") fica embaixo do nome, na mesma altura, quando não cabe ao lado (iPhone 17 e SE), e com texto grande nome, nota e botões têm
   linhas próprias; segmentos (Speed) com
-  mais de 3 opções vão em linhas de 3 nos tamanhos de acessibilidade; os cartões de **Filters** se alinham pelo topo e alargam com o texto (até
-  96 pt). **Pauses:** cartão em duas linhas (duração e Remove/Keep; quando e o círculo de Listen, 44 pt de toque), a 8 pt do "Pauses longer than",
+  mais de 3 opções vão em linhas de 3 nos tamanhos de acessibilidade; os cartões de **Filters** têm a miniatura de 64 pt de altura, se alinham pelo
+  topo e alargam com o texto (até 96 pt), e Intensity fica em cima deles quando há filtro (dono, canvas 2 F8: o painel continua pequeno). **Pauses:** cartão em duas linhas (duração e Remove/Keep; quando e o círculo de Listen, 44 pt de toque), a 8 pt do "Pauses longer than",
   inteiro no SE; a largura deixa o próximo cartão aparecendo na borda quando há mais (`CleanUpCardRow.cardWidth`); com texto grande o botão "Remove N
   pauses" desce para uma linha própria. **Volume:** sem os rótulos 0%/200% (o valor fica escrito em cima), e "Mute this clip" a 8 pt do slider,
-  inteiro acima do Home Indicator.
+  inteiro acima do Home Indicator; com Advanced aberto, o painel do clipe passa a médio, e Fade in e Fade out aparecem inteiros
+  (`VolumeAdvancedReachUITests`; os da música, embaixo do abaixar sob a voz, são alcançados rolando até o fim).
 - **Templates** (`VideoTemplate`, painel Templates: Bold hook, Tutorial, Story, Clean, Interview): legendas (tema e revelação, mantendo linhas,
   posição e margens), tipo e animação de todos os textos (não dos gráficos) e o estilo dos próximos; sem texto, abre o vídeo com o título do
   roteiro. As palavras, a posição de cada texto, os cortes, o som e os gráficos ficam; **um** Undo desfaz tudo ("Bold hook on the whole video" ·
@@ -2160,7 +2163,8 @@ auditoria: `reports/editor-award-checklist.md`.
   uma imagem em pé em H.264. Se o HDR não puder ser gravado, o quadro congela em SDR (nunca falha por isso).
 - **Efeitos sonoros seguem o momento** (`MusicClip.following`): um corte antes de um efeito o traz junto, como textos e legendas; a música fica.
   Apagar o clipe onde um efeito (ou um som extraído) foi posto o leva junto, sem amontoar no começo do próximo (relações no tempo, abaixo).
-- **Use on every cut** copia também a duração; se todos já têm, o toast diz "Every cut already has it".
+- **Use on all N cuts** copia também a duração, num passo de desfazer; o toast conta os cortes ("Dissolve on all 4 cuts") e tem Undo; se todos já
+  têm, diz "Every cut already has it".
 - **Edit by text numa montagem** corta só o clipe onde as palavras foram lidas (uma cópia as mantém); palavras com 44 pt; as cortadas aparecem
   riscadas depois do clipe onde tocavam e **Put back** as devolve ali (`EditTimeline.putBack`); sem lugar, o toast diz por quê.
 - **iPhone quente e espaço:** ficam na exportação da revisão (§38).
@@ -2323,7 +2327,7 @@ Prévia e exportação passam pelo mesmo compositor (`CueVideoCompositor`), ent�
   da corrida em curso, com o editor aberto e o vídeo e o item como estavam ("The video changed meanwhile · Track it again"); fechar o editor
   cancela.
 - **Speed › Curve** (`EditSegment.speedCurve`, `SpeedCurve`, `SpeedCurvePreset`, `SpeedCurvePanel`, `SpeedCurveEditor`): o painel Speed tem
-  **Normal | Curve**. Curve: None, **Hero, Bullet, Ramp up, Ramp down, Montage, Flash in, Flash out** (cada cartão desenha a curva) e **Custom**
+  **Normal | Curve**, que só trocam a vista (cada clipe abre na sua: a escolhida para ele, senão Curve quando tem curva). Curve: None, **Hero, Bullet, Ramp up, Ramp down, Montage, Flash in, Flash out** (cada cartão desenha a curva) e **Custom**
   (cinco pontos a 1×); o editor mostra a curva (0,25× a 4×, a faixa do varispeed da Apple, para o som sem "Keep voice pitch" nunca se afastar
   da imagem; escala logarítmica, linha de 1×, agulha) e os pontos: arrastar para cima acelera,
   para baixo desacelera, os de dentro também andam para os lados (VoiceOver: ajustável). A velocidade flui entre os pontos (cúbica monótona em
@@ -2334,7 +2338,9 @@ Prévia e exportação passam pelo mesmo compositor (`CueVideoCompositor`), ent�
   últimos). Enquanto um dedo arrasta um ponto da curva ou uma alça de clipe, a prévia estica o som em passos (instantâneo) e o renderiza quando o
   dedo solta (`EditPlayback.stepsCurveSound`). Dividir um clipe curvo mantém a parte da curva de cada lado (no máximo 25 amostras da curva, mais os
   pontos de dentro quando são até 8: cortar muitas vezes, como em Cut on the beats, nunca a faz crescer); aparar pelas alças estica a curva
-  no que sobrou; na prévia, as alças alcançam o resto da gravação na velocidade da ponta. Escolher uma velocidade em Normal tira a curva. Selo do clipe: o nome da curva ou "Curve".
+  no que sobrou; na prévia, as alças alcançam o resto da gravação na velocidade da ponta. Escolher uma velocidade em Normal (com curva, nenhuma
+  fica acesa, então até 1× pode ser escolhido) tira a curva num passo de desfazer, e o toast diz "Curve replaced by 1×" com Undo. Keep voice
+  pitch fica antes de Advanced em Normal e depois do editor em Curve. Selo do clipe: o nome da curva ou "Curve".
 - **Reverse** (barra do clipe, depois de Freeze frame; `ReversedClipWriter`, `ReversedSound`, `ClipReversal`): o trecho do clipe é escrito de trás
   para a frente, imagem e som, como um vídeo próprio na mídia da edição (HEVC no tamanho, quadros por segundo e orientação da gravação; alguns
   quadros por vez, no máximo ~100 MB na memória), e o clipe passa a tocá-lo, com a mesma velocidade, look e lugar; textos, mídias e voice-overs em
@@ -2346,10 +2352,12 @@ Prévia e exportação passam pelo mesmo compositor (`CueVideoCompositor`), ent�
 - **Beats** (para música, dos Files ou da biblioteca do Cue; efeitos sonoros e sons extraídos do vídeo não têm; `BeatDetector`, `BeatTracker`, `BeatStore`, `BeatCuts`,
   `BeatsPanel`): as de uma faixa da biblioteca vêm da partitura dela, exatas, sem procurar; as de um arquivo dos Files são achadas no iPhone quando a música entra (fluxo espectral, tempo pela autocorrelação entre 60 e 200 BPM, batidas
   por programação dinâmica), guardadas ao lado do arquivo (`<arquivo>.cuebeats`) e aparecem como risquinhos na faixa da música. **Beats** na barra
-  da música: **Snap to beats** (a agulha e as bordas grudam nas batidas; `TakeEdit.snapsToBeats`, ligado), **Move cuts to the beats** (cada corte
-  vai para a batida mais próxima, até 0,5 s, encurtando ou alongando o clipe antes dele, nunca além da gravação nem para dentro da parte seguinte)
-  e **Cut on** Every beat · Every 2 · Every 4 › **Cut the video on the beats**. Subtítulo: "112 BPM · 48 beats in the video", "Finding the
-  beats…" ou "No steady beat in this music". Cada ação é um passo de desfazer.
+  da música, nesta ordem: **Cut on** Every beat · Every 2 · Every 4 e o botão que diz o intervalo (**Cut on every beat** / **Cut every 2 beats** /
+  **Cut every 4 beats**: corta o vídeo); **Snap to beats** (a agulha e as bordas grudam nas batidas; `TakeEdit.snapsToBeats`, ligado); **Move my
+  cuts to the nearest beat** (não cria corte: cada corte já feito vai para a batida mais próxima, até 0,5 s, encurtando ou alongando o clipe antes
+  dele, nunca além da gravação nem para dentro da parte seguinte). A nota diz de onde vieram as batidas: "Found on your iPhone in this music from
+  Cue." ou "…in the music you added from Files.". Subtítulo: "112 BPM · 48 beats in the video", "Finding the beats…", "No steady beat in this
+  music", ou, antes disso, "Cue’s music" / "Music from Files". Cada ação é um passo de desfazer.
 - **Barras** (a de hoje; a ordem de cada uma está em §54 › Barras): Clipe: Split · Speed · Volume · **Mute** · Zoom | Adjust · Skin · Filters · Background · Stabilize · Blur area · Copy look · Paste look | **Transition** · Duplicate · Freeze frame · Reverse · Replace · Reorder · Extract audio · Voice effects (e as do vídeo, §55) · Delete. Texto: Edit · Style · Motion · Keyframe · **Track** · Duplicate · Delete. Foto ou vídeo por cima: Edit · Volume · Motion ·
   Mask · Split · Replace · Blur area · **Track** · Keyframe · Duplicate · Save to library · Delete; um apoio da tela dividida e a área do vídeo
   principal: §54. Música: Volume · **Beats** ·
@@ -3236,7 +3244,8 @@ keyframes; o Cue faz cada uma dessas coisas direto. Plano aprovado pelo dono: ht
     "This video has no sound"); **Motion** abre o painel próprio (`MediaMotionPanel`: animações prontas, Track, keyframes, Starts/Ends). O painel
     **Edit** perdeu o Advanced e ganhou **Opacity** (10–100%, `MediaOverlay.opacity`, multiplicada pela dos keyframes).
   - **Clipe:** Split · Speed · **Volume** · Mute · Zoom… (o volume de cada clipe de uma montagem volta à tela); a ordem inteira está em §55.
-  - **Legenda:** Edit · Split · Join next · **Emphasis** · Style · Delete (Emphasis abre a linha com o More aberto, nas palavras a destacar).
+  - **Legenda:** Edit · **Style** · Split · Join next · **Emphasis** · Delete (dono, canvas 2 N2, 07/11: Style logo depois de Edit; Emphasis abre a
+    linha com o More aberto, nas palavras a destacar).
   - Split de uma mídia usa o mesmo ícone do Split do clipe; em inglês, Blur area usa "Track" como o resto do app (em português, "Seguir").
 - **Áreas pequenas medidas no iPhone 15 Pro** (`BlurTrackingDeviceTests`, 26/10, na take do dono): ovais desenhadas sobre o nariz (227×269 px),
   um olho (189×58 px) e a boca (343×160 px), seguidas pelo Vision e conferidas em cada um dos 882 quadros contra os pontos do rosto que o Vision
@@ -3324,7 +3333,8 @@ recusado).
   clipe); o som sobe do silêncio no começo e desce a ele no fim, nunca menos que a curva curta de um corte (`EditedComposition.levels`). O fade
   out espera a rampa de abertura do clipe (a do silêncio, a do corte ou a que leva ao volume dele): uma rampa que começa dentro de outra faz o
   AVFoundation encerrar o app (o fade out no máximo do slider começava 5 ms depois da rampa ao volume do clipe), e `VolumeRamp` ainda as põe uma
-  depois da outra no relógio da composição. O Reset do Volume zera os fades também.
+  depois da outra no relógio da composição. O Reset do Volume zera os fades também. Numa foto ou vídeo por cima, o Reset do Volume mexe só no som
+  dela e o volta a como entrou: mudo, ou 100% se a pessoa disse para manter o som (`MediaOverlay.keptSoundWhenAdded`); o clipe embaixo fica.
 - **Reset clip** (`ClipsViewModel+Reset`): num passo de desfazer, o clipe volta como gravado: 1×, sem curva, som em 100% e ligado, sem Zoom,
   Adjust, Skin, filtro e fundo (os próprios e também os do vídeo inteiro e da gravação, desligados só nele: `ClipLook.asFilmed`; dono 29/10/2026,
   o Studio do vídeo inteiro ficava e o aviso dizia que o clipe já estava como gravado), Stabilize, Crop, Rotate, Mirror, Animation e fades, e

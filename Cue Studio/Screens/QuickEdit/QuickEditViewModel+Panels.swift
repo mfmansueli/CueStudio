@@ -22,6 +22,8 @@ extension QuickEditViewModel {
         if panel == .voiceOver && audio.offersNarrationScript { return .medium }
         // Music's Volume has its lowering under the voice too.
         if panel == .volume, selection?.musicID != nil { return .medium }
+        // A clip's Advanced (Fade in and Fade out) gets the room to show both whole, not scrolled inside the short panel.
+        if panel == .volume, showsAdvanced { return .medium }
         return panel.size
     }
 

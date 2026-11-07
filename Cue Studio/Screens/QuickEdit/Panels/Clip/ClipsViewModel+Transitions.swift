@@ -54,7 +54,8 @@ extension ClipsViewModel {
         commit(timeline, key: "transitionDuration.\(index)")
     }
 
-    /// The same transition on every cut, as long as the picked cut's, in one undo step. Already everywhere: a toast says so.
+    /// The same transition on every cut, as long as the picked cut's, in one undo step; the toast counts the cuts and offers
+    /// Undo. Already everywhere: a toast says so.
     func setTransitionOnEveryCut(_ transition: EditTransition) {
         guard isReady else { return }
         let duration = selectedJoinIndex.flatMap { edit.timeline.segments[$0].transitionDuration }
@@ -69,9 +70,10 @@ extension ClipsViewModel {
             return
         }
         commit(timeline)
-        toast.show(transition == .hardCut
-            ? String(localized: "Every cut is a hard cut")
-            : String(localized: "\(transition.label) on every cut"))
+        let count = timeline.segments.count - 1
+        sayUndoable(transition == .hardCut
+            ? String(localized: "All \(count) cuts are hard cuts")
+            : String(localized: "\(transition.label) on all \(count) cuts"))
     }
 
     /// Under the transitions: a cut that removed nothing shows both sides as the same video.

@@ -46,6 +46,7 @@ extension QuickEditViewModel {
         case .caption:
             let own = [
                 EditorToolbarItem(id: "editCaption", label: String(localized: "Edit"), systemImage: "pencil", action: .editCaption),
+                EditorToolbarItem(id: "style", label: String(localized: "Style"), systemImage: "textformat.alt", action: .open(.captionStyle)),
                 EditorToolbarItem(
                     id: "split", label: String(localized: "Split"), systemImage: "arrow.left.and.line.vertical.and.arrow.right", action: .splitCaption
                 ),
@@ -53,7 +54,6 @@ extension QuickEditViewModel {
                     id: "join", label: String(localized: "Join next"), systemImage: "arrow.right.and.line.vertical.and.arrow.left", action: .joinCaption
                 ),
                 EditorToolbarItem(id: "emphasis", label: String(localized: "Emphasis"), systemImage: "highlighter", action: .emphasizeCaption),
-                EditorToolbarItem(id: "style", label: String(localized: "Style"), systemImage: "textformat.alt", action: .open(.captionStyle)),
             ]
             // Edit already opens the Captions panel on this line: Captions would open the same list.
             return withShortcuts(own, Self.itemShortcutGroups, leaving: [.captions], delete: deleteItem(delete, .deleteCaption))
