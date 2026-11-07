@@ -1317,7 +1317,7 @@ aberta pelo toque na faixa (recolhida ou para fora) ou pela ferramenta da barra 
 inteira ou adiciona nela (o que é de um item vem com o item):
 - **Text**: Title, Subtitle, Hook, Callout, seta, círculo, etiqueta, Comment (balão de citação), Style all e, depois de uma linha fina, **Brand kit**
   (Templates › Kit de marca: as fontes e cores do kit nos textos).
-- **Audio**: Music, **Sound effects** (a folha só com os efeitos do Cue, título "Sound effects", sem a música), Voice-over, **Text to speech** (uma
+- **Audio**: Music, **Sound effects** (a mesma folha "Add music or a sound", aberta na parte Sound effects), Voice-over, **Text to speech** (uma
   pessoa falando) e, depois de uma linha fina, o que trata o som que já está lá: **Studio Voice**, e do clipe sob a agulha **Volume**, **Voice
   effects** (onda com uma pessoa) e **Extract audio** (§56).
 - **Media**: as formas de pôr uma foto ou vídeo, os cartões da folha (**Split screen · Window · Full screen · In sequence**, cada uma abrindo a
@@ -1591,7 +1591,10 @@ Sistema completo em `NOTIFICATIONS.md`. Na interface:
   folha e o botão troca as duas alturas. O conteúdo para 18 pt acima do Home Indicator (`Metrics.editorStylePanelBottomClearance`) e some em degradê
   (`scrollEdgeEffectStyle(.soft)`).
 - **Abas na largura toda** (Text style: **Animated · Styles · Custom**; Caption style: Styles · Format · Animation · Adjust, §50), 44 pt, com pelo menos 16 pt entre os nomes (sem esse espaço, rolam de lado); campo e abas
-  fixos, só o resto rola; trocar de aba volta ao topo (`contentKey`), menos Styles do Caption style, que volta onde estava (`keptOffset`). Em tamanhos de acessibilidade só as abas ficam fixas: o campo rola com o resto
+  fixos, só o resto rola; trocar de aba volta ao topo (`contentKey`), menos Styles do Caption style, que volta onde estava (`keptOffset`). Cada
+  painel volta na aba e com o Advanced como foi deixado neste vídeo (`PanelMemory`, dono, canvas 2 R7); os de um item (Volume, Text, Mask…) por
+  item: outro clipe ou texto abre como foi deixado para ele, ou como o painel começa. Um caminho que pede uma aba (Animation pela barra de um
+  texto) continua abrindo nela. Em tamanhos de acessibilidade só as abas ficam fixas: o campo rola com o resto
   e os controles da aba vêm antes de "Style applies to". Cores (`PanelSwatches`) de 34 pt, a paleta em linhas (§44), segmentos de 38 pt.
 - **Digitando** (teclado no campo): só cabeçalho, campo e abas sobre o teclado (`EditorLayout.typingPanelHeight`, 180 pt); o vídeo fica com o resto
   e mostra o texto mudando. Tocar numa aba guarda o teclado e mostra os controles dela (como no CapCut). Com texto grande (xxLarge ou
@@ -2913,7 +2916,8 @@ fotos e vídeos com cortes, durações e trechos próprios que se sucedem na out
 qualquer área; não precisa haver apresentador. **Dividir** (a tesoura) corta no tempo; **Tela dividida** organiza no espaço. Referência do dono: o
 formato "apresentador embaixo, demonstrações trocando em cima" das redes; o Cue o torna um layout pronto em vez da montagem à mão por Overlay e
 máscara do CapCut/InShot (o iMovie tem um "Split Screen" fixo em 50/50).
-- **Onde se faz** (`AddMediaSheet`, `MediaModeCards`, `MediaLayoutDiagram`): **Media** abre em onde a escolha vai, em cartões desenhados:
+- **Onde se faz** (`AddMediaSheet`, `MediaModeCards`, `MediaLayoutDiagram`): **Media** abre alta (dono, canvas 2 F14 e R4) em onde a escolha
+  vai, em cartões desenhados e baixos (desenho de 16 × 28 pt, cartão de 62 pt) com uma linha de explicação, para a galeria ter mais fileiras:
   **Sobreposição · ao mesmo tempo** (**Split screen**, **Window**, **Full screen**) ou **Sequence** (**In sequence**, que acrescenta tempo). Por cima
   do vídeo, vários de uma vez, na ordem em que foram tocados (o Fotos numera), com **Continue · 3**. Um vídeo só abre **Pick the part**
   (`MediaPartStep`, `MediaPartStrip`, `MediaPartPreview`: a janela amarela sobre os quadros do vídeo, as pontas para encurtar, ▶ toca o trecho
@@ -2921,7 +2925,9 @@ máscara do CapCut/InShot (o iMovie tem um "Split Screen" fixo em 50/50).
   Entram um depois do outro a partir da agulha (na tela dividida, depois do apoio que estiver na agulha), cada vídeo com o trecho inteiro (ou o
   escolhido), uma foto com 3 s, **sem nunca alongar o vídeo principal**: o que não cabe até o fim (ou até o próximo apoio) é dito antes, em
   `warnText` ("the last one is shortened to fit", "1 don’t fit before the end and stay out"), e só isso é encurtado ou fica de fora (`MediaRun`).
-  Tudo entra num passo de desfazer, mudo, e o aviso diz "3 added to the split screen from 00:07.0 · muted" com Undo. A última sobreposição usada é
+  Com algo escolhido, arrastar a folha não a fecha, e **Cancel** (ou Back na revisão de vários) pergunta "Discard what you picked?" ·
+  "Picked: 3 · nothing is added" · **Discard 3** / **Keep picking** (dono, canvas 2 R11); sem nada escolhido, fecha direto. Tudo entra num passo
+  de desfazer, mudo, e o aviso diz "3 added to the split screen from 00:07.0 · muted" com Undo. A última sobreposição usada é
   a que Your library (da barra Media) abre de novo; o "+" depois dos clipes abre na sequência.
 - **A folha fica parada** (pedido do dono, 25/10: os elementos pulavam ao trocar de modo e Continue ficava fora da folha): título, cartões, a
   explicação (que guarda o espaço da mais longa das quatro) e a nota de onde entra (duas linhas guardadas) nunca mudam de lugar; a origem é o
@@ -3054,7 +3060,8 @@ Tudo fica neste iPhone.
   próprio para a imagem, com o canto) e cópias dos **estilos de texto, legenda e capa** do criador (os salvos, §50, ou os "deste vídeo"; mudar ou
   apagar o estilo salvo depois não muda o kit). Vários kits, para quem trabalha com marcas diferentes. **New kit from this video** começa um com o
   que o vídeo usa (o estilo dos textos, das legendas e da capa, as cores mais usadas sem branco e preto, as fontes e o logo); nada é salvo até
-  **Save kit**. **•••** no fim do cartão (sem aplicar o kit) ou segurar: **Edit kit**, **Duplicate**, **Delete kit** (Undo).
+  **Save kit**; fechado por um arraste, o que mudou fica como rascunho e volta ao abrir o mesmo kit (ou ao começar outro novo), com "Your changes
+  from before are back · Cancel discards them"; **Cancel** no cabeçalho joga fora (dono, canvas 2 R11). **•••** no fim do cartão (sem aplicar o kit) ou segurar: **Edit kit**, **Duplicate**, **Delete kit** (Undo).
 - **Aplicar é explícito** (`BrandKitApplySheet`): tocar o kit abre a lista das partes que ele tem, cada uma dizendo o que muda neste vídeo
   (a linha "Text style · Acme title" diz "On 4 texts · words, timing and place stay"; "Replaces the video’s logo, where it is"; "No cover yet ·
   make one to use it");
@@ -3424,11 +3431,14 @@ som, decisões técnicas e limites: `AUDIO_LIBRARY.md`.
   Settings › Acknowledgements).", os termos, o crédito ("No credit needed.": as bibliotecas são todas CC0) e "Sample libraries: …") e **+** (adiciona na agulha a 40%, abaixando 12 dB sob a
   voz, com as batidas da partitura, do manifesto da biblioteca, prontas para Beats; a folha fecha). Nos tamanhos de texto de
   acessibilidade o ▶ fica acima do texto e ⓘ e + embaixo, para o texto ter a largura do cartão. Sem resultado: "No track matches · Try
-  another word or filter". Embaixo, **Browse Files** e a nota de direitos, como antes. Pelo **Replace** de uma música, a folha se chama "Replace
+  another word or filter". **Browse Files** (a música do criador, nos Arquivos) fica logo abaixo da busca, antes das faixas do Cue; a nota de
+  direitos fica no fim. A folha abre alta (`.large`, dono, canvas 2 F13 e R4: escolher numa biblioteca), com **Music | Sound effects** sempre à
+  vista: Music e Sound effects da barra abrem cada um a sua parte. Pelo **Replace** de uma música, a folha se chama "Replace
   music" e mostra só a música (a faixa entra no lugar do clipe, com o lugar, o volume e o abaixar dele). O clipe guarda qual faixa é
   (`MusicClip.libraryTrack`).
-- **Efeitos sonoros** (parte **Sound effects**, ou a folha sozinha pela barra do Audio; `SoundEffectsSection`, `SoundEffectCell`,
-  `SoundEffectCategory`, `SoundEffectFiles`): título "Sound effects" com "Free to use in your videos · no credit needed"; chips **All ·
+- **Efeitos sonoros** (parte **Sound effects**, aberta direto pela barra do Audio; `SoundEffectsSection`, `SoundEffectCell`,
+  `SoundEffectCategory`, `SoundEffectFiles`): "Made by Cue" com "Free to use in your videos · no credit needed" (o nome da parte é o do
+  segmentado, sem repetir); chips **All ·
   Transitions · Text & graphics · Reactions · Comedy · Big moments · Alerts & time** (a fila rola para o lado); em All, cada grupo com o
   nome em cima. Duas colunas (uma nos tamanhos de acessibilidade; o nome numa linha, um pouco menor se precisar, nunca partido): tocar o
   cartão ouve (o ícone vira um alto-falante animado e o cartão fica marcado enquanto toca; outro toque para), **+** adiciona na agulha. 42
@@ -3446,7 +3456,9 @@ som, decisões técnicas e limites: `AUDIO_LIBRARY.md`.
   primeiro e as Eloquence, como Eddy e Flo, por último; quando um idioma só tem vozes compactas, a nota diz onde
   baixar melhores; sem voz no idioma, "No voice for this language on this iPhone."), **Speed** 0.75× · 1× · 1.25× · 1.5×, **Hear** (a primeira
   frase, na voz e na velocidade escolhidas; pílula cinza do editor) e **Add** (amarela, na agulha), lado a lado (um sobre o outro nos tamanhos de acessibilidade). Enquanto é feito, "Making the voice-over…" com **Cancel**; a folha não fecha
-  arrastando. Entra como um voice-over ("Voice-over added" · Undo), escolhido, que se apara, move, muda de volume e apaga como um gravado; na
+  arrastando. Fechada por um arraste, a folha guarda o texto, o idioma, a voz e a velocidade (`TextToSpeechDraft`, dono, canvas 2 R11), que
+  voltam na próxima abertura para o mesmo lugar (uma narração nova, ou o Edit text da mesma voz) com "Your text from before is back · Cancel
+  discards it"; **Cancel** no cabeçalho joga fora; Add encerra. Entra como um voice-over ("Voice-over added" · Undo), escolhido, que se apara, move, muda de volume e apaga como um gravado; na
   barra dele, **Edit text** no lugar de Re-record reabre a folha com o texto, a voz e a velocidade, e o novo entra no mesmo lugar, com o volume e
   o efeito de voz ("Voice-over replaced").
 - **Voice effects** (painel `.voiceEffects`, `VoiceEffectsPanel`, `AudioViewModel+VoiceEffects`, `VoiceEffectRenderer`): na barra do clipe, de um

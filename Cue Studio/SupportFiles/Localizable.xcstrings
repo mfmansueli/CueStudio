@@ -7700,6 +7700,125 @@
         }
       }
     },
+    "A clip of its own at the playhead · videos only." : {
+      "comment" : "Add photo or video › In sequence mode: one-line explanation (it adds time)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مقطع مستقل عند مؤشر التشغيل · فيديو فقط."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Et eget klip ved afspilningshovedet · kun videoer."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein eigener Clip am Abspielkopf · nur Videos."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un clip propio en el cursor · solo videos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un clip à part à la tête de lecture · vidéos uniquement."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "प्लेहेड पर अपनी अलग क्लिप · सिर्फ़ वीडियो।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klip tersendiri di playhead · khusus video."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una clip a sé nel cursore · solo video."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "再生ヘッドの位置に独立したクリップとして · 動画のみ。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "플레이헤드에 별도 클립으로 · 동영상만."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Et eget klipp ved spillehodet · bare videoer."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Een eigen clip bij de afspeelkop · alleen video’s."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um clipe próprio na agulha · só vídeos."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ett eget klipp vid spelhuvudet · bara videor."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "คลิปแยกที่ตำแหน่งหัวเล่น · วิดีโอเท่านั้น"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oynatma başında kendi klibi olarak · yalnızca video."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thành clip riêng tại đầu phát · chỉ video."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在播放头处成为独立片段 · 仅限视频。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在播放頭處成為獨立片段 · 僅限影片。"
+          }
+        }
+      }
+    },
     "A font you imported isn’t on this iPhone · import it again or pick another" : {
       "comment" : "Editor's 'Is it ready to post?' sheet, small capitals line under the question: an imported font the video's words use is no longer on this iPhone; those words would export in the system font.",
       "localizations" : {
@@ -33352,6 +33471,244 @@
         }
       }
     },
+    "Discard %lld" : {
+      "comment" : "Add photo or video: the destructive button of the discard question (%lld = how many photos and videos are picked)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تجاهل %lld"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kassér %lld"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld verwerfen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Descartar %lld"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abandonner %lld"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld हटाएँ"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buang %lld"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scarta %lld"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld件を破棄"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld개 버리기"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forkast %lld"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld weggooien"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Descartar %lld"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Släng %lld"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ทิ้ง %lld รายการ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld öğeyi at"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bỏ %lld"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "放弃 %lld 项"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "放棄 %lld 項"
+          }
+        }
+      }
+    },
+    "Discard what you picked?" : {
+      "comment" : "Add photo or video: confirmation before throwing away the picked photos and videos (Cancel, or Back from the review)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تجاهل ما اخترته؟"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kassér det, du har valgt?"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auswahl verwerfen?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Descartar lo que elegiste?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abandonner votre sélection ?"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "जो चुना है उसे हटाएँ?"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buang yang sudah dipilih?"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scartare ciò che hai scelto?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選んだものを破棄しますか？"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "선택한 항목을 버릴까요?"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forkaste det du har valgt?"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je keuze weggooien?"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Descartar o que você escolheu?"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Släng det du har valt?"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ทิ้งสิ่งที่เลือกไว้ไหม"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seçtiklerin atılsın mı?"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bỏ những gì đã chọn?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "放弃所选内容？"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "放棄所選內容？"
+          }
+        }
+      }
+    },
     "Diversity & inclusion" : {
       "comment" : "My Cue Voice: a more specific topic inside the theme “causes and social impact” (a short chip)",
       "localizations" : {
@@ -38413,6 +38770,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "例如：我在上班路上的車裡拍"
+          }
+        }
+      }
+    },
+    "Each in its own area, at the same time as you." : {
+      "comment" : "Add photo or video › Split screen mode: one-line explanation",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "كلٌّ في مساحته، في الوقت نفسه معك."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hver i sit eget felt, samtidig med dig."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jedes in seinem Bereich, gleichzeitig mit dir."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada uno en su zona, al mismo tiempo que tú."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chacun dans sa zone, en même temps que vous."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "हर एक अपनी जगह में, आपके साथ-साथ।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masing-masing di areanya, bersamaan denganmu."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ognuno nella sua area, insieme a te."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "それぞれの枠で、あなたと同時に。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "각자 자기 영역에, 나와 동시에."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hver i sitt eget felt, samtidig med deg."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elk in een eigen vlak, tegelijk met jou."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada um na sua área, ao mesmo tempo que você."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Var och en i sin yta, samtidigt som du."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "แต่ละอันในพื้นที่ของตัวเอง พร้อมกับคุณ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Her biri kendi alanında, seninle aynı anda."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mỗi thứ một vùng riêng, cùng lúc với bạn."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "各占一块区域，与你同时出现。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "各佔一塊區域，與你同時出現。"
           }
         }
       }
@@ -56862,6 +57338,125 @@
         }
       }
     },
+    "In a window over your video, to move and resize." : {
+      "comment" : "Add photo or video › Window mode: one-line explanation",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "في نافذة فوق الفيديو، لتحريكها وتغيير حجمها."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I et vindue over din video, som kan flyttes og ændres."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In einem Fenster über deinem Video, verschieb- und skalierbar."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En una ventana sobre tu video, para mover y cambiar de tamaño."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dans une fenêtre sur votre vidéo, à déplacer et redimensionner."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपके वीडियो पर एक विंडो में, खिसकाने और आकार बदलने के लिए।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Di jendela di atas videomu, bisa dipindah dan diubah ukurannya."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In una finestra sul tuo video, da spostare e ridimensionare."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "動画の上の小窓に。移動・サイズ変更できます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "영상 위 창에, 옮기고 크기 조절 가능."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I et vindu over videoen, som kan flyttes og endres."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In een venster over je video, te verplaatsen en schalen."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Numa janela sobre o vídeo, para mover e redimensionar."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I ett fönster över videon, att flytta och ändra storlek på."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ในหน้าต่างบนวิดีโอ ย้ายและปรับขนาดได้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Videonun üstünde bir pencerede, taşınabilir ve boyutlanabilir."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trong một cửa sổ trên video, di chuyển và đổi cỡ được."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在视频上的小窗口中，可移动和调整大小。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在影片上的小視窗中，可移動和調整大小。"
+          }
+        }
+      }
+    },
     "In edit · Not saved" : {
       "comment" : "Editor top bar chip, mono caps, orange: the last write of the edit failed",
       "localizations" : {
@@ -60785,6 +61380,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "繼續匯出"
+          }
+        }
+      }
+    },
+    "Keep picking" : {
+      "comment" : "Add photo or video: the discard question's way back to the gallery, nothing lost",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "متابعة الاختيار"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bliv ved med at vælge"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weiter auswählen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seguir eligiendo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continuer la sélection"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "चुनना जारी रखें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lanjut memilih"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continua a scegliere"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選択を続ける"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "계속 선택"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fortsett å velge"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verder kiezen"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continuar escolhendo"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fortsätt välja"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เลือกต่อ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seçmeye devam et"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tiếp tục chọn"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "继续选择"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "繼續選擇"
           }
         }
       }
@@ -78587,6 +79301,125 @@
         }
       }
     },
+    "Over your video while your voice goes on." : {
+      "comment" : "Add photo or video › Full screen mode (B-roll): one-line explanation",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فوق الفيديو بينما يستمر صوتك."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Over din video, mens din stemme fortsætter."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Über deinem Video, während deine Stimme weiterläuft."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sobre tu video mientras tu voz sigue."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Par-dessus votre vidéo pendant que votre voix continue."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपके वीडियो के ऊपर, जबकि आपकी आवाज़ चलती रहती है।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Di atas videomu sementara suaramu terus berjalan."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sopra il tuo video mentre la tua voce continua."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "声はそのままに、動画の上に。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목소리는 그대로, 영상 위에."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Over videoen mens stemmen din fortsetter."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Over je video terwijl je stem doorgaat."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sobre o vídeo enquanto a sua voz continua."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Över videon medan rösten fortsätter."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ทับวิดีโอ ขณะที่เสียงของคุณยังดำเนินต่อ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sesin devam ederken videonun üstünde."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Phủ lên video trong khi giọng bạn vẫn tiếp tục."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "覆盖在视频上，你的声音继续。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "覆蓋在影片上，你的聲音繼續。"
+          }
+        }
+      }
+    },
     "Parodies" : {
       "comment" : "My Cue Voice: a more specific topic inside the theme “comedy and entertainment” (a short chip)",
       "localizations" : {
@@ -83242,6 +84075,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "選出你在每個主題裡具體聊什麼。"
+          }
+        }
+      }
+    },
+    "Picked: %lld · nothing is added" : {
+      "comment" : "Add photo or video: the discard question's message (%lld = how many photos and videos are picked and would be lost)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "المختار: %lld · لن يُضاف شيء"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Valgt: %lld · intet tilføjes"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ausgewählt: %lld · nichts wird hinzugefügt"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elegidos: %lld · no se agrega nada"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sélectionnés : %lld · rien n’est ajouté"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "चुने गए: %lld · कुछ नहीं जोड़ा जाएगा"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dipilih: %lld · tidak ada yang ditambahkan"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scelti: %lld · non viene aggiunto nulla"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選択中: %lld · 何も追加されません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "선택: %lld · 아무것도 추가되지 않아요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Valgt: %lld · ingenting legges til"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gekozen: %lld · er wordt niets toegevoegd"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolhidos: %lld · nada é adicionado"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Valda: %lld · inget läggs till"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เลือกไว้: %lld · จะไม่มีการเพิ่ม"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seçilen: %lld · hiçbir şey eklenmez"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đã chọn: %lld · không thêm gì"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已选：%lld · 不会添加"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已選：%lld · 不會加入"
           }
         }
       }
@@ -125539,6 +126491,125 @@
         }
       }
     },
+    "Your changes from before are back · Cancel discards them" : {
+      "comment" : "Brand kit editor: subtitle when changes kept from a sheet closed by a swipe came back",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عادت تغييراتك السابقة · «إلغاء» يتجاهلها"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dine ændringer fra før er tilbage · Annuller kasserer dem"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Änderungen von vorhin sind zurück · Abbrechen verwirft sie"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus cambios de antes volvieron · Cancelar los descarta"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vos modifications d’avant sont revenues · Annuler les supprime"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपके पहले के बदलाव वापस आ गए · रद्द करें उन्हें हटा देगा"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perubahanmu sebelumnya kembali · Batal membuangnya"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le tue modifiche di prima sono tornate · Annulla le scarta"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "前の変更が戻りました · キャンセルで破棄"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이전 변경 사항이 돌아왔어요 · 취소하면 버려져요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Endringene dine fra før er tilbake · Avbryt forkaster dem"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je wijzigingen van eerder zijn terug · Annuleer gooit ze weg"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suas alterações de antes voltaram · Cancelar descarta"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dina ändringar från förut är tillbaka · Avbryt slänger dem"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "การแก้ไขก่อนหน้ากลับมาแล้ว · ยกเลิกเพื่อทิ้ง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Önceki değişikliklerin geri geldi · Vazgeç onları atar"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thay đổi trước đã quay lại · Hủy để bỏ"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "之前的更改回来了 · 取消即放弃"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "之前的變更回來了 · 取消即放棄"
+          }
+        }
+      }
+    },
     "YOUR CODE" : {
       "comment" : "Label over the creator's invite code (monospaced capitals).",
       "localizations" : {
@@ -126844,6 +127915,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "這條錄得很流暢。"
+          }
+        }
+      }
+    },
+    "Your text from before is back · Cancel discards it" : {
+      "comment" : "Text to speech: subtitle when the text, voice and speed kept from a sheet closed by a swipe came back",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عاد نصك السابق · «إلغاء» يتجاهله"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Din tekst fra før er tilbage · Annuller kasserer den"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein Text von vorhin ist zurück · Abbrechen verwirft ihn"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu texto de antes volvió · Cancelar lo descarta"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votre texte d’avant est revenu · Annuler le supprime"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपका पहले का टेक्स्ट वापस आ गया · रद्द करें उसे हटा देगा"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teksmu sebelumnya kembali · Batal membuangnya"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il tuo testo di prima è tornato · Annulla lo scarta"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "前のテキストが戻りました · キャンセルで破棄"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이전 텍스트가 돌아왔어요 · 취소하면 버려져요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teksten din fra før er tilbake · Avbryt forkaster den"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je tekst van eerder is terug · Annuleer gooit hem weg"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seu texto de antes voltou · Cancelar descarta"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Din text från förut är tillbaka · Avbryt slänger den"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ข้อความก่อนหน้ากลับมาแล้ว · ยกเลิกเพื่อทิ้ง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Önceki metnin geri geldi · Vazgeç onu atar"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Văn bản trước đã quay lại · Hủy để bỏ"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "之前的文字回来了 · 取消即放弃"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "之前的文字回來了 · 取消即放棄"
           }
         }
       }
@@ -176730,125 +177920,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在說明文字中加入 #ad"
-          }
-        }
-      }
-    },
-    "Adds time: becomes a clip of its own at the playhead, and the video gets longer. Videos only." : {
-      "comment" : "Explanation under the In sequence choice when adding a photo or video",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "يضيف وقتًا: يصبح مقطعًا مستقلًا عند رأس التشغيل، ويصبح الفيديو أطول. مقاطع الفيديو فقط."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tilføjer tid: bliver sit eget klip ved afspilningsmarkøren, og videoen bliver længere. Kun videoer."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fügt Zeit hinzu: wird ein eigener Clip an der Abspielposition, und das Video wird länger. Nur Videos."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Añade tiempo: se convierte en un clip propio en el cursor, y el video dura más. Solo videos."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ajoute du temps : devient un clip à part entière sous la tête de lecture, et la vidéo s’allonge. Vidéos uniquement."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "समय जोड़ता है: प्लेहेड पर अपनी अलग क्लिप बन जाती है और वीडियो लंबा हो जाता है। सिर्फ़ वीडियो।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Menambah durasi: menjadi klip tersendiri di playhead, dan videonya jadi lebih panjang. Hanya video."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aggiunge tempo: diventa una clip a sé all’indicatore, e il video si allunga. Solo video."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "時間が増えます。再生ヘッドの位置に独立したクリップとして入り、動画が長くなります。動画のみ。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "시간이 늘어나요. 재생 헤드 위치에 별도 클립으로 들어가고 영상이 길어져요. 영상만 가능해요."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Legger til tid: blir et eget klipp ved avspillingshodet, og videoen blir lengre. Bare videoer."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Voegt tijd toe: wordt een eigen clip bij de afspeelkop, en de video wordt langer. Alleen video’s."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Adiciona tempo: vira um clipe próprio no cursor, e o vídeo fica mais longo. Só vídeos."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lägger till tid: blir ett eget klipp vid uppspelningsmarkören, och videon blir längre. Endast videor."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "เพิ่มเวลา: กลายเป็นคลิปของตัวเองที่หัวเล่น และวิดีโอจะยาวขึ้น เฉพาะวิดีโอ"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Süre ekler: oynatma çubuğunda ayrı bir klip olur ve video uzar. Yalnızca videolar."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Thêm thời lượng: trở thành một clip riêng tại đầu phát, và video dài hơn. Chỉ video."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "会增加时长：在播放头处成为独立片段，视频随之变长。仅限视频。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "會增加時長：在播放頭處成為獨立片段，影片隨之變長。僅限影片。"
           }
         }
       }
@@ -418203,244 +419274,6 @@
         }
       }
     },
-    "Plays over your video (B-roll) while your voice keeps going." : {
-      "comment" : "Explanation under the Full screen choice when adding a photo or video",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "يُعرض فوق الفيديو (B-roll) بينما يستمر صوتك."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Spiller oven på din video (B-roll), mens din stemme fortsætter."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Läuft über deinem Video (B-Roll), während deine Stimme weitergeht."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Se reproduce sobre tu video (B-roll) mientras tu voz sigue."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Passe par-dessus votre vidéo (B-roll) pendant que votre voix continue."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "आपकी आवाज़ चलती रहती है और यह वीडियो के ऊपर (B-roll) चलता है।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Diputar di atas videomu (B-roll) sementara suaramu terus berjalan."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Va sopra il tuo video (B-roll) mentre la tua voce continua."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "声はそのままに、動画の上に重ねて再生します（Bロール）。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "목소리는 그대로 이어지고, 영상 위에 재생돼요(B-roll)."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Spilles over videoen din (B-roll) mens stemmen din fortsetter."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Speelt over je video (B-roll) terwijl je stem doorgaat."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Passa por cima do vídeo (B-roll) enquanto sua voz continua."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Spelas över din video (B-roll) medan din röst fortsätter."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "เล่นทับวิดีโอ (B-roll) ขณะที่เสียงของคุณยังดำเนินต่อ"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sesin devam ederken videonun üstünde oynar (B-roll)."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Phát trên video (B-roll) trong khi giọng bạn vẫn tiếp tục."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "叠加在视频上播放（B-roll），你的人声继续。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "疊加在影片上播放（B-roll），你的聲音會持續。"
-          }
-        }
-      }
-    },
-    "Plays in a window over your video. Move and resize it on the preview." : {
-      "comment" : "Explanation under the Window choice when adding a photo or video",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "يُعرض في نافذة فوق الفيديو. حرّكها وغيّر حجمها في المعاينة."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Spiller i et vindue oven på din video. Flyt og skaler det i forhåndsvisningen."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Läuft in einem Fenster über deinem Video. Verschieb und skalier es in der Vorschau."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Se reproduce en una ventana sobre tu video. Muévela y cambia su tamaño en la vista previa."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Passe dans une fenêtre par-dessus votre vidéo. Déplacez-la et redimensionnez-la dans l’aperçu."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "आपके वीडियो के ऊपर एक विंडो में चलता है। प्रीव्यू में इसे हिलाएँ और साइज़ बदलें।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Diputar di jendela di atas videomu. Pindahkan dan ubah ukurannya di pratinjau."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Va in una finestra sopra il tuo video. Spostala e ridimensionala nell’anteprima."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "動画の上のウィンドウで再生します。プレビューで移動やサイズ変更ができます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "영상 위 창에서 재생돼요. 미리보기에서 옮기고 크기를 바꾸세요."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Spilles i et vindu over videoen din. Flytt og endre størrelse i forhåndsvisningen."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Speelt in een venster over je video. Verplaats en schaal het in de voorvertoning."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Toca numa janela por cima do vídeo. Mova e redimensione na prévia."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Spelas i ett fönster över din video. Flytta och ändra storlek i förhandsvisningen."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "เล่นในหน้าต่างทับวิดีโอ ย้ายและปรับขนาดได้ในตัวอย่าง"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Videonun üstünde bir pencerede oynar. Önizlemede taşı ve boyutlandır."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Phát trong một cửa sổ trên video. Di chuyển và đổi kích thước trong bản xem trước."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在视频上方的窗口中播放。可在预览中移动和调整大小。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在影片上方的視窗中播放。可在預覽中移動和調整大小。"
-          }
-        }
-      }
-    },
     "Plays for" : {
       "comment" : "B-roll length row",
       "localizations" : {
@@ -480922,125 +481755,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "已顯示"
-          }
-        }
-      }
-    },
-    "Shows at the same time as your video, each in its own area. Your video keeps playing." : {
-      "comment" : "Explanation under the Split screen choice when adding a photo or video",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "يظهر مع الفيديو في الوقت نفسه، كلٌّ في منطقته. ويستمر تشغيل الفيديو."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vises samtidig med din video, hver i sit eget område. Din video fortsætter."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Läuft gleichzeitig mit deinem Video, jedes in seinem Bereich. Dein Video läuft weiter."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Se muestra a la vez que tu video, cada uno en su área. Tu video sigue reproduciéndose."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "S’affiche en même temps que votre vidéo, chacun dans sa zone. Votre vidéo continue."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "आपके वीडियो के साथ ही, हर एक अपने हिस्से में दिखता है। आपका वीडियो चलता रहता है।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tampil bersamaan dengan videomu, masing-masing di areanya sendiri. Videomu tetap diputar."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Si vede insieme al tuo video, ognuno nella sua area. Il tuo video continua."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "動画と同時に、それぞれのエリアに表示します。動画は再生されたままです。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "영상과 동시에 각자의 영역에 나와요. 영상은 계속 재생돼요."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vises samtidig med videoen din, hver i sitt eget område. Videoen din fortsetter."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Te zien tegelijk met je video, elk in een eigen vlak. Je video speelt door."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aparece junto com o seu vídeo, cada um na sua área. Seu vídeo continua tocando."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Visas samtidigt som din video, var och en på sin yta. Din video fortsätter spelas."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "แสดงพร้อมกับวิดีโอของคุณ แต่ละอันอยู่ในพื้นที่ของตัวเอง วิดีโอของคุณยังเล่นต่อ"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Videonla aynı anda, her biri kendi alanında görünür. Videon oynamaya devam eder."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hiện cùng lúc với video của bạn, mỗi bên một vùng. Video của bạn vẫn tiếp tục phát."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "与你的视频同时显示，各占一个区域。你的视频继续播放。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "與你的影片同時顯示，各佔一個區域。你的影片繼續播放。"
           }
         }
       }

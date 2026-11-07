@@ -219,6 +219,7 @@ extension BrandViewModel {
         let isNew = kits.kit(kit.id) == nil
         kits.save(kit)
         kitBeingEdited = nil
+        kitDraft = nil
         toast.show(
             isNew
                 ? String(localized: "\(kit.name) saved · videos already made don’t change")

@@ -64,6 +64,10 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     var panelTab: EditorPanelTab = .presets
     /// The open panel's "Advanced" section is expanded.
     var showsAdvanced = false
+    /// Each panel's tab and Advanced as they were left, per item where the panel is an item's (`PanelMemory`, canvas 2 R7).
+    var panelMemory = PanelMemory()
+    /// The item the open panel's tab and Advanced belong to.
+    var panelStateItem: UUID?
     /// The Templates panel's tab: the one its button on a bar asked for (`openTemplates(on:)`).
     var templatesSection: TemplatesPanelSection = .templates
     /// Which whole-video tools already said, on which kind of item's bar, that they change the whole video (once each while the
@@ -379,6 +383,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         } else if let panel = shownPanel, look.followsSelection(panel), !(next.map { look.accepts($0, in: panel) } ?? false) {
             leavePanel(for: nil, endingChange: false)
         }
+        panelPickChanged()
     }
 
     /// The one way the panel changes: what the panel left behind ends, in this order, once.
@@ -388,8 +393,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         shownPanel = next
         if let lane = next?.focusedLane { bringTrack([lane]) }
         pinClip(for: next)
-        showsAdvanced = false
-        panelTab = .presets
+        swapPanelState(from: previous, to: next)
         audio.panelChanged(from: previous)
         // Auto, Compare, the recordings' analysis for Format and Stabilize, a clip's scope.
         look.panelChanged(to: next)

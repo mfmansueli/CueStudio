@@ -55,10 +55,11 @@ enum MediaInsertMode: String, CaseIterable, Identifiable {
     /// What happens with the pick, under the choice.
     var explanation: String {
         switch self {
-        case .split: String(localized: "Shows at the same time as your video, each in its own area. Your video keeps playing.")
-        case .window: String(localized: "Plays in a window over your video. Move and resize it on the preview.")
-        case .fullScreen: String(localized: "Plays over your video (B-roll) while your voice keeps going.")
-        case .sequence: String(localized: "Adds time: becomes a clip of its own at the playhead, and the video gets longer. Videos only.")
+        // One short line each (owner, canvas 2 F14): more of the gallery in sight.
+        case .split: String(localized: "Each in its own area, at the same time as you.")
+        case .window: String(localized: "In a window over your video, to move and resize.")
+        case .fullScreen: String(localized: "Over your video while your voice goes on.")
+        case .sequence: String(localized: "A clip of its own at the playhead · videos only.")
         }
     }
 

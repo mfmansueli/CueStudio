@@ -39,6 +39,11 @@ final class BrandViewModel: EditorPart {
     var kitToApply: BrandKit?
     /// The kit open to change (new or saved).
     var kitBeingEdited: BrandKit?
+    /// A kit's changes when its sheet closed without Save or Cancel (a swipe down): they come back when it opens again
+    /// (`BrandViewModel+KitDraft`, canvas 2 R11).
+    var kitDraft: BrandKit?
+    /// The open kit is the draft that came back.
+    var kitBeingEditedIsDraft = false
     /// Font files are being picked in Files.
     var isImportingFonts = false
 

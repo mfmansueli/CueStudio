@@ -69,6 +69,9 @@ enum EditorPanel: String, CaseIterable, Identifiable {
         }
     }
 
+    /// The panels whose controls are the picked item's: their tab and Advanced are remembered per item (`PanelMemory`).
+    var remembersPerItem: Bool { followsSelection }
+
     /// The clip panels: opened with nothing picked (from the main toolbar), they pick the clip under the playhead for as long as
     /// they're open, so moving the playhead never moves the change to another clip.
     var pinsClip: Bool {
