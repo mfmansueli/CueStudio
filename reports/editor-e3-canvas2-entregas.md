@@ -113,6 +113,53 @@ modos saíram do catálogo.
 
 **Falta:** nada desta entrega.
 
+## Entrega 6 · Mídia, Motion e prévia que segura — `fb682db4`, correções `c41be45c`, merge `c6c4529a`
+
+**Decisões:** F15, F5, R12, R6, bugs 9 e 12.
+
+**O que muda para o criador**
+- **Pausado sobre um item escolhido (F15, bug 9):** a prévia mostra o texto, o gráfico, a foto ou o vídeo como fica depois de entrar (o 1º quadro do
+  Pop, o fim do In and out), então dá para ajustar sem dar play. O playhead não pula mais para depois da entrada; a revisão e o export não leem isso.
+- **Motion:** Pop vem primeiro, depois Track e Keyframes; Starts e Ends ficam no Advanced.
+- **Show | Part (F5 B):** só o painel de foto ou vídeo por cima ganhou abas (uma foto tem só Show). Em Part, Duration oferece 1, 2, 3, 5 e 10 s.
+- **− e + que repetem (R12):** segurar repete, e a sequência inteira é um passo de Undo.
+- **Track › Stop guarda o que foi seguido (bug 12),** como no Blur area; Undo tira. Um vídeo por cima diz **Volume** na barra, no título e no controle (R6).
+
+**Evidência**
+- Código + Simulator (unidade): `PreviewMotionHoldTests`, `QuickEditMotionTests`, `QuickEditTrackTests`, `QuickEditMediaNamesTests`,
+  `OverlayAnimationTests`, `QuickEditSplitScreenTests`, `PreviewMatchesExportTests` e vizinhas, 92/92.
+- Simulator (UI): `MediaMotionUITests` (Show | Part, Duration com os tamanhos comuns, segurar o +, um Undo para a sequência, Volume, Pop primeiro,
+  Starts no Advanced), `TextPresetsUITests`, `EditorRecipeUITests`. Falhas da 1ª rodada eram do teste: o valor "2,0s" com vírgula, o nome do controle
+  lido no lugar do valor, e o vídeo do demo sem som (o Volume avisa "This video has no sound", certo).
+- **Medido:** o repetir do sistema dá ~5 passos em 2 s segurando (2,0 → 2,5 s). É o ritmo de `buttonRepeatBehavior`; se ficar lento no aparelho,
+  dá para acelerar com um repetir próprio.
+- **Não validado:** a prévia que segura o quadro precisa do iPhone (o Simulator não toca a composição). Fica para a entrega 11.
+
+**Decisões tomadas sem o dono:** nenhuma além do quadro.
+
+**Falta:** conferir no aparelho a prévia pausada no Pop e no In and out.
+
+## Entrega 7 · Clean up — `dfc2c9bd`, correções `c41be45c`, merge `c6c4529a`
+
+**Decisões:** F10, M3, F11.
+
+**O que muda para o criador**
+- **Abre na fileira de pausas (F10):** os ajustes (pausas maiores que, sobra) ficam atrás de uma cápsula no cabeçalho ("0,7s"), lembrada como Advanced.
+- **Marca na timeline leva ao cartão (M3):** o 1º toque numa marca acende o cartão dela (troca de aba se for palavra, rola até ele) e mostra aquele
+  momento, sem mudar nada; o 2º toque troca Remove/Keep. VoiceOver diz o que ficou.
+- **Text (F11):** sem nada escolhido, uma nota diz como escolher palavras ("Tap the first word…"); as ações só aparecem com palavras escolhidas.
+
+**Evidência**
+- Código + Simulator (unidade): `QuickEditPausesPanelTests` (marca → cartão → troca; abre com os ajustes guardados), `QuickEditCleanUpPanelTests`.
+- Simulator (UI): `CleanUpUITests` inteiro (fileira primeiro, ajustes no cabeçalho, marca → cartão aceso → 2º toque troca, nota do Text),
+  `NotificationsUITests`. A falha da 1ª rodada era do teste: "1,2s" lido como 12 s, o toque caía fora da marca.
+- Aparelho: entrega 11.
+
+**Decisões tomadas sem o dono:** M3 com dois toques (o 1º só mostra), para que nada mude sem o cartão à vista; os ajustes atrás de uma cápsula com o
+valor, não de um ícone só.
+
+**Falta:** nada desta entrega.
+
 ## Entrega 8 · Done, exportação e proporção — `649ba682`, merge `0df22492`
 
 Feita por um ajudante (branch `e3c2-done-export`); revisada e unida por mim.
@@ -171,3 +218,52 @@ Feita por um ajudante (branch `e3c2-cover`), adiantada porque a Capa não depend
 já existia diz "palavra por palavra" em tailandês e vietnamita).
 
 **Falta:** na linha de Zoom, o trilho do slider ficou curto (cerca de 90 pt entre "Zoom" e "100% Reset"); reavaliar na entrega 11.
+
+## Entrega 9 · Minhas fontes (F12) — `f6380734`, merge `c6c4529a`
+
+**Decisões:** F12.
+
+**O que muda para o criador**
+- **My fonts em todo seletor:** as fontes importadas aparecem num grupo próprio no Text style › Font, no Caption style (Custom) e no título da Capa,
+  separadas da lista do Cue.
+- **Tirar uma fonte:** Edit põe um − em cada uma (ou segurar o chip › Remove). Sai com Undo no aviso: "%@ removed · videos that use it keep it".
+  Uma fonte em uso no vídeo aberto continua à vista e não sai.
+
+**Evidência**
+- Código + Simulator (unidade): `CustomFontStoreTests` (tirar com Undo, um vídeo na família tirada continua com ela), `CoverStudioViewModelTests`.
+- Simulator (UI): `MyFontsUITests` (fonte importada pelo `-uiTestImportedFont`, Edit, −, Undo), `CoverStudioUITests`.
+- Aparelho: entrega 11 (importar uma fonte de verdade pelo Arquivos).
+
+**Decisões tomadas sem o dono:** Edit com − (o padrão do iOS) além do segurar, para não ter porta só por toque longo (plano §8).
+
+**Falta:** nada desta entrega.
+
+## Entrega 10 · Barra do clipe, faixas e timeline ao lado do estilo — `08817ea9`, `58d3b0f3`, `b6a6ea2f`, `419e82ae`, `e9f12dc3`, merge `c6c4529a`
+
+**Decisões:** M2, N1, R10 §7.3.
+
+**O que muda para o criador**
+- **O que já mudou no clipe (M2):** um ponto amarelo no canto das ferramentas que já mudaram o clipe escolhido (Speed, Volume, Zoom, Adjust, Skin,
+  Filters, Background, Crop, Stabilize, Animation, Voice effects, Transition). Muda com outro clipe, Reset e Undo; VoiceOver diz "Changed on this clip".
+  Mute e Mirror já são chaves acesas; Blur area é da faixa dele.
+- **Quantas faixas (N1):** com as faixas guardadas, o quadrado da faixa atual mostra uma pilha e o número de faixas sob o vídeo ("▤ 4"); abertas, ▴.
+  Sem clipe escolhido, a marca de um corte pega o toque a 44 pt.
+- **Timeline acima do Text style e do Caption style (R10 §7.3):** a régua e a faixa do painel ficam à vista; tocar outro texto ou legenda ali troca o
+  que se estiliza, sem ✓. O vídeo fica no menor tamanho e o painel cede até 330 pt (uma fileira inteira de estilos). Expandido, a faixa sai.
+- **No SE:** ⌄ no cabeçalho da folha tira a folha da frente e devolve a timeline inteira; uma barra com o nome do painel a traz de volta como estava
+  (item, aba, playhead), e ✓ termina.
+
+**Evidência**
+- Código + Simulator (unidade): `ClipAppliedToolsTests` (marcas por ferramenta, a transição do corte seguinte, Undo), `TimelineGeometryTests` (alcance de
+  44 pt, contagem de faixas), `EditorLayoutTests` (régua e faixa acima do painel cheio em todas as telas menos o SE, o painel ≥ 330 pt, o vídeo ≥ o
+  mínimo, a soma bate), `QuickEditPanelTuckTests` (só a faixa do texto acima; guardar e voltar com o mesmo texto, aba e playhead).
+- Simulator (UI): `TextStyleUITests` 8/8 no iPhone 17, incluindo o novo (faixa acima, rolar a timeline com o painel aberto e tocar o subtítulo troca o
+  texto no painel). Integração na `feature/editor-trust`: 61/62 na 1ª rodada (a falha era do teste, corrigida e repassada).
+- **Não validado:** o ⌄ do SE roda só no SE (o caminho do teste existe, mas os scripts usam o iPhone 17 e não crio simulador); fica para o aparelho
+  ou um SE disponível. **Não conferido ainda:** chegar a Music/Beats a partir de outra faixa com a contagem nova.
+
+**Decisões tomadas sem o dono:** a contagem conta as faixas sob o vídeo (o atalho de áudio conta); o alcance de 44 pt só sem clipe escolhido (com um
+escolhido, as alças vêm primeiro); no SE a folha sai por ⌄ em vez de ficar baixa, porque baixa ela ainda cobriria a faixa.
+
+**Falta:** conferência no SE e no aparelho.
+

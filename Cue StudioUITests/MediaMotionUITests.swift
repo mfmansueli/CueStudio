@@ -101,6 +101,31 @@ final class MediaMotionUITests: XCTestCase {
         EditorApp.capture(app, "media-motion")
     }
 
+    /// Canvas 2 F15, for the iPhone (the Simulator draws no composition): paused 0.1 s into the title's Pop, the editor's
+    /// preview shows the title whole; the capture is what's checked.
+    func testPausedInATextsPopThePreviewShowsItWhole() {
+        let app = EditorApp.open(demo: true)
+        EditorApp.tapTool(app, "text")
+        EditorApp.tapTool(app, "styleAll")
+        let selected = app.buttons["edit.style.scope.selected"]
+        XCTAssertTrue(selected.exists(within: 5))
+        selected.tap()
+        EditorApp.showTextTab(app, "motion")
+        let pop = app.buttons["edit.motion.preset.pop"]
+        XCTAssertTrue(pop.exists(within: 5))
+        pop.tap()
+        XCTAssertTrue(waitFor { pop.isSelected })
+        // The title comes in at 0.2 s: the playhead 0.1 s into its way in.
+        let label = app.staticTexts["edit.timeLabel"]
+        for _ in 0..<4 where !(label.value as? String ?? "").hasPrefix("00:00.3") {
+            let time = (label.value as? String ?? "").components(separatedBy: " / ").first ?? ""
+            let now = Double(time.split(separator: ":").last.map(String.init)?.replacingOccurrences(of: ",", with: ".") ?? "") ?? 0
+            EditorApp.scrub(app, points: max(4, (0.3 - now) * 44))
+        }
+        EditorApp.capture(app, "text-pop-paused-whole")
+        XCTAssertTrue((label.value as? String ?? "").hasPrefix("00:00."), "Not in the title's way in: \(label.value ?? "")")
+    }
+
     private func scrollPanelUp(_ app: XCUIApplication, to element: XCUIElement) {
         let panel = app.descendants(matching: .any)["edit.panel.motion"]
         for _ in 0..<6 where !(element.exists && element.isHittable) {
