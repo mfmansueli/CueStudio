@@ -179,6 +179,47 @@ final class TextStyleUITests: XCTestCase {
         XCTAssertTrue(all.isSelected)
     }
 
+    /// Canvas 2 R10 §7.3: above Text style the ruler and the texts' track stay, so another text is picked there without ✓; on
+    /// the SE, ⌄ puts the sheet aside for the whole timeline and the bar in the toolbar's place brings it back as it was.
+    func testTheTextsTrackStaysAboveTextStyleAndPicksAnotherText() {
+        let app = EditorApp.open(demo: true)
+        let panel = openTextStyle(app)
+        let field = app.textFields["edit.textField"]
+        XCTAssertTrue(field.exists(within: 3))
+        let title = field.value as? String ?? ""
+        let timeline = app.descendants(matching: .any)["edit.timeline"]
+        if isSheet(app) {
+            let tuck = app.buttons["edit.panel.tuck"]
+            XCTAssertTrue(tuck.exists(within: 3))
+            tuck.tap()
+            let back = app.buttons["edit.panel.untuck"]
+            XCTAssertTrue(back.exists(within: 5))
+            XCTAssertTrue(timeline.exists && timeline.frame.height > 80, "The whole timeline isn't back")
+            EditorApp.capture(app, "text-style-tucked")
+            back.tap()
+            XCTAssertTrue(field.exists(within: 5))
+            XCTAssertEqual(field.value as? String, title)
+            return
+        }
+        XCTAssertTrue(timeline.exists(within: 3))
+        XCTAssertGreaterThanOrEqual(timeline.frame.height, 60, "The ruler and the texts' track aren't above the panel")
+        XCTAssertLessThanOrEqual(timeline.frame.maxY, panel.frame.minY + 1)
+        XCTAssertGreaterThanOrEqual(panel.frame.height, 329, "The panel lost its row of styles")
+        EditorApp.capture(app, "text-style-with-its-track")
+        // Toward the subtitle (10.1–12.4 s): the timeline scrolls under the open panel, then a tap on it there.
+        EditorApp.scrub(app, points: 300)
+        EditorApp.scrub(app, points: 120)
+        let time = (app.staticTexts["edit.timeLabel"].value as? String ?? "").components(separatedBy: " / ").first ?? ""
+        let parts = time.split(separator: ":").compactMap { Double($0) }
+        XCTAssertEqual(parts.count, 2, "Can't read the playhead: \(time)")
+        let now = (parts.first ?? 0) * 60 + (parts.last ?? 0)
+        let x = timeline.frame.width / 2 + (11.25 - now) * 44
+        XCTAssertTrue((60...(timeline.frame.width - 20)).contains(x), "The subtitle isn't on screen at \(now) s")
+        timeline.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(dx: x, dy: 42)).tap()
+        XCTAssertTrue(panel.exists(within: 3), "Picking another text closed the panel")
+        XCTAssertTrue(waitFor { (field.value as? String ?? title) != title }, "The panel didn't move to the other text")
+    }
+
     /// Four tabs and nothing under them but the tab's own (canvas 2 R3 and F3): Animated is a filter of Styles, its settings
     /// right under its cards, and a card's ••• sits clear of the sample.
     func testFourTabsAndAnimatedIsAFilterOfStyles() {
