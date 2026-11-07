@@ -54,6 +54,8 @@ extension QuickEditViewModel {
                     id: "join", label: String(localized: "Join next"), systemImage: "arrow.right.and.line.vertical.and.arrow.left", action: .joinCaption
                 ),
                 EditorToolbarItem(id: "emphasis", label: String(localized: "Emphasis"), systemImage: "highlighter", action: .emphasizeCaption),
+                // Every line at once, where a creator lands tapping the captions' track (owner, 07/11/2026); asks first, naming how many.
+                EditorToolbarItem(id: "deleteAllCaptions", label: String(localized: "Delete all"), systemImage: "xmark.bin", action: .deleteAllCaptions),
             ]
             // Edit already opens the Captions panel on this line: Captions would open the same list.
             return withShortcuts(own, Self.itemShortcutGroups, leaving: [.captions], delete: deleteItem(delete, .deleteCaption))

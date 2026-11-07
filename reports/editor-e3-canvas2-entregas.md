@@ -347,3 +347,32 @@ Erro meu: as entregas 3 e 7 não rodaram `SplitScreenUITests`, `CreatorWorkflowU
 antiga. Volta o **▾** (gira para ▴ com as faixas para fora); fica o alcance de 44 pt nas marcas de corte sem clipe escolhido.
 
 Rodados sozinhos depois: as 7 suítes/testes acima e `TimelineGeometryTests`, 61/61 e 6/6.
+
+
+## Entrega 11 · Take de verdade (07/11, noite)
+
+**Teste novo** `RealTakeCopyWorkflowUITests` (`device-ui`): uma cópia em memória de uma take do aparelho (`-uiTestRealTake`; a take nunca muda,
+nada vai ao Fotos). Fluxo: Clean up › Pauses, legendas da voz real, Text › Title e Style all, ‹ para fora e Edit de novo (duração, legendas e a
+1ª linha voltam iguais), Done com "Export options · 1080p · captions on". `-uiTestRealTakeUnscripted` faz a cópia tocar como take sem roteiro, com
+os idiomas do próprio iPhone (a interface em inglês por `-uiTestAppLanguage`, sem forçar o idioma do aparelho).
+
+| Aparelho · take | Resultado |
+|---|---|
+| iago Lima (15 Pro) · a única take, 14 s | sem fala (uma estante): Clean up diz "Too much background sound", legendas "No speech found in this take" — certo; o fluxo não segue |
+| Mansuelli (18 Pro Max) · "What Makes Code Run?" pt, 70 s | fluxo inteiro passou (52 s); pausas 1:10,3 → 1:07,4; 25 linhas |
+| Mansuelli · **Gravação livre do dono, sem roteiro, com TV ao fundo**, 48 s | fluxo inteiro passou (40 s); legendas em português certo ("Então, bom dia, / hoje à noite nós saímos / para jantar numa / pizzaria…"); chip "Auto · Português" |
+
+**Achado do teste, não do app:** com a cópia presa ao roteiro de exemplo em inglês, as legendas saíram em inglês errado ("Eo segumako is a sober"):
+uma take com roteiro é ouvida no idioma do roteiro. Sem roteiro, o palpite do idioma acertou o português nas duas takes.
+
+**Pedidos do dono no caminho**
+- **Chip de idioma diz o que ouviu:** no Auto, com linhas, "Auto · Português" (antes era só "Auto", e legendas ouvidas no idioma errado não
+  diziam por quê). 20 idiomas; teste em `QuickEditCaptionPanelTests`; DESIGN_PROJECT §41.
+- **Delete all na barra de uma legenda:** o dono tocou a faixa cheia esperando escolher todas; a faixa escolhe a linha tocada, e a barra dela agora
+  tem Delete all (pergunta antes, com o número). Antes só no ••• do painel. Teste em `QuickEditToolbarTests`.
+- **A "segunda tradução" sob a legenda** na captura do dono é a Legenda ao Vivo do iOS (ícone de balão com ondas, fonte do sistema, transcrevendo o
+  português como espanhol), não o Cue: o app não pode escondê-la nem saber se está ligada, e ela não entra na exportação. A legenda do Cue estava
+  certa ("So, good morning, tonight we went out"). A confirmar pelo dono desligando-a.
+
+**Vídeo curto:** o XCTest grava a tela do aparelho em cada rodada (no xcresult); os quadros acima saíram dele. Roteiro de teste à mão para o dono: a
+seguir, no fechamento.

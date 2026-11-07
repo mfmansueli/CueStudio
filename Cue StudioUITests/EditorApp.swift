@@ -11,9 +11,12 @@ enum EditorApp {
     /// `demo`: Take 3 is the v10 design's 21.6 s edit (`SampleEdit.demo`): two clips (cut at 12.4 s), eight caption lines, a title
     /// and a subtitle, four pauses already found, music with a beat under the whole video, a B-roll window (4.2–8 s) and a
     /// voice-over (0.5–4.5 s).
-    static func open(sampleVideo: Bool = true, demo: Bool = false, animations: Bool = false, arguments: [String] = []) -> XCUIApplication {
+    static func open(
+        sampleVideo: Bool = true, demo: Bool = false, animations: Bool = false, appLanguage: String? = nil, arguments: [String] = []
+    ) -> XCUIApplication {
         let app = CueApp.launch(
-            seeded: true, sampleVideo: sampleVideo, animations: animations, extraArguments: (demo ? ["-uiTestDemoEdit"] : []) + arguments
+            seeded: true, sampleVideo: sampleVideo, appLanguage: appLanguage, animations: animations,
+            extraArguments: (demo ? ["-uiTestDemoEdit"] : []) + arguments
         )
         // Takes is the second tab; its label is "Takes" only in some languages (`-uiTestAppLanguage`).
         XCTAssertTrue(app.cueTabBar.exists(within: 15))

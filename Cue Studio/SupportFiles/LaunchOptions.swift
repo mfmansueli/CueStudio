@@ -39,6 +39,8 @@ import Foundation
 /// - `-uiTestRealTake <file name or path>`: "3 morning habits" Take 3 plays a copy of one of the creator's own recordings (in
 ///   Takes, or a path on the Mac for the Simulator; with its motion analysis), in memory: the take itself is never changed
 ///   (UI tests of Blur area on a real face).
+/// - `-uiTestRealTakeUnscripted`: with `-uiTestRealTake`, that copy plays as a take with no script linked (captions guess the
+///   language spoken, as for a video recorded without one).
 /// - `-uiTestSampleVideo`: with the sample takes, writes small real videos behind the "3 morning
 ///   habits" takes, so Quick edit can play, scrub and trim them.
 /// - `-uiTestDemoCamera`: the recorder's camera records with no hardware (a small real video per take), for the Simulator.
@@ -537,6 +539,11 @@ struct LaunchOptions {
             takes[index].aspect = analysis.width > analysis.height ? .landscape : .portrait
         }
         takes[index].edit = nil
+        if arguments.contains("-uiTestRealTakeUnscripted") {
+            // No script of its own and none that matches it: `captionScript` is nil, as for a take recorded without one.
+            takes[index].scriptReference = nil
+            takes[index].scriptVersion = nil
+        }
         try? repository.saveTakes(takes)
     }
     #endif

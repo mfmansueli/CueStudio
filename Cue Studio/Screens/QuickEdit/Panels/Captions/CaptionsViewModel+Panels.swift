@@ -101,9 +101,16 @@ extension CaptionsViewModel {
 
     // MARK: - Language and translation
 
-    /// The language chip: "Auto" or the language picked.
+    /// The language chip: the language picked, or on Auto the one the lines were heard in ("Auto · Português"), so captions
+    /// heard in the wrong language say so where it is changed; "Auto" before there are lines.
     var captionLanguageLabel: String {
-        edit.captionLanguage?.nativeName ?? String(localized: "Auto")
+        if let chosen = edit.captionLanguage { return chosen.nativeName }
+        guard !edit.captions.isEmpty, let code = edit.captionTranscript?.languageCode, let heard = CueLanguage.matching(languageCode: code) else {
+            return String(localized: "Auto")
+        }
+        // The name alone ("Português", not "Português (Brasil)"): the chip shares its row with Translate and Style.
+        let name = heard.nativeName.components(separatedBy: " (").first ?? heard.nativeName
+        return String(localized: "Auto · \(name)", comment: "Captions' language chip on Auto: the language the lines were heard in")
     }
 
     /// The Translate chip: "Translate", or the language the captions show in.

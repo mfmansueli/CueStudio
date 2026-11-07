@@ -227,7 +227,12 @@ struct QuickEditToolbarTests {
         viewModel.selection = .caption(line.id)
         #expect(viewModel.toolbarContext == .caption)
         // Edit opens the Captions panel on the line already: no second way to the same list.
-        #expect(ids(viewModel) == ["editCaption", "style", "split", "join", "emphasis"] + Self.itemShortcutIDs.filter { $0 != "captions" } + ["delete"])
+        // Delete all is there too: tapping the captions' track lands on a line (owner, 07/11/2026).
+        #expect(ids(viewModel) == ["editCaption", "style", "split", "join", "emphasis", "deleteAllCaptions"]
+            + Self.itemShortcutIDs.filter { $0 != "captions" } + ["delete"])
+        viewModel.perform(.deleteAllCaptions)
+        #expect(viewModel.captions.confirmsDeletingAll, "Delete all asks first")
+        #expect(viewModel.edit.captions.count == 1)
         let music = MusicClip(fileName: "m.m4a", title: "Morning loop", fileDuration: 60, start: 0, length: 10)
         viewModel.changeEdit { $0.music = [music] }
         viewModel.selection = .music(music.id)

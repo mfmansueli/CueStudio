@@ -1336,7 +1336,8 @@ inteira ou adiciona nela (o que é de um item vem com o item):
   kit). A faixa de mídia não abre mais a folha direto: a barra dela é o caminho (adicionar uma janela: Window e a foto).
 - **Legendas** (a faixa abre o painel): no topo, o interruptor, o idioma, **Translate**, Style e **•••** (no cabeçalho, antes do ✓; o menu do sistema: Find and replace,
   Select lines, Edit by text, Add a line at the playhead e, depois de um separador, **Delete all captions**, vermelho, que pergunta antes, "Delete
-  all 12 caption lines?" · "Undo brings them back.", e o toast "12 lines deleted" tem Undo). Add a line também fica no fim da lista. Sem linhas, o
+  all 12 caption lines?" · "Undo brings them back.", e o toast "12 lines deleted" tem Undo). **Delete all** também está na barra de uma linha
+  escolhida (tocar a faixa cheia escolhe a linha tocada; dono, 07/11/2026: apagar tudo à vista onde se toca), com a mesma pergunta. Add a line também fica no fim da lista. Sem linhas, o
   painel oferece fazê-las (Auto captions) ou escrevê-las.
 - **Blur area** (a faixa abre o primeiro passo, os rostos do quadro, como a barra): **Draw an area** e All but the largest no passo; ◐ no topo
   compara o vídeo inteiro sem as áreas quando já há alguma (apaga quando o painel fecha).
@@ -2454,6 +2455,8 @@ Prévia e exportação passam pelo mesmo compositor (`CueVideoCompositor`), ent�
   idioma que você fala…" (1–3 s num iPhone 15 Pro). Também vale para as legendas feitas na exportação de um vídeo nunca editado.
 - **Com roteiro:** no Auto, o idioma do roteiro, sem espera. Um idioma escolhido no seletor diferente do roteiro é tratado como
   engano provável: compara os dois, legenda no falado e o seletor passa a mostrar esse. Sem aviso (decisão do dono).
+- **O chip diz o que ouviu:** no Auto, com linhas feitas, o chip de idioma mostra "Auto · Português" (o nome sem a região, para caber ao lado de
+  Translate e Style); antes das linhas, só "Auto". Assim legendas ouvidas no idioma errado dizem isso onde se troca (dono, 07/11/2026).
 - **Onde não julga:** idiomas que só o ditado ouve (id, ar, tr, th, vi, nl, sv, da, nb no iPhone; todos num aparelho sem
   `SpeechTranscriber`, como o iPad Pro A12Z) seguem no idioma de antes.
 - **Como decide:** além da confiança de cada reconhecedor, lê o texto que cada um escreveu. Um reconhecedor escreve o que ouve no
