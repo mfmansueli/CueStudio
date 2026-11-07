@@ -18,16 +18,17 @@ struct CoverStudioView: View {
 
     @State private var confirmsDiscard = false
     @State private var confirmsRemove = false
-    /// Naming a cover style (Finish › Save style, or a saved style's Rename in Template).
+    /// Naming a cover style (Template's Save style card, or a saved style's Rename there).
     @State private var naming: StyleNameRequest?
-    /// While the keyboard is up the steps hide, so the cover keeps as much room as it can.
+    /// While the keyboard is up the steps and the panel's header hide and the controls take the room the cover can spare, so the
+    /// field and the control that comes after typing (the title's highlighted words, a tag's color) stay in view.
     @State private var isKeyboardUp = false
     @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
         NavigationStack {
             GeometryReader { proxy in
-                let panel = panelHeight(for: proxy.size.height)
+                let panel = isKeyboardUp ? typingPanelHeight(for: proxy.size.height) : panelHeight(for: proxy.size.height)
                 let bar: CGFloat = isKeyboardUp ? 0 : 50
                 VStack(spacing: 0) {
                     // Its messages as the editor's toasts, over the top of the cover.
@@ -75,53 +76,28 @@ struct CoverStudioView: View {
         return min(max(height * share, 220), 360)
     }
 
+    /// While typing the cover keeps under a third of what's above the keyboard, at most 150 pt (still showing the words typed):
+    /// on an iPhone SE that leaves the title field, its suggestions, Words and the highlighted words above the keyboard.
+    private func typingPanelHeight(for height: CGFloat) -> CGFloat {
+        max(160, height - min(150, height * 0.28))
+    }
+
     private func canvasArea(height: CGFloat) -> some View {
         GeometryReader { proxy in
-            let available = CGSize(width: max(1, proxy.size.width - 32), height: max(120, proxy.size.height - 16))
+            let available = CGSize(width: max(1, proxy.size.width - 32), height: max(74, proxy.size.height - 16))
             let aspect = CGFloat(viewModel.aspect)
             let width = min(available.width, available.height * aspect)
             let size = CGSize(width: width.rounded(), height: (width / aspect).rounded())
             CoverCanvas(viewModel: viewModel, size: size)
                 .frame(width: proxy.size.width, height: proxy.size.height)
         }
-        .frame(height: max(140, height))
+        // The floor only binds while typing on a small iPhone (the panel never takes more than 360 pt otherwise).
+        .frame(height: max(90, height))
     }
 
     private var stepPanel: some View {
         VStack(alignment: .leading, spacing: 0) {
-            HStack {
-                Text(viewModel.step.label)
-                    .font(.system(.headline, weight: .bold))
-                    .foregroundStyle(Palette.ink)
-                    .accessibilityAddTraits(.isHeader)
-                Spacer()
-                if let next = viewModel.step.next {
-                    Button {
-                        Haptics.selection()
-                        viewModel.step = next
-                    } label: {
-                        HStack(spacing: 4) {
-                            // With the largest text sizes, just "Next": the step's name would be cut.
-                            if typeSize.isAccessibilitySize { Text("Next") } else { Text(String(inInterfaceLanguage: LocalizedStringResource(
-                                "coverStudio.next", defaultValue: "Next: \(next.label)",
-                                comment: "Cover studio: the button that goes on to the next step, naming it. An action, not a status."
-                            ))) }
-                            Image(systemName: "chevron.right").font(.editorGlyph(EditorGlyph.chip, weight: .bold))
-                        }
-                        .font(.system(.subheadline, weight: .semibold))
-                        .foregroundStyle(Palette.ink)
-                        .padding(.horizontal, 14)
-                        .frame(height: 34)
-                        .background(Palette.fill, in: Capsule())
-                        .frame(minHeight: Metrics.hitTarget)
-                        .contentShape(Rectangle())
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityIdentifier("cover.next")
-                }
-            }
-            .padding(.horizontal, 16)
-            .padding(.top, 10)
+            if !isKeyboardUp { stepHeader }
             ScrollView {
                 Group {
                     switch viewModel.step {
@@ -129,7 +105,7 @@ struct CoverStudioView: View {
                     case .template: CoverTemplateStep(viewModel: viewModel, naming: $naming)
                     case .text: CoverTitleStep(viewModel: viewModel)
                     case .elements: CoverGraphicsStep(viewModel: viewModel)
-                    case .effects: CoverFinishStep(viewModel: viewModel, naming: $naming) { confirmsRemove = true }
+                    case .effects: CoverEffectsStep(viewModel: viewModel) { confirmsRemove = true }
                     }
                 }
                 .padding(.horizontal, 16)
@@ -148,6 +124,43 @@ struct CoverStudioView: View {
         }
         .background(Palette.Editor.panel)
         .clipShape(UnevenRoundedRectangle(topLeadingRadius: Metrics.editorPanelRadius, topTrailingRadius: Metrics.editorPanelRadius, style: .continuous))
+    }
+
+    /// The open step's name and "Next: <step>".
+    private var stepHeader: some View {
+        HStack {
+            Text(viewModel.step.label)
+                .font(.system(.headline, weight: .bold))
+                .foregroundStyle(Palette.ink)
+                .accessibilityAddTraits(.isHeader)
+            Spacer()
+            if let next = viewModel.step.next {
+                Button {
+                    Haptics.selection()
+                    viewModel.step = next
+                } label: {
+                    HStack(spacing: 4) {
+                        // With the largest text sizes, just "Next": the step's name would be cut.
+                        if typeSize.isAccessibilitySize { Text("Next") } else { Text(String(inInterfaceLanguage: LocalizedStringResource(
+                            "coverStudio.next", defaultValue: "Next: \(next.label)",
+                            comment: "Cover studio: the button that goes on to the next step, naming it. An action, not a status."
+                        ))) }
+                        Image(systemName: "chevron.right").font(.editorGlyph(EditorGlyph.chip, weight: .bold))
+                    }
+                    .font(.system(.subheadline, weight: .semibold))
+                    .foregroundStyle(Palette.ink)
+                    .padding(.horizontal, 14)
+                    .frame(height: 34)
+                    .background(Palette.fill, in: Capsule())
+                    .frame(minHeight: Metrics.hitTarget)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityIdentifier("cover.next")
+            }
+        }
+        .padding(.horizontal, 16)
+        .padding(.top, 10)
     }
 
     @ToolbarContentBuilder

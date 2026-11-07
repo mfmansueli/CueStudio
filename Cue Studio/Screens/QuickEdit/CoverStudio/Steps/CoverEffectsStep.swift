@@ -1,16 +1,15 @@
 //
-//  CoverFinishStep.swift
+//  CoverEffectsStep.swift
 //  Cue Studio
 //
 
 import SwiftUI
 
-/// Finish: what is done to the picture (Clean, Text behind me, Outline me, Dim, Blur) and how strongly; when no person is found,
-/// the two that need one say so instead of doing nothing. Then "My cover style": save this look for the next covers, or put the
-/// saved one on this cover.
-struct CoverFinishStep: View {
+/// Effects, the last step: what is done to the picture (Clean, Text behind me, Outline me, Dim, Blur) and how strongly; when no
+/// person is found, the two that need one say so instead of doing nothing. Then Remove cover, when the video had one. Saving the
+/// look as a style is in Template, as the last card of the creator's styles.
+struct CoverEffectsStep: View {
     let viewModel: CoverStudioViewModel
-    @Binding var naming: StyleNameRequest?
     /// Remove cover: asked, then done.
     let onRemove: () -> Void
 
@@ -43,15 +42,6 @@ struct CoverFinishStep: View {
                     onChange: { viewModel.setEffectAmount($0 / 100) },
                     onEditingChanged: { editing in if editing { viewModel.beginGesture() } else { viewModel.endGesture() } }
                 )
-            }
-            VStack(alignment: .leading, spacing: 8) {
-                PanelRowLabel(label: String(localized: "Your cover styles"), detail: String(localized: "Look only: never the words or the picture."))
-                PanelButton(label: String(localized: "Save style"), systemImage: "square.and.arrow.down", identifier: "cover.saveStyle") {
-                    naming = StyleNameRequest(purpose: .save, name: viewModel.suggestedCoverStyleName)
-                }
-                if !viewModel.coverStyles.styles.isEmpty {
-                    PanelNote(text: String(localized: "Your styles are first in Template."), teaches: true)
-                }
             }
             if viewModel.hadCover {
                 PanelButton(

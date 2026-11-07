@@ -6,8 +6,8 @@
 import PhotosUI
 import SwiftUI
 
-/// Picture: a frame of the video (the strip, then one frame at a time) or a photo; zoom (also with two fingers on the cover),
-/// and Reset back to filling the cover. A before/after picks which half it works on, and edits its labels.
+/// Picture: a frame of the video (the strip) or a photo; then Zoom (also with two fingers on the cover) and Reset back to filling
+/// the cover, on one row in view without scrolling; then the frame one at a time. A before/after picks which half it works on, and edits its labels.
 struct CoverPictureStep: View {
     @Bindable var viewModel: CoverStudioViewModel
     let frameRate: Double
@@ -16,7 +16,8 @@ struct CoverPictureStep: View {
     @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        // 8 pt apart: the source, the strip and the Zoom row (160 pt) fit an iPhone SE's panel (about 163 pt) without scrolling.
+        VStack(alignment: .leading, spacing: 8) {
             if viewModel.composition.activeSplit != nil {
                 PanelSegmented(
                     options: [PanelOption(false, String(localized: "Before")), PanelOption(true, String(localized: "After"))],
@@ -59,6 +60,10 @@ struct CoverPictureStep: View {
                         viewModel.endGesture()
                     }
                 )
+            }
+            // Zoom and Reset on one row right under the picture's source: in view without scrolling, even on an iPhone SE.
+            zoomRow
+            if !viewModel.pictureIsPhoto {
                 HStack(spacing: 8) {
                     stepButton("chevron.left", label: Text("One frame back"), id: "cover.frameBack") {
                         viewModel.stepFrame(by: -1, frameRate: frameRate)
@@ -74,23 +79,7 @@ struct CoverPictureStep: View {
                 // Time runs left to right in every language, like the strip above.
                 .environment(\.layoutDirection, .leftToRight)
             }
-            PanelSlider(
-                label: String(localized: "Zoom"), value: viewModel.framing.zoom * 100,
-                range: CoverFraming.zoomRange.lowerBound * 100...CoverFraming.zoomRange.upperBound * 100, step: 5, defaultValue: 100,
-                format: .percent, identifier: "cover.zoom",
-                onChange: { viewModel.setZoom($0 / 100) },
-                onEditingChanged: { editing in if editing { viewModel.beginGesture() } else { viewModel.endGesture() } }
-            )
-            HStack {
-                PanelNote(text: String(localized: "Drag the cover to move the picture, pinch to zoom."), teaches: true)
-                Spacer(minLength: 8)
-                Button(String(localized: "Reset")) { viewModel.resetFraming() }
-                    .font(.system(.subheadline, weight: .semibold))
-                    .foregroundStyle(viewModel.framing.isUntouched ? Palette.ink2 : Palette.accText)
-                    .disabled(viewModel.framing.isUntouched)
-                    .frame(minHeight: Metrics.hitTarget)
-                    .accessibilityIdentifier("cover.resetFraming")
-            }
+            PanelNote(text: String(localized: "Drag the cover to move the picture, pinch to zoom."), teaches: true)
             if let split = viewModel.composition.activeSplit { labels(split) }
         }
         .onChange(of: photo) { _, item in
@@ -99,6 +88,28 @@ struct CoverPictureStep: View {
                 await viewModel.usePhoto(item)
                 photo = nil
             }
+        }
+    }
+
+    /// Zoom (its name, track and value) and Reset: one 44 pt row.
+    private var zoomRow: some View {
+        HStack(spacing: 12) {
+            PanelSlider(
+                label: String(localized: "Zoom"), value: viewModel.framing.zoom * 100,
+                range: CoverFraming.zoomRange.lowerBound * 100...CoverFraming.zoomRange.upperBound * 100, step: 5, defaultValue: 100,
+                format: .percent, style: .row, identifier: "cover.zoom",
+                onChange: { viewModel.setZoom($0 / 100) },
+                onEditingChanged: { editing in if editing { viewModel.beginGesture() } else { viewModel.endGesture() } }
+            )
+            Button(String(localized: "Reset")) { viewModel.resetFraming() }
+                .font(.system(.subheadline, weight: .semibold))
+                .foregroundStyle(viewModel.framing.isUntouched ? Palette.ink2 : Palette.accText)
+                .disabled(viewModel.framing.isUntouched)
+                .lineLimit(1)
+                .fixedSize()
+                .frame(minWidth: Metrics.hitTarget, minHeight: Metrics.hitTarget)
+                .contentShape(Rectangle())
+                .accessibilityIdentifier("cover.resetFraming")
         }
     }
 

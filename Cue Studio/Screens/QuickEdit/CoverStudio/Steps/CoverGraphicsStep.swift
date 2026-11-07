@@ -5,41 +5,46 @@
 
 import SwiftUI
 
-/// Graphics: add an arrow, a circle, a tag or the @handle; the picked one gets its color, its words (a tag, the handle), size
-/// and turn (also with fingers on the cover), Copy, In front / Behind and Delete.
+/// Graphics: the picked one's controls first (its words for a tag or the handle, color, size and turn, also with fingers on the
+/// cover, Copy, In front / Behind and Delete), then a small row to add an arrow, a circle, a tag or the @handle.
 struct CoverGraphicsStep: View {
     let viewModel: CoverStudioViewModel
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            // Equal tiles while every name fits one; else each as wide as its name and the rest shared ("@gebruikersnaam" takes
-            // more than "Pijl"): a name is never cut (owner, 02/11/2026: no label is ever cut).
-            FairShareLayout(spacing: 8) {
-                ForEach(CoverItemKind.allCases) { kind in
-                    Button { viewModel.addItem(kind) } label: {
-                        VStack(spacing: 4) {
-                            Image(systemName: kind.systemImage).font(.editorGlyph(EditorGlyph.tool, weight: .semibold))
-                            Text(kind.label).font(.system(.caption, weight: .semibold)).lineLimit(1).minimumScaleFactor(0.8)
-                        }
-                        .foregroundStyle(Palette.ink)
-                        .padding(.horizontal, 6)
-                        .frame(maxWidth: .infinity, minHeight: 58)
-                        .editorCard()
-                        .contentShape(Rectangle())
-                    }
-                    .buttonStyle(.cuePressCard)
-                    .accessibilityLabel(Text("Add \(kind.label)"))
-                    .accessibilityIdentifier("cover.add.\(kind.rawValue)")
-                }
-            }
-            // The tiles' own height, not the panel's.
-            .fixedSize(horizontal: false, vertical: true)
             if let item = viewModel.selectedItem {
                 selected(item)
+                addRow
             } else {
+                addRow
                 PanelNote(text: String(localized: "Tap a graphic on the cover to change it. Drag to move, pinch or use the corner to resize and turn."), teaches: true)
             }
         }
+    }
+
+    /// One 44 pt row of chips. Equal while every name fits one; else each as wide as its name and the rest shared
+    /// ("@gebruikersnaam" takes more than "Pijl"): a name is never cut (owner, 02/11/2026: no label is ever cut).
+    private var addRow: some View {
+        FairShareLayout(spacing: 6) {
+            ForEach(CoverItemKind.allCases) { kind in
+                Button { viewModel.addItem(kind) } label: {
+                    HStack(spacing: 4) {
+                        Image(systemName: kind.systemImage).font(.editorGlyph(EditorGlyph.chip, weight: .semibold))
+                        Text(kind.label).font(.system(.caption, weight: .semibold)).lineLimit(1).minimumScaleFactor(0.8)
+                    }
+                    .foregroundStyle(Palette.ink)
+                    .padding(.horizontal, 8)
+                    .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
+                    .background(Palette.fill, in: Capsule())
+                    .contentShape(Capsule())
+                }
+                .buttonStyle(.cuePress)
+                .accessibilityLabel(Text("Add \(kind.label)"))
+                .accessibilityIdentifier("cover.add.\(kind.rawValue)")
+            }
+        }
+        // The chips' own height, not the panel's.
+        .fixedSize(horizontal: false, vertical: true)
     }
 
     private func selected(_ item: CoverItem) -> some View {
