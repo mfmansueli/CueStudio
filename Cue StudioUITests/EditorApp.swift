@@ -195,6 +195,15 @@ enum EditorApp {
     /// A picture of the editor and its hierarchy, for `tools/contrast/audit.py`, when `TEST_RUNNER_CUE_FIDELITY_DIR=<folder>`
     /// asks for them.
     static func capture(_ app: XCUIApplication, _ name: String) {
+        #if !targetEnvironment(simulator)
+        // On an iPhone (device-ui) the folder is out of reach: the picture goes into the result bundle.
+        XCTContext.runActivity(named: name) { activity in
+            let attachment = XCTAttachment(screenshot: app.screenshot())
+            attachment.name = name
+            attachment.lifetime = .keepAlways
+            activity.add(attachment)
+        }
+        #endif
         guard let path = ProcessInfo.processInfo.environment["CUE_FIDELITY_DIR"] else { return }
         let folder = URL(fileURLWithPath: path, isDirectory: true)
         try? FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
