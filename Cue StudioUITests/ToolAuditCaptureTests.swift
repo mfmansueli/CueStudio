@@ -637,7 +637,9 @@ final class ToolAuditCaptureTests: XCTestCase {
             }
             closeSheet()
         }
-        tap("edit.toolbar.back", within: 1)
+        // A fresh editor: the music sheets leave the bar where the next steps can't find Edit.
+        app.terminate()
+        start()
         EditorApp.tapTool(app, "edit")
         tap("edit.toolbar.split", within: 2)
         for _ in 0..<2 where !app.buttons["edit.toolbar.copyLook"].exists(within: 2) { EditorApp.mainTrack(app, at: 0.3).tap() }
@@ -645,8 +647,11 @@ final class ToolAuditCaptureTests: XCTestCase {
             try tour("sheet-paste-look")
             closeSheet()
         }
-        // The cut after the picked clip: its Transition panel, before and after a style is picked.
-        for _ in 0..<2 where !app.buttons["edit.toolbar.transition"].exists(within: 2) { EditorApp.mainTrack(app, at: 0.2).tap() }
+        // The cut after the picked clip: its Transition panel, before and after a style is picked (Transition is on the clip's bar).
+        app.terminate()
+        start()
+        EditorApp.tapTool(app, "edit")
+        tap("edit.toolbar.split", within: 2)
         if tool("transition") {
             try tour("transition-panel")
             let tiles = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'edit.transition.'"))
@@ -814,7 +819,13 @@ final class ToolAuditCaptureTests: XCTestCase {
     private func tool(_ id: String) -> Bool {
         let button = app.buttons["edit.toolbar.\(id)"]
         guard button.exists(within: 3) else { return false }
-        for _ in 0..<4 where !onScreen(button) { app.descendants(matching: .any)["edit.toolbar"].swipeLeft() }
+        // Short slow drags between the pinned ends: a swipe flings the bar past the tool.
+        let toolbar = app.descendants(matching: .any)["edit.toolbar"]
+        for _ in 0..<12 where !onScreen(button) {
+            let end = toolbar.coordinate(withNormalizedOffset: CGVector(dx: 0.2, dy: 0.3))
+            toolbar.coordinate(withNormalizedOffset: CGVector(dx: 0.7, dy: 0.3))
+                .press(forDuration: 0.05, thenDragTo: end, withVelocity: .slow, thenHoldForDuration: 0.3)
+        }
         guard onScreen(button) else { return false }
         button.tap()
         return true

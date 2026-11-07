@@ -121,7 +121,8 @@ final class ToolAuditBarCaptureTests: XCTestCase {
     }
 
     private func collectTools(_ snapshot: XCUIElementSnapshot, into tools: inout [[String: Any]]) {
-        if snapshot.elementType == .button, snapshot.identifier.hasPrefix("edit.toolbar.") {
+        // Mute and Mirror are switches.
+        if [.button, .switch, .toggle].contains(snapshot.elementType), snapshot.identifier.hasPrefix("edit.toolbar.") {
             let frame = snapshot.frame
             tools.append(["id": snapshot.identifier, "label": snapshot.label, "x": frame.minX, "w": frame.width, "enabled": snapshot.isEnabled])
         }
