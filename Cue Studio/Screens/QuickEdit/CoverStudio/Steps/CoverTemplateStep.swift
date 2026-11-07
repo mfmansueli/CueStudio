@@ -9,7 +9,7 @@ import SwiftUI
 /// the choice is the real result. Picking one keeps what was made (the words, the highlighted words, the framing, the graphics
 /// added). The one the cover wears is ringed and checked; favorites have a star, the style new covers start in says "Default";
 /// held (or with VoiceOver's actions), a tile favors, starts new covers, saves a copy, and for the creator's own renames,
-/// updates and deletes.
+/// updates and deletes. "Save style" is the last of the creator's styles, or the last card of all while there are none.
 struct CoverTemplateStep: View {
     let viewModel: CoverStudioViewModel
     @Binding var naming: StyleNameRequest?
@@ -21,43 +21,12 @@ struct CoverTemplateStep: View {
         ScrollView(.horizontal) {
             // At the top: a name on two lines doesn't move its picture down.
             HStack(alignment: .top, spacing: 10) {
-                ForEach(library.styles) { style in
-                    tile(
-                        name: style.name, image: viewModel.savedThumbnails[style.id],
-                        marks: Marks(isOn: viewModel.wornCoverStyleID == style.id, isFavorite: library.isFavorite(style.key),
-                                     isDefault: library.isDefault(style.key)),
-                        identifier: "cover.style.saved.\(style.id.uuidString)", action: { viewModel.applySavedCoverStyle(style.id) },
-                        menu: {
-                        StyleCardMenu(
-                            isFavorite: library.isFavorite(style.key), isDefault: library.isDefault(style.key),
-                            defaultLabel: String(localized: "Use for new covers"),
-                            onFavorite: { viewModel.toggleFavoriteCoverStyle(style.key) },
-                            onDefault: { viewModel.toggleDefaultCoverStyle(style.key, name: style.name) },
-                            onDuplicate: { viewModel.duplicateCoverStyle(style.id) },
-                            onRename: { naming = StyleNameRequest(purpose: .rename(style.id), name: style.name) },
-                            onUpdate: { viewModel.updateCoverStyle(style.id) },
-                            onDelete: { viewModel.deleteCoverStyle(style.id) }
-                        )
-                        }
-                    )
-                }
-                ForEach(CoverTemplate.allCases) { template in
-                    let key = StyleKey.builtIn(template.rawValue)
-                    tile(
-                        name: template.label, image: viewModel.thumbnails[template],
-                        marks: Marks(isOn: viewModel.wornCoverStyleID == nil && viewModel.composition.template == template,
-                                     isFavorite: library.isFavorite(key), isDefault: library.isDefault(key)),
-                        identifier: "cover.template.\(template.rawValue)", action: { viewModel.applyTemplate(template) },
-                        menu: {
-                        StyleCardMenu(
-                            isFavorite: library.isFavorite(key), isDefault: library.isDefault(key),
-                            defaultLabel: String(localized: "Use for new covers"),
-                            onFavorite: { viewModel.toggleFavoriteCoverStyle(key) },
-                            onDefault: { viewModel.toggleDefaultCoverStyle(key, name: template.label) },
-                            onDuplicate: { viewModel.duplicateCoverTemplate(template) }
-                        )
-                        }
-                    )
+                ForEach(CoverGalleryCard.gallery(saved: library.styles.map(\.id))) { card in
+                    switch card {
+                    case .saved(let id): if let style = library.styles.first(where: { $0.id == id }) { savedTile(style, library: library) }
+                    case .saveStyle: saveStyleCard
+                    case .template(let template): templateTile(template, library: library)
+                    }
                 }
             }
             .padding(.horizontal, 16)
@@ -65,6 +34,59 @@ struct CoverTemplateStep: View {
         }
         .scrollIndicators(.hidden)
         .padding(.horizontal, -16)
+    }
+
+    /// The tiles' picture: 92 pt wide, as tall as the cover's shape (at most 164 pt).
+    private var tileSize: CGSize {
+        CGSize(width: 92, height: min(92 / CGFloat(viewModel.aspect), 164))
+    }
+
+    /// "Save style": names this cover's look and keeps it for the next covers (never the words or the picture).
+    private var saveStyleCard: some View {
+        PanelSaveStyleCard(identifier: "cover.saveStyle", size: tileSize) {
+            naming = StyleNameRequest(purpose: .save, name: viewModel.suggestedCoverStyleName)
+        }
+        .accessibilityHint(Text("Look only: never the words or the picture."))
+    }
+
+    private func savedTile(_ style: SavedStyle<CoverStyle>, library: StyleLibrary<CoverStyle>) -> some View {
+        tile(
+            name: style.name, image: viewModel.savedThumbnails[style.id],
+            marks: Marks(isOn: viewModel.wornCoverStyleID == style.id, isFavorite: library.isFavorite(style.key),
+                         isDefault: library.isDefault(style.key)),
+            identifier: "cover.style.saved.\(style.id.uuidString)", action: { viewModel.applySavedCoverStyle(style.id) },
+            menu: {
+                StyleCardMenu(
+                    isFavorite: library.isFavorite(style.key), isDefault: library.isDefault(style.key),
+                    defaultLabel: String(localized: "Use for new covers"),
+                    onFavorite: { viewModel.toggleFavoriteCoverStyle(style.key) },
+                    onDefault: { viewModel.toggleDefaultCoverStyle(style.key, name: style.name) },
+                    onDuplicate: { viewModel.duplicateCoverStyle(style.id) },
+                    onRename: { naming = StyleNameRequest(purpose: .rename(style.id), name: style.name) },
+                    onUpdate: { viewModel.updateCoverStyle(style.id) },
+                    onDelete: { viewModel.deleteCoverStyle(style.id) }
+                )
+            }
+        )
+    }
+
+    private func templateTile(_ template: CoverTemplate, library: StyleLibrary<CoverStyle>) -> some View {
+        let key = StyleKey.builtIn(template.rawValue)
+        return tile(
+            name: template.label, image: viewModel.thumbnails[template],
+            marks: Marks(isOn: viewModel.wornCoverStyleID == nil && viewModel.composition.template == template,
+                         isFavorite: library.isFavorite(key), isDefault: library.isDefault(key)),
+            identifier: "cover.template.\(template.rawValue)", action: { viewModel.applyTemplate(template) },
+            menu: {
+                StyleCardMenu(
+                    isFavorite: library.isFavorite(key), isDefault: library.isDefault(key),
+                    defaultLabel: String(localized: "Use for new covers"),
+                    onFavorite: { viewModel.toggleFavoriteCoverStyle(key) },
+                    onDefault: { viewModel.toggleDefaultCoverStyle(key, name: template.label) },
+                    onDuplicate: { viewModel.duplicateCoverTemplate(template) }
+                )
+            }
+        )
     }
 
     /// How a tile stands: worn by this cover, a favorite, where new covers start.
