@@ -63,15 +63,17 @@ final class FrameHoldingPlayerView: UIView {
         CATransaction.commit()
     }
 
-    /// Shows `frame` over the video until the layer has a new item's picture.
-    func hold(_ frame: CGImage) {
+    /// Shows `frame` over the video until the layer has a new item's picture. `flushing` puts it on screen at once, before the
+    /// player lets go of the old picture (an item swap); a view still being made (`makeUIView`) shows it with its first frame
+    /// instead: flushing there lays SwiftUI out again from inside its own update, which froze the editor on an iPhone (a
+    /// watchdog kill, 07/11/2026, opening full screen in the middle of edits).
+    func hold(_ frame: CGImage, flushing: Bool = true) {
         CATransaction.begin()
         CATransaction.setDisableActions(true)
         heldLayer.contents = frame
         heldLayer.isHidden = false
         CATransaction.commit()
-        // On screen before the player lets go of the old picture.
-        CATransaction.flush()
+        if flushing { CATransaction.flush() }
         sawBlank = !playerLayer.isReadyForDisplay
         holdTask?.cancel()
         holdTask = Task { [weak self] in

@@ -17,7 +17,8 @@ struct QuickEditPlayerView: UIViewRepresentable {
         let view = FrameHoldingPlayerView()
         view.player = player.avPlayer
         player.addFrameHolder(view) { [weak view] frame in view?.hold(frame) }
-        if holdsFirstFrame, let frame = player.frameOnScreen() { view.hold(frame) }
+        // Not flushed: the view isn't on screen yet, and a flush inside SwiftUI's update lays it out again from within.
+        if holdsFirstFrame, let frame = player.frameOnScreen() { view.hold(frame, flushing: false) }
         return view
     }
 
