@@ -32,3 +32,21 @@ Meu estilo volta para a etapa 4. Antes de implementar, mostre lado a lado o alca
 Feche os pontos pendentes antes de implementar cada fluxo. Defina a regra para alongar legendas junto de outra linha e na borda de um clipe. Separe marcas de ênfase manual e automática para que desligar a automação preserve o trabalho manual. Em zoom por frase, defina limites de qualidade e duração e confira Follow face também em mídia importada. Em áudio, explique o nível da música e quanto ela baixa sob a voz. Meça loudness e true peak no arquivo antes de aprovar normalização, e ouça casos reais antes de ativar tratamento de respiração ou sibilância. Para Repetições, mantenha o fluxo em Words e registre os idiomas efetivamente testados com fala real.
 
 Depois do meu teste da etapa 3 no iPhone, feche os pontos de entrada e a altura dos painéis da etapa 4. No relatório, separe o que foi lido no código, o que foi reproduzido e o que foi validado no aparelho. O congelamento ainda fica pendente do meu fluxo de teste.
+
+## Meu estilo: decisões F, G, H (08/11/2026)
+
+Resposta do dono à comparação https://claude.ai/artifact/A1x24qHJkfZchG1PJeRMnW. Texto do dono, sem edição.
+
+Eu escolheria F sim, G(a) e H(a). O ganho é configurar seu estilo uma vez, começar o próximo vídeo com ele e preservar o que você já ajustou à mão. Eu faria duas ressalvas. O template precisa dizer o que vai trocar mesmo quando preserva as fontes e cores do kit, e o Paste look só deve repetir a última escolha quando ela fizer sentido para o novo item.
+
+Resposta para enviar à Claude
+
+F. Sim. Meu estilo vira o próprio Kit. Adicione Editing e Use on new videos ao Kit. Em Editing, guarde as preferências de limpeza, música, ducking e efeito de voz. Carregar a receita deixa esses valores prontos nas ferramentas. Remover pausas ou repetições continua dependendo de tocar em Remove. Se o efeito de voz for aplicado ao carregar o kit, deixe isso explícito na interface. A proposta anterior também mencionava preferências de zoom. Registre se elas entram nesta entrega ou ficam pendentes. Guardar uma preferência de zoom e criar zooms na timeline são ações distintas.
+
+G. Escolho (a). Se eu marcar Use on new videos, aplique o kit automaticamente ao criar um vídeo e mostre Your style is on · Undo. O Desfazer vale para o vídeo atual e preserva minha preferência para os próximos. Reabrir um projeto existente preserva o estado salvo. Se eu tiver vários kits, apenas um pode ser o padrão para vídeos novos.
+
+H. Escolho (a). Preserve por padrão os ajustes manuais de fonte, cor e tamanho em títulos e linhas de legenda. Preserve também posições ajustadas por trecho. Se houver ajustes que podem ser substituídos, mostre uma opção desmarcada com a contagem real, distinguindo títulos de legendas. Substitua apenas os ajustes que a opção indicar.
+
+Template. Aprovado. Antes de aplicar, mostre o que será trocado e que as fontes e cores do kit serão mantidas. Se o template depender de uma fonte ou cor específica para ficar como na demonstração, mostre na prévia como ele realmente vai ficar com o meu kit.
+
+Paste look. Aprovado. Mostre a folha na primeira vez e reutilize a última escolha para destinos compatíveis. Depois de colar, mostre Undo e Change. Change deve permitir corrigir a colagem que acabou de acontecer. Se a escolha anterior for incompatível com o novo destino, abra a folha de novo.
