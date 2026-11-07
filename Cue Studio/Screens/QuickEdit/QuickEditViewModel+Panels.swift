@@ -164,3 +164,18 @@ extension QuickEditViewModel {
         return String(localized: "This support")
     }
 }
+
+// MARK: - Tucked away (iPhone SE)
+
+extension QuickEditViewModel {
+    /// The SE's styling sheet steps aside so the timeline can be reached in one tap, without ✓ (owner, canvas 2 R10 §7.3).
+    func tuckPanel() {
+        guard panel != nil else { return }
+        panelIsTucked = true
+    }
+
+    /// The panel comes back as it was left.
+    func untuckPanel() {
+        panelIsTucked = false
+    }
+}

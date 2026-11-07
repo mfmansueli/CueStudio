@@ -155,7 +155,8 @@ extension QuickEditViewModel {
                 style: clips.canResetClip ? .normal : .dimmed, action: .resetClip
             ),
         ]
-        return Self.grouped([essentials, picture, montage])
+        let applied = targetClip.map { ClipAppliedTools.ids(of: $0, in: edit.timeline.segments) } ?? []
+        return Self.grouped([essentials, picture, montage]).map { $0.applied(applied.contains($0.id)) }
     }
 
     /// Adjust, Skin, Filters or Background of the picked clip.

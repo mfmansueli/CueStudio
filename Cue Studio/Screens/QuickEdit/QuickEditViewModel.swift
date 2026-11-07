@@ -64,6 +64,9 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     var panelTab: EditorPanelTab = .presets
     /// The open panel's "Advanced" section is expanded.
     var showsAdvanced = false
+    /// A styling sheet stepped aside on the iPhone SE so the timeline can be reached (`tuckPanel`, canvas 2 R10 §7.3): the panel
+    /// stays open (its item, tab, style and the playhead with it) and the toolbar's place says how to bring it back.
+    var panelIsTucked = false
     /// Each panel's tab and Advanced as they were left, per item where the panel is an item's (`PanelMemory`, canvas 2 R7).
     var panelMemory = PanelMemory()
     /// The item the open panel's tab and Advanced belong to.
@@ -391,6 +394,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         let previous = shownPanel
         guard next != previous else { return }
         shownPanel = next
+        panelIsTucked = false
         if let lane = next?.focusedLane { bringTrack([lane]) }
         pinClip(for: next)
         swapPanelState(from: previous, to: next)

@@ -37,6 +37,8 @@ struct EditorToolbarItem: Identifiable, Hashable {
     var startsGroup = false
     /// A switch (a track bar's Show, Compare): lit while on, and VoiceOver hears it as a switch, on or off. Nil: a button.
     var isOn: Bool?
+    /// It changed the picked clip (`ClipAppliedTools`, canvas 2 M2): a dot on its icon, "Changed on this clip" to VoiceOver.
+    var isApplied = false
 
     /// Delete (of the picked item) stays at the end of the bar while the other tools scroll.
     var isPinned: Bool { style == .destructive }
@@ -45,6 +47,13 @@ struct EditorToolbarItem: Identifiable, Hashable {
     func startingGroup() -> EditorToolbarItem {
         var item = self
         item.startsGroup = true
+        return item
+    }
+
+    /// The same tool, marked as having changed the picked clip.
+    func applied(_ isApplied: Bool) -> EditorToolbarItem {
+        var item = self
+        item.isApplied = isApplied
         return item
     }
 

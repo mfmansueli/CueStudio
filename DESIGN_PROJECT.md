@@ -1307,7 +1307,9 @@ cada faixa tem um toque da cor dela (6%, a atual 12%), e **a faixa com as ferram
 amarelo): contorno de 1,5 pt na cor dela a 85% (3:1 contra a faixa e o preto; o fundo não pode clarear mais, a dica de uma faixa vazia precisa de
 4,5:1) e o quadrado do ícone como apertado (`TimelineLaneTint.litRing`), e o ícone e o ▾ da atual ficam sobre **um quadrado de cantos arredondados** na cor dela (22%,
 contorno de 1 pt a 50%): 40 × 36 pt com cantos de 9 numa faixa de 44 (4 pt menor que a faixa em cada borda, nunca abaixo de 26; cantos de 10 a cada
-40 pt de altura, `TimelineLaneLook.chooserHeight`/`chooserRadius`). **▾** ao lado do ícone da faixa atual (a célula toda, sem tocar a faixa do vídeo) põe todas as faixas
+40 pt de altura, `TimelineLaneLook.chooserHeight`/`chooserRadius`). Ao lado do ícone da faixa atual, com as faixas guardadas, **uma pilha
+(`rectangle.stack.fill`) e quantas faixas há sob o vídeo** ("▤ 4"; dono, canvas 2 N1: diz que há mais faixas e quantas); com todas para fora, a pilha dá
+lugar a **▴**. Tocar a célula (toda, sem tocar a faixa do vídeo) põe todas as faixas
 para fora no lugar, e **todas aparecem, sem rolar** (dono 28/10/2026): elas encolhem para o vídeo ficar pelo menos do tamanho de tudo abaixo dele
 (barra do player + timeline + ferramentas; `EditorLayout.openLaneHeight`), de 44 pt até 28, 6 pt entre elas; se nem com 28 cabem nessa metade, a
 timeline passa da metade e o vídeo cede (só abaixo do mínimo do vídeo, 30% da altura, elas rolariam). No iPhone 17, uma edição nova fica com faixas de
@@ -1315,7 +1317,7 @@ timeline passa da metade e o vídeo cede (só abaixo do mínimo do vídeo, 30% d
 28 pt, timeline de 294 e vídeo de 332. Sob um painel sobre uma faixa, ela tem 40 pt, a altura do vídeo ali. **Arrastar a timeline para cima ou para
 baixo** (canvas "Estilo da faixa e do seletor", prancheta F, dono 28/10/2026) faz o que o ▾ faz, seguindo o dedo: arraste claramente vertical (mais
 que 1,2× o lateral; de lado é o tempo), fora de uma alça e do item escolhido; a borda de cima da timeline acompanha o dedo, o vídeo cede, as faixas se
-abrem a partir de onde a atual está (as outras aparecem entre 15% e 65% do caminho) e o ▾ gira na mesma medida (`TimelineGeometry.Input.reveal`,
+abrem a partir de onde a atual está (as outras aparecem entre 15% e 65% do caminho) e a pilha dá lugar ao ▴ na mesma medida (`TimelineGeometry.Input.reveal`,
 `EditorLayout.timelineReveal`); passando das pontas a borda estica até 18 pt e resiste. Ao soltar, vai para o estado mais perto, ou para onde foi
 jogada (mais de 350 pt/s), com uma mola que passa um pouco da marca (`TimelineRevealSpring`, 0,42 s, bounce 0,18) e um toque leve quando muda; o ▾
 abre e fecha com a mesma mola. Com todas para fora e mais faixas que espaço (só sob o mínimo do vídeo), o arraste rola as faixas primeiro e só recolhe
@@ -1598,7 +1600,12 @@ Sistema completo em `NOTIFICATIONS.md`. Na interface:
 - **O painel cresce** (`EditorPanelContainer(expansion:)`): alça (decorativa) e botão de expandir no cabeçalho (44 pt, "Expand panel" / "Collapse panel");
   arrastar o cabeçalho 24 pt faz o mesmo. Expandido, o vídeo vai ao menor tamanho do editor (`EditorLayout(panelIsExpanded:)`); a escolha vale para os dois
   painéis enquanto o editor está aberto (`stylePanelIsExpanded`). Altura normal de um painel `.full`: metade da tela (330–420 pt). No iPhone SE o painel é
-  folha e o botão troca as duas alturas. O conteúdo para 18 pt acima do Home Indicator (`Metrics.editorStylePanelBottomClearance`) e some em degradê
+  folha e o botão troca as duas alturas; ao lado dele, **⌄ "Show timeline"** (dono, canvas 2 R10 §7.3) tira a folha da frente sem fechar o painel: a
+  timeline volta inteira para escolher outro texto, legenda ou ponto, e no lugar das ferramentas fica uma barra com o nome do painel (˄, traz a folha
+  de volta como estava: item, aba, estilo, playhead) e ✓ (`PanelTuckedBar`, `QuickEditViewModel.panelIsTucked`); abrir outro painel também a traz.
+  Nas outras telas, **acima do painel ficam a régua e a faixa dele** (Texto ou Legendas, sem a faixa do vídeo; `TimelineGeometry.Input.panelIsFull`):
+  tocar outro texto ou legenda ali troca o que o painel estiliza. O vídeo fica no menor tamanho dele e o painel cede o que isso pede, até 330 pt
+  (`EditorPanelSize.fullMinimum`, uma fileira inteira de estilos); expandido ou digitando, a timeline sai. O conteúdo para 18 pt acima do Home Indicator (`Metrics.editorStylePanelBottomClearance`) e some em degradê
   (`scrollEdgeEffectStyle(.soft)`).
 - **Abas na largura toda** (Text style: **Styles · Font · Color · Motion**, um nível só, dono, canvas 2 R3; um gráfico: **Style · Motion**; Caption style: Styles · Format · Animation · Adjust, §50), 44 pt, com pelo menos 16 pt entre os nomes (sem esse espaço, rolam de lado); campo e abas
   fixos, só o resto rola; trocar de aba volta ao topo (`contentKey`), menos Styles do Caption style, que volta onde estava (`keptOffset`). Cada
@@ -2420,6 +2427,10 @@ Prévia e exportação passam pelo mesmo compositor (`CueVideoCompositor`), ent�
   principal: §54. Música: Volume · **Beats** ·
   Replace · Delete (efeitos sonoros e sons extraídos sem Beats). Voice-over: Volume · Re-record (ou **Edit text**, se foi falado a partir de
   texto) · **Voice effects** · Lock · Delete (§56).
+- **O que já mudou no clipe** (dono, canvas 2 M2; `ClipAppliedTools`): na barra do clipe, um ponto de 6 pt em `acc` no canto do ícone de cada ferramenta
+  que já mudou o clipe escolhido (Speed, Volume com fades, Zoom, Adjust, Skin, Filters, Background, Crop e giro, Stabilize, Animation, Voice effects e
+  Transition: o corte depois dele, ou antes no último); VoiceOver diz "Changed on this clip". Vem do próprio clipe: muda com outro clipe, Reset clip e
+  Undo. Mute e Mirror já são chaves acesas; Blur area é da faixa dela.
 - **Comparação com CapCut, Edits e InShot** (17/10/2026): Follow face é o "Auto reframe" do CapCut (formato + velocidade do acompanhamento), no
   painel de formato; Stabilize tem três níveis como o do CapCut, por clipe, e ganha "Use on every clip"; Track: no CapCut se arrasta uma caixa
   sobre o objeto; no Cue o próprio item é a caixa (põe e toca Track), um passo a menos, sem caixa de tamanho ajustável; Speed com Normal | Curve

@@ -90,8 +90,11 @@ extension QuickEditViewModel {
         input.selection = selection
         input.alsoSelected = overlays.textsStyledTogether
         input.selectedJoin = selectedJoinID
-        input.panelIsOpen = panel != nil
-        input.focusedLane = panel?.focusedLane
+        // A styling sheet tucked away on the SE gives the whole timeline back (canvas 2 R10 §7.3).
+        input.panelIsOpen = panel != nil && !panelIsTucked
+        input.focusedLane = panelIsTucked ? nil : panel?.focusedLane
+        // Text style and Caption style keep the ruler and their own track above them, without the video track (R10 §7.3).
+        input.panelIsFull = !panelIsTucked && openPanelSize == .full
         input.activeLanes = toolMenu?.lanes ?? []
         input.tracks = tracks
         input.heightClass = heightClass

@@ -39,6 +39,29 @@ struct TimelineGeometryTests {
         #expect(geometry.hit(at: CGPoint(x: 300, y: join.frame.midY)) == .clip(first))
     }
 
+    /// Canvas 2 N1: with no clip picked a cut's mark is reached across 44 pt (no clip handles to share it with), never past the
+    /// middle of a short clip beside it.
+    @Test func withNoClipPickedACutsMarkIsReachedAcross44Points() {
+        let geometry = TimelineGeometry(input())
+        let join = geometry.joins[0]
+        #expect(join.hitFrame.width == TimelineGeometry.joinReach)
+        #expect(geometry.hit(at: CGPoint(x: 440 - 21, y: join.frame.midY)) == .join(second))
+        #expect(geometry.hit(at: CGPoint(x: 440 + 21, y: join.frame.midY)) == .join(second))
+        // A clip 0.7 s long (30.8 pt) beside it: the reach stays the handles' 32 pt.
+        let short = TimelineGeometry(input { input in
+            input.clips[0].duration = 0.7
+            input.clips[1].start = 0.7
+        })
+        #expect(short.joins.first?.hitFrame.width == TimelineGeometry.handleReach)
+    }
+
+    /// Canvas 2 N1: the stack beside the current track's icon counts the tracks under the video.
+    @Test func theChooserCountsTheTracksUnderTheVideo() throws {
+        let geometry = TimelineGeometry(input { $0.tracks = TimelineTrackChoice(current: .text) })
+        // Photos and videos, texts, captions and the shortcut to add music or a voice-over.
+        #expect(try #require(geometry.chooser).trackCount == 4)
+    }
+
     @Test func aCutsMarkShowsItsTransitionAndHidesWhenAClipIsPicked() {
         let dissolved = TimelineGeometry(input { input in
             input.clips[1].transition = .dissolve

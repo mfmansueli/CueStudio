@@ -21,7 +21,8 @@ import CoreGraphics
 ///   its room. A panel that works on the timeline (all but the full ones) keeps the ruler and the
 ///   video track (and the track it is about) visible, taking that room from the preview down to its
 ///   minimum (30% of the height, at least 190 pt): the video never goes. Past that the panel gets
-///   shorter and scrolls inside.
+///   shorter and scrolls inside. A full panel (Text style, Caption style) keeps the ruler and its own track above it, without
+///   the video track (owner, canvas 2 R10 §7.3), down to its least height (a whole row of styles).
 /// - With large text (Dynamic Type from xxLarge, which also makes a regular screen compact) a mini or
 ///   medium panel grows by up to half its height, from the preview down to its minimum: its labels and
 ///   controls take more lines, and the video is what can give.
@@ -190,11 +191,16 @@ nonisolated struct EditorLayout: Equatable, Sendable {
             return
         }
         var needed: CGFloat = 0
+        var inlineHeight = panelHeight
         if panel != .full {
             needed = heightClass.rulerHeight + heightClass.panelMainTrackHeight + Self.timelineBottomPadding
             if panelFocusesLane { needed += Self.laneGap + heightClass.panelLaneHeight }
+        } else if panelFocusesLane {
+            // Text style and Caption style (owner, canvas 2 R10 §7.3): the ruler and the panel's own track stay above it, the
+            // video keeps its smallest size, and the panel gives what that takes down to its least (a whole row of styles).
+            needed = heightClass.rulerHeight + heightClass.panelLaneHeight + Self.timelineBottomPadding
+            inlineHeight = max(EditorPanelSize.fullMinimum, min(panelHeight, room - previewMinimum - needed))
         }
-        var inlineHeight = panelHeight
         if largeText, panel != .full {
             // Large text: the controls need more lines, so the panel grows (by half at most) and the video gives the room, down
             // to its minimum. The ruler and the video track stay.
