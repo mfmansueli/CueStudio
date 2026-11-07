@@ -1957,17 +1957,25 @@ auditoria: `reports/editor-award-checklist.md`.
   velocidade só muda onde ele toca. Capas antigas (`.frame(segundos)`) são quadros do take. **Se o trecho sai da edição**, a capa continua a mesma
   (da gravação); a etapa Picture mostra a faixa da edição de agora, e escolher outro quadro troca a capa.
 - **Cover Studio** (`Screens/QuickEdit/CoverStudio/`, `CoverStudioViewModel`, `CoverComposition`): a capa é feita em tela cheia, sobre o editor (Capa
-  na barra, o bloco de capa da timeline, "Try it" de notificação), em **cinco etapas** com Next e barra de etapas: **Picture** (quadro da faixa, ±1
-  quadro, ou foto; zoom/mover com os dedos ou o controle, Reset; no antes/depois, Before | After com a metade emoldurada em amarelo, rótulos
-  editáveis), **Template** (Educational, Opinion, List, Demo, Before/After, Series, cada miniatura desenhada com a foto e o título reais; trocar de
-  modelo mantém título, destaques, enquadramento, segunda foto e os gráficos do criador; os do modelo, se não tocados, são trocados), **Title**
-  (texto ou ✦ sugestões, palavras em destaque (várias), Type: fonte, tamanho, largura, alinhamento, maiúsculas; Color: texto, destaque e "Color |
-  Box"; Readability: None, Shadow, Outline, Box + cor da caixa; Line above), **Graphics** (Arrow, Circle, Tag, @handle como objetos: tocar,
-  arrastar, pinçar e girar com dois dedos ou a alça do canto, ✕, cor, texto, tamanho e giro por controle, Copy, In front, Behind, Delete) e
-  **Finish** (Clean, Text behind me, Outline me, Dim, Blur com Strength; sem pessoa: "No person found" e a explicação; My cover style: Save as my
-  style / Use my style; Remove cover). Desfazer/refazer próprio; Done é **um** passo no editor; Cancel com mudanças pergunta. Guias amarelas no
+  na barra, o bloco de capa da timeline, "Try it" de notificação), em **cinco etapas** com "Next: <etapa>" e barra de etapas: **Picture** (Frame
+  from video | Photo, a faixa de quadros, e logo abaixo **Zoom e Reset numa fileira de 44 pt**, à vista sem rolar do iPhone SE ao Pro Max; depois
+  ±1 quadro com o tempo e a dica de arrastar/pinçar; zoom e mover também com os dedos; no antes/depois, Before | After em cima, com a metade
+  emoldurada em amarelo, e rótulos editáveis no fim), **Template** (os estilos salvos do criador, depois Educational, Opinion, List, Demo,
+  Before/After, Series, cada miniatura desenhada com a foto e o título reais; trocar de modelo mantém título, destaques, enquadramento, segunda
+  foto e os gráficos do criador; os do modelo, se não tocados, são trocados; **Save style** é o cartão tracejado, do tamanho das miniaturas, no fim
+  dos estilos do criador ou, sem nenhum, no fim da fileira: `CoverGalleryCard`), **Title** (o campo; ✦ sugestões quando vazio ou digitando, nunca
+  a que repete o título atual, sem diferença de maiúsculas ou espaços; embaixo, **Words · Type · Color · Box**, abrindo em Words e lembrado
+  enquanto o estúdio está aberto: Words = palavras em destaque (várias) e Line above; Type = fonte, peso, tamanho, largura, alinhamento,
+  maiúsculas; Color = texto, destaque e "Highlight shows as"; Box = None, Shadow, Outline, Box + cor da caixa), **Graphics** (Arrow, Circle, Tag,
+  @handle como objetos: tocar, arrastar, pinçar e girar com dois dedos ou a alça do canto, ✕; com um escolhido, **os controles dele primeiro**
+  (texto, cor, tamanho, giro, Duplicate, In front, Behind, Delete) e depois a fileira pequena de adicionar, chips de 44 pt; sem escolhido, a
+  fileira e a dica) e **Effects** (Clean, Text behind me, Outline me, Dim, Blur com Strength; sem pessoa: "No person found" e a explicação; Remove
+  cover quando o vídeo já tinha capa). Desfazer/refazer próprio; Done é **um** passo no editor; Cancel com mudanças pergunta. Guias amarelas no
   meio e nos terços; guia de recorte "Profile grid 3:4 · approx." / "Square 1:1 · approx." (aproximações: o Cue não define a capa em nenhuma rede).
-  O teclado esconde a barra de etapas; tocar na capa o recolhe. A timeline mostra a capa desenhada no bloco de capa.
+  **Com o teclado aberto** (título, Line above, etiqueta ou @handle, rótulos do antes/depois) somem a barra de etapas e o cabeçalho da etapa, e os
+  controles ganham a altura que a capa cede (ela fica com 28% do que sobra acima do teclado, até 150 pt): no Title, o campo, Words e as palavras em destaque ficam acima do teclado,
+  e Line above, tocado, sobe para cima do teclado; tocar na capa recolhe o teclado. A faixa de quadros é um editor local da capa (R10): escolher quadros muda só a
+  prévia da capa; abrir e fechar o estúdio deixa a agulha do editor onde estava. A timeline mostra a capa desenhada no bloco de capa.
 - **Texto da capa** (`CoverTextLayout`, Core Text): o bloco inteiro cabe — a letra diminui (até 3,4% da largura) até a palavra mais longa, as
   linhas (até 6) e a altura caberem, sempre dentro da capa em volta do centro e longe de tags, @handle e rótulos do antes/depois. Quebra só no
   início de uma palavra (separação de palavras do sistema: espaços, ou dicionário em japonês, chinês e tailandês); RTL alinha do próprio lado;
@@ -2916,7 +2924,7 @@ muda, Desfazer ao excluir, estilo padrão, nem "voltar ao estilo"; nenhum mostra
   salvo; legendas novas num vídeo nunca estilizado nascem nele inteiro, textos novos num vídeo sem estilo próprio, capas novas), Delete com **Undo** no
   aviso (fora do Desfazer da edição). Cada vídeo guarda a própria cópia: mudar ou apagar um estilo salvo nunca muda um vídeo feito. O "My style" único de
   antes vira o primeiro da biblioteca (padrão nas legendas e capas, como já era) e a chave antiga fica, para uma versão anterior; estilos salvos que esta
-  versão não consegue ler (de uma mais nova) nunca são substituídos. Apagar dados apaga todos. Texto: os salvos (favoritos primeiro) antes dos presets, amostra traduzida. Capa: os salvos primeiro em Template; Finish › Save style.
+  versão não consegue ler (de uma mais nova) nunca são substituídos. Apagar dados apaga todos. Texto: os salvos (favoritos primeiro) antes dos presets, amostra traduzida. Capa: os salvos primeiro em Template, e o cartão Save style no fim deles (sem nenhum, no fim da fileira).
 - **Achados corrigidos:** trocar de preset zerava o tamanho; copiar um texto e salvar mostrava dois cartões iguais marcados (a "sensação de acúmulo": o
   Cue guardava um só estilo, mas a grade juntava Save, My style, Custom e o Clean antigo); "My style" não tinha como sair e sobrevivia a Apagar dados; a
   amostra era sempre em português; cor de destaque em Font e tamanho em Position. "Emphasis" e "Highlight color" eram a mesma palavra em português,

@@ -5,7 +5,7 @@
 
 import Foundation
 
-/// Cover Studio's steps, in the order a cover is made: the picture, a template, the title, the graphics, the finish. Any step
+/// Cover Studio's steps, in the order a cover is made: the picture, a template, the title, the graphics, the effects. Any step
 /// can be opened at any time; Next goes through them in order.
 enum CoverStudioStep: String, CaseIterable, Identifiable {
     case image, template, text, elements, effects
@@ -18,7 +18,7 @@ enum CoverStudioStep: String, CaseIterable, Identifiable {
         case .template: String(localized: "Template", comment: "Cover Studio step")
         case .text: String(localized: "Title", comment: "Cover Studio step")
         case .elements: String(localized: "Graphics", comment: "Cover Studio step")
-        case .effects: String(localized: "Finish", comment: "Cover Studio step")
+        case .effects: String(localized: "Effects", comment: "Cover Studio step")
         }
     }
 
