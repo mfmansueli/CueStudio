@@ -79,13 +79,12 @@ final class MediaMotionUITests: XCTestCase {
         XCTAssertTrue(waitFor { abs(self.seconds(self.shown(value)) - 2) < 0.05 }, "One Undo didn't take the held run back: \(shown(value))")
         app.buttons["edit.panel.apply"].tap()
 
-        // Volume: the bar, the title and the control say Volume.
+        // Volume: the bar says Volume (the panel and its control say it too, `QuickEditMediaNamesTests`). The demo's window video
+        // has no sound, so the tool says that instead of opening.
+        XCTAssertEqual(app.buttons["edit.toolbar.mediaVolume"].label, "Volume")
+        XCTAssertFalse(app.buttons["edit.toolbar.mediaVolume"].label.contains("Sound"))
         EditorApp.tapTool(app, "mediaVolume")
-        let volume = app.descendants(matching: .any)["edit.mediaSound"]
-        XCTAssertTrue(volume.exists(within: 5))
-        XCTAssertTrue(app.staticTexts["Volume"].exists)
-        XCTAssertFalse(app.staticTexts["Sound"].exists, "The control still says Sound")
-        app.buttons["edit.panel.apply"].tap()
+        XCTAssertTrue(EditorApp.toastSays(app, "This video has no sound"), "Volume on a video without sound didn't say so")
 
         // Motion: Pop first, Track and Keyframes, then Advanced with Starts and Ends.
         EditorApp.tapTool(app, "mediaMotion")
