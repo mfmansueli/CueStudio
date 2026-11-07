@@ -22,6 +22,8 @@ final class ToastService {
     private(set) var kind: ToastKind = .done
     /// The button beside the message, when the toast has one.
     private(set) var action: ToastAction?
+    /// A second, quieter button before it, only with one (a pasted look's Change beside its Undo).
+    private(set) var secondaryAction: ToastAction?
     /// The pill on screen: a new one for every toast, except the toast that ends work under way, which takes its own working
     /// toast's place in the same pill (its ring becomes the new icon, its words the new ones).
     private(set) var pill = UUID()
@@ -65,7 +67,8 @@ final class ToastService {
     /// The answer to what the creator just did: it takes the place of whatever is up. `ending` is the pill `showWorking` returned when
     /// this is what came of that work: only then does it take the ring's place in the same pill, with the success tap.
     func show(
-        _ message: String, kind: ToastKind = .done, duration: Duration? = nil, action: ToastAction? = nil, ending work: UUID? = nil
+        _ message: String, kind: ToastKind = .done, duration: Duration? = nil, action: ToastAction? = nil,
+        secondaryAction: ToastAction? = nil, ending work: UUID? = nil
     ) {
         let endsWork = work != nil && work == pill && self.message != nil && self.kind == .working && kind != .working
         let leaving = self.message == nil ? nil : pill
@@ -75,6 +78,7 @@ final class ToastService {
         self.message = message
         self.kind = kind
         self.action = action
+        self.secondaryAction = action == nil ? nil : secondaryAction
         AccessibilityNotification.Announcement(message).post()
         tap(for: kind, endsWork: endsWork)
         if let leaving, leaving != pill { left(leaving) }
@@ -134,6 +138,7 @@ final class ToastService {
         message = nil
         kind = .done
         action = nil
+        secondaryAction = nil
         if let leaving { left(leaving) }
         if let next = waiting {
             waiting = nil

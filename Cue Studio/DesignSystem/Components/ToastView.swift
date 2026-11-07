@@ -6,14 +6,17 @@
 import SwiftUI
 
 /// A toast (`ToastService`), the same in the whole app and the editor: its kind's round icon (`ToastIcon`), the message on a line
-/// (two when a language needs them, so an instruction is never cut) and its button ("Undo") at the end, in the app's yellow, on
-/// the toasts' pill (`toastSurface(in:)`). When work under way ends, the same pill turns into what came of it: a new icon arrives
-/// and the words cross-fade.
+/// (two when a language needs them, so an instruction is never cut) and its button ("Undo") at the end, in the app's yellow, with
+/// a quieter second one before it when the toast has two ("Change"), on the toasts' pill (`toastSurface(in:)`). When work under
+/// way ends, the same pill turns into what came of it: a new icon arrives and the words cross-fade.
 struct ToastView: View {
     var message: String
     var kind: ToastKind = .done
     var action: ToastAction?
     var onAction: () -> Void = {}
+    /// Shown only beside `action`.
+    var secondaryAction: ToastAction?
+    var onSecondaryAction: () -> Void = {}
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
@@ -34,6 +37,18 @@ struct ToastView: View {
             .padding(.vertical, action == nil ? 9 : 6)
             .accessibilityElement(children: .combine)
             .accessibilityIdentifier("toast")
+            if action != nil, let secondaryAction {
+                Button(action: onSecondaryAction) {
+                    Text(secondaryAction.title)
+                        .cueFont(.subheadline, weight: .semibold)
+                        .foregroundStyle(Palette.ink)
+                        .padding(.horizontal, 8)
+                        .frame(minHeight: Metrics.hitTarget)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityIdentifier("toast.secondaryAction")
+            }
             if let action {
                 Button(action: onAction) {
                     Text(action.title)
@@ -64,6 +79,7 @@ struct ToastView: View {
     VStack(spacing: 12) {
         ToastView(message: "Duplicated")
         ToastView(message: "Fitted to 1:00 to 1:30", kind: .cue, action: ToastAction(title: "Undo") {})
+        ToastView(message: "Look pasted · 3 parts", action: ToastAction(title: "Undo") {}, secondaryAction: ToastAction(title: "Change") {})
         ToastView(message: "Couldn’t draft it", kind: .problem)
         ToastView(message: "Drafting the TikTok version…", kind: .working)
     }

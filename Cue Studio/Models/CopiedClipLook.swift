@@ -7,8 +7,8 @@ import Foundation
 
 /// A clip's look as "Copy look" took it: everything it is drawn with (the take's look with the clip's own on top, as explicit
 /// values; Skin's smoothing with its texture and engine), its background and its slow zoom, ready to paste on other clips, all
-/// of it or only the parts picked. Pure: the panel and the tests read the same rules.
-nonisolated struct CopiedClipLook: Hashable, Sendable {
+/// of it or only the parts picked. Kept with the project (`TakeEdit.copiedLook`). Pure: the panel and the tests read the same rules.
+nonisolated struct CopiedClipLook: Codable, Hashable, Sendable {
     /// The clip's light, color and filter, every value written out.
     var look: ClipLook
     var background: BackgroundEffect?
@@ -81,6 +81,16 @@ nonisolated struct CopiedClipLook: Hashable, Sendable {
             pasted.zoomAmount = zoomAmount
         }
         return pasted
+    }
+
+    /// `edit` with `parts` of this look on every clip (`everyClip`), or on the clip `clipID`: `edit` as it is when that clip isn't
+    /// there.
+    func pasted(_ parts: Set<ClipLookPart>, everyClip: Bool, on clipID: UUID?, in edit: TakeEdit) -> TakeEdit {
+        if everyClip { return pastedEverywhere(parts, in: edit) }
+        guard let clipID, let segment = edit.timeline.segment(id: clipID) else { return edit }
+        var next = edit
+        next.timeline.replaceSegment(pasted(parts, on: segment, in: edit))
+        return next
     }
 
     /// `edit` with `parts` of this look on every clip: the video's own settings take them and each clip's overrides of those

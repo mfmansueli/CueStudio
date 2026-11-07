@@ -8,8 +8,8 @@ import Testing
 @testable import Cue_Studio
 
 /// Every part of the edit is either something the creator decides, which an undo step keeps and gives back (`EditSnapshot`,
-/// `EditLook`, `TakeEdit.apply`), or something listening found, which undo leaves as it is. A part added to `TakeEdit` without
-/// being one or the other fails here, so Undo can never quietly drop or freeze a new setting.
+/// `EditLook`, `TakeEdit.apply`), or something listening found or Paste look remembers, which undo leaves as it is. A part added
+/// to `TakeEdit` without being one or the other fails here, so Undo can never quietly drop or freeze a new setting.
 @MainActor
 @Suite("Undo keeps every decision")
 struct EditSnapshotCompletenessTests {
@@ -17,6 +17,8 @@ struct EditSnapshotCompletenessTests {
     static let findings: Set<String> = [
         "cleanUpAnalyzed", "cleanUpAnalyzedSources", "cleanUpHearing", "pauseHearings", "captionTranscript", "sourceTranscripts",
     ]
+    /// What Paste look remembers in the project: never an undo step (`EditDocument.remember`).
+    static let remembered: Set<String> = ["copiedLook", "pasteLookChoice"]
 
     @Test func everyPartIsChangedHere() {
         let blank = Self.parts(of: Self.blank())
@@ -33,8 +35,8 @@ struct EditSnapshotCompletenessTests {
         let blank = Self.parts(of: Self.blank())
         let back = Self.parts(of: restored)
         for (part, value) in wanted {
-            if Self.findings.contains(part) {
-                #expect(back[part] == blank[part], "\(part) is found by listening: an undo step leaves it")
+            if Self.findings.contains(part) || Self.remembered.contains(part) {
+                #expect(back[part] == blank[part], "\(part) is found by listening or remembered: an undo step leaves it")
             } else {
                 #expect(back[part] == value, "\(part) isn't given back by an undo step: add it to EditSnapshot (or EditLook) and TakeEdit.apply")
             }
