@@ -412,13 +412,9 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         }
     }
 
-    /// The crop at the requested quality, with even dimensions. Never upscaled.
+    /// The crop at the requested quality, with even dimensions. Never upscaled (`ExportFrameSize`, the rule the app's labels read too).
     static func outputSize(for crop: CGSize, shortSide: CGFloat?) -> CGSize {
-        guard let shortSide, crop.width > 0, crop.height > 0 else {
-            return CGSize(width: CropMath.even(crop.width), height: CropMath.even(crop.height))
-        }
-        let scale = min(1, shortSide / min(crop.width, crop.height))
-        return CGSize(width: CropMath.even(crop.width * scale), height: CropMath.even(crop.height * scale))
+        ExportFrameSize.size(ofCrop: crop, shortSide: shortSide)
     }
 
     // MARK: - Transitions

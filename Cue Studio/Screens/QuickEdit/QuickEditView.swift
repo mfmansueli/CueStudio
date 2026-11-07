@@ -27,11 +27,9 @@ struct QuickEditView: View {
     private let opening: EditorTool?
     /// The free exports' line on Done's question, for the edit as it is (the review knows what exporting it costs).
     private let exportNote: (TakeEdit) -> FreeExportLabels.Label?
-    /// The review the editor opened from: Done's "Export options" line shows and changes its export options (D11), the ones its Save and
-    /// Share use. Nil where nothing exports from here.
+    /// The review the editor opened from: Done's "Export options" page shows and changes its export options (D11), the ones its Save and
+    /// Share use, and Aspect ratio says the file's real size from it. Nil where nothing exports from here.
     private let review: TakeReviewViewModel?
-    /// Done's "Export options", over its question.
-    @State private var showsDoneExportOptions = false
 
     /// The height the editor has with no keyboard (see `measuresStableHeight`).
     @State private var stableHeight: CGFloat = 0
@@ -53,7 +51,7 @@ struct QuickEditView: View {
         review: TakeReviewViewModel? = nil, onClose: @escaping (EditorOutcome) -> Void
     ) {
         let languages = services.languages
-        _viewModel = State(initialValue: QuickEditViewModel(
+        let model = QuickEditViewModel(
             take: take, takes: services.takes, library: services.library,
             editing: services.editing, drafts: services.drafts, toast: services.toast,
             styles: TextStyleStore(defaults: services.defaults), mediaLibrary: services.mediaLibrary, brandKits: services.brandKits,
@@ -64,7 +62,10 @@ struct QuickEditView: View {
             speechLanguage: { languages.captionRequest(for: $0) },
             likelySpokenLanguages: { languages.likelySpokenLanguages(for: $0) },
             languageConflict: { languages.languageConflict(for: $0) }
-        ))
+        )
+        // Aspect ratio says the file's real size by the review's rule (its quality, Pro, the recording's frame).
+        model.look.reducedExportSize = { [weak review] in review?.reducedOutputSize(for: $0) }
+        _viewModel = State(initialValue: model)
         self.services = services
         self.opening = opening
         self.exportNote = exportNote
@@ -115,19 +116,14 @@ struct QuickEditView: View {
                     exportNote: exportNote(viewModel.edit),
                     fontNote: viewModel.fontsNotReady.map(EditorDoneFontNote.text),
                     exportOptions: review.map { $0.outputSummary(for: viewModel.edit) },
-                    onExportOptions: { showsDoneExportOptions = true },
+                    options: {
+                        if let review { ExportOptionsForm(review: review, edit: viewModel.edit) }
+                    },
                     onMeasure: { doneSheetHeight = $0 + 34 },
                     onAnswer: { outcome in
                         if let left = viewModel.finish(outcome) { onClose(left) }
                     }
                 )
-                .sheet(isPresented: $showsDoneExportOptions) {
-                    if let review {
-                        ShareExportOptions(review: review, edit: viewModel.edit)
-                            .presentationDetents([.medium])
-                            .presentationBackground(Palette.sheetNight)
-                    }
-                }
                 .presentationDetents([.height(doneSheetHeight)])
                 .presentationCornerRadius(Metrics.editorSheetRadius)
                 .presentationBackground(Palette.surface)

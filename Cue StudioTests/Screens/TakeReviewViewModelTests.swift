@@ -3,6 +3,7 @@
 //  Cue StudioTests
 //
 
+import CoreGraphics
 import Foundation
 import Testing
 @testable import Cue_Studio
@@ -298,6 +299,42 @@ struct TakeReviewViewModelTests {
         try scenario.viewModel.takes.applyEdit(unsaved, to: take.id)
         #expect(!scenario.viewModel.burnsInCaptions)
         #expect(scenario.viewModel.outputDifference(for: unsaved) == .removesCaptions)
+    }
+
+    /// Bug 10: a landscape 1080p recording at 9:16 exports 606×1080 (never enlarged), and the quiet lines say so instead of "1080p"; in its
+    /// own shape it says 1080p.
+    @Test func theSummarySaysTheRealSizeWhenTheCropMakesItSmaller() {
+        var take = TestData.take(scriptID: nil)
+        take.origin = .imported
+        take.aspect = .landscape
+        var edit = TakeEdit(sourceDuration: take.duration, aspect: .portrait)
+        edit.showsCaptions = true
+        take.edit = edit
+        let scenario = makeScenario(tier: .subscriber, take: take)
+        defer { scenario.defaults.tearDown() }
+        let viewModel = scenario.viewModel
+        // An imported video's shape is only known from its file.
+        #expect(viewModel.outputSummary(for: edit) == "1080p · captions on")
+        viewModel.recordingUprightSize = CGSize(width: 1920, height: 1080)
+        #expect(viewModel.outputSummary(for: edit) == "606×1080 · captions on")
+        #expect(viewModel.outputSizeNote(for: edit) == "This format exports at 606×1080 · never enlarged")
+        var vertical = edit
+        vertical.aspect = .vertical
+        #expect(viewModel.outputSizeLabel(for: vertical) == "864×1080")
+        var own = edit
+        own.aspect = .landscape
+        #expect(viewModel.outputSummary(for: own) == "1080p · captions on")
+        #expect(viewModel.outputSizeNote(for: own) == nil)
+    }
+
+    /// A Cue recording is the whole portrait sensor: 16:9 from it is 1080×606, said before its file is read; 4:5 keeps 1080 across.
+    @Test func aCueRecordingAtSixteenByNineSaysItsSize() {
+        var take = TestData.take(scriptID: nil)
+        take.edit = TakeEdit(sourceDuration: take.duration, aspect: .landscape)
+        let scenario = makeScenario(take: take)
+        defer { scenario.defaults.tearDown() }
+        #expect(scenario.viewModel.outputSizeLabel(for: take.edit) == "1080×606")
+        #expect(scenario.viewModel.outputSizeLabel(for: TakeEdit(sourceDuration: take.duration, aspect: .vertical)) == "1080p")
     }
 
     @Test func burnInCaptionsKeepsTheEditsCaptions() async {

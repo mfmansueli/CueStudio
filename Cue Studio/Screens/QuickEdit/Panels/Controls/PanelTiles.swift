@@ -12,6 +12,9 @@ struct PanelTiles<Value: Hashable>: View {
     let options: [PanelOption<Value>]
     let selection: Value?
     var scrollsSideways = false
+    /// Low tiles, the icon beside the name (44 pt): Aspect ratio, so Framing, Follow face and Reset show under them (F16). Stacked again
+    /// when the name doesn't fit beside the icon (the largest text sizes).
+    var isCompact = false
     let identifier: String
     let onSelect: (Value) -> Void
     @Environment(\.dynamicTypeSize) private var typeSize
@@ -50,17 +53,21 @@ struct PanelTiles<Value: Hashable>: View {
             Haptics.selection()
             onSelect(option.value)
         } label: {
-            VStack(spacing: 6) {
-                if let symbol = option.systemImage {
-                    Image(systemName: symbol).font(.editorGlyph(EditorGlyph.toolbar, weight: .medium))
+            Group {
+                if isCompact {
+                    ViewThatFits(in: .horizontal) {
+                        HStack(spacing: 6) {
+                            symbol(option, size: EditorGlyph.tile)
+                            name(option).fixedSize()
+                        }
+                        stacked(option, spacing: 3, size: EditorGlyph.tile)
+                    }
+                } else {
+                    stacked(option, spacing: 6, size: EditorGlyph.toolbar)
                 }
-                // Whole in every language: on two lines between words ("Dissolvenza / incrociata"), smaller only past that
-                // (owner, 02/11/2026: no label is ever cut). Two lines and the icon still fit the tile's 68 pt.
-                WholeWordsLabel(text: option.label, minimumScale: 0.75)
-                    .font(.system(.footnote, weight: .semibold))
             }
             .foregroundStyle(isOn ? Palette.accText : Palette.ink)
-            .frame(maxWidth: .infinity, minHeight: 68)
+            .frame(maxWidth: .infinity, minHeight: isCompact ? Metrics.hitTarget : 68)
             .editorCard(isOn ? .picked : .plain)
             .contentShape(Rectangle())
         }
@@ -69,5 +76,26 @@ struct PanelTiles<Value: Hashable>: View {
         .opacity(option.isEnabled ? 1 : Metrics.disabledOpacity)
         .accessibilityAddTraits(isOn ? .isSelected : [])
         .accessibilityIdentifier("\(identifier).\(option.key)")
+    }
+
+    private func stacked(_ option: PanelOption<Value>, spacing: CGFloat, size: CGFloat) -> some View {
+        VStack(spacing: spacing) {
+            symbol(option, size: size)
+            name(option)
+        }
+    }
+
+    @ViewBuilder
+    private func symbol(_ option: PanelOption<Value>, size: CGFloat) -> some View {
+        if let symbol = option.systemImage {
+            Image(systemName: symbol).font(.editorGlyph(size, weight: .medium))
+        }
+    }
+
+    /// Whole in every language: on two lines between words ("Dissolvenza / incrociata"), smaller only past that (owner, 02/11/2026: no
+    /// label is ever cut). Two lines and the icon still fit the tile's 68 pt.
+    private func name(_ option: PanelOption<Value>) -> some View {
+        WholeWordsLabel(text: option.label, minimumScale: 0.75)
+            .font(.system(.footnote, weight: .semibold))
     }
 }

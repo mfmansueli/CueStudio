@@ -225,6 +225,8 @@ struct TakeReviewView: View {
             if ended { exitDuringExport = nil }
         }
         .task(id: PlayerKey(takeID: viewModel.takeID, edit: viewModel.take?.edit)) { await runPlayer() }
+        // The recording's frame, for the quiet lines and the editor's Done to say the file's real size (606×1080) when a crop makes it smaller.
+        .task { await viewModel.loadRecordingFrame() }
         .sheet(isPresented: $showsExportOptions) {
             ShareExportOptions(review: viewModel, edit: viewModel.take?.edit)
                 .presentationDetents([.medium])

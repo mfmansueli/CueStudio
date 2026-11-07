@@ -389,16 +389,48 @@ final class EditorUITests: XCTestCase {
         XCTAssertTrue(app.buttons["edit.toolbar.edit"].exists(within: 5))
     }
 
-    /// D11: under Done's answers, a quiet line opens the same Export options Share and Download use, with the quality the file is made in.
-    func testDoneReachesTheExportOptions() {
+    /// D11 and F19: under Done's answers, a quiet line turns the same sheet to the Export options Share and Download use (no sheet over it),
+    /// with the quality the file is made in; "‹" goes back to the answers.
+    func testDoneReachesTheExportOptionsInsideItsSheet() {
         let app = EditorApp.open()
         app.buttons["edit.doneButton"].tap()
         let line = app.buttons["edit.done.exportOptions"]
         XCTAssertTrue(line.exists(within: 5))
         XCTAssertTrue(line.label.contains("1080p"))
         line.tap()
-        XCTAssertTrue(app.switches["share.captionsToggle"].exists(within: 5))
-        XCTAssertTrue(app.descendants(matching: .any)["share.qualityRecorded"].firstMatch.exists)
+        let sheet = app.descendants(matching: .any)["edit.doneSheet"].firstMatch
+        let back = app.buttons["edit.done.optionsBack"]
+        XCTAssertTrue(back.exists(within: 5))
+        // The options are Done's own page: inside its sheet, with no second sheet and its close button over it.
+        XCTAssertTrue(sheet.switches["share.captionsToggle"].exists(within: 5))
+        XCTAssertTrue(sheet.descendants(matching: .any)["share.qualityRecorded"].firstMatch.exists)
+        XCTAssertFalse(app.buttons["sheet.closeButton"].exists)
+        XCTAssertFalse(app.buttons["edit.done.share"].exists)
+        EditorApp.capture(app, "done-export-options")
+        back.tap()
+        XCTAssertTrue(app.buttons["edit.done.share"].exists(within: 5))
+        XCTAssertTrue(back.isGone(within: 5))
+        XCTAssertTrue(app.buttons["edit.done.exportOptions"].exists)
+    }
+
+    /// F17: at the largest text size each answer reads whole: its title and detail get the sheet's width (the pill goes under them), so
+    /// "Download video" never stands a letter per line, and each answer fits on the screen.
+    func testDoneReadsWholeAtTheLargestText() {
+        let app = EditorApp.open(arguments: ["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"])
+        app.buttons["edit.doneButton"].tap()
+        let sheet = app.descendants(matching: .any)["edit.doneSheet"].firstMatch
+        XCTAssertTrue(sheet.exists(within: 5))
+        let screen = app.windows.firstMatch.frame
+        for answer in ["share", "download", "ready", "notYet"] {
+            let row = app.buttons["edit.done.\(answer)"]
+            app.scroll(to: row, in: sheet)
+            XCTAssertTrue(row.exists, answer)
+            XCTAssertGreaterThan(row.frame.width, screen.width * 0.8, answer)
+            // A letter per line made "Download video" alone taller than the screen.
+            XCTAssertLessThan(row.frame.height, screen.height * 0.75, answer)
+        }
+        XCTAssertTrue(app.buttons["edit.done.download"].label.contains("Download video"))
+        EditorApp.capture(app, "done-largest-text")
     }
 
     /// With the last free export left, Done says so under its question (owner, 06/11/2026); with more left it says nothing.

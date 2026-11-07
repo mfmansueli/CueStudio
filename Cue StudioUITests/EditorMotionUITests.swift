@@ -30,6 +30,28 @@ final class EditorMotionUITests: XCTestCase {
         XCTAssertTrue(app.buttons["edit.crop.followPace.natural"].isSelected)
     }
 
+    /// F16: low tiles keep Follow face in view as the panel opens; it stays off when a format that crops is picked; Reset (the header)
+    /// goes back to the recording's 9:16, and Undo brings the picked format back.
+    func testAspectRatioKeepsFollowFaceInViewAndResets() {
+        let app = EditorApp.open()
+        EditorApp.tapTool(app, "format")
+        let follow = app.descendants(matching: .any)["edit.crop.followFace"]
+        XCTAssertTrue(follow.exists(within: 5))
+        XCTAssertTrue(follow.isHittable, "Follow face shows without scrolling the panel")
+        let reset = app.buttons["edit.panel.reset"]
+        XCTAssertFalse(reset.exists)
+        app.buttons["edit.crop.1:1"].tap()
+        XCTAssertTrue(app.buttons["edit.crop.1:1"].isSelected)
+        XCTAssertEqual(follow.value as? String, "Off", "Picking a format never turns Follow face on")
+        XCTAssertTrue(reset.exists(within: 5))
+        EditorApp.capture(app, "aspect-ratio-reset")
+        reset.tap()
+        XCTAssertTrue(app.buttons["edit.crop.9:16"].isSelected)
+        XCTAssertTrue(reset.isGone(within: 5))
+        app.buttons["edit.undoButton"].tap()
+        XCTAssertTrue(app.buttons["edit.crop.1:1"].isSelected)
+    }
+
     func testStabilizeSpeedCurveAndReverseOnAClip() {
         let app = EditorApp.open()
         openClipTool(app, "stabilize")

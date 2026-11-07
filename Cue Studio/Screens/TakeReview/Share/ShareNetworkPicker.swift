@@ -83,10 +83,10 @@ struct ShareNetworkPicker: View {
         }
     }
 
-    /// "Options · 1080p" (or "· 4K"): the sliders, named, with the effective quality.
+    /// "Options · 1080p" (or "· 4K", or "· 606×1080" when the format's crop makes the file smaller): the sliders, named, with what the file is.
     private var optionsButton: some View {
         Button { showsOptions = true } label: {
-            Label(String(localized: "Options · \(review.effectiveQualityLabel)"), systemImage: "slider.horizontal.3")
+            Label(String(localized: "Options · \(review.outputSizeLabel(for: review.take?.edit))"), systemImage: "slider.horizontal.3")
                 .lineLimit(1)
         }
         .buttonStyle(.cueGlass(.compact, expands: false))
