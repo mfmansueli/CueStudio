@@ -40,6 +40,9 @@ enum CueApp {
         }
         if let appLanguage { app.launchArguments += ["-uiTestAppLanguage", appLanguage] }
         if let systemLanguage { app.launchArguments += ["-AppleLanguages", "(\(systemLanguage))"] }
+        // The tests read English: on an iPhone set to another language (device-ui) the app starts in English unless a test asks
+        // for a language; the region (decimals, dates) stays the iPhone's.
+        if appLanguage == nil, systemLanguage == nil { app.launchArguments += ["-AppleLanguages", "(en)"] }
         if let contentSize { app.launchArguments += ["-UIPreferredContentSizeCategoryName", contentSize] }
         switch ai {
         case .stub: app.launchArguments.append("-uiTestStubAI")
