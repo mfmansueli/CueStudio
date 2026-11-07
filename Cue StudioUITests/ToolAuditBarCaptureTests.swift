@@ -20,9 +20,10 @@ final class ToolAuditBarCaptureTests: XCTestCase {
             throw XCTSkip("Set TEST_RUNNER_CUE_SCREENSHOT_DIR to capture the bars")
         }
         continueAfterFailure = true
+        executionTimeAllowance = 600
     }
 
-    /// The main bar, a clip's, the Text menu, a picked title, a picked arrow and a picked caption.
+    /// The main bar, a clip's, the Text menu and a picked title.
     func testEditingBars() throws {
         start()
         try wholeBar("main")
@@ -39,7 +40,12 @@ final class ToolAuditBarCaptureTests: XCTestCase {
             tap("edit.panel.apply")
             try wholeBar("text-picked")
         }
-        tap("edit.toolbar.back")
+        app.terminate()
+    }
+
+    /// A picked arrow, a picked caption and a split screen's support.
+    func testItemBars() throws {
+        start()
         EditorApp.tapTool(app, "text")
         if tap("edit.toolbar.graphic.arrow") {
             tap("edit.panel.apply")
@@ -51,9 +57,14 @@ final class ToolAuditBarCaptureTests: XCTestCase {
         tap("edit.panel.apply")
         try wholeBar("caption-picked")
         app.terminate()
+        start(arguments: ["-uiTestDemoSplit"])
+        if tapTrack(0, secondsAfterPlayhead: 3), app.buttons["edit.toolbar.delete"].exists(within: 5) {
+            try wholeBar("support-picked")
+        }
+        app.terminate()
     }
 
-    /// The Audio and Media menus, a picked music track, voice-over and B-roll, and a split screen's support.
+    /// The Audio and Media menus and a picked music track, voice-over and B-roll.
     func testSoundAndMediaBars() throws {
         start()
         EditorApp.tapTool(app, "audio")
@@ -74,11 +85,6 @@ final class ToolAuditBarCaptureTests: XCTestCase {
         EditorApp.scrub(app, points: 250)
         if tap("edit.mediaHandle") || (tapTrack(0, secondsAfterPlayhead: 0) && app.buttons["edit.toolbar.editMedia"].exists(within: 3)) {
             try wholeBar("media-picked")
-        }
-        app.terminate()
-        start(arguments: ["-uiTestDemoSplit"])
-        if tapTrack(0, secondsAfterPlayhead: 3), app.buttons["edit.toolbar.delete"].exists(within: 5) {
-            try wholeBar("support-picked")
         }
         app.terminate()
     }
@@ -104,8 +110,9 @@ final class ToolAuditBarCaptureTests: XCTestCase {
             try app.screenshot().pngRepresentation.write(to: directory.appending(path: "\(prefix)-wholebar-\(name)-s\(step).png"))
             let frame = snapshot.frame
             steps.append(["step": step, "tools": tools, "bar": [frame.minX, frame.minY, frame.width, frame.height]])
-            let from = toolbar.coordinate(withNormalizedOffset: CGVector(dx: 0.85, dy: 0.3))
-            let to = toolbar.coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 0.3))
+            // Between the pinned ends (a picked item's ‹ on the left and Delete on the right don't scroll).
+            let from = toolbar.coordinate(withNormalizedOffset: CGVector(dx: 0.7, dy: 0.3))
+            let to = toolbar.coordinate(withNormalizedOffset: CGVector(dx: 0.2, dy: 0.3))
             from.press(forDuration: 0.05, thenDragTo: to, withVelocity: .slow, thenHoldForDuration: 0.3)
         }
         let data = try JSONSerialization.data(withJSONObject: ["name": name, "steps": steps], options: [.prettyPrinted])
