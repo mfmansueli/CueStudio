@@ -340,11 +340,18 @@ extension QuickEditViewModel {
         panel = edit.captions.isEmpty ? .autoCaptions : .captions
     }
 
-    /// "Style all": the Text style panel for every text at once.
+    /// "Style all": the Text style panel for every text at once. With no text under the playhead, it goes to the first one's start
+    /// (paused, the preview shows it whole there, `PreviewMotionHold`), so the creator sees what they style.
     func styleAllTexts() {
         guard let first = edit.texts.first else { return }
         selection = .text(first.id)
         overlays.textStyleScope = .allTexts
         panel = .textStyle
+        let now = player.currentTime
+        let shown = edit.texts.contains { overlays.editedSpan(ofText: $0.id).map { ($0.start...$0.end).contains(now) } ?? false }
+        if !shown, let span = overlays.editedSpan(ofText: first.id) {
+            player.pause()
+            player.seek(to: span.start)
+        }
     }
 }

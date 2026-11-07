@@ -318,6 +318,23 @@ struct QuickEditToolbarTests {
         #expect(viewModel.panelSubtitle(.textStyle) == "All 2 texts change together")
     }
 
+    /// With no text under the playhead, Style all goes to the first one's start, so what is styled shows.
+    @Test func styleAllBringsThePlayheadToATextWhenNoneShows() async throws {
+        let viewModel = await makeScenario().viewModel
+        viewModel.perform(.addText(.title))
+        viewModel.leaveToolbarContext()
+        let text = try #require(viewModel.edit.texts.first)
+        let span = try #require(viewModel.overlays.editedSpan(ofText: text.id))
+        viewModel.player.seek(to: min(viewModel.edit.editedDuration, span.end + 1))
+        viewModel.perform(.styleAllTexts)
+        #expect(abs(viewModel.player.currentTime - span.start) < 0.001)
+        // On a text already: the playhead stays.
+        viewModel.closePanel()
+        viewModel.player.seek(to: span.start + 0.5)
+        viewModel.perform(.styleAllTexts)
+        #expect(abs(viewModel.player.currentTime - (span.start + 0.5)) < 0.001)
+    }
+
     @Test func captionsOpenAutoCaptionsUntilThereAreLines() async {
         let viewModel = await makeScenario().viewModel
         viewModel.perform(.openCaptions)
