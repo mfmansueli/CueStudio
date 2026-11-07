@@ -65,9 +65,14 @@ struct CoverTitleStep: View {
 
     @ViewBuilder
     private var type: some View {
-        // The same families as the texts and captions on the video, each chip in its own face.
+        // The same families as the texts and captions on the video, each chip in its own face; the imported ones as My fonts.
+        MyFontsGroup(
+            fonts: viewModel.myFonts(including: style.font.face), removable: viewModel.removableFonts, selection: style.font.face,
+            identifier: "cover.font", onSelect: { face in viewModel.updateTitle { $0.font = CoverFont(face, weight: $0.font.weight) } },
+            onRemove: viewModel.removeFont
+        )
         PanelChips(
-            options: TextOverlayFont.pickerFonts(including: style.font.face).map { PanelOption($0, $0.label) }, selection: style.font.face,
+            options: TextOverlayFont.editorFonts.map { PanelOption($0, $0.label) }, selection: style.font.face,
             font: { CueStudioFont.chip($0, size: $1) }, identifier: "cover.font",
             onSelect: { face in viewModel.updateTitle { $0.font = CoverFont(face, weight: $0.font.weight) } }
         )

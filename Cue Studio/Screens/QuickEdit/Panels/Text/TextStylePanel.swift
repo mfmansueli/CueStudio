@@ -317,13 +317,18 @@ struct TextStylePanel: View {
         )
     }
 
-    /// Size and Turn first, one row each and always in sight; then the fonts, the script libraries the words call for, an imported
-    /// one, and the weight.
+    /// Size and Turn first, one row each and always in sight; then My fonts (the imported ones, with Edit and Remove), Cue's
+    /// fonts, the script libraries the words call for, Import font, and the weight.
     @ViewBuilder
     private func font(_ text: TextOverlay) -> some View {
         sizeAndTurn()
+        let brand = viewModel.brand
+        MyFontsGroup(
+            fonts: brand.myFonts(including: text.font), removable: brand.removableFonts, selection: text.font,
+            identifier: "edit.textFont", onSelect: { viewModel.overlays.restyleText(.font($0)) }, onRemove: brand.removeFont
+        )
         PanelChips(
-            options: TextOverlayFont.pickerFonts(including: text.font).map { PanelOption($0, $0.label) }, selection: text.font,
+            options: TextOverlayFont.editorFonts.map { PanelOption($0, $0.label) }, selection: text.font,
             font: { CueStudioFont.chip($0, size: $1) }, identifier: "edit.textFont",
             onSelect: { viewModel.overlays.restyleText(.font($0)) }
         )

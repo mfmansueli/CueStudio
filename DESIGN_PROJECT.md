@@ -3131,7 +3131,10 @@ Tudo fica neste iPhone.
   branco. A cor do texto é conteúdo do criador, não um token: o aviso de contraste das legendas (§50) continua valendo.
 - **Fontes próprias** (`CustomFontStore`, `CustomFontInspector`, `CustomFontRegistry`, Application Support/Fonts com `fonts.json`): **Import font**
   (Arquivos, TTF, OTF e coleções, vários de uma vez) em Text style › Font, Caption style › Custom e Templates › Brand › Your fonts; a família
-  importada aparece primeiro em todo seletor de fonte (texto, legenda, capa, kits), escrita nela mesma. Antes de guardar, o arquivo é lido
+  importada aparece primeiro em todo seletor de fonte (texto, legenda, capa, kits), escrita nela mesma; em Text style › Font, Caption style ›
+  Custom e no Title da capa ela fica no grupo **My fonts** (`MyFontsGroup`, dono, canvas 2 F12), com **Edit** à direita: Edit põe um menos em cada
+  família e um toque a remove (Done encerra); segurar o chip oferece Remove também. A família que o texto usa continua no grupo, escolhida, depois
+  de removida (não dá para remover duas vezes). Antes de guardar, o arquivo é lido
   inteiro: precisa ser fonte que o Core Text monta, com tabela 'head', letras (uma fonte de ícones é recusada) e no máximo 40 MB; nome da família,
   estilos e peso vêm da própria fonte (tabela OS/2, e o eixo de peso de uma fonte variável). Uma fonte com o mesmo nome PostScript de uma que o
   iPhone ou o Cue já têm é recusada ("… is already on this iPhone"); o mesmo arquivo de novo diz "already in your fonts"; um arquivo que falha não
@@ -3143,7 +3146,7 @@ Tudo fica neste iPhone.
   de dizer "already in your fonts": o arquivo volta com o nome que a família guarda, é registrado, a prévia é desenhada de novo e a nota some
   ("… is back · videos that use it show it again"); nada é duplicado. A nota acompanha as famílias que o Cue consegue desenhar agora
   (`CustomFontStore.drawable`), então some assim que a fonte volta.
-  Importar de novo uma família removida a devolve aos seletores. **Remover** (Your fonts, com Undo) tira dos seletores, mas o vídeo, estilo salvo ou kit que usa continua desenhando nela; os arquivos só são
+  Importar de novo uma família removida a devolve aos seletores. **Remover** (Your fonts ou My fonts, com Undo; `FontRemoval`, uma frase só) tira dos seletores, mas o vídeo, estilo salvo ou kit que usa continua desenhando nela; os arquivos só são
   apagados num lançamento em que nada salvo cita a família (vídeos, rascunhos com o desfazer, estilos salvos, kits). Só fontes que o criador
   pode usar: o Cue não traz fontes comerciais de terceiros nem presume direito de redistribuição, e diz isso sob o botão.
 - **Fontes baixadas** (§59): as famílias das bibliotecas de outras escritas que estão no iPhone aparecem em Your fonts, em "Downloaded fonts"
@@ -3158,7 +3161,7 @@ Tudo fica neste iPhone.
   "fontes de subtítulo/corpo" separadas (títulos e legendas). Cores do kit não recolorem nada sozinhas: entram nas paletas (os estilos do kit já
   trazem as cores deles). A capa sem composição ainda não recebe o estilo do kit (o cartão diz).
 - **Testes:** `MediaLibraryStoreTests`, `CustomFontStoreTests` (a Anton do app renomeada vira uma fonte nova para importar; o texto que a exportação
-  desenha nela sai letra por letra igual à Anton), `OverlayColorCustomTests`, `QuickEditBrandKitTests`, `BrandLibraryUITests` (`-uiTestSeedLibrary`,
+  desenha nela sai letra por letra igual à Anton), `MyFontsUITests` (`-uiTestImportedFont Qbrnd`), `OverlayColorCustomTests`, `QuickEditBrandKitTests`, `BrandLibraryUITests` (`-uiTestSeedLibrary`,
   `-uiTestAssetRoot`). As duas primeiras também no aparelho (`CUE_DEVICE=<iPhone> scripts/test.sh device CustomFontStoreTests` e
   `MediaLibraryStoreTests`; 25/10 no iPhone 15 Pro: 7 e 6 de 6 passam, registro do Core Text e links físicos de verdade).
 

@@ -295,6 +295,10 @@ struct AppServices {
         if ProcessInfo.processInfo.arguments.contains("-uiTestSeedLibrary") {
             Task { [mediaLibrary] in await DebugLibrarySeed.seed(into: mediaLibrary) }
         }
+        let arguments = ProcessInfo.processInfo.arguments
+        if let index = arguments.firstIndex(of: "-uiTestImportedFont"), arguments.indices.contains(index + 1) {
+            Task { [fonts] in await DebugFontSeed.seed(arguments[index + 1], into: fonts) }
+        }
         #endif
         // A creator who already has scripts, takes or a profile skips the first flight.
         onboarding.resolve(

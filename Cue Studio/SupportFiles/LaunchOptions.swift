@@ -33,6 +33,7 @@ import Foundation
 ///   (`SampleEdit.demo`: two clips, captions, texts, music with a beat, a B-roll window and a voice-over, their files made by
 ///   `SampleEditMedia`); with `-uiTestDemoTranscript` its words were heard too, for Edit by text. `-uiTestDemoSplit` opens it with
 ///   a split screen instead of the window (`SampleEdit.demoSplit`).
+/// - `-uiTestImportedFont <Name>`: an imported family called `Name` (five letters, Anton renamed; `DebugFontSeed`), for My fonts.
 /// - `-uiTestSeedLibrary`: the media library starts with a logo and a photo (`DebugLibrarySeed`); the library, brand kits and
 ///   imported fonts live in a folder of the test's own, kept between launches with `-uiTestAssetRoot <name>`.
 /// - `-uiTestRealTake <file name or path>`: "3 morning habits" Take 3 plays a copy of one of the creator's own recordings (in

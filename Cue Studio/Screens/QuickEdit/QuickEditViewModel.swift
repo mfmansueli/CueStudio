@@ -206,9 +206,12 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         // Without the app's stores (tests, previews): ones of their own in a temporary folder, never the creator's.
         let scratch = URL.temporaryDirectory.appending(path: "EditorAssets-\(UUID().uuidString)", directoryHint: .isDirectory)
         let fontPacks = fontPacks ?? FontPackStore(source: OfflineFontPackSource(), directory: scratch.appending(path: "FontPacks"))
+        let fonts = fonts ?? CustomFontStore(
+            repository: LocalCustomFontRepository(directory: scratch.appending(path: "Fonts")), directory: scratch.appending(path: "Fonts")
+        )
         cover = CoverViewModel(
             session: session, editing: editing, pictures: coverPictures ?? CoverPictureService(), importer: mediaImporter,
-            styles: styles, fontPacks: fontPacks, writingLanguages: writingLanguages
+            styles: styles, fontPacks: fontPacks, customFonts: fonts, writingLanguages: writingLanguages
         )
         look = LookViewModel(session: session, editing: editing, motion: motion)
         clips = ClipsViewModel(session: session, editing: editing, takes: takes, library: library, speechLanguage: speechLanguage)
@@ -228,10 +231,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
             kits: brandKits ?? BrandKitStore(
                 repository: LocalBrandKitRepository(directory: scratch.appending(path: "Kits")), directory: scratch.appending(path: "Kits")
             ),
-            fonts: fonts ?? CustomFontStore(
-                repository: LocalCustomFontRepository(directory: scratch.appending(path: "Fonts")), directory: scratch.appending(path: "Fonts")
-            ),
-            fontPacks: fontPacks, styles: styles, writingLanguages: writingLanguages
+            fonts: fonts, fontPacks: fontPacks, styles: styles, writingLanguages: writingLanguages
         )
         session.host = self
         self.player.playingStopped = { [weak self] in self?.audio.playingStopped() }
