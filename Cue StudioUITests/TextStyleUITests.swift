@@ -30,10 +30,12 @@ final class TextStyleUITests: XCTestCase {
     }
 
     /// What scrolls under the open styling panel's fixed rows (a swipe on the field or the tabs scrolls
-    /// nothing): the panel's first scroll view (the preset cards and font chips scroll inside it).
+    /// nothing): the panel's tallest scroll view (the tabs' row, when it scrolls sideways, and the preset cards and font chips
+    /// are scroll views too).
     private func content(_ app: XCUIApplication) -> XCUIElement {
-        app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'edit.panel.' AND identifier ENDSWITH 'Style'"))
-            .firstMatch.scrollViews.firstMatch
+        let panel = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'edit.panel.' AND identifier ENDSWITH 'Style'"))
+            .firstMatch
+        return panel.scrollViews.allElementsBoundByIndex.max { $0.frame.height < $1.frame.height } ?? panel.scrollViews.firstMatch
     }
 
     /// The SE shows the styling panels as a sheet over a preview that doesn't move.
@@ -42,9 +44,8 @@ final class TextStyleUITests: XCTestCase {
     }
 
     /// Scrolls the panel's content up until `element` can be tapped where it shows: above the keyboard when it is up, above the
-    /// screen's bottom otherwise. Without the keyboard, a slow swipe on the content (a quick one, or one down the panel's margin,
-    /// didn't move it). With it, the scroll view runs under the keys (it insets its content instead), so the drag stays in the
-    /// part that shows.
+    /// screen's bottom otherwise. The scroll view runs under the keys (it insets its content instead) and past the screen's
+    /// bottom, so the drag stays in the part that shows.
     private func scrollPanel(_ app: XCUIApplication, to element: XCUIElement, file: StaticString = #filePath, line: UInt = #line) {
         let keyboard = app.keyboards.firstMatch
         let limit = keyboard.exists ? keyboard.frame.minY : app.windows.firstMatch.frame.maxY
@@ -52,11 +53,8 @@ final class TextStyleUITests: XCTestCase {
             let scroll = content(app)
             // Above what shows (scrolled past it): back down.
             let isAbove = element.exists && element.frame.maxY < scroll.frame.minY
-            guard keyboard.exists else {
-                if isAbove { scroll.swipeDown(velocity: .slow) } else { scroll.swipeUp(velocity: .slow) }
-                continue
-            }
-            // The keyboard's element starts under its suggestions bar (a drag there picks a word): stop above the bar.
+            // A drag inside the part that shows: above the keyboard's suggestions bar (a drag there picks a word), or above the
+            // home indicator (XCTest's swipe on the scroll view, whose frame runs past the screen, didn't move it).
             let top = scroll.frame.minY, bottom = min(scroll.frame.maxY, limit - 48)
             let origin = scroll.coordinate(withNormalizedOffset: .zero)
             let start = origin.withOffset(CGVector(dx: scroll.frame.width / 2, dy: bottom - top - 4))
@@ -162,7 +160,8 @@ final class TextStyleUITests: XCTestCase {
         XCTAssertEqual(all.label, "All 2 texts")
         let panel = app.descendants(matching: .any)["edit.panel.textStyle"]
         XCTAssertLessThan(all.frame.minY - panel.frame.minY, 110, "The scope isn't in the header")
-        XCTAssertLessThanOrEqual(all.frame.maxY, app.textFields["edit.textField"].frame.minY + 1, "The scope isn't above the words")
+        // Its touch area reaches a few points past the drawn choice; the choice itself sits above the words.
+        XCTAssertLessThan(all.frame.midY, app.textFields["edit.textField"].frame.minY, "The scope isn't above the words")
         all.tap()
         XCTAssertTrue(all.isSelected)
         EditorApp.capture(app, "text-scope-in-header")

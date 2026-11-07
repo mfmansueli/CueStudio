@@ -1642,8 +1642,9 @@ Sistema completo em `NOTIFICATIONS.md`. Na interface:
   caixa. Textos e estilos salvos antes leem `centered` e continuam desenhados como eram (`LegacyCaptionLookTests`); escolher um estilo hoje passa a
   desenhar do jeito novo.
 - **Escopo só do visual, no cabeçalho** (`TextScopeChoice`, dono, canvas 2 R2): no lugar do subtítulo, **This title | All 3 texts** em Styles, Font e
-  Color, sempre à vista e a um toque (ocupava uma linha entre as abas e os estilos); grande demais ao lado dos botões, o cabeçalho põe os botões numa
-  linha só deles. Só aparece com mais de um texto (gráficos não contam: têm painel próprio; com um texto só, o subtítulo "Only this title changes").
+  Color, sempre à vista e a um toque (ocupava uma linha entre as abas e os estilos); cada escolha tem a largura das suas palavras ("Alle 2 Texte" inteiro
+  em alemão) e, grande demais ao lado dos botões, o cabeçalho põe os botões numa linha só deles. Enquanto as palavras são digitadas, o subtítulo volta
+  no lugar dela, para o campo e as abas caberem acima do teclado. Só aparece com mais de um texto (gráficos não contam: têm painel próprio; com um texto só, o subtítulo "Only this title changes").
   Com **All 3 texts** a timeline acende os três como escolhidos (`TimelineGeometry.Input.alsoSelected`). Em Motion o cabeçalho diz "Only this text
   moves" e a escolha some; o alcance fica como estava, então o Motion da barra (que abre direto em Motion) não o troca e Font ou Color depois dele
   ainda valem para todos se valiam antes. O **Style all** do menu Text continua como atalho (abre com All).
