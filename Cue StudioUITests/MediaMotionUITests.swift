@@ -120,7 +120,14 @@ final class MediaMotionUITests: XCTestCase {
         let label = app.staticTexts["edit.timeLabel"]
         let next = app.buttons["edit.nextFrame"]
         XCTAssertTrue(next.exists(within: 3))
-        for _ in 0..<20 where !(label.value as? String ?? "").hasPrefix("00:00.3") { next.tap() }
+        func time() -> String { label.value as? String ?? "" }
+        // One frame at a time, each read before the next (on an iPhone the label follows a moment later).
+        for _ in 0..<20 where !time().hasPrefix("00:00.3") {
+            let before = time()
+            if before.hasPrefix("00:00.4") || !before.hasPrefix("00:00.") { break }
+            next.tap()
+            _ = waitFor { time() != before }
+        }
         XCTAssertTrue(app.descendants(matching: .any)["edit.panel.textStyle"].exists, "Stepping let go of the title")
         EditorApp.capture(app, "text-pop-paused-whole")
         XCTAssertTrue((label.value as? String ?? "").hasPrefix("00:00.3"), "Not in the title's way in: \(label.value ?? "")")
