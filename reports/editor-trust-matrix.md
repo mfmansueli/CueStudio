@@ -165,7 +165,8 @@ Limite: numa montagem, aparar com a alça sob um texto o deixa no que sobrou; ar
 | Um arrasto de legenda move todas | E2 (alcance claro antes da mudança) |
 | Mover uma legenda na timeline sem "Check timing" | E2 |
 | Alongar uma legenda limitado pela vizinha | E4 |
-| Sala barulhenta com mensagem enganosa | E3 |
+| Sala barulhenta com mensagem enganosa | E3 · **alterado no código, medido (M) no corpus sintético, não validado no iPhone** (D16): o nível segue o fundo acima de −42 dBFS e desce sob uma voz baixa; o que ele acha nunca vem marcado; voz a menos de 12 dB do fundo = "Too much background sound" (`PauseHearing`). Sala silenciosa idêntica a antes (teste). Falta ouvir no iPhone: tomadas reais com ventilador, rua e música, e se a voz típica fica acima de −24 dBFS (P90) |
+| Opções de exportação só por Share e escondidas atrás de um ícone (D11) | E3 · **alterado no código, testado (unidade + UI no simulador), não validado no iPhone**: um estado (`TakeReviewViewModel.output(for:)`) e um componente (`ShareExportOptions`) para Save, Share e Done; "Options · 1080p" em Share, linha discreta na revisão e no Done; padrão do editor com tradução; diferença só da exportação dita; a edição nunca muda |
 | Template depois de um kit troca o visual calado; música sempre em 0,5; sem salvar template próprio | E4 (dentro de 10.8; salvar template = Validar) |
 | Máscara treme no tempo | E5 |
 

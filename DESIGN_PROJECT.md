@@ -879,6 +879,15 @@ acima). Tudo cabe sem rolar do SE ao Pro Max (a rolagem só existe para o Dynami
   passa a 4K. Uma gravação em 4K sem o Pro diz sob a qualidade "Recorded in 4K · exports in 1080p without Pro" (`ink2` sobre `surface2`). Todo
   caminho de exportação (Save, Share, Try again, a fila, o arquivo refeito, o Download do editor) usa `TakeReviewViewModel.exportQuality`: um plano
   que acabou com 4K escolhido exporta em 1080p. A gravação, o rascunho e a edição nunca mudam; nenhuma ferramenta do editor pede o Pro.
+- **Export options, um estado e um componente** (D11, `ShareExportOptions`, `TakeReviewViewModel+ExportOptions`, `ExportOutputChoice`): as
+  mesmas opções (legendas no vídeo, idioma delas, qualidade) para Save, Share e as respostas do Done, abertas de três lugares: **Options · 1080p**
+  em Share to universe, a linha discreta **"Export options · 1080p · captions on ›"** sob o rodapé de exportações da revisão (`review.exportOptions`,
+  quem salva sem passar por Share) e a mesma linha sob as quatro respostas do Done do editor (`edit.done.exportOptions`; sobre a edição que o
+  Done vai salvar). Linha em `footnote`, `ink2`, alvo de 44 pt (`ExportOptionsLine`). As legendas começam do editor (mostradas ou não, no
+  idioma que ele mostra, tradução incluída); uma escolha diferente vale só para a exportação daquela versão e diz isso sob o cartão
+  ("Captions in this export only · your edit stays as it is", "No captions in this export · your edit keeps them", "Caption language for this
+  export only · your edit keeps its own"); a edição salva nunca muda. Se o editor muda as legendas dele, a exportação volta a partir dele. A
+  qualidade só é escolha numa gravação em 4K (as outras mostram a própria resolução, `share.qualityRecorded`).
 - Reduzir Movimento: nada gira nem voa, a abertura é um fade de 0,3 s e a compra fecha na hora. `-uiTestProAt <s>`.
 
 ## 13. Profile (9.1) e Edit Profile
@@ -939,8 +948,9 @@ os ícones (§16), e só promete um ícone ainda não destravado; passado o últ
 
 Na revisão, o botão amarelo **Share to universe** renderiza o arquivo (1080 × 1920, sem marca d'água; nada sai do Cue, nada é contado) e abre **Ready to
 travel** com as redes (`ShareNetworkPicker`: TikTok "· from your script", Reels, Shorts, YouTube ("POSTS AS A SHORT" até 3 min na vertical), LinkedIn, "Also
-save to Photos", "Share to n networks", "Uses 1 free export · k left after this"; atrás do ícone de ajustes, **Export options**: legendas e
-qualidade, 1080p ou 4K, que é Pro (§12)). Fechado o sheet, Ready mostra **Share to
+save to Photos", "Share to n networks", "Uses 1 free export · k left after this"; no canto, o botão de vidro **Options · 1080p** (ou "· 4K",
+"· 720p": a qualidade com que o arquivo sai, com a regra do Pro aplicada) abre **Export options**: legendas e qualidade, 1080p ou 4K, que é Pro
+(§12)). Fechado o sheet, Ready mostra **Share to
 universe · Save video · compartilhar** (folha do sistema). **Uma exportação por envio** (um arquivo para todas as redes; reexportar na fila não gasta
 outra: `ExportLedgerService.begin(inheritingCountFrom:)`).
 **A fila** (`ShareQueue`, `ShareQueueService`, `ShareFlow`): "Posting to n networks" (com 2+, nas 2 primeiras vezes); o passo de cada rede ("1 OF 3",
@@ -1967,6 +1977,20 @@ auditoria: `reports/editor-award-checklist.md`.
 - **Clean Up na montagem** (`CleanUpSuggestion.sourceID`, `EditTimeline+CleanUp`, `TakeEdit.cleanUpAnalyzedSources`): ouve cada gravação uma vez (uma
   nova, ao abrir de novo); a lista segue a ordem em que tocam e o cartão diz de onde é ("Interview · 00:22.0"). Remover corta aquela gravação onde ela
   toca (em cada cópia, na velocidade dela), nunca outra no mesmo segundo. Uma gravação que não pôde ser ouvida não apaga as sugestões das outras.
+- **Pausas numa sala barulhenta** (D16, `SilenceDetector.pauses`, `BackgroundLevel`, `PauseDetection`, `PauseHearing`): cada gravação é medida
+  antes (o fundo é o P10 dos níveis de 50 ms, a voz o P90; o silêncio digital fica de fora). Numa sala silenciosa, com a voz ao menos 18 dB acima
+  de −42 dBFS, as pausas são as de sempre (o mesmo nível fixo, marcadas como antes). Com o fundo acima de −42 (ventilador, rua, música), o nível
+  sobe com ele (fundo + 2,5 a 6 dB, conforme o quanto ele oscila); com a voz baixa demais, o nível desce para 18 dB abaixo dela. O que um nível
+  movido acha é **menos seguro**: entra na lista, **nunca vem marcado** (confiança 0,5 nas longas, 0,4 nas curtas), as bordas ficam onde o som
+  assentou no fundo, com 0,25 s de respiro de cada lado, só a partir de 0,5 s, e uma pausa cuja fala vizinha (2,5 s de cada lado) não fica 8 dB
+  acima do nível é deixada passar (na dúvida, a pausa fica; nunca fala válida). O cartão diz "Listen first · none is marked"; o comprimento
+  mostrado e o filtro "Pauses longer than" usam o silêncio ouvido, não o corte (`CleanUpSuggestion.silence`). Com a voz a menos de 12 dB do fundo
+  (descontada a oscilação), ou nada sob o fundo, o resultado é **"Too much background sound"** (`PauseHearing.tooMuchBackgroundSound`,
+  `isInconclusive`), nenhuma pausa nova listada, com "Pauses can’t be found reliably here. Try Edit by text."; não é o mesmo que "No long pauses".
+  `ClipsViewModel.cleanUpPauseHearing` dá o caso mais cauteloso entre as gravações tocadas e `TakeEdit.pauseHearings` o guarda com a edição.
+  Ouvir de novo troca só as sugestões ainda abertas: cortes aplicados e decisões ficam (`CleanUpAnalyzer.merged`). Medido no corpus
+  determinístico `NoisyRoomPauseTests` (leituras FLEURS em pt, en, es com consoantes, respirações e fundos feitos no teste); **não ouvido no
+  iPhone**.
 - **Mídias sobrepostas** (`OverlaysViewModel+Picking`): cada janela visível tem sua alça, na ordem em que o vídeo empilha (a escolhida por cima,
   para alcançá-la mesmo coberta). Um toque pega a de cima; tocar de novo onde elas se cobrem pega a de baixo; tocar a escolhida sozinha abre o painel.
   Contorno das não escolhidas: branco tracejado com halo escuro (`Palette.Editor.overlayOutline`/`overlayOutlineHalo`). **Durante o arraste o vídeo

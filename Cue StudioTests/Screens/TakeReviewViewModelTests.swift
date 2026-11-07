@@ -242,6 +242,64 @@ struct TakeReviewViewModelTests {
         #expect(plain.viewModel.exportCaptionDisplay == .original)
     }
 
+    /// D11: one state for the video's exports, starting from the editor; a different pick is for the export only, says so, and never changes
+    /// the saved edit; once the editor changes its captions, the export follows the editor again.
+    @Test func exportOptionsStartFromTheEditorAndNeverChangeTheEdit() async throws {
+        var take = TestData.take(scriptID: nil)
+        var edit = TakeEdit(sourceDuration: take.duration, aspect: .portrait)
+        edit.showsCaptions = true
+        let cue = CaptionCue(text: "Meu.", start: 0, end: 1)
+        edit.captions = [cue]
+        let line = TranslatedCaptionLine(cueIDs: [cue.id], sourceText: cue.text, text: "Mine.", start: cue.start, end: cue.end)
+        edit.captionTranslations = [CaptionTranslation(language: .english, lines: [line])]
+        edit.captionDisplay = .translation(.english)
+        take.edit = edit
+        let scenario = makeScenario(tier: .subscriber, take: take)
+        defer { scenario.defaults.tearDown() }
+        let viewModel = scenario.viewModel
+        #expect(viewModel.outputDifference(for: edit) == nil)
+        #expect(viewModel.outputSummary(for: edit) == "1080p · captions on")
+        #expect(viewModel.effectiveQualityLabel == "1080p")
+        // Both languages for this export only: Save uses it, the edit stays in English.
+        viewModel.setOutput(ExportOutputChoice(burnsInCaptions: true, captionDisplay: .bilingual(.english)), for: edit)
+        #expect(viewModel.exportCaptionDisplay == .bilingual(.english))
+        #expect(viewModel.outputDifference(for: edit) == .otherLanguage)
+        await viewModel.save()
+        #expect(scenario.exporter.exports.last?.edit?.captionDisplay == .bilingual(.english))
+        #expect(viewModel.take?.edit?.captionDisplay == .translation(.english))
+        // No captions in the file: said, and the edit keeps them.
+        viewModel.burnsInCaptions = false
+        #expect(viewModel.outputDifference(for: viewModel.take?.edit) == .removesCaptions)
+        #expect(viewModel.outputSummary(for: viewModel.take?.edit) == "1080p · no captions")
+        #expect(viewModel.take?.edit?.showsCaptions == true)
+        // The editor hides its captions in a new version: the export starts from it again (no captions, no difference).
+        var hidden = try #require(viewModel.take?.edit)
+        hidden.showsCaptions = false
+        try viewModel.takes.applyEdit(hidden, to: take.id)
+        #expect(!viewModel.burnsInCaptions)
+        #expect(viewModel.outputDifference(for: hidden) == nil)
+        // Picking the editor's own again forgets the pick.
+        viewModel.burnsInCaptions = true
+        viewModel.burnsInCaptions = false
+        #expect(viewModel.pickedOutput == nil)
+    }
+
+    /// Done's options are about the edit it is about to save: a pick there holds once that edit is saved.
+    @Test func donesPickHoldsForTheEditItSaves() throws {
+        let take = TestData.take(scriptID: nil)
+        let scenario = makeScenario(tier: .subscriber, take: take)
+        defer { scenario.defaults.tearDown() }
+        var unsaved = TakeEdit(sourceDuration: take.duration, aspect: .portrait)
+        unsaved.showsCaptions = true
+        scenario.viewModel.setOutput(ExportOutputChoice(burnsInCaptions: false, captionDisplay: .original), for: unsaved)
+        // Before Done saves it, the review's own (no edit) is untouched.
+        #expect(!scenario.viewModel.burnsInCaptions)
+        #expect(scenario.viewModel.outputDifference(for: nil) == nil)
+        try scenario.viewModel.takes.applyEdit(unsaved, to: take.id)
+        #expect(!scenario.viewModel.burnsInCaptions)
+        #expect(scenario.viewModel.outputDifference(for: unsaved) == .removesCaptions)
+    }
+
     @Test func burnInCaptionsKeepsTheEditsCaptions() async {
         var take = TestData.take(scriptID: nil)
         var edit = TakeEdit(sourceDuration: take.duration, aspect: .portrait)
