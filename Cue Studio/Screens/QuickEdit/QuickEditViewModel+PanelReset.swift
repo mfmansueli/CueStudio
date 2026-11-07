@@ -7,7 +7,8 @@ import Foundation
 
 /// Reset in a panel's header, the same in every panel: it shows once something there differs from how the clip (or the take)
 /// started, and puts all of the panel's settings back in one undo step. Adjust, Skin, Filters, Background and Caption style bring
-/// their own (they reset a clip's override, or the theme).
+/// their own (they reset a clip's override, or the theme); a text's, a graphic's, Motion's and a photo or video's are in
+/// `QuickEditViewModel+LayerReset`.
 extension QuickEditViewModel {
     /// What Reset does in `panel` now; nil while there is nothing to put back.
     func panelReset(_ panel: EditorPanel) -> (() -> Void)? {
@@ -20,6 +21,9 @@ extension QuickEditViewModel {
         case .clipAnimation: clipAnimationReset
         case .transition: transitionReset
         case .voice: voiceReset
+        case .textStyle: textReset
+        case .motion: motionReset
+        case .media: mediaReset
         default: nil
         }
     }

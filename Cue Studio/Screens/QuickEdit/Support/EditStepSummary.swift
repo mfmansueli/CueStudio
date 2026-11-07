@@ -6,7 +6,7 @@
 import Foundation
 
 /// What an undo step changed, read from the two states it goes between (undo keeps states, not actions, `EditHistory`), so
-/// Undo and Redo say it ("Undid · Split", "Undid · Clip 2", "Undid · Text") and the editor can show where it lands when that is
+/// Undo and Redo say it ("Undid · Split", "Undid · Clip 2 · Speed", "Undid · Pauses", "Undid · Text") and the editor can show where it lands when that is
 /// out of sight. The name is the tool's own word, the one the creator tapped; a change of the whole video (a look, the
 /// captions' style, Lock) has no place on the timeline.
 nonisolated struct EditStepSummary: Equatable, Sendable {
@@ -32,8 +32,9 @@ nonisolated struct EditStepSummary: Equatable, Sendable {
 
     // MARK: - Clips
 
-    /// The cuts changed: "Split", a clip by its number ("Clip 2", "The clip" while the video is one clip), or Clean Up when
-    /// its decisions changed with them (pauses, filler words, retakes).
+    /// The cuts changed: "Split", a clip by its number and the tool that changed it ("Clip 2 · Speed"; "Clip 2" alone when it
+    /// was moved or trimmed; "The clip" while the video is one clip), or Clean Up when its decisions changed with them (pauses,
+    /// filler words, retakes).
     private static func clips(_ earlier: TakeEdit, _ later: TakeEdit) -> EditStepSummary? {
         let before = earlier.timeline.segments, after = later.timeline.segments
         guard before != after else { return nil }
@@ -47,9 +48,62 @@ nonisolated struct EditStepSummary: Equatable, Sendable {
         )
         if earlier.suggestions != later.suggestions { return EditStepSummary(name: String(localized: "Clean up"), span: span) }
         if isSplit(more: more, fewer: fewer, at: index) { return EditStepSummary(name: String(localized: "Split"), span: span) }
-        let name = more.count > 1 ? String(localized: "Clip \(index + 1)") : String(localized: "The clip")
-        return EditStepSummary(name: name, span: span)
+        let clip = more.count > 1 ? String(localized: "Clip \(index + 1)") : String(localized: "The clip")
+        // The same number of clips, changed in place: the tool that changed them (one clip: "Clip 2 · Speed"; several, as
+        // "Use on all", or a cut's transition: the tool alone).
+        if before.count == after.count, let tool = toolName(before, after) {
+            let changed = before.indices.filter { before[$0] != after[$0] }
+            let named = changed.count == 1 && tool.namesItsClip && more.count > 1
+            return EditStepSummary(name: named ? "\(clip) · \(tool.name)" : tool.name, span: span)
+        }
+        return EditStepSummary(name: clip, span: span)
     }
+
+    /// The one tool whose settings changed on the clips (Speed, Zoom, Volume…), when it is only one; nil when the clips moved or
+    /// were trimmed, or several tools changed at once (Reset clip).
+    private static func toolName(_ before: [EditSegment], _ after: [EditSegment]) -> (name: String, namesItsClip: Bool)? {
+        var tools = Set<String>()
+        var namesItsClip = true
+        for (old, new) in zip(before, after) where old != new {
+            guard old.id == new.id, old.sourceID == new.sourceID, old.sourceStart == new.sourceStart, old.sourceEnd == new.sourceEnd else {
+                return nil
+            }
+            if old.speed != new.speed || old.speedCurve != new.speedCurve || old.keepsPitch != new.keepsPitch { tools.insert("speed") }
+            if old.zoom != new.zoom || old.zoomAmount != new.zoomAmount { tools.insert("zoom") }
+            if old.volume != new.volume || old.isMuted != new.isMuted || old.soundFadeIn != new.soundFadeIn || old.soundFadeOut != new.soundFadeOut {
+                tools.insert("volume")
+            }
+            if old.stabilization != new.stabilization { tools.insert("stabilize") }
+            if old.crop != new.crop || old.quarterTurns != new.quarterTurns { tools.insert("crop") }
+            if old.isMirrored != new.isMirrored { tools.insert("mirror") }
+            if old.animationIn != new.animationIn || old.animationOut != new.animationOut { tools.insert("animation") }
+            if old.voiceEffect != new.voiceEffect { tools.insert("voiceEffects") }
+            if old.transitionIn != new.transitionIn || old.transitionDuration != new.transitionDuration {
+                tools.insert("transition")
+                // A transition belongs to the cut, not to the clip after it.
+                namesItsClip = false
+            }
+            if old.look != new.look { tools.insert(lookTool(old.look ?? ClipLook(), new.look ?? ClipLook())) }
+        }
+        guard tools.count == 1, let tool = tools.first else { return nil }
+        return (Self.toolNames[tool] ?? String(localized: "Edit"), namesItsClip)
+    }
+
+    /// The look panel a clip's own look changed in.
+    private static func lookTool(_ old: ClipLook, _ new: ClipLook) -> String {
+        if old.filter != new.filter || old.filterAmount != new.filterAmount { return "filters" }
+        if old.background != new.background { return "background" }
+        if old.skin != new.skin { return "skin" }
+        return "adjust"
+    }
+
+    private static let toolNames: [String: String] = [
+        "speed": String(localized: "Speed"), "zoom": String(localized: "Zoom"), "volume": String(localized: "Volume"),
+        "stabilize": String(localized: "Stabilize"), "crop": String(localized: "Crop"), "mirror": String(localized: "Mirror"),
+        "animation": String(localized: "Animation"), "voiceEffects": String(localized: "Voice effects"),
+        "transition": String(localized: "Transition"), "filters": String(localized: "Filters"),
+        "background": String(localized: "Background"), "skin": String(localized: "Skin"), "adjust": String(localized: "Adjust"),
+    ]
 
     /// `more` is `fewer` with its clip at `index` cut in two where it was: the two halves play on from each other, and the rest is
     /// the same.
@@ -147,6 +201,7 @@ nonisolated struct EditStepSummary: Equatable, Sendable {
         if before.backgrounds != after.backgrounds { return String(localized: "Background") }
         if lookBefore.skin != lookAfter.skin || lookBefore.skinSmoothing != lookAfter.skinSmoothing { return String(localized: "Skin") }
         if lookBefore.volume != lookAfter.volume { return String(localized: "Volume") }
+        if let timing = timingName(lookBefore, lookAfter) { return timing }
         if lookBefore.enhancesVoice != lookAfter.enhancesVoice || lookBefore.reducesNoise != lookAfter.reducesNoise
             || lookBefore.voiceEnhancement != lookAfter.voiceEnhancement || lookBefore.noiseReduction != lookAfter.noiseReduction
             || lookBefore.voiceReach != lookAfter.voiceReach || lookBefore.evensOutVoices != lookAfter.evensOutVoices {
@@ -159,5 +214,12 @@ nonisolated struct EditStepSummary: Equatable, Sendable {
         }
         if before.suggestions != after.suggestions { return String(localized: "Clean up") }
         return String(localized: "Edit")
+    }
+
+    /// Clean up's Pauses longer than and Gap left ("Pauses"), and Beats' Snap to beats, by their own word (canvas 2 bug 3).
+    private static func timingName(_ before: EditLook, _ after: EditLook) -> String? {
+        if before.pauseThreshold != after.pauseThreshold || before.pauseGap != after.pauseGap { return String(localized: "Pauses") }
+        if before.snapsToBeats != after.snapsToBeats { return String(localized: "Beats") }
+        return nil
     }
 }

@@ -1749,7 +1749,7 @@ verde/azul, e num vídeo sem tela verde Color "não fazia nada".
   clipes que têm o seu.
 - **Behind you:** Original · Blur · Color · Image e só o controle da escolhida (Blur strength, cores, foto; em Original, uma linha).
 - **Cutout** em cartão próprio (`Palette.Editor.panelCard`): **Automatic | Green or blue screen** com uma frase de cada; "Can't find people here" no
-  Automatic. Em tela verde/azul: **Screen color** (Green | Blue, "Your own color" quando escolhida à mão), "Pick the screen's color", e **Tolerance, Edge,
+  Automatic. Com um fundo escolhido, o nome do cartão diz **In use** (o recorte está agindo). Em tela verde/azul: **Screen color** (Green | Blue, "Your own color" quando escolhida à mão), "Pick the screen's color", e **Tolerance, Edge,
   Spill** recolhidos em "Fine-tune the cutout" ("· adjusted" quando mudados), cada um com o que faz (`ChromaKeyCube`). Com Original: "Used once a
   background is picked".
 - Última linha: "Changes show in the preview and are saved as you make them. ✓ closes the panel."
@@ -2129,7 +2129,9 @@ auditoria: `reports/editor-award-checklist.md`.
   Studio só aparece quando cabe inteiro (no SE, não).
 - **Painéis com texto grande e em telas estreitas** (`EditorLayout.largeTextPanelGrowth`, controles de `Panels/Controls`): de xxLarge para cima um
   painel mini ou médio cresce até 1,5× a sua altura e o vídeo cede até o mínimo (régua e trilha do vídeo ficam); os painéis de estilo não mudam.
-  Nenhum rótulo quebra no meio da palavra nem botão empilha letras: **Adjust** põe nome, valor, ◐ e Auto numa linha; a nota de um clipe ("From the
+  Nenhum rótulo quebra no meio da palavra nem botão empilha letras: **Adjust** põe nome, valor, ◐ e **Measure** numa linha (o chip **Auto** só
+  escolhe a régua do Auto, como os outros chips; quem mede o vídeo é Measure, sempre à vista, também com o Auto aberto; medir segue a um toque;
+  dono, canvas 2 R5); a nota de um clipe ("From the
   whole take") fica embaixo do nome, na mesma altura, quando não cabe ao lado (iPhone 17 e SE), e com texto grande nome, nota e botões têm
   linhas próprias; segmentos (Speed) com
   mais de 3 opções vão em linhas de 3 nos tamanhos de acessibilidade; os cartões de **Filters** têm a miniatura de 64 pt de altura, se alinham pelo
@@ -2495,7 +2497,12 @@ dono achou a versão redesenhada pior). Comparado com CapCut, Edits e InShot (p�
 iguais ou melhores; o fundo e o recorte num painel só, de propósito.
 - **Cabeçalho de painel** (`EditorPanelContainer`): título, **escopo** na linha de baixo ("Clip 2 of 3" numa montagem, "This clip" com um
   clipe, "Whole video"), **Reset** à esquerda de ◐ e ✓ assim que algo mudou (`QuickEditViewModel+PanelReset`: Speed, Zoom, Volume, Stabilize,
-  Transition e Studio Voice; Adjust, Filters, Background e Caption style com o seu), num passo de desfazer.
+  Crop, Animation, Transition e Studio Voice; Adjust, Skin, Filters, Background, Mask e Caption style com o seu), num passo de desfazer. Com
+  alcance definido (dono, canvas 2 R5; `QuickEditViewModel+LayerReset`): **Text** (um texto) volta ao visual com que um texto do papel dele
+  começa neste vídeo e sem movimento, ficando palavras, lugar, tempo e giro; **Graphic** volta à cor do tipo, 100%, sem giro e sem movimento;
+  **Motion** de uma foto ou vídeo tira entrada, saída e keyframes; **Photo or video** volta a janela a Original, tamanho e opacidade de quando
+  entrou (como aparece, a parte que toca e a ordem ficam). Com o estilo de todos os textos, não há Reset de um texto. O Background do vídeo
+  inteiro não tem Reset: o caminho de volta é o tile Original.
 - **◐ Compare with original** (`PanelCompare`, `PanelCompareButton`) no cabeçalho de Adjust, Filters, Background e Studio Voice: toque mostra
   o original até o próximo toque; segurar mostra só enquanto o dedo está; esmaecido quando não há o que comparar. A prévia diz "Original" (a
   imagem como gravada: sem Auto, Adjust, filtro **nem fundo**, `TakeEdit.withoutPictureLook`) ou "Original audio".
@@ -2629,8 +2636,10 @@ O editor por dentro, para milhares de criadores: nada se perde, nada some, nada 
   um contador é um valor ajustável. `EditorUITests.testTheEditorPassesTheAccessibilityAudit` roda a auditoria do Xcode (tamanhos de texto limitados de
   propósito e o esmaecimento da borda da barra à parte).
 - **Desfazer diz o quê** (`QuickEditViewModel+Undo`, `EditStepSummary`): o histórico guarda estados, então o nome sai da diferença entre os dois,
-  com a palavra da ferramenta: "Undid · Split", "Undid · Clip 2", "Redid · Text", "Undid · Format", "Undid · Lock"… ("Edit" quando nada conhecido
-  mudou). Quando o que voltou está fora do que a timeline mostra (~150 pt de cada lado da agulha, na escala do zoom), a agulha vai até o começo
+  com a palavra da ferramenta: "Undid · Split", "Undid · Clip 2 · Speed" (um clipe mudado no lugar diz o número e a ferramenta; movido ou
+  aparado, só o número; num vídeo de um clipe, só a ferramenta), "Undid · Transition", "Undid · Stabilize" (vários clipes, como Use on all),
+  "Undid · Pauses" (Pauses longer than e Gap left), "Undid · Beats", "Redid · Text", "Undid · Format", "Undid · Lock"… ("Edit" quando nada
+  conhecido mudou; dono, canvas 2 erro 3). Quando o que voltou está fora do que a timeline mostra (~150 pt de cada lado da agulha, na escala do zoom), a agulha vai até o começo
   dele; o que já está à vista não pula.
 - **Done encerra o histórico:** Done grava a edição na take e descarta o rascunho, e o rascunho é o que marca o vídeo "In edit" (Takes, cartões,
   lembretes); por isso a próxima visita abre a edição salva sem nada para desfazer. Back e Not yet guardam o rascunho com os passos.
@@ -3127,7 +3136,8 @@ Profile, Pro, celebrações) tinha tamanho fixo copiado do quadro, e várias tel
 ## 54. Máscara e Desfocar área (Fase 6 do refinamento, 26 de outubro de 2026; pedido do dono)
 
 Duas ferramentas, com nomes que não se confundem com o que já existe: **Mask** (uma forma desenhada que mostra só parte de uma foto ou vídeo por
-cima) e **Blur area** (esconde um rosto, uma placa ou um nome numa tela, e o segue). Não são o **Recorte** do Fundo (a pessoa achada pelo Vision)
+cima) e **Blur area** (esconde um rosto, uma placa ou um nome numa tela, e o segue). Não são o **Contorno** do Fundo (Cutout: a pessoa achada pelo Vision; em português deixou de ser "Recorte" para não se confundir com o Crop,
+"Recortar", canvas 2)
 nem o **Desfoque** do Fundo (atrás do criador). Comparado com CapCut, InShot e Edits (pesquisa de fluxos e de fóruns, 26/10): nenhum dos três avisa
 quando o tracking perde o alvo, nenhum move o vídeo sob uma máscara parada, e no CapCut esconder um rosto pede duplicar o clipe, efeito, máscara e
 keyframes; o Cue faz cada uma dessas coisas direto. Plano aprovado pelo dono: https://claude.ai/artifact/UpoEnj7t6wAUpmGeCG8PpW.

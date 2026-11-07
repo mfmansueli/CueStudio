@@ -10,8 +10,10 @@ import SwiftUI
 /// Skin's, `SkinPanel`): the picked chip is white, one that is off zero shows its value in yellow; for a clip a chip shows the take's value
 /// until the clip sets its own, and Reset gives the clip the take's values again. ◐ shows the picture as recorded
 /// for as long as it is held. The Auto chip is the measured correction (a step before the other settings, which
-/// stay as they are on top of it): its ruler is how much of it shows. Auto, ◐ and the picked setting's name, value
-/// and Reset share one line (two or three on a narrow screen or with large text), so the controls fit the panel without
+/// stay as they are on top of it): tapping it only picks its ruler, how much of it shows. Measuring is its own button,
+/// Measure, always in the readout line (one tap from any setting, as before; it picks Auto's ruler too): the chip never
+/// runs an analysis by surprise (owner, canvas 2 R5). Measure, ◐ and the picked setting's name, value and Reset share one
+/// line (two or three on a narrow screen or with large text), so the controls fit the panel without
 /// scrolling on an ordinary iPhone. Reset puts them all back, and the setting on the ruler has its own.
 struct AdjustPanel: View {
     @Bindable var viewModel: QuickEditViewModel
@@ -42,7 +44,7 @@ struct AdjustPanel: View {
                     onChange: { viewModel.look.setAutoAmount($0) }
                 )
             } else {
-                PanelNote(text: String(localized: "Auto fixes light and color · Your edits stay on top"))
+                PanelNote(text: String(localized: "Measure fixes light and color · Your edits stay on top"))
             }
         case .dial(let adjustment):
             PanelRulerSlider(
@@ -238,14 +240,14 @@ struct AdjustPanel: View {
         }
     }
 
-    /// Measures the picture (the take's, or the picked clip's) and applies a correction.
+    /// Measure: measures the picture (the take's, or the picked clip's) and applies a correction; Auto's ruler then shows how much.
     private var autoButton: some View {
         let isWorking = viewModel.look.autoState == .analyzing
         return Button {
             current = .auto
             viewModel.look.autoAdjust()
         } label: {
-            Label(isWorking ? String(localized: "Measuring…") : String(localized: "Auto"), systemImage: "sparkles")
+            Label(isWorking ? String(localized: "Measuring…") : String(localized: "Measure"), systemImage: "sparkles")
                 .font(.system(.subheadline, weight: .semibold))
                 .lineLimit(1)
                 .fixedSize()

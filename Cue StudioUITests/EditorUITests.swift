@@ -192,13 +192,17 @@ final class EditorUITests: XCTestCase {
         XCTAssertTrue(app.buttons["edit.filter.original"].isSelected, "Reset clip left a filter on the clip")
     }
 
-    /// Auto measures the real frames of the clip: it ends with a correction to dial down, or says the picture is
+    /// Measure measures the real frames of the clip (the Auto chip alone doesn't): it ends with a correction to dial down, or says the picture is
     /// already balanced; either way the picture is never left half-done.
     func testAutoMeasuresTheClipAndCompareShowsTheOriginal() {
         let app = EditorApp.open()
         EditorApp.tapTool(app, "adjust")
+        // The Auto chip only picks its ruler (canvas 2 R5): nothing is measured until Measure.
+        app.buttons["edit.adjust.autoDial"].tap()
+        XCTAssertFalse(app.descendants(matching: .any)["edit.adjust.autoAmount"].exists(within: 1.5), "The Auto chip measured on its own")
         let auto = app.buttons["edit.adjust.auto"]
         XCTAssertTrue(auto.exists(within: 5))
+        XCTAssertEqual(auto.label, "Measure")
         auto.tap()
         // Measuring takes a moment; it ends with the intensity ruler, or a note when there's nothing to do.
         let amount = app.descendants(matching: .any)["edit.adjust.autoAmount"]

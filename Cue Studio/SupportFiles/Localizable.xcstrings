@@ -57100,6 +57100,125 @@
         }
       }
     },
+    "In use" : {
+      "comment" : "Video editor › Background › Cutout: beside the card's name while a background is picked, so the cutout is acting on the video",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "قيد الاستخدام"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I brug"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktiv"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En uso"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actif"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "चालू है"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sedang dipakai"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In uso"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用中"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사용 중"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I bruk"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In gebruik"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Em uso"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Används"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "กำลังใช้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kullanımda"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đang dùng"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用中"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用中"
+          }
+        }
+      }
+    },
     "Indie games" : {
       "comment" : "My Cue Voice: a more specific topic inside the theme “gaming” (a short chip)",
       "localizations" : {
@@ -67925,6 +68044,244 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "男性"
+          }
+        }
+      }
+    },
+    "Measure fixes light and color · Your edits stay on top" : {
+      "comment" : "Video editor › Adjust › Auto: in place of the ruler before the picture is measured; Measure is the button beside it",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "زر القياس يصحح الإضاءة واللون · تبقى تعديلاتك فوقه"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mål retter lys og farve · Dine ændringer bliver ovenpå"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Messen korrigiert Licht und Farbe · Deine Anpassungen bleiben darüber"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Medir corrige luz y color · Tus ajustes quedan encima"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mesurer corrige la lumière et la couleur · Vos réglages restent par-dessus"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "मापें रोशनी और रंग ठीक करता है · आपके बदलाव ऊपर बने रहते हैं"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ukur memperbaiki cahaya dan warna · Editanmu tetap di atasnya"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Misura corregge luce e colore · Le tue modifiche restano sopra"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "測定で明るさと色を補正 · あなたの調整はその上に残ります"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "측정이 밝기와 색을 보정해요 · 직접 한 조정은 그 위에 남아요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mål retter lys og farge · Endringene dine blir liggende over"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meten corrigeert licht en kleur · Je eigen aanpassingen blijven erbovenop"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Medir corrige luz e cor · Seus ajustes ficam por cima"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mät rättar ljus och färg · Dina ändringar ligger kvar ovanpå"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "วัดจะแก้แสงและสี · การปรับของคุณยังอยู่ด้านบน"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ölç ışığı ve rengi düzeltir · Senin ayarların üstünde kalır"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đo sẽ chỉnh ánh sáng và màu · Chỉnh sửa của bạn vẫn ở trên"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "测量会校正光线和颜色 · 你的调整保留在上面"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "測量會校正光線和顏色 · 你的調整保留在上面"
+          }
+        }
+      }
+    },
+    "Measure" : {
+      "comment" : "Video editor › Adjust: the button that measures the picture and applies an automatic correction (the Auto chip only picks its ruler)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "قياس"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mål"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Messen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Medir"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mesurer"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "मापें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ukur"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Misura"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "測定"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "측정"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mål"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meten"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Medir"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mät"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "วัด"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ölç"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đo"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "测量"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "測量"
           }
         }
       }
@@ -191887,124 +192244,6 @@
         }
       }
     },
-    "Auto fixes light and color · Your edits stay on top" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "يصحّح الضبط التلقائي الضوء واللون · تعديلاتك تبقى فوقه"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auto retter lys og farve · Dine ændringer ligger ovenpå"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auto korrigiert Licht und Farbe · Deine Änderungen bleiben obenauf"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auto corrige luz y color · Tus ajustes van encima"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auto corrige lumière et couleur · Vos réglages restent par-dessus"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ऑटो रोशनी और रंग सुधारता है · आपके बदलाव ऊपर रहते हैं"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Otomatis memperbaiki cahaya dan warna · Hasil editmu tetap di atas"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auto corregge luce e colore · Le tue modifiche restano sopra"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自動で明るさと色を補正 · 手動調整が優先されます"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "자동으로 빛과 색을 보정 · 직접 조정한 값이 우선해요"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auto retter lys og farge · Dine justeringer ligger oppå"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auto corrigeert licht en kleur · Jouw aanpassingen blijven erboven"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auto corrige luz e cor · Seus ajustes ficam por cima"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auto rättar ljus och färg · Dina justeringar ligger överst"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "อัตโนมัติปรับแสงและสี · ค่าที่คุณปรับยังมาก่อน"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Işığı ve rengi otomatik düzeltir · Kendi ayarların üstte kalır"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tự động chỉnh sáng và màu · Chỉnh tay vẫn ưu tiên"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自动校正光线和色彩 · 你的调整优先"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自動校正光線與色彩 · 你的調整優先"
-          }
-        }
-      }
-    },
     "Auto-detect" : {
       "localizations" : {
         "ar" : {
@@ -249420,7 +249659,7 @@
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Recorte"
+            "value" : "Contorno"
           }
         },
         "sv" : {
@@ -289536,7 +289775,7 @@
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ajustar o recorte"
+            "value" : "Ajustar o contorno"
           }
         },
         "sv" : {

@@ -103,7 +103,8 @@ struct BackgroundPanel: View {
         VStack(alignment: .leading, spacing: 12) {
             PanelRowLabel(
                 label: String(localized: "Cutout"),
-                detail: effect.style == .original ? String(localized: "Used once a background is picked") : nil
+                // Owner, canvas 2 R5: whether the cutout is acting on the video now, in sight.
+                detail: effect.style == .original ? String(localized: "Used once a background is picked") : String(localized: "In use")
             )
             .accessibilityAddTraits(.isHeader)
             PanelSegmented(

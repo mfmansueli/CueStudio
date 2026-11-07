@@ -204,6 +204,53 @@ struct QuickEditGestureTrustTests {
         #expect(EditStepSummary(from: edit, to: locked) == EditStepSummary(name: "Lock", span: nil))
     }
 
+    /// Canvas 2 bug 3 (owner, 07/11/2026): Undo names the tool, not only the clip; pauses, gap and beats by their own word.
+    @Test func aClipsChangeIsNamedByTheToolThatMadeIt() {
+        let edit = TakeEdit(sourceDuration: 10, aspect: .square)
+        var split = edit
+        _ = split.timeline.split(atEdited: 4)
+        var faster = split
+        _ = faster.timeline.setSpeed(2, forSegmentAt: 1)
+        #expect(EditStepSummary(from: split, to: faster).name == "Clip 2 · Speed")
+        var zoomed = split
+        zoomed.timeline = changing(zoomed.timeline, at: 0) { $0.zoomAmount = 1.4 }
+        #expect(EditStepSummary(from: split, to: zoomed).name == "Clip 1 · Zoom")
+        var looked = split
+        var look = ClipLook()
+        look.exposure = 0.3
+        looked.timeline = changing(looked.timeline, at: 1) { $0.look = look }
+        #expect(EditStepSummary(from: split, to: looked).name == "Clip 2 · Adjust")
+        var everyClip = split
+        everyClip.timeline = changing(everyClip.timeline, at: 0) { $0.stabilization = .standard }
+        everyClip.timeline = changing(everyClip.timeline, at: 1) { $0.stabilization = .standard }
+        #expect(EditStepSummary(from: split, to: everyClip).name == "Stabilize")
+        var cut = split
+        cut.timeline = changing(cut.timeline, at: 1) { $0.transitionIn = .dissolve }
+        #expect(EditStepSummary(from: split, to: cut).name == "Transition")
+        // One clip in the video: the tool alone.
+        var whole = edit
+        whole.timeline = changing(whole.timeline, at: 0) { $0.volume = 0.5 }
+        #expect(EditStepSummary(from: edit, to: whole).name == "Volume")
+        var pauses = edit
+        pauses.pauseThreshold = 1
+        #expect(EditStepSummary(from: edit, to: pauses).name == "Pauses")
+        var gap = edit
+        gap.pauseGap = .relaxed
+        #expect(EditStepSummary(from: edit, to: gap).name == "Pauses")
+        var beats = edit
+        beats.snapsToBeats.toggle()
+        #expect(EditStepSummary(from: edit, to: beats).name == "Beats")
+    }
+
+    /// `timeline` with its clip at `index` changed by `change`.
+    private func changing(_ timeline: EditTimeline, at index: Int, _ change: (inout EditSegment) -> Void) -> EditTimeline {
+        var timeline = timeline
+        var segment = timeline.segments[index]
+        change(&segment)
+        _ = timeline.replaceSegment(segment)
+        return timeline
+    }
+
     // MARK: - The clip under the playhead
 
     @Test func freezeFramePicksTheFrozenClipSoItsEndCanBeDragged() async throws {
