@@ -253,7 +253,7 @@ struct QuickEditView: View {
                     EditorPanelView(viewModel: viewModel, panel: panel)
                         .environment(\.editorHeightClass, layout.heightClass)
                         // ⌄ in its header: the sheet steps aside for the timeline (canvas 2 R10 §7.3).
-                        .environment(\.editorPanelTuck, { viewModel.tuckPanel() })
+                        .environment(\.editorPanelTuck, EditorPanelTuck { viewModel.tuckPanel() })
                         // Expanding the panel is the sheet's taller height, and dragging the sheet expands it.
                         .presentationDetents([.height(medium), .height(large)], selection: sheetDetentBinding(medium: medium, large: large))
                         .presentationBackgroundInteraction(.enabled(upThrough: .height(large)))

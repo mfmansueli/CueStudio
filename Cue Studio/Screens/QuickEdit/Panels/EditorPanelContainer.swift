@@ -204,7 +204,7 @@ struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
         }
         if let compare { PanelCompareButton(compare: compare) }
         if let play { playButton(play) }
-        if let tuck { tuckButton(tuck) }
+        if let tuck { tuckButton(tuck.perform) }
         if let expansion { expandButton(expansion) }
         if let accessory { accessory }
         Button {
@@ -225,7 +225,7 @@ struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
     }
 
     /// ⌄ on the SE's styling sheet: the panel steps aside for the timeline (`editorPanelTuck`), and comes back as it was.
-    private func tuckButton(_ tuck: @escaping () -> Void) -> some View {
+    private func tuckButton(_ tuck: @escaping @MainActor () -> Void) -> some View {
         Button {
             Haptics.selection()
             tuck()
