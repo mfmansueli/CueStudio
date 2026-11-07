@@ -122,15 +122,17 @@ final class MediaMotionUITests: XCTestCase {
         XCTAssertTrue(next.exists(within: 3))
         func time() -> String { label.value as? String ?? "" }
         // One frame at a time, each read before the next (on an iPhone the label follows a moment later).
-        for _ in 0..<20 where !time().hasPrefix("00:00.3") {
+        let wayIn = ["00:00.3", "00:00.4", "00:00.5", "00:00.6"]
+        for _ in 0..<20 where !wayIn.contains(where: time().hasPrefix) {
             let before = time()
-            if before.hasPrefix("00:00.4") || !before.hasPrefix("00:00.") { break }
+            if !before.hasPrefix("00:00.") { break }
             next.tap()
             _ = waitFor { time() != before }
         }
         XCTAssertTrue(app.descendants(matching: .any)["edit.panel.textStyle"].exists, "Stepping let go of the title")
         EditorApp.capture(app, "text-pop-paused-whole")
-        XCTAssertTrue((label.value as? String ?? "").hasPrefix("00:00.3"), "Not in the title's way in: \(label.value ?? "")")
+        // The Pop takes 0.5 s from 0.2 s: anywhere in it before its end.
+        XCTAssertTrue(wayIn.contains(where: time().hasPrefix), "Not in the title's way in: \(time())")
     }
 
     private func scrollPanelUp(_ app: XCUIApplication, to element: XCUIElement) {
