@@ -82,7 +82,8 @@ final class CleanUpUITests: XCTestCase {
     /// A card's start and length, from what it says ("1.2s, 00:04.1").
     private func pause(_ card: XCUIElement) -> (start: Double, length: Double) {
         let parts = card.label.components(separatedBy: ", ")
-        let length = Double(parts.first?.filter { $0.isNumber || $0 == "." } ?? "") ?? 0
+        // "1,2s" or "1.2s", as the language writes it.
+        let length = Double(parts.first?.replacingOccurrences(of: ",", with: ".").filter { $0.isNumber || $0 == "." } ?? "") ?? 0
         return (clock(parts.last ?? ""), length)
     }
 

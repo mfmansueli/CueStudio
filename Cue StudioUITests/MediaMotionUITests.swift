@@ -31,8 +31,14 @@ final class MediaMotionUITests: XCTestCase {
         return condition()
     }
 
+    /// "2,0s" or "2.0s", as the language writes it.
     private func seconds(_ label: String) -> Double {
-        Double(label.filter { $0.isNumber || $0 == "." }) ?? -1
+        Double(label.replacingOccurrences(of: ",", with: ".").filter { $0.isNumber || $0 == "." }) ?? -1
+    }
+
+    /// The stepper's value ("2,0s"): its label is the name (Duration).
+    private func shown(_ element: XCUIElement) -> String {
+        element.value as? String ?? ""
     }
 
     func testAVideoInAWindowHasShowAndPartDurationsVolumeAndMotion() {
@@ -48,28 +54,28 @@ final class MediaMotionUITests: XCTestCase {
         part.tap()
         let value = app.descendants(matching: .any)["edit.mediaLength.value"]
         XCTAssertTrue(value.exists(within: 5), "No Duration in Part")
-        XCTAssertTrue(app.staticTexts["Duration"].exists, "The length isn't called Duration")
+        XCTAssertEqual(value.label, "Duration", "The length isn't called Duration")
         EditorApp.capture(app, "media-part")
 
         // Common lengths: tapping the value opens them, opening alone changes nothing; 2 s is one tap more.
-        let before = value.label
+        let before = shown(value)
         value.tap()
         let two = app.buttons["edit.mediaLength.preset.20"]
         XCTAssertTrue(two.exists(within: 3), "No common lengths")
         EditorApp.capture(app, "media-common-lengths")
-        XCTAssertEqual(value.label, before, "Opening the lengths changed the value")
+        XCTAssertEqual(shown(value), before, "Opening the lengths changed the value")
         two.tap()
-        XCTAssertTrue(waitFor { abs(self.seconds(value.label) - 2) < 0.05 }, value.label)
+        XCTAssertTrue(waitFor { abs(self.seconds(self.shown(value)) - 2) < 0.05 }, shown(value))
 
         // A held + steps on its own; one Undo takes the whole run back.
         let plus = app.buttons["edit.mediaLength.plus"]
         plus.press(forDuration: 2)
-        XCTAssertTrue(waitFor { self.seconds(value.label) >= 3.4 }, "Holding + stepped once: \(value.label)")
+        XCTAssertTrue(waitFor { self.seconds(self.shown(value)) >= 3.4 }, "Holding + stepped once: \(shown(value))")
         app.buttons["edit.panel.apply"].tap()
         app.buttons["edit.undoButton"].tap()
         EditorApp.tapTool(app, "editMedia")
         app.buttons["edit.panel.tab.part"].tap()
-        XCTAssertTrue(waitFor { abs(self.seconds(value.label) - 2) < 0.05 }, "One Undo didn't take the held run back: \(value.label)")
+        XCTAssertTrue(waitFor { abs(self.seconds(self.shown(value)) - 2) < 0.05 }, "One Undo didn't take the held run back: \(shown(value))")
         app.buttons["edit.panel.apply"].tap()
 
         // Volume: the bar, the title and the control say Volume.
