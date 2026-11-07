@@ -19,7 +19,8 @@ struct CoverTitleStep: View {
     private var style: CoverTitleStyle { viewModel.composition.title }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        // 8 pt apart: with the keyboard up on an iPhone SE, the field, the suggestions, Words and the highlighted words all fit.
+        VStack(alignment: .leading, spacing: 8) {
             field
             if viewModel.titleOverflows {
                 PanelNote(text: String(localized: "Too long to fit. Shorten the title or make the block wider."))
@@ -38,7 +39,6 @@ struct CoverTitleStep: View {
                 case .box: box
                 }
             }
-            .padding(.top, 2)
         }
     }
 

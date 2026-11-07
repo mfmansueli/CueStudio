@@ -101,8 +101,8 @@ final class CoverStudioUITests: XCTestCase {
         XCTAssertFalse(reset.isEnabled)
     }
 
-    /// R8: typing the title, the field, Words and its highlighted words stay above the keyboard; the line above is a scroll away
-    /// and takes the keyboard too.
+    /// R8: typing the title, the field, Words and its highlighted words stay above the keyboard and its word suggestions;
+    /// Line above, tapped with the keyboard up, comes into view above it and takes the typing.
     func testTitleWordsStayInReachWithTheKeyboardUp() throws {
         let app = EditorApp.open(demo: true)
         EditorApp.tapTool(app, "cover")
@@ -115,7 +115,8 @@ final class CoverStudioUITests: XCTestCase {
         field.typeText(" today")
         let keyboard = app.keyboards.firstMatch
         XCTAssertTrue(keyboard.exists(within: 3))
-        let top = keyboard.frame.minY
+        // The keyboard's frame leaves out the word suggestions over its keys (44 pt): they cover the panel too.
+        let top = keyboard.frame.minY - 44
         let word = app.buttons["cover.highlight.0"]
         XCTAssertTrue(word.exists(within: 3))
         XCTAssertLessThanOrEqual(field.frame.maxY, top)
@@ -127,18 +128,13 @@ final class CoverStudioUITests: XCTestCase {
         XCTAssertTrue(keyboard.exists, "Picking a word keeps the keyboard")
         try capture(app, "3-title-keyboard")
 
+        // Line above, under Words: tapped with the keyboard still up, it comes into view above it and takes the typing.
         let kicker = app.textFields["cover.kicker"]
         XCTAssertTrue(kicker.exists)
-        var swipes = 0
-        while kicker.frame.maxY > keyboard.frame.minY || !kicker.isHittable, swipes < 4 {
-            word.swipeUp(velocity: .slow)
-            swipes += 1
-        }
-        XCTAssertLessThanOrEqual(kicker.frame.maxY, keyboard.frame.minY, "Line above is reached with the keyboard up")
         kicker.tap()
         kicker.typeText("EP 03")
         XCTAssertTrue(keyboard.exists)
-        XCTAssertLessThanOrEqual(kicker.frame.maxY, keyboard.frame.minY)
+        XCTAssertLessThanOrEqual(kicker.frame.maxY, keyboard.frame.minY - 44, "Line above is in view with the keyboard up")
         XCTAssertEqual(kicker.value as? String, "EP 03")
         try capture(app, "3-title-kicker-keyboard")
     }

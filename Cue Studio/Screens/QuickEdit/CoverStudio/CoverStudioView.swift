@@ -76,15 +76,15 @@ struct CoverStudioView: View {
         return min(max(height * share, 220), 360)
     }
 
-    /// While typing the cover keeps about a third of what's above the keyboard, at most 150 pt (still showing the words typed):
-    /// on an iPhone SE that leaves the title field, Words and the highlighted words above the keyboard.
+    /// While typing the cover keeps under a third of what's above the keyboard, at most 150 pt (still showing the words typed):
+    /// on an iPhone SE that leaves the title field, its suggestions, Words and the highlighted words above the keyboard.
     private func typingPanelHeight(for height: CGFloat) -> CGFloat {
-        max(160, height - min(150, height * 0.32))
+        max(160, height - min(150, height * 0.28))
     }
 
     private func canvasArea(height: CGFloat) -> some View {
         GeometryReader { proxy in
-            let available = CGSize(width: max(1, proxy.size.width - 32), height: max(90, proxy.size.height - 16))
+            let available = CGSize(width: max(1, proxy.size.width - 32), height: max(74, proxy.size.height - 16))
             let aspect = CGFloat(viewModel.aspect)
             let width = min(available.width, available.height * aspect)
             let size = CGSize(width: width.rounded(), height: (width / aspect).rounded())
@@ -92,7 +92,7 @@ struct CoverStudioView: View {
                 .frame(width: proxy.size.width, height: proxy.size.height)
         }
         // The floor only binds while typing on a small iPhone (the panel never takes more than 360 pt otherwise).
-        .frame(height: max(106, height))
+        .frame(height: max(90, height))
     }
 
     private var stepPanel: some View {
@@ -109,7 +109,7 @@ struct CoverStudioView: View {
                     }
                 }
                 .padding(.horizontal, 16)
-                .padding(.top, isKeyboardUp ? 12 : 8)
+                .padding(.top, 8)
                 .padding(.bottom, 16)
             }
             .scrollDismissesKeyboard(.interactively)

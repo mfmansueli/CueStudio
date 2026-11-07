@@ -1962,8 +1962,8 @@ auditoria: `reports/editor-award-checklist.md`.
   cover quando o vídeo já tinha capa). Desfazer/refazer próprio; Done é **um** passo no editor; Cancel com mudanças pergunta. Guias amarelas no
   meio e nos terços; guia de recorte "Profile grid 3:4 · approx." / "Square 1:1 · approx." (aproximações: o Cue não define a capa em nenhuma rede).
   **Com o teclado aberto** (título, Line above, etiqueta ou @handle, rótulos do antes/depois) somem a barra de etapas e o cabeçalho da etapa, e os
-  controles ganham a altura que a capa cede (ela fica com um terço do que sobra acima do teclado, até 150 pt): no Title, o campo, Words e as palavras em destaque ficam acima do teclado,
-  e Line above está a uma rolagem; tocar na capa recolhe o teclado. A faixa de quadros é um editor local da capa (R10): escolher quadros muda só a
+  controles ganham a altura que a capa cede (ela fica com 28% do que sobra acima do teclado, até 150 pt): no Title, o campo, Words e as palavras em destaque ficam acima do teclado,
+  e Line above, tocado, sobe para cima do teclado; tocar na capa recolhe o teclado. A faixa de quadros é um editor local da capa (R10): escolher quadros muda só a
   prévia da capa; abrir e fechar o estúdio deixa a agulha do editor onde estava. A timeline mostra a capa desenhada no bloco de capa.
 - **Texto da capa** (`CoverTextLayout`, Core Text): o bloco inteiro cabe — a letra diminui (até 3,4% da largura) até a palavra mais longa, as
   linhas (até 6) e a altura caberem, sempre dentro da capa em volta do centro e longe de tags, @handle e rótulos do antes/depois. Quebra só no
