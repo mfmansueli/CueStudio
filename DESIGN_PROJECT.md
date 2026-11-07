@@ -1307,9 +1307,8 @@ cada faixa tem um toque da cor dela (6%, a atual 12%), e **a faixa com as ferram
 amarelo): contorno de 1,5 pt na cor dela a 85% (3:1 contra a faixa e o preto; o fundo não pode clarear mais, a dica de uma faixa vazia precisa de
 4,5:1) e o quadrado do ícone como apertado (`TimelineLaneTint.litRing`), e o ícone e o ▾ da atual ficam sobre **um quadrado de cantos arredondados** na cor dela (22%,
 contorno de 1 pt a 50%): 40 × 36 pt com cantos de 9 numa faixa de 44 (4 pt menor que a faixa em cada borda, nunca abaixo de 26; cantos de 10 a cada
-40 pt de altura, `TimelineLaneLook.chooserHeight`/`chooserRadius`). Ao lado do ícone da faixa atual, com as faixas guardadas, **uma pilha
-(`rectangle.stack.fill`) e quantas faixas há sob o vídeo** ("▤ 4"; dono, canvas 2 N1: diz que há mais faixas e quantas); com todas para fora, a pilha dá
-lugar a **▴**. Tocar a célula (toda, sem tocar a faixa do vídeo) põe todas as faixas
+40 pt de altura, `TimelineLaneLook.chooserHeight`/`chooserRadius`). **▾** ao lado do ícone da faixa atual (dono, 07/11/2026: a seta, não
+uma pilha com a contagem; vira ▴ com todas para fora). Tocar a célula (toda, sem tocar a faixa do vídeo) põe todas as faixas
 para fora no lugar, e **todas aparecem, sem rolar** (dono 28/10/2026): elas encolhem para o vídeo ficar pelo menos do tamanho de tudo abaixo dele
 (barra do player + timeline + ferramentas; `EditorLayout.openLaneHeight`), de 44 pt até 28, 6 pt entre elas; se nem com 28 cabem nessa metade, a
 timeline passa da metade e o vídeo cede (só abaixo do mínimo do vídeo, 30% da altura, elas rolariam). No iPhone 17, uma edição nova fica com faixas de
@@ -1317,7 +1316,7 @@ timeline passa da metade e o vídeo cede (só abaixo do mínimo do vídeo, 30% d
 28 pt, timeline de 294 e vídeo de 332. Sob um painel sobre uma faixa, ela tem 40 pt, a altura do vídeo ali. **Arrastar a timeline para cima ou para
 baixo** (canvas "Estilo da faixa e do seletor", prancheta F, dono 28/10/2026) faz o que o ▾ faz, seguindo o dedo: arraste claramente vertical (mais
 que 1,2× o lateral; de lado é o tempo), fora de uma alça e do item escolhido; a borda de cima da timeline acompanha o dedo, o vídeo cede, as faixas se
-abrem a partir de onde a atual está (as outras aparecem entre 15% e 65% do caminho) e a pilha dá lugar ao ▴ na mesma medida (`TimelineGeometry.Input.reveal`,
+abrem a partir de onde a atual está (as outras aparecem entre 15% e 65% do caminho) e o ▾ gira na mesma medida (`TimelineGeometry.Input.reveal`,
 `EditorLayout.timelineReveal`); passando das pontas a borda estica até 18 pt e resiste. Ao soltar, vai para o estado mais perto, ou para onde foi
 jogada (mais de 350 pt/s), com uma mola que passa um pouco da marca (`TimelineRevealSpring`, 0,42 s, bounce 0,18) e um toque leve quando muda; o ▾
 abre e fecha com a mesma mola. Com todas para fora e mais faixas que espaço (só sob o mínimo do vídeo), o arraste rola as faixas primeiro e só recolhe

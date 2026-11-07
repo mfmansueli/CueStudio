@@ -55,13 +55,6 @@ struct TimelineGeometryTests {
         #expect(short.joins.first?.hitFrame.width == TimelineGeometry.handleReach)
     }
 
-    /// Canvas 2 N1: the stack beside the current track's icon counts the tracks under the video.
-    @Test func theChooserCountsTheTracksUnderTheVideo() throws {
-        let geometry = TimelineGeometry(input { $0.tracks = TimelineTrackChoice(current: .text) })
-        // Photos and videos, texts, captions and the shortcut to add music or a voice-over.
-        #expect(try #require(geometry.chooser).trackCount == 4)
-    }
-
     @Test func aCutsMarkShowsItsTransitionAndHidesWhenAClipIsPicked() {
         let dissolved = TimelineGeometry(input { input in
             input.clips[1].transition = .dissolve

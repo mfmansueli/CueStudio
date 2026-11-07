@@ -95,7 +95,7 @@ final class CreatorWorkflowUITests: XCTestCase {
         XCTAssertTrue(flow.waits(for: mode, "Add photo or video"), "Media › Full screen didn't open Add photo or video")
         XCTAssertTrue(app.buttons["edit.mediaMode.fullScreen"].isSelected, "The sheet doesn't open on Full screen")
         let explanation = flow.element("edit.mediaModeExplanation")
-        XCTAssertTrue(explanation.label.contains("B-roll"), explanation.label)
+        XCTAssertTrue(explanation.label.contains("voice goes on"), explanation.label)
         flow.tap(app.buttons["sheet.closeButton"].firstMatch, "Add photo or video's ×")
         XCTAssertTrue(mode.isGone(within: 5), "Add photo or video didn't go away")
         XCTAssertTrue(app.buttons["edit.toolbar.mediaSplit"].exists, "Not back on the Media bar")

@@ -60,7 +60,6 @@ final class TimelineLaneGutterView: UIView {
                 lane: frame.lane, height: frame.height,
                 isCurrent: geometry.chooser?.lane == frame.lane,
                 turn: geometry.chooser?.lane == frame.lane ? geometry.chooser?.turn ?? 0 : 0,
-                trackCount: geometry.chooser?.trackCount ?? 0,
                 isActive: geometry.input.activeLanes.contains(frame.lane)
             )
             if let cell = cells[frame.lane] {

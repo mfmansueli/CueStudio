@@ -238,8 +238,6 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         /// Across in the timeline's own width (the gutter stays put), down in the content: the icon's column and the start of
         /// the strip, with the space above the track and, collapsed, the room under it, so it is `chooserReach` square at least.
         var hitFrame: CGRect
-        /// How many tracks there are under the video, shown beside the stack (canvas 2 N1).
-        var trackCount: Int = 0
     }
 
     /// A handle being dragged: an end of a clip or of a track item.
@@ -357,13 +355,8 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         contentHeight = height
         let isExpanded = input.tracks?.isExpanded == true
         let turn = Self.reveal(of: input) ?? (isExpanded ? 1 : 0)
-        let trackCount = Self.lanes(hasBlurs: !input.blurs.isEmpty, hasMusic: hasMusic, hasVoice: hasVoice).count - 1
         chooser = chosen.flatMap { chosen in
-            lanes.first { $0.lane == chosen }.map {
-                var chooser = Self.chooser(beside: $0, isExpanded: isExpanded, turn: turn, spacing: spacing)
-                chooser.trackCount = trackCount
-                return chooser
-            }
+            lanes.first { $0.lane == chosen }.map { Self.chooser(beside: $0, isExpanded: isExpanded, turn: turn, spacing: spacing) }
         }
         contentWidth = CGFloat(input.duration) * pps
 

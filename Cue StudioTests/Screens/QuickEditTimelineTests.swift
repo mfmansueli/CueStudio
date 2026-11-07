@@ -148,10 +148,12 @@ struct QuickEditTimelineTests {
         viewModel.panel = .pauses
         viewModel.tapTimeline(.clip(viewModel.edit.timeline.segments[0].id))
         #expect(viewModel.selection == nil)
+        // Canvas 2 F10: the first tap lights its card, the second takes the mark off.
+        viewModel.tapTimeline(.pause(pause.id))
+        #expect(viewModel.clips.highlightedCleanUpID == pause.id)
+        #expect(viewModel.timelineInput(heightClass: .regular).pauses.first?.isMarked == true)
         viewModel.tapTimeline(.pause(pause.id))
         #expect(viewModel.timelineInput(heightClass: .regular).pauses.first?.isMarked == false)
-        viewModel.tapTimeline(.pause(pause.id))
-        #expect(viewModel.timelineInput(heightClass: .regular).pauses.first?.isMarked == true)
     }
 
     // MARK: - Zoom

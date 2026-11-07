@@ -72,7 +72,13 @@ struct LocalizedStringCacheTests {
         let clock = ContinuousClock()
         let texts = (0..<40).map { "\(script) \($0)" }
         let counted = clock.measure { for text in texts { _ = ReadTime.wordCount(in: text) } }
-        let again = clock.measure { for text in texts { _ = ReadTime.wordCount(in: text) } }
+        // The kept counts are the whole process's: tests running alongside can fill and empty them between the two passes, so
+        // the texts are counted again before each later try (the fastest of three is the one kept).
+        var again = Duration.seconds(3600)
+        for _ in 0..<3 {
+            for text in texts { _ = ReadTime.wordCount(in: text) }
+            again = min(again, clock.measure { for text in texts { _ = ReadTime.wordCount(in: text) } })
+        }
         #expect(again * 5 < counted, "40 scripts: counted \(counted), again \(again)")
     }
 
