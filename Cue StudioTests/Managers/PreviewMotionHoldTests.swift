@@ -3,6 +3,8 @@
 //  Cue StudioTests
 //
 
+import CoreGraphics
+import CoreImage
 import Foundation
 import Testing
 @testable import Cue_Studio
