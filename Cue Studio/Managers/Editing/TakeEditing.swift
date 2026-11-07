@@ -13,10 +13,10 @@ protocol TakeEditing: AnyObject {
     func sourceDuration(ofVideoAt url: URL) async throws -> TimeInterval
     /// Frames per second of the recording, read from the file; nil when it can't be read.
     func frameRate(ofVideoAt url: URL) async -> Double?
-    /// Clean Up's findings: pauses from the take's loudness, and filler words and possible retakes
-    /// from its transcript in `language` (pauses only when no speech model can listen). None for a
-    /// take without sound. Throws when the sound can't be read.
-    func cleanUpSuggestions(forVideoAt url: URL, language: SpeechLanguageRequest) async throws -> [CleanUpSuggestion]
+    /// Clean Up's findings: pauses from the take's loudness (the silence level following a loud background or a soft voice, and
+    /// saying how sure it could be: `CleanUpFindings.pauseHearing`), and filler words and possible retakes from its transcript in
+    /// `language` (pauses only when no speech model can listen). None for a take without sound. Throws when the sound can't be read.
+    func cleanUpFindings(forVideoAt url: URL, language: SpeechLanguageRequest) async throws -> CleanUpFindings
     /// Captions from what is said in the take, heard in `language`. The voice decides the words and
     /// when; `script` (empty for a take without one) only lends its spelling where it reliably
     /// matches. Nothing is ever spread over the take: without sound, speech or a model for the
@@ -53,6 +53,11 @@ protocol TakeEditing: AnyObject {
 }
 
 extension TakeEditing {
+    /// Clean Up's suggestions alone (`cleanUpFindings`).
+    func cleanUpSuggestions(forVideoAt url: URL, language: SpeechLanguageRequest) async throws -> [CleanUpSuggestion] {
+        try await cleanUpFindings(forVideoAt: url, language: language).suggestions
+    }
+
     /// The edited take for a take's review: the edit as it is.
     func previewItem(forVideoAt url: URL, edit: TakeEdit) async throws -> AVPlayerItem {
         try await previewItem(forVideoAt: url, edit: edit, purpose: .reviewPreview)

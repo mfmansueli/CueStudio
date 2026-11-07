@@ -73,6 +73,43 @@ struct QuickEditMontageCleanUpTests {
         #expect(scenario.editor.cleanUpVideos.count == 2)
     }
 
+    @Test func aTakeRecordedBesideAFanListsItsPausesUnmarkedAndSaysSo() async throws {
+        let scenario = try await makeScenario()
+        defer { scenario.cleanUp() }
+        let viewModel = scenario.viewModel
+        // The other take is heard from its copy in the edit's media.
+        scenario.editor.pauseDetections[EditMediaFiles.url(for: scenario.source.fileName)] = PauseDetection(hearing: .overBackgroundSound, pauses: [
+            PauseDetection.Pause(cut: TimeSpan(start: 5.25, end: 6.25), silence: TimeSpan(start: 5, end: 6.5), isClear: false),
+        ])
+        await viewModel.clips.analyzeIfNeeded()
+        #expect(viewModel.clips.cleanUpPauseHearing == .overBackgroundSound)
+        #expect(viewModel.edit.pauseHearings == [RecordingPauseHearing(sourceID: scenario.source.id, hearing: .overBackgroundSound)])
+        viewModel.panel = .pauses
+        let pauses = viewModel.clips.pauseCandidates
+        #expect(pauses.count == 2)
+        // The quiet take's pause is marked as always; the one heard over the fan waits for a listen.
+        #expect(pauses.map { viewModel.clips.isMarked($0) } == [true, false])
+        #expect(viewModel.clips.cardLength(pauses[1]) == DurationText.tenths(1.5))
+        viewModel.clips.applyCleanUp()
+        // Only the marked pause went; the other is still listed, and the take is still said to be noisy.
+        #expect(viewModel.clips.pauseCandidates.map(\.sourceID) == [scenario.source.id])
+        #expect(viewModel.clips.cleanUpPauseHearing == .overBackgroundSound)
+    }
+
+    @Test func tooMuchBackgroundSoundIsntAFlowingTake() async throws {
+        let scenario = try await makeScenario()
+        defer { scenario.cleanUp() }
+        let viewModel = scenario.viewModel
+        scenario.editor.pauseDetections[viewModel.videoURL] = PauseDetection(hearing: .tooMuchBackgroundSound, pauses: [])
+        await viewModel.clips.analyzeIfNeeded()
+        #expect(viewModel.clips.analysis == .done)
+        #expect(viewModel.clips.pauseCandidates.map(\.sourceID) == [scenario.source.id])
+        #expect(viewModel.clips.cleanUpPauseHearing == .tooMuchBackgroundSound)
+        #expect(viewModel.clips.cleanUpPauseHearing.title == "Too much background sound")
+        // Kept with the edit, so reopening says it again without listening twice.
+        #expect(viewModel.edit.pauseHearings == [RecordingPauseHearing(sourceID: nil, hearing: .tooMuchBackgroundSound)])
+    }
+
     @Test func removingTheOtherTakesPauseCutsOnlyThatTake() async throws {
         let scenario = try await makeScenario()
         defer { scenario.cleanUp() }
