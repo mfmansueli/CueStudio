@@ -335,7 +335,7 @@ final class CreatorWorkflowUITests: XCTestCase {
 
         flow.step("Format")
         flow.tool("format")
-        XCTAssertTrue(flow.waits(for: app.staticTexts["Format"], "the Format panel"), "Format didn't open the Format panel")
+        XCTAssertTrue(flow.waits(for: app.staticTexts["Aspect ratio"], "the Aspect ratio panel"), "Aspect ratio didn't open its panel")
         let vertical = app.buttons["edit.crop.9:16"]
         let square = app.buttons["edit.crop.1:1"]
         XCTAssertTrue(vertical.isSelected, "The take doesn't start at 9:16")

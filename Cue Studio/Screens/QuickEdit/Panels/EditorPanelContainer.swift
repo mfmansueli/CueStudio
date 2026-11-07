@@ -26,6 +26,8 @@ struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
     var compare: PanelCompare?
     /// "Preview" before expand and ✓: plays what the panel changes on the video (`PanelPlay`).
     var play: PanelPlay?
+    /// One more of the panel's own, right before ✓ (Captions' •••: its less used tools, out of the scroll).
+    var accessory: AnyView?
     var expansion: Binding<Bool>?
     /// The content stops further above the Home Indicator and fades under it while it scrolls (always with `expansion`).
     var clearsHomeIndicator = false
@@ -165,7 +167,7 @@ struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
         }
     }
 
-    /// Reset, ◐, ▶, expand and ✓, in that order: ✓ never moves when Reset appears.
+    /// Reset, ◐, ▶, expand, the panel's own and ✓, in that order: ✓ never moves when Reset appears.
     @ViewBuilder private var headerButtons: some View {
         if let onReset {
             Button("Reset", action: onReset)
@@ -180,6 +182,7 @@ struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
         if let compare { PanelCompareButton(compare: compare) }
         if let play { playButton(play) }
         if let expansion { expandButton(expansion) }
+        if let accessory { accessory }
         Button {
             Haptics.apply()
             onApply()

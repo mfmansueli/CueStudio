@@ -141,7 +141,7 @@ nonisolated struct EditStepSummary: Equatable, Sendable {
         if before.splitScreen != after.splitScreen { return String(localized: "Split screen") }
         if lookBefore.aspect != lookAfter.aspect || lookBefore.cropOffset != lookAfter.cropOffset || lookBefore.cropFit != lookAfter.cropFit
             || lookBefore.faceFollow != lookAfter.faceFollow {
-            return String(localized: "Format")
+            return String(localized: "Aspect ratio")
         }
         if before.filter != after.filter || lookBefore.filterAmount != lookAfter.filterAmount { return String(localized: "Filters") }
         if before.backgrounds != after.backgrounds { return String(localized: "Background") }

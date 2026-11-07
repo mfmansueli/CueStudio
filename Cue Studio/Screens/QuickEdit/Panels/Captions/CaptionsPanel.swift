@@ -23,7 +23,7 @@ struct CaptionsPanel: View {
     @FocusState private var focusesField: Bool
 
     var body: some View {
-        PanelFrame(viewModel: viewModel, panel: .captions, fixed: {
+        PanelFrame(viewModel: viewModel, panel: .captions, accessory: AnyView(moreMenu), fixed: {
             if viewModel.captions.isPickingCaptions {
                 CaptionPickTools(viewModel: viewModel, part: .header)
             } else {
@@ -80,14 +80,12 @@ struct CaptionsPanel: View {
                 translationChip
                 Spacer(minLength: 0)
                 styleButton
-                moreMenu
             }
             VStack(alignment: .leading, spacing: 0) {
                 HStack(spacing: 8) {
                     captionsSwitch
                     Spacer(minLength: 0)
                     styleButton
-                    moreMenu
                 }
                 HStack(spacing: 8) {
                     languageChip
@@ -99,7 +97,6 @@ struct CaptionsPanel: View {
                     captionsSwitch
                     Spacer(minLength: 0)
                     styleButton
-                    moreMenu
                 }
                 languageChip
                 translationChip
@@ -270,7 +267,7 @@ struct CaptionsPanel: View {
         .accessibilityIdentifier("edit.captionsAddButton")
     }
 
-    /// The panel's less frequent tools, in the system's menu: at hand at any scroll, and the lines keep the room. Delete all
+    /// The panel's less frequent tools, in the system's menu in the header before ✓: at hand at any scroll, and the controls stay on one row. Delete all
     /// asks first, and Undo in its toast brings every line back.
     private var moreMenu: some View {
         let hasLines = !viewModel.edit.captions.isEmpty

@@ -8,8 +8,9 @@ import UIKit
 
 /// A style as it draws on the video: the sample drawn by the export's own renderer over a frame of the take, its name under
 /// it. Picked, it is ringed in yellow and marked with a check (never only a color); a favorite has a star, the style new work
-/// starts in says "Default". The picked one may play its sample (`motion`), still with Reduce Motion. VoiceOver reads the
-/// name, what the style looks like and its marks; the style's actions are its menu (`menu`), also VoiceOver actions.
+/// starts in says "Default" under its name. The picked one may play its sample (`motion`), still with Reduce Motion. VoiceOver
+/// reads the name, what the style looks like and its marks; the style's actions are its menu (`menu`): ••• on the sample, the
+/// long press and VoiceOver actions. ••• never picks the style (owner, 07/11/2026).
 struct PanelPresetCard<Menu: View>: View {
     let name: String
     let sample: UIImage?
@@ -38,6 +39,13 @@ struct PanelPresetCard<Menu: View>: View {
                 WholeWordsLabel(text: name, minimumScale: 0.8)
                     .font(.system(.caption, weight: isSelected ? .bold : .semibold))
                     .foregroundStyle(isSelected ? Palette.ink : Palette.ink2)
+                if isDefault {
+                    Text("Default", comment: "A style card's mark: new work starts in this style")
+                        .font(.system(.caption2, weight: .bold))
+                        .foregroundStyle(Palette.accText)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
             .frame(width: 96)
             .contentShape(Rectangle())
@@ -50,6 +58,11 @@ struct PanelPresetCard<Menu: View>: View {
         .accessibilityHint(summary.map { Text($0) } ?? Text(verbatim: ""))
         .accessibilityAddTraits(isSelected ? .isSelected : [])
         .accessibilityIdentifier(identifier)
+        // Beside the card's button, never in it: the bottom corner of the sample, clear of the ★ and the check.
+        .overlay(alignment: .topTrailing) {
+            ItemMoreMenu(identifier: "\(identifier).more") { menu }
+                .padding(.top, 74 - 40)
+        }
     }
 
     private var thumbnail: some View {
@@ -93,18 +106,6 @@ struct PanelPresetCard<Menu: View>: View {
                     .frame(width: badgeSize, height: badgeSize)
                     .background(Palette.Editor.presetCardBadge, in: Circle())
                     .padding(4)
-            }
-        }
-        .overlay(alignment: .bottom) {
-            if isDefault {
-                Text("Default", comment: "A style card's mark: new work starts in this style")
-                    .font(.system(.caption2, weight: .bold))
-                    .foregroundStyle(Palette.chipOn)
-                    .lineLimit(1)
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 2)
-                    .background(Palette.Editor.presetCardBadge, in: Capsule())
-                    .padding(.bottom, 4)
             }
         }
     }

@@ -79,11 +79,11 @@ struct QuickEditToolbarTests {
     @Test func formatIsOnTheMainBarAndOpensTheFormatPanel() async {
         let viewModel = await makeScenario().viewModel
         let format = viewModel.toolbarItems.first { $0.id == "format" }
-        #expect(format?.label == "Format")
+        #expect(format?.label == "Aspect ratio")
         #expect(format?.action == .open(.crop))
         viewModel.perform(.open(.crop))
         #expect(viewModel.panel == .crop)
-        #expect(EditorPanel.crop.title == "Format")
+        #expect(EditorPanel.crop.title == "Aspect ratio")
     }
 
     /// The speech clean-up is the fifth, among the five on screen, where ✦ Smart was (owner, 07/11/2026).

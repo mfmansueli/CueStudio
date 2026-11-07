@@ -44,6 +44,40 @@ struct QuickEditPanelPreviewTests {
         return try #require(scenario.viewModel.overlays.editedSpan(ofText: id))
     }
 
+    /// A text with Pop shows whole while it's edited (owner, 07/11/2026): its panel opened on its first moments, where Pop still
+    /// hides it, moves the playhead to where it has come in; the video keeps its Pop, and a slow zoom (which never hides it) or a
+    /// playhead past the way in stays put.
+    @Test func aTextWithPopShowsWholeWhileItsPanelIsOpen() async throws {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        let overlays = viewModel.overlays
+        let span = try addTitle(scenario, at: 10)
+        let id = try #require(viewModel.selectedTextID)
+        overlays.setMotionPreset(.pop)
+        // Picking Pop puts the playhead where the title has come in, not on its first frame.
+        #expect(abs(scenario.player.currentTime - (span.start + 0.55)) < 0.001)
+        viewModel.show(nil)
+        viewModel.selection = .text(id)
+        scenario.player.seek(to: span.start)
+        viewModel.show(.textStyle)
+        #expect(abs(scenario.player.currentTime - (span.start + 0.55)) < 0.001)
+        #expect(!scenario.player.isPlaying)
+        #expect(viewModel.edit.texts.first { $0.id == id }?.animation?.preset == .pop, "The video keeps its Pop")
+        // Past the way in: the playhead stays where it is.
+        viewModel.show(nil)
+        viewModel.selection = .text(id)
+        scenario.player.seek(to: span.start + 1)
+        viewModel.show(.textStyle)
+        #expect(scenario.player.currentTime == span.start + 1)
+        // A slow zoom never hides it.
+        overlays.setMotionPreset(.gentleZoom)
+        viewModel.show(nil)
+        viewModel.selection = .text(id)
+        scenario.player.seek(to: span.start)
+        viewModel.show(.textStyle)
+        #expect(scenario.player.currentTime == span.start)
+    }
+
     @Test func aTextPlaysItsWayInOnlyWhenSomethingMovesIt() async throws {
         let scenario = await makeScenario()
         let overlays = scenario.viewModel.overlays

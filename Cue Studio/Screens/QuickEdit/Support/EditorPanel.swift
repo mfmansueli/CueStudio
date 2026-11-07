@@ -115,7 +115,7 @@ enum EditorPanel: String, CaseIterable, Identifiable {
         case .adjust: String(localized: "Adjust")
         case .skin: EditorLookTool.skin.label
         case .filters: String(localized: "Filters")
-        case .crop: String(localized: "Format")
+        case .crop: String(localized: "Aspect ratio")
         case .background: String(localized: "Background")
         case .captions: String(localized: "Captions")
         case .autoCaptions: String(localized: "Auto captions")

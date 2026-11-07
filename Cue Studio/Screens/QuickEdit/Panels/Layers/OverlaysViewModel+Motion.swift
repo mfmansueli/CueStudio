@@ -82,7 +82,8 @@ extension OverlaysViewModel {
     }
 
     /// Picks a ready-made motion for the picked item (nil: none), keeping its duration and strength when it had one. One undo
-    /// step; the keyframes stay as they are. The playhead goes to the item's start, to see it. On a text that wears an effect,
+    /// step; the keyframes stay as they are. The playhead goes to where the item has come in (`wholeTime`), to see it: at its
+    /// start a Pop or a Fade still hides it; Preview plays the way in. On a text that wears an effect,
     /// one way in at a time: a Motion (or None) leaves the effect still, its finish kept, and its Animated tab says Still;
     /// "Effect's own" (`playEffectsOwnMotion`) gives it back.
     func setMotionPreset(_ preset: MotionPreset?) {
@@ -99,13 +100,45 @@ extension OverlaysViewModel {
         }
         if next != nil, let span = editedSpan(of: item) {
             player.pause()
-            player.seek(to: span.start)
+            player.seek(to: wholeTime(of: item, from: span.start) ?? span.start)
         }
         Haptics.selection()
     }
 
+    /// How long the item's way in hides or shrinks it: its Motion's entrance (a slow zoom never hides it), or a moving text
+    /// effect's way in; 0 when nothing does.
+    func entranceLength(of item: MotionItem) -> TimeInterval {
+        guard let span = editedSpan(of: item) else { return 0 }
+        if let animation = animation(of: item) {
+            guard animation.preset != .gentleZoom else { return 0 }
+            return min(animation.duration, max(0.05, span.duration / 2))
+        }
+        if case .text(let id) = item, let effect = edit.texts.first(where: { $0.id == id })?.effect, effect.isAnimated {
+            return effect.duration
+        }
+        return 0
+    }
+
+    /// Where the item has come in, when `time` is still in its way in; nil when it shows whole at `time` already (or never
+    /// does: an item shorter than its way in).
+    func wholeTime(of item: MotionItem, from time: TimeInterval) -> TimeInterval? {
+        let entrance = entranceLength(of: item)
+        guard entrance > 0, let span = editedSpan(of: item), span.duration > entrance + 0.1 else { return nil }
+        guard time >= span.start - 0.000_1, time < span.start + entrance else { return nil }
+        return span.start + entrance + 0.05
+    }
+
+    /// The picked text's panel opened with the playhead in its way in, where a Pop, a Fade or a moving effect still hides it:
+    /// the playhead goes to where it has come in, so what is typed or styled shows whole (owner, 07/11/2026). The video is the
+    /// same; Preview and Play show the way in.
+    func showPickedTextWhole() {
+        guard let id = selectedTextID, let whole = wholeTime(of: .text(id), from: player.currentTime) else { return }
+        player.pause()
+        player.seek(to: whole)
+    }
+
     /// Motion's "Effect's own": the picked text's effect plays its own way in and out again, as its card shows, with no Motion
-    /// over it. One undo step; the playhead goes to the text's start, to see it.
+    /// over it. One undo step; the playhead goes to where the text has come in (`wholeTime`), to see it.
     func playEffectsOwnMotion() {
         guard let text = selectedText, text.effect != nil else { return }
         customizeText(text.id, .effect) { text in
@@ -114,7 +147,7 @@ extension OverlaysViewModel {
         }
         if let span = editedSpan(ofText: text.id) {
             player.pause()
-            player.seek(to: span.start)
+            player.seek(to: wholeTime(of: .text(text.id), from: span.start) ?? span.start)
         }
         Haptics.selection()
     }

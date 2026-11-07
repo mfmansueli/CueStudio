@@ -1312,7 +1312,7 @@ inteira ou adiciona nela (o que é de um item vem com o item):
 - **Media**: as formas de pôr uma foto ou vídeo, os cartões da folha (**Split screen · Window · Full screen · In sequence**, cada uma abrindo a
   galeria já nela, com os cartões no topo para trocar); depois de uma linha fina, **Your library** (a folha na biblioteca) e **Brand kit** (o logo do
   kit). A faixa de mídia não abre mais a folha direto: a barra dela é o caminho (adicionar uma janela: Window e a foto).
-- **Legendas** (a faixa abre o painel): no topo, o interruptor, o idioma, **Translate**, Style e **•••** (o menu do sistema: Find and replace,
+- **Legendas** (a faixa abre o painel): no topo, o interruptor, o idioma, **Translate**, Style e **•••** (no cabeçalho, antes do ✓; o menu do sistema: Find and replace,
   Select lines, Edit by text, Add a line at the playhead e, depois de um separador, **Delete all captions**, vermelho, que pergunta antes, "Delete
   all 12 caption lines?" · "Undo brings them back.", e o toast "12 lines deleted" tem Undo). Add a line também fica no fim da lista. Sem linhas, o
   painel oferece fazê-las (Auto captions) ou escrevê-las.
@@ -2039,10 +2039,12 @@ auditoria: `reports/editor-award-checklist.md`.
   deleted", "Found 1 pause", "Cut 1 word from the video", "1 word cut · 0.8 s", "Frame frozen for 2 seconds", "3 matches"…) escolhem a forma
   de cada idioma (árabe com as seis); o botão de Edit by text diz "Cut N words from the video" e o toast "N words cut · 0,8 s".
 - **Barras como um editor de celular (decisão do dono, 16/10/2026, depois de comparar com CapCut, Edits e InShot; diverge da ordem do quadro
-  v29 · 7.2).** Principal: todas as ferramentas do editor numa barra só, em grupos, na ordem em que um vídeo falado é feito (§55). **Format**
-  abre o painel "Format" ("Whole video · format for where you post").
+  v29 · 7.2).** Principal: todas as ferramentas do editor numa barra só, em grupos, na ordem em que um vídeo falado é feito (§55). **Aspect ratio**
+  (em português **Proporção**, dono 07/11/2026) abre o painel do mesmo nome ("Whole video · format for where you post"); numa foto ou vídeo por cima,
+  a forma da janela é **Window ratio** (Proporção da janela), e o que aparece dentro dela é Crop (Recorte).
   Clipe: as dele em três grupos, o essencial primeiro (§55; Stabilize e Reverse: §39; Blur area: §54), depois o que vai por cima e, por último,
-  tudo o que muda o vídeo inteiro, com o selo "All"; Delete fixo no fim. Texto ganha **Motion** (Style › Motion); mídia ganha **Mask** e **Blur area** (§54), **Split** (em dois na agulha), **Replace**,
+  tudo o que muda o vídeo inteiro, com o selo "All"; Delete fixo no fim. Texto ganha **Motion** (Style › Motion; escolher uma, ou abrir o painel do texto com a agulha na entrada dele, leva a agulha a onde ele já
+  entrou, para o Pop ou o Fade não o esconderem enquanto é editado; o vídeo não muda, e Preview mostra a entrada; dono 07/11/2026); mídia ganha **Mask** e **Blur area** (§54), **Split** (em dois na agulha), **Replace**,
   **Track** (§39), **Duplicate** (por cima, mesmo arquivo) e, num vídeo com som, **Extract audio**; um apoio da tela dividida não tem Track nem
   Duplicate nem Mask e ganha **Close gap** quando há espaço antes dele (§51).
 - **Reordenar clipes** (`ClipOrderSheet`): **segurar um clipe** na timeline (0,45 s, toque háptico) ou **Reorder** na barra do clipe abre a lista dos
@@ -2491,7 +2493,7 @@ iguais ou melhores; o fundo e o recorte num painel só, de propósito.
 - **Fontes:** uma lista para textos, legendas e capa (`TextOverlayFont.editorFonts`, 15): Montserrat, TikTok Sans, Poppins, Rubik, DM Sans,
   SF Pro, Space Grotesk, Unbounded, Syne, Anton, Bangers, DM Serif Display, Instrument Serif, Caveat, Space Mono (as favoritas das legendas
   primeiro; as cinco primeiras e Bangers vieram da pesquisa de 2025–26, SIL OFL 1.1, em Acknowledgements). A capa usa as mesmas e seus pesos
-  (`CoverFont` = família + peso; capas antigas com "Grotesk", "Serif" abrem nas mesmas faces). Caption style › Adjust troca a família **sobre um
+  (`CoverFont` = família + peso; capas antigas com "Grotesk", "Serif" abrem nas mesmas faces). Caption style › Custom troca a família **sobre um
   estilo** (`CaptionSettings.face`, chip "Style's font" volta à dele) e mantém o resto; escolher outro estilo traz a fonte dele. Texto numa escrita que a
   família não tem (japonês, chinês, coreano, árabe, hindi, tailandês) sai numa face daquela escrita com o mesmo caráter do estilo, e o latim da
   mesma linha fica na família; vietnamita numa família sem as letras dele sai inteiro numa família latina do mesmo caráter (§59).
@@ -2738,7 +2740,7 @@ InShot, Edits, Descript e Captions (pesquisa de 24/10: os apps põem a limpeza d
 
 O que a legenda **diz** (as palavras, as correções, os tempos de cada palavra, as marcas de revisão) fica separado de **como ela é cortada** no que aparece
 de uma vez. Trocar o corte, o preset, a fonte ou o tamanho nunca pede outra transcrição nem apaga uma decisão do criador.
-- **Format** (Caption style › Presets, acima da grade; `CaptionFormat` em `CaptionSettings.format`): **One word** (só a palavra que está sendo dita, trocada
+- **Text per caption** (em português **Texto por legenda**; Caption style › Layout; `CaptionFormat` em `CaptionSettings.format`): **One word** (só a palavra que está sendo dita, trocada
   pela seguinte, no mesmo lugar), **Short phrase** (um grupo que faz sentido, numa linha; a segunda só para uma palavra não ficar sozinha; o padrão) e **Two lines** (blocos
   de até duas linhas, quebradas por igual). Legendas novas nascem em Short phrase, ou no formato do My style salvo. Uma edição de antes dos formatos fica
   como era ("Format · as they were made", nada marcado) até alguém escolher um: escolher corta as mesmas palavras de novo, num passo de desfazer, com o
@@ -2787,10 +2789,10 @@ Um estilo de legenda tem duas metades que o Cue trata separadas: o **look** (o e
 estilo troca, e o **layout** (tamanho, posição, largura, alinhamento, formato), que fica quando o estilo muda (`CaptionSettings.restyled`). Comparado
 com CapCut, Captions, Submagic, Edits, Descript e VEED (pesquisa de 24/10): nenhum documenta o que acontece com vídeos já feitos quando um estilo salvo
 muda, Desfazer ao excluir, estilo padrão, nem "voltar ao estilo"; nenhum mostra os cartões com as palavras do próprio vídeo.
-- **Caption style em quatro abas** (`EditorPanelTab.captionStyle`): **Styles** (o catálogo e os estilos do criador), **Format** (Format, Position, Size,
-  Width, Alignment: o que fica quando o estilo muda), **Animation** (entrada e saída, revelação, a palavra sendo dita e a cor do destaque) e **Adjust**
-  (os detalhes do look sobre qualquer estilo). O painel cresce como antes, o vídeo fica à vista e cada escolha toca a linha atual.
-- **Size no topo de Styles** (S · M · L · XL, o mesmo de Format): é o que quase todo criador ajusta logo depois do estilo. Nos estilos do catálogo o
+- **Caption style em quatro abas** (`EditorPanelTab.captionStyle`): **Styles** (o catálogo e os estilos do criador), **Layout** (Text per caption, Position, Size,
+  Width, Alignment: o que fica quando o estilo muda), **Animation** (entrada e saída, revelação, a palavra sendo dita e a cor do destaque) e **Custom**
+  (em português **Personalizar**, como no Text style: os detalhes do look sobre qualquer estilo; dono 07/11/2026). O painel cresce como antes, o vídeo fica à vista e cada escolha toca a linha atual.
+- **Size no topo de Styles** (S · M · L · XL, o mesmo de Layout): é o que quase todo criador ajusta logo depois do estilo. Nos estilos do catálogo o
   tamanho escala **a legenda inteira**: a largura máxima da linha cresce e encolhe com a letra (`widthScalesWithSize`), as mesmas palavras ficam em cada
   linha e a legenda ocupa mais ou menos tela, até a área segura; nas leituras antigas, só a letra muda, como era.
 - **Modelos de vídeo** (Templates) usam o catálogo: o visual do modelo vira mudanças sobre o estilo e o jeito de mostrar as palavras vira o
@@ -2799,9 +2801,11 @@ muda, Desfazer ao excluir, estilo padrão, nem "voltar ao estilo"; nenhum mostra
 - **Styles:** filtros **All · Favorites · Mine · Cue · Essentials · Impact · Editorial · Colorful** (`CaptionCatalogFilter`; "Cue" a mais que o pedido, senão
   os quatro do Cue só apareceriam em All), lembrado entre vídeos (`TextStyleStoring.captionCatalogFilter`); a rolagem volta onde estava ao voltar de outra
   aba. Em All: o cartão **This video** (quando nenhum estilo é o das legendas: um ajuste, um texto copiado, um estilo de antes do catálogo), **Mine** com
-  "Save style" primeiro, e os 20 por grupo. O cartão escolhido tem anel amarelo **e** ✓ (não só cor), o favorito ★, o padrão "Default"; o VoiceOver lê
-  nome, o que o estilo é (`CaptionTheme.summary`), as marcas e "Selected". Segurar (ou as ações do VoiceOver) abre o menu: Add to favorites, Use for new
-  videos, Save a copy as mine e, nos do criador, Rename, Update with this look, Delete.
+  "Save style" primeiro, e os 20 por grupo. O cartão escolhido tem anel amarelo **e** ✓ (não só cor), o favorito ★, o padrão "Default" embaixo do nome; o VoiceOver
+  lê nome, o que o estilo é (`CaptionTheme.summary`), as marcas e "Selected". **•••** no canto de baixo da amostra (`ItemMoreMenu`, em todo cartão, fora
+  do botão do cartão: abre o menu sem escolher o estilo; dono 07/11/2026), segurar ou as ações do VoiceOver abrem o mesmo menu: Add to favorites, Use for
+  new videos, Save a copy as mine e, nos do criador, Rename, Update with this look, Delete. Os estilos de texto e os looks da capa têm o mesmo •••;
+  Favorites vazio diz "Tap ••• on a style to add it".
 - **Cartões desenhados pelo renderizador da exportação** (`CaptionCardSamples`, fora da linha principal, guardados pelo que desenham) com **as palavras
   do próprio vídeo** (até quatro da linha na agulha quando o painel abre; sem legendas, uma frase traduzida no idioma das legendas), a palavra dita
   acesa e a terceira marcada como ênfase, sobre um quadro do vídeo. Só o escolhido toca o movimento do estilo (parado com Reduzir Movimento).
@@ -2820,7 +2824,7 @@ muda, Desfazer ao excluir, estilo padrão, nem "voltar ao estilo"; nenhum mostra
   palavras abaixo de 4,5:1 sobre branco; não muda nada sozinho.
 - **Format › Alignment** leva a legenda para o lado escolhido da área segura (Left, Right), além de alinhar as linhas dentro dela; à mão a legenda só
   sobe e desce, e move **todas** as legendas (a posição é do layout inteiro): enquanto o dedo arrasta, uma etiqueta "All captions" ↕ sobre a
-  legenda diz isso antes de soltar (decorativa, escondida do VoiceOver). **Tudo entrega:** `CaptionControlsDeliverTests` desenha cada família e cada peso dela, cada escolha de Adjust, Animation e Format e
+  legenda diz isso antes de soltar (decorativa, escondida do VoiceOver). **Tudo entrega:** `CaptionControlsDeliverTests` desenha cada família e cada peso dela, cada escolha de Adjust, Animation e Layout e
   confere que o desenho muda.
 - **Animation** (`CaptionMotion`): **In and out** (None, Fade, Pop, Rise: sobe 10 pt enquanto aparece), **Reveal** (Whole line, Word by word; desligado
   com o formato One word, com o motivo) e **Word being said** (None, Color, Box, Sliding box: a caixa desliza de uma palavra à outra em dois estados de
@@ -2933,7 +2937,7 @@ máscara do CapCut/InShot (o iMovie tem um "Split Screen" fixo em 50/50).
   principal só enquanto o apoio aparece, até 0 para ouvir só o apoio, com rampa de 30 ms nas pontas) e **This support** (o som próprio); **Mute
   all supports** cala todas as mídias por cima, cada uma guardando o seu volume. Cada vídeo tem uma faixa de som só: trocar de layout nunca duplica
   imagem nem som. Abaixar o apoio sob a voz automaticamente fica para depois.
-- **Legendas**: continuam desenhadas por cima de tudo e no tempo da fala. **On the seam during the split screen** (Caption style › Format,
+- **Legendas**: continuam desenhadas por cima de tudo e no tempo da fala. **On the seam during the split screen** (Caption style › Layout,
   `SplitScreen.captionsOnSeam`, ligada ao criar a primeira tela dividida, como nos vídeos desse formato) centraliza na emenda as linhas ditas
   enquanto um apoio aparece (cima/baixo; lado a lado não tem emenda na
   horizontal), dentro das margens seguras; o resto fica onde o criador pôs. Com a tela dividida na agulha, a legenda arrastada **gruda na emenda** (a
@@ -2991,7 +2995,7 @@ Tudo fica neste iPhone.
   (tela dividida, janela, tela cheia) ou como clipe na sequência, conforme o modo. Um **logo** entra num toque: janela pequena (20% da largura) no
   canto de cima à direita, dentro da área segura, sobre o vídeo inteiro, transparência mantida (`MediaOverlay.isLogo`); um segundo logo troca a
   imagem do primeiro onde ele está. Entram arquivos por **Add from Photos** e **Add from Files** (PNG de logo, vídeos) sem sair da folha, e
-  **Save to library** na barra de uma mídia escolhida guarda a mídia do vídeo. Segurar um cartão: **Rename**, **Add to favorites**, **Use as a
+  **Save to library** na barra de uma mídia escolhida guarda a mídia do vídeo. **•••** ao lado do nome (sem escolher a mídia) ou segurar um cartão: **Rename**, **Add to favorites**, **Use as a
   logo / Use as a photo**, **Remove from library** (aviso com Undo; "videos that use it keep it" quando algum vídeo usa).
 - **Propriedade dos arquivos**: a biblioteca guarda um **link físico** (hard link) para os bytes que o Cue já tem (a importação, a mídia de
   um vídeo); inserir num vídeo cria outro link na pasta do editor (`EditMediaFiles`). Cada um (biblioteca, cada vídeo, cada kit) tem o seu nome
@@ -3009,7 +3013,7 @@ Tudo fica neste iPhone.
   próprio para a imagem, com o canto) e cópias dos **estilos de texto, legenda e capa** do criador (os salvos, §50, ou os "deste vídeo"; mudar ou
   apagar o estilo salvo depois não muda o kit). Vários kits, para quem trabalha com marcas diferentes. **New kit from this video** começa um com o
   que o vídeo usa (o estilo dos textos, das legendas e da capa, as cores mais usadas sem branco e preto, as fontes e o logo); nada é salvo até
-  **Save kit**. Segurar o cartão: **Edit kit**, **Duplicate**, **Delete kit** (Undo).
+  **Save kit**. **•••** no fim do cartão (sem aplicar o kit) ou segurar: **Edit kit**, **Duplicate**, **Delete kit** (Undo).
 - **Aplicar é explícito** (`BrandKitApplySheet`): tocar o kit abre a lista das partes que ele tem, cada uma dizendo o que muda neste vídeo
   (a linha "Text style · Acme title" diz "On 4 texts · words, timing and place stay"; "Replaces the video’s logo, where it is"; "No cover yet ·
   make one to use it");
@@ -3023,7 +3027,7 @@ Tudo fica neste iPhone.
   o dedo para (0,35 s), então uma escolha é uma mudança e um Desfazer, e aparece na paleta enquanto está em uso. Edições antigas leem igual (o JSON continua texto); uma versão anterior do Cue lê uma cor livre como
   branco. A cor do texto é conteúdo do criador, não um token: o aviso de contraste das legendas (§50) continua valendo.
 - **Fontes próprias** (`CustomFontStore`, `CustomFontInspector`, `CustomFontRegistry`, Application Support/Fonts com `fonts.json`): **Import font**
-  (Arquivos, TTF, OTF e coleções, vários de uma vez) em Text style › Font, Caption style › Adjust e Templates › Brand › Your fonts; a família
+  (Arquivos, TTF, OTF e coleções, vários de uma vez) em Text style › Font, Caption style › Custom e Templates › Brand › Your fonts; a família
   importada aparece primeiro em todo seletor de fonte (texto, legenda, capa, kits), escrita nela mesma. Antes de guardar, o arquivo é lido
   inteiro: precisa ser fonte que o Core Text monta, com tabela 'head', letras (uma fonte de ícones é recusada) e no máximo 40 MB; nome da família,
   estilos e peso vêm da própria fonte (tabela OS/2, e o eixo de peso de uma fonte variável). Uma fonte com o mesmo nome PostScript de uma que o
@@ -3254,7 +3258,7 @@ recusado).
   Templates (`TemplatesPanel`, abas Templates · Kit de marca) na aba deles.
 - **Faixas:** tocar a faixa de texto, de mídia ou de áudio abre a barra dela (`EditorToolMenu`); tocar a de **legendas** ou a de **Blur area** abre
   o mesmo painel que o botão da barra principal abre (o painel de legendas; os rostos do quadro), e um segundo toque fecha (dono, 07/11/2026: uma
-  porta, uma tela). No painel de legendas, **•••** no topo guarda Find and replace, Select lines, Edit by text, Add a line e Delete all (que
+  porta, uma tela). No painel de legendas, **•••** no cabeçalho, antes do ✓, guarda Find and replace, Select lines, Edit by text, Add a line e Delete all (que
   pergunta antes); Add a line também fica no fim da lista. No passo dos rostos, **◐** compara o vídeo inteiro sem as áreas quando já há alguma.
 - **Audio** começa pelo que se acrescenta: Music · Sound effects · Voice-over · Text to speech | Studio Voice · Volume · Voice effects · Extract
   audio (dono, 07/11/2026).
@@ -3757,7 +3761,7 @@ escolher, baixadas só quando usadas.
 - **Biblioteca** (`SupportFiles/FontPacks.json`, 58 famílias do Google Fonts, todas SIL OFL 1.1; gerado por `tools/fonts/make_manifest.py` de
   `tools/fonts/packs.py`, presos a um commit de google/fonts, com SHA-256 e tamanho de cada arquivo): japonês 10, chinês simplificado 7, chinês
   tradicional 5, coreano 8, árabe 10, hindi 9, tailandês 9. O app leva só o manifesto (55 KB), nunca as fontes.
-- **Onde aparece** (`ScriptLibraryOffer`): Text style › Font, Caption style › Adjust e o título da capa mostram a biblioteca de uma escrita só
+- **Onde aparece** (`ScriptLibraryOffer`): Text style › Font, Caption style › Custom e o título da capa mostram a biblioteca de uma escrita só
   quando as palavras sendo estilizadas estão nela, ou quando o idioma da legenda, do roteiro ou da interface a usa; as escritas do texto vêm
   primeiro. Um criador só em idiomas latinos não vê nada (nem seção, nem selo). Cada biblioteca fica depois das famílias latinas: título
   ("Japanese fonts"), chips com amostra na escrita e o nome da família, desenhados na própria família, e a marca de estado: nuvem (baixa ao

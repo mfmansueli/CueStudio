@@ -83,7 +83,7 @@ enum EditorToolbarTool: CaseIterable, Hashable {
         case .editByText: String(localized: "Edit by text")
         case .studioVoice: String(localized: "Studio Voice")
         case .extractAudio: String(localized: "Extract audio")
-        case .format: String(localized: "Format")
+        case .format: String(localized: "Aspect ratio")
         case .adjust: EditorLookTool.adjust.label
         case .skin: EditorLookTool.skin.label
         case .filters: EditorLookTool.filters.label

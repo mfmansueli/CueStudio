@@ -180,12 +180,17 @@ struct MediaLibrarySection: View {
         return Button {
             tap(asset, status: status)
         } label: {
-            LibraryAssetTile(asset: asset, url: brand.library.url(of: asset), status: status, order: order)
+            LibraryAssetTile(asset: asset, url: brand.library.url(of: asset), status: status, order: order, reservesMenu: true)
         }
         .buttonStyle(.cuePress)
         .task(id: asset.id) { await brand.library.checkStatus(of: asset) }
         .contextMenu { menu(asset) }
         .accessibilityIdentifier("edit.library.asset.\(asset.name)")
+        // ••• beside the name, outside the tile's button: it never picks the item (owner, 07/11/2026).
+        .overlay(alignment: .bottomTrailing) {
+            ItemMoreMenu(look: .onCard, identifier: "edit.library.asset.\(asset.name).more") { menu(asset) }
+                .offset(x: 6, y: 4)
+        }
     }
 
     @ViewBuilder

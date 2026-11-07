@@ -33,10 +33,11 @@ enum EditorPanelTab: String, CaseIterable, Identifiable {
         case .color: String(localized: "Color")
         case .motion: String(localized: "Motion")
         case .styles: String(localized: "Styles")
-        // Not the video's format nor the Adjust tool: how caption lines are cut, and the details of their look.
-        case .format: String(inInterfaceLanguage: LocalizedStringResource("captionStyle.format", defaultValue: "Format"))
+        // Caption style's own names, borrowed from the editor where they mean the same (owner, 07/11/2026): where the lines sit
+        // and how they're cut, like the split screen's Layout; the creator's own look, like Text style's Custom.
+        case .format: String(inInterfaceLanguage: LocalizedStringResource("splitScreen.layout", defaultValue: "Layout"))
         case .animation: String(localized: "Animation")
-        case .adjust: String(inInterfaceLanguage: LocalizedStringResource("captionStyle.adjust", defaultValue: "Adjust"))
+        case .adjust: String(inInterfaceLanguage: LocalizedStringResource("textStyle.custom", defaultValue: "Custom"))
         case .layout: String(inInterfaceLanguage: LocalizedStringResource("splitScreen.layout", defaultValue: "Layout"))
         case .framing: String(localized: "Framing")
         case .sound: String(localized: "Sound")
