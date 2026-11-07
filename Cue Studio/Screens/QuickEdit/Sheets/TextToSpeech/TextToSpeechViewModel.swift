@@ -37,6 +37,9 @@ final class TextToSpeechViewModel {
     /// What went wrong the last time, said under the buttons.
     private(set) var problem: String?
 
+    /// The text, voice and speed came back from when the sheet last closed by a swipe.
+    var isRestoredDraft = false
+
     /// The spoken voice-over this replaces; nil adds a new one.
     let replacing: VoiceOverClip?
     /// The take's script without its cues, offered as "Use the script".
@@ -65,6 +68,21 @@ final class TextToSpeechViewModel {
             : languages.sorted().first { $0.hasPrefix(String(wanted.prefix(2))) } ?? languages.sorted().first ?? wanted
         let offered = NarrationVoice.ordered(allVoices.filter { $0.language == language })
         voiceID = offered.contains { $0.id == spoken?.voiceID } ? spoken?.voiceID : offered.first?.id
+    }
+
+    // MARK: - Draft
+
+    /// What the sheet holds now, to keep when it closes by a swipe.
+    var draft: TextToSpeechDraft {
+        TextToSpeechDraft(text: text, language: language, voiceID: voiceID, speed: speed, replacingID: replacing?.id)
+    }
+
+    /// Puts a kept draft back (its voice only if this iPhone still has it).
+    func restore(_ draft: TextToSpeechDraft) {
+        text = draft.text
+        if languages.contains(draft.language) { language = draft.language }
+        if voices.contains(where: { $0.id == draft.voiceID }) { voiceID = draft.voiceID }
+        speed = draft.speed
     }
 
     // MARK: - What's offered

@@ -10,6 +10,9 @@ import SwiftUI
 struct MediaModeCards: View {
     @Binding var selection: MediaInsertMode
 
+    /// The drawing in each card: 16 × 28 pt (was 22 × 38).
+    static let diagramSize = CGSize(width: 16, height: 28)
+
     var body: some View {
         HStack(alignment: .bottom, spacing: 12) {
             group(String(localized: "Overlay · at the same time"), modes: MediaInsertMode.overlays)
@@ -40,14 +43,16 @@ struct MediaModeCards: View {
             Haptics.selection()
             selection = mode
         } label: {
-            VStack(spacing: 6) {
-                MediaLayoutDiagram(shape: .mode(mode), isOn: isOn)
+            VStack(spacing: 4) {
+                // Smaller than before (owner, canvas 2 F14): the drawing stays, the gallery gets the room.
+                MediaLayoutDiagram(shape: .mode(mode), isOn: isOn, size: Self.diagramSize)
                 // Two lines broken between words, never inside one (owner, 02/11/2026: no label is ever cut).
                 WholeWordsLabel(text: mode.label, minimumScale: 0.8)
                     .font(.system(.caption, weight: .semibold))
                     .foregroundStyle(isOn ? Palette.accText : Palette.ink)
             }
-            .frame(maxWidth: .infinity, minHeight: 84)
+            .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget + 18)
+            .padding(.vertical, 4)
             .padding(.horizontal, 4)
             .editorCard(isOn ? .picked : .plain)
             .contentShape(Rectangle())

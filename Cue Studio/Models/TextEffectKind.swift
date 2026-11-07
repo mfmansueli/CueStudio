@@ -5,7 +5,7 @@
 
 import Foundation
 
-/// One of the finished looks a text can wear on top of its type (Text style › Animated): a material, light and depth
+/// One of the finished looks a text can wear on top of its type (Text style › Styles › Animated): a material, light and depth
 /// drawn on the creator's own words, with a way in, a still time to be read and a way out. Each one is drawn by
 /// `TextEffectPainter` and placed by `TextEffectComposer` the same in the preview, at any moment of the timeline and in
 /// the export.

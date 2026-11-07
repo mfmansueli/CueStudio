@@ -147,16 +147,19 @@ final class EditorTaskUITests: XCTestCase {
         let app = EditorApp.open(demo: true)
         EditorApp.tapTool(app, "text")
         EditorApp.tapTool(app, "styleAll")
-        let subtitle = app.staticTexts["edit.panel.subtitle"]
-        XCTAssertTrue(subtitle.exists(within: 5))
-        app.buttons["edit.style.scope.selected"].tap()
-        XCTAssertEqual(subtitle.label, "Only this title changes")
+        // The scope is in the header, in the subtitle's place (canvas 2 R2).
+        let only = app.buttons["edit.style.scope.selected"], all = app.buttons["edit.style.scope.allTexts"]
+        XCTAssertTrue(only.exists(within: 5))
+        only.tap()
+        XCTAssertTrue(only.isSelected)
+        XCTAssertEqual(only.label, "This title")
         let logbook = app.buttons["edit.style.logbook"]
         XCTAssertFalse(logbook.isSelected)
         logbook.tap()
         XCTAssertTrue(logbook.isSelected)
-        app.buttons["edit.style.scope.allTexts"].tap()
-        XCTAssertEqual(subtitle.label, "All 2 texts change together")
+        all.tap()
+        XCTAssertTrue(all.isSelected)
+        XCTAssertEqual(all.label, "All 2 texts")
         logbook.tap()
         XCTAssertTrue(EditorApp.toastSays(app, "Logbook on every text"))
         app.buttons["edit.panel.apply"].tap()

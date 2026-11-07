@@ -42,6 +42,8 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         /// Pauses to review (the Pauses panel), on the video track.
         var pauses: [PauseInput] = []
         var selection: EditorSelection?
+        /// Items lit as picked with it: every text while Text style changes all of them ("All 3 texts", owner, canvas 2 R2).
+        var alsoSelected: Set<UUID> = []
         /// The cut picked to choose its transition (named by the clip that starts there).
         var selectedJoin: UUID?
         var panelIsOpen = false
@@ -423,7 +425,7 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
                 let x = CGFloat(item.span.start) * pps
                 let width = max(4, CGFloat(item.span.duration) * pps - 2)
                 let id = item.id
-                let isSelected = Self.isSelected(kind, item.owner ?? id, selection)
+                let isSelected = Self.isSelected(kind, item.owner ?? id, selection) || input.alsoSelected.contains(id)
                 items.append(Item(
                     kind: kind, id: id,
                     frame: CGRect(x: x, y: lane.y, width: width, height: lane.height),

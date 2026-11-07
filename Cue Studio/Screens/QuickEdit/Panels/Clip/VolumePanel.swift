@@ -132,7 +132,8 @@ struct VolumePanel: View {
         }
         if viewModel.audio.musicLoweringDifferently(from: music) > 0 {
             PanelButton(
-                label: String(localized: "Use on all music"), systemImage: "square.on.square", isCompact: true, identifier: "edit.musicDuckAll"
+                label: String(localized: "Use on all \(viewModel.audio.musicClipCount) music clips"), systemImage: "square.on.square", isCompact: true,
+                identifier: "edit.musicDuckAll"
             ) { viewModel.audio.useLoweringOnAllMusic(from: music.id) }
         }
     }

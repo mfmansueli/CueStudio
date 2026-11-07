@@ -52,7 +52,10 @@ extension AudioViewModel {
         edit.music.filter(\.takesMusicRoom).sorted { $0.start < $1.start }
     }
 
-    /// How many other music clips lower differently from `music`: "Use on all music" shows when there's at least one.
+    /// How many music clips "Use on all 3 music clips" changes.
+    var musicClipCount: Int { musicClips.count }
+
+    /// How many other music clips lower differently from `music`: "Use on all 3 music clips" shows when there's at least one.
     func musicLoweringDifferently(from music: MusicClip) -> Int {
         musicClips.filter { $0.id != music.id && !Self.lowersAlike($0, music) }.count
     }

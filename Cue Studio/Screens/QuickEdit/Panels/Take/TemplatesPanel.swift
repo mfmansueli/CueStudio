@@ -5,9 +5,10 @@
 
 import SwiftUI
 
-/// Templates and the creator's brand kits, in two tabs (`TemplatesPanelSection`), each opened by its own button on the bars.
-/// **Templates**: a whole look for a kind of video (`VideoTemplate`), one card each with what it changes, the one the edit is in
-/// marked; one Undo puts everything back. **Brand**: the creator's brand kits (`BrandKitsSection`).
+/// Templates or the creator's brand kits (`TemplatesPanelSection`): two panels, each opened by its own button on the bars, with
+/// no tabs between them (owner, canvas 2 R3, 07/11/2026: the tabs scrolled away with the content, and the bar already has the
+/// two). **Templates**: a whole look for a kind of video (`VideoTemplate`), one card each with what it changes, the one the edit
+/// is in marked; one Undo puts everything back. **Brand**: the creator's brand kits (`BrandKitsSection`).
 struct TemplatesPanel: View {
     let viewModel: QuickEditViewModel
 
@@ -17,17 +18,14 @@ struct TemplatesPanel: View {
             subtitle: viewModel.panelSubtitle(.templates),
             onApply: { viewModel.closePanel() },
             content: {
-                PanelSegmented(
-                    options: TemplatesPanelSection.allCases.map { PanelOption($0, $0.label, key: $0.rawValue) },
-                    selection: viewModel.templatesSection, identifier: "edit.templates.section"
-                ) { viewModel.templatesSection = $0 }
-                // The tab is the editor's (`templatesSection`), so Templates and Brand kit on a toolbar open straight on theirs.
+                // Which of the two is the editor's (`templatesSection`): the button on the bar that opened it.
                 switch viewModel.templatesSection {
                 case .templates: templates
                 case .brand: BrandKitsSection(viewModel: viewModel)
                 }
             }
         )
+        .accessibilityIdentifier("edit.panel.\(viewModel.templatesSection == .brand ? "brand" : "templates")")
     }
 
     /// Templates: a whole look for a kind of video, in one tap (one Undo).
@@ -43,7 +41,7 @@ struct TemplatesPanel: View {
             ForEach(VideoTemplate.allCases) { template in
                 templateCard(template, isOn: viewModel.appliedVideoTemplate == template)
             }
-            // After the cards, so the first template shows right under the tabs even with large text.
+            // After the cards, so the first template shows right under the header even with large text.
             Text("Captions, titles and motion together · your words stay")
                 .font(.footnote)
                 .foregroundStyle(Palette.ink2)

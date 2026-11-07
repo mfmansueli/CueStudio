@@ -20,7 +20,7 @@ struct BrandKitsSection: View {
             }
             ForEach(brand.kits.kits) { kit in card(kit) }
             PanelButton(label: String(localized: "New kit from this video"), systemImage: "plus", identifier: "edit.brand.newKit") {
-                brand.kitBeingEdited = brand.kitFromThisVideo()
+                brand.edit(brand.kitFromThisVideo())
             }
             Text("Videos keep what a kit put on them · changing a kit never changes a video")
                 .font(.footnote)
@@ -77,7 +77,7 @@ struct BrandKitsSection: View {
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(isOn ? .isSelected : [])
         .accessibilityHint(Text("Choose which parts go on this video. Undo puts it back."))
-        .accessibilityAction(named: Text("Edit kit")) { brand.kitBeingEdited = kit }
+        .accessibilityAction(named: Text("Edit kit")) { brand.edit(kit) }
         .accessibilityAction(named: Text("Delete kit")) { brand.deleteKit(kit.id) }
         .accessibilityIdentifier("edit.brand.kit.\(kit.name)")
         .overlay(alignment: .trailing) {
@@ -88,7 +88,7 @@ struct BrandKitsSection: View {
 
     @ViewBuilder
     private func kitMenu(_ kit: BrandKit) -> some View {
-        Button { brand.kitBeingEdited = kit } label: { Label("Edit kit", systemImage: "pencil") }
+        Button { brand.edit(kit) } label: { Label("Edit kit", systemImage: "pencil") }
         Button { brand.kits.duplicate(kit.id) } label: { Label("Duplicate", systemImage: "plus.square.on.square") }
         Button(role: .destructive) { brand.deleteKit(kit.id) } label: { Label("Delete kit", systemImage: "trash") }
     }

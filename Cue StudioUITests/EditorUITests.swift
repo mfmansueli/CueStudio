@@ -522,14 +522,16 @@ final class EditorUITests: XCTestCase {
 
     // MARK: - Timeline
 
-    /// Templates opens on its tab, apart from the brand kits; a template applies to the whole video, is marked as the one in use
-    /// and comes off with one Undo.
+    /// Templates and the brand kits are two panels, each from its own button with no tab to the other (canvas 2 R3); a template
+    /// applies to the whole video, is marked as the one in use and comes off with one Undo.
     func testTemplatesOpenOnTheirTabApartFromBrandKits() {
         let app = EditorApp.open()
         EditorApp.tapTool(app, "brandKit")
         XCTAssertTrue(app.buttons["edit.brand.newKit"].exists(within: 5))
         XCTAssertFalse(app.buttons["edit.template.boldHook"].exists)
-        app.buttons["edit.templates.section.templates"].tap()
+        XCTAssertFalse(app.buttons["edit.templates.section.templates"].exists, "The brand kits still have a Templates tab")
+        app.buttons["edit.panel.apply"].tap()
+        EditorApp.tapTool(app, "templates")
         let boldHook = app.buttons["edit.template.boldHook"]
         XCTAssertTrue(boldHook.exists(within: 5))
         XCTAssertFalse(app.buttons["edit.brand.newKit"].exists)

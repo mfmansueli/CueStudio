@@ -18,6 +18,9 @@ import SwiftUI
 struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
     let title: String
     let subtitle: String
+    /// A choice in the subtitle's place (Text style's "This title | All 3 texts": what the look changes, always in sight and a
+    /// tap away; owner, canvas 2 R2). Too wide beside the buttons, the header puts them on a row of their own.
+    var subtitleChoice: AnyView?
     @Environment(\.dynamicTypeSize) private var typeSize
     /// VoiceOver lands on the title when the panel opens, so the controls it brought are read from the top.
     @AccessibilityFocusState private var titleIsFocused: Bool
@@ -167,15 +170,23 @@ struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibilityAddTraits(.isHeader)
                 .accessibilityFocused($titleIsFocused)
-            Text(subtitle)
-                .font(.system(.footnote))
-                .foregroundStyle(Palette.ink2)
-                .lineLimit(typeSize.isAccessibilitySize ? 4 : 3)
-                .minimumScaleFactor(0.85)
-                .fixedSize(horizontal: false, vertical: true)
-                .frame(minWidth: 0, idealWidth: 0, maxWidth: .infinity, alignment: .leading)
-                .accessibilityIdentifier("edit.panel.subtitle")
+            if let subtitleChoice {
+                subtitleChoice
+            } else {
+                subtitleText
+            }
         }
+    }
+
+    private var subtitleText: some View {
+        Text(subtitle)
+            .font(.system(.footnote))
+            .foregroundStyle(Palette.ink2)
+            .lineLimit(typeSize.isAccessibilitySize ? 4 : 3)
+            .minimumScaleFactor(0.85)
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(minWidth: 0, idealWidth: 0, maxWidth: .infinity, alignment: .leading)
+            .accessibilityIdentifier("edit.panel.subtitle")
     }
 
     /// Reset, ◐, ▶, expand, the panel's own and ✓, in that order: ✓ never moves when Reset appears.

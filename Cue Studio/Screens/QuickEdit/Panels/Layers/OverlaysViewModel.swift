@@ -28,8 +28,8 @@ final class OverlaysViewModel: EditorPart {
     var recordingSizes: [UUID?: CGSize] = [:]
     /// What Text style's look changes: this text or every text. The words, timing and motion are always the picked text's.
     var textStyleScope: TextStyleScope = .selected
-    /// The section Text style › Custom last showed (Font, Color or Motion): where Custom opens again.
-    var lastTextCustomSection: EditorPanelTab = .font
+    /// What Text style › Styles shows, as it was left in this video.
+    var textStyleFilter: TextStyleFilter = .all
     /// The Text style panel's field takes the keyboard (a text was just added, or Edit was tapped).
     var focusesTextField = false
     /// The text being written in its sheet.

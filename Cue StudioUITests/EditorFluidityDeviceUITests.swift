@@ -764,7 +764,7 @@ final class EditorFluidityDeviceUITests: XCTestCase {
             field.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: current.count))
         }
         field.typeText("3 morning habits")
-        app.buttons["edit.panel.tab.animated"].tap()
+        EditorApp.showTextTab(app, "animated")
         XCTAssertTrue(app.keyboards.firstMatch.isGone(within: 3), "The keyboard stayed")
     }
 

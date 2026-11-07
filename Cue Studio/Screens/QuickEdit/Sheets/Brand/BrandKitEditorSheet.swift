@@ -8,17 +8,35 @@ import SwiftUI
 /// A brand kit, made or changed: its name; its colors (up to six, any color: the palette's or the brand's exact one); its
 /// title and caption fonts (the imported ones first, and Import font); its logo (one of the library's pictures) and corner;
 /// and which of the creator's own styles it keeps: this video's, or one they saved, for texts, captions and the cover.
-/// Nothing is saved until Save; saving never changes a video.
+/// Nothing is saved until Save; saving never changes a video. Closed by a swipe, its changes stay as a draft that comes back the next
+/// time (`BrandViewModel+KitDraft`); Cancel throws them away.
 struct BrandKitEditorSheet: View {
     let viewModel: QuickEditViewModel
-    @State var kit: BrandKit
+    @State private var kit: BrandKit
+    /// How it opened, to tell whether a swipe down leaves changes behind.
+    private let start: BrandKit
+    /// Save or Cancel ended it: nothing to keep.
+    @State private var isEnded = false
 
     @Environment(\.dismiss) private var dismiss
     private var brand: BrandViewModel { viewModel.brand }
 
+    init(viewModel: QuickEditViewModel, kit: BrandKit) {
+        self.viewModel = viewModel
+        _kit = State(initialValue: kit)
+        start = kit
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            SheetHeader(title: brand.kits.kit(kit.id) == nil ? String(localized: "New brand kit") : String(localized: "Edit brand kit"))
+            SheetHeader(
+                title: brand.kits.kit(kit.id) == nil ? String(localized: "New brand kit") : String(localized: "Edit brand kit"),
+                subtitle: brand.kitBeingEditedIsDraft ? String(localized: "Your changes from before are back · Cancel discards them") : nil
+            ) {
+                isEnded = true
+                brand.discardKitChanges()
+                dismiss()
+            }
             ScrollView {
                 VStack(alignment: .leading, spacing: 18) {
                     TextField("Kit name", text: $kit.name)
@@ -37,6 +55,7 @@ struct BrandKitEditorSheet: View {
             }
             .scrollBounceBehavior(.basedOnSize)
             PanelButton(label: String(localized: "Save kit"), isPrimary: true, identifier: "edit.brand.saveKit") {
+                isEnded = true
                 brand.saveKit(kit)
                 dismiss()
             }
@@ -48,7 +67,7 @@ struct BrandKitEditorSheet: View {
         .cueSheetChrome()
         .presentationDetents([.large])
         .presentationDragIndicator(.visible)
-        .onDisappear { brand.kitBeingEdited = nil }
+        .onDisappear { if !isEnded { brand.sheetClosed(on: kit, openedWith: start) } }
     }
 
     // MARK: - Colors

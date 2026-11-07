@@ -247,10 +247,9 @@ final class CreatorWalksUITests: XCTestCase {
 
         EditorApp.tapTool(app, "text")
         EditorApp.tapTool(app, "styleAll")
-        // Custom opens on its Font.
-        let customTab = app.buttons["edit.panel.tab.custom"]
-        waitFor(customTab, "Text style's Custom")
-        customTab.tap()
+        let fontTab = app.buttons["edit.panel.tab.font"]
+        waitFor(fontTab, "Text style's Font")
+        fontTab.tap()
         let importButton = app.buttons["edit.importFont"]
         waitFor(importButton, "Import font")
         importButton.tap()

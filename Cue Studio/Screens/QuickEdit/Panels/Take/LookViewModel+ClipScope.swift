@@ -88,7 +88,7 @@ extension LookViewModel {
     func lookSubtitle(for panel: EditorPanel) -> String {
         // Background says its scope and what is behind the creator; its scope's rule is a note inside the panel.
         if panel == .background { return backgroundSubtitle }
-        if lookClip != nil { return String(localized: "\(clipScope) · the rest stays as it is") }
+        if lookClip != nil { return String(localized: "\(clipScope) · only this clip") }
         // The clips that keep their own say so under the header, with "Use this on all".
         return String(localized: "Whole video")
     }

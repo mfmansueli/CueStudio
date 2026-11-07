@@ -22,17 +22,30 @@ struct TextToSpeechSheet: View {
         String(localized: "tts.voice", defaultValue: "Voice", comment: "Text to speech sheet: the system voice that will speak the text (a narrator), not a writing style.")
     }
 
+    /// How it opens fresh, before a draft comes back: what a swipe down is compared with.
+    private let start: TextToSpeechDraft
+    /// Add or Cancel ended it: nothing to keep.
+    @State private var isEnded = false
+
     init(viewModel: QuickEditViewModel) {
         self.viewModel = viewModel
-        _speech = State(initialValue: viewModel.audio.makeTextToSpeech())
+        let speech = viewModel.audio.makeTextToSpeech()
+        _speech = State(initialValue: speech)
+        start = speech.draft
     }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             SheetHeader(
                 title: speech.replacing == nil ? String(localized: "Text to speech") : String(localized: "Edit spoken text"),
-                subtitle: String(localized: "Spoken by a voice on this iPhone, offline")
-            )
+                subtitle: speech.isRestoredDraft
+                    ? String(localized: "Your text from before is back · Cancel discards it")
+                    : String(localized: "Spoken by a voice on this iPhone, offline")
+            ) {
+                isEnded = true
+                viewModel.audio.textToSpeechDraft = nil
+                dismiss()
+            }
             .padding(.horizontal, 16)
             ScrollView {
                 VStack(alignment: .leading, spacing: 18) {
@@ -54,7 +67,10 @@ struct TextToSpeechSheet: View {
                 .padding(.bottom, 12)
         }
         .padding(.top, 8)
-        .onDisappear { speech.cancel() }
+        .onDisappear {
+            speech.cancel()
+            if !isEnded { viewModel.audio.keepTextToSpeechDraft(speech.draft, opened: start, wasDraft: speech.isRestoredDraft) }
+        }
         .interactiveDismissDisabled(speech.phase == .making)
         .cueSheetChrome()
         .presentationDetents([.large])
@@ -168,6 +184,8 @@ struct TextToSpeechSheet: View {
                     ) {
                         isWriting = false
                         speech.make { narration, fileName, duration in
+                            isEnded = true
+                            viewModel.audio.textToSpeechDraft = nil
                             viewModel.audio.addSpoken(narration, fileName: fileName, duration: duration)
                             dismiss()
                         }

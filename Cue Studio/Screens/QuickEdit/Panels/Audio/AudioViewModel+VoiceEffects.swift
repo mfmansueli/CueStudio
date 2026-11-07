@@ -25,7 +25,7 @@ extension AudioViewModel {
 
     /// The panel's subtitle: where the effect lands, and what the picked one is for ("Voice-over 1 · A machine talking").
     var voiceEffectsSubtitle: String {
-        let use = voiceEffectTarget.flatMap(voiceEffect(of:))?.effect.use ?? String(localized: "a creative effect on the voice")
+        let use = voiceEffectTarget.flatMap(voiceEffect(of:))?.effect.use ?? String(localized: "a voice effect")
         return "\(voiceEffectScope) · \(use)"
     }
 
