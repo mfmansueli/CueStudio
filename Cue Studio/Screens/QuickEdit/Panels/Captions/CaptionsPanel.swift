@@ -55,6 +55,13 @@ struct CaptionsPanel: View {
                 .onAppear {
                     if let id = viewModel.selection?.captionID { scroll(proxy, to: id) }
                 }
+                // Opened for a line's words to emphasize (the caption's Emphasis, Caption style's Choose words to emphasize): the
+                // line, then its words, in sight once its More has opened.
+                .task(id: viewModel.captions.expandedLineID) {
+                    guard let id = viewModel.captions.expandedLineID else { return }
+                    try? await Task.sleep(for: .milliseconds(250))
+                    withAnimation(.easeOut(duration: 0.2)) { proxy.scrollTo(CaptionEmphasisStrip.scrollID(id), anchor: .bottom) }
+                }
             }
         }, footer: {
             // Select's actions stay at hand while the lines scroll.
@@ -139,12 +146,15 @@ struct CaptionsPanel: View {
         .disabled(viewModel.edit.captions.isEmpty)
     }
 
+    /// Style opens Caption style; "‹ Style" after Caption style's Choose words to emphasize goes back to it as it was left.
     private var styleButton: some View {
-        Button {
-            viewModel.panel = .captionStyle
+        let returns = viewModel.captions.styleReturn != nil
+        return Button {
+            if !viewModel.captions.returnToCaptionStyle() { viewModel.panel = .captionStyle }
         } label: {
             HStack(spacing: 5) {
-                Image(systemName: "textformat").font(.editorGlyph(EditorGlyph.chip, weight: .bold))
+                // Back points where back is: left, and right in Arabic.
+                Image(systemName: returns ? "chevron.backward" : "textformat").font(.editorGlyph(EditorGlyph.chip, weight: .bold))
                 Text("Style").font(.system(.footnote, weight: .bold)).lineLimit(1)
             }
             .foregroundStyle(Palette.chipOnInk)
@@ -156,6 +166,7 @@ struct CaptionsPanel: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(returns ? Text("Back to Caption style") : Text("Style"))
         .accessibilityIdentifier("edit.captionsStyleButton")
     }
 

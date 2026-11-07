@@ -59,6 +59,8 @@ final class CaptionToolsUITests: XCTestCase {
         XCTAssertEqual(count.label, "7 selected")
         let emphasis = app.descendants(matching: .any)["edit.captionPicks.emphasis"]
         XCTAssertTrue(emphasis.exists(within: 5))
+        // The action and its reach; Highlight is the word being said's (owner, canvas 2 §7.1).
+        XCTAssertTrue(emphasis.label.contains("Emphasize line"), "Select's whole-line emphasis reads \"\(emphasis.label)\"")
         emphasis.tap()
         XCTAssertTrue(["On", "1"].contains(emphasis.value as? String ?? ""), "Emphasis didn't turn on")
         EditorApp.capture(app, "captions-select")

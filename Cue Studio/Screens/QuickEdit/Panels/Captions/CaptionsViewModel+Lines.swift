@@ -259,10 +259,12 @@ extension CaptionsViewModel {
     }
 
     /// Reset: the style the captions are in, whole (its look, motion, size and place), one undo step; how they are cut and the
-    /// words marked for emphasis stay.
+    /// words marked for emphasis stay. The toast says what came back, with Undo, so Reset's reach is never a guess (owner,
+    /// canvas 2 F2).
     func resetCaptionTheme() {
         guard let current = edit.captionCollection else { return }
         let aspect = edit.aspect
+        let was = (edit.captionCollection, edit.captionPosition, edit.captionAnimation)
         change { snapshot in
             let before = snapshot.captionCollection
             let next = current.restyled(current.theme, full: true)
@@ -271,6 +273,8 @@ extension CaptionsViewModel {
             snapshot.captionPosition = .bottom
             Self.refit(&snapshot, from: before, aspect: aspect)
         }
+        guard (edit.captionCollection, edit.captionPosition, edit.captionAnimation) != was else { return }
+        toast.show(String(localized: "Back to the whole \(current.theme.label) style: look, size and position"), action: undoAction)
     }
 
     var captionSafeMargins: SafeZoneMargins {

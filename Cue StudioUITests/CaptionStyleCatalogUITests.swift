@@ -84,7 +84,8 @@ final class CaptionStyleCatalogUITests: XCTestCase {
         XCTAssertTrue(comic.exists(within: 5), "Comic isn't in Favorites")
     }
 
-    /// Save style asks a name and the style shows in Mine, picked; held, it is deleted, and the toast's Undo brings it back.
+    /// Save style asks a name and the style shows in Mine, picked, before Save style (its gallery's last card); held, it is
+    /// deleted, and the toast's Undo brings it back.
     func testAStyleIsSavedWithANameAndDeletedWithUndo() {
         let app = EditorApp.open(demo: true)
         openCaptionStyle(app)
@@ -103,6 +104,10 @@ final class CaptionStyleCatalogUITests: XCTestCase {
         let saved = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'edit.captionPreset.saved.'")).firstMatch
         XCTAssertTrue(saved.exists(within: 5), "The saved style isn't in Mine")
         XCTAssertTrue(saved.isSelected, "The captions wear the style just saved: it should be marked")
+        XCTAssertTrue(
+            saved.frame.minY < save.frame.minY || (saved.frame.minY == save.frame.minY && saved.frame.minX < save.frame.minX),
+            "Save style isn't the gallery's last card"
+        )
         EditorApp.capture(app, "caption-styles-mine")
         saved.press(forDuration: 1)
         // The card's menu (the editor's own Delete stays in its bar).
@@ -154,9 +159,11 @@ final class CaptionStyleCatalogUITests: XCTestCase {
         XCTAssertTrue(rise.isSelected)
         app.buttons["edit.captionSpoken.glide"].tap()
         XCTAssertTrue(app.buttons["edit.captionSpoken.glide"].isSelected)
-        reveal(app, app.buttons["edit.captionAccent.lavender"])
+        // The highlight's color is in Custom, with the look's other colors (owner, canvas 2 F2).
+        XCTAssertFalse(app.buttons["edit.captionAccent.lavender"].exists, "Animation repeats Custom's highlight color")
         EditorApp.capture(app, "caption-animation")
         tab(app, "adjust")
+        reveal(app, app.buttons["edit.captionAdjustAccent.lavender"])
         let pill = app.buttons["edit.captionBackground.pill"]
         reveal(app, pill)
         pill.tap()
@@ -173,6 +180,69 @@ final class CaptionStyleCatalogUITests: XCTestCase {
         XCTAssertFalse(app.buttons["edit.captionEntry.rise"].isSelected, "The style's own way in didn't come back")
         XCTAssertFalse(app.buttons["edit.captionSpoken.glide"].isSelected, "The style's own word being said didn't come back")
         XCTAssertFalse(app.buttons["edit.captionAnimation.reset"].exists)
+    }
+
+    /// Caption style opens on its styles (owner, canvas 2 F2): Size on one row, the filters, and a row of whole cards in the
+    /// first view with the one the captions wear marked; Save style is the gallery's last card, not on top. Run on the 6.1"
+    /// iPhone and the SE (`CUE_SIMULATOR`).
+    func testCaptionStyleOpensWithARowOfWholeStyles() {
+        let app = EditorApp.open(demo: true)
+        openCaptionStyle(app)
+        XCTAssertTrue(app.buttons["edit.captionStyleSize.1"].exists(within: 5), "No Size in Styles")
+        XCTAssertTrue(app.buttons["edit.captionFilter.all"].isSelected, "Styles doesn't open on All")
+        let panel = app.descendants(matching: .any)["edit.panel.captionStyle"]
+        let content = panel.scrollViews.allElementsBoundByIndex.first { $0.frame.height > 80 && $0.buttons["edit.captionFilter.all"].exists }
+        let view = content?.frame ?? panel.frame
+        let cards = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'edit.captionPreset.'")).allElementsBoundByIndex
+        let whole = cards.filter { $0.frame.minY >= view.minY && $0.frame.maxY <= view.maxY }
+        EditorApp.capture(app, "caption-styles-first-view")
+        XCTAssertGreaterThanOrEqual(whole.count, 3, "Fewer than three whole styles in the first view (\(whole.map(\.identifier)))")
+        XCTAssertTrue(whole.contains { $0.isSelected }, "The style the captions wear isn't marked in the first view")
+        let save = app.buttons["edit.captionStyle.save"]
+        XCTAssertFalse(save.exists && save.frame.maxY <= view.maxY, "Save style is in the first view, before the styles")
+        XCTAssertFalse(app.staticTexts["Mine"].exists && app.staticTexts["Mine"].frame.maxY <= view.maxY, "An empty Mine on top of All")
+    }
+
+    /// Custom › Choose words to emphasize opens the line under the playhead in Captions with its words at hand; ✓ comes back to
+    /// Custom where it was, the playhead where it was (owner, canvas 2 F1).
+    func testChooseWordsToEmphasizeComesBackToTheStyleAtTheSamePoint() {
+        let app = EditorApp.open(demo: true)
+        EditorApp.goToCaption(app, 2)
+        let time = app.staticTexts["edit.timeLabel"]
+        XCTAssertTrue(time.exists(within: 5))
+        let before = time.value as? String
+        openCaptionStyle(app)
+        tab(app, "adjust")
+        XCTAssertTrue(app.buttons["edit.captionFace.preset"].exists(within: 5), "Custom has no font at its top")
+        let choose = app.buttons["edit.captionAdjust.chooseEmphasis"]
+        reveal(app, choose)
+        EditorApp.capture(app, "caption-choose-emphasis-custom")
+        choose.tap()
+
+        XCTAssertTrue(app.descendants(matching: .any)["edit.panel.captions"].exists(within: 5), "Captions didn't open")
+        let strip = app.descendants(matching: .any)["edit.captionEmphasis"]
+        XCTAssertTrue(strip.exists(within: 5), "The line's words to emphasize aren't open")
+        let word = strip.buttons.element(boundBy: 0)
+        XCTAssertTrue(waitFor { word.isHittable }, "The words to emphasize aren't in sight")
+        word.tap()
+        XCTAssertTrue(waitFor { word.isSelected }, "The word isn't marked")
+        XCTAssertEqual(app.buttons["edit.captionsStyleButton"].label, "Back to Caption style")
+        XCTAssertEqual(time.value as? String, before, "The line under the playhead opened: the playhead stays")
+        EditorApp.capture(app, "caption-choose-emphasis")
+
+        app.buttons["edit.panel.apply"].tap()
+        XCTAssertTrue(app.descendants(matching: .any)["edit.panel.captionStyle"].exists(within: 5), "✓ didn't go back to Caption style")
+        XCTAssertTrue(app.buttons["edit.panel.tab.adjust"].isSelected, "Not back on Custom")
+        // Where Custom was left: not at its top (the font is out of sight), and the marked word's color, now where the button
+        // was, in sight without scrolling.
+        XCTAssertTrue(app.buttons["edit.captionEmphasisSize.bigger"].exists(within: 5), "No emphasis size after marking a word")
+        EditorApp.capture(app, "caption-choose-emphasis-back")
+        let color = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'edit.captionEmphasisColor.'")).firstMatch
+        XCTAssertTrue(waitFor { color.isHittable }, "The emphasis color isn't where Choose words to emphasize was")
+        XCTAssertFalse(app.buttons["edit.captionFace.preset"].isHittable, "Custom came back at its top, not where it was")
+        XCTAssertEqual(time.value as? String, before, "The playhead moved")
+        app.buttons["edit.panel.apply"].tap()
+        XCTAssertTrue(app.descendants(matching: .any)["edit.panel.captionStyle"].isGone(within: 5), "✓ didn't close Caption style")
     }
 
     /// A line's More › Emphasis: a word marked stays marked, and Adjust then shows the emphasis color.

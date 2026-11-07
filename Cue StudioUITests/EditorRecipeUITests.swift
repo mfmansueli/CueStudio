@@ -250,8 +250,10 @@ extension EditorRecipeUITests {
         tapButton("edit.captionPosition.bottom")
         tapButton("edit.panel.tab.animation")
         let spoken = tapButton("edit.captionSpoken.color")
-        let yellow = reveal(button("edit.captionAccent.yellow"), in: "captionStyle", sideways: true) && tapButton("edit.captionAccent.yellow")
+        // The highlight's color is in Custom with the look's other colors (owner, canvas 2 F2).
         tapButton("edit.panel.tab.adjust")
+        let yellow = reveal(button("edit.captionAdjustAccent.yellow"), in: "captionStyle", sideways: true)
+            && tapButton("edit.captionAdjustAccent.yellow")
         dump("R1.6-adjust")
         let white = reveal(button("edit.captionTextColor.white"), in: "captionStyle", sideways: true) && tapButton("edit.captionTextColor.white")
         let thick = reveal(button("edit.captionOutline.thick"), in: "captionStyle") && tapButton("edit.captionOutline.thick")
@@ -264,7 +266,7 @@ extension EditorRecipeUITests {
         let place = moveCaption(toHeight: 0.65)
         let done = [phrase, spoken, yellow, white, thick, black].allSatisfy { $0 }
         return "\(done ? "DONE" : "PARTIAL"): Captions › Style › Format Short phrase (\(phrase); one or two lines, no 1–3 word cap: One word or a phrase), "
-            + "Animation › Word being said Color (\(spoken)) + yellow (\(yellow)), Adjust › Text white (\(white)), Outline Thick (\(thick)) Off-black (\(black); no pure black in the palette), "
+            + "Animation › Word being said Color (\(spoken)), Custom › Highlight yellow (\(yellow)), Text white (\(white)), Outline Thick (\(thick)) Off-black (\(black); no pure black in the palette), "
             + "contrast warning \(warning); Position has Top/Middle/Bottom only, then dragged on the preview to \(place)"
     }
 

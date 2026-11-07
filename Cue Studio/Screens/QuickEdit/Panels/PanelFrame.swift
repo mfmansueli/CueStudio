@@ -14,6 +14,8 @@ struct PanelFrame<Fixed: View, Content: View, Footer: View>: View {
     var compare: PanelCompare?
     /// Where the content is kept scrolled to between tabs (`EditorPanelContainer.keptOffset`).
     var keptOffset: Binding<CGFloat>?
+    /// What the content brings to its top when nothing is kept (`EditorPanelContainer.revealID`).
+    var revealID: AnyHashable?
     /// "Preview" in the header (`PanelPlay`).
     var play: PanelPlay?
     /// The panel's own button before ✓ (`EditorPanelContainer.accessory`).
@@ -27,7 +29,7 @@ struct PanelFrame<Fixed: View, Content: View, Footer: View>: View {
             title: viewModel.panelTitle(panel), subtitle: viewModel.panelSubtitle(panel), onReset: onReset ?? viewModel.panelReset(panel),
             compare: compare, play: play, accessory: accessory,
             expansion: panel.isExpandable ? expansion : nil, clearsHomeIndicator: panel.scrollsClearOfHomeIndicator, contentKey: viewModel.panelTab,
-            keptOffset: keptOffset, revealsAdvanced: viewModel.showsAdvanced,
+            keptOffset: keptOffset, revealID: revealID, revealsAdvanced: viewModel.showsAdvanced,
             onApply: viewModel.closePanel, fixed: { keepTheirOwn; fixed }, content: { content }, footer: { footer }
         )
         .accessibilityIdentifier("edit.panel.\(panel.rawValue)")
@@ -65,10 +67,11 @@ extension PanelFrame where Fixed == EmptyView, Footer == EmptyView {
 extension PanelFrame where Footer == EmptyView {
     init(
         viewModel: QuickEditViewModel, panel: EditorPanel, onReset: (() -> Void)? = nil, compare: PanelCompare? = nil,
-        keptOffset: Binding<CGFloat>? = nil, play: PanelPlay? = nil, @ViewBuilder fixed: () -> Fixed, @ViewBuilder content: () -> Content
+        keptOffset: Binding<CGFloat>? = nil, revealID: AnyHashable? = nil, play: PanelPlay? = nil, @ViewBuilder fixed: () -> Fixed,
+        @ViewBuilder content: () -> Content
     ) {
         self.init(
-            viewModel: viewModel, panel: panel, onReset: onReset, compare: compare, keptOffset: keptOffset, play: play, fixed: fixed,
+            viewModel: viewModel, panel: panel, onReset: onReset, compare: compare, keptOffset: keptOffset, revealID: revealID, play: play, fixed: fixed,
             content: content, footer: { EmptyView() }
         )
     }
