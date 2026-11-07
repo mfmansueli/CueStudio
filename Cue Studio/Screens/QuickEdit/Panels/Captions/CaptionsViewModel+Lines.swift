@@ -96,9 +96,7 @@ extension CaptionsViewModel {
         )
         var result = [take]
         for source in edit.sources where edit.timeline.segments.contains(where: { $0.sourceID == source.id }) {
-            let script = source.scriptReference ?? source.takeID
-                .flatMap { id in takes.takes.first { $0.id == id } }
-                .flatMap { $0.captionScript(current: library.script(id: $0.scriptID)) }
+            let script = source.script(takes: takes, library: library)
             let language = edit.captionLanguage.map(SpeechLanguageRequest.language) ?? speechLanguageFor(script)
             result.append(CaptionRecording(
                 source: source.id, url: EditMediaFiles.url(for: source.fileName), script: script?.text ?? "", language: language,

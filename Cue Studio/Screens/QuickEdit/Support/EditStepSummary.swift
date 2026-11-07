@@ -184,7 +184,8 @@ nonisolated struct EditStepSummary: Equatable, Sendable {
             || lookBefore.showsCaptions != lookAfter.showsCaptions {
             return String(localized: "Captions")
         }
-        if before.captionCollection != after.captionCollection || before.captionStyle != after.captionStyle
+        // A new shape brings the captions' margins with it (`LookViewModel.setAspect`): it is the shape that changed.
+        if (before.captionCollection != after.captionCollection && lookBefore.aspect == lookAfter.aspect) || before.captionStyle != after.captionStyle
             || before.captionLook != after.captionLook || before.captionPreset != after.captionPreset
             || before.captionAnimation != after.captionAnimation || before.captionPosition != after.captionPosition
             || before.captionDisplay != after.captionDisplay {

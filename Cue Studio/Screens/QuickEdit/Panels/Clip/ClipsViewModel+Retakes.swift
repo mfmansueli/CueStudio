@@ -36,13 +36,19 @@ extension ClipsViewModel {
         !isMarked(attempt) && group.tries.contains { $0.id != attempt.id && isMarked($0) }
     }
 
-    /// "Keep this one": this try stays, the line's other tries are marked to go. Tapped again, nothing of the line is marked.
+    /// "Keep this one": this try stays, the line's other tries are marked to go. Tapped again, nothing of the line is marked. The
+    /// choice is saved with the edit as an undo step (owner, 07/11/2026): closing Clean up, or the editor, doesn't forget it.
     func keepTry(_ id: UUID, in group: CleanUpRetakeGroup) {
         guard let picked = group.tries.first(where: { $0.id == id }) else { return }
         Haptics.selection()
         let undo = isKeptTry(picked, in: group)
-        for attempt in group.tries {
-            cleanUpMarks[attempt.id] = undo ? false : attempt.id != id
+        let tries = Set(group.tries.map(\.id))
+        for attempt in tries { cleanUpMarks[attempt] = nil }
+        changeEdit { edit in
+            for index in edit.suggestions.indices where tries.contains(edit.suggestions[index].id) {
+                let kept: Bool? = !undo && edit.suggestions[index].id == id ? true : nil
+                edit.suggestions[index].attempt?.kept = kept
+            }
         }
     }
 

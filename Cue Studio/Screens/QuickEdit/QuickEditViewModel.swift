@@ -457,6 +457,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     static func startingEdit(for take: Take) -> TakeEdit {
         var edit = take.edit ?? TakeEdit(sourceDuration: take.duration, aspect: take.aspect)
         if take.edit == nil { edit.captionCollection?.safeMargins = CaptionsViewModel.captionSafeMargins(for: take, aspect: take.aspect) }
+        CaptionSafeArea.repairMargins(of: &edit, for: take)
         edit.captions = edit.captions.map(CaptionRevision.withoutContinuation)
         return edit
     }

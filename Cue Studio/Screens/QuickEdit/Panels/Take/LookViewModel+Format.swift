@@ -20,9 +20,11 @@ extension LookViewModel {
 
     /// Reset in the header: the recording's ratio, Fill, centered, Follow face off, in one undo step.
     func resetFormat() {
-        let recorded = session.take.aspect
+        let take = session.take
+        let recorded = take.aspect
         changeEdit { edit in
             edit.aspect = recorded
+            edit.captionCollection?.safeMargins = CaptionSafeArea.margins(for: take, aspect: recorded)
             edit.cropOffset = 0
             edit.cropFit = .fill
             edit.faceFollow = nil

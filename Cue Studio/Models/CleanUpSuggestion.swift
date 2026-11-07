@@ -49,6 +49,9 @@ nonisolated struct CleanUpSuggestion: Codable, Hashable, Identifiable, Sendable 
         var count: Int
         /// The line of the script they all try, as written there.
         var line: String
+        /// The try the creator kept ("Keep this one"): saved with the edit, so the others stay marked to go when Clean up closes
+        /// and opens again, and undone like any change. Nil: not picked (and every try saved before, 07/11/2026).
+        var kept: Bool?
     }
 
     init(

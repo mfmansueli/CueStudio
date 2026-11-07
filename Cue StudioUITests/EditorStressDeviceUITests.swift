@@ -48,7 +48,9 @@ final class EditorStressDeviceUITests: XCTestCase {
             let preview = app.descendants(matching: .any).matching(NSPredicate(format: "identifier == 'edit.preview' AND enabled == true")).firstMatch
             if preview.exists {
                 let top = preview.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.3))
-                for _ in 0..<4 { top.press(forDuration: 0.02, thenDragTo: top.withOffset(CGVector(dx: 0, dy: 50)), withVelocity: .fast, thenHoldForDuration: 0) }
+                for _ in 0..<4 {
+                    top.press(forDuration: 0.02, thenDragTo: top.withOffset(CGVector(dx: 0, dy: 50)), withVelocity: .fast, thenHoldForDuration: 0)
+                }
                 top.press(forDuration: 0.02, thenDragTo: top.withOffset(CGVector(dx: 0, dy: 260)), withVelocity: .fast, thenHoldForDuration: 0)
                 if exit.exists(within: 3) {
                     let screen = app.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.6))

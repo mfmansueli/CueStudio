@@ -243,9 +243,13 @@ extension LookViewModel {
     // MARK: - Crop
 
     func setAspect(_ aspect: AspectRatio) {
+        let take = session.take
         changeEdit { edit in
             edit.aspect = aspect
             edit.cropOffset = 0
+            // The captions' safe margins are the new shape's: a 9:16 platform's kept on 4:5 or 1:1 put lines where neither the
+            // preview nor the file should (owner, 07/11/2026).
+            edit.captionCollection?.safeMargins = CaptionSafeArea.margins(for: take, aspect: aspect)
         }
     }
 

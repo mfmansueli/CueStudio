@@ -13,6 +13,16 @@ extension ClipsViewModel {
 
     // MARK: - Analysis
 
+    /// The script a recording is heard against and the language it's heard in: the take's own, or a montage's other take's
+    /// (`ClipSource.script`); a video without a script is heard in the take's language.
+    func cleanUpScript(of source: UUID?) -> (script: Script?, language: SpeechLanguageRequest) {
+        guard let source else { return (captionScript, speechLanguage) }
+        guard let script = edit.sources.first(where: { $0.id == source })?.script(takes: takes, library: library) else {
+            return (nil, speechLanguage)
+        }
+        return (script, speechLanguageFor(script))
+    }
+
     /// Starts listening for Clean Up (`analyzeIfNeeded`) unless it already is: opening Pauses, and its Try again.
     func listenForCleanUp() {
         guard !jobs.isRunning(.cleanUp) else { return }
@@ -21,9 +31,9 @@ extension ClipsViewModel {
 
     /// Listens to each recording the edit plays the first time Clean Up opens on it (the take, then a montage's other takes
     /// and videos): loudness for pauses, the transcript (in the Voice Following language, or the script's) for filler words and
-    /// retakes, and the take's script for its lines said more than once. Nothing is removed. A recording that can't be listened
-    /// to leaves the others' suggestions in. What it learned about the take's words is kept (`TakeEdit.cleanUpHearing`), and how
-    /// sure it could be of each recording's pauses (`TakeEdit.pauseHearings`, D16).
+    /// retakes, and each recording's own script for its lines said more than once (`cleanUpScript`). Nothing is removed. A
+    /// recording that can't be listened to leaves the others' suggestions in. What it learned about the take's words is kept
+    /// (`TakeEdit.cleanUpHearing`), and how sure it could be of each recording's pauses (`TakeEdit.pauseHearings`, D16).
     func analyzeIfNeeded() async {
         guard isReady, analysis != .running else { return }
         let pending = edit.recordingsToCleanUp
@@ -42,9 +52,10 @@ extension ClipsViewModel {
             let file: URL? = if let source { urls[source] } else { videoURL }
             guard let url = file else { continue }
             do {
-                // The take's own script finds the lines said more than once; another recording is heard without one.
-                let script = source == nil ? captionScript?.text ?? "" : ""
-                let heard = try await editing.cleanUpFindings(forVideoAt: url, language: speechLanguage, script: script)
+                // Each recording's own script finds its lines said more than once, in its language: the take's, a montage's other
+                // take's (owner, 07/11/2026); a video brought in has none and is heard in the take's language.
+                let (script, language) = cleanUpScript(of: source)
+                let heard = try await editing.cleanUpFindings(forVideoAt: url, language: language, script: script?.text ?? "")
                 found += heard.suggestions.map { suggestion in
                     var mine = suggestion
                     mine.sourceID = source

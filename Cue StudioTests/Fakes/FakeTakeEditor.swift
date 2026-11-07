@@ -97,6 +97,9 @@ final class FakeTakeEditor: TakeEditing {
 
     /// The script Clean Up was given to find the lines said more than once.
     private(set) var cleanUpGivenScript: String?
+    /// The script and language each recording was heard with, by its file.
+    private(set) var cleanUpScripts: [URL: String] = [:]
+    private(set) var cleanUpLanguages: [URL: SpeechLanguageRequest] = [:]
     /// What the silence level heard in a recording, when a test says (a noisy room, D16); the others are heard clearly: `silences`.
     var pauseDetections: [URL: PauseDetection] = [:]
 
@@ -105,6 +108,8 @@ final class FakeTakeEditor: TakeEditing {
         cleanUpVideos.append(url)
         cleanUpLanguage = language
         cleanUpGivenScript = script
+        cleanUpScripts[url] = script
+        cleanUpLanguages[url] = language
         guard let detection = pauseDetections[url] else {
             return CleanUpFindings(
                 suggestions: CleanUpAnalyzer.suggestions(silences: silences, transcript: transcript, script: script),

@@ -180,8 +180,9 @@ final class EditDocument {
         return true
     }
 
-    /// Goes back (or forward) to a step. Suggestions found since keep their place and take the step's decision (and what a
-    /// removal took out, `removedSpan`), or wait for review when the step didn't know them yet.
+    /// Goes back (or forward) to a step. Suggestions found since keep their place and take the step's decision (what a
+    /// removal took out, `removedSpan`, and the try kept of a line, `Attempt.kept`), or wait for review when the step didn't
+    /// know them yet.
     private func restore(_ step: EditSnapshot) {
         let decisions = Dictionary(step.suggestions.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
         var changed = edit
@@ -190,6 +191,7 @@ final class EditDocument {
             var restored = suggestion
             restored.status = decisions[suggestion.id]?.status ?? .pending
             restored.removedSpan = decisions[suggestion.id]?.removedSpan
+            restored.attempt?.kept = decisions[suggestion.id]?.attempt?.kept
             return restored
         }
         edit = changed

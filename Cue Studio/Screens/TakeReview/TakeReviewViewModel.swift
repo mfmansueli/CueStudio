@@ -878,6 +878,7 @@ final class TakeReviewViewModel {
             edit.voiceEnhancement = .off
             edit.enhancesVoice = false
         }
+        CaptionSafeArea.repairMargins(of: &edit, for: take)
         edit.showsCaptions = true
         edit.captionDisplay = edit.captionTranslations.contains { $0.language == exportCaptionDisplay.language } ? exportCaptionDisplay : .original
         return (edit, edit.captions.isEmpty)

@@ -2364,7 +2364,10 @@ Prévia e exportação passam pelo mesmo compositor (`CueVideoCompositor`), ent�
 - **Aspect ratio** (`CropPanel`, F16, dono 07/11/2026): os quatro formatos em blocos baixos (44 pt, o ícone ao lado do nome; empilhados de novo
   quando o nome não cabe ao lado, nos maiores tamanhos de texto; `PanelTiles(isCompact:)`), Framing Fill · Fit e Follow face à vista ao abrir.
   **Reset** no cabeçalho (`LookViewModel+Format`) aparece quando o formato difere de como o vídeo começou e volta à proporção da gravação
-  (`Take.aspect`), Fill, sem deslocamento e Follow face desligado, num passo de desfazer. Quando o recorte deixa menos pixels que a qualidade, uma
+  (`Take.aspect`), Fill, sem deslocamento e Follow face desligado, num passo de desfazer. Trocar o formato (ou o Reset) troca junto as
+  **margens seguras das legendas** (`CaptionSafeArea`): as da plataforma no formato dela, as genéricas nos outros (um vídeo do TikTok em 1:1 fica com
+  a legenda a 7% da borda de baixo, não a 25%), iguais na prévia e no arquivo; um projeto salvo antes com as margens da gravação noutro formato abre
+  com as certas. Quando o recorte deixa menos pixels que a qualidade, uma
   linha sob os blocos diz o arquivo de verdade: **"This format exports at 606×1080 · never enlarged"** (um vídeo deitado de 1080p em 9:16;
   `ExportFrameSize`, a mesma regra da exportação, pela qualidade e o Pro da revisão de onde o editor abriu; sem revisão, nada).
 - **Format › Follow face** (`TakeEdit.faceFollow`, `FaceFollow`, `FollowPace`, `FaceFollowPath`): com Fill e um formato que corta (qualquer um que não
@@ -4064,8 +4067,10 @@ escolha de palavras. Em Pauses ele abre na **fileira de pausas**; "Pauses longer
   cartões de pausa e **Removed**: cada pausa tirada, em cada lugar onde pode voltar ("Pause · 1.2s", "00:04.1", **Put back**).
 - **Words** (`CleanUpWordsTab`): "Ums, uhs and words said twice. Tap one to keep it.", os cartões de hesitação e repetição e as **linhas do
   roteiro ditas mais de uma vez** (`ScriptRetakeDetector`, plano §10): "Said 3 times", a linha, e cada tentativa ("Try 2 of 3") com Listen (toca
-  só ela) e **Keep this one** (marca as outras para sair); nada vem marcado e a última não é escolhida sozinha. Sem roteiro, só repetições
-  seguidas ("This take has no script…"). Avisos: palavras não ouvidas ("Cue couldn't hear the words of this take on this iPhone. Pauses still
+  só ela) e **Keep this one** (marca as outras para sair); nada vem marcado e a última não é escolhida sozinha. A escolha fica **salva no
+  projeto** (`Attempt.kept`): fechar o Clean up ou o editor não a perde, e ela é um passo do Desfazer ("Undid · Clean up"). Numa montagem, cada take
+  é ouvido contra **o seu próprio roteiro**, no idioma dele (`ClipSource.script`); um vídeo trazido do Fotos, sem roteiro, no idioma do take.
+  Sem roteiro, só repetições seguidas ("This take has no script…"). Avisos: palavras não ouvidas ("Cue couldn't hear the words of this take on this iPhone. Pauses still
   work.") e idioma sem hesitações conhecidas ("Ums: English, Portuguese and Spanish. Pauses work in every language."). Removed como em Pauses.
 - **Text** (`CleanUpTextTab`, `CleanUpTextActions`): o Edit by text (§37), com as hesitações sublinhadas (amarelo quando marcadas) e cada pausa como
   uma marca com a duração entre as palavras; tocar numa marca alterna Remove/Keep. Como escolher palavras ("Tap the first word of the part to

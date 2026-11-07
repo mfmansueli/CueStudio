@@ -38,12 +38,16 @@ extension ClipsViewModel {
         cleanUpSuggestions.filter { $0.kind != .pause && $0.status != .removed && !edit.timeline.isRemoved($0) }
     }
 
-    /// Whether a suggestion is marked to go: pauses heard clearly by default, words when Clean Up is sure, never a try at a script
-    /// line; a pause heard over background sound or under a soft voice waits for the creator (`CleanUpSuggestion.isMarkedByDefault`).
+    /// Whether a suggestion is marked to go: pauses heard clearly by default, words when Clean Up is sure, a try at a script line
+    /// only once the creator kept another try of it (`keepTry`); a pause heard over background sound or under a soft voice waits
+    /// for the creator (`CleanUpSuggestion.isMarkedByDefault`).
     func isMarked(_ suggestion: CleanUpSuggestion) -> Bool {
         if let mark = cleanUpMarks[suggestion.id] { return mark }
         guard suggestion.status == .pending else { return false }
-        return suggestion.attempt == nil && suggestion.isMarkedByDefault
+        if let attempt = suggestion.attempt {
+            return edit.suggestions.contains { $0.id != suggestion.id && $0.attempt?.group == attempt.group && $0.attempt?.kept == true }
+        }
+        return suggestion.isMarkedByDefault
     }
 
     func toggleMark(_ id: UUID) {
