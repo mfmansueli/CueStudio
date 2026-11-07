@@ -6,12 +6,11 @@
 import SwiftUI
 
 /// Caption style › Animation, three choices apart: how the captions come in and go out, whether they show whole or word by
-/// word, and how the word being said stands out (with its color). Tapping one plays the current line with it; "Back to
-/// <style>'s look" brings the style back whole. Captions from before the collection keep the one list of reveals they had.
+/// word, and how the word being said stands out (its color is in Custom, with the look's other colors). Tapping one plays the
+/// current line with it; "Back to <style>'s look" brings the style back whole. Captions from before the collection keep the one
+/// list of reveals they had.
 struct CaptionAnimationTab: View {
     @Bindable var viewModel: QuickEditViewModel
-
-    @ScaledMetric(relativeTo: .body) private var swatchDiameter: CGFloat = 34
 
     private var captions: CaptionsViewModel { viewModel.captions }
 
@@ -41,15 +40,14 @@ struct CaptionAnimationTab: View {
                     selection: motion.spoken, identifier: "edit.captionSpoken", onSelect: captions.setCaptionSpokenHighlight
                 )
             }
-            if motion.spoken != .none, let accent = captions.captionAccent {
-                PanelSwatches(
-                    label: String(localized: "Highlight color"), colors: OverlayColor.palette, selection: accent, diameter: swatchDiameter,
-                    reset: viewModel.edit.captionCollection?.accent == nil ? nil : (String(localized: "Style's"), { captions.resetCaptionAccent() }),
-                    identifier: "edit.captionAccent"
-                ) { captions.setCaptionAccent($0) }
-                if !captions.captionHighlightStandsOut {
-                    PanelNote(text: String(localized: "The word being said is the same color as the others: pick another highlight color."), tint: Palette.warnText)
-                }
+            // The highlight's color is one of the look's colors, in Custom with the others (owner, canvas 2 F2): here, only when
+            // it wouldn't show.
+            if motion.spoken != .none, captions.captionAccent != nil, !captions.captionHighlightStandsOut {
+                PanelNote(
+                    text: String(localized: "The word being said is the same color as the others: change Highlight color in Custom."),
+                    tint: Palette.warnText
+                )
+                .accessibilityIdentifier("edit.captionAnimation.highlightHidden")
             }
             if motion.followsWords, captions.linesWithoutWordTiming > 0 {
                 PanelNote(text: String(localized: "\(captions.linesWithoutWordTiming) lines follow the voice approximately."))

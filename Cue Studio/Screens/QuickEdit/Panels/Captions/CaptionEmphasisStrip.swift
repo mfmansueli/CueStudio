@@ -28,8 +28,12 @@ struct CaptionEmphasisStrip: View {
             }
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("edit.captionEmphasis")
+            .id(Self.scrollID(cueID))
         }
     }
+
+    /// What Captions scrolls to when it opens for a line's words to emphasize.
+    static func scrollID(_ cueID: UUID) -> String { "captionEmphasis.\(cueID)" }
 
     private func chip(_ word: String, isMarked: Bool, action: @escaping () -> Void) -> some View {
         Button {

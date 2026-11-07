@@ -5,8 +5,8 @@
 
 import SwiftUI
 
-/// "Save style", first among the creator's styles in Caption style, Text style and Cover: names the look on screen and keeps it
-/// for the next videos.
+/// "Save style" among the creator's styles (the last card of Caption style's gallery; first in Text style and Cover): names the
+/// look on screen and keeps it for the next videos.
 struct PanelSaveStyleCard: View {
     var identifier = "edit.style.saveMine"
     /// The dashed card's size: the gallery's own cards' (Cover's are as tall as the cover's shape).

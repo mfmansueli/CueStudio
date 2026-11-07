@@ -8,9 +8,11 @@ import Foundation
 /// The panels' headers: the title, and the subtitle that says what the panel changes ("This
 /// clip", "Whole video", "Applies to all 8 lines", "Only this title changes").
 extension QuickEditViewModel {
-    /// ✓: applies (everything already shows live) and closes the panel.
+    /// ✓: applies (everything already shows live) and closes the panel; Captions opened by Caption style's "Choose words to
+    /// emphasize" goes back to Caption style as it was left.
     func closePanel() {
         player.pause()
+        if panel == .captions, captions.returnToCaptionStyle() { return }
         panel = nil
     }
 

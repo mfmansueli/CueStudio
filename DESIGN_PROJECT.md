@@ -1607,8 +1607,10 @@ Sistema completo em `NOTIFICATIONS.md`. Na interface:
   tocar outro texto ou legenda ali troca o que o painel estiliza. O vídeo fica no menor tamanho dele e o painel cede o que isso pede, até 330 pt
   (`EditorPanelSize.fullMinimum`, uma fileira inteira de estilos); expandido ou digitando, a timeline sai. O conteúdo para 18 pt acima do Home Indicator (`Metrics.editorStylePanelBottomClearance`) e some em degradê
   (`scrollEdgeEffectStyle(.soft)`).
-- **Abas na largura toda** (Text style: **Styles · Font · Color · Motion**, um nível só, dono, canvas 2 R3; um gráfico: **Style · Motion**; Caption style: Styles · Format · Animation · Adjust, §50), 44 pt, com pelo menos 16 pt entre os nomes (sem esse espaço, rolam de lado); campo e abas
-  fixos, só o resto rola; trocar de aba volta ao topo (`contentKey`), menos Styles do Caption style, que volta onde estava (`keptOffset`). Cada
+- **Abas na largura toda** (Text style: **Styles · Font · Color · Motion**, um nível só, dono, canvas 2 R3; um gráfico: **Style · Motion**; Caption style: Styles · Layout · Animation · Custom, §50), 44 pt, com pelo menos 16 pt entre os nomes (sem esse espaço, rolam de lado); campo e abas
+  fixos, só o resto rola; trocar de aba volta ao topo (`contentKey`), menos Styles do Caption style, que volta onde estava (`keptOffset`) e, sem
+  lugar guardado, abre na seção do estilo que as legendas usam (`revealID`), e Custom do Caption style, que volta onde estava depois de Choose words
+  to emphasize (§50); enquanto o conteúdo se arma, o topo em que ele nasce não apaga o lugar guardado. Cada
   painel volta na aba e com o Advanced como foi deixado neste vídeo (`PanelMemory`, dono, canvas 2 R7); os de um item (Volume, Text, Mask…) por
   item: outro clipe ou texto abre como foi deixado para ele, ou como o painel começa. Um caminho que pede uma aba (Animation pela barra de um
   texto) continua abrindo nela. Em tamanhos de acessibilidade só as abas ficam fixas: o campo rola com o resto. Cores (`PanelSwatches`) de 34 pt, a paleta em linhas (§44), segmentos de 38 pt.
@@ -2045,8 +2047,9 @@ auditoria: `reports/editor-award-checklist.md`.
   linha › Select lines, como a edição em lote do CapCut): cada linha ganha um círculo; tocar põe ou tira. Enquanto escolhe, o painel cresce até
   a altura dos painéis de estilo (`openPanelSize`), no lugar da chave e dos chips fica "N selected", **Select all** / **Deselect all** e **Done**,
   e as ações ficam fixas embaixo da lista (rodapé do painel, como no CapCut, que as mantém à mão enquanto a lista rola; decisão depois de
-  comparar: no topo da lista elas sumiam ao rolar e as linhas mal cabiam): chip **Emphasis** (a linha inteira na cor de destaque, como a palavra
-  dita; em caixa onde a revelação usa caixa; ligado em `accText` sobre `accSoft`), menu **Size** (Regular, Bigger 1,25×, Biggest 1,5×, nunca
+  comparar: no topo da lista elas sumiam ao rolar e as linhas mal cabiam): chip **Emphasize line** (em português **Enfatizar linha**; dono, canvas 2
+  §7.1: o nome diz a ação e o alcance, e "Highlight" fica só com a palavra sendo dita): marca todas as palavras das linhas para ênfase, na cor e no
+  tamanho de ênfase do estilo (§50); ligado em `accText` sobre `accSoft`; o VoiceOver ouve o que faz), menu **Size** (Regular, Bigger 1,25×, Biggest 1,5×, nunca
   menor, para não cair abaixo do tamanho em que as cores foram medidas; dentro do limite da coleção), ‹ › (**Move earlier / Move later**, 0,1 s
   por toque, todas juntas, até onde a que tem menos espaço pode ir: dentro do seu clipe e sem encostar numa linha não escolhida; "The lines
   can’t move further") e a lixeira ("N lines deleted" · Undo). Cada ação
@@ -2853,8 +2856,14 @@ de uma vez. Trocar o corte, o preset, a fonte ou o tamanho nunca pede outra tran
 - **Text per caption** (em português **Texto por legenda**; Caption style › Layout; `CaptionFormat` em `CaptionSettings.format`): **One word** (só a palavra que está sendo dita, trocada
   pela seguinte, no mesmo lugar), **Short phrase** (um grupo que faz sentido, numa linha; a segunda só para uma palavra não ficar sozinha; o padrão) e **Two lines** (blocos
   de até duas linhas, quebradas por igual). Legendas novas nascem em Short phrase, ou no formato do My style salvo. Uma edição de antes dos formatos fica
-  como era ("Format · as they were made", nada marcado) até alguém escolher um: escolher corta as mesmas palavras de novo, num passo de desfazer, com o
+  como era ("Format · as they were made", nada marcado) até alguém escolher um: escolher corta as mesmas palavras de novo, num passo de desfazer, com
   o Undo da barra do player (sem toast: a prévia já mostra; o VoiceOver ouve "Captions format: …").
+- **O nome cabe nos 20 idiomas** (o app não tem finlandês; `CaptionLayoutLabelFitTests` mede com as fontes do painel na largura do iPhone SE,
+  343 pt): "Text per caption" fica numa linha em todos, do coreano "자막당 글자" (69 pt) ao italiano "Testo per sottotitolo" (145 pt) no tamanho padrão
+  e até 193 pt (it, th) no maior antes dos de acessibilidade. No padrão, o nome e "as they were made" dividem a linha em todos (o francês, o mais
+  longo, usa 307 de 343 pt); no maior, em de, fr, it, nl e tr o detalhe quebra em duas linhas à direita (só aparece numa edição de antes dos
+  formatos). As três escolhas cabem inteiras no seu terço (110 pt; a maior no padrão, "Phrase courte", 89 pt); no maior, as de duas palavras
+  quebram entre as palavras, nunca no meio de uma.
 - **Medido como o desenho mede** (`CaptionBlocking`, `CaptionCollectionRenderer.measure`): fonte, peso, tamanho, maiúsculas, espaçamento entre letras, o
   contorno e a sobra das margens e da caixa, no formato do vídeo. Um bloco termina no fim de uma frase ("Dr." e iniciais não contam) ou numa pausa de
   0,6 s; uma frase curta gosta de terminar numa vírgula ou numa pausa de 0,3 s; nunca termina numa palavra que se apoia na seguinte ("the", "de", "and",
@@ -2899,10 +2908,14 @@ Um estilo de legenda tem duas metades que o Cue trata separadas: o **look** (o e
 estilo troca, e o **layout** (tamanho, posição, largura, alinhamento, formato), que fica quando o estilo muda (`CaptionSettings.restyled`). Comparado
 com CapCut, Captions, Submagic, Edits, Descript e VEED (pesquisa de 24/10): nenhum documenta o que acontece com vídeos já feitos quando um estilo salvo
 muda, Desfazer ao excluir, estilo padrão, nem "voltar ao estilo"; nenhum mostra os cartões com as palavras do próprio vídeo.
-- **Caption style em quatro abas** (`EditorPanelTab.captionStyle`): **Styles** (o catálogo e os estilos do criador), **Layout** (Text per caption, Position, Size,
-  Width, Alignment: o que fica quando o estilo muda), **Animation** (entrada e saída, revelação, a palavra sendo dita e a cor do destaque) e **Custom**
-  (em português **Personalizar**, como no Text style: os detalhes do look sobre qualquer estilo; dono 07/11/2026). O painel cresce como antes, o vídeo fica à vista e cada escolha toca a linha atual.
-- **Size no topo de Styles** (S · M · L · XL, o mesmo de Layout): é o que quase todo criador ajusta logo depois do estilo. Nos estilos do catálogo o
+- **Caption style em quatro abas** (`EditorPanelTab.captionStyle`): **Styles** (o catálogo e os estilos do criador), **Layout** (Text per caption, uma
+  palavra por legenda incluída, Position, Size, Width, Alignment: o que fica quando o estilo muda), **Animation** (entrada e saída, palavra por palavra e
+  como a palavra sendo dita se destaca) e **Custom** (em português **Personalizar**, como no Text style: os detalhes do look sobre qualquer estilo, as cores
+  todas, a do destaque incluída, e Choose words to emphasize; dono 07/11/2026 e canvas 2 F2). O painel cresce como antes, o vídeo fica à vista e cada
+  escolha toca a linha atual.
+- **Size em Styles, numa linha** ("Size" e S · M · L · XL lado a lado, o mesmo de Layout, onde fica o ajuste com o resto do layout; com os tamanhos de
+  acessibilidade, o nome em cima): é o que quase todo criador ajusta logo depois do estilo, e numa linha não tira os estilos da primeira vista (dono,
+  canvas 2 F2). Nos estilos do catálogo o
   tamanho escala **a legenda inteira**: a largura máxima da linha cresce e encolhe com a letra (`widthScalesWithSize`), as mesmas palavras ficam em cada
   linha e a legenda ocupa mais ou menos tela, até a área segura; nas leituras antigas, só a letra muda, como era.
 - **Modelos de vídeo** (Templates) usam o catálogo: o visual do modelo vira mudanças sobre o estilo e o jeito de mostrar as palavras vira o
@@ -2910,8 +2923,11 @@ muda, Desfazer ao excluir, estilo padrão, nem "voltar ao estilo"; nenhum mostra
 - **Um cartão marcado, nunca dois:** o último tocado ou salvo, senão o estilo salvo que o vídeo usa (`savedStyleID`), senão o do catálogo com o mesmo look.
 - **Styles:** filtros **All · Favorites · Mine · Cue · Essentials · Impact · Editorial · Colorful** (`CaptionCatalogFilter`; "Cue" a mais que o pedido, senão
   os quatro do Cue só apareceriam em All), lembrado entre vídeos (`TextStyleStoring.captionCatalogFilter`); a rolagem volta onde estava ao voltar de outra
-  aba. Em All: o cartão **This video** (quando nenhum estilo é o das legendas: um ajuste, um texto copiado, um estilo de antes do catálogo), **Mine** com
-  "Save style" primeiro, e os 20 por grupo. O cartão escolhido tem anel amarelo **e** ✓ (não só cor), o favorito ★, o padrão "Default" embaixo do nome; o VoiceOver
+  aba. **Abre nos estilos, com o atual marcado** (dono, canvas 2 F2): a primeira vista tem Size, os filtros e uma fileira de cartões inteiros; quando o
+  estilo das legendas está num grupo depois do primeiro, Styles abre com esse grupo no topo (`captionRevealedSection`). Em All: o cartão **This video**
+  (quando nenhum estilo é o das legendas: um ajuste, um texto copiado, um estilo de antes do catálogo), **Mine** só quando o criador tem um estilo, e os
+  20 por grupo. **Save style é o último cartão da galeria:** de Mine, ou, sem Mine, do último grupo de All (Colorful); no filtro Mine também é o
+  último (`CaptionCardSection.endsWithSave`). O cartão escolhido tem anel amarelo **e** ✓ (não só cor), o favorito ★, o padrão "Default" embaixo do nome; o VoiceOver
   lê nome, o que o estilo é (`CaptionTheme.summary`), as marcas e "Selected". **•••** no canto de baixo da imagem, com a amostra desenhada acima dele, sem
   nunca cobrir as palavras (dono, canvas 2 F3; `ItemMoreMenu`, em todo cartão, fora
   do botão do cartão: abre o menu sem escolher o estilo; dono 07/11/2026), segurar ou as ações do VoiceOver abrem o mesmo menu: Add to favorites, Use for
@@ -2921,7 +2937,11 @@ muda, Desfazer ao excluir, estilo padrão, nem "voltar ao estilo"; nenhum mostra
   do próprio vídeo** (até quatro da linha na agulha quando o painel abre; sem legendas, uma frase traduzida no idioma das legendas), a palavra dita
   acesa e a terceira marcada como ênfase, sobre um quadro do vídeo. Só o escolhido toca o movimento do estilo (parado com Reduzir Movimento).
 - **Trocar de estilo** troca o look e o movimento e mantém tamanho, posição, largura, alinhamento, formato e as palavras marcadas; uma nota diz "Your
-  size, position and format stayed." com **Use <estilo>'s size and position** (o estilo inteiro, um Desfazer). Reset no cabeçalho põe o estilo inteiro.
+  size, position and format stayed." com **Use <estilo>'s size and position** (o estilo inteiro, um Desfazer).
+- **Cada volta diz o seu alcance** (dono, canvas 2 F2): **Reset** no cabeçalho põe o estilo inteiro (look, movimento, tamanho, posição, largura e
+  alinhamento; Text per caption e as palavras marcadas ficam), e o aviso diz "Back to the whole Cue style: look, size and position" com Undo (nada a
+  dizer quando nada mudou); **Back to <estilo>'s look** (Custom e Animation) só o look; **Style's color** ao lado de uma cor, só aquela cor;
+  **Use <estilo>'s size and position**, só o layout do estilo escolhido.
 - **Catálogo de 20** (`CaptionStyleSpec+Catalog`, leitura 3; nomes sem marcas): Cue (Cue, Glide, Spotlight, Reveal), Essentials (Clean, Dark box,
   Outline, Band), Impact (Condensed, Bold, Comic, Punch), Editorial (Serif, Paper, Interview, Mono), Colorful (Violet, Light pill, Coral, Cyan night).
   Cada um é uma receita inteira (família, maiúsculas, fundo, palavra dita, entrada; dois quaisquer diferem em pelo menos duas dessas,
@@ -2939,25 +2959,32 @@ muda, Desfazer ao excluir, estilo padrão, nem "voltar ao estilo"; nenhum mostra
   confere que o desenho muda.
 - **Animation** (`CaptionMotion`): **In and out** (None, Fade, Pop, Rise: sobe 10 pt enquanto aparece), **Reveal** (Whole line, Word by word; desligado
   com o formato One word, com o motivo) e **Word being said** (None, Color, Box, Sliding box: a caixa desliza de uma palavra à outra em dois estados de
-  30 ms, e desliza também depois de um respiro curto, Pop: a palavra cresce até 12% passando um pouco antes de assentar, em três estados). Caixa e pop
+  30 ms, e desliza também depois de um respiro curto, Pop: a palavra cresce até 12% passando um pouco antes de assentar, em três estados). A cor do
+  destaque fica em Custom, com as outras cores; Animation só avisa, em `warnText`, quando a palavra dita teria a cor das outras ("…change Highlight color
+  in Custom"). Caixa e pop
   são desenhados por cima, a diagramação nunca se mexe; prévia e exportação tocam os mesmos estados. A entrada e a saída correm por todos os estados
   da linha, contadas do começo e até o fim dela (`FrameOverlay.entryStart`, `exitEnd`): um pop de 45 ms na primeira palavra não corta o fade. Um estilo com pop deixa espaço a mais entre as
   palavras (`wordSpacing`, 0,22 do tamanho da letra, também na medição que corta as linhas) e a palavra cresce só no espaço que a linha tem, mais para o
   lado livre, guardando quase um espaço até a vizinha e o contorno dela (`popRoom`): nunca encosta. Edições de antes de `motion` tocam `captionAnimation` como sempre e mostram nas três escolhas o
   que tocam; `captionAnimation` continua gravado com o mais próximo, para versões anteriores.
-- **Adjust** (`CaptionAdjustments`, cada campo nil até mudar): fonte (Style's font + as 15), peso (só os que a família tem; some com um), Case (Aa · AA ·
-  aa, com o idioma da linha: turco "İ" e "ı"), Text color e, com a palavra dita acesa, Highlight color ao lado (também em Animation; um aviso quando é a
+- **Custom** (`.adjust`, `CaptionAdjustments`, cada campo nil até mudar): fonte (Style's font + as 15), peso (só os que a família tem; some com um), Case (Aa · AA ·
+  aa, com o idioma da linha: turco "İ" e "ı"), Text color e, com a palavra dita acesa, Highlight color ao lado (só aqui; um aviso quando é a
   cor das outras palavras e o destaque não apareceria), Background (None, Box, Lines, Band, Pill, com cor e opacidade de 30 a 100%), Outline (None,
-  Thin, Thick, com cor), Shadow (None, Soft, Halo, Glow); Emphasis color e Emphasis size quando há palavra marcada (senão, onde marcar); Advanced: Letter
-  spacing. Cada cor volta à do estilo por "Style's". **Back to <estilo>'s look** (em Adjust e em Animation) põe o estilo de volta inteiro, como o
+  Thin, Thick, com cor), Shadow (None, Soft, Halo, Glow); Emphasis color e Emphasis size quando há palavra marcada, e **Choose words to emphasize**
+  (abaixo); Advanced: Letter spacing. Cada cor volta à do estilo por **Style's color**. **Back to <estilo>'s look** (em Custom e em Animation) põe o estilo de volta inteiro, como o
   cartão dele mostra, num Desfazer: fonte, mudanças, cor do destaque e movimento; tamanho, posição, largura, alinhamento e formato ficam. Mudar a cor do
   destaque ou o movimento conta como mudança do look ("This video" no lugar do cartão), como mudar a fonte.
 - **Ênfase por palavra** (`CaptionCue.emphasis`, os índices das palavras; gravado só quando há): Caption › More › **Emphasis** (as palavras em chips, um
-  toque marca, um Desfazer cada; mais de duas na linha, uma nota) e Select › Emphasis (todas as palavras das linhas escolhidas). Fica na cor e no tamanho
+  toque marca, um Desfazer cada; mais de duas na linha, uma nota) e Select › **Emphasize line** (todas as palavras das linhas escolhidas). Fica na cor e no tamanho
   de ênfase do estilo (1 · 1,15 · 1,3) enquanto a linha aparece, ao contrário da palavra dita; entra na medição e no corte das linhas
   (`CaptionBlocking`, `CaptionLineSizes`) e sobrevive a correções (`WordAlignment`), Split, Join, formatos e cortes do vídeo (a marca segue a palavra que
   fica). Marcar não corta as linhas de novo (a linha aberta continua a mesma): o desenho dá à palavra maior o seu lugar, e o próximo corte (um formato,
   um tamanho, um estilo) a mede. Traduções não herdam a ênfase.
+- **Choose words to emphasize** (Caption style › Custom, em português "Escolher palavras para enfatizar"; dono, canvas 2 F1;
+  `CaptionsViewModel+EmphasisTrip`): abre Captions na linha sob a agulha (a um quadro do início dela já conta; sem linha ali, na próxima, e a agulha vai até ela), escolhida e com o More
+  aberto, rolado até as palavras (marcar uma palavra só leva a agulha à linha quando ela não está nela). O Style da fileira de cima vira **‹ Style** ("Back to Caption style" no VoiceOver); ele ou ✓ voltam ao Caption style
+  na aba Custom, rolado onde estava, com a agulha onde estava e o que estava escolhido escolhido de novo; o próximo ✓ fecha. Sair das Legendas por outro
+  caminho (outra ferramenta, a faixa) só sai. Sem linhas, o botão não aparece.
 - **Estilos salvos** (`StyleLibrary`: nome, favoritos e padrão; o mesmo para legendas, textos e capas, `TextStyleStoring`): Save style pede o nome
   ("My style", "My style 2"…), Rename, Update with this look, Save a copy as mine, Add to favorites, Use for new videos/texts/covers (um preset ou um
   salvo; legendas novas num vídeo nunca estilizado nascem nele inteiro, textos novos num vídeo sem estilo próprio, capas novas), Delete com **Undo** no
@@ -2973,7 +3000,10 @@ muda, Desfazer ao excluir, estilo padrão, nem "voltar ao estilo"; nenhum mostra
 - **Testes:** `LegacyCaptionLookTests`, `CaptionCatalogTests`, `CaptionCatalogContrastTests`, `CaptionStyleFindingsTests`, `QuickEditCaptionStyleLibraryTests`,
   `CaptionStyleCopyTests`, `QuickEditCaptionStyleCopyTests`, `QuickEditCaptionPicksTests`, `CoverStudioViewModelTests`, `QuickCreatorViewModelTests`,
   `CaptionControlsDeliverTests`, `CaptionReviewFixesTests` (o que a revisão independente achou), `CaptionMotionCostTests`,
-  `CaptionStyleCatalogUITests` (filtro, salvar e apagar com Undo, tamanho mantido, Animation e Adjust, ênfase), `TextStyleUITests`; capturas opt-in
+  `QuickEditCaptionStyleGalleryTests` (sem Mine vazio, Save style no fim, seção do estilo usado, Choose words to emphasize e a volta, o aviso do Reset),
+  `CaptionLayoutLabelFitTests` (Text per caption nos 20 idiomas),
+  `CaptionStyleCatalogUITests` (filtro, salvar e apagar com Undo, tamanho mantido, Animation e Custom, ênfase, primeira vista com estilos inteiros,
+  Choose words to emphasize de ida e volta), `CaptionToolsUITests` (Emphasize line), `TextStyleUITests`; capturas opt-in
   `CaptionCatalogCaptureTests` (`TEST_RUNNER_CUE_CAPTION_CATALOG`).
 
 ## 51. Tela dividida: o vídeo principal e os apoios ao mesmo tempo (Fase 4 do refinamento, 25 de outubro de 2026; pedido do dono)
@@ -3332,7 +3362,7 @@ keyframes; o Cue faz cada uma dessas coisas direto. Plano aprovado pelo dono: ht
     **Edit** perdeu o Advanced e ganhou **Opacity** (10–100%, `MediaOverlay.opacity`, multiplicada pela dos keyframes).
   - **Clipe:** Split · Speed · **Volume** · Mute · Zoom… (o volume de cada clipe de uma montagem volta à tela); a ordem inteira está em §55.
   - **Legenda:** Edit · **Style** · Split · Join next · **Emphasis** · Delete (dono, canvas 2 N2, 07/11: Style logo depois de Edit; Emphasis abre a
-    linha com o More aberto, nas palavras a destacar).
+    linha com o More aberto e rola até as palavras a destacar).
   - Split de uma mídia usa o mesmo ícone do Split do clipe; em inglês, Blur area usa "Track" como o resto do app (em português, "Seguir").
 - **Áreas pequenas medidas no iPhone 15 Pro** (`BlurTrackingDeviceTests`, 26/10, na take do dono): ovais desenhadas sobre o nariz (227×269 px),
   um olho (189×58 px) e a boca (343×160 px), seguidas pelo Vision e conferidas em cada um dos 882 quadros contra os pontos do rosto que o Vision

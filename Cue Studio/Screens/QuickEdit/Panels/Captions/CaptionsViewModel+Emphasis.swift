@@ -23,7 +23,8 @@ extension CaptionsViewModel {
     /// Emphasis can be marked: the captions are drawn by the collection.
     var canMarkCaptionEmphasis: Bool { edit.captionCollection != nil }
 
-    /// Marks or unmarks the line's word at `index`, then shows the line.
+    /// Marks or unmarks the line's word at `index`, then shows the line: the playhead goes to it unless it is already on it
+    /// (Choose words to emphasize opens the line under the playhead, and the way back puts the playhead where it was).
     func toggleCaptionEmphasis(_ cueID: UUID, word index: Int) {
         guard isReady, canMarkCaptionEmphasis else { return }
         change { snapshot in
@@ -32,7 +33,7 @@ extension CaptionsViewModel {
             snapshot.captions = lines
             Self.convertCopiedLook(&snapshot)
         }
-        if let span = editedSpan(ofCaption: cueID) {
+        if let span = editedSpan(ofCaption: cueID), !(span.start <= player.currentTime && player.currentTime < span.end) {
             player.pause()
             player.seek(to: span.start + 0.05)
         }

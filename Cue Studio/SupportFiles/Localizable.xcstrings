@@ -16811,6 +16811,244 @@
         }
       }
     },
+    "Back to the whole %@ style: look, size and position" : {
+      "comment" : "Toast after Reset in Caption style's header (with Undo): what came back. %@ is the style's name (e.g. 'Cue', 'Violet').",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "العودة إلى نمط %@ كاملًا: الشكل والحجم والموضع"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tilbage til hele stilen %@: udseende, størrelse og placering"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zurück zum ganzen Stil %@: Aussehen, Größe und Position"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De vuelta al estilo %@ completo: aspecto, tamaño y posición"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retour au style %@ complet : apparence, taille et position"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "पूरा %@ स्टाइल वापस: लुक, साइज़ और जगह"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kembali ke seluruh gaya %@: tampilan, ukuran, dan posisi"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Di nuovo lo stile %@ completo: aspetto, dimensione e posizione"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@スタイルをすべて戻しました：見た目、サイズ、位置"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 스타일 전체로 되돌림: 모양, 크기, 위치"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tilbake til hele stilen %@: utseende, størrelse og plassering"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terug naar de hele stijl %@: uiterlijk, grootte en positie"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De volta ao estilo %@ inteiro: visual, tamanho e posição"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tillbaka till hela stilen %@: utseende, storlek och position"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "กลับไปใช้สไตล์ %@ ทั้งหมด: ลุค ขนาด และตำแหน่ง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ stilinin tamamına dönüldü: görünüm, boyut ve konum"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trở lại toàn bộ kiểu %@: giao diện, kích thước và vị trí"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已恢复完整的“%@”样式：外观、大小和位置"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已恢復完整的「%@」風格：外觀、大小和位置"
+          }
+        }
+      }
+    },
+    "Back to Caption style" : {
+      "comment" : "VoiceOver label of Captions' Style chip after Caption style › Custom › Choose words to emphasize opened Captions: goes back to Caption style as it was left. 'Caption style' is the panel's name: use its translation.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "العودة إلى نمط الترجمة النصية"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tilbage til Undertekststil"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zurück zu Untertitelstil"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volver a Estilo de subtítulos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Revenir à Style des sous-titres"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कैप्शन स्टाइल पर वापस जाएँ"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kembali ke Gaya teks"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Torna a Stile dei sottotitoli"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "字幕のスタイルに戻る"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "자막 스타일로 돌아가기"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tilbake til Undertekststil"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terug naar Ondertitelstijl"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voltar ao Estilo das legendas"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tillbaka till Undertextstil"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "กลับไปที่สไตล์คำบรรยาย"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Altyazı stiline dön"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quay lại Kiểu phụ đề"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "返回字幕样式"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "返回字幕風格"
+          }
+        }
+      }
+    },
     "Barber" : {
       "comment" : "What kind of creator are you? (a chip in a long searchable list): a barber showing cuts and grooming tips to bring clients to the shop",
       "localizations" : {
@@ -24899,6 +25137,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "最多選 3 個，請用心選：AI 會依此為你寫想法和腳本。"
+          }
+        }
+      }
+    },
+    "Choose words to emphasize" : {
+      "comment" : "Button in Caption style › Custom: opens the caption line under the playhead in Captions to pick the words that stay emphasized. Same word family as 'Emphasis'; never the word for 'Highlight'.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اختر كلمات لإبرازها"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vælg ord at betone"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wörter zum Betonen wählen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elegir palabras para enfatizar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisir les mots à mettre en avant"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ज़ोर देने के लिए शब्द चुनें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pilih kata untuk ditekankan"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scegli le parole da enfatizzare"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "強調する単語を選ぶ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "강조할 단어 선택"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Velg ord som skal betones"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Woorden kiezen voor nadruk"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolher palavras para enfatizar"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Välj ord att betona"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เลือกคำที่จะเน้น"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vurgulanacak kelimeleri seç"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chọn từ để nhấn mạnh"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择要强调的词"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選擇要強調的字詞"
           }
         }
       }
@@ -42060,6 +42417,125 @@
         }
       }
     },
+    "Emphasize line" : {
+      "comment" : "Captions › Select: switch that marks every word of the picked lines for emphasis (the emphasis color and size). A verb + 'line': the action and its reach. Use the same word family as 'Emphasis'; never the word for 'Highlight' (that is the word being said). Portuguese 'Enfatizar linha' (owner).",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إبراز السطر"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Betoning af linje"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeile betonen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enfatizar línea"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mettre la ligne en avant"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "लाइन पर ज़ोर दें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tekankan baris"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enfatizza riga"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "行を強調"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "줄 강조"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Betoning av linje"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regel benadrukken"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enfatizar linha"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Betona raden"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เน้นบรรทัด"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Satırı vurgula"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nhấn mạnh dòng"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "强调整行"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "強調整行"
+          }
+        }
+      }
+    },
     "Engineer" : {
       "comment" : "What kind of creator are you? (a chip in a long searchable list): an engineer who explains how things are built and work",
       "localizations" : {
@@ -43127,6 +43603,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "所有分割畫面"
+          }
+        }
+      }
+    },
+    "Every word of the line in the emphasis color and size" : {
+      "comment" : "VoiceOver hint of Captions › Select › Emphasize line: what it does. Same words as 'Emphasis color' and 'Emphasis size'.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "كل كلمات السطر بلون الإبراز وحجمه"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle ord i linjen i betoningsfarven og -størrelsen"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle Wörter der Zeile in Betonungsfarbe und -größe"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todas las palabras de la línea con el color y el tamaño del énfasis"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tous les mots de la ligne dans la couleur et la taille de mise en avant"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "लाइन के सभी शब्द ज़ोर के रंग और साइज़ में"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Semua kata di baris dengan warna dan ukuran penekanan"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tutte le parole della riga nel colore e nella dimensione dell’enfasi"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "行のすべての単語を強調色とサイズで"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "줄의 모든 단어를 강조 색상과 크기로"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle ordene i linjen i betoningsfargen og -størrelsen"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle woorden van de regel in de nadrukkleur en -grootte"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todas as palavras da linha na cor e no tamanho da ênfase"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alla ord på raden i betoningsfärgen och -storleken"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ทุกคำในบรรทัดเป็นสีและขนาดคำเน้น"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Satırdaki tüm kelimeler vurgu renginde ve boyutunda"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mọi từ trong dòng theo màu và cỡ nhấn mạnh"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "整行每个词都使用强调颜色和大小"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "整行每個字詞都使用強調顏色和大小"
           }
         }
       }
@@ -81754,6 +82349,125 @@
         }
       }
     },
+    "Opens the line under the playhead in Captions" : {
+      "comment" : "VoiceOver hint of Caption style › Custom › Choose words to emphasize. 'Captions' is the panel's name on screen: use its translation.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يفتح السطر الموجود تحت رأس التشغيل في الترجمة النصية"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Åbner linjen ved afspilningsmarkøren i Undertekster"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffnet die Zeile an der Abspielposition in Untertitel"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre la línea del cursor en Subtítulos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvre la ligne sous la tête de lecture dans Sous-titres"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कैप्शन में प्लेहेड के नीचे वाली लाइन खोलता है"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Membuka baris di playhead di Teks"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apre la riga all’indicatore in Sottotitoli"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "字幕で再生ヘッドの位置の行を開きます"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "자막에서 재생 헤드 아래의 줄을 엽니다"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Åpner linjen ved avspillingshodet i Undertekster"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opent de regel bij de afspeelkop in Ondertitels"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre a linha no cursor em Legendas"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öppnar raden vid uppspelningsmarkören i Undertexter"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เปิดบรรทัดที่หัวเล่นในคำบรรยาย"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Altyazılar’da oynatma çubuğundaki satırı açar"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mở dòng tại đầu phát trong Phụ đề"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在“字幕”中打开播放头处的行"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在「字幕」中打開播放頭處的行"
+          }
+        }
+      }
+    },
     "Options · %@" : {
       "comment" : "Share to universe, the button that opens Export options, with the quality the video exports in (1080p, 4K, 720p)",
       "localizations" : {
@@ -106954,6 +107668,125 @@
         }
       }
     },
+    "Style's color" : {
+      "comment" : "Short button next to a color row in Caption style › Custom: puts that one color back to the style's own. Names its reach (one color).",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لون النمط"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stilens farve"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Farbe des Stils"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Color del estilo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couleur du style"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "स्टाइल का रंग"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Warna gaya"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Colore dello stile"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "スタイルの色"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "스타일 색상"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stilens farge"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kleur van stijl"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cor do estilo"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stilens färg"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "สีของสไตล์"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stilin rengi"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Màu theo kiểu"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "样式颜色"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "風格顏色"
+          }
+        }
+      }
+    },
     "Subscribe · export now" : {
       "comment" : "Calm Pro's button (free exports used up): subscribes and exports the waiting video",
       "localizations" : {
@@ -112186,6 +113019,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "影片不會被儲存或分享。"
+          }
+        }
+      }
+    },
+    "The word being said is the same color as the others: change Highlight color in Custom." : {
+      "comment" : "Note in Caption style › Animation when the word being said would not show (its highlight color is the text's). 'Highlight color' and 'Custom' are names on screen: use their translations (Custom is the Caption style tab, the same word as Text style's Custom tab).",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الكلمة المنطوقة بلون باقي الكلمات نفسه: غيّر لون التمييز في تخصيص."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Det ord, der siges, har samme farve som de andre: skift Fremhævningsfarve under Tilpas."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das gesprochene Wort hat dieselbe Farbe wie die anderen: Ändere die Hervorhebungsfarbe unter Anpassen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La palabra que se dice tiene el mismo color que las demás: cambia el Color de resaltado en Personalizar."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le mot prononcé a la même couleur que les autres : changez la Couleur de surlignage dans Personnaliser."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "बोला जा रहा शब्द बाकी शब्दों जैसे ही रंग का है: कस्टम में हाइलाइट रंग बदलें।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kata yang diucapkan berwarna sama dengan kata lain: ubah Warna sorotan di Kustom."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La parola detta ha lo stesso colore delle altre: cambia il Colore evidenziazione in Personalizza."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "話している単語が他の単語と同じ色です。カスタムでハイライト色を変更してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "말하는 단어가 다른 단어와 같은 색이에요. 직접 만들기에서 하이라이트 색상을 바꿔 주세요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ordet som sies har samme farge som de andre: endre Uthevingsfarge under Tilpass."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Het gesproken woord heeft dezelfde kleur als de andere: wijzig de Markeringskleur bij Aanpassen."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A palavra falada está da mesma cor das outras: mude a Cor do destaque em Personalizar."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ordet som sägs har samma färg som de andra: ändra Markeringsfärg under Anpassa."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "คำที่กำลังพูดเป็นสีเดียวกับคำอื่น เปลี่ยนสีไฮไลต์ในกำหนดเอง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Söylenen kelime diğerleriyle aynı renkte: Özel bölümünde İşaretleme rengini değiştirin."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Từ đang nói cùng màu với các từ khác: hãy đổi Màu tô sáng trong Tùy chỉnh."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在说的词和其他词颜色相同：请在“自定义”中更改高亮颜色。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在說的詞和其他詞顏色相同：請在「自訂」中更改醒目顏色。"
           }
         }
       }
@@ -276951,7 +277903,7 @@
       }
     },
     "Emphasis" : {
-      "comment" : "Captions › Select: switch that draws the whole picked lines in the highlight color",
+      "comment" : "A caption's bar and a caption line's More: the words marked to stay emphasized (the emphasis color and size), unlike the highlight of the word being said. Never the same word as 'Highlight color'.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -511544,125 +512496,6 @@
         }
       }
     },
-    "Style's" : {
-      "comment" : "Short button next to a color row: goes back to the style's own color.",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "من النمط"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Stilens"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vom Stil"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Del estilo"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Du style"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "स्टाइल का"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dari gaya"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dello stile"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "スタイルの色"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "스타일 색"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Stilens"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Van stijl"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Do estilo"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Stilens"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ของสไตล์"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Stilin"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Theo kiểu"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "样式色"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "風格色"
-          }
-        }
-      }
-    },
     "Styling mistakes that are easy to fix" : {
       "comment" : "Find inspiration: a starter idea's title (a video headline)",
       "localizations" : {
@@ -534586,125 +535419,6 @@
         }
       }
     },
-    "The whole line in the highlight color" : {
-      "comment" : "Captions › Select › Emphasis: what it does",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "السطر كله بلون التمييز"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hele linjen i fremhævningsfarven"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Die ganze Zeile in der Hervorhebungsfarbe"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Toda la línea en el color de resaltado"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Toute la ligne dans la couleur de surlignage"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "पूरी लाइन हाइलाइट रंग में"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Seluruh baris dengan warna sorotan"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tutta la riga nel colore di evidenziazione"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "行全体をハイライト色で"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "줄 전체를 하이라이트 색으로"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hele linjen i uthevingsfargen"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "De hele regel in de markeringskleur"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "A linha inteira na cor de destaque"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hela raden i markeringsfärgen"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ทั้งบรรทัดเป็นสีไฮไลต์"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Satırın tamamı işaretleme renginde"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cả dòng theo màu tô sáng"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "整行使用高亮颜色"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "整行使用醒目顏色"
-          }
-        }
-      }
-    },
     "The word being said is the same color as the others: pick another highlight color." : {
       "comment" : "Note in Caption style when the highlight color of the word being said is the text's own color, so it doesn't show.",
       "localizations" : {
@@ -544666,125 +545380,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "標題字體"
-          }
-        }
-      }
-    },
-    "To emphasize a word, open its line in Captions › More › Emphasis." : {
-      "comment" : "Note in Caption style › Adjust. Captions, More and Emphasis are names on screen: use their translations.",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "لإبراز كلمة، افتح سطرها في الترجمة النصية › المزيد › إبراز."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "For at betone et ord skal du åbne dets linje i Undertekster › Mere › Betoning."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Um ein Wort zu betonen, öffne seine Zeile in Untertitel › Mehr › Betonung."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Para dar énfasis a una palabra, abre su línea en Subtítulos › Más › Énfasis."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pour mettre un mot en avant, ouvrez sa ligne dans Sous-titres › Plus › Mise en avant."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "किसी शब्द पर ज़ोर देने के लिए, उसकी लाइन कैप्शन › और › ज़ोर में खोलें।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Untuk menekankan kata, buka barisnya di Teks › Lainnya › Penekanan."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Per dare enfasi a una parola, apri la sua riga in Sottotitoli › Altro › Enfasi."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "単語を強調するには、字幕 › その他 › 強調 でその行を開きます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "단어를 강조하려면 자막 › 더 보기 › 강조에서 그 줄을 여세요."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "For å betone et ord, åpne linjen i Undertekster › Mer › Betoning."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Om een woord nadruk te geven, open je de regel in Ondertitels › Meer › Nadruk."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Para dar ênfase a uma palavra, abra a linha em Legendas › Mais › Ênfase."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Om du vill betona ett ord öppnar du raden i Undertexter › Mer › Betoning."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "หากต้องการเน้นคำ ให้เปิดบรรทัดนั้นใน คำบรรยาย › เพิ่มเติม › เน้น"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bir kelimeyi vurgulamak için satırını Altyazılar › Diğer › Vurgu’da aç."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Để nhấn mạnh một từ, hãy mở dòng đó trong Phụ đề › Thêm › Nhấn mạnh."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "要强调某个词，请在“字幕 › 更多 › 强调”中打开它所在的行。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "若要強調某個字詞，請在「字幕 › 更多 › 強調」中打開它所在的行。"
           }
         }
       }

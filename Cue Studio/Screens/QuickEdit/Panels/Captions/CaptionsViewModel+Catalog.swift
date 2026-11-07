@@ -14,8 +14,11 @@ extension CaptionsViewModel {
     struct CaptionCardSection: Identifiable {
         let title: String?
         let cards: [CaptionStyleCard]
-        /// The creator's own styles: "Save style" comes first in it.
+        /// The creator's own styles.
         var isMine = false
+        /// "Save style" is its last card: Mine's, or All's last group while the creator has no style yet (one place in the
+        /// gallery, never an empty Mine on top; owner, canvas 2 F2).
+        var endsWithSave = false
 
         var id: String { title ?? (isMine ? "mine" : "untitled") }
     }
@@ -96,7 +99,8 @@ extension CaptionsViewModel {
         )
     }
 
-    /// The cards `filter` shows, grouped: in All, this video's look, the creator's styles and every group of the catalogue.
+    /// The cards `filter` shows, grouped: in All, this video's look, the creator's styles (once there is one) and every group of
+    /// the catalogue. "Save style" ends Mine, or All's last group while Mine is empty (`endsWithSave`).
     func captionCardSections(_ filter: CaptionCatalogFilter) -> [CaptionCardSection] {
         let worn = wornCard
         let mine = captionStyles.styles.map { card($0, worn: worn) }
@@ -105,19 +109,33 @@ extension CaptionsViewModel {
         case .all:
             var sections: [CaptionCardSection] = []
             if let current = currentCaptionCard { sections.append(CaptionCardSection(title: nil, cards: [current])) }
-            sections.append(CaptionCardSection(title: CaptionCatalogFilter.mine.label, cards: mine, isMine: true))
-            sections += CaptionCategory.allCases.map { category in
-                CaptionCardSection(title: category.label, cards: CaptionTheme.themes(in: category).map(card))
+            if !mine.isEmpty {
+                sections.append(CaptionCardSection(title: CaptionCatalogFilter.mine.label, cards: mine, isMine: true, endsWithSave: true))
+            }
+            let groups = CaptionCategory.allCases
+            sections += groups.map { category in
+                CaptionCardSection(
+                    title: category.label, cards: CaptionTheme.themes(in: category).map(card),
+                    endsWithSave: mine.isEmpty && category == groups.last
+                )
             }
             return sections
         case .favorites:
             let cards = mine.filter(\.isFavorite) + CaptionTheme.catalog.map(card).filter(\.isFavorite)
             return [CaptionCardSection(title: nil, cards: cards)]
         case .mine:
-            return [CaptionCardSection(title: nil, cards: mine, isMine: true)]
+            return [CaptionCardSection(title: nil, cards: mine, isMine: true, endsWithSave: true)]
         case .category(let category):
             return [CaptionCardSection(title: nil, cards: CaptionTheme.themes(in: category).map(card))]
         }
+    }
+
+    /// The section Styles brings to the top when it opens: the one with the card the captions wear, when it isn't the first
+    /// (the first shows from the top, under Size and the filters). Nil: the top.
+    func captionRevealedSection(_ filter: CaptionCatalogFilter) -> String? {
+        let sections = captionCardSections(filter)
+        guard let index = sections.firstIndex(where: { $0.cards.contains(where: \.isSelected) }), index > 0 else { return nil }
+        return sections[index].id
     }
 
     /// A card tapped: its look on every line, in one undo step (this video's own look is already on).

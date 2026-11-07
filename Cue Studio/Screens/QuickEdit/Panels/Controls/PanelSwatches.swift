@@ -16,7 +16,7 @@ struct PanelSwatches: View {
     let colors: [OverlayColor]
     let selection: OverlayColor?
     var diameter: CGFloat = 30
-    /// "Style's": shown while a color is picked over the style's own, and what it does.
+    /// "Style's color": shown while a color is picked over the style's own, and what it does.
     var reset: (label: String, action: () -> Void)?
     let identifier: String
     let onSelect: (OverlayColor) -> Void

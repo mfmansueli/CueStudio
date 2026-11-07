@@ -10,7 +10,7 @@ import Foundation
 /// themselves are in the edit, and every change to them is an undo step through the session.
 ///
 /// Each part of the work is in its own extension (`+Lines`, `+LineByLine`, `+Panels`, `+Picks`, `+Find`, `+StyleCopy`,
-/// `+Catalog`, `+Library`, `+Adjust`, `+Motion`, `+Emphasis`, `+Format`, `+Translation`, `+Preview`).
+/// `+Catalog`, `+Library`, `+Adjust`, `+Motion`, `+Emphasis`, `+EmphasisTrip`, `+Format`, `+Translation`, `+Preview`).
 @MainActor
 @Observable
 final class CaptionsViewModel: EditorPart {
@@ -25,8 +25,16 @@ final class CaptionsViewModel: EditorPart {
     var captionPicks: Set<UUID>?
     /// The picked caption line's field takes the keyboard (a line was just added).
     var focusesCaptionField = false
-    /// The line whose More opens on its own (Emphasis on a caption's toolbar): its words to emphasize, at hand.
+    /// The line whose More opens on its own (Emphasis on a caption's toolbar, Choose words to emphasize): its words to emphasize,
+    /// at hand.
     var expandedLineID: UUID?
+    /// Captions was opened by Caption style › Custom › Choose words to emphasize: ✓ and ‹ Style go back there as it was left
+    /// (`+EmphasisTrip`); nil otherwise.
+    var styleReturn: CaptionStyleReturn?
+    /// How far Caption style › Custom is scrolled, and whether it shows there again (back from choosing words) rather than at
+    /// its top (`+EmphasisTrip`).
+    @ObservationIgnored var captionCustomOffset: CGFloat = 0
+    @ObservationIgnored var restoresCustomOffset = false
     /// The text whose look "Apply this style to captions" is asking to copy; nil when not asking.
     var captionStyleCopySourceID: UUID?
     /// The creator's saved caption styles, with favorites and the one new captions start in (`+Library`).
@@ -99,7 +107,14 @@ final class CaptionsViewModel: EditorPart {
     /// The panel changed to `next`: picking several lines belongs to the list of lines, and the offer of a style's own size and
     /// place to Caption style.
     func panelChanged(to next: EditorPanel?) {
-        if next != .captions { captionPicks = nil }
+        if next != .captions {
+            captionPicks = nil
+            // Any way out of Captions but ✓ and ‹ Style (another tool, the track) leaves the trip back to Caption style behind;
+            // the line opened for its words to emphasize opens like any other next time.
+            styleReturn = nil
+            expandedLineID = nil
+        }
+        if next != .captionStyle { restoresCustomOffset = false }
         if next != .captionStyle { lastPickedCaptionCard = nil }
         if next == .captionStyle {
             captionSampleWords = currentSampleWords

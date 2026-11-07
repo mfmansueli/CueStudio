@@ -7,8 +7,8 @@ import SwiftUI
 
 /// Captions › Select, around the list of lines (as CapCut's batch edit keeps them at hand while the list scrolls; the panel
 /// grows to the styling panels' height meanwhile): above it, how many lines are picked, Select all and Done (`.header`, in
-/// place of the switch and chips); under it, what changes them together (`.actions`): Emphasis (the whole line in the
-/// highlight color), Size, a tenth of a second earlier or later, and Delete.
+/// place of the switch and chips); under it, what changes them together (`.actions`): Emphasize line (every word in the
+/// emphasis color and size), Size, a tenth of a second earlier or later, and Delete.
 struct CaptionPickTools: View {
     enum Part {
         case header, actions
@@ -69,11 +69,16 @@ struct CaptionPickTools: View {
                 if !viewModel.captions.canStyleCaptionLines {
                     PanelNote(text: String(localized: "Pick a look in Style to style lines on their own."), teaches: true)
                 }
-                // On one row when it fits; with large text, the style on one row and moving and deleting on the next.
+                // On one row when it fits; with large text, the style on one row and moving and deleting on the next; past that,
+                // each style chip on its own row (a name is never cut).
                 ViewThatFits(in: .horizontal) {
                     HStack(spacing: 6) { style; Spacer(minLength: 0); moveAndDelete }
                     VStack(alignment: .leading, spacing: 0) {
                         HStack(spacing: 6) { style }
+                        HStack(spacing: 6) { Spacer(minLength: 0); moveAndDelete }
+                    }
+                    VStack(alignment: .leading, spacing: 0) {
+                        style
                         HStack(spacing: 6) { Spacer(minLength: 0); moveAndDelete }
                     }
                 }
@@ -88,11 +93,12 @@ struct CaptionPickTools: View {
         if viewModel.captions.canStyleCaptionLines {
             let emphasized = viewModel.captions.pickedCaptionsAreEmphasized
             Button { viewModel.captions.setPickedCaptionsEmphasized(!emphasized) } label: {
-                chipLabel(String(localized: "Emphasis"), systemImage: "highlighter", isOn: emphasized)
+                // Says the action and its reach: Highlight is the word being said's (owner, canvas 2 §7.1).
+                chipLabel(String(localized: "Emphasize line"), systemImage: "highlighter", isOn: emphasized)
             }
             .buttonStyle(.plain)
             .accessibilityValue(emphasized ? Text("On") : Text("Off"))
-            .accessibilityHint(Text("The whole line in the highlight color"))
+            .accessibilityHint(Text("Every word of the line in the emphasis color and size"))
             .accessibilityAddTraits(.isToggle)
             .accessibilityIdentifier("edit.captionPicks.emphasis")
             Menu {
