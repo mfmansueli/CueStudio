@@ -3,6 +3,7 @@
 //  Cue Studio
 //
 
+import Accessibility
 import Foundation
 
 /// Clean up's marks and its Remove: the pauses longer than the threshold (Pauses) and the filler words and repeats (Words),
@@ -51,10 +52,34 @@ extension ClipsViewModel {
         cleanUpMarks[id] = !isMarked(suggestion)
     }
 
-    /// A card tapped: switches its mark and shows that moment.
+    /// A card tapped: switches its mark, lights it (its mark on the timeline is where the playhead goes) and shows that moment.
+    /// VoiceOver hears what it is now.
     func tapCleanUpCard(_ id: UUID) {
         toggleMark(id)
-        guard let suggestion = edit.suggestions.first(where: { $0.id == id }), let start = editedCut(of: suggestion)?.start else { return }
+        guard let suggestion = edit.suggestions.first(where: { $0.id == id }) else { return }
+        highlightedCleanUpID = id
+        AccessibilityNotification.Announcement(isMarked(suggestion) ? String(localized: "Remove") : String(localized: "Keep")).post()
+        show(suggestion)
+    }
+
+    /// A mark tapped on the timeline (owner, canvas 2 M3): the first tap goes to its card (its tab, scrolled into view, lit) and
+    /// shows that moment, changing nothing; a tap on the mark of the lit card switches it, as a tap on the card does. Nothing
+    /// changes what goes without the card in sight.
+    func revealCleanUpMark(_ id: UUID) {
+        guard let suggestion = edit.suggestions.first(where: { $0.id == id }) else { return }
+        guard highlightedCleanUpID != id else {
+            tapCleanUpCard(id)
+            return
+        }
+        let tab: EditorPanelTab = suggestion.kind == .pause ? .pauses : .words
+        if cleanUpTab != tab { showCleanUpTab(tab) } else { Haptics.selection() }
+        highlightedCleanUpID = id
+        show(suggestion)
+    }
+
+    /// Pauses and shows the moment just before `suggestion`.
+    private func show(_ suggestion: CleanUpSuggestion) {
+        guard let start = editedCut(of: suggestion)?.start else { return }
         player.pause()
         player.seek(to: max(0, start - 0.4))
     }

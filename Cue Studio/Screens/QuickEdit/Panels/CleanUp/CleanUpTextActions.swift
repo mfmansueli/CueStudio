@@ -6,16 +6,14 @@
 import SwiftUI
 
 /// Clean up › Text's bottom while words are picked: where the pick is, **Cut from video** (picture, sound and captions go),
-/// **Fix caption text** (only the words a caption shows; nothing is cut), and **Put back** for cut words. With nothing picked,
-/// how to pick.
+/// **Fix caption text** (only the words a caption shows; nothing is cut), and **Put back** for cut words. How to pick is in the
+/// tab itself (`CleanUpTextTab`), so marked pauses never hide it (canvas 2, bug 7).
 struct CleanUpTextActions: View {
     @Bindable var viewModel: QuickEditViewModel
 
     var body: some View {
         let picked = viewModel.clips.selectedTranscriptWords
-        if picked.isEmpty {
-            PanelNote(text: String(localized: "Tap the first word of the part to cut, then its last word. Crossed-out words were cut."))
-        } else {
+        if !picked.isEmpty {
             VStack(spacing: 8) {
                 pickGuide(picked)
                 if picked.contains(where: { !$0.isRemoved }) {

@@ -120,6 +120,8 @@ extension EditorRecipeUITests {
         guard tool("pauses") else { return "GAP: no Clean up on the bar" }
         let listening = element("edit.pauses.listening")
         _ = listening.isGone(within: realTake == nil ? 30 : 180)
+        // The length is behind the header's button (canvas 2 F10).
+        if !button("edit.pauses.threshold.minus").exists { tapButton("edit.pauses.settings") }
         let value = element("edit.pauses.threshold.value")
         var steps = 0
         while steps < 8, !(label(value).contains("0.4") || label(value).contains("0,4")), button("edit.pauses.threshold.minus").isEnabled {

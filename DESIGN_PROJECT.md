@@ -3998,9 +3998,15 @@ menu de legendas, ✦ Smart) abre o mesmo painel na aba Text, já alto. As marca
 vai, cinza fica); **Remove** tira tudo o que está marcado nas três; **✓ fecha sem tirar nada**, e o que só estava marcado é esquecido (reabrir volta
 ao padrão: pausas marcadas, palavras só quando o Clean up tem certeza, tentativas nunca). O painel é médio (nunca vira folha, nem no SE) e cresce no
 mesmo lugar pelo botão de expandir ou ao ir para Text (o vídeo fica no mínimo, tocando); trocar de aba não o encolhe e mantém a aba, as marcas e a
-escolha de palavras.
+escolha de palavras. Em Pauses ele abre na **fileira de pausas**; "Pauses longer than" e "Gap left" ficam atrás do botão do cabeçalho
+(`CleanUpSettingsButton`, com o limite em uso no rótulo, "0.7s"; aceso quando aberto, lembrado com o painel como o Advanced; dono, canvas 2 F10).
 
-- **Pauses** (`CleanUpPausesTab`): "Pauses longer than" (0,3 a 3 s, padrão 0,7) e **Gap left: Tight · Natural · Relaxed** (pt Respiro: Curto ·
+- **Da marca ao cartão** (dono, canvas 2 M3): tocar numa marca da timeline leva ao cartão dela (a aba dele, rolado até à vista, com um anel `ink`
+  por fora) e mostra o momento, **sem mudar nada**; um segundo toque na mesma marca troca Remove/Keep, como o toque no cartão. Tocar num cartão
+  também o acende (a marca dele está sob a agulha) e o VoiceOver diz "Remove" ou "Keep". Nada muda o que sai sem o cartão à vista; o rodapé
+  conta de novo a cada troca. Reabrir o painel não traz cartão aceso.
+
+- **Pauses** (`CleanUpPausesTab`): pelo botão do cabeçalho, "Pauses longer than" (0,3 a 3 s, padrão 0,7) e **Gap left: Tight · Natural · Relaxed** (pt Respiro: Curto ·
   Natural · Longo; 0,12 · 0,24 · 0,40 s de silêncio, metade de cada lado; Natural é o corte de antes; `PauseGap`, `TakeEdit.pauseGap`, passo de
   Desfazer). Uma pausa só entra se sobra algo a cortar (nunca alonga uma pausa mais curta que o respiro); lista, marcas, Listen, tempo economizado e
   corte leem a mesma regra (`CleanUpSuggestion.cut(leaving:)`). Mudar o respiro não mexe no que já foi cortado (o corte fica em `removedSpan`).
@@ -4015,8 +4021,9 @@ escolha de palavras.
   seguidas ("This take has no script…"). Avisos: palavras não ouvidas ("Cue couldn't hear the words of this take on this iPhone. Pauses still
   work.") e idioma sem hesitações conhecidas ("Ums: English, Portuguese and Spanish. Pauses work in every language."). Removed como em Pauses.
 - **Text** (`CleanUpTextTab`, `CleanUpTextActions`): o Edit by text (§37), com as hesitações sublinhadas (amarelo quando marcadas) e cada pausa como
-  uma marca com a duração entre as palavras; tocar numa marca alterna Remove/Keep. Com palavras escolhidas, o rodapé é o delas (Cut, Fix caption
-  text, Put back); sem escolha, o Remove de sempre. Corrigir o texto da legenda continua separado de cortar o vídeo.
+  uma marca com a duração entre as palavras; tocar numa marca alterna Remove/Keep. Como escolher palavras ("Tap the first word of the part to
+  cut, then its last word…") fica no alto da aba enquanto nada está escolhido, com pausas marcadas ou não (canvas 2, erro 7). Com palavras
+  escolhidas, o rodapé é o delas (Cut, Fix caption text, Put back); sem escolha, o Remove de sempre. Corrigir o texto da legenda continua separado de cortar o vídeo.
 - **Remove** diz o que tira: "Remove 3 pauses", "Remove hesitations", "Remove repeats", "Remove pauses and hesitations", … , "Nothing selected"
   (texto `ink2`, não `ink3`). O tempo economizado conta cada segundo uma vez, por mais que as marcas se sobreponham, em cada lugar que toca (um
   clipe copiado conta duas vezes, porque o corte sai dos dois). Toast "Removed 4 pauses · 4.1s" (ou "Speech cleaned up · 4.1s") **com Undo**.

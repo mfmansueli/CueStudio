@@ -13,6 +13,8 @@ struct CleanUpCard: View {
     let time: String
     let isMarked: Bool
     let isListening: Bool
+    /// Reached from its mark on the timeline, or the last one tapped (canvas 2 M3): ringed in ink outside the card.
+    var isHighlighted = false
     let identifier: String
     var width: CGFloat = 122
     let onToggle: () -> Void
@@ -49,12 +51,20 @@ struct CleanUpCard: View {
         .padding(.vertical, 6)
         .frame(width: width, alignment: .leading)
         .editorCard(isMarked ? .marked : .plain)
+        .overlay {
+            RoundedRectangle(cornerRadius: Metrics.editorCardRadius + 3, style: .continuous)
+                .strokeBorder(isHighlighted ? Palette.ink : .clear, lineWidth: 2)
+                .padding(-4)
+        }
+        .animation(.easeOut(duration: 0.2), value: isHighlighted)
+        .animation(.easeOut(duration: 0.2), value: isMarked)
         .contentShape(Rectangle())
         .onTapGesture(perform: onToggle)
         .accessibilityElement(children: .contain)
         .accessibilityLabel(Text("\(title), \(time)"))
         .accessibilityValue(isMarked ? Text("Remove") : Text("Keep"))
         .accessibilityAction(named: Text(isMarked ? "Keep" : "Remove"), onToggle)
+        .accessibilityAddTraits(isHighlighted ? .isSelected : [])
         .accessibilityIdentifier(identifier)
     }
 

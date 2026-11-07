@@ -42,6 +42,41 @@ struct QuickEditPausesPanelTests {
         #expect(viewModel.clips.cleanUpResultLabel == "00:21.6 → 00:17.5")
     }
 
+    /// Canvas 2 M3: a mark tapped on the timeline goes to its card (lit, its moment shown) and changes nothing; a second tap on it
+    /// switches it, as a tap on the card does. A word's mark brings its tab.
+    @Test func aMarkOnTheTimelineLeadsToItsCardThenSwitchesIt() async throws {
+        let viewModel = await makeViewModel()
+        let clips = viewModel.clips
+        let pause = clips.pauseCandidates[2]
+        viewModel.tapTimeline(.pause(pause.id))
+        #expect(clips.highlightedCleanUpID == pause.id)
+        #expect(clips.isMarked(pause))
+        #expect(clips.cleanUpApplyLabel == "Remove 4 pauses")
+        let start = try #require(clips.editedCut(of: pause)?.start)
+        #expect(abs(viewModel.player.currentTime - max(0, start - 0.4)) < 0.001)
+        viewModel.tapTimeline(.pause(pause.id))
+        #expect(!clips.isMarked(pause))
+        #expect(clips.cleanUpApplyLabel == "Remove 3 pauses")
+        // Another one: lit first, the first stays as it was left.
+        let next = clips.pauseCandidates[0]
+        viewModel.tapTimeline(.pause(next.id))
+        #expect(clips.highlightedCleanUpID == next.id)
+        #expect(clips.isMarked(next) && !clips.isMarked(pause))
+        // A card tapped is the lit one too, so its mark answers the next tap at once.
+        clips.tapCleanUpCard(pause.id)
+        #expect(clips.highlightedCleanUpID == pause.id && clips.isMarked(pause))
+        // Reopened, nothing is lit.
+        viewModel.closePanel()
+        viewModel.panel = .pauses
+        #expect(clips.highlightedCleanUpID == nil)
+    }
+
+    /// Canvas 2 F10: the panel opens on the row (the settings are behind the header's button, Advanced in the panel's memory).
+    @Test func cleanUpOpensWithTheSettingsPutAway() async {
+        let viewModel = await makeViewModel()
+        #expect(!viewModel.showsAdvanced)
+    }
+
     @Test func oneKeptTheOthersRemovedInOneStep() async {
         let viewModel = await makeViewModel()
         let kept = viewModel.clips.pauseCandidates[1]

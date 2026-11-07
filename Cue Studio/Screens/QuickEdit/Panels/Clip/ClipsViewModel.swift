@@ -32,6 +32,8 @@ final class ClipsViewModel: EditorPart {
     var cleanUpMarks: [UUID: Bool] = [:]
     /// The pause or word being listened to in Pauses.
     var listeningID: UUID?
+    /// The Clean up card last reached, from its mark on the timeline or by a tap on it: lit and scrolled into view (canvas 2 M3).
+    var highlightedCleanUpID: UUID?
     /// The tab Clean up opens on next (`openCleanUp(on:)`): Pauses, unless Edit by text asked for Text.
     @ObservationIgnored var cleanUpOpensOn: EditorPanelTab = .pauses
     /// Clean up is taller (the video at its smallest), for Text's reading room or by the creator's expand button. It opens tall
@@ -94,6 +96,7 @@ final class ClipsViewModel: EditorPart {
         guard next == .pauses else { return }
         cleanUpMarks = [:]
         transcriptSelection = nil
+        highlightedCleanUpID = nil
         panelTab = cleanUpOpensOn
         cleanUpIsExpanded = cleanUpOpensOn == .transcript
         cleanUpOpensOn = .pauses
