@@ -8,7 +8,7 @@ import Foundation
 /// The picked clip's tools that changed it (owner, canvas 2 M2): a dot on each in the clip's bar, and VoiceOver hears "Changed
 /// on this clip". It reads the clip as it is, so it follows another clip picked, Reset clip and Undo. Mute and Mirror are
 /// switches, lit instead; the tools that change the whole video carry All, never the dot.
-nonisolated enum ClipAppliedTools {
+enum ClipAppliedTools {
     static func ids(of clip: EditSegment, in segments: [EditSegment]) -> Set<String> {
         var ids: Set<String> = []
         func mark(_ changed: Bool, _ id: String) {

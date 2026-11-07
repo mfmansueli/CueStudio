@@ -9,6 +9,7 @@ import Testing
 
 /// Canvas 2 M2: the clip bar marks the tools that changed the picked clip, from the clip itself, so the marks follow another clip
 /// picked, Reset clip and Undo; Transition is the cut after the clip.
+@MainActor
 @Suite("Clip applied tools")
 struct ClipAppliedToolsTests {
     @Test func aClipAsFilmedHasNoMarks() {
@@ -32,7 +33,6 @@ struct ClipAppliedToolsTests {
         #expect(!ClipAppliedTools.ids(of: next, in: [clip, next, EditSegment(sourceStart: 8, sourceEnd: 9)]).contains("transition"))
     }
 
-    @MainActor
     @Test func theClipBarDrawsTheMarksAndFollowsUndo() async throws {
         var take = TestData.take(scriptID: nil, number: 3)
         take.duration = SampleEdit.duration
