@@ -5,6 +5,7 @@
 
 import AVFoundation
 import Foundation
+import os
 
 /// Track: the picked text, graphic or photo follows what's under it in the video. The object under the item's center at the
 /// playhead is followed through the clip under the playhead (forwards and backwards, as long as the item shows there) with
