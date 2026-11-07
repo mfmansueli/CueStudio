@@ -15,6 +15,11 @@ struct CleanUpTextTab: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             if viewModel.clips.hasTranscript {
+                if viewModel.clips.transcriptSelection == nil {
+                    // Always here, marks or not: the footer is Remove while pauses are marked (canvas 2, bug 7).
+                    PanelNote(text: String(localized: "Tap the first word of the part to cut, then its last word. Crossed-out words were cut."))
+                        .accessibilityIdentifier("edit.transcript.howToPick")
+                }
                 words
             } else {
                 listen

@@ -82,6 +82,14 @@ extension OverlaysViewModel {
         sayUndoable(imported.kind == .photo ? String(localized: "Photo added at \(place)") : String(localized: "Video added at \(place)"))
     }
 
+    /// Where the video just added has its sound changed later: Volume on its bar, or Sound on a split screen support's (owner,
+    /// canvas 2 bug 12: the hint points at the button that is there).
+    func soundChoiceHint(for id: UUID) -> String {
+        edit.media.first { $0.id == id }?.layout == .split
+            ? String(localized: "You can change it later in Sound, on the support’s bar.")
+            : String(localized: "You can change it later in Volume, on the media’s bar.")
+    }
+
     /// Answers "keep its sound?" for a video just added: kept at full volume, or muted.
     func chooseSound(for id: UUID, keeps: Bool) {
         if soundChoiceMediaID == id { soundChoiceMediaID = nil }

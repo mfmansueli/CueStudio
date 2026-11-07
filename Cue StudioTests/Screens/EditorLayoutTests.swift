@@ -148,6 +148,22 @@ struct EditorLayoutTests {
         }
     }
 
+    /// Canvas 2 R10 §7.3: Text style and Caption style keep the ruler and their own track above them, the video at least its
+    /// smallest and the panel at least a whole row of styles; expanded or typing, the timeline may go.
+    @Test func aFullPanelKeepsTheRulerAndItsTrackAboveIt() {
+        for screen in Screen.allCases where screen != .iPhoneSE {
+            let usable = screen.rawValue
+            let layout = EditorLayout(usableHeight: usable, panel: .full, panelFocusesLane: true)
+            let heightClass = EditorHeightClass(usableHeight: usable)
+            #expect(layout.timeline >= heightClass.rulerHeight + heightClass.panelLaneHeight, "\(screen)")
+            #expect(layout.showsTimeline, "\(screen)")
+            #expect(layout.panel >= EditorPanelSize.fullMinimum, "\(screen)")
+            #expect(layout.preview >= EditorLayout.previewMinimum(for: usable) - 0.01, "\(screen)")
+            #expect(abs(layout.preview + layout.playerBar + layout.timeline + layout.panel - usable) < 0.5, "\(screen)")
+            #expect(EditorLayout(usableHeight: usable, panel: .full, panelFocusesLane: true, panelIsExpanded: true).timeline == 0)
+        }
+    }
+
     @Test func withTheKeyboardUpAnExpandedPanelSharesTheHeightLikeAnyOther() {
         for screen in Screen.allCases where screen != .iPhoneSE {
             let usable = screen.rawValue - keyboard

@@ -259,7 +259,8 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
                 translationX: item.rect.minX + placed.origin.x, y: item.rect.maxY - placed.origin.y - placed.size.height
             ))
             .cropped(to: item.rect)
-        let state = item.motion?.state(at: time - item.span.start)
+        let local = time - item.span.start
+        let state = item.motion?.state(at: item.readsPreviewHold ? PreviewMotionHold.shared.local(local, of: item.mediaID) : local)
         if let mask = item.mask {
             picture = MaskDrawing.apply(mask, placement: state?.mask ?? mask.placement, to: picture, in: item.rect)
         }

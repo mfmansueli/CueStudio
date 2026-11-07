@@ -33,6 +33,8 @@ protocol EditPlayback: AnyObject {
     func show(_ edit: TakeEdit)
     /// Draws the edit shown again (something it reads besides the edit changed: a recording's motion analysis came in).
     func redraw()
+    /// Draws the paused frame again because what the compositor reads at each frame changed (`PreviewMotionHold`), not the edit.
+    func redrawPausedFrame()
     /// Builds the edit shown from scratch, after the preview failed (`state == .failed`): Try again, or Cue coming back to the
     /// front after iOS reset its media services.
     func retry()

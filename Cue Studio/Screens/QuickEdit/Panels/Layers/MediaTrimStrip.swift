@@ -80,7 +80,10 @@ struct MediaTrimStrip: View {
             // Time runs left to right in every language (media never mirrors), like the timeline.
             .environment(\.layoutDirection, .leftToRight)
             PanelStepper(
-                label: String(localized: "Plays for"), value: DurationText.tenths(shown), identifier: "edit.mediaLength",
+                label: String(localized: "Duration"), value: DurationText.tenths(shown), identifier: "edit.mediaLength",
+                presets: PanelStepper.commonLengths(upTo: media.longestDuration),
+                onPreset: { viewModel.overlays.setMediaLength(media.id, $0) },
+                onEditingChanged: { $0 ? viewModel.beginPanelChange() : viewModel.endPanelChange() },
                 onDecrease: { viewModel.overlays.setMediaLength(media.id, shown - 0.5) },
                 onIncrease: { viewModel.overlays.setMediaLength(media.id, shown + 0.5) }
             )

@@ -5,8 +5,8 @@
 
 import SwiftUI
 
-/// Motion's ready-made ways in (and out) for the picked text or photo or video: None, Fade in, Slide up, Slide in, Gentle zoom,
-/// Pop, In and out; with one picked, how long it takes and how strong it is ("Preview" in the panel's header plays it,
+/// Motion's ready-made ways in (and out) for the picked text or photo or video: None, Pop, Fade in, Slide up, Slide in, Gentle
+/// zoom, In and out (`MotionPreset.panelOrder`); with one picked, how long it takes and how strong it is ("Preview" in the panel's header plays it,
 /// `PanelPlay.motion`). They sit over the keyframes, which stay for moving it by hand (under them). A text that wears an
 /// effect also has "Effect's own" after None, one of them picked at a time: the effect's way in and out as its card shows,
 /// or a Motion (or None) with the effect still, keeping its finish.
@@ -27,7 +27,7 @@ struct MotionPresetPicker: View {
                     if effect != nil {
                         tile(Self.effectsOwn, systemImage: "sparkles", key: "effect", isOn: effectMoves, action: overlays.playEffectsOwnMotion)
                     }
-                    ForEach(MotionPreset.allCases) { preset in
+                    ForEach(MotionPreset.panelOrder) { preset in
                         tile(preset.label, systemImage: preset.systemImage, key: preset.rawValue, isOn: current?.preset == preset) {
                             overlays.setMotionPreset(preset)
                         }

@@ -29,12 +29,16 @@ extension BrandViewModel {
 
     /// Takes a family out of the pickers, with Undo; videos and styles that use it keep drawing in it.
     func removeFont(_ name: String) {
-        guard let removed = fonts.remove(name) else { return }
-        toast.show(
-            String(localized: "\(name) removed · videos that use it keep it"),
-            action: ToastAction(title: String(localized: "Undo")) { [fonts] in fonts.restore(removed) }
-        )
+        FontRemoval.remove(name, from: fonts, toast: toast)
     }
+
+    /// My fonts in a picker (`MyFontsGroup`): the offered families and `current` when it's an imported one no longer offered.
+    func myFonts(including current: TextOverlayFont?) -> [TextOverlayFont] {
+        TextOverlayFont.myFonts(offered: offeredFonts.map(\.name), including: current)
+    }
+
+    /// The families My fonts can remove.
+    var removableFonts: Set<String> { Set(offeredFonts.map(\.name)) }
 
     /// The note under a picker whose family isn't on this iPhone; it goes as soon as the family can be drawn again.
     func missingFontNote(_ font: TextOverlayFont) -> String? {

@@ -118,7 +118,7 @@ extension QuickEditViewModel {
                 }
                 return "\(music.title) · \(DurationText.editor(span.start))–\(DurationText.editor(span.end))"
             case .voiceOver: return String(localized: "Voice-over")
-            case .media: return String(localized: "Video · its own sound")
+            case .media: return String(localized: "Video · its own volume")
             default: return clipScope
             }
         }
@@ -162,5 +162,20 @@ extension QuickEditViewModel {
         if overlays.splitTab == .layout { return String(localized: "Every split screen") }
         if overlays.splitTab == .framing, overlays.selectedArea == .main { return String(localized: "Main video · its recording") }
         return String(localized: "This support")
+    }
+}
+
+// MARK: - Tucked away (iPhone SE)
+
+extension QuickEditViewModel {
+    /// The SE's styling sheet steps aside so the timeline can be reached in one tap, without ✓ (owner, canvas 2 R10 §7.3).
+    func tuckPanel() {
+        guard panel != nil else { return }
+        panelIsTucked = true
+    }
+
+    /// The panel comes back as it was left.
+    func untuckPanel() {
+        panelIsTucked = false
     }
 }

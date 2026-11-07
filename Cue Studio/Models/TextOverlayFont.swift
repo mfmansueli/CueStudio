@@ -65,6 +65,14 @@ nonisolated struct TextOverlayFont: LenientChoice, CaseIterable, Identifiable, H
         .dmSerif, .instrumentSerif, .caveat, .spaceMono,
     ]
 
+    /// A picker's My fonts (`MyFontsGroup`, canvas 2 F12): the `offered` imported families (newest first), and `current` first
+    /// when it's an imported family no longer offered, so the picker still shows what the text uses.
+    static func myFonts(offered: [String], including current: TextOverlayFont? = nil) -> [TextOverlayFont] {
+        var fonts = offered.map(TextOverlayFont.custom)
+        if let current, current.isCustom, !fonts.contains(current) { fonts.insert(current, at: 0) }
+        return fonts
+    }
+
     /// What a picker offers: the creator's imported families first (the newest first), then `editorFonts`; `current` too,
     /// when it is a family that was removed or isn't on this iPhone, so the picker still shows what the text uses.
     static func pickerFonts(including current: TextOverlayFont? = nil) -> [TextOverlayFont] {

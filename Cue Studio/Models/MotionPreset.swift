@@ -25,6 +25,10 @@ nonisolated enum MotionPreset: String, LenientChoice, CaseIterable, Identifiable
 
     var id: String { rawValue }
 
+    /// The order Motion shows them in: Pop first, the one creators reach for to make a word stand out (owner, canvas 2 F15,
+    /// 07/11/2026). The cases keep their order, so nothing saved changes.
+    static let panelOrder: [MotionPreset] = [.pop, .fade, .slideUp, .slideIn, .gentleZoom, .inAndOut]
+
     var label: String {
         switch self {
         case .fade: String(localized: "Fade in")

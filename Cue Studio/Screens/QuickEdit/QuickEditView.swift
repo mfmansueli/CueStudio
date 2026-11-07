@@ -102,6 +102,8 @@ struct QuickEditView: View {
         }
         .onChange(of: services.motion.completed) { viewModel.motionAnalysisDidChange() }
         .onChange(of: services.fontPacks.generation) { viewModel.fontPacksChanged() }
+        // Paused on a picked item that a Motion hides in its way in or out, the preview shows it whole (`PreviewMotionHold`).
+        .onChange(of: viewModel.overlays.previewHold, initial: true) { viewModel.overlays.holdPickedWhole() }
         .sheet(item: $viewModel.sheet) { sheet in
             switch sheet {
             case .music: AddMusicSheet(viewModel: viewModel)
@@ -157,8 +159,8 @@ struct QuickEditView: View {
         ) { id in
             Button("Keep its sound") { viewModel.overlays.chooseSound(for: id, keeps: true) }
             Button("Mute it") { viewModel.overlays.chooseSound(for: id, keeps: false) }
-        } message: { _ in
-            Text("You can change it later in Volume, on the media’s bar.")
+        } message: { id in
+            Text(viewModel.overlays.soundChoiceHint(for: id))
         }
         .confirmationDialog(
             "A Blur area may not cover what it hides",
@@ -215,7 +217,10 @@ struct QuickEditView: View {
             }
         }
         .onAppear { viewModel.leaveScreen = { onClose($0) } }
-        .onDisappear { viewModel.pauseAndKeepDraft() }
+        .onDisappear {
+            viewModel.pauseAndKeepDraft()
+            PreviewMotionHold.shared.set(nil)
+        }
         .animation(reduceMotion ? nil : .easeOut(duration: 0.22), value: viewModel.panel)
         .animation(reduceMotion ? nil : .easeInOut(duration: 0.28), value: viewModel.stylePanelIsExpanded)
         .animation(reduceMotion ? nil : .easeInOut(duration: 0.28), value: viewModel.clips.cleanUpIsExpanded)
@@ -247,6 +252,8 @@ struct QuickEditView: View {
                 if let panel = viewModel.panel, case .sheet(let medium, let large) = layout.panelPresentation {
                     EditorPanelView(viewModel: viewModel, panel: panel)
                         .environment(\.editorHeightClass, layout.heightClass)
+                        // ⌄ in its header: the sheet steps aside for the timeline (canvas 2 R10 §7.3).
+                        .environment(\.editorPanelTuck, EditorPanelTuck { viewModel.tuckPanel() })
                         // Expanding the panel is the sheet's taller height, and dragging the sheet expands it.
                         .presentationDetents([.height(medium), .height(large)], selection: sheetDetentBinding(medium: medium, large: large))
                         .presentationBackgroundInteraction(.enabled(upThrough: .height(large)))
@@ -280,8 +287,9 @@ struct QuickEditView: View {
         EditorLayout(
             usableHeight: height,
             stableHeight: stableHeight > 0 ? stableHeight : nil,
-            panel: viewModel.openPanelSize,
-            panelFocusesLane: viewModel.panel?.focusedLane != nil,
+            // Tucked away, the panel gives the timeline and the toolbar's place back (`PanelTuckedBar`).
+            panel: viewModel.panelIsTucked ? nil : viewModel.openPanelSize,
+            panelFocusesLane: !viewModel.panelIsTucked && viewModel.panel?.focusedLane != nil,
             largeText: dynamicTypeSize >= .xxLarge,
             panelIsExpanded: viewModel.panelIsExpanded,
             typesInHeaderField: viewModel.panel == .textStyle && viewModel.selectedText?.graphic == nil
@@ -356,9 +364,15 @@ struct QuickEditView: View {
                     }
                 }
             if layout.toolbar > 0 {
-                EditorToolbar(viewModel: viewModel, heightClass: layout.heightClass)
-                    .frame(height: layout.toolbar)
-                    .transition(.opacity)
+                if viewModel.panelIsTucked, let panel = viewModel.panel {
+                    PanelTuckedBar(viewModel: viewModel, panel: panel)
+                        .frame(height: layout.toolbar)
+                        .transition(.opacity)
+                } else {
+                    EditorToolbar(viewModel: viewModel, heightClass: layout.heightClass)
+                        .frame(height: layout.toolbar)
+                        .transition(.opacity)
+                }
             }
             if layout.panel > 0, let panel = viewModel.panel {
                 EditorPanelView(viewModel: viewModel, panel: panel)
@@ -502,10 +516,11 @@ struct QuickEditView: View {
     private func sheetPanelBinding(_ layout: EditorLayout) -> Binding<Bool> {
         Binding(
             get: {
-                guard viewModel.panel != nil, case .sheet = layout.panelPresentation else { return false }
+                guard viewModel.panel != nil, !viewModel.panelIsTucked, case .sheet = layout.panelPresentation else { return false }
                 return true
             },
-            set: { if !$0 { viewModel.panel = nil } }
+            // Stepping aside dismisses the sheet too: that isn't closing the panel.
+            set: { if !$0, !viewModel.panelIsTucked { viewModel.panel = nil } }
         )
     }
 }

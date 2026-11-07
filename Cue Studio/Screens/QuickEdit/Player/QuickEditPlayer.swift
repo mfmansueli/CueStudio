@@ -175,6 +175,8 @@ final class QuickEditPlayer: EditPlayback {
         // Play is never a scrub: a drag whose end never came (a glide stopped by a touch) doesn't hold the clock still.
         isScrubbing = false
         isPlaying = true
+        // Playing shows the motion as it is: the picked item is no longer held whole (`PreviewMotionHold`).
+        PreviewMotionHold.shared.set(nil)
         var from = currentTime
         if let part = reviewedPart, abs(currentTime - part.upperBound) < 0.02 {
             // From the end of the part under review, that part plays again.
@@ -207,6 +209,12 @@ final class QuickEditPlayer: EditPlayback {
             currentTime = min(clamped(shown - windowStart), playbackEnd)
         }
         endStop()
+    }
+
+    /// No rebuild: the item stays and the paused frame is asked for again.
+    func redrawPausedFrame() {
+        guard !isPlaying, state == .ready, avPlayer.currentItem != nil, !awaitsItem else { return }
+        requestSeek(to: currentTime)
     }
 
     func togglePlayback() {

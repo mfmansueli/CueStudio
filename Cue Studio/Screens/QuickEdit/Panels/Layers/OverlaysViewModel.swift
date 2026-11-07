@@ -5,6 +5,7 @@
 
 import CoreGraphics
 import Foundation
+import os
 
 /// What lies on the video (`EditorPart`): texts and graphics with their type styles and "My style", photos and videos over the
 /// take, their motion and keyframes, Track, and picking, dragging and placing them on the preview. What it keeps is its
@@ -43,6 +44,8 @@ final class OverlaysViewModel: EditorPart {
     var textStyles: StyleLibrary<TextLook>
     /// Track: how far following the picked item's object is, 0 to 1; nil when it isn't (`+Track`).
     var trackingProgress: Double?
+    /// Track's Stop, read by the run off the main actor (`stopTracking`).
+    let trackStop = OSAllocatedUnfairLock(initialState: false)
     /// A video just added that has its own sound: Media asks whether to keep it.
     var soundChoiceMediaID: UUID?
     /// What a drag on the preview moves while Mask is open (`+Mask`).

@@ -22,6 +22,7 @@ struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
     /// tap away; owner, canvas 2 R2). Too wide beside the buttons, the header puts them on a row of their own.
     var subtitleChoice: AnyView?
     @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(\.editorPanelTuck) private var tuck
     /// VoiceOver lands on the title when the panel opens, so the controls it brought are read from the top.
     @AccessibilityFocusState private var titleIsFocused: Bool
     var onReset: (() -> Void)?
@@ -203,6 +204,7 @@ struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
         }
         if let compare { PanelCompareButton(compare: compare) }
         if let play { playButton(play) }
+        if let tuck { tuckButton(tuck.perform) }
         if let expansion { expandButton(expansion) }
         if let accessory { accessory }
         Button {
@@ -220,6 +222,25 @@ struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
         .buttonStyle(.plain)
         .accessibilityLabel(Text("Apply"))
         .accessibilityIdentifier("edit.panel.apply")
+    }
+
+    /// ⌄ on the SE's styling sheet: the panel steps aside for the timeline (`editorPanelTuck`), and comes back as it was.
+    private func tuckButton(_ tuck: @escaping @MainActor () -> Void) -> some View {
+        Button {
+            Haptics.selection()
+            tuck()
+        } label: {
+            Image(systemName: "chevron.down")
+                .font(.editorGlyph(EditorGlyph.button, weight: .semibold))
+                .foregroundStyle(Palette.ink)
+                .frame(width: Metrics.applyButtonSize, height: Metrics.applyButtonSize)
+                .background(Palette.fill, in: Circle())
+                .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(Text("Show timeline"))
+        .accessibilityIdentifier("edit.panel.tuck")
     }
 
     /// ▶ as round as expand, with a small "PREVIEW" tag above its corner (as the toolbar's "ALL"), so it never reads as the

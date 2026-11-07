@@ -86,7 +86,7 @@ extension AudioViewModel {
         guard let moved = BeatCuts.movingCuts(of: edit.timeline, onto: editedBeats) else {
             toast.show(edit.timeline.segments.count > 1
                 ? String(localized: "No cut is near a beat")
-                : String(localized: "Split the video first, or use Cut on the beats"), kind: .problem)
+                : String(localized: "No cuts to move yet · Split the video first, or cut on the beats above"), kind: .problem)
             return
         }
         commit(moved.timeline)

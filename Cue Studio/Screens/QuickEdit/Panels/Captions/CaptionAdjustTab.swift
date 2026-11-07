@@ -58,9 +58,14 @@ struct CaptionAdjustTab: View {
 
     @ViewBuilder
     private func font(_ settings: CaptionSettings, spec: CaptionStyleSpec) -> some View {
+        let brand = viewModel.brand
+        MyFontsGroup(
+            fonts: brand.myFonts(including: settings.face), removable: brand.removableFonts, selection: settings.face,
+            identifier: "edit.captionFace", onSelect: { captions.setCaptionFace($0) }, onRemove: brand.removeFont
+        )
         PanelChips(
             options: [PanelOption(nil, String(localized: "Style's font"), key: "preset")]
-                + TextOverlayFont.pickerFonts(including: settings.face).map { PanelOption(Optional($0), $0.label, key: $0.rawValue) },
+                + TextOverlayFont.editorFonts.map { PanelOption(Optional($0), $0.label, key: $0.rawValue) },
             selection: settings.face,
             font: { face, size in face.map { CueStudioFont.chip($0, size: size) } ?? .system(size: size, weight: .semibold) },
             identifier: "edit.captionFace", onSelect: captions.setCaptionFace

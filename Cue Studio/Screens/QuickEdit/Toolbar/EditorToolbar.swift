@@ -222,6 +222,16 @@ struct EditorToolbar: View {
                                 .accessibilityHidden(true)
                         }
                     }
+                    .overlay(alignment: .bottomTrailing) {
+                        // It changed the picked clip (canvas 2 M2): a dot low on the icon's corner, never where All sits.
+                        if item.isApplied {
+                            Circle()
+                                .fill(Palette.acc)
+                                .frame(width: 6, height: 6)
+                                .offset(x: 7, y: 1)
+                                .accessibilityHidden(true)
+                        }
+                    }
                 Text(item.label)
                     .font(.system(size: heightClass.toolbarLabelSize, weight: .medium))
                     .foregroundStyle(isLit ? Palette.accText : labelTint)
@@ -236,7 +246,7 @@ struct EditorToolbar: View {
         .accessibilityShowsLargeContentViewer { Label(item.label, systemImage: item.systemImage) }
         .accessibilityLabel(item.scopeBadge == nil ? Text(item.label) : Text("\(item.label), whole video"))
         .accessibilityHint(item.style == .dimmed ? Text("Not available here") : Text(""))
-        .accessibilityValue(item.isOn.map { $0 ? Text("On") : Text("Off") } ?? Text(""))
+        .accessibilityValue(item.isOn.map { $0 ? Text("On") : Text("Off") } ?? (item.isApplied ? Text("Changed on this clip") : Text("")))
         .accessibilityAddTraits(item.isOn == nil ? [] : .isToggle)
         .accessibilityIdentifier("edit.toolbar.\(item.id)")
     }

@@ -82,6 +82,8 @@ final class CoverStudioViewModel: Identifiable {
     @ObservationIgnored private let styles: TextStyleStoring
     /// The script libraries the Title's picker offers (`scriptLibraries`).
     let fontPacks: FontPackStore?
+    /// The creator's imported families, for the Title's My fonts (Edit and Remove; nil in previews).
+    let customFonts: CustomFontStore?
     @ObservationIgnored private let writingLanguages: () -> (script: CueLanguage?, interface: CueLanguage?)
     /// The creator's script language and the app's, now.
     var writingLanguagesNow: (script: CueLanguage?, interface: CueLanguage?) { writingLanguages() }
@@ -113,9 +115,10 @@ final class CoverStudioViewModel: Identifiable {
     init(
         cover: VideoCover?, frame: CoverFrame, edit: TakeEdit, videoURL: URL, handle: String, suggestions: [String],
         pictures: CoverPicturing, importer: EditMediaImporting, styles: TextStyleStoring, fontPacks: FontPackStore? = nil,
-        writingLanguages: @escaping () -> (script: CueLanguage?, interface: CueLanguage?) = { (nil, nil) }
+        customFonts: CustomFontStore? = nil, writingLanguages: @escaping () -> (script: CueLanguage?, interface: CueLanguage?) = { (nil, nil) }
     ) {
         self.fontPacks = fontPacks
+        self.customFonts = customFonts
         self.writingLanguages = writingLanguages
         self.edit = edit
         self.videoURL = videoURL

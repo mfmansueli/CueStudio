@@ -90,8 +90,11 @@ extension QuickEditViewModel {
         input.selection = selection
         input.alsoSelected = overlays.textsStyledTogether
         input.selectedJoin = selectedJoinID
-        input.panelIsOpen = panel != nil
-        input.focusedLane = panel?.focusedLane
+        // A styling sheet tucked away on the SE gives the whole timeline back (canvas 2 R10 §7.3).
+        input.panelIsOpen = panel != nil && !panelIsTucked
+        input.focusedLane = panelIsTucked ? nil : panel?.focusedLane
+        // Text style and Caption style keep the ruler and their own track above them, without the video track (R10 §7.3).
+        input.panelIsFull = !panelIsTucked && openPanelSize == .full
         input.activeLanes = toolMenu?.lanes ?? []
         input.tracks = tracks
         input.heightClass = heightClass
@@ -153,7 +156,7 @@ extension QuickEditViewModel {
     func tapTimeline(_ hit: TimelineGeometry.Hit?) {
         guard isReady, !audio.isRecordingVoiceOver else { return }
         if panel == .pauses {
-            if case .pause(let id) = hit { togglePauseMark(id) }
+            if case .pause(let id) = hit { tapPauseMark(id) }
             return
         }
         if hit == .trackChooser {
@@ -177,7 +180,7 @@ extension QuickEditViewModel {
         case .addClip:
             overlays.mediaInsertMode = .sequence
             sheet = .media
-        case .pause(let id): togglePauseMark(id)
+        case .pause(let id): tapPauseMark(id)
         case .gap(let id):
             // The track names the photo or video itself: a support's own tools, not its split screen's main video.
             overlays.selectedArea = .support
@@ -316,8 +319,9 @@ extension QuickEditViewModel {
     }
 
     /// Marks a pause to go, or to stay.
-    func togglePauseMark(_ id: UUID) {
-        clips.toggleMark(id)
+    /// A Clean up mark on the timeline: its card first, then a second tap switches it (`ClipsViewModel.revealCleanUpMark`).
+    func tapPauseMark(_ id: UUID) {
+        clips.revealCleanUpMark(id)
     }
 
     // MARK: - Scrubbing

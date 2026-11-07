@@ -120,6 +120,8 @@ extension EditorRecipeUITests {
         guard tool("pauses") else { return "GAP: no Clean up on the bar" }
         let listening = element("edit.pauses.listening")
         _ = listening.isGone(within: realTake == nil ? 30 : 180)
+        // The length is behind the header's button (canvas 2 F10).
+        if !button("edit.pauses.threshold.minus").exists { tapButton("edit.pauses.settings") }
         let value = element("edit.pauses.threshold.value")
         var steps = 0
         while steps < 8, !(label(value).contains("0.4") || label(value).contains("0,4")), button("edit.pauses.threshold.minus").isEnabled {
@@ -225,6 +227,8 @@ extension EditorRecipeUITests {
         dump("R1.5-motion")
         let pop = reveal(button("edit.motion.preset.pop"), in: "textStyle", sideways: true) && tapButton("edit.motion.preset.pop")
         let ends = element("edit.text.ends.value")
+        // When it starts and ends is under Advanced (canvas 2 F15).
+        if !ends.exists, reveal(button("edit.panel.advanced"), in: "textStyle"), tapButton("edit.panel.advanced") { taps += 1 }
         _ = reveal(button("edit.text.ends.minus"), in: "textStyle")
         var minus = 0
         while minus < 40, seconds(label(ends)) > 2.05, tapButton("edit.text.ends.minus", within: 1) { minus += 1 }

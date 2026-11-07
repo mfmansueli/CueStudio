@@ -5,19 +5,34 @@
 
 import SwiftUI
 
-/// Clean up › Pauses: "Pauses longer than" (0.3 to 3 s) and "Gap left" (how much silence each cut leaves), the silence before
-/// the first word, a card for each pause, and what was removed. Needs no words: the pauses come from the loudness.
+/// Clean up › Pauses: a card for each pause first (owner, canvas 2 F10), with "Pauses longer than" (0.3 to 3 s) and "Gap left"
+/// (how much silence each cut leaves) above them when the header's button opens them; the silence before the first word, and
+/// what was removed. Needs no words: the pauses come from the loudness.
 struct CleanUpPausesTab: View {
     @Bindable var viewModel: QuickEditViewModel
 
     var body: some View {
         let clips = viewModel.clips
         VStack(alignment: .leading, spacing: 8) {
+            if viewModel.showsAdvanced { settings }
+            switch clips.analysis {
+            case .idle, .running: CleanUpListening()
+            case .failed: CleanUpFailed { clips.listenForCleanUp() }
+            case .done: found
+            }
+        }
+    }
+
+    /// "Pauses longer than" and "Gap left", opened by the header's button (`CleanUpSettingsButton`).
+    private var settings: some View {
+        let clips = viewModel.clips
+        return VStack(alignment: .leading, spacing: 8) {
             PanelStepper(
                 label: String(localized: "Pauses longer than"), value: DurationText.tenths(clips.pauseThreshold),
                 canDecrease: clips.pauseThreshold > ClipsViewModel.pauseThresholdRange.lowerBound + 0.001,
                 canIncrease: clips.pauseThreshold < ClipsViewModel.pauseThresholdRange.upperBound - 0.001,
                 identifier: "edit.pauses.threshold",
+                onEditingChanged: { $0 ? viewModel.beginPanelChange() : viewModel.endPanelChange() },
                 onDecrease: clips.lowerPauseThreshold, onIncrease: clips.raisePauseThreshold
             )
             PanelSegmented(
@@ -25,12 +40,9 @@ struct CleanUpPausesTab: View {
                 options: PauseGap.allCases.map { PanelOption($0, $0.label, key: $0.rawValue) },
                 selection: clips.pauseGap, identifier: "edit.pauses.gap"
             ) { clips.pauseGap = $0 }
-            switch clips.analysis {
-            case .idle, .running: CleanUpListening()
-            case .failed: CleanUpFailed { clips.listenForCleanUp() }
-            case .done: found
-            }
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("edit.pauses.settingsRow")
     }
 
     @ViewBuilder private var found: some View {

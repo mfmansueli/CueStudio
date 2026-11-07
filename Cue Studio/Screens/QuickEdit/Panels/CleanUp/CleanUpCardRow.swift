@@ -24,7 +24,25 @@ struct CleanUpCardRow: View {
     private static let rowInset: CGFloat = 16
 
     var body: some View {
-        ScrollView(.horizontal) {
+        ScrollViewReader { proxy in
+            ScrollView(.horizontal) {
+                cards
+                    // Room for the lit card's ring (`CleanUpCard.isHighlighted`).
+                    .padding(.vertical, 5)
+                    .padding(.horizontal, Self.rowInset)
+            }
+            .scrollIndicators(.hidden)
+            .onChange(of: viewModel.clips.highlightedCleanUpID, initial: true) { _, id in
+                // A mark tapped on the timeline brings its card into view (canvas 2 M3).
+                guard let id, suggestions.contains(where: { $0.id == id }) else { return }
+                withAnimation(.easeOut(duration: 0.3)) { proxy.scrollTo(id, anchor: .center) }
+            }
+        }
+        .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { rowWidth = $0 }
+        .padding(.horizontal, -Self.rowInset)
+    }
+
+    private var cards: some View {
             HStack(spacing: Self.cardSpacing) {
                 ForEach(Array(suggestions.enumerated()), id: \.element.id) { index, suggestion in
                     CleanUpCard(
@@ -32,18 +50,15 @@ struct CleanUpCardRow: View {
                         time: viewModel.clips.cardTime(suggestion),
                         isMarked: viewModel.clips.isMarked(suggestion),
                         isListening: viewModel.clips.listeningID == suggestion.id,
+                        isHighlighted: viewModel.clips.highlightedCleanUpID == suggestion.id,
                         identifier: "edit.\(kind).\(index)",
                         width: cardWidth,
                         onToggle: { viewModel.clips.tapCleanUpCard(suggestion.id) },
                         onListen: { viewModel.clips.listen(to: suggestion.id) }
                     )
+                    .id(suggestion.id)
                 }
             }
-            .padding(.horizontal, Self.rowInset)
-        }
-        .scrollIndicators(.hidden)
-        .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { rowWidth = $0 }
-        .padding(.horizontal, -Self.rowInset)
     }
 
     /// A card's width for a row `length` wide: as many whole cards as fit at the minimum, plus a part of the next one.

@@ -6,10 +6,11 @@
 import SwiftUI
 import UIKit
 
-/// One track's icon in the gutter, in its colour (`TimelineLaneTint`). The current track's icon has ▾ beside it on a square of
-/// its hue, stronger while the track's tools are open: the square sinks while a finger is on it and springs back on release,
-/// and ▾ turns to ▴ with a spring while every track is out (under a finger dragging the timeline, as far as the tracks are
-/// out). With Reduce Motion nothing moves: the colours change in place.
+/// One track's icon in the gutter, in its colour (`TimelineLaneTint`). The current track's icon has a stack of tracks and how
+/// many there are beside it ("▤ 4", owner, canvas 2 N1) on a square of its hue, stronger while the track's tools are open: the
+/// square sinks while a finger is on it and springs back on release, and the stack gives way to ▴ while every track is out
+/// (under a finger dragging the timeline, as far as the tracks are out). With Reduce Motion nothing moves: the colours change in
+/// place.
 @MainActor
 final class TimelineLaneGutterCell: UIView {
     struct State: Equatable {
@@ -17,8 +18,10 @@ final class TimelineLaneGutterCell: UIView {
         var height: CGFloat
         /// The current track: the square and ▾.
         var isCurrent: Bool
-        /// How far ▾ has turned to ▴ (`TimelineGeometry.Chooser.turn`).
+        /// How far the stack has given way to ▴ (`TimelineGeometry.Chooser.turn`).
         var turn: CGFloat
+        /// The tracks under the video, beside the stack.
+        var trackCount: Int
         /// Its tools are open on the toolbar.
         var isActive: Bool
     }
@@ -28,6 +31,8 @@ final class TimelineLaneGutterCell: UIView {
     private let square = UIView()
     private let icon = UIImageView()
     private let chevron = UIImageView()
+    /// The stack of tracks and their count, while they're put away.
+    private let stack = UILabel()
     private(set) var state: State?
     private var isPressed = false
 
@@ -42,6 +47,7 @@ final class TimelineLaneGutterCell: UIView {
         body.addSubview(square)
         body.addSubview(icon)
         body.addSubview(chevron)
+        body.addSubview(stack)
         addSubview(body)
     }
 
@@ -64,18 +70,33 @@ final class TimelineLaneGutterCell: UIView {
                 UIImage(systemName: $0, withConfiguration: UIImage.SymbolConfiguration(pointSize: look.gutterSymbolSize, weight: .semibold))
             }
             chevron.image = UIImage(
-                systemName: "chevron.down", withConfiguration: UIImage.SymbolConfiguration(pointSize: look.chevronSize, weight: .bold)
+                systemName: "chevron.up", withConfiguration: UIImage.SymbolConfiguration(pointSize: look.chevronSize, weight: .bold)
             )
         }
         let ink = UIColor(TimelineLaneTint.ink(of: next.lane))
+        if previous?.lane != next.lane || previous?.trackCount != next.trackCount || previousLook?.chevronSize != look.chevronSize {
+            stack.attributedText = Self.stackText(count: next.trackCount, size: look.chevronSize, ink: ink)
+        }
         icon.tintColor = ink
         chevron.tintColor = ink
         square.isHidden = !next.isCurrent
         chevron.isHidden = !next.isCurrent
+        stack.isHidden = !next.isCurrent
         if next.isCurrent { paintSquare() }
         square.layer.cornerRadius = look.chooserRadius
         setNeedsLayout()
-        turnChevron(to: next.turn, animated: animated && previous?.isCurrent == true && previous?.lane == next.lane)
+        showStack(away: next.turn, animated: animated && previous?.isCurrent == true && previous?.lane == next.lane)
+    }
+
+    /// "▤ 4": a stack of tracks and how many there are under the video.
+    private static func stackText(count: Int, size: CGFloat, ink: UIColor) -> NSAttributedString {
+        let text = NSMutableAttributedString()
+        if let symbol = UIImage(systemName: "rectangle.stack.fill", withConfiguration: UIImage.SymbolConfiguration(pointSize: size + 1, weight: .bold)) {
+            text.append(NSAttributedString(attachment: NSTextAttachment(image: symbol.withTintColor(ink, renderingMode: .alwaysOriginal))))
+        }
+        let digits = UIFont.monospacedDigitSystemFont(ofSize: size + 3, weight: .bold)
+        text.append(NSAttributedString(string: "\u{2009}\(count)", attributes: [.font: digits, .foregroundColor: ink]))
+        return text
     }
 
     override func layoutSubviews() {
@@ -93,14 +114,18 @@ final class TimelineLaneGutterCell: UIView {
             icon.frame = bounds
             return
         }
-        // The icon and ▾ side by side, centred together on the square.
+        // The icon and the stack (or ▴) side by side, centred together on the square.
         let chevronWidth = chevron.image?.size.width ?? 8
+        let stackSize = stack.intrinsicContentSize
+        let accessory = max(chevronWidth, stackSize.width)
         let gap: CGFloat = 2
-        let start = (bounds.width - iconWidth - gap - chevronWidth) / 2
+        let start = (bounds.width - iconWidth - gap - accessory) / 2
         icon.frame = CGRect(x: start, y: 0, width: iconWidth, height: bounds.height)
-        // By bounds and centre: it may be turned.
+        let middle = start + iconWidth + gap + accessory / 2
         chevron.bounds = CGRect(x: 0, y: 0, width: chevronWidth, height: chevronWidth)
-        chevron.center = CGPoint(x: start + iconWidth + gap + chevronWidth / 2, y: bounds.midY)
+        chevron.center = CGPoint(x: middle, y: bounds.midY)
+        stack.bounds = CGRect(origin: .zero, size: stackSize)
+        stack.center = CGPoint(x: middle, y: bounds.midY)
     }
 
     /// A finger came down on the current track's square (it sinks) or left it (it springs back).
@@ -139,22 +164,17 @@ final class TimelineLaneGutterCell: UIView {
         square.layer.borderColor = UIColor(TimelineLaneTint.ring(of: lane)).cgColor
     }
 
-    /// ▾ down, or turned up (▴) while every track is out: with a spring that passes the mark a little (under a finger, as far
-    /// as it has turned, at once).
-    private func turnChevron(to turn: CGFloat, animated: Bool) {
-        let angle = .pi * turn
-        let layer = chevron.layer
-        let from = (layer.presentation()?.value(forKeyPath: "transform.rotation.z") as? CGFloat) ?? 0
-        layer.setValue(angle, forKeyPath: "transform.rotation.z")
-        guard animated, !Self.reducesMotion, abs(from - angle) > 0.01 else {
-            layer.removeAnimation(forKey: "turn")
+    /// The stack while the tracks are put away, ▴ while every one is out: crossfaded as far as they're out under a finger, and
+    /// at once with Reduce Motion.
+    private func showStack(away turn: CGFloat, animated: Bool) {
+        let change = {
+            self.stack.alpha = 1 - turn
+            self.chevron.alpha = turn
+        }
+        guard animated, !Self.reducesMotion else {
+            change()
             return
         }
-        let spring = CASpringAnimation(perceptualDuration: 0.45, bounce: 0.35)
-        spring.keyPath = "transform.rotation.z"
-        spring.fromValue = from
-        spring.toValue = angle
-        spring.duration = spring.settlingDuration
-        layer.add(spring, forKey: "turn")
+        UIView.animate(withDuration: 0.2, delay: 0, options: [.allowUserInteraction, .beginFromCurrentState], animations: change)
     }
 }

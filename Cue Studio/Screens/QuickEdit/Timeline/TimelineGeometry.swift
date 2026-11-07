@@ -48,6 +48,8 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         var selectedJoin: UUID?
         var panelIsOpen = false
         var focusedLane: TimelineLane?
+        /// A full panel (Text style, Caption style) is open: the ruler and its track alone show above it (canvas 2 R10 §7.3).
+        var panelIsFull = false
         /// The tracks whose tools are open on the toolbar (their strips light up).
         var activeLanes: Set<TimelineLane> = []
         /// The current track and whether every track is out; nil shows every track, with no ▾.
@@ -236,6 +238,8 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         /// Across in the timeline's own width (the gutter stays put), down in the content: the icon's column and the start of
         /// the strip, with the space above the track and, collapsed, the room under it, so it is `chooserReach` square at least.
         var hitFrame: CGRect
+        /// How many tracks there are under the video, shown beside the stack (canvas 2 N1).
+        var trackCount: Int = 0
     }
 
     /// A handle being dragged: an end of a clip or of a track item.
@@ -293,6 +297,8 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
     static let addGap: CGFloat = 14
     /// A cut's mark, and the least room each clip beside it needs for it to show.
     static let joinSize: CGFloat = 20
+    /// How wide a cut's mark is reached with no clip picked (no handles near it).
+    static let joinReach: CGFloat = 44
     static let joinRoom: CGFloat = 26
     /// The voice-over being recorded has no id of its own yet.
     static let recordingID = UUID(uuidString: "00000000-0000-0000-0000-000000000000") ?? UUID()
@@ -351,8 +357,13 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         contentHeight = height
         let isExpanded = input.tracks?.isExpanded == true
         let turn = Self.reveal(of: input) ?? (isExpanded ? 1 : 0)
+        let trackCount = Self.lanes(hasBlurs: !input.blurs.isEmpty, hasMusic: hasMusic, hasVoice: hasVoice).count - 1
         chooser = chosen.flatMap { chosen in
-            lanes.first { $0.lane == chosen }.map { Self.chooser(beside: $0, isExpanded: isExpanded, turn: turn, spacing: spacing) }
+            lanes.first { $0.lane == chosen }.map {
+                var chooser = Self.chooser(beside: $0, isExpanded: isExpanded, turn: turn, spacing: spacing)
+                chooser.trackCount = trackCount
+                return chooser
+            }
         }
         contentWidth = CGFloat(input.duration) * pps
 
@@ -396,7 +407,9 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
                 let x = CGFloat(clip.start) * pps
                 let size = Self.joinSize
                 let frame = CGRect(x: x - size / 2, y: main.y + (main.height - size) / 2, width: size, height: size)
-                let reach = Self.handleReach
+                // With no clip picked there are no clip handles to share the touch with: the mark gets a full 44 pt, short of
+                // the middle of either clip (canvas 2 N1).
+                let reach = picked == nil ? max(Self.handleReach, min(Self.joinReach, before, CGFloat(clip.duration) * pps)) : Self.handleReach
                 joins.append(Join(
                     id: clip.id, frame: frame,
                     hitFrame: CGRect(x: x - reach / 2, y: main.y, width: reach, height: main.height),
@@ -523,7 +536,7 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
     /// The tracks, top to bottom, and the one ▾ sits beside: with a panel about one track open, that track over the video (no
     /// ▾); collapsed, the video and the current track; else every track (`lanes`).
     private static func laneOrder(_ input: Input) -> (lanes: [TimelineLane], chooser: TimelineLane?) {
-        if input.panelIsOpen, let focus = input.focusedLane { return ([focus, .main], nil) }
+        if input.panelIsOpen, let focus = input.focusedLane { return (input.panelIsFull ? [focus] : [focus, .main], nil) }
         let all = lanes(
             hasBlurs: !input.blurs.isEmpty, hasMusic: !input.music.isEmpty, hasVoice: !input.voiceOvers.isEmpty || input.recording != nil
         )

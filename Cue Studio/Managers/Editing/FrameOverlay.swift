@@ -47,6 +47,10 @@ nonisolated struct FrameOverlay: @unchecked Sendable {
     /// Keyframed motion over its own time, on a frame of `frameSize`.
     var motion: OverlayMotion?
     var frameSize: CGSize = .zero
+    /// The text this draws (`TextOverlay.id`); nil for a caption.
+    var textID: UUID?
+    /// Drawn for the editor's preview, where the picked text shows whole while paused (`PreviewMotionHold`).
+    var readsPreviewHold = false
 
     init(image: CIImage, origin: CGPoint, span: TimeSpan?) {
         self.image = image
@@ -88,7 +92,9 @@ nonisolated struct FrameOverlay: @unchecked Sendable {
 
     /// Its drawing placed on the frame at `time`: where its keyframes put it, as big, as turned and
     /// as opaque as they say, faded at its edges.
-    func placed(at time: TimeInterval, cache: OverlayImageCache) -> CIImage? {
+    func placed(at shown: TimeInterval, cache: OverlayImageCache) -> CIImage? {
+        // The editor's preview, paused on the picked text: drawn as it is once in (`PreviewMotionHold`).
+        let time = readsPreviewHold ? span.map { $0.start + PreviewMotionHold.shared.local(shown - $0.start, of: textID) } ?? shown : shown
         let local = span.map { time - $0.start } ?? time
         guard let picture = effect?.image(at: local) ?? image ?? lazyText.flatMap(cache.image(for:)) else { return nil }
         var center = CGPoint(x: origin.x + size.width / 2, y: origin.y + size.height / 2)

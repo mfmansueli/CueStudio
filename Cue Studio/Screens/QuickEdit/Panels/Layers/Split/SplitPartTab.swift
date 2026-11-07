@@ -21,7 +21,10 @@ struct SplitPartTab: View {
                 MediaTrimStrip(viewModel: viewModel, media: media)
             } else if let span {
                 PanelStepper(
-                    label: String(localized: "Shows for"), value: DurationText.tenths(span.duration), identifier: "edit.mediaLength",
+                    label: String(localized: "Duration"), value: DurationText.tenths(span.duration), identifier: "edit.mediaLength",
+                    presets: PanelStepper.commonLengths(upTo: media.longestDuration),
+                    onPreset: { overlays.setMediaLength(media.id, $0) },
+                    onEditingChanged: { $0 ? viewModel.beginPanelChange() : viewModel.endPanelChange() },
                     onDecrease: { overlays.setMediaLength(media.id, span.duration - 0.5) },
                     onIncrease: { overlays.setMediaLength(media.id, span.duration + 0.5) }
                 )
