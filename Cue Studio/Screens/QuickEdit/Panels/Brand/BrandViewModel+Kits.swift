@@ -83,7 +83,7 @@ extension BrandViewModel {
     }
 
     /// Editing: values ready in the tools, nothing that plays changes ("Clean up: pauses over 0.7s · Natural gap · Music you add:
-    /// 40%, 12 dB down under the voice · nothing is cut").
+    /// 40% · While you talk and in pauses: 10% · nothing is cut").
     private func editingChange(_ editing: BrandKitEditing?, part: BrandKitPart) -> KitChange {
         guard let editing else { return KitChange(part: part, title: part.label, detail: "", isAvailable: false) }
         let said = Self.said(editing)
@@ -91,13 +91,14 @@ extension BrandViewModel {
         return KitChange(part: part, title: part.label, detail: detail, isAvailable: true)
     }
 
-    /// A kit's Editing in words: "Clean up: pauses over 0.7s · Natural gap", "Music you add: 40%, 12 dB down under the voice",
+    /// A kit's Editing in words: "Clean up: pauses over 0.7s · Natural gap", "Music you add: 40% · While you talk and in pauses: 10%",
     /// "Enhance voice Light · Reduce noise Off".
     static func said(_ editing: BrandKitEditing) -> (pauses: String, music: String, voice: String) {
         let pauses = String(localized: "Clean up: pauses over \(DurationText.tenths(editing.pauseThreshold)) · \(editing.pauseGap.label) gap")
         let percent = Int((editing.music.volume * 100).rounded())
-        let depth = Int(editing.music.duck.depth.rounded())
-        let music = String(localized: "Music you add: \(percent)%, \(depth) dB down under the voice")
+        // The same words as Volume's: percents of the music's own level, never decibels beside them.
+        let levels = AudioViewModel.musicLevels(volume: editing.music.volume, duck: editing.music.duck) ?? ""
+        let music = String(localized: "Music you add: \(percent)% · \(levels)")
         let voice = String(localized: "Enhance voice \(editing.voiceEnhancement.label) · Reduce noise \(editing.noiseReduction.label)")
         return (pauses, music, voice)
     }

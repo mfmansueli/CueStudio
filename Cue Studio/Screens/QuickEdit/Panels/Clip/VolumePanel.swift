@@ -119,6 +119,9 @@ struct VolumePanel: View {
         ) { viewModel.audio.setMusicDucks(music.id, !music.ducksUnderVoice) }
         if music.ducksUnderVoice {
             let duck = viewModel.audio.duck(of: music)
+            if let levels = AudioViewModel.musicLevels(volume: music.volume, duck: duck) {
+                PanelNote(text: levels).accessibilityIdentifier("edit.musicLevels")
+            }
             PanelSlider(
                 label: String(localized: "Lower by"), value: duck.depth, range: MusicDuck.depthRange, step: 1,
                 defaultValue: MusicDuck.standard.depth, format: .decibels, identifier: "edit.musicDuckDepth",

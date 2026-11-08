@@ -81522,121 +81522,121 @@
         }
       }
     },
-    "Music you add: %lld%%, %lld dB down under the voice" : {
-      "comment" : "A kit's Editing: the volume music added starts at and how far it goes down while someone speaks",
+    "Music you add: %lld%% · %@" : {
+      "comment" : "A kit's Editing: the level new music gets, then its level under the voice",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "الموسيقى التي تضيفها: %1$lld%%، تنخفض %2$lld dB تحت الصوت"
+            "value" : "الموسيقى التي تضيفها: %1$lld%% · %2$@"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Musik, du tilføjer: %1$lld %%, %2$lld dB ned under stemmen"
+            "value" : "Musik, du tilføjer: %1$lld%% · %2$@"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Musik, die du hinzufügst: %1$lld %%, %2$lld dB leiser unter der Stimme"
+            "value" : "Musik, die du hinzufügst: %1$lld%% · %2$@"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Música que añadas: %1$lld %%, %2$lld dB menos bajo la voz"
+            "value" : "Música que añades: %1$lld%% · %2$@"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Musique ajoutée : %1$lld %%, %2$lld dB plus bas sous la voix"
+            "value" : "Musique que vous ajoutez : %1$lld%% · %2$@"
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "आप जो म्यूज़िक जोड़ें: %1$lld%%, आवाज़ के नीचे %2$lld dB कम"
+            "value" : "जोड़ा गया संगीत: %1$lld%% · %2$@"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Musik yang kamu tambahkan: %1$lld%%, turun %2$lld dB di bawah suara"
+            "value" : "Musik yang kamu tambahkan: %1$lld%% · %2$@"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Musica che aggiungi: %1$lld%%, %2$lld dB più bassa sotto la voce"
+            "value" : "Musica che aggiungi: %1$lld%% · %2$@"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "追加する音楽：%1$lld%%、声の下で%2$lld dB下げる"
+            "value" : "追加する音楽: %1$lld%% · %2$@"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "추가하는 음악: %1$lld%%, 목소리 아래에서 %2$lld dB 낮춤"
+            "value" : "추가하는 음악: %1$lld%% · %2$@"
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Musikk du legger til: %1$lld %%, %2$lld dB ned under stemmen"
+            "value" : "Musikk du legger til: %1$lld%% · %2$@"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Muziek die je toevoegt: %1$lld%%, %2$lld dB zachter onder de stem"
+            "value" : "Muziek die je toevoegt: %1$lld%% · %2$@"
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Música que você adicionar: %1$lld%%, %2$lld dB mais baixa sob a voz"
+            "value" : "Música que você adiciona: %1$lld%% · %2$@"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Musik du lägger till: %1$lld %%, %2$lld dB ner under rösten"
+            "value" : "Musik du lägger till: %1$lld%% · %2$@"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "เพลงที่คุณเพิ่ม: %1$lld%% ลดลง %2$lld dB ใต้เสียงพูด"
+            "value" : "เพลงที่คุณเพิ่ม: %1$lld%% · %2$@"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Eklediğin müzik: %%%1$lld, sesin altında %2$lld dB kısılır"
+            "value" : "Eklediğin müzik: %1$lld%% · %2$@"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nhạc bạn thêm: %1$lld%%, giảm %2$lld dB dưới giọng nói"
+            "value" : "Nhạc bạn thêm: %1$lld%% · %2$@"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你添加的音乐：%1$lld%%，人声下降低 %2$lld dB"
+            "value" : "你添加的音乐：%1$lld%% · %2$@"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你新增的音樂：%1$lld%%，人聲下降低 %2$lld dB"
+            "value" : "你加入的音樂：%1$lld%% · %2$@"
           }
         }
       }
@@ -138493,6 +138493,244 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "最常發布的平台 · 長度"
+          }
+        }
+      }
+    },
+    "While you talk: %lld%% · in pauses: %lld%%" : {
+      "comment" : "Volume › music: level while someone talks, then in pauses (percents of its own file)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أثناء كلامك: %1$lld%% · في الوقفات: %2$lld%%"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mens du taler: %1$lld%% · i pauser: %2$lld%%"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Während du sprichst: %1$lld%% · in Pausen: %2$lld%%"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mientras hablas: %1$lld%% · en las pausas: %2$lld%%"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pendant que vous parlez : %1$lld%% · dans les pauses : %2$lld%%"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपके बोलते समय: %1$lld%% · रुकावटों में: %2$lld%%"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saat kamu bicara: %1$lld%% · saat jeda: %2$lld%%"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mentre parli: %1$lld%% · nelle pause: %2$lld%%"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "話している間: %1$lld%% · 間（ま）: %2$lld%%"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "말할 때: %1$lld%% · 쉬는 동안: %2$lld%%"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mens du snakker: %1$lld%% · i pauser: %2$lld%%"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terwijl je praat: %1$lld%% · in pauzes: %2$lld%%"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enquanto você fala: %1$lld%% · nas pausas: %2$lld%%"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Medan du pratar: %1$lld%% · i pauser: %2$lld%%"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ขณะคุณพูด: %1$lld%% · ช่วงหยุด: %2$lld%%"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konuşurken: %1$lld%% · duraklamalarda: %2$lld%%"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Khi bạn nói: %1$lld%% · lúc ngắt nghỉ: %2$lld%%"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "说话时：%1$lld%% · 停顿时：%2$lld%%"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "說話時：%1$lld%% · 停頓時：%2$lld%%"
+          }
+        }
+      }
+    },
+    "While you talk and in pauses: %lld%%" : {
+      "comment" : "Volume › music: the music's level (percent of its own file) while someone talks and in pauses",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أثناء كلامك وفي الوقفات: %lld%%"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mens du taler og i pauser: %lld%%"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Während du sprichst und in Pausen: %lld%%"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mientras hablas y en las pausas: %lld%%"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pendant que vous parlez et dans les pauses : %lld%%"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपके बोलते समय और रुकावटों में: %lld%%"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saat kamu bicara dan saat jeda: %lld%%"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mentre parli e nelle pause: %lld%%"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "話している間と間（ま）: %lld%%"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "말할 때와 쉬는 동안: %lld%%"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mens du snakker og i pauser: %lld%%"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terwijl je praat en in pauzes: %lld%%"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enquanto você fala e nas pausas: %lld%%"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Medan du pratar och i pauser: %lld%%"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ขณะคุณพูดและช่วงหยุด: %lld%%"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konuşurken ve duraklamalarda: %lld%%"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Khi bạn nói và lúc ngắt nghỉ: %lld%%"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "说话时和停顿时：%lld%%"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "說話時和停頓時：%lld%%"
           }
         }
       }
