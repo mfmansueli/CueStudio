@@ -3016,6 +3016,17 @@ muda, Desfazer ao excluir, estilo padrão, nem "voltar ao estilo"; nenhum mostra
   (`CaptionBlocking`, `CaptionLineSizes`) e sobrevive a correções (`WordAlignment`), Split, Join, formatos e cortes do vídeo (a marca segue a palavra que
   fica). Marcar não corta as linhas de novo (a linha aberta continua a mesma): o desenho dá à palavra maior o seu lugar, e o próximo corte (um formato,
   um tamanho, um estilo) a mede. Traduções não herdam a ênfase.
+- **Suggest emphasis** (dono, 08/11/2026; `TakeEdit.suggestsEmphasis`, `CaptionEmphasisSuggester`): uma chave no alto da Emphasis da linha, desligada por
+  padrão, para o vídeo inteiro. Ligada, marca no máximo uma palavra nas linhas de três palavras ou mais que têm uma clara, pela regra do aparelho
+  (NaturalLanguage, sem rede): um **valor** (número com dinheiro, %, "3x", "5 mil") quando é o único da linha; sem valor, um **número** ou um **nome de
+  uma palavra** (pessoa, lugar, organização) quando é o único. Números de passagem não contam (horas, datas, anos, ordinais, "step 1", "às 6"); dois
+  do mesmo tipo ("25 to 30 years"), um nome cortado no fim da linha ("Reino | Unido") ou nada claro deixam a linha sem marca. Pula linhas com marcas do
+  criador. As sugestões (`CaptionCue.suggestedEmphasis`) aparecem com ✨ no chip e "✨ Suggested" no cabeçalho da linha, cujo More abre sozinho para
+  revisar; um toque tira a sugestão, que vira recusada (`declinedEmphasis`) e não volta sozinha; marcar à mão a torna do criador. Desligar tira só as
+  sugestões ("Suggested emphasis off · your marks stay"). Ligar e desligar são um passo de desfazer cada, com o toast dizendo quantas linhas. As três
+  marcas atravessam correções, Split, Join, formatos e cortes juntas. É separada do destaque da palavra dita. **Validado** (testes, regra pura):
+  português e inglês, em legendas ouvidas de pessoas reais (FLEURS) e roteiros reais (6 de 713 linhas marcadas); os outros 18 idiomas **não
+  validados** (a regra roda, os sinais de nome do NaturalLanguage variam por idioma).
 - **Choose words to emphasize** (Caption style › Custom, em português "Escolher palavras para enfatizar"; dono, canvas 2 F1;
   `CaptionsViewModel+EmphasisTrip`): abre Captions na linha sob a agulha (a um quadro do início dela já conta; sem linha ali, na próxima, e a agulha vai até ela), escolhida e com o More
   aberto, rolado até as palavras (marcar uma palavra só leva a agulha à linha quando ela não está nela). O Style da fileira de cima vira **‹ Style** ("Back to Caption style" no VoiceOver); ele ou ✓ voltam ao Caption style
