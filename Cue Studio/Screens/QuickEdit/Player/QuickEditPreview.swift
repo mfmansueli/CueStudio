@@ -55,8 +55,14 @@ struct QuickEditPreview: View {
             }
             .overlay {
                 // Under Voice-over's script (`NarrationScriptOverlay`) the handles would only draw over the words.
-                if !isFullScreen, viewModel.panel != .crop, viewModel.panel != .clipCrop, !viewModel.showsNarrationScriptOverlay {
+                if !isFullScreen, viewModel.panel != .crop, viewModel.panel != .clipCrop, !viewModel.showsNarrationScriptOverlay,
+                   !viewModel.showsPersonPlace {
                     OverlayEditingLayer(viewModel: viewModel, size: size)
+                }
+            }
+            .overlay {
+                if !isFullScreen, viewModel.showsPersonPlace {
+                    PersonPlaceLayer(viewModel: viewModel, size: size)
                 }
             }
             .overlay {

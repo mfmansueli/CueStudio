@@ -167,6 +167,25 @@ extension OverlaysViewModel {
         sayUndoable(String(localized: "Media duplicated"))
     }
 
+    /// Shows the photo or video Behind you (the creator cut out over it, `MediaLayout.behind`), or over the video again (full
+    /// screen), as one undo step; everything else set on it stays. One at a time behind the creator: another one showing then
+    /// keeps its place, and the toast says so.
+    func setMediaBehind(_ id: UUID, _ behind: Bool) {
+        guard let media = edit.media.first(where: { $0.id == id }), (media.layout == .behind) != behind else { return }
+        if behind, let span = mediaBars.first(where: { $0.id == id })?.span {
+            let others = edit.media.filter { $0.id != id && $0.layout == .behind }.compactMap { other in mediaBars.first { $0.id == other.id }?.span }
+            guard !others.contains(where: { $0.overlaps(span) }) else {
+                toast.show(String(localized: "Something else is behind you then · one at a time"), kind: .problem)
+                return
+            }
+        }
+        changeEdit { edit in
+            guard let index = edit.media.firstIndex(where: { $0.id == id }) else { return }
+            edit.media[index].layout = behind ? .behind : .fullFrame
+        }
+        sayUndoable(behind ? String(localized: "Behind you · you're cut out over it") : String(localized: "Over your video again"))
+    }
+
     /// Takes the photo or video out (Undo brings it back). A support leaves its space: the main video has the whole frame there.
     func deleteMedia(_ id: UUID) {
         let wasSupport = edit.media.first { $0.id == id }?.layout == .split

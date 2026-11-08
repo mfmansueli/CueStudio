@@ -149,6 +149,17 @@ extension RealExports {
                 support.layout = .split
                 support.followsCuts = true
                 edit.media = [support]
+            case .behindYou:
+                // A video Behind you, the creator cut out by the key (Original background) and moved and resized over it.
+                var effect = BackgroundEffect(cutout: .colorKey)
+                effect.person = PersonPlacement(center: OverlayPoint(x: 0.4, y: 0.6), scale: 0.7)
+                edit.backgrounds = [RecordingBackground(sourceID: nil, effect: effect)]
+                var behind = MediaOverlay(
+                    kind: .video, fileName: try await supportVideo(), aspect: 9.0 / 16, mediaDuration: 4, span: TimeSpan(start: 0.2, end: 2.8)
+                )
+                behind.layout = .behind
+                behind.followsCuts = true
+                edit.media = [behind]
             default:
                 break
             }
@@ -198,7 +209,7 @@ extension RealExports {
             case .speed:
                 _ = edit.timeline.split(atEdited: 1)
                 _ = edit.timeline.setSpeed(2, forSegmentAt: 1)
-            case .speedCurve, .background, .backgroundKey, .skin, .mask, .splitScreen:
+            case .speedCurve, .background, .backgroundKey, .skin, .mask, .splitScreen, .behindYou:
                 try await addLayer(feature, to: &edit)
             case .text:
                 var title = TextOverlay(role: .title, look: TypePreset.cue.look(for: .title), preset: .cue, span: TimeSpan(start: 0.2, end: 2.8))
@@ -275,7 +286,7 @@ extension RealExports {
 enum RenderFeature: String, CaseIterable, CustomTestStringConvertible {
     case look, crop, fit, clipZoom, shortClipTransition, slide, zoomTransition, flash, fade, push, wipe, blur, punch, speed,
          speedCurve, text, textEffects, turnedText, captions, stabilize, followFace, blurArea, background, backgroundKey, skin, mask,
-         splitScreen
+         splitScreen, behindYou
 
     var testDescription: String { rawValue }
 
@@ -291,7 +302,7 @@ enum RenderFeature: String, CaseIterable, CustomTestStringConvertible {
         case .speedCurve: [0.3, 0.9, 1.5]
         // A video over the take: halfway between two frames of both (on a frame's edge, which of the two shows depends on the last
         // bit of a sum, in the take and in the video over it alike).
-        case .mask, .splitScreen: [0.45, 1.45, 2.45]
+        case .mask, .splitScreen, .behindYou: [0.45, 1.45, 2.45]
         // On their way in, read, on their way out.
         case .textEffects: [0.35, 0.6, 1.4, 2.6, 2.75]
         default: [0.4, 1.4, 2.6]

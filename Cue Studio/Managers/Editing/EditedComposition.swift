@@ -562,6 +562,9 @@ nonisolated struct EditedComposition: @unchecked Sendable {
             frame.areaFraming = (areas == nil ? entry.media.pictureFraming : entry.media.areaFraming) ?? AreaFraming()
             if let areas {
                 frame.areas = areas
+            } else if entry.media.layout == .behind {
+                // The whole frame, behind the creator: no window, mask, motion or fade of its own.
+                frame.isBehind = true
             } else {
                 frame.mask = entry.media.mask
                 frame.opacity = min(max(entry.media.opacity ?? 1, 0.1), 1)

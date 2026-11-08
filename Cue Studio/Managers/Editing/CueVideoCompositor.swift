@@ -152,6 +152,9 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
         // A support showing: the main video goes to its own area, framed there; without one it has the whole frame.
         let support = instruction.media.first { $0.isSupport && $0.isVisible(at: time) }
         let mainArea = support?.areas?.main.size
+        // A photo or video Behind you: drawn behind the cut-out creator on both sides of a dissolve, under everything else.
+        let backdrop = instruction.media.first { $0.isBehind && $0.isVisible(at: time) }
+            .flatMap { behindPicture($0, frame: $0.trackID.flatMap { media[$0] }, at: time) }
         var image = framed(
             source,
             as: Framing(
@@ -159,7 +162,7 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
                 key: mainArea == nil ? "main-\(moment)" : "main-split-\(moment)",
                 moment: SmoothingMoment(stream: .main, stretch: stretch, time: time), sourceTime: instruction.sourceTime(at: time),
                 lookTime: time - instruction.timeOrigin, area: mainArea.map { ($0, instruction.mainFraming) },
-                blurs: instruction.blurs(at: time)
+                blurs: instruction.blurs(at: time), backdrop: backdrop
             ),
             faces: faces
         )
@@ -180,7 +183,7 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
                     moment: SmoothingMoment(stream: .blend, stretch: stretch, time: time), sourceTime: dissolve.otherSideSourceTime(at: time),
                     lookTime: time - instruction.timeOrigin,
                     area: mainArea.map { ($0, instruction.blendMainFraming ?? instruction.mainFraming) },
-                    blurs: instruction.blendBlurs(atSource: dissolve.otherSideSourceTime(at: time))
+                    blurs: instruction.blendBlurs(atSource: dissolve.otherSideSourceTime(at: time)), backdrop: backdrop
                 ),
                 faces: faces
             )
@@ -200,7 +203,7 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
         }
         // Every other photo and video showing, lowest layer first; the same layer in the order they come in the edit, as the
         // editor stacks them (`QuickEditViewModel.visibleMediaStack`).
-        let showing = instruction.media.enumerated().filter { !$0.element.isSupport && $0.element.isVisible(at: time) }
+        let showing = instruction.media.enumerated().filter { !$0.element.isSupport && !$0.element.isBehind && $0.element.isVisible(at: time) }
         for shown in showing.sorted(by: { ($0.element.layer, $0.offset) < ($1.element.layer, $1.offset) }).map(\.element) {
             image = laid(shown, frame: shown.trackID.flatMap { media[$0] }, over: image, at: time)
         }
@@ -231,9 +234,26 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
     nonisolated private static func framed(
         _ source: CVPixelBuffer, as framing: Framing, faces: (masker: PersonMasker, skin: SkinSmoother)
     ) -> CIImage {
-        FramePipeline.framed(FramePipeline.upright(source, transform: framing.frame.transform), as: framing, skin: faces.skin) { image, key in
-            faces.masker.mask(for: image, key: key)
+        FramePipeline.framed(FramePipeline.upright(source, transform: framing.frame.transform), as: framing, skin: faces.skin) { image, moment in
+            faces.masker.mask(for: image, at: moment)
         }
+    }
+
+    /// A photo or video shown Behind you at `time`: upright, its corner at the origin, its Blur areas hidden (it fills the frame
+    /// behind the creator, `BackgroundCompositing`). Nil for a video without a frame at this moment: the recording's own
+    /// background shows.
+    nonisolated private static func behindPicture(_ item: MediaFrame, frame: CVPixelBuffer?, at time: TimeInterval) -> CIImage? {
+        var picture: CIImage
+        if let photo = item.image {
+            picture = photo
+        } else if let frame {
+            picture = CIImage(cvPixelBuffer: frame)
+                .transformed(by: FramePipeline.uprightTransform(item.transform, sourceHeight: CGFloat(CVPixelBufferGetHeight(frame))))
+        } else {
+            return nil
+        }
+        picture = picture.transformed(by: CGAffineTransform(translationX: -picture.extent.minX, y: -picture.extent.minY))
+        return item.hidingBlurs(picture, at: time)
     }
 
     /// A photo or video over the take: its Blur areas hidden, filling its place (cropped, centered, or as Mask › Picture framed

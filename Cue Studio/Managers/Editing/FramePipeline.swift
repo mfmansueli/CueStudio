@@ -28,11 +28,11 @@ nonisolated enum FramePipeline {
         return flip.concatenating(transform).concatenating(CGAffineTransform(scaleX: 1, y: -1))
     }
 
-    /// An upright frame (corner at the origin) steadied, cropped and scaled to the take's frame, with its background effect,
-    /// Skin, Adjust and Filters, as `framing` says. `mask` finds the person in a frame for a background (the key
-    /// names the moment, for a cache).
+    /// An upright frame (corner at the origin) steadied, cropped and scaled to the take's frame, with its background effect (or the
+    /// photo or video Behind you), Skin, Adjust and Filters, as `framing` says. `mask` finds the person in a frame for a background
+    /// (the moment names the frame, for a cache, and the stream it plays in, so its masks are steadied in order).
     static func framed(
-        _ upright: CIImage, as framing: Framing, skin: SkinSmoother, mask: (_ image: CIImage, _ key: String) -> CIImage?
+        _ upright: CIImage, as framing: Framing, skin: SkinSmoother, mask: (_ image: CIImage, _ moment: PersonMaskMoment) -> CIImage?
     ) -> CIImage {
         let frame = framing.frame, look = framing.look, moment = framing.moment, sourceTime = framing.sourceTime
         var image = BlurDrawing.apply(framing.blurs, to: upright)
@@ -55,9 +55,11 @@ nonisolated enum FramePipeline {
         }
         // The faces of the frame as recorded (before a background is put behind the creator), found only when Skin has something on.
         let smoothing = skin.pass(for: image, skin: look.skin, stream: moment.stream, epoch: moment.stretch, time: moment.time)
-        if let background = frame.background {
-            image = BackgroundCompositing.apply(image, render: background) { image in
-                mask(image, background.cacheKey + framing.key)
+        // Behind you takes the place of the recording's own background while it shows, with the same cutout and place.
+        if let render = framing.backdrop == nil ? frame.background : frame.background ?? frame.cutout {
+            image = BackgroundCompositing.apply(image, render: render, backdrop: framing.backdrop) { image in
+                let track = render.cacheKey + (moment.stream == .main ? "-main" : "-blend")
+                return mask(image, PersonMaskMoment(key: render.cacheKey + framing.key, track: track, epoch: moment.stretch, time: moment.time))
             }
         }
         return FrameLook.apply(look, to: image, skin: smoothing, time: framing.lookTime)

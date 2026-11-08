@@ -48,6 +48,9 @@ nonisolated struct MediaFrame: @unchecked Sendable {
     /// How opaque it is (`MediaOverlay.opacity`), times what its keyframes say.
     var opacity = 1.0
 
+    /// Shown Behind you (`MediaLayout.behind`): it fills the frame behind the cut-out creator.
+    var isBehind = false
+
     var isSupport: Bool { areas != nil }
 
     var isVideo: Bool { image == nil }

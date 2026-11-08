@@ -72,6 +72,50 @@ struct BackgroundCompositionTests {
         #expect(abs(grey[0] - grey[1]) < 20 && grey[1] > 90 && grey[1] < 170, "the grey half became \(grey)")
     }
 
+    /// A blue photo in the edit's media, removed after the test.
+    private func bluePhoto() throws -> String {
+        let name = "behind-\(UUID().uuidString).png"
+        let url = EditMediaFiles.url(for: name)
+        try FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
+        let blue = CIImage(color: CIColor(red: 0, green: 0, blue: 1)).cropped(to: CGRect(x: 0, y: 0, width: 90, height: 160))
+        let space = try #require(CGColorSpace(name: CGColorSpace.sRGB))
+        try CIContext().writePNGRepresentation(of: blue, to: url, format: .RGBA8, colorSpace: space)
+        return name
+    }
+
+    @Test func aPhotoBehindYouShowsAroundTheCreatorWhereTheyStand() async throws {
+        let clip = try await greenScreenClip()
+        let name = try bluePhoto()
+        defer {
+            try? FileManager.default.removeItem(at: clip)
+            EditMediaFiles.remove([name])
+        }
+        var edit = TakeEdit(sourceDuration: 2, aspect: .portrait)
+        edit.voiceEnhancement = .off
+        // An Original background: the green screen's cutout serves the photo Behind you.
+        edit.setBackground(BackgroundEffect(cutout: .colorKey), for: nil)
+        var photo = MediaOverlay(kind: .photo, fileName: name, aspect: 90.0 / 160, mediaDuration: nil, span: TimeSpan(start: 0, end: 2))
+        photo.layout = .behind
+        edit.media = [photo]
+        let item = try await TakeEditService().previewItem(forVideoAt: clip, edit: edit)
+        let frame = try await image(item.asset, composition: item.videoComposition, at: 1)
+        let screen = try color(frame, x: 0.25, y: 0.5)
+        #expect(screen[2] > 200 && screen[1] < 90, "the green screen became \(screen), not the photo")
+        let creator = try color(frame, x: 0.75, y: 0.5)
+        #expect(abs(creator[0] - creator[1]) < 20 && creator[1] > 90 && creator[1] < 170, "the creator became \(creator)")
+
+        // Half the size at the middle: the photo shows at the frame's edge where the creator stood.
+        var smallerEffect = BackgroundEffect(cutout: .colorKey)
+        smallerEffect.person = PersonPlacement(center: .center, scale: 0.5)
+        edit.backgrounds = [RecordingBackground(sourceID: nil, effect: smallerEffect)]
+        let smaller = try await TakeEditService().previewItem(forVideoAt: clip, edit: edit)
+        let resized = try await image(smaller.asset, composition: smaller.videoComposition, at: 1)
+        let edge = try color(resized, x: 0.9, y: 0.5)
+        #expect(edge[2] > 200 && edge[1] < 90, "where the creator stood shows \(edge), not the photo")
+        let still = try color(resized, x: 0.6, y: 0.5)
+        #expect(abs(still[0] - still[1]) < 20 && still[1] > 90, "the smaller creator isn't at the middle: \(still)")
+    }
+
     @Test func aColorKeyWithABlurPutsTheBlurredFrameThere() async throws {
         let clip = try await greenScreenClip()
         defer { try? FileManager.default.removeItem(at: clip) }
