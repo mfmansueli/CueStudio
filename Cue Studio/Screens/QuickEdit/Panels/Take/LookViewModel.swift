@@ -11,7 +11,7 @@ import Foundation
 /// is its panels' state; the look itself is in the edit, and every change is an undo step through the session.
 ///
 /// Each part of the work is in its own extension (`+Adjust`, `+Auto`, `+Skin`, `+ClipScope`, `+Background`, `+CopyLook`, `+Format`,
-/// `+FaceFollow`, `+Stabilize`, `+MotionAnalysis`).
+/// `+SafeGuide`, `+FaceFollow`, `+Stabilize`, `+MotionAnalysis`).
 @MainActor
 @Observable
 final class LookViewModel: EditorPart {
@@ -67,16 +67,26 @@ final class LookViewModel: EditorPart {
         var after: EditSnapshot
     }
 
+    /// The safe zone guide over the preview (`+SafeGuide`): the creator's way of working, kept for every video, never a change of
+    /// this one (no undo step, nothing to save).
+    var showsSafeGuide: Bool {
+        didSet { if showsSafeGuide != oldValue { preferences.showsSafeGuide = showsSafeGuide } }
+    }
+
     let session: EditorSession
     /// Measures Auto.
     let editing: TakeEditing
     /// Analyzes the recordings' motion for Follow face and Stabilize; nil in tests that don't use it.
     let motion: MotionAnalysisService?
+    /// Quick edit's own switches, kept between edits (the safe zone guide's).
+    let preferences: EditorPreferencesStoring
 
-    init(session: EditorSession, editing: TakeEditing, motion: MotionAnalysisService?) {
+    init(session: EditorSession, editing: TakeEditing, motion: MotionAnalysisService?, preferences: EditorPreferencesStoring) {
         self.session = session
         self.editing = editing
         self.motion = motion
+        self.preferences = preferences
+        showsSafeGuide = preferences.showsSafeGuide
     }
 
     /// The edit changed: a comparison is no longer of what is shown, and a recording it plays now is analyzed when it needs to be.

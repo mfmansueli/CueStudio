@@ -24,7 +24,7 @@ extension LookViewModel {
         let recorded = take.aspect
         changeEdit { edit in
             edit.aspect = recorded
-            edit.captionCollection?.safeMargins = CaptionSafeArea.margins(for: take, aspect: recorded)
+            edit.captionCollection?.safeMargins = CaptionSafeArea.margins(for: take, aspect: recorded, pick: edit.safeGuide)
             edit.cropOffset = 0
             edit.cropFit = .fill
             edit.faceFollow = nil

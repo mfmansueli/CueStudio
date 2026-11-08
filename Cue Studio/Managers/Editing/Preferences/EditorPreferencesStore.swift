@@ -19,6 +19,11 @@ final class EditorPreferencesStore: EditorPreferencesStoring {
         set { defaults.set(newValue, forKey: DefaultsKey.narrationScriptShown) }
     }
 
+    var showsSafeGuide: Bool {
+        get { defaults.bool(forKey: DefaultsKey.safeGuideShown) }
+        set { defaults.set(newValue, forKey: DefaultsKey.safeGuideShown) }
+    }
+
     var narrationScriptSpeed: Double? {
         get { (defaults.object(forKey: DefaultsKey.narrationScriptSpeed) as? Double).map(PrompterSettings.clampedSpeed) }
         set {

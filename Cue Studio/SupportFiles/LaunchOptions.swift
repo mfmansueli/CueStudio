@@ -79,6 +79,8 @@ import Foundation
 /// - `-uiTestFakeShareSheet`: a stand-in with Complete and Cancel takes the place of the system share sheet.
 /// - `-uiTestFourKTakes`: with the sample takes, every one recorded in 4K (Export options' quality choice is only for 4K recordings).
 /// - `-uiTestLowPower`: the editor reads Low Power Mode as on (its notice shows; the Simulator can't turn the mode on).
+/// - `-uiTestPreviewFrame <white|black>`: the editor's preview shows a plain white or black frame under what's laid on the video (the
+///   Simulator can't play it), to measure the safe zone guide over a light and a dark video (`PreviewStandInFrame`).
 /// - `-uiTestDockMotionLog`: the Scripts dock counts its lights (the writer's, the network's, the send arrow's) in `dock.motionLog`.
 /// - `-uiTestShareQueue`: a "Share to universe" queue left for the sample take (the Continue posting card).
 /// - `-uiTestStoryAt <seconds>`: the milestone and first-star stories stand still at that second.
@@ -191,6 +193,8 @@ struct LaunchOptions {
     var fakesShareSheet = false
     /// UI tests: the editor reads Low Power Mode as on (`-uiTestLowPower`).
     var forcesLowPowerMode = false
+    /// UI tests: a white or black frame in place of the editor's video (`-uiTestPreviewFrame`).
+    var previewStandInFrame: PreviewStandInFrame?
     /// UI tests: the Scripts dock counts its lights (`-uiTestDockMotionLog`).
     var logsDockMotion = false
     /// UI tests: the welcome's opening is frozen at this second (`-uiTestWelcomeAt`).
@@ -454,6 +458,9 @@ struct LaunchOptions {
             }
             options.fakesShareSheet = arguments.contains("-uiTestFakeShareSheet")
             options.forcesLowPowerMode = arguments.contains("-uiTestLowPower")
+            if let flag = arguments.firstIndex(of: "-uiTestPreviewFrame"), arguments.indices.contains(flag + 1) {
+                options.previewStandInFrame = PreviewStandInFrame(rawValue: arguments[flag + 1])
+            }
             options.logsDockMotion = arguments.contains("-uiTestDockMotionLog")
             // A "Share to universe" queue the creator left: TikTok then Reels for the sample take (`-uiTestShareQueue`).
             let habits3 = takes.first { $0.scriptID == SampleScripts.morningHabits.id && $0.number == 3 }

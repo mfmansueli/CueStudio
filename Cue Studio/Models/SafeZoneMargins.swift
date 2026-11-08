@@ -14,6 +14,10 @@ nonisolated struct SafeZoneMargins: Codable, Hashable, Sendable {
     static let leftRange: ClosedRange<Double> = 0...20
     static let rightRange: ClosedRange<Double> = 0...25
 
+    /// The frame's own edges, kept clear of nothing but the edge: what captions keep to on a frame no app's buttons were
+    /// measured on (1:1, 16:9) and the generic safe zone guide there (`SafeGuideZones.generic`).
+    static let frameEdges = SafeZoneMargins(top: 5, bottom: 7, left: 6, right: 6)
+
     var top: Double = 11
     var bottom: Double = 22
     var left: Double = 6

@@ -41,6 +41,12 @@ extension QuickEditViewModel {
         panel == .voiceOver && audio.showsNarrationScript && !isFullScreen && audio.offersNarrationScript
     }
 
+    /// The safe zone guide is over the preview now: turned on, the video ready, the preview not full screen (it shows the video as
+    /// it will be), and neither the narration's script nor a clip's crop over it.
+    var showsSafeGuideOverlay: Bool {
+        look.showsSafeGuide && isReady && !isFullScreen && panel != .clipCrop && !showsNarrationScriptOverlay
+    }
+
     /// Space plays and pauses, except while a panel with a text field is open.
     var acceptsSpaceToPlay: Bool {
         guard sheet == nil else { return false }

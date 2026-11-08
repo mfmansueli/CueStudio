@@ -22,7 +22,7 @@ struct LookPartTests {
         _ = timeline.split(atEdited: 10)
         edit.timeline = timeline
         host = FakeEditorHost(edit: edit)
-        part = LookViewModel(session: host.session, editing: FakeTakeEditor(), motion: nil)
+        part = LookViewModel(session: host.session, editing: FakeTakeEditor(), motion: nil, preferences: FakeEditorPreferencesStore())
     }
 
     @Test func aDialChangesTheTakeOrOnlyThePickedClip() throws {
