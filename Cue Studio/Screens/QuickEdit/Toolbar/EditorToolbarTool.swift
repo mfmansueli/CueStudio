@@ -14,7 +14,7 @@ enum EditorToolbarTool: CaseIterable, Hashable {
     // Editing the clip under the playhead
     case speed, volume, zoom, stabilize, freeze, reverse, duplicate, replace, reorder, crop, animation
     // Speech and sound
-    case pauses, editByText, studioVoice, extractAudio
+    case pauses, editByText, studioVoice, extractAudio, autoEdit
     // Picture and beauty (the whole video's look)
     case format, adjust, skin, filters, background, blurArea, copyLook, pasteLook
     // Finishing
@@ -45,6 +45,7 @@ enum EditorToolbarTool: CaseIterable, Hashable {
         case .editByText: "editByText"
         case .studioVoice: "voice"
         case .extractAudio: "extractAudio"
+        case .autoEdit: "autoEdit"
         case .format: "format"
         case .adjust: EditorLookTool.adjust.toolbarID(wholeVideo: true)
         case .skin: EditorLookTool.skin.toolbarID(wholeVideo: true)
@@ -83,6 +84,7 @@ enum EditorToolbarTool: CaseIterable, Hashable {
         case .editByText: String(localized: "Edit by text")
         case .studioVoice: String(localized: "Studio Voice")
         case .extractAudio: String(localized: "Extract audio")
+        case .autoEdit: String(localized: "Auto edit")
         case .format: String(localized: "Aspect ratio")
         case .adjust: EditorLookTool.adjust.label
         case .skin: EditorLookTool.skin.label
@@ -121,6 +123,7 @@ enum EditorToolbarTool: CaseIterable, Hashable {
         case .editByText: "text.badge.minus"
         case .studioVoice: "waveform.and.mic"
         case .extractAudio: "waveform.badge.plus"
+        case .autoEdit: "wand.and.stars"
         case .format: "aspectratio"
         case .adjust: EditorLookTool.adjust.systemImage
         case .skin: EditorLookTool.skin.systemImage
@@ -159,6 +162,7 @@ enum EditorToolbarTool: CaseIterable, Hashable {
         case .editByText: .editByText
         case .studioVoice: .open(.voice)
         case .extractAudio: .extractAudio
+        case .autoEdit: .openAutoEdit
         case .format: .open(.crop)
         case .adjust: .openLook(.adjust, wholeVideo: true)
         case .skin: .openLook(.skin, wholeVideo: true)
@@ -184,7 +188,7 @@ enum EditorToolbarTool: CaseIterable, Hashable {
     /// What it changes reaches past a picked item: on an item's bar it carries the whole video's badge.
     var reachesWholeVideo: Bool {
         switch self {
-        case .captions, .pauses, .editByText, .studioVoice, .format, .adjust, .skin, .filters, .background, .templates, .brandKit: true
+        case .captions, .pauses, .autoEdit, .editByText, .studioVoice, .format, .adjust, .skin, .filters, .background, .templates, .brandKit: true
         default: false
         }
     }

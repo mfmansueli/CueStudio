@@ -23,6 +23,8 @@ enum EditorSheet: String, Identifiable {
     case findInCaptions
     /// Captions › My words: the creator's names and terms, for speech recognition.
     case myWords
+    /// Auto edit: the steps to pick, then what each did (`QuickEditViewModel+AutoEdit`).
+    case autoEdit
 
     var id: String { rawValue }
 }

@@ -2068,8 +2068,13 @@ auditoria: `reports/editor-award-checklist.md`.
   1080p continuar nítido, e com o Zoom do clipe nunca passa de 1,45×; vai para o meio do quadro, e para o rosto só onde o criador ligou Follow face
   (o recorte já segue o rosto); nunca liga o Follow face sozinho; vale para o que toca no vídeo principal (o take ou um clipe importado, preso à
   gravação dele), não para fotos e vídeos por cima nem para o outro lado da tela dividida. Um corte antes dele o mantém nas palavras; com as
-  palavras cortadas, some. O compositor e a prévia das áreas de desfoque e do tracking contam o zoom. Não tem faixa própria na linha do tempo
-  (pendente). ‹ › (**Move earlier / Move later**, 0,1 s
+  palavras cortadas, some. O compositor e a prévia das áreas de desfoque e do tracking contam o zoom. Não tem faixa própria: na faixa de
+  legendas da linha do tempo, a linha com zoom troca o ícone pela lupa (`TimelineGeometry.ItemInput.symbol`). **Place e Zoom pela linha do
+  tempo** (canvas 2 §6, decisão D: escolher o trecho na timeline principal e saber o alcance antes do gesto): tocar numa legenda da faixa abre a
+  barra dela com **Place** e **Zoom** depois de Emphasize; cada um abre um menu (`CaptionLineChoiceDialog`) cujo cabeçalho diz a linha, o
+  tempo dela e o que está valendo ("“We grew 40%” · 00:02.0–00:04.1 · Now: With all captions. Only this line changes."); a escolha vale só para
+  ela, um passo de desfazer. Sem estilo de legenda, o toast pede "Pick a caption style first to place lines on their own". Arrastar a legenda
+  escolhida na prévia já mostra o rótulo do alcance antes do primeiro movimento. ‹ › (**Move earlier / Move later**, 0,1 s
   por toque, todas juntas, até onde a que tem menos espaço pode ir: dentro do seu clipe e sem encostar numa linha não escolhida; "The lines
   can’t move further") e a lixeira ("N lines deleted" · Undo). Cada ação
   é um passo de desfazer (toques seguidos de mover são um). O estilo fica na linha (`CaptionCue.lineStyle`, `CaptionLineStyle`; linhas antigas
@@ -3051,9 +3056,10 @@ muda, Desfazer ao excluir, estilo padrão, nem "voltar ao estilo"; nenhum mostra
   palavras (`wordSpacing`, 0,22 do tamanho da letra, também na medição que corta as linhas) e a palavra cresce só no espaço que a linha tem, mais para o
   lado livre, guardando quase um espaço até a vizinha e o contorno dela (`popRoom`): nunca encosta. Edições de antes de `motion` tocam `captionAnimation` como sempre e mostram nas três escolhas o
   que tocam; `captionAnimation` continua gravado com o mais próximo, para versões anteriores.
-- **Custom** (`.adjust`, `CaptionAdjustments`, cada campo nil até mudar): fonte (Style's font + as 15), peso (só os que a família tem; some com um), Case (Aa · AA ·
-  aa, com o idioma da linha: turco "İ" e "ı"), Text color e, com a palavra dita acesa, Highlight color ao lado (só aqui; um aviso quando é a
-  cor das outras palavras e o destaque não apareceria), Background (None, Box, Lines, Band, Pill, com cor e opacidade de 30 a 100%), Outline (None,
+- **Custom** (`.adjust`, `CaptionAdjustments`, cada campo nil até mudar): primeiro Text color e, com a palavra dita acesa, Highlight color ao
+  lado (só aqui; um aviso quando é a cor das outras palavras e o destaque não apareceria): as cores à vista sem rolar o painel médio (receita
+  R1.6, 08/11/2026); depois fonte (Style's font + as 15), peso (só os que a família tem; some com um), Case (Aa · AA · aa, com o idioma da linha:
+  turco "İ" e "ı"), Background (None, Box, Lines, Band, Pill, com cor e opacidade de 30 a 100%), Outline (None,
   Thin, Thick, com cor), Shadow (None, Soft, Halo, Glow); Emphasis color e Emphasis size quando há palavra marcada, e **Choose words to emphasize**
   (abaixo); Advanced: Letter spacing. Cada cor volta à do estilo por **Style's color**. **Back to <estilo>'s look** (em Custom e em Animation) põe o estilo de volta inteiro, como o
   cartão dele mostra, num Desfazer: fonte, mudanças, cor do destaque e movimento; tamanho, posição, largura, alinhamento e formato ficam. Mudar a cor do
@@ -3502,11 +3508,11 @@ A barra funciona como antes: uma só, que troca para as ferramentas do item esco
 alcance: toda ferramenta do editor está na barra principal, e a barra de qualquer item escolhido traz, depois das dele, as outras. Agrupada por
 afinidade, uma barra longa como a do InShot (decisão do dono, 26/10; o desenho com faixa de contexto, lixeira separada e catálogo "All" foi
 recusado).
-- **Barra principal** (`QuickEditViewModel.mainToolGroups`, `EditorToolbarTool`, 32 ferramentas, uma linha fina entre os grupos), na mesma
+- **Barra principal** (`QuickEditViewModel.mainToolGroups`, `EditorToolbarTool`, 33 ferramentas, uma linha fina entre os grupos), na mesma
   ordem da barra do clipe, para cada ferramenta ficar entre as mesmas vizinhas nas duas (dono, 28/10/2026): **Edit · Split · Captions · Text ·
   Clean up · Media · Audio** | Speed · Volume · Zoom | Adjust · Skin · Filters · Background · Crop · Stabilize · Blur area · Copy look · Paste look |
-  Animation · Duplicate · Freeze frame · Reverse · Replace · Reorder · Extract audio | Edit by text · Studio Voice · Format · Templates · Brand kit ·
-  Cover. As cinco primeiras cabem na tela de um iPhone de 6,1"; Delete nunca está nela. **Clean up** (em português **Limpar fala**) é a limpeza da
+  Animation · Duplicate · Freeze frame · Reverse · Replace · Reorder · Extract audio | Auto edit · Edit by text · Studio Voice · Format · Templates ·
+  Brand kit · Cover (Auto edit, §63, também vem depois de Clean up nos atalhos da barra do clipe). As cinco primeiras cabem na tela de um iPhone de 6,1"; Delete nunca está nela. **Clean up** (em português **Limpar fala**) é a limpeza da
   fala, no 5º lugar (dono, 07/11/2026); cada ferramenta automática tem um botão só (Edit by text, Studio Voice e Background na barra, Auto
   captions no Captions, Auto adjust no Auto do Adjust). Adjust, Skin, Filters e Background levam o selo
   do vídeo inteiro também aqui, porque a barra do clipe tem ferramentas com o mesmo nome só para o clipe; as outras dizem o alcance no painel.
@@ -4205,12 +4211,20 @@ escolha de palavras. Em Pauses ele abre na **fileira de pausas**; "Pauses longer
   uma marca com a duração entre as palavras; tocar numa marca alterna Remove/Keep. Como escolher palavras ("Tap the first word of the part to
   cut, then its last word…") fica no alto da aba enquanto nada está escolhido, com pausas marcadas ou não (canvas 2, erro 7). Com palavras
   escolhidas, o rodapé é o delas (Cut, Fix caption text, Put back); sem escolha, o Remove de sempre. Corrigir o texto da legenda continua separado de cortar o vídeo.
+- **Quick pass** (pt **Passada rápida**; `CleanUpQuickPassButton` no cabeçalho, ao lado do botão de pausas; `ClipsViewModel+QuickPass`;
+  decisão A do E4): um toque marca tudo o que o Clean up tem certeza (pausas e hesitações já vêm marcadas) e, em cada linha dita mais de uma vez
+  sem escolha, **fica a última tentativa** e saem as anteriores (decisão de 08/11/2026, sem o dono, a confirmar no teste final: a última costuma
+  ser a que deu certo; o Keep this one de sempre não escolhe sozinho). Nada sai até o **Remove**, que é um passo de desfazer; cada marca ainda
+  troca; uma tentativa que o criador desmarcou fica desmarcada, e uma linha com tentativa escolhida fica como está. Toast "Marked 5 · the last try
+  of each repeated line stays · Remove takes out 6.1s", "Marked 3 · Remove takes out 2.4s" ou "Nothing clear to take out". Só fala: não mexe em
+  legendas, zoom ou camadas (o resto da edição automática é o Auto edit, §63).
 - **Remove** diz o que tira: "Remove 3 pauses", "Remove hesitations", "Remove repeats", "Remove pauses and hesitations", … , "Nothing selected"
   (texto `ink2`, não `ink3`). O tempo economizado conta cada segundo uma vez, por mais que as marcas se sobreponham, em cada lugar que toca (um
   clipe copiado conta duas vezes, porque o corte sai dos dois). Toast "Removed 4 pauses · 4.1s" (ou "Speech cleaned up · 4.1s") **com Undo**.
 - **Put back** (`EditTimeline+PutBack`, `ClipsViewModel+PutBack`): devolve só aquele trecho, ao lado do clipe que tocava logo antes dele (ou logo
   depois, quando o de antes saiu); um clipe movido ou com outra velocidade não impede (volta na velocidade do clipe ao lado); um clipe copiado é
-  um lugar a mais. O resto da edição, as camadas presas (`CutFollowing`) e o histórico ficam; toast "Pause put back · +1.2s" com Undo. Sem lugar, a
+  um lugar a mais. Uma pausa no fim (ou no começo) do take, que ao sair moveu o fim (ou o começo) do vídeo, volta levando a borda
+  de novo para fora (08/11/2026; antes ela não voltava); depois de uma borda que o criador arrastou para dentro, continua cortada. O resto da edição, as camadas presas (`CutFollowing`) e o histórico ficam; toast "Pause put back · +1.2s" com Undo. Sem lugar, a
   linha diz por quê e o que fazer: "Can't put back · the clips around it were deleted. Undo brings them back." ou "…it's past where the video now
   starts or ends. Drag that edge to bring it back." Nunca devolve aproximado. Não cobre: um trecho cortado à mão (Split/Delete), que não é uma
   sugestão; uma pausa cujos clipes dos dois lados foram apagados; um clipe com curva de velocidade volta como clipe próprio na velocidade da borda.
@@ -4224,7 +4238,7 @@ escolha de palavras. Em Pauses ele abre na **fileira de pausas**; "Pauses longer
   soube das palavras fica em `TakeEdit.cleanUpHearing` e o que soube das pausas em `TakeEdit.pauseHearings` (os dois fora do histórico).
 - **Contraste:** só tokens de texto (`ink`, `ink2`, `accText`, `accInk` sobre `acc`, `warnText`) sobre `Palette.Editor.panelCard` e `fill`;
   nenhum token novo.
-- **Testes:** `QuickEditCleanUpPanelTests`, `EditTimelinePutBackTests`, `PauseGapTests`, `CleanUpStartTests`, `ScriptRetakeDetectorTests`,
+- **Testes:** `QuickEditCleanUpPanelTests`, `QuickEditQuickPassTests`, `EditTimelinePutBackTests`, `PauseGapTests`, `CleanUpStartTests`, `ScriptRetakeDetectorTests`,
   `QuickEditTranscriptEditTests` (montagem reordenada), `QuickEditPausesPanelTests`; `CleanUpUITests` (abrir por Pauses e por Edit by text, abas,
   Remove com Undo, Put back).
 
@@ -4261,3 +4275,34 @@ distintas").
 - **Contraste:** só tokens de texto (`ink`, `ink2`) sobre `fill` e `Palette.Editor.panelCard`, como o Find and replace; nenhum token novo.
 - **Testes:** `MyWordsListTests`, `MyWordsStoreTests`, `RecognitionHintsTests`, `MyWordsSpellingTests`, `CaptionsMyWordsTests`,
   `DataEraserServiceTests`; `CaptionToolsUITests/testMyWordsKeepsAWordWithoutChangingTheCaptions`.
+
+## 63. Auto edit (Edição automática; etapa 5 do plano do editor, §14, 8 de novembro de 2026; ponto de entrada a confirmar pelo dono)
+
+Uma primeira passada que junta etapas que já funcionam sozinhas (`QuickEditViewModel+AutoEdit`, `AutoEditSheet`, `AutoEditSession`,
+`AutoEditRecord` salvo em `TakeEdit.autoEdit`). **Ponto de entrada:** a ferramenta **Auto edit** (pt **Edição automática**, `wand.and.stars`)
+abrindo o último grupo da barra principal e nos atalhos depois de Clean up; não fica no Clean up porque mexe também em legendas e zoom (decisão de
+08/11/2026, sem o dono, marcada para o teste final; o ✦ Smart saiu na D1). Abre uma folha média (a prévia fica à vista), em três momentos:
+
+- **Escolher:** três chaves nativas, cada uma com o que faz. **Clean up speech** (ligada): pausas claras, hesitações e as tentativas anteriores de
+  uma linha, a última fica (a regra do Quick pass, §61). **Captions** (ligada quando o vídeo não tem legendas): da voz, no estilo de legenda do
+  criador; com legendas, desligada e "This video has captions: they stay as they are" (as do criador nunca são trocadas). **Zoom on key lines**
+  (desligada; só com legendas ou com Captions ligada): zoom por frase (§29) nas linhas com número, valor ou nome claro
+  (`CaptionEmphasisSuggester`), no mínimo 6 s entre um e outro, nunca sobre um zoom que já está lá (`AutoEditZoomPicker`), na força escolhida no
+  seletor (Subtle por padrão). Rodapé: "No music, effects, styles or other cuts are added." O botão **Auto edit** fica fixo embaixo.
+  Studio Voice não é etapa (já vem ligado, suave, em todo take); aparar o começo (§61) também não (é escolha à parte do Clean up).
+- **Rodando:** "Listening to the speech…", "Making captions…", "Putting it together…" e **Cancel**. Ouvir não muda nada; tudo o que a passada
+  aplica é **um passo de desfazer** (`EditDocument.beginChange`), e Cancel (ou fechar a folha) enquanto roda deixa a edição como estava. A folha
+  não fecha arrastando enquanto roda.
+- **Depois:** **Before | After** (segmentado) troca a prévia entre a edição sem e com a passada, enquanto ela é o último passo (depois de outra
+  mudança, a nota diz que o Desfazer ainda volta tudo); fechar em Before volta para After. Cada etapa com o que fez: "4 cuts · −3.2s", "12 lines
+  to check", "Zoom on 2 lines", ou por que não fez ("Nothing clear to take out", "Your captions stay", "No line with a clear number or name",
+  "Didn't run" quando a escuta falhou) e **Turn off**, que desfaz só ela, um passo de desfazer, com toast "Captions turned off" e Undo: os cortes da
+  fala voltam pelo Put back (§61), as legendas se escondem (as linhas ficam; Captions mostra de novo), os zooms dela saem (os do criador ficam).
+  **Run again** volta a escolher. Reabrir o Auto edit mostra o resultado enquanto alguma etapa dele está ligada.
+- **Preserva a edição manual:** os cortes são os do Clean up, então legendas, textos, mídias e áudio presos ao vídeo andam juntos
+  (`CutFollowing`); nada de música, efeitos, estilos, transições ou cortes que o criador não escolheu.
+- **Contraste:** só `ink` e `ink2` sobre o fundo da folha (`cueSheetChrome`) e o botão primário do Design System; nenhum token novo.
+- **Testes:** `QuickEditAutoEditTests` (um passo de desfazer, Cancel no meio das legendas, cada etapa desligada sozinha e os zooms do criador
+  ficando, vídeo com legendas, Before/After, reabrir), `AutoEditZoomPickerTests`, `QuickEditToolbarTests`; `EditorTaskUITests.testAutoEdit…`
+  (na edição de demonstração: legendas ficam, quatro pausas saem, Before/After, Turn off, Undo). No aparelho: **não validado** (o Simulator não
+  ouve a fala; a demonstração já traz as pausas achadas).

@@ -95,6 +95,8 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         var beats: [TimeInterval] = []
         /// Locked in place (`TakeEdit.lockedLayers`): no handles, a lock drawn on it.
         var isLocked = false
+        /// Drawn in place of its kind's symbol: something it carries (a caption line's phrase zoom).
+        var symbol: String?
         /// A photo or video: what its frames are drawn from.
         var strip: MediaStrip?
         /// A Blur area: where it's left unchecked (edited seconds), hatched on its bar.
@@ -183,6 +185,8 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         /// Beat ticks (music), from the item's left edge.
         var beatOffsets: [CGFloat] = []
         var isLocked = false
+        /// In place of its kind's symbol (`ItemInput.symbol`).
+        var symbol: String?
         /// A photo or video's frames.
         var strip: MediaStrip?
         /// A Blur area's unchecked stretches, from the item's left edge.
@@ -441,6 +445,7 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
                     keyframeOffsets: item.keyframes.map { CGFloat($0 - item.span.start) * pps },
                     beatOffsets: item.beats.map { CGFloat($0 - item.span.start) * pps },
                     isLocked: item.isLocked,
+                    symbol: item.symbol,
                     strip: item.strip,
                     warningRanges: item.warnings.compactMap { warning in
                         let from = max(0, CGFloat(warning.start - item.span.start) * pps)

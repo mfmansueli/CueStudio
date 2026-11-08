@@ -111,6 +111,8 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     var suggestsEmphasis = false
     /// Zooms on phrases, started from caption lines and then on their own (`PhraseZoom`).
     var phraseZooms: [PhraseZoom] = []
+    /// What the last Auto edit did, so each of its steps can be turned off on its own (`AutoEditRecord`); nil before one ran.
+    var autoEdit: AutoEditRecord?
     /// New projects use Cue; decoding an absent key preserves the old renderer and appearance.
     var captionCollection: CaptionSettings? = CaptionSettings()
     /// How captions look in edits made before type presets; `captionLook` replaces it once set.
@@ -441,6 +443,7 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         case splitScreen, brandKit, blurRegions, blurLook
         case newMusic
         case copiedLook, pasteLookChoice
+        case autoEdit
     }
 
     /// Edits saved before the timeline had pieces: trim handles, cut points, deleted sections and
@@ -512,6 +515,7 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         showsCaptions = try container.decodeIfPresent(Bool.self, forKey: .showsCaptions) ?? false
         suggestsEmphasis = (try? container.decodeIfPresent(Bool.self, forKey: .suggestsEmphasis)) ?? false
         phraseZooms = (try? container.decodeIfPresent([PhraseZoom].self, forKey: .phraseZooms)) ?? []
+        autoEdit = try? container.decodeIfPresent(AutoEditRecord.self, forKey: .autoEdit)
         captionCollection = container.decodeLenient(CaptionSettings.self, forKey: .captionCollection, report: report)
         captionStyle = try container.decodeIfPresent(CaptionStyle.self, forKey: .captionStyle) ?? .bold
         captionLook = container.decodeLenient(TextLook.self, forKey: .captionLook, report: report)

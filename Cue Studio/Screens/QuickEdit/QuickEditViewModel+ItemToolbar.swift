@@ -15,7 +15,7 @@ extension QuickEditViewModel {
     /// whole video, together, so no "All" sits among the clip's own.
     static let clipShortcutGroups: [[EditorToolbarTool]] = [
         [.text, .media, .audio],
-        [.pauses, .editByText, .studioVoice, .captions, .format, .templates, .brandKit, .cover],
+        [.pauses, .autoEdit, .editByText, .studioVoice, .captions, .format, .templates, .brandKit, .cover],
     ]
 
     /// What every other item's bar adds: the clip under the playhead's tools first.
@@ -54,6 +54,8 @@ extension QuickEditViewModel {
                     id: "join", label: String(localized: "Join next"), systemImage: "arrow.right.and.line.vertical.and.arrow.left", action: .joinCaption
                 ),
                 EditorToolbarItem(id: "emphasis", label: String(localized: "Emphasis"), systemImage: "highlighter", action: .emphasizeCaption),
+                EditorToolbarItem(id: "placeCaption", label: String(localized: "Place"), systemImage: "arrow.up.and.down", action: .placeCaption),
+                EditorToolbarItem(id: "zoomCaption", label: String(localized: "Zoom"), systemImage: "plus.magnifyingglass", action: .zoomCaption),
                 // Every line at once, where a creator lands tapping the captions' track (owner, 07/11/2026); asks first, naming how many.
                 EditorToolbarItem(id: "deleteAllCaptions", label: String(localized: "Delete all"), systemImage: "xmark.bin", action: .deleteAllCaptions),
             ]

@@ -33,6 +33,10 @@ enum EditFixtures {
         edit.newMusic = MusicDefaults(volume: 0.25, duck: MusicDuck(depth: 18, pauses: .comesBack))
         edit.suggestsEmphasis = true
         edit.phraseZooms = [PhraseZoom(span: TimeSpan(start: 1, end: 2), strength: .strong)]
+        var autoEdit = AutoEditRecord(removedSuggestions: [UUID()], removedSeconds: 1.5, madeCaptions: true, zoomIDs: [UUID()])
+        autoEdit.ranSteps = [.speech, .captions, .zoom]
+        autoEdit.offSteps = [.zoom]
+        edit.autoEdit = autoEdit
         edit.cleanUpHearing = CleanUpHearing(wordsLanguage: "en")
         edit.volume = 0.5
         edit.enhancesVoice = false

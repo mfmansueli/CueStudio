@@ -112,6 +112,8 @@ struct QuickEditView: View {
             case .media: AddMediaSheet(viewModel: viewModel)
             case .findInCaptions: CaptionFindSheet(viewModel: viewModel)
             case .myWords: MyWordsSheet(captions: viewModel.captions)
+            case .autoEdit:
+                if let session = viewModel.autoEdit { AutoEditSheet(viewModel: viewModel, session: session) }
             case .clipOrder: ClipOrderSheet(viewModel: viewModel, thumbnails: services.thumbnails)
             case .done:
                 EditorDoneSheet(
@@ -153,6 +155,7 @@ struct QuickEditView: View {
                 if let trial = viewModel.templateTrial { TemplateTrialSheet(viewModel: viewModel, trial: trial) }
             }
         }
+        .modifier(CaptionLineChoiceDialog(captions: viewModel.captions))
         .confirmationDialog(
             "This video has its own sound",
             isPresented: Binding(

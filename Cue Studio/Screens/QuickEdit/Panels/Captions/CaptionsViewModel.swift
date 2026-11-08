@@ -20,6 +20,8 @@ final class CaptionsViewModel: EditorPart {
     var confirmsCaptionReplacement = false
     /// Asking before Delete all takes every line (`+LineByLine`).
     var confirmsDeletingAll = false
+    /// Place or Zoom asked from a caption picked on the timeline: the line and which choice (`+LineChoice`); nil otherwise.
+    var lineChoice: CaptionLineChoice?
     /// Captions › Select: the lines picked to be styled, moved or deleted together (`+Picks`); nil while lines are picked one
     /// at a time.
     var captionPicks: Set<UUID>?

@@ -144,16 +144,31 @@ extension ClipsViewModel {
     /// took out is kept on it (`removedSpan`), for Put back.
     func applyCleanUp() {
         guard isReady else { return }
-        let marked = markedCleanUp
-        let removals = marked.compactMap(removal)
-        guard !removals.isEmpty else { return }
         let saving = cleanUpSaving
+        guard let removed = removeMarkedCleanUp() else { return }
+        panel = nil
+        let seconds = DurationText.tenths(saving)
+        let pauses = removed.filter { $0.kind == .pause }.count
+        toast.show(
+            pauses == removed.count
+                ? String(localized: "Removed \(pauses) pauses · \(seconds)")
+                : String(localized: "Speech cleaned up · \(seconds)", comment: "Toast after Clean up removed pauses, ums and repeats; the time saved"),
+            kind: .cue, action: undoAction
+        )
+    }
+
+    /// The marked pauses and words taken out as one change (the others are kept), without a word on screen: what Remove and
+    /// Auto edit share. Nil when nothing could go (nothing marked, or the cuts would leave no clip, which the toast says).
+    @discardableResult
+    func removeMarkedCleanUp() -> [CleanUpSuggestion]? {
+        let removals = markedCleanUp.compactMap(removal)
+        guard !removals.isEmpty else { return nil }
         let kept = Set((pauseCandidates + wordCandidates).filter { !isMarked($0) }.map(\.id))
         let cuts = Dictionary(removals.map { ($0.id, $0.span) }, uniquingKeysWith: { first, _ in first })
         var timeline = edit.timeline
         guard timeline.remove(removals) else {
             toast.show(String(localized: "Keep at least one clip"), kind: .problem)
-            return
+            return nil
         }
         let decided = edit.suggestions.map { suggestion in
             var decided = suggestion
@@ -167,15 +182,7 @@ extension ClipsViewModel {
         player.pause()
         commit(timeline, suggestions: decided)
         cleanUpMarks = [:]
-        panel = nil
-        let seconds = DurationText.tenths(saving)
-        let pauses = removals.filter { $0.kind == .pause }.count
-        toast.show(
-            pauses == removals.count
-                ? String(localized: "Removed \(pauses) pauses · \(seconds)")
-                : String(localized: "Speech cleaned up · \(seconds)", comment: "Toast after Clean up removed pauses, ums and repeats; the time saved"),
-            kind: .cue, action: undoAction
-        )
+        return removals
     }
 
     /// Listen: 1.2 s before to 1.2 s after; a marked one is skipped (as it would be cut, with the gap left), so what plays is

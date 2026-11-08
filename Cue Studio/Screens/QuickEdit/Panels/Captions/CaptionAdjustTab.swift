@@ -29,8 +29,9 @@ struct CaptionAdjustTab: View {
                 PanelNote(text: String(localized: "Hard to read on bright scenes. Add a background, a thick outline or a halo."), tint: Palette.warnText)
                     .accessibilityIdentifier("edit.captionContrastWarning")
             }
-            font(settings, spec: spec)
+            // Colors first: the change a creator makes most, in sight without scrolling the medium panel (recipe R1.6, 08/11/2026).
             colors(spec, changes: changes)
+            font(settings, spec: spec)
             background(spec, changes: changes)
             edges(spec, changes: changes)
             emphasis(spec, changes: changes)

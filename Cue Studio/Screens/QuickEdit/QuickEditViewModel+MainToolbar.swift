@@ -18,7 +18,7 @@ extension QuickEditViewModel {
         [.speed, .volume, .zoom],
         [.adjust, .skin, .filters, .background, .crop, .stabilize, .blurArea, .copyLook, .pasteLook],
         [.animation, .duplicate, .freeze, .reverse, .replace, .reorder, .extractAudio],
-        [.editByText, .studioVoice, .format, .templates, .brandKit, .cover],
+        [.autoEdit, .editByText, .studioVoice, .format, .templates, .brandKit, .cover],
     ]
 
     /// Adjust, Skin, Filters and Background carry the whole video's badge here too: a clip's bar has a tool with the same name

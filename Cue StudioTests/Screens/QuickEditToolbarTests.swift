@@ -46,7 +46,7 @@ struct QuickEditToolbarTests {
         "speed", "volume", "zoom",
         "adjustVideo", "skinVideo", "filters", "backgroundVideo", "clipCrop", "stabilize", "blurArea", "copyLook", "pasteLook",
         "clipAnimation", "duplicate", "freeze", "reverse", "replace", "reorder", "extractAudio",
-        "editByText", "voice", "format", "templates", "brandKit", "cover",
+        "autoEdit", "editByText", "voice", "format", "templates", "brandKit", "cover",
     ]
 
     /// What every item's bar (but a clip's) offers after its own tools.
@@ -67,7 +67,7 @@ struct QuickEditToolbarTests {
     @Test func theMainToolbarHasEveryToolWithNothingPicked() async {
         let viewModel = await makeScenario().viewModel
         #expect(ids(viewModel) == Self.mainIDs)
-        #expect(viewModel.toolbarItems.count == 32)
+        #expect(viewModel.toolbarItems.count == 33)
         #expect(viewModel.toolbarContext == .main)
         // A thin line starts each group after the basics.
         #expect(viewModel.toolbarItems.enumerated().filter(\.element.startsGroup).map(\.offset) == [7, 10, 19, 26])
@@ -113,7 +113,9 @@ struct QuickEditToolbarTests {
         // Five groups: its essentials, its picture, the montage, what goes on top, the whole video.
         #expect(items.filter(\.startsGroup).map(\.id) == ["adjust", "transition", "text", "pauses"])
         // Everything that reaches past the clip is in the last group, and says so.
-        #expect(items.filter { $0.scopeBadge != nil }.map(\.id) == ["pauses", "editByText", "voice", "captions", "format", "templates", "brandKit"])
+        #expect(items.filter { $0.scopeBadge != nil }.map(\.id) == [
+            "pauses", "autoEdit", "editByText", "voice", "captions", "format", "templates", "brandKit",
+        ])
         #expect(items.last?.id == "delete")
     }
 
@@ -170,7 +172,7 @@ struct QuickEditToolbarTests {
             "adjust", "skin", "filters", "background", "clipCrop", "mirror", "stabilize", "blurArea", "copyLook", "pasteLook",
             "transition", "clipAnimation", "duplicate", "freeze", "reverse", "replace", "reorder", "extractAudio", "voiceEffects", "resetClip",
             "text", "addMedia", "audio",
-            "pauses", "editByText", "voice", "captions", "format", "templates", "brandKit", "cover", "delete",
+            "pauses", "autoEdit", "editByText", "voice", "captions", "format", "templates", "brandKit", "cover", "delete",
         ])
         #expect(viewModel.toolbarItems.last?.style == .destructive)
     }
@@ -227,8 +229,9 @@ struct QuickEditToolbarTests {
         viewModel.selection = .caption(line.id)
         #expect(viewModel.toolbarContext == .caption)
         // Edit opens the Captions panel on the line already: no second way to the same list.
-        // Delete all is there too: tapping the captions' track lands on a line (owner, 07/11/2026).
-        #expect(ids(viewModel) == ["editCaption", "style", "split", "join", "emphasis", "deleteAllCaptions"]
+        // Place and Zoom for this line (E4 D: the stretch is chosen on the timeline). Delete all is there too: tapping the
+        // captions' track lands on a line (owner, 07/11/2026).
+        #expect(ids(viewModel) == ["editCaption", "style", "split", "join", "emphasis", "placeCaption", "zoomCaption", "deleteAllCaptions"]
             + Self.itemShortcutIDs.filter { $0 != "captions" } + ["delete"])
         viewModel.perform(.deleteAllCaptions)
         #expect(viewModel.captions.confirmsDeletingAll, "Delete all asks first")

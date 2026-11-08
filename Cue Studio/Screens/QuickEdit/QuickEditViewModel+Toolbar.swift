@@ -98,6 +98,7 @@ extension QuickEditViewModel {
         case .addText, .addGraphic, .addCommentCard, .styleAllTexts, .editText: performTextAction(action)
         case .deleteAllCaptions: captions.askToDeleteAllCaptions()
         case .findInCaptions: captions.openCaptionFind()
+        case .openAutoEdit: openAutoEdit()
         case .editByText:
             // Edit by text is Clean up's Text tab (D6): the same panel, grown for reading, never a sheet over it.
             toolMenu = nil
@@ -208,6 +209,8 @@ extension QuickEditViewModel {
         case .emphasizeCaption:
             captions.expandedLineID = selection?.captionID
             panel = .captions
+        case .placeCaption: captions.askLineChoice(.place, for: selection?.captionID)
+        case .zoomCaption: captions.askLineChoice(.zoom, for: selection?.captionID)
         case .splitCaption: selection?.captionID.map(captions.splitCaptionAtPlayhead)
         case .joinCaption: selection?.captionID.map(captions.joinCaption)
         case .deleteCaption: selection?.captionID.map(captions.deleteCaptionLine)

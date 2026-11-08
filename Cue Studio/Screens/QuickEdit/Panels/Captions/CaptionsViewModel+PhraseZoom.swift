@@ -20,13 +20,22 @@ extension CaptionsViewModel {
 
     /// The zoom the picked lines share: nil for none or when they differ.
     var pickedPhraseZoom: PhraseZoom.Strength? {
-        let strengths = Set(pickedCaptionLines.map { phraseZoom(onLine: $0.id)?.strength })
-        return strengths.count == 1 ? strengths.first ?? nil : nil
+        phraseZoom(of: pickedCaptionLines)
     }
 
     /// The picked lines zoomed at `strength`, or not zoomed (nil).
     func setPickedCaptionsZoom(_ strength: PhraseZoom.Strength?) {
-        let lines = pickedCaptionLines
+        setZoom(strength, onLines: pickedCaptionLines)
+    }
+
+    /// The zoom `lines` share: nil for none or when they differ.
+    func phraseZoom(of lines: [CaptionCue]) -> PhraseZoom.Strength? {
+        let strengths = Set(lines.map { phraseZoom(onLine: $0.id)?.strength })
+        return strengths.count == 1 ? strengths.first ?? nil : nil
+    }
+
+    /// `lines` zoomed at `strength`, or not zoomed (nil), in one undo step.
+    func setZoom(_ strength: PhraseZoom.Strength?, onLines lines: [CaptionCue]) {
         guard isReady, !lines.isEmpty else { return }
         var zooms = edit.phraseZooms.filter { zoom in
             !lines.contains { $0.sourceID == zoom.sourceID && $0.span.overlaps(zoom.span) }

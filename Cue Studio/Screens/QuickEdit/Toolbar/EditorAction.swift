@@ -75,6 +75,8 @@ enum EditorAction: Hashable {
     case deleteAllCaptions
     /// Find and replace in every line.
     case findInCaptions
+    /// Auto edit's sheet (`QuickEditViewModel+AutoEdit`).
+    case openAutoEdit
     // Caption
     case editCaption
     case splitCaption
@@ -112,6 +114,10 @@ enum EditorAction: Hashable {
     case openMediaMotion
     /// The picked caption line's words, to emphasize some (Captions, the line's More open).
     case emphasizeCaption
+    /// Where the picked caption line goes: with every caption or in its own place (asks, naming the line).
+    case placeCaption
+    /// The picked caption line's phrase zoom (asks, naming the line).
+    case zoomCaption
     // Blur area
     /// A face, a plate or a name hidden: the faces in the frame to tap, or an area to draw.
     case addBlurArea

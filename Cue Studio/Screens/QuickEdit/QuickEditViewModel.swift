@@ -167,6 +167,8 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     /// Where a failure the creator saw is written down (`noteFailure`): Console and Crashlytics; tests read it.
     /// A template on the video while its sheet is open (`QuickEditViewModel+Templates`).
     var templateTrial: TemplateTrial?
+    /// Auto edit while its sheet is open (`+AutoEdit`).
+    var autoEdit: AutoEditSession?
     @ObservationIgnored var reportFailure: (EditorFailureReport) -> Void = { $0.send() }
     /// Everything the editor started and waits for (`EditorJobs`): Auto, captions, Track, the cover, a short preview, the
     /// sound compared, the draft, beats, Clean Up and tools' work. Closing cancels it all.

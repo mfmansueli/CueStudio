@@ -408,7 +408,8 @@ struct OverlayEditingLayer: View {
                     .frame(width: frame.width + 8, height: frame.height + 8)
                     .allowsHitTesting(false)
             }
-            if draggedY != nil {
+            // What a drag moves is said before the first gesture, while the line is picked (canvas 2 §6).
+            if isSelected || draggedY != nil {
                 captionScopeLabel(viewModel.captions.captionDragScope(id), above: frame.midY + offset > size.height * 0.3, captionHeight: frame.height)
             }
         }

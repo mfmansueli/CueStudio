@@ -60,6 +60,9 @@ nonisolated struct EditLook: Codable, Hashable, Sendable {
     var suggestsEmphasis: Bool?
     /// Added with phrase zooms: nil in steps saved before, which leave them as they are.
     var phraseZooms: [PhraseZoom]?
+    /// Added with Auto edit: what its last run did (nil is a value), and whether this step knew it (steps saved before leave it).
+    var autoEdit: AutoEditRecord?
+    var autoEditKnown: Bool?
 
     init(_ edit: TakeEdit) {
         exposure = edit.exposure
@@ -99,6 +102,8 @@ nonisolated struct EditLook: Codable, Hashable, Sendable {
         newMusicKnown = true
         suggestsEmphasis = edit.suggestsEmphasis
         phraseZooms = edit.phraseZooms
+        autoEdit = edit.autoEdit
+        autoEditKnown = true
     }
 
     /// Puts these settings on `edit`.
@@ -143,5 +148,6 @@ nonisolated struct EditLook: Codable, Hashable, Sendable {
         if newMusicKnown == true { edit.newMusic = newMusic }
         if let suggestsEmphasis { edit.suggestsEmphasis = suggestsEmphasis }
         if let phraseZooms { edit.phraseZooms = phraseZooms }
+        if autoEditKnown == true { edit.autoEdit = autoEdit }
     }
 }

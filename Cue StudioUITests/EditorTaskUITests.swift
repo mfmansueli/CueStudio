@@ -93,6 +93,35 @@ final class EditorTaskUITests: XCTestCase {
         XCTAssertEqual(EditorApp.length(app), "00:18.4")
     }
 
+    /// Auto edit (E5) on the demo edit: its captions stay (that step can't be picked), its four pauses come out in one step;
+    /// Before | After shows the video without and with them; Turn off puts the pauses back; Undo takes the turning off back.
+    func testAutoEditCleansTheSpeechAndEachStepTurnsOff() {
+        let app = EditorApp.open(demo: true)
+        EditorApp.tapTool(app, "autoEdit")
+        let captions = app.switches["edit.autoEdit.captions"]
+        XCTAssertTrue(captions.exists(within: 5))
+        XCTAssertFalse(captions.isEnabled, "The demo has captions: they stay")
+        app.buttons["edit.autoEdit.run"].tap()
+        let speech = app.descendants(matching: .any)["edit.autoEdit.result.speech"]
+        XCTAssertTrue(speech.exists(within: 10))
+        XCTAssertTrue(speech.label.contains("4 cuts"), speech.label)
+        XCTAssertTrue(app.descendants(matching: .any)["edit.autoEdit.result.captions"].label.contains("Your captions stay"))
+        let compare = app.segmentedControls["edit.autoEdit.compare"]
+        XCTAssertTrue(compare.buttons["Before"].isEnabled)
+        compare.buttons["Before"].tap()
+        XCTAssertFalse(app.buttons["edit.autoEdit.off.speech"].isEnabled, "Turn off waits for After")
+        compare.buttons["After"].tap()
+        app.buttons["edit.autoEdit.off.speech"].tap()
+        XCTAssertTrue(speech.label.contains("Turned off"), speech.label)
+        app.swipeDown(velocity: .fast)
+        XCTAssertTrue(app.descendants(matching: .any)["edit.autoEdit.run"].isGone(within: 5))
+        XCTAssertEqual(EditorApp.length(app), "00:21.6", "The pauses came back")
+        app.buttons["edit.undoButton"].tap()
+        XCTAssertNotEqual(EditorApp.length(app), "00:21.6", "Undo took the turning off back")
+        app.buttons["edit.undoButton"].tap()
+        XCTAssertEqual(EditorApp.length(app), "00:21.6", "And the run, in one step")
+    }
+
     /// "caudo" → "caldo", and the line ends 0.2 s later.
     func testFixingACaptionAndItsEnd() {
         let app = EditorApp.open(demo: true)

@@ -43,7 +43,12 @@ extension CaptionsViewModel {
 
     /// The place the picked lines share; nil when they differ or one is somewhere a drag left it.
     var pickedCaptionPlace: CaptionPlace? {
-        let places = Set(pickedCaptionLines.map { $0.lineStyle?.y })
+        place(of: pickedCaptionLines)
+    }
+
+    /// The place `lines` share; nil when they differ or one is somewhere a drag left it.
+    func place(of lines: [CaptionCue]) -> CaptionPlace? {
+        let places = Set(lines.map { $0.lineStyle?.y })
         guard places.count == 1, let place = places.first else { return nil }
         guard let y = place else { return .withAll }
         return CaptionPosition.allCases.first { abs($0.verticalFraction - y) < 0.000_1 }.map(CaptionPlace.own)
@@ -52,9 +57,14 @@ extension CaptionsViewModel {
     /// The picked lines with every caption, or in their own place.
     func setPickedCaptionsPlace(_ place: CaptionPlace) {
         guard let picks = captionPicks, !picks.isEmpty else { return }
+        setPlace(place, ofLines: picks)
+    }
+
+    /// `ids` with every caption, or in their own place, in one undo step.
+    func setPlace(_ place: CaptionPlace, ofLines ids: Set<UUID>) {
         switch place {
-        case .withAll: placeLines(picks, at: nil)
-        case .own(let position): placeLines(picks, at: position.verticalFraction)
+        case .withAll: placeLines(ids, at: nil)
+        case .own(let position): placeLines(ids, at: position.verticalFraction)
         }
     }
 

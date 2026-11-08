@@ -65,7 +65,11 @@ extension QuickEditViewModel {
             )
         }
         input.captions = captions.captionMap.instances.map { line, cueID in
-            TimelineGeometry.ItemInput(id: cueID, span: line.span, label: line.text)
+            // A line with a phrase zoom shows the magnifier where its kind's symbol was: the timeline says where the zoom lands.
+            TimelineGeometry.ItemInput(
+                id: cueID, span: line.span, label: line.text,
+                symbol: captions.phraseZoom(onLine: cueID) == nil ? nil : "plus.magnifyingglass"
+            )
         }
         input.showsCaptions = edit.showsCaptions
         input.music = edit.music.compactMap { clip in
