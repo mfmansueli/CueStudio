@@ -165,9 +165,8 @@ struct AppServices {
         showsFirstStar = options.showsFirstStar
         storyFrozenTime = options.storyFrozenTime
         milestoneToShow = options.milestoneToShow
-        fakesShareSheet = options.fakesShareSheet
-        forcesLowPowerMode = options.forcesLowPowerMode
-        previewStandInFrame = options.previewStandInFrame
+        // What UI tests stand in for: the share sheet, Low Power Mode, the editor's video.
+        (fakesShareSheet, forcesLowPowerMode, previewStandInFrame) = (options.fakesShareSheet, options.forcesLowPowerMode, options.previewStandInFrame)
         logsDockMotion = options.logsDockMotion
         profile = CreatorProfileService(defaults: options.defaults)
         session = SessionService(defaults: options.defaults, checker: options.credentialChecker)

@@ -38,13 +38,14 @@ extension CaptionsViewModel {
     /// "Replace" on one match: that match only, one undo step.
     func replaceCaptionMatch(_ match: CaptionFindReplace.Match, query: String, with replacement: String) {
         guard isReady else { return }
+        let before = edit.captions
         let changed = replaceInCaptions { cueID, text in
             guard cueID == match.cueID else { return nil }
             return CaptionFindReplace.replacing(query, with: replacement, in: text, occurrence: match.occurrence)
         }
         guard changed > 0 else { return }
         Haptics.selection()
-        toast.show(String(localized: "Replaced"))
+        toast.show(Self.timingCheckNote(newTimingChecks(since: before)).map { String(localized: "Replaced · \($0)") } ?? String(localized: "Replaced"))
     }
 
     /// "Replace all": every match in every line that plays, one undo step (Undo in the toast brings them all back).
@@ -54,12 +55,14 @@ extension CaptionsViewModel {
         let count = captionMatches(for: query).count
         guard count > 0 else { return 0 }
         let playing = Set(captionLinesInPlayOrder.map(\.id))
+        let before = edit.captions
         replaceInCaptions { cueID, text in
             playing.contains(cueID) ? CaptionFindReplace.replacing(query, with: replacement, in: text) : nil
         }
         Haptics.selection()
+        let replaced = String(localized: "Replaced \(count) times")
         toast.show(
-            String(localized: "Replaced \(count) times"),
+            Self.timingCheckNote(newTimingChecks(since: before)).map { String(localized: "\(replaced) · \($0)") } ?? replaced,
             action: undoAction
         )
         return count

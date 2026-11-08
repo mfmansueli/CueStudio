@@ -2968,6 +2968,11 @@ de uma vez. Trocar o corte, o preset, a fonte ou o tamanho nunca pede outra tran
   nenhum se ela já estava no limite; o −/+ do painel no limite diz o mesmo num toast, sem passo.
   Contraste medido nos três cartões da linha (`panelCard`, `accCard`, `surface2` sobre o painel), com e sem Aumentar Contraste: palavra medida `ink`
   sobre `segmentOn`, palavra estimada e o tracejado em `ink2` (4,5:1), alça `acc` (3:1) (`PaletteContrastTests.theWordTimingStripReadsOnTheLineCard`).
+- **Correção que mexe no tempo** (E4, "Avisar quando uma correção mexe no tempo"; `CaptionsViewModel+TimingNotice`): uma correção que precisou
+  adivinhar tempos diz isso onde aconteceu e a linha fica com "Check timing": palavras digitadas sem voz embaixo (o toast aparece uma vez, quando
+  a linha passa a pedir revisão), Replace e Replace all ("Replaced · Timing guessed in 1 line · Check timing") e dividir uma linha sem tempo por
+  palavra (as duas metades por tamanho, com Undo). Uma correção que mantém os tempos da voz não fala de tempo; arrastar uma linha para longe da voz
+  já avisava (`noteMovedOffTheVoice`).
 - **Traduções:** cada linha traduzida guarda o próprio texto e o próprio tempo (nunca é cortada palavra por palavra) e passa a apontar para os blocos sobre
   os quais toca; a linha escolhida continua escolhida no bloco que contém o começo dela.
 - **Cortes, cópias, montagem e velocidade:** os blocos são cortados no tempo da gravação (como as linhas sempre foram), então o mapa das legendas na edição

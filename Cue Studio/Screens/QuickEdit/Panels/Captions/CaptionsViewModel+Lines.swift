@@ -393,7 +393,10 @@ extension CaptionsViewModel {
 
     /// New words for a line: the times the voice gave are kept where the words still match.
     func setCaptionText(_ id: UUID, _ text: String) {
+        let before = edit.captions
         updateCaption(id, key: "captionText.\(id)") { CaptionRevision.retimed($0, text: text) }
+        // Typed words with no voice under them: said once, when the line starts asking for a look.
+        if let note = Self.timingCheckNote(newTimingChecks(since: before)) { toast.show(note) }
     }
 
     /// Moves a line's start or end by `seconds` of the edit, never past its neighbors, the other
@@ -469,6 +472,11 @@ extension CaptionsViewModel {
 
     /// Splits a line before its word at `index`. Both parts were cut by hand: a caption format leaves them as they are.
     func splitCaption(_ id: UUID, beforeWord index: Int) {
+        let before = edit.captions
+        defer {
+            // A line without word times splits by length: both halves are a guess.
+            if let note = Self.timingCheckNote(newTimingChecks(since: before)) { sayUndoable(note) }
+        }
         change { snapshot in
             guard var lines = snapshot.captions, let position = lines.firstIndex(where: { $0.id == id }),
                   var (first, second) = CaptionRevision.split(lines[position], beforeWord: index) else { return }
