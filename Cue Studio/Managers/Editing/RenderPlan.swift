@@ -28,8 +28,11 @@ nonisolated struct RenderPlan: Equatable, Sendable {
     let animations: [ClipAnimationWindow?]
     let options: EditedComposition.Options
 
-    init(_ made: TakeEdit, options: EditedComposition.Options) {
+    init(_ edit: TakeEdit, options: EditedComposition.Options) {
         let grows = options.reachesWholeRecording
+        // Punch in on cuts on the clips (`CutZoom`), so its zooms are drawn, measured and keyed like the creator's own.
+        var made = edit
+        if edit.cutZoom != nil { made.timeline = edit.punchedTimeline }
         var drawn = made
         if grows { drawn.timeline = made.timeline.reachable }
         self.drawn = drawn

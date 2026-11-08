@@ -542,7 +542,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     func motionAnalysisDidChange() {
         // A Blur area's handles read Stabilize's and Follow face's paths from the analyses.
         blur.placements.removeAll()
-        guard source == .ready, EditedComposition.usesMotion(playedEdit) else { return }
+        guard source == .ready, EditedComposition.readsMotion(playedEdit) else { return }
         player.redraw()
     }
 

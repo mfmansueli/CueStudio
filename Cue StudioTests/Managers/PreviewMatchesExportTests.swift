@@ -110,6 +110,8 @@ extension RealExports {
             default:
                 .init(background: { index in (CGPoint(x: Double(index) * 2, y: Double(index)), 0) })
             }
+            // Punch in on cuts needs pixels to zoom into (at 640 a zoom is held at 1×, `ZoomAnchor.minimumPixels`): 720 allows 1.33×.
+            if feature == .cutZoom { return try await MovingFootage.make(seconds: 4, width: 720, height: 1280, motion: motion) }
             return try await MovingFootage.make(seconds: 4, width: 360, height: 640, motion: motion)
         }
 
@@ -164,6 +166,45 @@ extension RealExports {
         }
 
         private static let facePath: @Sendable (Int) -> CGPoint = { index in CGPoint(x: 180, y: 140 + Double(min(index, 90)) * 3) }
+
+        /// One face held left of the middle and high for the whole recording, the way a zoom grows toward it (`FaceZoomFocus`).
+        private static func steadyFace(width: Double, height: Double) -> MotionAnalysis {
+            var analysis = MotionAnalysis(duration: 4, width: width, height: height)
+            let face = NormalizedBox(center: CGPoint(x: 0.3, y: 0.3), width: 0.25, height: 0.14)
+            analysis.subjects = stride(from: 0.0, to: 4, by: 0.1).map { SubjectSample(time: $0, faces: [face], bodies: []) }
+            analysis.analyzedUntil = 4
+            return analysis
+        }
+
+        /// Punch in on cuts is drawn at all, toward the face: the punched clip's frame is not the frame without it, and not the
+        /// frame zoomed from the middle.
+        @Test func thePunchInIsDrawnTowardTheFace() async throws {
+            let take = try await footage(for: .cutZoom)
+            defer {
+                MotionAnalysisStore.remove(forRecording: take)
+                try? FileManager.default.removeItem(at: take)
+            }
+            let punched = try await edit(for: .cutZoom, take: take)
+            var plain = punched
+            plain.cutZoom = nil
+            plain.phraseZooms = []
+            let sounds = RecordingSoundCache()
+            var frames: [CGImage] = []
+            for edit in [punched, plain] {
+                let export = try await EditRenderRequest.prepare(
+                    source: take, edit: edit, purpose: .export(burnsInCaptions: true, shortSide: 1080, frameRate: 30), sounds: sounds
+                ).build()
+                frames.append(try await RenderParity.frame(export.asset, composition: export.videoComposition, at: 1.4))
+            }
+            #expect(try RenderParity.meanDifference(frames[0], frames[1], size: size) > 2)
+            // Without the face the same punch-in grows from the middle: another frame.
+            MotionAnalysisStore.remove(forRecording: take)
+            let centred = try await EditRenderRequest.prepare(
+                source: take, edit: punched, purpose: .export(burnsInCaptions: true, shortSide: 1080, frameRate: 30), sounds: sounds
+            ).build()
+            let middle = try await RenderParity.frame(centred.asset, composition: centred.videoComposition, at: 1.4)
+            #expect(try RenderParity.meanDifference(frames[0], middle, size: size) > 2)
+        }
 
         /// An edit with both ends trimmed (0.6 s off the start, 0.4 s off the end) and the tool on.
         private func edit(for feature: RenderFeature, take: URL) async throws -> TakeEdit {
@@ -254,6 +295,13 @@ extension RealExports {
                     BlurKeyframe(time: 3.5, box: NormalizedBox(x: 0.6, y: 0.5, width: 0.3, height: 0.15)),
                 ]
                 edit.blurRegions = [region]
+            case .cutZoom:
+                // The second clip punched in at Strong toward a face left of the middle, a phrase zoom over it on top (together
+                // held at what the 720 pixels allow).
+                _ = edit.timeline.removeEdited(0.95...1.45)
+                edit.cutZoom = CutZoom(strength: .strong)
+                edit.phraseZooms = [PhraseZoom(span: TimeSpan(start: 2.8, end: 3.5), strength: .strong)]  // Edited 1.7 to 2.4.
+                MotionAnalysisStore.save(Self.steadyFace(width: 720, height: 1280), forRecording: take)
             case .followFace:
                 edit.aspect = .square
                 edit.faceFollow = FaceFollow(pace: .quick)
@@ -275,7 +323,7 @@ extension RealExports {
 enum RenderFeature: String, CaseIterable, CustomTestStringConvertible {
     case look, crop, fit, clipZoom, shortClipTransition, slide, zoomTransition, flash, fade, push, wipe, blur, punch, speed,
          speedCurve, text, textEffects, turnedText, captions, stabilize, followFace, blurArea, background, backgroundKey, skin, mask,
-         splitScreen
+         splitScreen, cutZoom
 
     var testDescription: String { rawValue }
 
@@ -294,6 +342,8 @@ enum RenderFeature: String, CaseIterable, CustomTestStringConvertible {
         case .mask, .splitScreen: [0.45, 1.45, 2.45]
         // On their way in, read, on their way out.
         case .textEffects: [0.35, 0.6, 1.4, 2.6, 2.75]
+        // As filmed, punched in, punched in with the phrase zoom over it.
+        case .cutZoom: [0.4, 1.4, 2.1]
         default: [0.4, 1.4, 2.6]
         }
     }

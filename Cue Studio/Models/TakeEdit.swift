@@ -111,6 +111,11 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     var suggestsEmphasis = false
     /// Zooms on phrases, started from caption lines and then on their own (`PhraseZoom`).
     var phraseZooms: [PhraseZoom] = []
+    /// Zoom › Punch in on cuts (`CutZoom`): every other clip closer; nil plays the clips as they are. Only by the creator's choice
+    /// (or their kit's, `BrandKitZoom`).
+    var cutZoom: CutZoom?
+    /// The strength a kit's Zoom marks as the creator's in Captions › Select › Zoom (`BrandKitZoom`); nil marks none.
+    var phraseZoomStrength: PhraseZoom.Strength?
     /// New projects use Cue; decoding an absent key preserves the old renderer and appearance.
     var captionCollection: CaptionSettings? = CaptionSettings()
     /// How captions look in edits made before type presets; `captionLook` replaces it once set.
@@ -434,7 +439,8 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         case snapsToBeats, lockedLayers
         case saturation, highlights, shadows, sharpness, filterAmount, cropFit, pauseThreshold, pauseGap, cleanUpHearing
         case vibrance, tint, autoCorrection, autoAmount, lookVersion, skin, faceFollow, safeGuide
-        case aspect, cropOffset, showsCaptions, suggestsEmphasis, phraseZooms, captionStyle, captionLook, captionPreset, captionPosition, captions
+        case aspect, cropOffset, showsCaptions, suggestsEmphasis, phraseZooms, cutZoom, phraseZoomStrength
+        case captionStyle, captionLook, captionPreset, captionPosition, captions
         case captionTranscript, sourceTranscripts, captionLanguage, captionAnimation, captionTranslations, captionDisplay
         case captionCollection
         case texts, media, voiceOvers, creatorStyle, textLook, textPreset, cover
@@ -512,6 +518,9 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         showsCaptions = try container.decodeIfPresent(Bool.self, forKey: .showsCaptions) ?? false
         suggestsEmphasis = (try? container.decodeIfPresent(Bool.self, forKey: .suggestsEmphasis)) ?? false
         phraseZooms = (try? container.decodeIfPresent([PhraseZoom].self, forKey: .phraseZooms)) ?? []
+        // Added with Punch in on cuts and kits' Zoom (08/11/2026): edits saved before play their clips as they are.
+        cutZoom = try? container.decodeIfPresent(CutZoom.self, forKey: .cutZoom)
+        phraseZoomStrength = try? container.decodeIfPresent(PhraseZoom.Strength.self, forKey: .phraseZoomStrength)
         captionCollection = container.decodeLenient(CaptionSettings.self, forKey: .captionCollection, report: report)
         captionStyle = try container.decodeIfPresent(CaptionStyle.self, forKey: .captionStyle) ?? .bold
         captionLook = container.decodeLenient(TextLook.self, forKey: .captionLook, report: report)

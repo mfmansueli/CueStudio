@@ -92,11 +92,13 @@ extension BlurViewModel {
             return nil
         }
         let index = timeline.segmentIndex(atEdited: time)
-        let segment = timeline.segments[index]
+        // With Punch in on cuts on its clips, as the compositor draws it.
+        let segment = edit.punchedTimeline.segments[index]
         let start = timeline.editedStart(ofSegmentAt: index)
         let played = min(segment.sourceEnd, segment.sourceStart + segment.sourceOffset(forEdited: max(0, time - start)))
         let playedURL = url(of: .recording(segment.sourceID)) ?? footageURL
         var placement = basePlacement(size: size, playedURL: playedURL, stabilization: segment.stabilization, orientation: segment.orientation)
+            .anchored(for: segment, recording: playedURL, in: edit)
             .moment(of: segment, startingAt: start, at: time, phrases: PhraseZoomWindow.windows(of: edit.phraseZooms, in: timeline))
         // A support of the split screen showing: the main video sits in its area.
         if let support = edit.placedMedia(in: timeline).first(where: { entry in

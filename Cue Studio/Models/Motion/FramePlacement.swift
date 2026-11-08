@@ -25,8 +25,12 @@ nonisolated struct FramePlacement: Sendable {
     /// While a support shows: the main area on the frame (pixels, from the top left) and how the steadied recording sits in it
     /// (`SplitPlacement.place`); the crop then doesn't apply.
     var area: (rect: CGRect, placed: SplitPlacement.Placement)?
-    /// The clip's zoom at the moment: times the frame (or the main area), around its middle.
+    /// The clip's zoom at the moment: times the frame (or the main area), around `zoomPivot` (the main area's middle).
     var zoom = 1.0
+    /// The point of the frame the zoom grows around: the middle, or the face for the zooms Cue makes (`ZoomAnchor`).
+    var zoomPivot = OverlayPoint.center
+    /// How the zooms Cue makes grow on this clip (`ZoomAnchor`); nil grows them from the middle, unlimited.
+    var zoomAnchor: ZoomAnchor?
     /// The clip's Animation at the moment, over its zoom: the frame (or the main area) scaled around its middle and moved by
     /// shares of its size, as `FramePipeline.animated` draws it.
     var animation = ClipAnimationFrame.still
@@ -119,10 +123,15 @@ nonisolated struct FramePlacement: Sendable {
         )
     }
 
-    /// The clip's zoom's middle: the frame's, or the main area's.
+    /// The middle the Animation turns around: the frame's, or the main area's.
     private var zoomCenter: OverlayPoint {
         guard let area, crop.width > 0, crop.height > 0 else { return .center }
         return OverlayPoint(x: area.rect.midX / crop.width, y: area.rect.midY / crop.height)
+    }
+
+    /// Where the zoom grows from: `zoomPivot`, or the main area's middle while a support shows (as the compositor draws it).
+    private var zoomOrigin: OverlayPoint {
+        area == nil ? zoomPivot : zoomCenter
     }
 
     /// What the Animation moves, as shares of the frame: the frame, or the main area.
@@ -151,13 +160,13 @@ nonisolated struct FramePlacement: Sendable {
 
     private func zoomed(_ point: OverlayPoint) -> OverlayPoint {
         guard abs(zoom - 1) > 0.000_1 else { return point }
-        let middle = zoomCenter
+        let middle = zoomOrigin
         return OverlayPoint(x: middle.x + (point.x - middle.x) * zoom, y: middle.y + (point.y - middle.y) * zoom)
     }
 
     private func unzoomed(_ point: OverlayPoint) -> OverlayPoint {
         guard abs(zoom - 1) > 0.000_1, zoom > 0 else { return point }
-        let middle = zoomCenter
+        let middle = zoomOrigin
         return OverlayPoint(x: middle.x + (point.x - middle.x) / zoom, y: middle.y + (point.y - middle.y) / zoom)
     }
 

@@ -51,6 +51,8 @@ final class CompositionInstruction: NSObject, AVVideoCompositionInstructionProto
     let zoom: ZoomWindow?
     /// Every phrase zoom in the edit (`PhraseZoom`), on top of the section's.
     var phraseZooms: [PhraseZoomWindow] = []
+    /// How the zooms Cue makes grow on the clip this stretch plays (`ZoomAnchor`); nil grows them from the middle.
+    var zoomAnchor: ZoomAnchor?
     /// The Animation of the clip this stretch plays, and of the other side's in a transition.
     let animation: ClipAnimationWindow?
     let blendAnimation: ClipAnimationWindow?

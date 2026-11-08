@@ -32,7 +32,8 @@ extension OverlaysViewModel {
         let playhead = min(player.currentTime, span.end - 0.001)
         let timeline = edit.timeline
         let index = timeline.segmentIndex(atEdited: playhead)
-        let segment = timeline.segments[index]
+        // With Punch in on cuts on its clips, as the compositor draws it.
+        let segment = edit.punchedTimeline.segments[index]
         let clipStart = timeline.editedStart(ofSegmentAt: index)
         // Within the clip under the playhead, as long as the item shows there.
         let from = max(span.start, clipStart), until = min(span.end, clipStart + segment.duration)
@@ -154,5 +155,6 @@ extension OverlaysViewModel {
     private nonisolated static func placement(for url: URL, in edit: TakeEdit, as segment: EditSegment) async -> FramePlacement? {
         guard let size = await EditFraming.shape(of: url)?.uprightSize else { return nil }
         return FramePlacement.recording(url, size: size, in: edit, steadiedBy: segment.stabilization, orientation: segment.orientation)
+            .anchored(for: segment, recording: url, in: edit)
     }
 }

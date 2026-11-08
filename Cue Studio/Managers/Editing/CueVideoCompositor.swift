@@ -163,10 +163,10 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
             ),
             faces: faces
         )
-        let phrase = PhraseZoomWindow.scale(of: instruction.phraseZooms, at: time)
-        if instruction.zoom != nil || phrase > 1 {
-            let zoom = PhraseZoomWindow.combined(instruction.zoom?.scale(at: time) ?? 1, phrase)
-            image = FramePipeline.zoomed(image, by: CGFloat(zoom))
+        if instruction.zoom != nil || !instruction.phraseZooms.isEmpty {
+            let zoom = ZoomMoment.at(time, section: instruction.zoom, phrases: instruction.phraseZooms, anchor: instruction.zoomAnchor)
+            // While a support shows, the main video is its area's picture: it grows from that area's middle.
+            image = FramePipeline.zoomed(image, by: CGFloat(zoom.scale), around: support == nil ? zoom.pivot : .center)
         }
         if let state = instruction.animation?.state(at: time) {
             image = FramePipeline.animated(image, state)

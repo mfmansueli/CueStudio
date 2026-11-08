@@ -224,6 +224,7 @@ nonisolated struct EditedComposition: @unchecked Sendable {
                 timeOrigin: leadIn
             )
             instruction.phraseZooms = phraseZooms.filter { $0.span.overlaps(stretchSpan) || $0.span.contains(stretchSpan.start) }
+            if zoom != nil || !instruction.phraseZooms.isEmpty { instruction.zoomAnchor = framing.zoomAnchor(of: playedSegment) }
             return instruction
         }
         let configuration = AVVideoComposition.Configuration(
@@ -402,7 +403,10 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         return made.segments.indices.map { index in
             let segment = made.segments[index]
             return segment.zoom.map {
-                ZoomWindow(zoom: $0, start: leadIn + made.editedStart(ofSegmentAt: index), duration: segment.duration, amount: segment.zoomAmount)
+                ZoomWindow(
+                    zoom: $0, start: leadIn + made.editedStart(ofSegmentAt: index), duration: segment.duration, amount: segment.zoomAmount,
+                    punchesInOnCut: segment.punchesInOnCut
+                )
             }
         }
     }

@@ -25,10 +25,10 @@ extension LookViewModel {
         motion?.request(urls)
     }
 
-    /// The edit changed: while Follow face or Stabilize is on, a recording it plays now that wasn't asked for is (so the
-    /// preview draws it as the export will).
+    /// The edit changed: while Follow face, Stabilize or a zoom Cue makes is on, a recording it plays now that wasn't asked for is
+    /// (so the preview draws it as the export will, and the zooms find the face).
     func requestMotionAnalysisIfNeeded() {
-        guard motion != nil, EditedComposition.usesMotion(edit) else { return }
+        guard motion != nil, EditedComposition.readsMotion(edit) else { return }
         let urls = playedRecordingURLs
         guard !Set(urls).isSubset(of: motionRequestedURLs) else { return }
         requestMotionAnalysis()

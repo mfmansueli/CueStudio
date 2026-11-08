@@ -60,6 +60,11 @@ nonisolated struct EditLook: Codable, Hashable, Sendable {
     var suggestsEmphasis: Bool?
     /// Added with phrase zooms: nil in steps saved before, which leave them as they are.
     var phraseZooms: [PhraseZoom]?
+    /// Added with Punch in on cuts and kits' Zoom: `cutZoomKnown` is set in every step that has them (nil in steps saved before,
+    /// which leave them).
+    var cutZoom: CutZoom?
+    var phraseZoomStrength: PhraseZoom.Strength?
+    var cutZoomKnown: Bool?
 
     init(_ edit: TakeEdit) {
         exposure = edit.exposure
@@ -99,6 +104,9 @@ nonisolated struct EditLook: Codable, Hashable, Sendable {
         newMusicKnown = true
         suggestsEmphasis = edit.suggestsEmphasis
         phraseZooms = edit.phraseZooms
+        cutZoom = edit.cutZoom
+        phraseZoomStrength = edit.phraseZoomStrength
+        cutZoomKnown = true
     }
 
     /// Puts these settings on `edit`.
@@ -143,5 +151,9 @@ nonisolated struct EditLook: Codable, Hashable, Sendable {
         if newMusicKnown == true { edit.newMusic = newMusic }
         if let suggestsEmphasis { edit.suggestsEmphasis = suggestsEmphasis }
         if let phraseZooms { edit.phraseZooms = phraseZooms }
+        if cutZoomKnown == true {
+            edit.cutZoom = cutZoom
+            edit.phraseZoomStrength = phraseZoomStrength
+        }
     }
 }

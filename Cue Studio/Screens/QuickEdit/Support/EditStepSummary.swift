@@ -193,6 +193,7 @@ nonisolated struct EditStepSummary: Equatable, Sendable {
         if lookBefore.skin != lookAfter.skin || lookBefore.skinSmoothing != lookAfter.skinSmoothing { return String(localized: "Skin") }
         if lookBefore.volume != lookAfter.volume { return String(localized: "Volume") }
         if let timing = timingName(lookBefore, lookAfter) { return timing }
+        if lookBefore.phraseZooms != lookAfter.phraseZooms || lookBefore.cutZoom != lookAfter.cutZoom { return String(localized: "Zoom") }
         if lookBefore.enhancesVoice != lookAfter.enhancesVoice || lookBefore.reducesNoise != lookAfter.reducesNoise
             || lookBefore.voiceEnhancement != lookAfter.voiceEnhancement || lookBefore.noiseReduction != lookAfter.noiseReduction
             || lookBefore.voiceReach != lookAfter.voiceReach || lookBefore.evensOutVoices != lookAfter.evensOutVoices {

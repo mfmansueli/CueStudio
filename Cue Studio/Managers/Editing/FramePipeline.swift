@@ -76,14 +76,17 @@ nonisolated enum FramePipeline {
         return moved.composited(over: CIImage(color: .black).cropped(to: bounds))
     }
 
-    /// `image` scaled around its center, cropped back to its frame (a section's slow zoom).
-    static func zoomed(_ image: CIImage, by scale: CGFloat) -> CIImage {
+    /// `image` scaled around `pivot` (fractions of it, from the top left: its center unless a zoom grows toward a face,
+    /// `ZoomAnchor`), cropped back to its frame (a clip's zoom, a phrase zoom). Any point inside keeps the frame filled.
+    static func zoomed(_ image: CIImage, by scale: CGFloat, around pivot: OverlayPoint = .center) -> CIImage {
         guard abs(scale - 1) > 0.000_1 else { return image }
         let extent = image.extent
+        // Core Image's y grows upward: a pivot down from the top is up from the bottom.
+        let x = extent.minX + CGFloat(pivot.x) * extent.width, y = extent.maxY - CGFloat(pivot.y) * extent.height
         return image
-            .transformed(by: CGAffineTransform(translationX: -extent.midX, y: -extent.midY)
+            .transformed(by: CGAffineTransform(translationX: -x, y: -y)
                 .concatenating(CGAffineTransform(scaleX: scale, y: scale))
-                .concatenating(CGAffineTransform(translationX: extent.midX, y: extent.midY)))
+                .concatenating(CGAffineTransform(translationX: x, y: y)))
             .cropped(to: extent)
     }
 
