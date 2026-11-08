@@ -418,6 +418,8 @@ extension CaptionsViewModel {
             case .end:
                 revised.end = source(max(min(ceiling, span.end + seconds), span.start + CaptionCue.minimumDuration))
             }
+            // Already at its limit: nothing changes, so no undo step.
+            guard abs(revised.start - cue.start) > 0.000_1 || abs(revised.end - cue.end) > 0.000_1 else { return cue }
             revised.isRevised = true
             // Words now outside the line's time fold into it; the line keeps its look and its words.
             return CaptionRevision.fitted(revised)

@@ -345,6 +345,7 @@ extension QuickEditViewModel {
         guard isReady, handleDrag == nil else { return }
         takePlayhead()
         player.pause()
+        stretchLimitNoticed = false
         // The undo step begins only once the drag holds something: a stale target never leaves a change open.
         defer { if handleDrag != nil { beginChange() } }
         let playhead = player.currentTime
@@ -417,10 +418,20 @@ extension QuickEditViewModel {
             return ("", 0)
         case .item(_, _, let side):
             guard let bar = drag.bar else { return ("", 0) }
-            resizeBar(bar, edge: side == .start ? .start : .end, to: edge)
+            let layerEdge: LayerEdge = side == .start ? .start : .end
+            resizeBar(bar, edge: layerEdge, to: edge)
             guard let now = layerBarForDrag(bar) else { return ("", 0) }
             let edgeNow = side == .start ? now.span.start : now.span.end
             player.scrub(to: min(edgeNow, max(0, edit.editedDuration - 0.03)))
+            // A line held by its neighbor or its clip's cut says which, by the handle; one tap of the haptic per gesture.
+            if let room = captionStretchRoom(for: bar), room.holds(layerEdge, at: edge), let hint = room.hint(for: layerEdge) {
+                if !stretchLimitNoticed {
+                    stretchLimitNoticed = true
+                    Haptics.soft()
+                    AccessibilityNotification.Announcement(hint).post()
+                }
+                return (hint, 0)
+            }
             return (DurationText.editor(edgeNow) + " · " + DurationText.tenths(now.span.duration), 0)
         }
     }
@@ -430,6 +441,7 @@ extension QuickEditViewModel {
         guard let drag = handleDrag else { return }
         handleDrag = nil
         lastHandleSnap = nil
+        stretchLimitNoticed = false
         clips.updateCurveSoundStepping()
         // A caption line moved off its voice asks for a timing check, in the same step.
         if case .move(.caption, let line) = drag.target, let bar = drag.bar { captions.noteMovedOffTheVoice(line: line, from: bar.span) }

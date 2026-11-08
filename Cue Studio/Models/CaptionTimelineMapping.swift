@@ -101,10 +101,14 @@ nonisolated enum CaptionTimelineMapping {
                 mapped.text = CaptionText.joined(words.map(\.text))
                 // The marked words that survive the cut keep their marks, counted among the words that are left.
                 let matchesText = cue.words.map(\.text) == CaptionText.words(in: cue.text)
-                mapped.emphasis = matchesText ? Set(kept.enumerated().filter { cue.emphasis.contains($0.element.place) }.map(\.offset)) : []
+                mapped.setMarks { marks in matchesText ? Set(kept.enumerated().filter { marks.contains($0.element.place) }.map(\.offset)) : [] }
             }
-            mapped.start = max(mapped.start, first.start)
-            mapped.end = min(mapped.end, last.end)
+            // A cut through the line leaves it the time of the words it kept; a whole line keeps its own time, so a line stretched
+            // by hand past its words shows that long (owner, 08/11/2026: the words keep their sync).
+            if start > cue.start || end < cue.end {
+                mapped.start = max(mapped.start, first.start)
+                mapped.end = min(mapped.end, last.end)
+            }
         }
         return mapped.end > mapped.start ? mapped : nil
     }

@@ -23,7 +23,7 @@ nonisolated enum CaptionRevision {
         var revised = cue
         revised.text = text
         revised.isRevised = true
-        revised.emphasis = emphasis(cue.emphasis, from: cue.text, to: text)
+        revised.setMarks { emphasis($0, from: cue.text, to: text) }
         guard !cue.words.isEmpty else { return revised }
         let newWords = CaptionText.words(in: text)
         guard !newWords.isEmpty else {
@@ -137,7 +137,7 @@ nonisolated enum CaptionRevision {
             second.lineStyle = cue.lineStyle
             second.start = max(second.start, first.end)
             first.isRevised = true
-            (first.emphasis, second.emphasis) = splitEmphasis(cue.emphasis, at: index)
+            splitMarks(of: cue, at: index, into: &first, &second)
             return (first, second)
         }
         let words = CaptionText.words(in: cue.text)
@@ -157,7 +157,7 @@ nonisolated enum CaptionRevision {
         second.sourceID = cue.sourceID
         second.lineStyle = cue.lineStyle
         first.needsTimingReview = true
-        (first.emphasis, second.emphasis) = splitEmphasis(cue.emphasis, at: index)
+        splitMarks(of: cue, at: index, into: &first, &second)
         return (first, second)
     }
 
@@ -193,7 +193,20 @@ nonisolated enum CaptionRevision {
         merged.needsTimingReview = first.needsTimingReview || second.needsTimingReview
         let offset = CaptionText.words(in: first.text).count
         merged.emphasis = first.shownEmphasis.union(second.shownEmphasis.map { $0 + offset })
+        let secondCount = CaptionText.words(in: second.text).count
+        func joined(_ head: Set<Int>, _ tail: Set<Int>) -> Set<Int> {
+            head.filter { $0 < offset }.union(tail.filter { $0 < secondCount }.map { $0 + offset })
+        }
+        merged.suggestedEmphasis = joined(first.suggestedEmphasis, second.suggestedEmphasis).intersection(merged.emphasis)
+        merged.declinedEmphasis = joined(first.declinedEmphasis, second.declinedEmphasis)
         return merged
+    }
+
+    /// A line's marks (the creator's, the suggested and the declined) shared by its two halves at the word `index`.
+    private static func splitMarks(of cue: CaptionCue, at index: Int, into first: inout CaptionCue, _ second: inout CaptionCue) {
+        (first.emphasis, second.emphasis) = splitEmphasis(cue.emphasis, at: index)
+        (first.suggestedEmphasis, second.suggestedEmphasis) = splitEmphasis(cue.suggestedEmphasis, at: index)
+        (first.declinedEmphasis, second.declinedEmphasis) = splitEmphasis(cue.declinedEmphasis, at: index)
     }
 
     // MARK: - Emphasis

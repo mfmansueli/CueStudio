@@ -31,6 +31,7 @@ enum EditFixtures {
         edit.pauseThreshold = 1.2
         edit.pauseGap = .tight
         edit.newMusic = MusicDefaults(volume: 0.25, duck: MusicDuck(depth: 18, pauses: .comesBack))
+        edit.suggestsEmphasis = true
         edit.cleanUpHearing = CleanUpHearing(wordsLanguage: "en")
         edit.volume = 0.5
         edit.enhancesVoice = false

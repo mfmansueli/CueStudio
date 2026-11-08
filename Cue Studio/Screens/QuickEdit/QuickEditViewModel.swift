@@ -96,6 +96,8 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     }
     /// Where the dragged handle last stuck, so the haptic plays once per snap.
     @ObservationIgnored var lastHandleSnap: TimeInterval?
+    /// A caption line's handle reached its limit in this gesture: the haptic taps once (`CaptionStretchRoom`).
+    @ObservationIgnored var stretchLimitNoticed = false
     /// The styling panels (Text style, Caption style) are expanded: the video gets as small as it
     /// ever gets so the controls have room. Kept while the editor is open.
     var stylePanelIsExpanded = false

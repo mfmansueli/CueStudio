@@ -49,11 +49,18 @@ extension CaptionsViewModel {
         previewPart(start...end, back: start + 0.01)
     }
 
-    /// Start or End −/+: the line's edge moves by a tenth (never over a neighbor) and the playhead
-    /// goes there, to see it. Quick taps are one undo step.
+    /// Start or End −/+: the line's edge moves by a tenth (never over a neighbor nor its clip's cut, and it says which when it
+    /// can't go further) and the playhead goes there, to see it. Quick taps are one undo step.
     func nudgeCaptionLine(_ id: UUID, edge: TrimHandle, by seconds: TimeInterval) {
+        let before = editedSpan(ofCaption: id)
         nudgeCaption(id, edge: edge, by: seconds)
         guard let span = editedSpan(ofCaption: id) else { return }
+        // Already at its limit: the line says what holds it, as its handle on the timeline does.
+        let outward = edge == .start ? seconds < 0 : seconds > 0
+        if outward, let before, abs(span.start - before.start) < 0.000_5, abs(span.end - before.end) < 0.000_5, let hint = stretchHint(ofLine: id, edge: edge) {
+            Haptics.soft()
+            toast.show(hint)
+        }
         player.pause()
         player.seek(to: edge == .start ? span.start + 0.01 : max(span.start, span.end - 0.3))
     }
@@ -238,5 +245,18 @@ extension CaptionsViewModel {
     /// The highlight color back to the style's own.
     func resetCaptionAccent() {
         change { $0.captionCollection?.accent = nil }
+    }
+
+    /// What holds a line's edge, when it holds it: the line next to it or its clip's cut (`CaptionStretchRoom`).
+    private func stretchHint(ofLine id: UUID, edge: TrimHandle) -> String? {
+        let lines = editedCaptionLines
+        guard let index = lines.firstIndex(where: { $0.id == id }), let span = editedSpan(ofCaption: id) else { return nil }
+        let room = CaptionStretchRoom(
+            span: span, previousEnd: index > 0 ? lines[index - 1].end : nil,
+            nextStart: index + 1 < lines.count ? lines[index + 1].start : nil, timeline: edit.timeline
+        )
+        let layerEdge: LayerEdge = edge == .start ? .start : .end
+        guard room.holds(layerEdge, at: edge == .start ? span.start : span.end) else { return nil }
+        return room.hint(for: layerEdge)
     }
 }

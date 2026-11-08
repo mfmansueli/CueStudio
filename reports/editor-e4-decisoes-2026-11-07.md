@@ -50,3 +50,11 @@ H. Escolho (a). Preserve por padrão os ajustes manuais de fonte, cor e tamanho 
 Template. Aprovado. Antes de aplicar, mostre o que será trocado e que as fontes e cores do kit serão mantidas. Se o template depender de uma fonte ou cor específica para ficar como na demonstração, mostre na prévia como ele realmente vai ficar com o meu kit.
 
 Paste look. Aprovado. Mostre a folha na primeira vez e reutilize a última escolha para destinos compatíveis. Depois de colar, mostre Undo e Change. Change deve permitir corrigir a colagem que acabou de acontecer. Se a escolha anterior for incompatível com o novo destino, abra a folha de novo.
+
+## Alongar legenda e ênfase automática (08/11/2026)
+
+Respostas do dono às duas perguntas da Claude. Texto do dono, sem edição.
+
+**Alongar legenda.** Na etapa 4, siga com “Parar e avisar”. Deixe alongar a legenda até o primeiro limite que encontrar, seja o começo da próxima linha ou o corte do clipe. Ao chegar ao limite, mostre uma dica curta perto da alça e dê um toque háptico por gesto. Preserve a duração da legenda vizinha e o sincronismo das palavras. Se a duração mudar, registre um único passo de Desfazer ao soltar. Se a alça já estava no limite e nada mudou, deixe o histórico como está.
+
+**Ênfase automática.** Use a regra no aparelho como primeira versão, desligada por padrão e acionada em Legendas, junto à edição das palavras. Em linhas com três ou mais palavras, sugira até uma palavra, pulando linhas que já tenham ênfase manual. Use números, valores e nomes como sinais, sem dar prioridade automática a qualquer ocorrência. Se a regra não encontrar um candidato claro, deixe a linha sem marca.  Quero poder revisar e remover cada sugestão. Se eu remover uma, ela não deve voltar sozinha. Ao desligar a ênfase automática, remova só as marcas automáticas e preserve as manuais. Mantenha essa função separada do destaque que acompanha a palavra falada.  Antes de liberar, teste com legendas reais em português e inglês, incluindo frases com números incidentais e linhas que devem ficar sem marca. Registre quais idiomas foram validados.

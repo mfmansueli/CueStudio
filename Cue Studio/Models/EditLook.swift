@@ -53,6 +53,8 @@ nonisolated struct EditLook: Codable, Hashable, Sendable {
     /// Added with a kit's Editing: `newMusicKnown` nil in steps saved before, which leave it as it is.
     var newMusic: MusicDefaults?
     var newMusicKnown: Bool?
+    /// Added with Suggest emphasis: nil in steps saved before, which leave it as it is.
+    var suggestsEmphasis: Bool?
 
     init(_ edit: TakeEdit) {
         exposure = edit.exposure
@@ -88,6 +90,7 @@ nonisolated struct EditLook: Codable, Hashable, Sendable {
         pauseGap = edit.pauseGap
         newMusic = edit.newMusic
         newMusicKnown = true
+        suggestsEmphasis = edit.suggestsEmphasis
     }
 
     /// Puts these settings on `edit`.
@@ -129,5 +132,6 @@ nonisolated struct EditLook: Codable, Hashable, Sendable {
         edit.pauseThreshold = pauseThreshold
         if let pauseGap { edit.pauseGap = pauseGap }
         if newMusicKnown == true { edit.newMusic = newMusic }
+        if let suggestsEmphasis { edit.suggestsEmphasis = suggestsEmphasis }
     }
 }

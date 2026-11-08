@@ -2917,6 +2917,12 @@ de uma vez. Trocar o corte, o preset, a fonte ou o tamanho nunca pede outra tran
   criador é sólido; estimado é tracejado. VoiceOver: cada alça se ajusta de 0,1 em 0,1 s. Quando nenhuma palavra fica estimada, "Check timing" sai.
   Uma linha ouvida arrastada na timeline 0,1 s ou mais para longe da fala ganha "Check timing" no mesmo passo, com o toast "Line moved · Check timing
   in Captions" (`CaptionsViewModel.noteMovedOffTheVoice`).
+  **Alongar uma linha** (as alças na timeline, Start e End −/+ no painel; dono, 08/11/2026) leva cada ponta até o primeiro limite que ela encontra: o
+  começo da próxima linha (ou o fim da anterior) ou o corte do clipe em que a linha aparece (`CaptionStretchRoom`). A vizinha guarda o tempo dela e as
+  palavras o delas: uma linha inteira aparece pelo tempo que tem, mesmo passando das palavras; só um corte que atravessa a linha a deixa com o tempo das
+  palavras que ficaram (`CaptionTimelineMapping`). No limite, a bolha da alça diz "Stops at the next line", "Stops at the line before" ou "Stops at the
+  cut" (o VoiceOver ouve), com um toque háptico por gesto; no começo ou no fim do vídeo não diz nada. Ao soltar, um passo de desfazer se a linha mudou e
+  nenhum se ela já estava no limite; o −/+ do painel no limite diz o mesmo num toast, sem passo.
   Contraste medido nos três cartões da linha (`panelCard`, `accCard`, `surface2` sobre o painel), com e sem Aumentar Contraste: palavra medida `ink`
   sobre `segmentOn`, palavra estimada e o tracejado em `ink2` (4,5:1), alça `acc` (3:1) (`PaletteContrastTests.theWordTimingStripReadsOnTheLineCard`).
 - **Traduções:** cada linha traduzida guarda o próprio texto e o próprio tempo (nunca é cortada palavra por palavra) e passa a apontar para os blocos sobre
