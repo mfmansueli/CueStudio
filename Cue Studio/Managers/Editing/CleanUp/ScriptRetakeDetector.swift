@@ -11,7 +11,8 @@ import Foundation
 /// then. The last try is not assumed to be the best.
 ///
 /// It tolerates what recognition and improvising do: a line's opening matches with one word of its first four heard
-/// differently, words are compared folded (`WordTokenizer.key`: case, accents, widths), and what is said between the tries
+/// differently (its first, a name mostly, heard close to it or not at all; letter by letter in a script written without
+/// spaces), words are compared folded (`WordTokenizer.key`: case, accents, widths), and what is said between the tries
 /// (improvised words, "sorry", a filler) belongs to the try it follows. A line the script itself says more than once is left
 /// alone (its repeats may be meant), and so are lines shorter than `shortestLine` words (too common to tell a try from a
 /// repeat). Pure, so it is tested with made-up words.
@@ -47,7 +48,8 @@ nonisolated enum ScriptRetakeDetector {
         }
         for character in script {
             current.append(character)
-            if ".!?…。！？\n".contains(character) { close() }
+            // Arabic and Urdu's question marks and the Devanagari danda end sentences too.
+            if ".!?…。！？؟۔।॥\n".contains(character) { close() }
         }
         close()
         return lines
@@ -59,7 +61,9 @@ nonisolated enum ScriptRetakeDetector {
         guard !lines.isEmpty, words.count >= shortestLine else { return [] }
         let keys = words.map { WordTokenizer.key($0.text) }
         let openings = lines.map { opening(of: $0) }
-        let heard = openings.map { opening in opening.map { positions(of: $0, in: keys) } ?? [] }
+        let heard = zip(lines, openings).map { line, opening in
+            opening.map { byCharacters(line) ? characterPositions(of: $0.joined(), in: keys) : positions(of: $0, in: keys) } ?? []
+        }
         var result: [CleanUpSuggestion] = []
         var covered: [ClosedRange<Int>] = []
         for (index, line) in lines.enumerated() {
@@ -99,16 +103,72 @@ nonisolated enum ScriptRetakeDetector {
         return Array(line.keys.prefix(openingWords))
     }
 
-    /// Where `opening` is heard in `keys`: its first word exactly, and at most one of the others heard differently. Matches
-    /// never overlap.
+    /// Where `opening` is heard in `keys`. Matches never overlap; each starts where the line's first word is (or would be):
+    /// - its first word exactly, and at most one of the others heard differently;
+    /// - its first word heard as a word close to it (a name, mostly: "Gridley" as "gitley", "Finland" as "find") and the others
+    ///   exactly;
+    /// - its first word not heard at all and the others exactly, when they're long enough not to be an everyday phrase.
     private static func positions(of opening: [String], in keys: [String]) -> [Int] {
+        let count = opening.count
+        let rest = Array(opening.dropFirst())
         var found: [Int] = []
         var index = 0
-        while index + opening.count <= keys.count {
-            let same = zip(opening, keys[index..<index + opening.count]).filter { $0 == $1 }.count
-            if keys[index] == opening[0], same >= opening.count - 1 {
+        while index + count - 1 <= keys.count {
+            if index + count <= keys.count {
+                let window = Array(keys[index..<index + count])
+                let same = zip(opening, window).filter { $0 == $1 }.count
+                let exactFirst = window[0] == opening[0] && same >= count - 1
+                let misheardFirst = count >= 3 && Array(window.dropFirst()) == rest && resembles(window[0], opening[0])
+                if exactFirst || misheardFirst {
+                    found.append(index)
+                    index += count
+                    continue
+                }
+            }
+            if count >= 4, rest.joined().count >= 12, Array(keys[index..<index + count - 1]) == rest {
                 found.append(index)
-                index += opening.count
+                index += count - 1
+                continue
+            }
+            index += 1
+        }
+        return found
+    }
+
+    /// Two spellings of one word as a recognizer may hear it: the same first letter and most of its length.
+    private static func resembles(_ heard: String, _ written: String) -> Bool {
+        guard let first = heard.first, first == written.first, heard != written else { return false }
+        return min(heard.count, written.count) * 2 >= max(heard.count, written.count)
+    }
+
+    /// A line written without spaces (Japanese, Chinese): its words are where the tokenizer cut them, and the recognizer cuts
+    /// its own way (often a character at a time), so the opening is compared letter by letter.
+    private static func byCharacters(_ line: Line) -> Bool {
+        !line.text.prefix(16).contains(where: \.isWhitespace)
+    }
+
+    /// Where the opening's first letters (`opening`, up to 8) are heard one after the other across `keys`, at most one in four
+    /// heard differently and the first exactly.
+    private static func characterPositions(of opening: String, in keys: [String]) -> [Int] {
+        let target = Array(opening.prefix(8))
+        guard target.count >= 3 else { return [] }
+        var found: [Int] = []
+        var index = 0
+        while index < keys.count {
+            guard keys[index].first == target[0] else {
+                index += 1
+                continue
+            }
+            var heard: [Character] = []
+            var end = index
+            while heard.count < target.count, end < keys.count {
+                heard += Array(keys[end])
+                end += 1
+            }
+            let same = zip(target, heard).filter { $0 == $1 }.count
+            if heard.count >= target.count, same >= target.count - max(1, target.count / 4) {
+                found.append(index)
+                index = end
             } else {
                 index += 1
             }

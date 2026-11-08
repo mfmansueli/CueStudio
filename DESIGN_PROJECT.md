@@ -3632,7 +3632,15 @@ som, decisões técnicas e limites: `AUDIO_LIBRARY.md`.
   **Lower under voice** (interruptor) com o alcance embaixo, pelo que toca sob aquela música: "Under your voice", "Under your voice and 2
   voice-overs", "Under 2 voice-overs" ou "Nobody speaks while it plays". Ligado: **Lower by** 3–30 dB (12 por padrão) e **In pauses** (segmentado):
   **Stays low** (pausas de até ~3 s não trazem a música de volta: nada de "bombear" entre frases) ou **Comes back up** (volta em pausas a partir de
-  ~1,2 s). As rampas são suaves (em dB, começam 0,4 s antes da voz e voltam em 1 s; em Comes back up, 0,25 e 0,4 s). Conta como voz a fala dos
+  ~1,2 s). Embaixo do interruptor, uma nota diz onde a música fica **na mesma unidade do slider** (E4, "numa linguagem só"; `AudioViewModel.musicLevels`):
+  "While you talk and in pauses: 10%" ou "While you talk: 10% · in pauses: 40%" (a porcentagem do nível do arquivo: 40% abaixado 12 dB são 10%);
+  o Editing de um kit diz com as mesmas palavras ("Music you add: 40% · While you talk and in pauses: 10%"). **Volume medido no arquivo**
+  (08/11/2026, `LoudnessReportExportTests` + `tools/audio/loudness_report.py`, BS.1770, pico real 4×; Simulator): quatro leituras FLEURS (pt-BR,
+  en-US) como voice-over exportadas como o criador deixa saem a **−13,3 a −14,8 LUFS** (a fonte tinha −16,2 a −17,8) com pico real de **−1,0 a
+  −2,8 dBTP** (a fonte de −0,5 vira −1,0: o limitador e o teto de −1 dBFS, `AudioCeiling`, seguram depois do AAC); a música da biblioteca a
+  40% sozinha fica em −25 LUFS, e sob a voz não muda o total (+0,1 dB). Já perto dos −14 LUFS que as redes usam e sem passar de −1 dBTP:
+  **nenhuma normalização foi acrescentada**. Não medido: a voz da própria take (o Simulator não monta uma take de teste com som numa
+  composição, −12780) e no iPhone. As rampas são suaves (em dB, começam 0,4 s antes da voz e voltam em 1 s; em Comes back up, 0,25 e 0,4 s). Conta como voz a fala dos
   clipes que tocam (um clipe mudo, a 0% ou cujo som foi para uma faixa não conta) e cada voice-over, gravado ou falado a partir de texto, onde ele
   realmente tem som. **◐** toca aquela música sem abaixar, a partir de um pouco antes da primeira voz sob ela (as outras músicas continuam como
   estão); apaga ao sair do painel. **Use on all 3 music clips** (com o número, canvas 2 R2) aparece quando outra música abaixa diferente e copia o interruptor, a profundidade e as
@@ -4183,6 +4191,16 @@ escolha de palavras. Em Pauses ele abre na **fileira de pausas**; "Pauses longer
   é ouvido contra **o seu próprio roteiro**, no idioma dele (`ClipSource.script`); um vídeo trazido do Fotos, sem roteiro, no idioma do take.
   Sem roteiro, só repetições seguidas ("This take has no script…"). Avisos: palavras não ouvidas ("Cue couldn't hear the words of this take on this iPhone. Pauses still
   work.") e idioma sem hesitações conhecidas ("Ums: English, Portuguese and Spanish. Pauses work in every language."). Removed como em Pauses.
+  **Abertura de uma linha** (`ScriptRetakeDetector`): a primeira palavra igual e no máximo uma das quatro ouvida diferente; ou a primeira
+  ouvida parecida (mesma letra inicial e boa parte do tamanho: um nome, "Gridley" ouvido "gitley") e as outras iguais; ou a primeira não ouvida e
+  as outras iguais, quando passam de 12 letras (não uma frase do dia a dia como "I think that"). Num roteiro escrito sem espaços (japonês,
+  chinês) a abertura é comparada letra a letra (o reconhecedor devolve um caractere por vez). ؟, ۔, । e ॥ também fecham frases.
+  **Idiomas testados** (`RetakeLanguagesTests`, 08/11/2026): palavras reais, leituras FLEURS de pessoas ouvidas pelo reconhecedor do iPhone, com a
+  repetição **montada** (1,5 s do começo, meio segundo de silêncio, a leitura inteira de novo), não uma pessoa repetindo de verdade: en, es, da, de,
+  id, it, vi 4 de 4; ar, fr, hi, ja, nb, pt, th, tr, zh-CN 3 de 4; nl, sv, zh-TW 2 de 4; ko 1 de 4 (62 de 80). O que falta é a abertura ouvida com
+  duas palavras erradas ou mais ("Giancarlo Fisichella" como "garlo ficella"): a repetição não é sugerida e nada é cortado. Tailandês não separa
+  frases sem pontuação (a leitura inteira vira uma linha). Uma repetição real gravada por uma pessoa: **não validada** em nenhum idioma além dos
+  takes de teste em pt e en.
 - **Text** (`CleanUpTextTab`, `CleanUpTextActions`): o Edit by text (§37), com as hesitações sublinhadas (amarelo quando marcadas) e cada pausa como
   uma marca com a duração entre as palavras; tocar numa marca alterna Remove/Keep. Como escolher palavras ("Tap the first word of the part to
   cut, then its last word…") fica no alto da aba enquanto nada está escolhido, com pausas marcadas ou não (canvas 2, erro 7). Com palavras

@@ -51,4 +51,21 @@ struct ScriptRetakeDetectorTests {
         let plain = found.filter { $0.kind == .retake && $0.attempt == nil }
         #expect(plain.allSatisfy { repeated in !tries.contains { $0.span.overlaps(repeated.span) } })
     }
+
+    @Test func aNameHeardDifferentlyStillOpensTheLine() {
+        let script = "Gridley placed a stake in the ground. Then he left."
+        let words = said("Gitley placed a stake Gitley placed a stake in the ground. Then he left.")
+        #expect(ScriptRetakeDetector.suggestions(in: words, script: script).count == 2)
+    }
+
+    @Test func anEverydayPhraseWithoutTheLinesFirstWordIsNoTry() {
+        let script = "So I think that this works. Then we go home."
+        let words = said("I think that is fine and I think that this works. Then we go home.")
+        #expect(ScriptRetakeDetector.suggestions(in: words, script: script).isEmpty)
+    }
+
+    @Test func aDandaAndAnArabicQuestionMarkEndALine() {
+        #expect(ScriptRetakeDetector.lines(in: "यह पहला वाक्य है। यह दूसरा वाक्य है।").count == 2)
+        #expect(ScriptRetakeDetector.lines(in: "هل هذا أول سطر؟ وهذا هو الثاني").count == 2)
+    }
 }
