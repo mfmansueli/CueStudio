@@ -17,6 +17,9 @@ nonisolated struct AutoEditRecord: Codable, Hashable, Sendable {
     var madeCaptions = false
     /// The phrase zooms the pass added.
     var zoomIDs: [UUID] = []
+    /// The pass turned Punch in on cuts on, and how many clips it put closer then.
+    var madePunchIn = false
+    var punchedClips = 0
     /// The steps that ran to the end (a step picked whose listening failed didn't).
     var ranSteps: Set<AutoEditStep> = []
     /// The steps turned off since.
@@ -30,7 +33,7 @@ nonisolated struct AutoEditRecord: Codable, Hashable, Sendable {
     }
 
     private enum CodingKeys: String, CodingKey {
-        case removedSuggestions, removedSeconds, madeCaptions, zoomIDs, ranSteps, offSteps
+        case removedSuggestions, removedSeconds, madeCaptions, zoomIDs, madePunchIn, punchedClips, ranSteps, offSteps
     }
 
     init(from decoder: Decoder) throws {
@@ -39,6 +42,8 @@ nonisolated struct AutoEditRecord: Codable, Hashable, Sendable {
         removedSeconds = (try? container.decodeIfPresent(TimeInterval.self, forKey: .removedSeconds)) ?? 0
         madeCaptions = (try? container.decodeIfPresent(Bool.self, forKey: .madeCaptions)) ?? false
         zoomIDs = (try? container.decodeIfPresent([UUID].self, forKey: .zoomIDs)) ?? []
+        madePunchIn = (try? container.decodeIfPresent(Bool.self, forKey: .madePunchIn)) ?? false
+        punchedClips = (try? container.decodeIfPresent(Int.self, forKey: .punchedClips)) ?? 0
         // A step a newer Cue added is left out rather than failing the edit.
         offSteps = Self.steps(in: container, .offSteps)
         ranSteps = Self.steps(in: container, .ranSteps)
@@ -49,6 +54,31 @@ nonisolated struct AutoEditRecord: Codable, Hashable, Sendable {
         return Set(names.compactMap(AutoEditStep.init(rawValue:)))
     }
 
+    /// This run with what an earlier run still has on, so Turn off takes back both (Run again).
+    func carrying(_ earlier: AutoEditRecord?) -> AutoEditRecord {
+        guard let earlier else { return self }
+        var both = self
+        if earlier.isOn(.speech) {
+            both.removedSuggestions = earlier.removedSuggestions + removedSuggestions.filter { !earlier.removedSuggestions.contains($0) }
+            both.removedSeconds += earlier.removedSeconds
+            both.ranSteps.insert(.speech)
+        }
+        if earlier.isOn(.captions) {
+            both.madeCaptions = true
+            both.ranSteps.insert(.captions)
+        }
+        if earlier.isOn(.zoom) {
+            both.zoomIDs = earlier.zoomIDs + zoomIDs
+            both.ranSteps.insert(.zoom)
+        }
+        if earlier.isOn(.punchIn), !madePunchIn {
+            both.madePunchIn = true
+            both.punchedClips = earlier.punchedClips
+            both.ranSteps.insert(.punchIn)
+        }
+        return both
+    }
+
     /// Whether the pass did anything for `step` that is still on.
     func isOn(_ step: AutoEditStep) -> Bool {
         guard !offSteps.contains(step) else { return false }
@@ -56,6 +86,7 @@ nonisolated struct AutoEditRecord: Codable, Hashable, Sendable {
         case .speech: !removedSuggestions.isEmpty
         case .captions: madeCaptions
         case .zoom: !zoomIDs.isEmpty
+        case .punchIn: madePunchIn
         }
     }
 }

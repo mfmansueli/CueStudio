@@ -4345,17 +4345,19 @@ abrindo o último grupo da barra principal e nos atalhos depois de Clean up; nã
   criador; com legendas, desligada e "This video has captions: they stay as they are" (as do criador nunca são trocadas). **Zoom on key lines**
   (desligada; só com legendas ou com Captions ligada): zoom por frase (§29) nas linhas com número, valor ou nome claro
   (`CaptionEmphasisSuggester`), no mínimo 6 s entre um e outro, nunca sobre um zoom que já está lá (`AutoEditZoomPicker`), na força escolhida no
-  seletor (Subtle por padrão). Rodapé: "No music, effects, styles or other cuts are added." O botão **Auto edit** fica fixo embaixo.
+  seletor (Subtle por padrão). **Punch in on cuts** (desligada; regra F16): liga o Punch in on cuts do Zoom (§11 do plano, `CutZoom`) nos
+  cortes que existem depois da limpeza da fala, na mesma força; com ele já ligado pelo criador, desligada e "Already on in this video".
+  Rodapé: "No music, effects, styles or other cuts are added." O botão **Auto edit** fica fixo embaixo.
   Studio Voice não é etapa (já vem ligado, suave, em todo take); aparar o começo (§61) também não (é escolha à parte do Clean up).
 - **Rodando:** "Listening to the speech…", "Making captions…", "Putting it together…" e **Cancel**. Ouvir não muda nada; tudo o que a passada
   aplica é **um passo de desfazer** (`EditDocument.beginChange`), e Cancel (ou fechar a folha) enquanto roda deixa a edição como estava. A folha
   não fecha arrastando enquanto roda.
 - **Depois:** **Before | After** (segmentado) troca a prévia entre a edição sem e com a passada, enquanto ela é o último passo (depois de outra
   mudança, a nota diz que o Desfazer ainda volta tudo); fechar em Before volta para After. Cada etapa com o que fez: "4 cuts · −3.2s", "12 lines
-  to check", "Zoom on 2 lines", ou por que não fez ("Nothing clear to take out", "Your captions stay", "No line with a clear number or name",
+  to check", "Zoom on 2 lines", "Punch in on 3 clips", ou por que não fez ("Needs a cut in the video", "Nothing clear to take out", "Your captions stay", "No line with a clear number or name",
   "Didn't run" quando a escuta falhou) e **Turn off**, que desfaz só ela, um passo de desfazer, com toast "Captions turned off" e Undo: os cortes da
-  fala voltam pelo Put back (§61), as legendas se escondem (as linhas ficam; Captions mostra de novo), os zooms dela saem (os do criador ficam).
-  **Run again** volta a escolher. Reabrir o Auto edit mostra o resultado enquanto alguma etapa dele está ligada.
+  fala voltam pelo Put back (§61), as legendas se escondem (as linhas ficam; Captions mostra de novo), os zooms dela saem (os do criador ficam),
+  o Punch in on cuts desliga. **Run again** volta a escolher; a passada nova soma à anterior, e Turn off desfaz as duas. Reabrir o Auto edit mostra o resultado enquanto alguma etapa dele está ligada.
 - **Preserva a edição manual:** os cortes são os do Clean up, então legendas, textos, mídias e áudio presos ao vídeo andam juntos
   (`CutFollowing`); nada de música, efeitos, estilos, transições ou cortes que o criador não escolheu.
 - **Contraste:** só `ink` e `ink2` sobre o fundo da folha (`cueSheetChrome`) e o botão primário do Design System; nenhum token novo.

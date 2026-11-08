@@ -39,6 +39,9 @@ extension QuickEditViewModel {
         !edit.captions.isEmpty || session.isOn(.captions)
     }
 
+    /// Whether Punch in on cuts can be one of the steps: not when the creator turned it on already.
+    var autoEditCanPunchIn: Bool { edit.cutZoom == nil || edit.autoEdit?.isOn(.punchIn) == true }
+
     /// Runs the picked steps.
     func runAutoEdit() {
         guard let session = autoEdit, session.phase == .choosing, !session.steps.isEmpty, isReady else { return }
@@ -106,6 +109,10 @@ extension QuickEditViewModel {
             return record.zoomIDs.isEmpty
                 ? String(localized: "No line with a clear number or name")
                 : String(localized: "Zoom on \(record.zoomIDs.count) lines")
+        case .punchIn:
+            return record.madePunchIn
+                ? String(localized: "Punch in on \(record.punchedClips) clips", comment: "Toast: Punch in on cuts put this many clips closer")
+                : String(localized: "Needs a cut in the video")
         }
     }
 
@@ -123,6 +130,8 @@ extension QuickEditViewModel {
         case .zoom:
             let ids = Set(record.zoomIDs)
             changeEdit { $0.phraseZooms.removeAll { ids.contains($0.id) } }
+        case .punchIn:
+            changeEdit { $0.cutZoom = nil }
         }
         record.offSteps.insert(step)
         changeEdit { $0.autoEdit = record }
@@ -148,6 +157,7 @@ extension QuickEditViewModel {
         session.phase = .working(.listening)
         if session.isOn(.speech) { await clips.analyzeIfNeeded() }
         guard !Task.isCancelled, autoEdit === session else { return }
+        let earlier = edit.autoEdit
         document.beginChange(by: .gesture)
         var record = AutoEditRecord()
         if session.isOn(.captions), edit.captions.isEmpty {
@@ -181,7 +191,15 @@ extension QuickEditViewModel {
                 record.zoomIDs = zooms.map(\.id)
             }
         }
-        changeEdit { $0.autoEdit = record }
+        if session.isOn(.punchIn), autoEditCanPunchIn {
+            record.ranSteps.insert(.punchIn)
+            if edit.timeline.segments.count > 1 {
+                changeEdit { $0.cutZoom = CutZoom(strength: session.zoomStrength) }
+                record.madePunchIn = true
+                record.punchedClips = clips.punchedClipCount
+            }
+        }
+        changeEdit { $0.autoEdit = record.carrying(earlier) }
         document.endChange(by: .gesture)
         session.stepsAfterRun = document.history.past.count
         session.phase = .done

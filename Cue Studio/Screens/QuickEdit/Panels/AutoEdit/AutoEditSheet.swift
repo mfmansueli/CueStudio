@@ -61,7 +61,17 @@ struct AutoEditSheet: View {
                 }
                 .disabled(!viewModel.autoEditCanZoom(session))
                 .accessibilityIdentifier("edit.autoEdit.zoom")
-                if session.isOn(.zoom) {
+                Toggle(isOn: binding(.punchIn)) {
+                    rowLabel(
+                        AutoEditStep.punchIn.title,
+                        viewModel.autoEditCanPunchIn
+                            ? String(localized: "Every other clip a little closer")
+                            : String(localized: "Already on in this video")
+                    )
+                }
+                .disabled(!viewModel.autoEditCanPunchIn)
+                .accessibilityIdentifier("edit.autoEdit.punchIn")
+                if session.isOn(.zoom) || session.isOn(.punchIn) {
                     Picker(String(localized: "Zoom"), selection: $session.zoomStrength) {
                         ForEach(PhraseZoom.Strength.allCases) { Text($0.label).tag($0) }
                     }

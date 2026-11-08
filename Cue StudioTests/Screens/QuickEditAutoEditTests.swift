@@ -173,4 +173,48 @@ struct QuickEditAutoEditTests {
         #expect(viewModel.autoEdit?.phase == .done)
         #expect(viewModel.autoEditResult(.speech).contains("2"))
     }
+
+    @Test func punchInOnTheCutsTheSpeechLeftTurnsOffAlone() async throws {
+        let viewModel = await makeScenario().viewModel
+        viewModel.openAutoEdit()
+        #expect(viewModel.autoEdit?.isOn(.punchIn) == false, "Only when the creator picks it (F16)")
+        viewModel.autoEdit?.set(.punchIn, on: true)
+        viewModel.autoEdit?.zoomStrength = .strong
+        viewModel.runAutoEdit()
+        try await waitForResults(viewModel)
+        #expect(viewModel.edit.cutZoom == CutZoom(strength: .strong))
+        let record = try #require(viewModel.edit.autoEdit)
+        #expect(record.madePunchIn)
+        #expect(record.punchedClips > 0, "The pauses taken out left cuts to punch in on")
+        let cuts = viewModel.edit.editedDuration
+        viewModel.turnOffAutoEditStep(.punchIn)
+        #expect(viewModel.edit.cutZoom == nil)
+        #expect(viewModel.edit.editedDuration == cuts, "The speech's cuts stay")
+    }
+
+    @Test func runningAgainKeepsTheFirstRunTurnOffable() async throws {
+        let viewModel = await makeScenario().viewModel
+        let before = viewModel.edit.editedDuration
+        viewModel.openAutoEdit()
+        viewModel.autoEdit?.set(.captions, on: false)
+        viewModel.runAutoEdit()
+        try await waitForResults(viewModel)
+        viewModel.autoEditAgain()
+        viewModel.autoEdit?.set(.captions, on: false)
+        viewModel.autoEdit?.set(.punchIn, on: true)
+        viewModel.runAutoEdit()
+        try await waitForResults(viewModel)
+        let record = try #require(viewModel.edit.autoEdit)
+        #expect(record.removedSuggestions.count == 2, "The first run's cuts are still the run's")
+        #expect(record.madePunchIn)
+        viewModel.turnOffAutoEditStep(.speech)
+        #expect(viewModel.edit.editedDuration == before)
+    }
+
+    @Test func aVideoWithPunchInOnAlreadyKeepsTheCreatorsChoice() async throws {
+        let viewModel = await makeScenario().viewModel
+        viewModel.changeEdit { $0.cutZoom = CutZoom(strength: .subtle) }
+        viewModel.openAutoEdit()
+        #expect(!viewModel.autoEditCanPunchIn)
+    }
 }

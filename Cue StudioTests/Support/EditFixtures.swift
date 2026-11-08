@@ -35,6 +35,8 @@ enum EditFixtures {
         edit.phraseZooms = [PhraseZoom(span: TimeSpan(start: 1, end: 2), strength: .strong)]
         var autoEdit = AutoEditRecord(removedSuggestions: [UUID()], removedSeconds: 1.5, madeCaptions: true, zoomIDs: [UUID()])
         autoEdit.ranSteps = [.speech, .captions, .zoom]
+        autoEdit.madePunchIn = true
+        autoEdit.punchedClips = 2
         autoEdit.offSteps = [.zoom]
         edit.autoEdit = autoEdit
         edit.cutZoom = CutZoom(strength: .strong)
