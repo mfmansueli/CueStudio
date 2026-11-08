@@ -10,7 +10,7 @@ import Foundation
 /// themselves are in the edit, and every change to them is an undo step through the session.
 ///
 /// Each part of the work is in its own extension (`+Lines`, `+LineByLine`, `+Panels`, `+Picks`, `+Find`, `+StyleCopy`,
-/// `+Catalog`, `+Library`, `+Adjust`, `+Motion`, `+Emphasis`, `+EmphasisTrip`, `+Format`, `+Translation`, `+Preview`).
+/// `+Catalog`, `+Library`, `+Adjust`, `+Motion`, `+Emphasis`, `+EmphasisTrip`, `+Format`, `+Translation`, `+Preview`, `+MyWords`).
 @MainActor
 @Observable
 final class CaptionsViewModel: EditorPart {
@@ -64,6 +64,8 @@ final class CaptionsViewModel: EditorPart {
     @ObservationIgnored var captionMapStore: CaptionMap?
     /// The video over the take whose voice is being listened to (`setCaptionsItsVoice`): turning it off stops that.
     @ObservationIgnored var listeningSupportID: UUID?
+    /// My words as the sheet shows them, kept with the store (`+MyWords`).
+    var myWords: MyWordsList
 
     let session: EditorSession
     let editing: TakeEditing
@@ -71,6 +73,8 @@ final class CaptionsViewModel: EditorPart {
     let takes: TakeLibraryService
     let library: ScriptLibraryService
     let styles: TextStyleStoring
+    /// Where My words are kept: the same list the recognizers read before they listen.
+    let myWordsStore: MyWordsStoring
     let translations: TranslationAvailabilityChecking
     /// What a script is heard in (`LanguageService.captionRequest(for:)`).
     let speechLanguageFor: (Script?) -> SpeechLanguageRequest
@@ -81,7 +85,7 @@ final class CaptionsViewModel: EditorPart {
 
     init(
         session: EditorSession, editing: TakeEditing, takes: TakeLibraryService, library: ScriptLibraryService,
-        styles: TextStyleStoring, translations: TranslationAvailabilityChecking,
+        styles: TextStyleStoring, myWords: MyWordsStoring, translations: TranslationAvailabilityChecking,
         speechLanguage: @escaping (Script?) -> SpeechLanguageRequest,
         likelySpokenLanguages: @escaping (Script?) -> [CueLanguage],
         languageConflict: @escaping (Script?) -> SpeechLanguageConflict?
@@ -91,6 +95,8 @@ final class CaptionsViewModel: EditorPart {
         self.takes = takes
         self.library = library
         self.styles = styles
+        myWordsStore = myWords
+        self.myWords = myWords.words
         self.translations = translations
         speechLanguageFor = speechLanguage
         likelySpokenLanguagesFor = likelySpokenLanguages

@@ -176,7 +176,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         take: Take, takes: TakeLibraryService, library: ScriptLibraryService, editing: TakeEditing,
         drafts: QuickEditDraftStoring, toast: ToastService, player: EditPlayback? = nil,
         mediaImporter: EditMediaImporting? = nil, recorder: VoiceOverRecording? = nil, styles: TextStyleStoring? = nil,
-        mediaLibrary: MediaLibraryStore? = nil, brandKits: BrandKitStore? = nil, fonts: CustomFontStore? = nil,
+        myWords: MyWordsStoring? = nil, mediaLibrary: MediaLibraryStore? = nil, brandKits: BrandKitStore? = nil, fonts: CustomFontStore? = nil,
         fontPacks: FontPackStore? = nil, writingLanguages: @escaping () -> (script: CueLanguage?, interface: CueLanguage?) = { (nil, nil) },
         editorPreferences: EditorPreferencesStoring? = nil, prompterLook: PrompterSettings = PrompterSettings(),
         coverPictures: CoverPicturing? = nil, soundPreviews: SoundPreviewing? = nil,
@@ -209,7 +209,8 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         let takeID = take.id
         session.keepRememberedLook = { [weak preferences] look in preferences?.setRememberedLook(look, forTake: takeID) }
         captions = CaptionsViewModel(
-            session: session, editing: editing, takes: takes, library: library, styles: styles, translations: translations,
+            session: session, editing: editing, takes: takes, library: library, styles: styles, myWords: myWords ?? MyWordsStore(),
+            translations: translations,
             speechLanguage: speechLanguage, likelySpokenLanguages: likelySpokenLanguages, languageConflict: languageConflict
         )
         // Without the app's stores (tests, previews): ones of their own in a temporary folder, never the creator's.

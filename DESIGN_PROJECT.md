@@ -1337,7 +1337,7 @@ inteira ou adiciona nela (o que é de um item vem com o item):
   galeria já nela, com os cartões no topo para trocar); depois de uma linha fina, **Your library** (a folha na biblioteca) e **Brand kit** (o logo do
   kit). A faixa de mídia não abre mais a folha direto: a barra dela é o caminho (adicionar uma janela: Window e a foto).
 - **Legendas** (a faixa abre o painel): no topo, o interruptor, o idioma, **Translate**, Style e **•••** (no cabeçalho, antes do ✓; o menu do sistema: Find and replace,
-  Select lines, Edit by text, Add a line at the playhead e, depois de um separador, **Delete all captions**, vermelho, que pergunta antes, "Delete
+  Select lines, Edit by text, Add a line at the playhead, **My words** (§62) e, depois de um separador, **Delete all captions**, vermelho, que pergunta antes, "Delete
   all 12 caption lines?" · "Undo brings them back.", e o toast "12 lines deleted" tem Undo). **Delete all** também está na barra de uma linha
   escolhida (tocar a faixa cheia escolhe a linha tocada; dono, 07/11/2026: apagar tudo à vista onde se toca), com a mesma pergunta. Add a line também fica no fim da lista. Sem linhas, o
   painel oferece fazê-las (Auto captions) ou escrevê-las.
@@ -2044,7 +2044,8 @@ auditoria: `reports/editor-award-checklist.md`.
   contam: "e" não acha "é"). Cada resultado mostra a linha com a palavra em amarelo (`accText`, negrito) e **Replace**; **Replace all** troca
   todas num passo de desfazer ("Replaced N times" · Undo). Só o texto muda: a linha guarda seus tempos e as palavras que continuam iguais, os da
   voz (`CaptionRevision.retimed`); linhas de trechos cortados ficam como estão. Tocar num resultado leva a agulha à linha (a folha fica a meia
-  altura, com o vídeo à vista).
+  altura, com o vídeo à vista). Sob os campos, **Add “caldo” to My words** guarda a grafia que o botão mostra em My words (§62), sem mudar
+  nenhuma linha; Replace nunca guarda palavra.
 - **Várias linhas de legenda de uma vez** (`CaptionPickTools`, `CaptionsViewModel+Picks`; Captions › **Select lines**, ou segurar uma
   linha › Select lines, como a edição em lote do CapCut): cada linha ganha um círculo; tocar põe ou tira. Enquanto escolhe, o painel cresce até
   a altura dos painéis de estilo (`openPanelSize`), no lugar da chave e dos chips fica "N selected", **Select all** / **Deselect all** e **Done**,
@@ -3476,7 +3477,7 @@ recusado).
   o seu painel (`TemplatesPanel` com `templatesSection`), sem abas entre eles (dono, canvas 2 R3: as abas rolavam com o conteúdo e sumiam).
 - **Faixas:** tocar a faixa de texto, de mídia ou de áudio abre a barra dela (`EditorToolMenu`); tocar a de **legendas** ou a de **Blur area** abre
   o mesmo painel que o botão da barra principal abre (o painel de legendas; os rostos do quadro), e um segundo toque fecha (dono, 07/11/2026: uma
-  porta, uma tela). No painel de legendas, **•••** no cabeçalho, antes do ✓, guarda Find and replace, Select lines, Edit by text, Add a line e Delete all (que
+  porta, uma tela). No painel de legendas, **•••** no cabeçalho, antes do ✓, guarda Find and replace, Select lines, Edit by text, Add a line, My words e Delete all (que
   pergunta antes); Add a line também fica no fim da lista. No passo dos rostos, **◐** compara o vídeo inteiro sem as áreas quando já há alguma.
 - **Audio** começa pelo que se acrescenta: Music · Sound effects · Voice-over · Text to speech | Studio Voice · Volume · Voice effects · Extract
   audio (dono, 07/11/2026).
@@ -4161,3 +4162,37 @@ escolha de palavras. Em Pauses ele abre na **fileira de pausas**; "Pauses longer
 - **Testes:** `QuickEditCleanUpPanelTests`, `EditTimelinePutBackTests`, `PauseGapTests`, `CleanUpStartTests`, `ScriptRetakeDetectorTests`,
   `QuickEditTranscriptEditTests` (montagem reordenada), `QuickEditPausesPanelTests`; `CleanUpUITests` (abrir por Pauses e por Edit by text, abas,
   Remove com Undo, Put back).
+
+## 62. My words (Minhas palavras; etapa 4 do plano do editor, decisão C do dono, 7 de novembro de 2026)
+
+Uma lista do criador de nomes e termos (marca, pessoas, jargão), escritos como ele quer, que o reconhecimento de fala ouve nas próximas
+legendas e gravações. Fica só neste iPhone (`MyWordsStore`, `DefaultsKey.myWords`; Delete my Cue data a apaga), separada do perfil de escrita
+da IA (My Cue Voice): nada dela entra num rascunho. Guardar uma palavra nunca muda as legendas de um vídeo nem é um passo de Desfazer; trocar
+texto no vídeo é o Find and replace, e ele nunca guarda palavra (dono: "Adicionar uma palavra à lista e substituir texto no vídeo são ações
+distintas").
+
+- **Onde:** Captions › **•••** › **My words** (pt Minhas palavras; abre também sem linhas) e **Add “…” to My words** no Find and replace (§37).
+- **A folha** (`MyWordsSheet`, `CaptionsViewModel+MyWords`; meia altura, como Find and replace): título **My words**, "Names and terms Cue
+  listens for in new captions and recordings."; o campo "A name or term, as it's spelled" com **Add** (ou Return), sem maiúscula automática nem
+  correção (as maiúsculas são as que o criador digita, "iPhone"); a lista, a mais nova no topo; tocar numa palavra abre **Change spelling**
+  ("Saved exactly as you type it."); arrastar para o lado apaga. Vazia: "No words yet" · "Add your brand, the people you mention and the terms
+  you use.". No rodapé, "On this iPhone only. Never used for drafts." e a conta "3 of 50". Repetida: "“TikTok” is already in My words"; cheia:
+  "My words is full · Delete one to add another".
+- **A lista** (`MyWordsList`): até 50 entradas de até 40 caracteres; uma por palavra sem contar maiúsculas nem largura (acentos contam, como no
+  Find and replace: "cafe" e "café" são duas). A mesma palavra com outras maiúsculas toma o lugar da antiga ("Saved as “TikTok” in My words").
+  Aspas em volta e espaços sobrando saem; o resto fica como digitado ("C#", "Node.js", "Cue Studio").
+- **No Find and replace:** o botão diz a grafia que vai guardar antes do toque: a de **Replace with** (a grafia certa que o criador está pondo
+  no vídeo), senão a de **Find**. Sob ele, "For new captions and recordings. This video stays as it is.". Tocado, toast "“TikTok” added to My
+  words" e o botão passa a "“TikTok” is in My words".
+- **O reconhecimento** (`RecognitionHints`): as legendas (`CaptionTranscriber`, também as feitas na exportação) e o Voice Following e o ditado
+  (`SpeechRecognitionManager`) recebem como dicas (`contextualStrings`) as palavras do roteiro primeiro e depois My words, cada uma uma vez (a
+  que está nos dois vai na grafia de My words), até 100 no total: todas as de My words cabem, as do roteiro preenchem o resto. As dicas valem
+  para o que for ouvido daqui em diante; legendas refeitas num vídeo já ouvido reaproveitam o que foi ouvido (só a grafia abaixo se aplica).
+- **A grafia nas legendas** (`MyWordsSpelling`, depois do `ScriptSpelling`): só uma palavra ouvida inteira que é a palavra guardada a menos de
+  maiúsculas ("tiktok," → "TikTok,"; nunca "tiktoks", "tick tock" ou uma frase), e só quando a palavra guardada tem maiúscula depois de
+  minúscula ("iPhone", "TikTok", "CapCut", "YouTube"): em minúsculas ela não é palavra do dia a dia. "Cue", "Apple", "Notion" ou "US" têm um
+  gêmeo comum ("take your cue", "tell us") e ficam só como dica: o reconhecedor decide pela frase. Os tempos das palavras nunca mudam.
+- **Não validado:** o Simulator não roda o reconhecimento; o efeito das dicas numa fala de verdade não foi medido no iPhone.
+- **Contraste:** só tokens de texto (`ink`, `ink2`) sobre `fill` e `Palette.Editor.panelCard`, como o Find and replace; nenhum token novo.
+- **Testes:** `MyWordsListTests`, `MyWordsStoreTests`, `RecognitionHintsTests`, `MyWordsSpellingTests`, `CaptionsMyWordsTests`,
+  `DataEraserServiceTests`; `CaptionToolsUITests/testMyWordsKeepsAWordWithoutChangingTheCaptions`.

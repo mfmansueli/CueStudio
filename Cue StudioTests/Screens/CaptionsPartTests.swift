@@ -32,7 +32,7 @@ struct CaptionsPartTests {
             session: session, editing: FakeTakeEditor(),
             takes: TakeLibraryService(repository: FakeTakeRepository(takes: [])),
             library: ScriptLibraryService(repository: FakeScriptRepository(scripts: [])),
-            styles: FakeTextStyleStore(), translations: FakeTranslationAvailability(),
+            styles: FakeTextStyleStore(), myWords: FakeMyWordsStore(), translations: FakeTranslationAvailability(),
             speechLanguage: { _ in .language(.english) }, likelySpokenLanguages: { _ in [] }, languageConflict: { _ in nil }
         )
     }

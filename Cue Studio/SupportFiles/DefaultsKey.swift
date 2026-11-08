@@ -56,6 +56,9 @@ nonisolated enum DefaultsKey {
     static let coverStyleLibrary = "styles.covers"
     /// Caption style › Styles' filter (`CaptionCatalogFilter` raw value).
     static let captionCatalogFilter = "styles.captions.filter"
+    /// My words: the creator's names and terms that speech recognition listens for (`[String]`, `MyWordsStore`). Never the AI
+    /// writing profile (My Cue Voice).
+    static let myWords = "speech.myWords"
     /// Quick edit › Voice-over's "Show script" (`Bool`; absent = on) and the speed it scrolls at (`PrompterSettings.speed`'s scale;
     /// absent = the prompter's), `EditorPreferencesStore`.
     static let narrationScriptShown = "editor.narrationScriptShown"

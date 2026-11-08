@@ -278,8 +278,8 @@ struct CaptionsPanel: View {
         .accessibilityIdentifier("edit.captionsAddButton")
     }
 
-    /// The panel's less frequent tools, in the system's menu in the header before ✓: at hand at any scroll, and the controls stay on one row. Delete all
-    /// asks first, and Undo in its toast brings every line back.
+    /// The panel's less frequent tools, in the system's menu in the header before ✓: at hand at any scroll, and the controls stay on one row. My words
+    /// opens even without lines (it is for the captions to come). Delete all asks first, and Undo in its toast brings every line back.
     private var moreMenu: some View {
         let hasLines = !viewModel.edit.captions.isEmpty
         return Menu {
@@ -293,6 +293,9 @@ struct CaptionsPanel: View {
                 .accessibilityIdentifier("edit.captionsEditByText")
             Button("Add a line at the playhead", systemImage: "plus") { viewModel.captions.addCaptionAtPlayhead() }
                 .accessibilityIdentifier("edit.captionsMoreAdd")
+            // The creator's names and terms, for the next captions heard (never a change to these lines).
+            Button("My words", systemImage: "character.book.closed") { viewModel.captions.openMyWords() }
+                .accessibilityIdentifier("edit.captionsMyWords")
             if hasLines {
                 Divider()
                 Button("Delete all captions", systemImage: "trash", role: .destructive) { viewModel.perform(.deleteAllCaptions) }

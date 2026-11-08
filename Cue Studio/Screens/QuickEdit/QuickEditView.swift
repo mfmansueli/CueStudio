@@ -54,7 +54,7 @@ struct QuickEditView: View {
         let model = QuickEditViewModel(
             take: take, takes: services.takes, library: services.library,
             editing: services.editing, drafts: services.drafts, toast: services.toast,
-            styles: TextStyleStore(defaults: services.defaults), mediaLibrary: services.mediaLibrary, brandKits: services.brandKits,
+            styles: TextStyleStore(defaults: services.defaults), myWords: services.myWords, mediaLibrary: services.mediaLibrary, brandKits: services.brandKits,
             fonts: services.fonts, fontPacks: services.fontPacks,
             writingLanguages: { (languages.scriptLanguage, languages.interfaceLanguage) },
             editorPreferences: EditorPreferencesStore(defaults: services.defaults), prompterLook: services.preferences.prompter,
@@ -111,6 +111,7 @@ struct QuickEditView: View {
             case .textToSpeech: TextToSpeechSheet(viewModel: viewModel)
             case .media: AddMediaSheet(viewModel: viewModel)
             case .findInCaptions: CaptionFindSheet(viewModel: viewModel)
+            case .myWords: MyWordsSheet(captions: viewModel.captions)
             case .clipOrder: ClipOrderSheet(viewModel: viewModel, thumbnails: services.thumbnails)
             case .done:
                 EditorDoneSheet(

@@ -17,10 +17,16 @@ final class TakeEditService: TakeEditing {
     private let sounds: RecordingSoundCache
     /// Which language a take without a script is spoken in.
     private let spokenLanguages: SpokenLanguageIdentifier
+    /// The creator's names and terms: listened for as a take is heard, and their capitals written on whole words (`MyWordsSpelling`).
+    private let myWords: MyWordsStoring
 
-    init(sounds: RecordingSoundCache = .shared, spokenLanguages: SpokenLanguageIdentifier = SpokenLanguageIdentifier()) {
+    init(
+        sounds: RecordingSoundCache = .shared, spokenLanguages: SpokenLanguageIdentifier = SpokenLanguageIdentifier(),
+        myWords: MyWordsStoring = MyWordsStore()
+    ) {
         self.sounds = sounds
         self.spokenLanguages = spokenLanguages
+        self.myWords = myWords
     }
     /// What was heard in a take, for captions and Clean Up, so it is transcribed once.
     private var transcripts: [TranscriptKey: TakeTranscript] = [:]
@@ -108,7 +114,8 @@ final class TakeEditService: TakeEditing {
         let words = heard.words.map { CaptionWord(text: $0.text, start: $0.start, end: $0.end, isEstimated: $0.isEstimated) }
         guard !words.isEmpty else { return .noSpeech }
         let language = CueLanguage.matching(languageCode: heard.languageCode)
-        let cues = await Task.detached { CaptionBuilder.captions(heard: words, script: script, language: language) }.value
+        let myWords = myWords.words.words
+        let cues = await Task.detached { CaptionBuilder.captions(heard: words, script: script, language: language, myWords: myWords) }.value
         try Task.checkCancellation()
         return .captions(
             cues,
@@ -197,17 +204,20 @@ final class TakeEditService: TakeEditing {
         of audio: URL, language: SpeechLanguageRequest, script: String = "",
         progress: (@Sendable (CaptionProgress) -> Void)? = nil
     ) async throws -> TakeTranscript {
-        let key = TranscriptKey(audio: audio, language: language, script: script)
+        let myWords = myWords.words.words
+        let key = TranscriptKey(audio: audio, language: language, script: script, myWords: myWords)
         if let cached = transcripts[key] { return cached }
-        let heard = try await CaptionTranscriber.transcript(in: audio, language: language, script: script, progress: progress)
+        let heard = try await CaptionTranscriber.transcript(in: audio, language: language, script: script, myWords: myWords, progress: progress)
         transcripts[key] = heard
         return heard
     }
 
-    /// The language the take is heard in (the Voice Following language, or the script's).
+    /// The language the take is heard in (the Voice Following language, or the script's), and the words it listens for: a word
+    /// added to My words makes the take heard again.
     private struct TranscriptKey: Hashable {
         let audio: URL
         let language: SpeechLanguageRequest
         let script: String
+        let myWords: [String]
     }
 }

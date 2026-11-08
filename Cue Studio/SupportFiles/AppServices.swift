@@ -26,6 +26,8 @@ struct AppServices {
     /// What the recorder films with: the camera, or a stand-in under UI tests.
     let recorderCamera: any CameraControlling
     let audio: AudioInputManager
+    /// My words: the creator's names and terms, which every recognizer listens for (captions, Voice Following, dictation).
+    let myWords: MyWordsStoring
     let speech: SpeechRecognitionManager
     /// What the prompter's Voice Following listens through: `speech`, or a scripted one in UI tests.
     let prompterSpeech: SpeechTranscribing
@@ -179,9 +181,10 @@ struct AppServices {
         camera = realCamera
         recorderCamera = options.recorderCamera ?? realCamera
         audio = AudioInputManager()
-        speech = SpeechRecognitionManager()
+        myWords = MyWordsStore(defaults: options.defaults)
+        speech = SpeechRecognitionManager(myWords: myWords)
         prompterSpeech = options.prompterSpeech ?? speech
-        dictation = options.dictation ?? DictationService(audio: AudioInputManager(), speech: SpeechRecognitionManager(use: .dictation))
+        dictation = options.dictation ?? DictationService(audio: AudioInputManager(), speech: SpeechRecognitionManager(use: .dictation, myWords: myWords))
         ideaDraft = IdeaDraftService(defaults: options.defaults)
         let ideaTransition = IdeaTransitionService()
         // UI tests don't wait three seconds for every idea (`-uiTestStarTransition` brings the real timings back).
@@ -224,7 +227,7 @@ struct AppServices {
         backgroundExports = BackgroundExportRunner(scheduler: options.usesContinuedTasks ? SystemContinuedTaskScheduler() : nil)
         photos = PhotoLibraryManager()
         thumbnails = VideoThumbnailService()
-        editing = TakeEditService()
+        editing = TakeEditService(myWords: myWords)
         motion = MotionAnalysisService()
         drafts = options.draftStore
         let apps = ExternalAppService()

@@ -34,10 +34,13 @@ final class SpeechRecognitionManager: SpeechTranscribing {
     private let resolver: SpeechLocaleResolver
     private let use: SpeechUse
     private var downloads = DownloadCooldown()
+    /// The creator's names and terms, listened for after the script's (`RecognitionHints`).
+    private let myWords: MyWordsStoring
 
-    init(catalog: SpeechLocaleCatalog = AppleSpeechLocaleCatalog(), use: SpeechUse = .following) {
+    init(catalog: SpeechLocaleCatalog = AppleSpeechLocaleCatalog(), use: SpeechUse = .following, myWords: MyWordsStoring = MyWordsStore()) {
         resolver = SpeechLocaleResolver(catalog: catalog)
         self.use = use
+        self.myWords = myWords
     }
 
     func start(
@@ -75,7 +78,7 @@ final class SpeechRecognitionManager: SpeechTranscribing {
             let analyzer = SpeechAnalyzer(modules: modules, options: SpeechAnalyzer.Options(priority: .userInitiated, modelRetention: .whileInUse))
             opening = (analyzer, nil)
             let context = AnalysisContext()
-            context.contextualStrings[.general] = Self.vocabulary(in: script)
+            context.contextualStrings[.general] = Self.hints(in: script, myWords: myWords.words.words)
             try? await analyzer.setContext(context)
             try await analyzer.prepareToAnalyze(in: format)
             let (inputs, input) = AsyncStream.makeStream(of: AnalyzerInput.self)
@@ -243,6 +246,11 @@ final class SpeechRecognitionManager: SpeechTranscribing {
         } catch {
             return false
         }
+    }
+
+    /// What the recognizer listens for: the script's vocabulary, then My words (`RecognitionHints`).
+    static func hints(in script: String, myWords: [String]) -> [String] {
+        RecognitionHints.merged(script: vocabulary(in: script), myWords: myWords)
     }
 
     /// Names, brands and numbers a general model may not expect, as recognition hints. Text

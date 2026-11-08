@@ -19,9 +19,10 @@ nonisolated enum CaptionTranscriber {
     /// The words and the language they were heard in (the main one). Throws `SpeechUnavailableReason`
     /// when no speech model on this device can listen in the main language (never another language
     /// instead), and `CancellationError` when the task is cancelled. Runs off the main actor.
+    /// - Parameter myWords: the creator's names and terms (`MyWordsList`), listened for after the script's words.
     @concurrent
     static func transcript(
-        in audio: URL, language: SpeechLanguageRequest, script: String = "",
+        in audio: URL, language: SpeechLanguageRequest, script: String = "", myWords: [String] = [],
         resolver: SpeechLocaleResolver = SpeechLocaleResolver(),
         progress: (@Sendable (CaptionProgress) -> Void)? = nil
     ) async throws -> TakeTranscript {
@@ -49,7 +50,9 @@ nonisolated enum CaptionTranscriber {
         for (index, entry) in routes.enumerated() {
             try Task.checkCancellation()
             do {
-                let words = try await listen(in: audio, route: entry.route, script: script, progress: share(progress, pass: index, of: routes.count))
+                let words = try await listen(
+                    in: audio, route: entry.route, script: script, myWords: myWords, progress: share(progress, pass: index, of: routes.count)
+                )
                 heard.append(.init(code: entry.code, words: words))
             } catch {
                 // The main language must be heard; another one this iPhone can't download or run only costs
@@ -79,10 +82,10 @@ nonisolated enum CaptionTranscriber {
 
     /// The take heard in one language.
     private static func listen(
-        in audio: URL, route: SpeechRoute, script: String, progress: (@Sendable (CaptionProgress) -> Void)?
+        in audio: URL, route: SpeechRoute, script: String, myWords: [String], progress: (@Sendable (CaptionProgress) -> Void)?
     ) async throws -> [TimedWord] {
-        // The script's names and long words, so the recognizer listens for them (it still writes what it hears).
-        let terms = ScriptVocabulary.terms(in: script, language: route.language)
+        // The script's names and long words, then My words, so the recognizer listens for them (it still writes what it hears).
+        let terms = RecognitionHints.merged(script: ScriptVocabulary.terms(in: script, language: route.language), myWords: myWords)
         // The system holds only a few languages at a time: take a place for this one first.
         await SpeechLocaleReservation.reserve(route.locale)
         switch route.engine {

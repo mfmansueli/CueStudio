@@ -21,6 +21,8 @@ enum EditorSheet: String, Identifiable {
     case clipOrder
     /// Find and replace in the caption lines.
     case findInCaptions
+    /// Captions › My words: the creator's names and terms, for speech recognition.
+    case myWords
 
     var id: String { rawValue }
 }

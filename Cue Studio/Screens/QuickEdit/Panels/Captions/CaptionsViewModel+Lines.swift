@@ -49,11 +49,14 @@ extension CaptionsViewModel {
                     let outcome: CaptionOutcome
                     if let cached = transcript(of: recording.source), canReuse(cached, for: recording.language, among: isAuto ? recording.candidates : []) {
                         // Lining the words up with the script (spelling, languages) is the same work
-                        // `TakeEditService` does after listening: off the main actor, like there.
+                        // `TakeEditService` does after listening: off the main actor, like there. My words' capitals too.
                         let words = cached.words
                         let script = recording.script
                         let language = CueLanguage.matching(languageCode: cached.languageCode)
-                        let lines = await Task.detached { CaptionBuilder.captions(heard: words, script: script, language: language) }.value
+                        let myWords = myWordsStore.words.words
+                        let lines = await Task.detached {
+                            CaptionBuilder.captions(heard: words, script: script, language: language, myWords: myWords)
+                        }.value
                         try Task.checkCancellation()
                         outcome = .captions(lines, transcript: cached)
                     } else {
