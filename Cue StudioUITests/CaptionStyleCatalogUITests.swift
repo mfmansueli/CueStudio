@@ -214,7 +214,10 @@ final class CaptionStyleCatalogUITests: XCTestCase {
         let before = time.value as? String
         openCaptionStyle(app)
         tab(app, "adjust")
-        XCTAssertTrue(app.buttons["edit.captionFace.preset"].exists(within: 5), "Custom has no font at its top")
+        // Custom opens on the colors, in sight without scrolling (recipe R1.6), then the font.
+        let textColor = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'edit.captionTextColor.'")).firstMatch
+        XCTAssertTrue(waitFor { textColor.isHittable }, "Custom doesn't open on the text color")
+        XCTAssertTrue(app.buttons["edit.captionFace.preset"].exists(within: 5), "Custom has no font")
         let choose = app.buttons["edit.captionAdjust.chooseEmphasis"]
         reveal(app, choose)
         EditorApp.capture(app, "caption-choose-emphasis-custom")
@@ -240,7 +243,7 @@ final class CaptionStyleCatalogUITests: XCTestCase {
         EditorApp.capture(app, "caption-choose-emphasis-back")
         let color = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'edit.captionEmphasisColor.'")).firstMatch
         XCTAssertTrue(waitFor { color.isHittable }, "The emphasis color isn't where Choose words to emphasize was")
-        XCTAssertFalse(app.buttons["edit.captionFace.preset"].isHittable, "Custom came back at its top, not where it was")
+        XCTAssertFalse(textColor.isHittable, "Custom came back at its top, not where it was")
         XCTAssertEqual(time.value as? String, before, "The playhead moved")
         app.buttons["edit.panel.apply"].tap()
         XCTAssertTrue(app.descendants(matching: .any)["edit.panel.captionStyle"].isGone(within: 5), "✓ didn't close Caption style")
