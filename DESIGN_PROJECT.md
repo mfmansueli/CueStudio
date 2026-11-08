@@ -2068,7 +2068,8 @@ auditoria: `reports/editor-award-checklist.md`.
   linha › Select lines, como a edição em lote do CapCut): cada linha ganha um círculo; tocar põe ou tira. Enquanto escolhe, o painel cresce até
   a altura dos painéis de estilo (`openPanelSize`), no lugar da chave e dos chips fica "N selected", **Select all** / **Deselect all** e **Done**,
   e as ações ficam fixas embaixo da lista (rodapé do painel, como no CapCut, que as mantém à mão enquanto a lista rola; decisão depois de
-  comparar: no topo da lista elas sumiam ao rolar e as linhas mal cabiam): chip **Emphasize line** (em português **Enfatizar linha**; dono, canvas 2
+  comparar: no topo da lista elas sumiam ao rolar e as linhas mal cabiam; numa linha quando cabe, senão os chips numa fileira que rola de lado, com
+  mover e apagar embaixo: um chip por fileira deixava 20 pt para as linhas num iPhone 17): chip **Emphasize line** (em português **Enfatizar linha**; dono, canvas 2
   §7.1: o nome diz a ação e o alcance, e "Highlight" fica só com a palavra sendo dita): marca todas as palavras das linhas para ênfase, na cor e no
   tamanho de ênfase do estilo (§50); ligado em `accText` sobre `accSoft`; o VoiceOver ouve o que faz), menu **Size** (Regular, Bigger 1,25×, Biggest 1,5×, nunca
   menor, para não cair abaixo do tamanho em que as cores foram medidas; dentro do limite da coleção), menu **Place** (decisão D do E4, 07/11/2026;
@@ -2485,7 +2486,8 @@ Prévia e exportação passam pelo mesmo compositor (`CueVideoCompositor`), ent�
   enquadramento. A capa feita de um quadro usa o recorte daquele momento. Um passo de desfazer (`EditLook`). O painel Format passou a `.medium`.
 - **Zoom › Punch in on cuts** (E4, 08/11/2026; plano §11; R1.3/R2.1: eram 9–10 toques, clipe a clipe; `TakeEdit.cutZoom`, `CutZoom`,
   `ClipsViewModel+CutZoom`, `ZoomPanel`): no rodapé do painel Zoom do clipe, sempre à vista, um interruptor para o vídeo inteiro: um clipe sim, outro
-  não, um pouco mais perto, como uma segunda câmera. **Só liga pelo criador** (ou pelo kit dele, abaixo); "Every other clip a little closer"
+  não, um pouco mais perto, como uma segunda câmera. A força e os avisos dele ficam na parte que rola, depois das escolhas do clipe (no rodapé,
+  deixavam 6 pt para Push in e os outros num iPhone 17). **Só liga pelo criador** (ou pelo kit dele, abaixo); "Every other clip a little closer"
   desligado, "N clips closer · toward your face when it’s clear" ligado, "Needs a cut in the video" com um clipe só. Ligado: **Subtle · Medium ·
   Strong** (os mesmos 1,1 / 1,18 / 1,25× do zoom por frase; começa em Medium, ou na força que o kit marcou). Um passo de desfazer com toast
   "Punch in on N clips" e Undo; a agulha toca do segundo antes do primeiro corte com zoom. É calculado ao desenhar (`TakeEdit.punchedTimeline`,

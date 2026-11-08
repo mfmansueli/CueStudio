@@ -15,6 +15,26 @@ struct CaptionEmphasisSuggesterTests {
         CaptionEmphasisSuggester.suggestion(in: text, language: language).map { CaptionText.words(in: text)[$0] }
     }
 
+    /// Whether this system's name tagger hears "Brasil" as a place: the rule marks names the tagger finds, and the tagger is
+    /// the OS's (the iPhone 17 simulator on iOS 27 said yes on 08/11 at 03:50 and no from 17:00 on, with the same code).
+    private static let taggerHearsBrasil: Bool = {
+        let text = "Aqui no Brasil, para o produto"
+        let tagger = NLTagger(tagSchemes: [.nameType])
+        tagger.string = text
+        tagger.setLanguage(.portuguese, range: text.startIndex..<text.endIndex)
+        var place = false
+        tagger.enumerateTags(in: text.startIndex..<text.endIndex, unit: .word, scheme: .nameType, options: [.omitPunctuation, .omitWhitespace]) { tag, range in
+            if text[range] == "Brasil", tag == .placeName { place = true }
+            return true
+        }
+        return place
+    }()
+
+    /// A name the system's tagger doesn't hear is a gap of the OS model, not of the rule: known, and only then.
+    private func expectName(_ check: () -> Void) {
+        if Self.taggerHearsBrasil { check() } else { withKnownIssue("This system's tagger doesn't hear Brasil as a place", isIntermittent: true, check) }
+    }
+
     @Test(arguments: [
         ("Ganhei R$ 5 mil no primeiro mês", "5"),
         ("Meu canal cresceu 300% esse ano", "300%"),
@@ -24,7 +44,11 @@ struct CaptionEmphasisSuggesterTests {
         ("Aqui no Brasil, para o produto", "Brasil,"),
     ])
     func portugueseLinesWithOneClearWord(line: String, expected: String) {
-        #expect(word(line, .portuguese) == expected, "\(line)")
+        if expected == "Brasil," {
+            expectName { #expect(word(line, .portuguese) == expected, "\(line)") }
+        } else {
+            #expect(word(line, .portuguese) == expected, "\(line)")
+        }
     }
 
     @Test(arguments: [
@@ -88,7 +112,7 @@ struct CaptionEmphasisSuggesterTests {
         // "Reino | Unido", "Jean Carlos" and the many lines with nothing clear stay without a mark.
         #expect(marked["Estou vendo 3 hábitos ruins que"] == "3")
         #expect(marked["I break down 3 common errors"] == "3")
-        #expect(marked["Aqui no Brasil, para o produto"] == "Brasil,")
+        expectName { #expect(marked["Aqui no Brasil, para o produto"] == "Brasil,") }
         #expect(marked["by 25 to 30 years."] == nil)
         #expect(marked["em outras partes do Reino"] == nil)
         #expect(marked["Jean Carlos disse que ela"] == nil)

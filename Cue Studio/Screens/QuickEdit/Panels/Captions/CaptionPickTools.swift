@@ -71,16 +71,16 @@ struct CaptionPickTools: View {
                 if !viewModel.captions.canStyleCaptionLines {
                     PanelNote(text: String(localized: "Pick a look in Style to style lines on their own."), teaches: true)
                 }
-                // On one row when it fits; with large text, the style on one row and moving and deleting on the next; past that,
-                // each style chip on its own row (a name is never cut).
+                // On one row when it fits; else the style chips on a row of their own that scrolls sideways (a name is never cut,
+                // and the lines above keep their room: one chip per row left them 20 pt on an iPhone 17), moving and deleting under it.
                 ViewThatFits(in: .horizontal) {
                     HStack(spacing: 6) { style; Spacer(minLength: 0); moveAndDelete }
                     VStack(alignment: .leading, spacing: 0) {
-                        HStack(spacing: 6) { style }
-                        HStack(spacing: 6) { Spacer(minLength: 0); moveAndDelete }
-                    }
-                    VStack(alignment: .leading, spacing: 0) {
-                        style
+                        ScrollView(.horizontal) {
+                            HStack(spacing: 6) { style }
+                        }
+                        .scrollIndicators(.hidden)
+                        .scrollClipDisabled()
                         HStack(spacing: 6) { Spacer(minLength: 0); moveAndDelete }
                     }
                 }

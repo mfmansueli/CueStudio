@@ -7,9 +7,10 @@ import SwiftUI
 
 /// Zoom (this clip): None, Push in, Pull out or Punch in; picking a move plays the clip's first
 /// seconds to show it, and "Preview" in the header plays them again. Advanced: its intensity (1.3× at most).
-/// Under them, always in reach, the whole video's **Punch in on cuts** (`CutZoom`): every other clip a little closer, at Subtle,
-/// Medium or Strong, toward the face when one is clearly in view; the lines say a clip that keeps its own zoom, a clip too short
-/// to change, and a zoom held back by the video's pixels or to keep the head in the frame.
+/// Under them, always in reach, the whole video's **Punch in on cuts** switch (`CutZoom`): every other clip a little closer,
+/// toward the face when one is clearly in view. While it is on, its Subtle · Medium · Strong and the lines (a clip that keeps its
+/// own zoom, a zoom held back by the video's pixels or to keep the head in the frame) come after the clip's own choices, in the
+/// scrolling part: in the footer they left the clip's moves 6 pt to show in on an iPhone 17.
 struct ZoomPanel: View {
     @Bindable var viewModel: QuickEditViewModel
 
@@ -35,19 +36,22 @@ struct ZoomPanel: View {
                     format: .percent, identifier: "edit.zoom.intensity"
                 ) { viewModel.clips.setZoomIntensity($0) }
             }
+            punchInSettings
         } footer: {
-            punchInOnCuts
-        }
-    }
-
-    private var punchInOnCuts: some View {
-        let clips = viewModel.clips
-        return VStack(alignment: .leading, spacing: 8) {
+            let clips = viewModel.clips
             PanelToggleRow(label: String(localized: "Punch in on cuts"), detail: punchDetail, isOn: clips.punchesInOnCuts, identifier: "edit.zoom.cuts") {
                 clips.setPunchesInOnCuts(!clips.punchesInOnCuts)
             }
             .disabled(!clips.canPunchInOnCuts && !clips.punchesInOnCuts)
-            if let zoom = viewModel.edit.cutZoom {
+        }
+    }
+
+    /// Punch in on cuts' strength and lines, while it is on.
+    @ViewBuilder private var punchInSettings: some View {
+        let clips = viewModel.clips
+        if let zoom = viewModel.edit.cutZoom {
+            VStack(alignment: .leading, spacing: 8) {
+                PanelRowLabel(label: String(localized: "Punch in on cuts"))
                 PanelSegmented(
                     options: PhraseZoom.Strength.allCases.map { PanelOption($0, $0.label) }, selection: zoom.strength,
                     identifier: "edit.zoom.cutsStrength"
