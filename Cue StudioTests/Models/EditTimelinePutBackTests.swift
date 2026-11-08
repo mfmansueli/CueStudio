@@ -107,4 +107,32 @@ struct EditTimelinePutBackTests {
         #expect(timeline.putBackPlaces(for: pause, in: nil).isEmpty)
         #expect(timeline.putBackBlock(for: pause, in: nil) == .trimmedOff)
     }
+
+    /// A pause at the very end of the take (the demo's last one): removing it moves the end; Put back moves it out again. Past an
+    /// end the creator dragged in further, it stays trimmed off.
+    @Test func aPauseRemovedAtTheEndComesBack() throws {
+        var timeline = EditTimeline(sourceDuration: 10)
+        let last = TimeSpan(start: 8.5, end: 10)
+        timeline.remove([last])
+        #expect(abs(timeline.trimEnd - 8.5) < 0.001)
+        let place = try #require(timeline.putBackPlaces(for: last, in: nil).first)
+        let back = timeline.putBack(last, in: nil, at: place)
+        #expect(back)
+        #expect(abs(timeline.editedDuration - 10) < 0.001)
+        var dragged = EditTimeline(sourceDuration: 10)
+        dragged.remove([last])
+        dragged.trimEnd(to: 7)
+        #expect(dragged.putBackPlaces(for: last, in: nil).isEmpty)
+        #expect(dragged.putBackBlock(for: last, in: nil) == .trimmedOff)
+    }
+
+    @Test func aPauseRemovedAtTheStartComesBack() throws {
+        var timeline = EditTimeline(sourceDuration: 10)
+        let first = TimeSpan(start: 0, end: 1.2)
+        timeline.remove([first])
+        let place = try #require(timeline.putBackPlaces(for: first, in: nil).first)
+        let back = timeline.putBack(first, in: nil, at: place)
+        #expect(back)
+        #expect(abs(timeline.editedDuration - 10) < 0.001)
+    }
 }

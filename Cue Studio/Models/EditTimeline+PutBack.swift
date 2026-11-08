@@ -103,7 +103,15 @@ nonisolated extension EditTimeline {
         }
         guard isArranged else {
             let before = self
-            restore([span])
+            // A stretch removed at the very end (or start) moved that edge: it comes back by moving the edge out again.
+            let tolerance = Self.putBackTolerance
+            if abs(span.start - trimEnd) <= tolerance, span.end > trimEnd + tolerance {
+                trimEnd(to: span.end)
+            } else if abs(span.end - trimStart) <= tolerance, span.start < trimStart - tolerance {
+                trimStart(to: span.start)
+            } else {
+                restore([span])
+            }
             return self != before
         }
         guard let index = index(ofSegment: place.segmentID) else { return false }
@@ -117,7 +125,12 @@ nonisolated extension EditTimeline {
 
     /// What of `span` doesn't play, between the handles, as one stretch (from the first missing second to the last).
     private func missingSpan(of span: TimeSpan) -> TimeSpan? {
-        let clamped = TimeSpan(start: max(span.start, trimStart), end: min(span.end, trimEnd))
+        // Removed right at the edit's end or start (a pause at the end of the take): its removal is what moved that edge, so it
+        // isn't trimmed off; past an edge the creator dragged, it is.
+        let tolerance = Self.putBackTolerance
+        let atEnd = abs(span.start - trimEnd) <= tolerance
+        let atStart = abs(span.end - trimStart) <= tolerance
+        let clamped = TimeSpan(start: atStart ? span.start : max(span.start, trimStart), end: atEnd ? span.end : min(span.end, trimEnd))
         let missing = clamped.subtracting(keptSpans).filter { $0.duration > Self.putBackTolerance }
         guard let first = missing.first, let last = missing.last else { return nil }
         return TimeSpan(start: first.start, end: last.end)
