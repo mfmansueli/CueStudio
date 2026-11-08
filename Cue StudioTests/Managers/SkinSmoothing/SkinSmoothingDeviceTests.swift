@@ -241,10 +241,12 @@ struct SkinSmoothingDeviceTests {
             let shown = try await still(preview.asset, composition: preview.videoComposition, at: time)
             let held = try await still(previewPlain.asset, composition: previewPlain.videoComposition, at: time)
             let written = try await still(AVURLAsset(url: exported), composition: nil, at: time)
-            let match = difference(shown, written), effect = difference(shown, held)
-            note("SKIN SMOOTHING preview vs export at \(time) s · mean difference \(String(format: "%.2f", match)) of 255 · smoothing vs none \(String(format: "%.2f", effect))")
+            // The face is ~2% of the frame: the smoothing is measured where it works, in the face Vision finds in the plain still.
+            let face = held.cgImage.flatMap { VisionFaceDetector().faces(in: CIImage(cgImage: $0)).first?.box }
+            let match = difference(shown, written), effect = difference(shown, held, in: try #require(face, "no face at \(time) s"))
+            note("SKIN SMOOTHING preview vs export at \(time) s · mean difference \(String(format: "%.2f", match)) of 255 · smoothing vs none on the face \(String(format: "%.2f", effect))")
             #expect(match < 3, "the export differs from the preview at \(time) s")
-            #expect(effect > 0.05, "smoothing changed nothing at \(time) s: the face wasn't found")
+            #expect(effect > 0.5, "smoothing changed nothing on the face at \(time) s")
             Attachment.record(try #require(written.pngData()), named: "export-\(time).png")
             Attachment.record(try #require(held.pngData()), named: "without-\(time).png")
         }
@@ -320,6 +322,33 @@ struct SkinSmoothingDeviceTests {
     }
 
     /// The mean difference per channel of two stills drawn at 270 × 480.
+    /// The mean gap inside `box` (the unit square, y up from the bottom edge, as Vision gives it).
+    private func difference(_ first: UIImage, _ second: UIImage, in box: CGRect) -> Double {
+        func bytes(_ image: UIImage) -> [UInt8] {
+            var data = [UInt8](repeating: 0, count: 270 * 480 * 4)
+            guard let cgImage = image.cgImage, let context = CGContext(
+                data: &data, width: 270, height: 480, bitsPerComponent: 8, bytesPerRow: 270 * 4, space: CGColorSpaceCreateDeviceRGB(),
+                bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+            ) else { return data }
+            context.draw(cgImage, in: CGRect(x: 0, y: 0, width: 270, height: 480))
+            return data
+        }
+        let one = bytes(first), two = bytes(second)
+        let columns = max(0, Int(box.minX * 270))..<min(270, Int(box.maxX * 270))
+        let rows = max(0, Int((1 - box.maxY) * 480))..<min(480, Int((1 - box.minY) * 480))
+        var total = 0, count = 0
+        for row in rows {
+            for column in columns {
+                for channel in 0..<3 {
+                    let index = (row * 270 + column) * 4 + channel
+                    total += abs(Int(one[index]) - Int(two[index]))
+                    count += 1
+                }
+            }
+        }
+        return count == 0 ? 0 : Double(total) / Double(count)
+    }
+
     private func difference(_ first: UIImage, _ second: UIImage) -> Double {
         func bytes(_ image: UIImage) -> [UInt8] {
             var data = [UInt8](repeating: 0, count: 270 * 480 * 4)

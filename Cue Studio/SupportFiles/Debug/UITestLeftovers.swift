@@ -11,8 +11,9 @@ import Foundation
 /// mode, and a real launch never uses them. Never shipped.
 nonisolated enum UITestLeftovers {
     /// Names only UI tests give files: the sample takes (`SampleTakes`, `-uiTestDemoEdit`, `-uiTestLongTake`) and their edit's media
-    /// (`SampleEditMedia`), the demo camera's takes, the seeded library's images, and each launch's asset folder.
-    static let testPrefixes = ["sample-", "demo-take-", "seed-", "UITestAssets-"]
+    /// (`SampleEditMedia`), the demo camera's takes, the seeded library's images, each launch's asset folder, and the hard link
+    /// `-uiTestRealTake` makes of a creator's recording (removing it leaves the recording in Takes as it was).
+    static let testPrefixes = ["sample-", "demo-take-", "seed-", "UITestAssets-", "real-"]
 
     static func isTestFile(_ name: String) -> Bool {
         testPrefixes.contains { name.hasPrefix($0) }

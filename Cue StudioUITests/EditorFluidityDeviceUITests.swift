@@ -697,7 +697,8 @@ final class EditorFluidityDeviceUITests: XCTestCase {
     /// Taps `element` when it is on screen; otherwise says what was skipped.
     @discardableResult
     private func tap(_ element: XCUIElement, _ what: String) -> Bool {
-        guard element.exists, element.isHittable else {
+        // An element with no place on screen (a filter card past the fan's edge) makes isHittable fail the test instead of saying no.
+        guard element.exists, XCUIApplication().frame.intersects(element.frame), element.isHittable else {
             print("SKIP \(what)")
             return false
         }

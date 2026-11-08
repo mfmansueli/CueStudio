@@ -31,4 +31,21 @@ struct UITestLeftoversTests {
         #expect(leftInTemporary == Set(stay))
         #expect(leftInMedia == ["import-photo.jpg"])
     }
+
+    /// `-uiTestRealTake` plays a hard link of the creator's recording: the link goes, the recording it came from stays whole.
+    @Test func theRealTakeLinkGoesAndTheRecordingStays() async throws {
+        let root = URL.temporaryDirectory.appending(path: "leftovers-\(UUID().uuidString)", directoryHint: .isDirectory)
+        let media = root.appending(path: "EditMedia", directoryHint: .isDirectory)
+        defer { try? FileManager.default.removeItem(at: root) }
+        try FileManager.default.createDirectory(at: media, withIntermediateDirectories: true)
+        let recording = root.appending(path: "AB8220F7-09E2-4EF0-9638-271FC60AF798.mov")
+        try Data(repeating: 7, count: 1024).write(to: recording)
+        let link = root.appending(path: "real-AB8220F7-09E2-4EF0-9638-271FC60AF798.mov")
+        try FileManager.default.linkItem(at: recording, to: link)
+
+        await UITestLeftovers.removeAll(temporary: root, media: media)
+
+        #expect(!FileManager.default.fileExists(atPath: link.path(percentEncoded: false)))
+        #expect(try Data(contentsOf: recording).count == 1024)
+    }
 }

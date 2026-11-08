@@ -82,6 +82,24 @@ struct BackgroundDeviceTests {
         return Double(differences.reduce(0, +)) / Double(differences.count)
     }
 
+    /// How much fine detail a picture holds: the mean step in brightness between neighbouring pixels, across and down. A blur
+    /// lowers it wherever the background had any texture, even when a plain wall barely changes the mean colour.
+    private func detail(_ image: CGImage) throws -> Double {
+        let bytes = try pixels(image)
+        let width = Int(size.width), height = Int(size.height)
+        func luma(_ x: Int, _ y: Int) -> Int {
+            let index = (y * width + x) * 4
+            return (Int(bytes[index]) * 3 + Int(bytes[index + 1]) * 6 + Int(bytes[index + 2])) / 10
+        }
+        var total = 0
+        for y in 0..<(height - 1) {
+            for x in 0..<(width - 1) {
+                total += abs(luma(x + 1, y) - luma(x, y)) + abs(luma(x, y + 1) - luma(x, y))
+            }
+        }
+        return Double(total) / Double((width - 1) * (height - 1))
+    }
+
     @Test func thisIPhoneFindsThePersonInThePhoto() async throws {
         let canFind = await BackgroundSupport.canFindPeople()
         note("BACKGROUND support check (64 pt grey frame): \(canFind)")
@@ -110,6 +128,13 @@ struct BackgroundDeviceTests {
         let difference = try meanDifference(plain, changed)
         note("BACKGROUND \(style): mean difference \(String(format: "%.1f", difference)) of 255")
         Attachment.record(UIImage(cgImage: changed).pngData() ?? Data(), named: "background-\(style).png")
-        #expect(difference > 4, "the \(style) background changed nothing")
+        if style == .blur {
+            // A blur shows as lost detail: on a portrait against plain walls the mean colour moves only ~3.6 of 255.
+            let sharp = try detail(plain), soft = try detail(changed)
+            note("BACKGROUND blur: detail \(String(format: "%.2f", sharp)) → \(String(format: "%.2f", soft))")
+            #expect(soft < sharp * 0.85, "the blur background kept the picture's detail")
+        } else {
+            #expect(difference > 4, "the \(style) background changed nothing")
+        }
     }
 }
