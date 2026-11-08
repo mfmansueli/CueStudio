@@ -30,6 +30,7 @@ enum EditFixtures {
         edit.pauseHearings = [RecordingPauseHearing(sourceID: source.id, hearing: .overBackgroundSound)]
         edit.pauseThreshold = 1.2
         edit.pauseGap = .tight
+        edit.newMusic = MusicDefaults(volume: 0.25, duck: MusicDuck(depth: 18, pauses: .comesBack))
         edit.cleanUpHearing = CleanUpHearing(wordsLanguage: "en")
         edit.volume = 0.5
         edit.enhancesVoice = false
@@ -95,6 +96,8 @@ enum EditFixtures {
         edit.textLook = TypePreset.cue.look(for: .title)
         edit.textPreset = .cue
         edit.cover = VideoCover(source: .frame(0))
+        edit.copiedLook = CopiedClipLook(of: edit.timeline.segments[0], in: edit)
+        edit.pasteLookChoice = PasteLookChoice(parts: [.filter], everyClip: true)
         return edit
     }
 }

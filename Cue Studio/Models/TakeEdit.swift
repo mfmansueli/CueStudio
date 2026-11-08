@@ -154,6 +154,12 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     /// The cover saved with exports; nil when none was chosen.
     var cover: VideoCover?
 
+    // MARK: Paste look
+    /// Kept with the project, never an undo step (copying changes nothing on the video, `EditDocument.remember`): the look Copy
+    /// look took last, and how Paste look last pasted it (`PasteLookChoice`); nil until each happens.
+    var copiedLook: CopiedClipLook?
+    var pasteLookChoice: PasteLookChoice?
+
     init(sourceDuration: TimeInterval, aspect: AspectRatio) {
         timeline = EditTimeline(sourceDuration: sourceDuration)
         self.aspect = aspect
@@ -420,6 +426,7 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         case texts, media, voiceOvers, creatorStyle, textLook, textPreset, cover
         case splitScreen, brandKit, blurRegions, blurLook
         case newMusic
+        case copiedLook, pasteLookChoice
     }
 
     /// Edits saved before the timeline had pieces: trim handles, cut points, deleted sections and
@@ -511,6 +518,9 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         textLook = container.decodeLenient(TextLook.self, forKey: .textLook, report: report)
         textPreset = try? container.decodeIfPresent(TypePreset.self, forKey: .textPreset)
         cover = container.decodeLenient(VideoCover.self, forKey: .cover, report: report)
+        // Paste look's memory: edits saved before have none, and one that can't be read is let go in silence (it's not the video).
+        copiedLook = try? container.decodeIfPresent(CopiedClipLook.self, forKey: .copiedLook)
+        pasteLookChoice = try? container.decodeIfPresent(PasteLookChoice.self, forKey: .pasteLookChoice)
         // An edit saved before the calibrated dials reads them the first way, unless it never used them.
         lookVersion = ReadingVersion.look.read(try? container.decodeIfPresent(Int.self, forKey: .lookVersion), usedOldNumbers: usesAdjustDials)
     }

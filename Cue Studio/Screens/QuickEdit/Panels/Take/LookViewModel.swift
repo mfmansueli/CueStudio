@@ -41,11 +41,16 @@ final class LookViewModel: EditorPart {
     /// Adjust, Filters or Background was opened from a picked clip: it changes that clip only, and follows the picked clip.
     /// Opened from the main toolbar it changes the whole take.
     var lookScopeIsClip = false
-    /// "Copy look": what a clip's look was when copied; nil until one is.
-    var copiedLook: CopiedClipLook?
-    /// "Paste look": which parts go, and whether its sheet is open.
+    /// "Paste look": which parts its sheet has on, and whether it is open. The look copied and the last choice are kept with the
+    /// project (`TakeEdit.copiedLook`, `pasteLookChoice`).
     var pastesLookParts: Set<ClipLookPart> = Set(ClipLookPart.allCases)
-    var showsPasteLook = false
+    var showsPasteLook = false {
+        didSet { if !showsPasteLook { correctsLastPaste = false } }
+    }
+    /// The sheet was opened by the toast's Change: what it pastes takes the place of the paste just made (`lastPaste`).
+    var correctsLastPaste = false
+    /// The paste just made, which the toast's Change corrects while nothing else changed since; nil before one.
+    @ObservationIgnored var lastPaste: PasteMade?
     /// The recordings whose motion analysis was last asked for while the edit used it (`requestMotionAnalysisIfNeeded`).
     @ObservationIgnored var motionRequestedURLs: [URL] = []
     /// The take's upright frame in pixels, read when the recording opens (Follow face needs a format other than it).
@@ -54,6 +59,13 @@ final class LookViewModel: EditorPart {
     /// review the editor opened from (`TakeReviewViewModel.reducedOutputSize(for:)`: the quality, Pro, the recording's frame); nil
     /// otherwise, and always nil where nothing exports from the editor.
     @ObservationIgnored var reducedExportSize: (TakeEdit) -> CGSize? = { _ in nil }
+
+    /// A paste of a copied look as made: how, on which clip (nil: every clip), and what undo keeps of the edit right after it.
+    struct PasteMade {
+        var choice: PasteLookChoice
+        var clipID: UUID?
+        var after: EditSnapshot
+    }
 
     let session: EditorSession
     /// Measures Auto.

@@ -35,6 +35,23 @@ struct ToastServiceTests {
         #expect(toast.message == nil && toast.action == nil)
     }
 
+    /// A pasted look's Change beside its Undo: shown only with a first button, and gone with the toast or a newer one.
+    @Test func aSecondButtonComesOnlyBesideAFirst() {
+        let toast = ToastService()
+        var changed = 0
+        toast.show("Look pasted · 3 parts", action: ToastAction(title: "Undo") {}, secondaryAction: ToastAction(title: "Change") { changed += 1 })
+        #expect(toast.action?.title == "Undo" && toast.secondaryAction?.title == "Change")
+        toast.secondaryAction?.perform()
+        #expect(changed == 1)
+        toast.show("Saved")
+        #expect(toast.secondaryAction == nil)
+        toast.show("Odd", secondaryAction: ToastAction(title: "Change") {})
+        #expect(toast.action == nil && toast.secondaryAction == nil)
+        toast.show("Look pasted · 1 part", action: ToastAction(title: "Undo") {}, secondaryAction: ToastAction(title: "Change") {})
+        toast.dismiss()
+        #expect(toast.secondaryAction == nil)
+    }
+
     @Test func aToastSaysItsKindAndANewOneComesInItsOwnPill() {
         let toast = ToastService()
         toast.show("Duplicated")

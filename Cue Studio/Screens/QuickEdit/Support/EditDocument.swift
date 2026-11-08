@@ -8,7 +8,8 @@ import Foundation
 /// The take's edit while Quick edit is open, with its undo steps: the one place the edit changes. What the creator decides
 /// is an undo step (`changeEdit`, `change`, `commit`; a gesture, a panel's control or a sheet is one step, `beginChange` /
 /// `endChange`), Undo
-/// and Redo move between steps (`undo`, `redo`), and what listening found is laid on without one (`updateFindings`). The
+/// and Redo move between steps (`undo`, `redo`), and what listening found is laid on without one (`updateFindings`), as is what
+/// Paste look remembers (`remember`). The
 /// editor hears every change (`onChange`) and does the rest: the preview, the draft, the cover, letting go of what's gone.
 @MainActor
 @Observable
@@ -116,6 +117,18 @@ final class EditDocument {
         var decided = EditSnapshot(changed)
         decided.suggestions = snapshot.suggestions
         assert(decided == snapshot, "A decision of the creator changes with changeEdit, as an undo step")
+        edit = changed
+    }
+
+    /// Keeps what the editor remembers in the project for the creator, which isn't a change of the video: the look Copy look took and
+    /// how Paste look last pasted it (`TakeEdit.copiedLook`, `pasteLookChoice`). Never an undo step, and Undo leaves it; it is saved
+    /// with the draft and on the take like the rest of the edit.
+    func remember(_ update: (inout TakeEdit) -> Void) {
+        var changed = edit
+        update(&changed)
+        assert(EditSnapshot(changed) == snapshot, "A decision of the creator changes with changeEdit, as an undo step")
+        assert(Self.findings(of: changed) == Self.findings(of: edit), "What listening found changes with updateFindings")
+        guard changed != edit else { return }
         edit = changed
     }
 

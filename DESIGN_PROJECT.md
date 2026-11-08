@@ -2143,10 +2143,21 @@ auditoria: `reports/editor-award-checklist.md`.
   exportação desenham o movimento como ele é, e Play o solta antes de tocar. O compositor lê a cada quadro, então pausar e tocar não reconstroem a
   prévia; ao mudar, o quadro parado é pedido de novo (`redrawPausedFrame`). O Simulator do iOS 27 não toca composições de vídeo, então esse
   desenho só se confere no aparelho.
-- **Copiar e colar o look** (`CopiedClipLook`, `ClipLookPart`, `PasteLookSheet`): **Copy look** na barra do clipe guarda Adjust, Filter,
-  Background e Zoom do clipe; **Paste look** abre a folha para escolher as partes ("The words, sound and timing stay") e colar no clipe ou em
-  **Every clip**, num passo de desfazer. Em todos os clipes, o look vai para os ajustes do vídeo e cada clipe perde a cópia própria das partes
-  coladas (Filters, Adjust e Background do vídeo inteiro continuam valendo); num clipe, ele guarda só o que difere do vídeo.
+- **Copiar e colar o look** (`CopiedClipLook`, `ClipLookPart`, `PasteLookChoice`, `PasteLookSheet`; dono, 07/11/2026): **Copy look** na barra do
+  clipe guarda Adjust, Skin, Filter, Background e Zoom do clipe. O **primeiro Paste look** do projeto abre a folha para escolher as partes ("The
+  words, sound and timing stay") e colar no clipe ou em **Every clip**, num passo de desfazer. Depois, Paste look **repete a última escolha** sem a
+  folha onde ela cabe (`PasteLookChoice.repeated`): com um clipe escolhido, vai nesse clipe com as mesmas partes (também quando a última foi Every
+  clip: um toque nunca muda clipes fora da vista sem a folha); sem clipe escolhido, só Every clip se repete. A escolha **não cabe**, e a folha
+  abre de novo já com ela, quando nenhuma das partes mudaria nada no destino (o clipe de onde o look veio, um clipe que já o recebeu); nenhuma
+  parte depende do tipo de clipe (freeze frame, invertido, vídeo do Fotos, clipe curto levam as cinco). Toda colagem diz **"Look pasted · N
+  parts"** (ou "Look pasted on every clip · N parts") com **Undo** e **Change** no toast (`ToastService.secondaryAction`, Change antes do Undo,
+  em `ink`). **Change** abre a folha na escolha usada ("Pick again. It replaces the paste you just made."), no clipe que recebeu a colagem, e o que
+  ela cola **toma o lugar** da colagem: desfaz a colagem e cola de novo, num passo só, então um Undo volta a antes da primeira. Se outro passo veio
+  depois, Change abre a folha como colagem nova. O look copiado e a última escolha ficam **com o projeto** (`TakeEdit.copiedLook`,
+  `pasteLookChoice`, `EditDocument.remember`): fora dos passos de desfazer, salvos no rascunho e na take, lidos de novo ao reabrir; edições
+  antigas abrem sem eles. Por isso copiar um look conta como mudança do projeto (o rascunho é salvo e Done grava na take). Em todos os clipes, o
+  look vai para os ajustes do vídeo e cada clipe perde a cópia própria das partes coladas (Filters, Adjust e Background do vídeo inteiro continuam
+  valendo); num clipe, ele guarda só o que difere do vídeo.
 - **Painel da foto ou vídeo** (`MediaPanel`, dono, canvas 2 F5): um vídeo tem **Show | Part**. Show: Show as, Window ratio e Size (na janela),
   Opacity, Bring forward e Send backward; Part: o trecho abaixo. Uma foto não tem trecho, então fica só com Show, sem abas. Volume, Motion e Mask
   continuam ferramentas próprias na barra do item.
