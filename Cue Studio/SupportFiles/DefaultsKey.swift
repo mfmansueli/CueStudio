@@ -67,6 +67,8 @@ nonisolated enum DefaultsKey {
     static let timelineLanes = "editor.timelineLanes"
     /// The takes the kit for new videos already went on once (`[String]` of take ids, the last at the end; `EditorPreferencesStore`).
     static let newVideoKitTakes = "editor.newVideoKitTakes"
+    /// What Copy and Paste look remember for each take edited lately (JSON list, the last at the end; `EditorPreferencesStore`).
+    static let rememberedLooks = "editor.rememberedLooks"
     /// Free exports used, before the count moved to the Keychain; migrated and removed at launch.
     static let legacyCleanExportsUsed = "cleanExportsUsed"
     /// Debug builds: this install has launched before. UserDefaults goes with the app and the Keychain stays, so without

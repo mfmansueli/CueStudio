@@ -46,7 +46,8 @@ struct BrandKitApplySheet: View {
         .padding(.bottom, 12)
         .modifier(EditorToastHost())
         .cueSheetChrome()
-        .presentationDetents([.medium, .large])
+        // Tall from the start: at half height an SE showed a part and a half of the list (capture 08/11/2026).
+        .bigTextSheetDetents(.fraction(0.75))
         .presentationDragIndicator(.visible)
         .onAppear { chosen = Set(changes.filter(\.isAvailable).map(\.part)) }
         .onDisappear { brand.kitToApply = nil }

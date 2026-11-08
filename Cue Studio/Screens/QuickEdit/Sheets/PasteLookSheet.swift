@@ -42,7 +42,7 @@ struct PasteLookSheet: View {
         .padding(.horizontal, 16)
         .padding(.top, 8)
         .cueSheetChrome()
-        .presentationDetents([.height(470)])
+        .bigTextSheetDetents(.height(470))
         .presentationDragIndicator(.visible)
     }
 }

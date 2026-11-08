@@ -136201,6 +136201,125 @@
         }
       }
     },
+    "You can paste this look on video clips and freeze frames." : {
+      "comment" : "Paste look tapped on a photo over the video",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يمكنك لصق هذا المظهر على مقاطع الفيديو والإطارات المجمّدة."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du kan indsætte dette look på videoklip og frosne billeder."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du kannst diesen Look in Videoclips und Standbilder einsetzen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Puedes pegar este look en clips de video y fotogramas congelados."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vous pouvez coller ce style sur des clips vidéo et des arrêts sur image."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आप यह लुक वीडियो क्लिप और फ़्रीज़ किए फ़्रेम पर पेस्ट कर सकते हैं।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamu bisa menempel tampilan ini di klip video dan bingkai beku."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Puoi incollare questo look su clip video e fermi immagine."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このルックは動画クリップと静止したフレームにペーストできます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 룩은 동영상 클립과 정지한 프레임에 붙여넣을 수 있어요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du kan lime inn dette looket på videoklipp og frosne bilder."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je kunt deze look plakken op videoclips en bevroren beelden."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você pode colar este visual em clipes de vídeo e quadros congelados."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du kan klistra in den här looken på videoklipp och frysta bildrutor."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "คุณวางลุคนี้ได้บนคลิปวิดีโอและเฟรมที่ตรึงไว้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu görünümü video kliplerine ve dondurulmuş karelere yapıştırabilirsin."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bạn có thể dán diện mạo này lên clip video và khung hình dừng."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你可以将这个外观粘贴到视频片段和定格画面上。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你可以將這個外觀貼上到影片片段和定格畫面上。"
+          }
+        }
+      }
+    },
     "You joined with %@. Your friend’s reward arrives when you export your first video." : {
       "comment" : "After typing a friend's code that counted: %@ is the code.",
       "localizations" : {

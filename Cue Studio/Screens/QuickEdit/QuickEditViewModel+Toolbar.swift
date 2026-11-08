@@ -300,6 +300,11 @@ extension QuickEditViewModel {
             pickClipForAction()
             look.copyClipLook()
         case .pasteLook:
+            // A photo over the video has no look of its own yet: it says so, and the photo and the copied look stay.
+            if selectedMedia?.kind == .photo, look.canPasteLook {
+                look.explainPasteOnPhoto()
+                return true
+            }
             if look.canPasteLook { pickClipForAction() }
             look.askToPasteLook()
         case .deleteClip: selection?.clipID.map(clips.deleteClip)

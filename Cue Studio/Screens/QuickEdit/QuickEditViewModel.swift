@@ -204,6 +204,8 @@ final class QuickEditViewModel: EditorHost, EditorPart {
             document: document, player: player, jobs: jobs, toast: toast, take: take, videoURL: takes.videoURL(for: take),
             importer: mediaImporter
         )
+        let takeID = take.id
+        session.keepRememberedLook = { [weak preferences] look in preferences?.setRememberedLook(look, forTake: takeID) }
         captions = CaptionsViewModel(
             session: session, editing: editing, takes: takes, library: library, styles: styles, translations: translations,
             speechLanguage: speechLanguage, likelySpokenLanguages: likelySpokenLanguages, languageConflict: languageConflict
@@ -264,6 +266,10 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         let reading = drafts.reading(for: take.id)
         let restored = document.open(sourceDuration: duration, draft: reading.draft)
         if restored, let draft = reading.draft { playhead = draft.playhead }
+        // What Copy and Paste look remember comes back with the project, without being a change to it.
+        if let remembered = editorPreferences.rememberedLook(forTake: take.id) {
+            document.remember { remembered.apply(to: &$0) }
+        }
         switch reading {
         case .unreadable:
             // The take's own edit opens; the draft's file is kept aside before a new draft can be written over it.

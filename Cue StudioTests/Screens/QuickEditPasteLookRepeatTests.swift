@@ -17,10 +17,14 @@ struct QuickEditPasteLookRepeatTests {
         let viewModel: QuickEditViewModel
         let takes: TakeLibraryService
         let drafts: FakeDraftStore
+        let toast: ToastService
     }
 
     /// Three clips (0–10, 10–20, 20–30); the first one has its own exposure and filter.
-    private func makeScenario(take given: Take? = nil, drafts: FakeDraftStore = FakeDraftStore(), splits: Bool = true) async -> Scenario {
+    private func makeScenario(
+        take given: Take? = nil, drafts: FakeDraftStore = FakeDraftStore(), preferences: FakeEditorPreferencesStore = FakeEditorPreferencesStore(),
+        splits: Bool = true
+    ) async -> Scenario {
         var take = given ?? TestData.take(scriptID: nil, number: 3)
         take.duration = 30
         let takes = TakeLibraryService(repository: FakeTakeRepository(takes: [take]))
@@ -29,9 +33,11 @@ struct QuickEditPasteLookRepeatTests {
         library.load()
         let editor = FakeTakeEditor()
         editor.duration = 30
+        let toast = ToastService()
         let viewModel = QuickEditViewModel(
-            take: takes.takes[0], takes: takes, library: library, editing: editor, drafts: drafts, toast: ToastService(),
-            player: FakeEditPlayback(), mediaImporter: FakeMediaImporter(), recorder: FakeVoiceRecorder(), styles: FakeTextStyleStore()
+            take: takes.takes[0], takes: takes, library: library, editing: editor, drafts: drafts, toast: toast,
+            player: FakeEditPlayback(), mediaImporter: FakeMediaImporter(), recorder: FakeVoiceRecorder(), styles: FakeTextStyleStore(),
+            editorPreferences: preferences
         )
         await viewModel.prepare()
         if splits {
@@ -49,7 +55,7 @@ struct QuickEditPasteLookRepeatTests {
             timeline.replaceSegment(first)
             viewModel.commit(timeline)
         }
-        return Scenario(viewModel: viewModel, takes: takes, drafts: drafts)
+        return Scenario(viewModel: viewModel, takes: takes, drafts: drafts, toast: toast)
     }
 
     private func clip(_ viewModel: QuickEditViewModel, _ index: Int) -> UUID {
@@ -247,16 +253,87 @@ struct QuickEditPasteLookRepeatTests {
         #expect(reopened.edit.timeline.segment(id: third)?.look?.exposure == 30)
     }
 
-    @Test func leavingKeepsTheCopyInTheDraft() async {
+    /// Copying alone isn't a change (owner, 08/11/2026): no unsaved change, no draft, no "Draft saved"; the look is there when the
+    /// project opens again, and pasting it is the change that asks for a draft.
+    @Test func copyingAloneLeavesNoDraftAndTheLookComesBack() async throws {
         let drafts = FakeDraftStore()
-        let first = await makeScenario(drafts: drafts)
+        let preferences = FakeEditorPreferencesStore()
+        let first = await makeScenario(drafts: drafts, preferences: preferences, splits: false)
         first.viewModel.selection = .clip(clip(first.viewModel, 0))
-        first.viewModel.look.copyClipLook()
-        first.viewModel.cancel()
+        first.viewModel.perform(.copyLook)
+        let copied = try #require(first.viewModel.look.copiedLook)
+        #expect(!first.viewModel.hasUnsavedChanges)
+        #expect(first.viewModel.cancel())
+        #expect(drafts.drafts.isEmpty)
+        #expect(first.toast.message != "Draft saved")
+        #expect(first.takes.takes[0].edit == nil, "Copying marked the take edited")
+
+        let reopened = await makeScenario(take: first.takes.takes[0], drafts: drafts, preferences: preferences, splits: false)
+        let viewModel = reopened.viewModel
+        #expect(viewModel.look.copiedLook == copied)
+        #expect(!viewModel.hasUnsavedChanges)
+        // Pasting is a change: now leaving keeps a draft.
+        var timeline = viewModel.edit.timeline
+        timeline.split(atEdited: 15)
+        viewModel.commit(timeline)
+        viewModel.selection = .clip(clip(viewModel, 1))
+        viewModel.change { snapshot in
+            var plain = snapshot.timeline.segments[1]
+            plain.look = ClipLook()
+            plain.look?.exposure = -40
+            snapshot.timeline.replaceSegment(plain)
+        }
+        viewModel.perform(.pasteLook)
+        viewModel.look.pasteLook(on: false)
+        #expect(viewModel.hasUnsavedChanges)
+        #expect(viewModel.cancel())
         #expect(drafts.drafts.count == 1)
-        let reopened = await makeScenario(take: first.takes.takes[0], drafts: drafts, splits: false).viewModel
-        #expect(reopened.look.copiedLook == first.viewModel.look.copiedLook)
-        #expect(reopened.look.copiedLook != nil)
+    }
+
+    /// A freeze frame takes a look like any clip.
+    @Test func aFreezeFrameTakesTheLook() async throws {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        viewModel.selection = .clip(clip(viewModel, 0))
+        viewModel.perform(.copyLook)
+        viewModel.leaveToolbarContext()
+        viewModel.player.seek(to: 15)
+        await viewModel.clips.freezeFrame()
+        let frozen = try #require(viewModel.edit.timeline.segments.first { segment in
+            viewModel.edit.sources.contains { $0.id == segment.sourceID && $0.still != nil }
+        })
+        viewModel.selection = .clip(frozen.id)
+        viewModel.perform(.pasteLook)
+        viewModel.look.pasteLook(on: false)
+        let pasted = try #require(viewModel.edit.timeline.segment(id: frozen.id))
+        #expect(pasted.look?.exposure == 30)
+        #expect(pasted.look?.filter == .film)
+    }
+
+    /// A photo over the video has no look yet: Paste look there is dimmed, says where a look goes, and changes nothing (no undo
+    /// step, nothing to save); the photo and the copied look stay.
+    @Test func pasteLookOnAPhotoSaysWhereALookGoesAndChangesNothing() async throws {
+        let scenario = await makeScenario(splits: false)
+        let viewModel = scenario.viewModel
+        viewModel.selection = .clip(clip(viewModel, 0))
+        viewModel.perform(.copyLook)
+        viewModel.leaveToolbarContext()
+        let photo = MediaOverlay(kind: .photo, fileName: "p.jpg", aspect: 1, mediaDuration: nil, span: TimeSpan(start: 2, end: 6))
+        viewModel.change { $0.media = [photo] }
+        viewModel.selection = .media(photo.id)
+        let paste = try #require(viewModel.items(for: .media(photo.id)).first { $0.action == .pasteLook })
+        #expect(paste.style == .dimmed)
+        let before = viewModel.edit
+        let steps = viewModel.document.history.past.count
+        let unsaved = viewModel.hasUnsavedChanges
+        viewModel.perform(.pasteLook)
+        #expect(scenario.toast.message == "You can paste this look on video clips and freeze frames.")
+        #expect(!viewModel.look.showsPasteLook)
+        #expect(viewModel.edit == before)
+        #expect(viewModel.document.history.past.count == steps)
+        #expect(viewModel.hasUnsavedChanges == unsaved)
+        #expect(viewModel.selection == .media(photo.id))
+        #expect(viewModel.look.copiedLook != nil)
     }
 
     @Test func anEditSavedBeforeReadsWithNothingCopied() throws {

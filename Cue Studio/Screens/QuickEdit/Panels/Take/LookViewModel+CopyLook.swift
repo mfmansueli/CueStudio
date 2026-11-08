@@ -11,7 +11,9 @@ import Foundation
 /// The first paste of a project asks in the sheet; the next ones repeat that choice where it fits (`PasteLookChoice.repeated`) and
 /// open the sheet on it where it doesn't. Every paste's toast has Undo and Change: Change opens the sheet on the choice just used,
 /// and what it pastes takes the place of that paste, so one Undo still goes back to before it. The look copied and the choice are
-/// kept with the project, never as undo steps (`remember`).
+/// kept with the project, never as undo steps nor as a change to save (`remember`, `RememberedLook`): copy, leave and come back,
+/// and the look is there, with no "Draft saved". A freeze frame takes a look like any clip; a photo over the video doesn't have
+/// one yet, so Paste look there says where a look goes and changes nothing.
 extension LookViewModel {
     /// Copies the picked clip's look.
     func copyClipLook() {
@@ -40,6 +42,11 @@ extension LookViewModel {
             return
         }
         openPasteLook(on: edit.pasteLookChoice?.parts ?? Set(ClipLookPart.allCases), correcting: false)
+    }
+
+    /// Paste look on a photo over the video: nothing changes (no undo step, nothing to save), and it says where a look goes.
+    func explainPasteOnPhoto() {
+        toast.show(String(localized: "You can paste this look on video clips and freeze frames.", comment: "Paste look tapped on a photo over the video"))
     }
 
     /// Change, on a paste's toast: the sheet on the choice just used, to paste again in its place. When the edit changed since

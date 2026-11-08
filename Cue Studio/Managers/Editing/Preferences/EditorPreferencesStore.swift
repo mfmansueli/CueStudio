@@ -60,6 +60,28 @@ final class EditorPreferencesStore: EditorPreferencesStoring {
         defaults.set(Array(takes.suffix(Self.keptTimelineLanes)), forKey: DefaultsKey.newVideoKitTakes)
     }
 
+    func rememberedLook(forTake id: UUID) -> RememberedLook? {
+        rememberedLooks.last { $0.take == id }?.look
+    }
+
+    func setRememberedLook(_ look: RememberedLook, forTake id: UUID) {
+        var entries = rememberedLooks.filter { $0.take != id }
+        if !look.isEmpty { entries.append(RememberedLookEntry(take: id, look: look)) }
+        guard let data = try? JSONEncoder().encode(Array(entries.suffix(Self.keptTimelineLanes))) else { return }
+        defaults.set(data, forKey: DefaultsKey.rememberedLooks)
+    }
+
+    /// One take's remembered look; the take edited last at the end.
+    private struct RememberedLookEntry: Codable {
+        let take: UUID
+        let look: RememberedLook
+    }
+
+    /// A list that can't be read (a newer Cue's) reads as empty: a copied look is a convenience, never worth an error.
+    private var rememberedLooks: [RememberedLookEntry] {
+        defaults.data(forKey: DefaultsKey.rememberedLooks).flatMap { try? JSONDecoder().decode([RememberedLookEntry].self, from: $0) } ?? []
+    }
+
     /// "take id=track", the take edited last at the end.
     private var timelineLanes: [String] {
         defaults.stringArray(forKey: DefaultsKey.timelineLanes) ?? []

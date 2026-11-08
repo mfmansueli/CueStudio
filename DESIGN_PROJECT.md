@@ -27,7 +27,9 @@ reproduz a pílula violeta) e as dicas (`TipCard`: a da primeira viagem e a do M
 
 **Avisos (toasts)** (`ToastView`, `ToastIcon`, `ToastService`; os mesmos no app e no editor; o iOS não tem toast nativo): uma pílula **opaca** no topo
 (`Palette.Toast`, `toastSurface(in:)`: `#2B2F48`, contorno claro de 24%, 40% com Aumentar Contraste, e sombra), para ler sobre a noite do app, o céu e um
-vídeo claro; texto 15 pt semibold em até duas linhas (Dynamic Type); o botão (**Undo**, **Settings**, **Write it**) é amarelo com texto preto. À esquerda,
+vídeo claro; texto 15 pt semibold em até duas linhas (Dynamic Type; nos tamanhos de acessibilidade, um toast com botão dá a largura toda ao
+texto, sem limite de linhas, e põe os botões embaixo, porque na linha o alemão virava "Look auf…" e "Änder/n" no SE); o botão (**Undo**, **Settings**,
+**Write it**) é amarelo com texto preto. À esquerda,
 o ícone do tipo (`ToastKind`), escolhido em cada chamada:
 - **✓ verde** (`.done`, o padrão): o que o criador fez está feito, ou já estava ("Duplicated", "Every cut already has it", todo `sayUndoable` do editor).
   Sem vibração: o toque do criador já teve a dele.
@@ -2149,13 +2151,18 @@ auditoria: `reports/editor-award-checklist.md`.
   folha onde ela cabe (`PasteLookChoice.repeated`): com um clipe escolhido, vai nesse clipe com as mesmas partes (também quando a última foi Every
   clip: um toque nunca muda clipes fora da vista sem a folha); sem clipe escolhido, só Every clip se repete. A escolha **não cabe**, e a folha
   abre de novo já com ela, quando nenhuma das partes mudaria nada no destino (o clipe de onde o look veio, um clipe que já o recebeu); nenhuma
-  parte depende do tipo de clipe (freeze frame, invertido, vídeo do Fotos, clipe curto levam as cinco). Toda colagem diz **"Look pasted · N
+  parte depende do tipo de clipe (freeze frame, invertido, vídeo do Fotos, clipe curto levam as cinco). **Uma foto sobre o vídeo** ainda não
+  tem look próprio (decisão do dono, 08/11/2026; cor e filtro em fotos ficam para uma decisão separada): com um look copiado, a barra da foto
+  mostra Paste look apagado, e tocá-lo diz "You can paste this look on video clips and freeze frames.", sem passo de desfazer nem mudança a
+  salvar; a foto e o look copiado ficam. O Copy look é só visual: efeito de voz não entra. Toda colagem diz **"Look pasted · N
   parts"** (ou "Look pasted on every clip · N parts") com **Undo** e **Change** no toast (`ToastService.secondaryAction`, Change antes do Undo,
   em `ink`). **Change** abre a folha na escolha usada ("Pick again. It replaces the paste you just made."), no clipe que recebeu a colagem, e o que
   ela cola **toma o lugar** da colagem: desfaz a colagem e cola de novo, num passo só, então um Undo volta a antes da primeira. Se outro passo veio
   depois, Change abre a folha como colagem nova. O look copiado e a última escolha ficam **com o projeto** (`TakeEdit.copiedLook`,
-  `pasteLookChoice`, `EditDocument.remember`): fora dos passos de desfazer, salvos no rascunho e na take, lidos de novo ao reabrir; edições
-  antigas abrem sem eles. Por isso copiar um look conta como mudança do projeto (o rascunho é salvo e Done grava na take). Em todos os clipes, o
+  `pasteLookChoice`, `EditDocument.remember`): fora dos passos de desfazer e **sem contar como mudança** (dono, 08/11/2026;
+  `hasUnsavedChanges` os ignora): copiar e sair não salva rascunho nem diz "Draft saved", e a take não vira editada. Ficam guardados por take,
+  fora da edição (`RememberedLook`, `EditorPreferencesStore`, as 200 takes editadas por último), e voltam ao reabrir; também vão no rascunho e
+  na take quando eles são gravados por uma mudança de verdade (colar é uma). Edições antigas abrem sem eles. Em todos os clipes, o
   look vai para os ajustes do vídeo e cada clipe perde a cópia própria das partes coladas (Filters, Adjust e Background do vídeo inteiro continuam
   valendo); num clipe, ele guarda só o que difere do vídeo.
 - **Painel da foto ou vídeo** (`MediaPanel`, dono, canvas 2 F5): um vídeo tem **Show | Part**. Show: Show as, Window ratio e Size (na janela),
@@ -2209,7 +2216,8 @@ auditoria: `reports/editor-award-checklist.md`.
   posição e margens), tipo e animação de todos os textos (não dos gráficos) e o estilo dos próximos; sem texto, abre o vídeo com o título do
   roteiro. As palavras, a posição de cada texto, os cortes, o som e os gráficos ficam. **Tocar o cartão prova o template no vídeo**
   (`tryVideoTemplate`, `TemplateTrial`, decisão do dono, 08/11/2026): ele já está na prévia (como fica de verdade, com o kit do vídeo) e uma
-  folha baixa (`TemplateTrialSheet`, metade da tela) diz o que muda e o que fica: "Caption style · Bold hook" com "Lines, timing and place stay",
+  folha baixa (`TemplateTrialSheet`, metade da tela; nos tamanhos de texto de acessibilidade ela, a do kit e a do Paste look abrem na altura
+  toda, `bigTextSheetDetents`, porque no SE mostravam uma linha da lista ou cortavam os botões) diz o que muda e o que fica: "Caption style · Bold hook" com "Lines, timing and place stay",
   "Type and motion on 3 texts · words and place stay", o "Opening text" que entra; num vídeo com kit, cada linha diz "keeps Acme's fonts and
   colors" (a família e as cores das legendas e dos textos ficam; o template troca forma, tamanho e movimento); sem kit, se as legendas têm
   cores Custom, "your Custom colors change too". O que foi ajustado à mão fica, com as chaves desmarcadas de `ManualChangesOptions` (abaixo).
@@ -3197,6 +3205,10 @@ Tudo fica neste iPhone.
   Clean up, e a música adicionada depois entra nesse nível (`TakeEdit.newMusic`, "Music added at 0:10 · 25%"). No editor do kit
   (`BrandKitEditingSection`): o resumo, **Take from this video** e Remove; **New kit from this video** já traz o Editing do vídeo. **Zoom
   ainda não entra**: guardar o gosto por zoom e criar zooms na timeline são coisas diferentes, e a segunda espera o zoom por frase.
+  **Ducking**: guardado (quanto a música baixa sob a voz e se volta nas pausas), vale para a música adicionada depois; a que já está no vídeo
+  fica como está. **Efeito de voz**: o kit guarda o Studio Voice (Enhance voice e Reduce noise), que entra na hora em que o kit é aplicado com
+  essa parte marcada (ou num vídeo novo), dito na folha e no aviso. Os **Voice effects** criativos de um clipe ou narração (Radio, Megaphone,
+  Robot, Deep voice, Chipmunk, Echo, Hall) são outra ferramenta e **não entram no kit**: pendente, decisão separada do dono.
 - **Use on new videos** (uma chave no editor do kit; um kit só: salvar um tira a marca do outro, duplicar não copia, e um kit restaurado
   depois de outro tomar o lugar volta sem ela; o cartão diz "New videos open in it"). Um vídeo aberto pela primeira vez no editor (sem edição
   salva, nem rascunho) entra com tudo o que o kit pode pôr, num passo, com "Your style is on" · Undo ("· Studio Voice changes the sound" quando

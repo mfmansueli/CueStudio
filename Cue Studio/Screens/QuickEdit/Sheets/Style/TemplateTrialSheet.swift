@@ -17,12 +17,12 @@ struct TemplateTrialSheet: View {
     @State private var isKept = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 10) {
             SheetHeader(title: trial.template.label, subtitle: String(localized: "On the video now · Apply to keep it")) {
                 dismiss()
             }
             ScrollView {
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: 6) {
                     ForEach(trial.lines) { line in row(line) }
                     ManualChangesOptions(
                         changes: trial.manual,
@@ -32,20 +32,18 @@ struct TemplateTrialSheet: View {
                 }
             }
             .scrollBounceBehavior(.basedOnSize)
+            // The toast after Apply has Undo: no line under the button, so the half-height sheet keeps room for what changes.
             PanelButton(label: String(localized: "Apply"), isPrimary: true, identifier: "edit.template.apply") {
                 isKept = true
                 viewModel.keepVideoTemplate()
                 dismiss()
             }
-            Text("One step: Undo puts it all back")
-                .font(.footnote)
-                .foregroundStyle(Palette.ink2)
         }
         .padding(.horizontal, 16)
         .padding(.top, 8)
         .padding(.bottom, 12)
         .cueSheetChrome()
-        .presentationDetents([.fraction(0.5), .large])
+        .bigTextSheetDetents(.fraction(0.5))
         .presentationDragIndicator(.visible)
         .onDisappear { if !isKept { viewModel.dropVideoTemplate() } }
         .accessibilityIdentifier("edit.template.sheet")
@@ -65,7 +63,7 @@ struct TemplateTrialSheet: View {
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(.horizontal, 12)
-        .padding(.vertical, 10)
+        .padding(.vertical, 8)
         .editorCard(.plain)
         .accessibilityElement(children: .combine)
         .accessibilityIdentifier("edit.template.change.\(line.id)")

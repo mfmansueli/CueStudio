@@ -33,7 +33,8 @@ final class EditDocument {
         self.edit = edit
     }
 
-    var hasUnsavedChanges: Bool { edit != original }
+    /// What Copy and Paste look remember (`RememberedLook`) isn't a change: copying alone saves nothing and asks for no draft.
+    var hasUnsavedChanges: Bool { edit.forgettingRememberedLook != original.forgettingRememberedLook }
     var canUndo: Bool { history.canUndo }
     var canRedo: Bool { history.canRedo }
 
@@ -48,7 +49,7 @@ final class EditDocument {
     @discardableResult
     func open(sourceDuration duration: TimeInterval, draft: QuickEditDraft?) -> Bool {
         original.timeline = original.timeline.fitted(toSourceDuration: duration)
-        guard let draft, draft.edit != original else {
+        guard let draft, draft.edit.forgettingRememberedLook != original.forgettingRememberedLook else {
             edit = original
             return false
         }
@@ -121,8 +122,9 @@ final class EditDocument {
     }
 
     /// Keeps what the editor remembers in the project for the creator, which isn't a change of the video: the look Copy look took and
-    /// how Paste look last pasted it (`TakeEdit.copiedLook`, `pasteLookChoice`). Never an undo step, and Undo leaves it; it is saved
-    /// with the draft and on the take like the rest of the edit.
+    /// how Paste look last pasted it (`TakeEdit.copiedLook`, `pasteLookChoice`). Never an undo step, and Undo leaves it; never an
+    /// unsaved change either (`hasUnsavedChanges`, owner 08/11/2026): it goes with a draft or the take when they're written for a
+    /// real change, and is kept for the take on its own (`RememberedLook`, `EditorPreferencesStoring`).
     func remember(_ update: (inout TakeEdit) -> Void) {
         var changed = edit
         update(&changed)

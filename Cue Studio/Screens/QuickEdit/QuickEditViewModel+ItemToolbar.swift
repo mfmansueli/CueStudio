@@ -223,6 +223,12 @@ extension QuickEditViewModel {
             EditorToolbarItem(id: "keyframe", label: String(localized: "Keyframe"), systemImage: "diamond", action: .toggleKeyframe),
             EditorToolbarItem(id: "duplicate", label: String(localized: "Duplicate"), systemImage: "plus.square.on.square", action: .duplicateMedia),
         ]
+        // With a look copied, a photo shows Paste look dimmed: tapped, it says where a look goes (owner, 08/11/2026).
+        if media.kind == .photo, look.canPasteLook {
+            var paste = item(.pasteLook)
+            paste.style = .dimmed
+            items.append(paste)
+        }
         return items + sharedMediaItems
     }
 

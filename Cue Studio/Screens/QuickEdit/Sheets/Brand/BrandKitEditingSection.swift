@@ -37,7 +37,7 @@ struct BrandKitEditingSection: View {
                 .foregroundStyle(Palette.ink)
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibilityElement(children: .combine)
-                HStack(spacing: 8) {
+                ReflowStack(spacing: 8) {
                     takeFromVideo
                     PanelButton(label: String(localized: "Remove"), systemImage: "xmark", identifier: "edit.brand.noEditing") { kit.editing = nil }
                 }

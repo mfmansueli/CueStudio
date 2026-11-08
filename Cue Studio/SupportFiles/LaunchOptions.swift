@@ -32,7 +32,8 @@ import Foundation
 /// - `-uiTestDemoEdit`: "3 morning habits" Take 3 opens in the editor as the v10 design's demo
 ///   (`SampleEdit.demo`: two clips, captions, texts, music with a beat, a B-roll window and a voice-over, their files made by
 ///   `SampleEditMedia`); with `-uiTestDemoTranscript` its words were heard too, for Edit by text. `-uiTestDemoSplit` opens it with
-///   a split screen instead of the window (`SampleEdit.demoSplit`).
+///   a split screen instead of the window (`SampleEdit.demoSplit`). `-uiTestHandStyled`: the demo's title has a color set by
+///   hand and its first caption line is emphasized, so a kit or a template has hand-made changes to keep (`ManualChangesOptions`).
 /// - `-uiTestImportedFont <Name>`: an imported family called `Name` (five letters, Anton renamed; `DebugFontSeed`), for My fonts.
 /// - `-uiTestSeedLibrary`: the media library starts with a logo and a photo (`DebugLibrarySeed`); the library, brand kits and
 ///   imported fonts live in a folder of the test's own, kept between launches with `-uiTestAssetRoot <name>`.
@@ -359,6 +360,14 @@ struct LaunchOptions {
             takes[index].edit = arguments.contains("-uiTestDemoSplit")
                 ? SampleEdit.demoSplit(aspect: takes[index].aspect, heard: heard)
                 : SampleEdit.demo(aspect: takes[index].aspect, heard: heard)
+            if arguments.contains("-uiTestHandStyled"), var edit = takes[index].edit {
+                if let title = edit.texts.firstIndex(where: { $0.graphic == nil }) {
+                    edit.texts[title].color = .yellow
+                    edit.texts[title].customized.insert(.color)
+                }
+                if !edit.captions.isEmpty { edit.captions[0].lineStyle = CaptionLineStyle(isEmphasized: true, size: .bigger) }
+                takes[index].edit = edit
+            }
             SampleEditMedia.writeMissing()
         }
         return takes
