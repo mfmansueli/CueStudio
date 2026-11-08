@@ -28,6 +28,8 @@ extension FramePlacement {
     /// This placement of `segment`'s recording (at `url`) with how the zooms Cue makes grow on the clip (`ZoomAnchor`), from the
     /// recording's face, as the compositor has it (`EditFraming.zoomAnchor(of:)`).
     nonisolated func anchored(for segment: EditSegment, recording url: URL, in edit: TakeEdit) -> FramePlacement {
+        // Only Cue's zooms grow around an anchor: without one on the clip, nothing to read (the creator's zoom grows from the middle).
+        guard segment.punchesInOnCut || !edit.phraseZooms.isEmpty else { return self }
         var placement = self
         placement.zoomAnchor = ZoomAnchor.make(
             placement: self, face: MotionAnalysisStore.faceFocus(forRecording: url),

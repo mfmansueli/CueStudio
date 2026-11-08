@@ -188,7 +188,10 @@ extension EditorRecipeUITests {
     func punchInOnCuts() -> String {
         scrub(by: 60)
         guard tool("zoom") else { return "GAP: no Zoom" }
-        guard tapButton("edit.zoom.cuts") else { return punchIn(percent: nil, scrubbing: 120) }
+        let cuts = element("edit.zoom.cuts")
+        guard cuts.exists(within: 3), onScreen(cuts) else { return punchIn(percent: nil, scrubbing: 120) }
+        cuts.tap()
+        taps += 1
         let toast = toastText(within: 3)
         let strength = element("edit.zoom.cutsStrength.medium").exists(within: 3)
         tapButton("edit.zoom.cutsStrength.subtle")

@@ -247,7 +247,8 @@ final class CreatorWorkflowUITests: XCTestCase {
         // One switch for the whole video, at the foot of the clip's Zoom (R1.3: it took a Punch in and a Paste look per clip).
         flow.tap(EditorApp.mainTrack(app, at: 0.15))
         flow.tool("zoom")
-        let cuts = app.buttons["edit.zoom.cuts"]
+        // A row with the toggle trait: not a button nor a switch to XCUITest, found by its identifier.
+        let cuts = flow.element("edit.zoom.cuts")
         flow.reveal(cuts, "Punch in on cuts")
         flow.tap(cuts, "Punch in on cuts")
         XCTAssertTrue(flow.toastSays("Punch in on"), "No toast after Punch in on cuts")
