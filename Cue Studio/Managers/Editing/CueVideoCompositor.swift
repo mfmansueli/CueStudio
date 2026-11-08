@@ -163,8 +163,10 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
             ),
             faces: faces
         )
-        if let zoom = instruction.zoom {
-            image = FramePipeline.zoomed(image, by: CGFloat(zoom.scale(at: time)))
+        let phrase = PhraseZoomWindow.scale(of: instruction.phraseZooms, at: time)
+        if instruction.zoom != nil || phrase > 1 {
+            let zoom = PhraseZoomWindow.combined(instruction.zoom?.scale(at: time) ?? 1, phrase)
+            image = FramePipeline.zoomed(image, by: CGFloat(zoom))
         }
         if let state = instruction.animation?.state(at: time) {
             image = FramePipeline.animated(image, state)

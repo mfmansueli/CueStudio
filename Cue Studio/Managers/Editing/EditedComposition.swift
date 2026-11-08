@@ -140,6 +140,7 @@ nonisolated struct EditedComposition: @unchecked Sendable {
 
         let windows = plan.transitions
         let zooms = plan.zooms
+        let phraseZooms = plan.phraseZooms
         let animations = plan.animations
         var dissolves = windows.filter { $0.transition.showsBothSides }
         var blendTrack = dissolves.isEmpty ? nil : composition.addMutableTrack(withMediaType: .video, preferredTrackID: kCMPersistentTrackID_Invalid)
@@ -199,7 +200,7 @@ nonisolated struct EditedComposition: @unchecked Sendable {
             let mediaTrackIDs = stretch.showsMedia
                 ? mediaTracks.map(\.trackID).filter { id in showing.contains { $0.trackID == id } }
                 : []
-            return CompositionInstruction(
+            let instruction = CompositionInstruction(
                 timeRange: stretch.range,
                 trackID: video.trackID,
                 blendTrackID: stretch.dissolve == nil ? nil : blendTrack?.trackID,
@@ -222,6 +223,8 @@ nonisolated struct EditedComposition: @unchecked Sendable {
                 fades: fadeWindows,
                 timeOrigin: leadIn
             )
+            instruction.phraseZooms = phraseZooms.filter { $0.span.overlaps(stretchSpan) || $0.span.contains(stretchSpan.start) }
+            return instruction
         }
         let configuration = AVVideoComposition.Configuration(
             customVideoCompositorClass: CueVideoCompositor.self,

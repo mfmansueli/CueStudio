@@ -94,6 +94,11 @@ struct CaptionLineCard: View {
             if let style = line.lineStyle, style.size != .regular {
                 Text(style.size.label)
             }
+            // A phrase zoom over its words (Select › Zoom).
+            if viewModel.captions.phraseZoom(onLine: cueID) != nil {
+                Image(systemName: "plus.magnifyingglass")
+                    .accessibilityLabel(Text("Zoom on the phrase"))
+            }
             // A word Suggest emphasis marked: the list shows where to look, the line's More takes it away.
             if hasSuggestion {
                 Label("Suggested", systemImage: "sparkles")

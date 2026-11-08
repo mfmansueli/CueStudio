@@ -25,12 +25,16 @@ extension FramePlacement {
         return placement
     }
 
-    /// As `segment` (starting at `start`, edited seconds) shows at edited `time`: with its zoom and its Animation then.
-    nonisolated func moment(of segment: EditSegment, startingAt start: TimeInterval, at time: TimeInterval) -> FramePlacement {
+    /// As `segment` (starting at `start`, edited seconds) shows at edited `time`: with its zoom, the phrase zooms (`phrases`, on
+    /// the same edit) and its Animation then.
+    nonisolated func moment(
+        of segment: EditSegment, startingAt start: TimeInterval, at time: TimeInterval, phrases: [PhraseZoomWindow] = []
+    ) -> FramePlacement {
         var placement = self
-        placement.zoom = segment.zoom.map {
+        let section = segment.zoom.map {
             ZoomWindow(zoom: $0, start: start, duration: segment.duration, amount: segment.zoomAmount).scale(at: time)
         } ?? 1
+        placement.zoom = PhraseZoomWindow.combined(section, PhraseZoomWindow.scale(of: phrases, at: time))
         if segment.animates {
             let window = ClipAnimationWindow(
                 start: start, duration: segment.duration, entrance: segment.animationIn, exit: segment.animationOut

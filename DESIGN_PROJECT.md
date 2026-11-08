@@ -2060,7 +2060,16 @@ auditoria: `reports/editor-award-checklist.md`.
   linha com lugar próprio move só o trecho (as linhas do mesmo lugar; o rótulo diz "This stretch" ou "This line"; uma escolhida no Select move as
   escolhidas, "Selected lines"), grudando no alto, no meio e embaixo, e não na divisória; arrastar outra move todas as legendas menos essas, e o
   toast diz "N lines keep their own place" com **Move them too**. Linhas no lugar próprio formam blocos à parte (`CaptionBlocking` já separa por
-  estilo). ‹ › (**Move earlier / Move later**, 0,1 s
+  estilo). Menu **Zoom** (zoom por frase, E4 07/11/2026; `PhraseZoom`, `PhraseZoomWindow`, `CaptionsViewModel+PhraseZoom`): **No zoom**,
+  **Subtle** 1,1×, **Medium** 1,18× ou **Strong** 1,25× nos segundos da gravação das linhas escolhidas, linhas ditas em sequência (menos de 0,35 s
+  entre elas) como uma frase só; um passo de desfazer, a agulha volta 0,3 s antes para ver entrar; a linha mostra uma lupa no cabeçalho. Depois de
+  criado, é independente: corrigir, dividir ou apagar a linha não mexe nele; não divide o clipe e soma ao Zoom do clipe. Limites (decididos
+  08/11/2026, sem o dono): no mínimo 0,8 s (uma linha curta segura isso desde o começo), entra e sai em 0,2 s, no máximo 1,25× para um take em
+  1080p continuar nítido, e com o Zoom do clipe nunca passa de 1,45×; vai para o meio do quadro, e para o rosto só onde o criador ligou Follow face
+  (o recorte já segue o rosto); nunca liga o Follow face sozinho; vale para o que toca no vídeo principal (o take ou um clipe importado, preso à
+  gravação dele), não para fotos e vídeos por cima nem para o outro lado da tela dividida. Um corte antes dele o mantém nas palavras; com as
+  palavras cortadas, some. O compositor e a prévia das áreas de desfoque e do tracking contam o zoom. Não tem faixa própria na linha do tempo
+  (pendente). ‹ › (**Move earlier / Move later**, 0,1 s
   por toque, todas juntas, até onde a que tem menos espaço pode ir: dentro do seu clipe e sem encostar numa linha não escolhida; "The lines
   can’t move further") e a lixeira ("N lines deleted" · Undo). Cada ação
   é um passo de desfazer (toques seguidos de mover são um). O estilo fica na linha (`CaptionCue.lineStyle`, `CaptionLineStyle`; linhas antigas

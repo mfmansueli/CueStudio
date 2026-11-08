@@ -32,6 +32,7 @@ enum EditFixtures {
         edit.pauseGap = .tight
         edit.newMusic = MusicDefaults(volume: 0.25, duck: MusicDuck(depth: 18, pauses: .comesBack))
         edit.suggestsEmphasis = true
+        edit.phraseZooms = [PhraseZoom(span: TimeSpan(start: 1, end: 2), strength: .strong)]
         edit.cleanUpHearing = CleanUpHearing(wordsLanguage: "en")
         edit.volume = 0.5
         edit.enhancesVoice = false

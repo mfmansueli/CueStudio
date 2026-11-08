@@ -49,6 +49,8 @@ final class CompositionInstruction: NSObject, AVVideoCompositionInstructionProto
     let dissolve: TransitionWindow?
     /// The slow zoom of the section this stretch plays, if it has one.
     let zoom: ZoomWindow?
+    /// Every phrase zoom in the edit (`PhraseZoom`), on top of the section's.
+    var phraseZooms: [PhraseZoomWindow] = []
     /// The Animation of the clip this stretch plays, and of the other side's in a transition.
     let animation: ClipAnimationWindow?
     let blendAnimation: ClipAnimationWindow?

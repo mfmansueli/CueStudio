@@ -8,7 +8,8 @@ import SwiftUI
 /// Captions › Select, around the list of lines (as CapCut's batch edit keeps them at hand while the list scrolls; the panel
 /// grows to the styling panels' height meanwhile): above it, how many lines are picked, Select all and Done (`.header`, in
 /// place of the switch and chips); under it, what changes them together (`.actions`): Emphasize line (every word in the
-/// emphasis color and size), Size, Place (their own place, top, middle or bottom, or with every caption), a tenth of a second
+/// emphasis color and size), Size, Place (their own place, top, middle or bottom, or with every caption), Zoom (on the phrase,
+/// `PhraseZoom`), a tenth of a second
 /// earlier or later, and Delete.
 struct CaptionPickTools: View {
     enum Part {
@@ -133,6 +134,26 @@ struct CaptionPickTools: View {
             .accessibilityValue(Text(viewModel.captions.pickedCaptionPlace?.label ?? ""))
             .accessibilityIdentifier("edit.captionPicks.place")
         }
+        Menu {
+            Picker(String(localized: "Zoom"), selection: Binding(
+                get: { viewModel.captions.pickedPhraseZoom },
+                set: { viewModel.captions.setPickedCaptionsZoom($0) }
+            )) {
+                Text("No zoom").tag(PhraseZoom.Strength?.none)
+                ForEach(PhraseZoom.Strength.allCases) { strength in
+                    Text(strength.label).tag(Optional(strength))
+                }
+            }
+        } label: {
+            chipLabel(
+                viewModel.captions.pickedPhraseZoom?.label ?? String(localized: "Zoom"), systemImage: "plus.magnifyingglass",
+                isOn: viewModel.captions.pickedPhraseZoom != nil
+            )
+        }
+        .accessibilityLabel(Text("Zoom"))
+        .accessibilityValue(Text(viewModel.captions.pickedPhraseZoom?.label ?? String(localized: "No zoom")))
+        .accessibilityHint(Text("Zoom on the phrase"))
+        .accessibilityIdentifier("edit.captionPicks.zoom")
     }
 
     /// "Place" while the picked lines go with every caption or differ; else where they are.

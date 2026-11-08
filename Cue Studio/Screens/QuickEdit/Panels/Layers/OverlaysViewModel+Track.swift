@@ -52,7 +52,8 @@ extension OverlaysViewModel {
             let sourceAt = segment.sourceStart + segment.sourceOffset(forEdited: playhead - clipStart)
             // Where the item sits on the clip as it shows now, and where the object shows at each moment: the clip's zoom and
             // Animation move the picture under it.
-            let start = placement.moment(of: segment, startingAt: clipStart, at: playhead).recordingPoint(for: center, at: sourceAt)
+            let phrases = PhraseZoomWindow.windows(of: edit.phraseZooms, in: timeline)
+            let start = placement.moment(of: segment, startingAt: clipStart, at: playhead, phrases: phrases).recordingPoint(for: center, at: sourceAt)
             let size = placement.recordingSize(forVideoWidth: Self.trackedBoxSide)
             let box = NormalizedBox(center: start, width: size.width, height: size.height)
             let report: @Sendable (Double, Bool) -> Void = { done, forward in
@@ -77,7 +78,8 @@ extension OverlaysViewModel {
                     let edited = clipStart + segment.editedOffset(forSource: sample.time - segment.sourceStart)
                     return TrackedMotion.Point(
                         time: edited - span.start,
-                        center: placement.moment(of: segment, startingAt: clipStart, at: edited).videoPoint(for: sample.box.center, at: sample.time)
+                        center: placement.moment(of: segment, startingAt: clipStart, at: edited, phrases: phrases)
+                            .videoPoint(for: sample.box.center, at: sample.time)
                     )
                 }
                 self?.trackingFinished(

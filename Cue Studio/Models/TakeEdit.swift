@@ -106,6 +106,8 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     /// Suggest emphasis (Captions, by a line's words; owner, 08/11/2026): one word at most in a line of three or more, where the
     /// line has a clear one (`CaptionEmphasisSuggester`); the marks it put are `CaptionCue.suggestedEmphasis`. Off by default.
     var suggestsEmphasis = false
+    /// Zooms on phrases, started from caption lines and then on their own (`PhraseZoom`).
+    var phraseZooms: [PhraseZoom] = []
     /// New projects use Cue; decoding an absent key preserves the old renderer and appearance.
     var captionCollection: CaptionSettings? = CaptionSettings()
     /// How captions look in edits made before type presets; `captionLook` replaces it once set.
@@ -429,7 +431,7 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         case snapsToBeats, lockedLayers
         case saturation, highlights, shadows, sharpness, filterAmount, cropFit, pauseThreshold, pauseGap, cleanUpHearing
         case vibrance, tint, autoCorrection, autoAmount, lookVersion, skin, faceFollow
-        case aspect, cropOffset, showsCaptions, suggestsEmphasis, captionStyle, captionLook, captionPreset, captionPosition, captions
+        case aspect, cropOffset, showsCaptions, suggestsEmphasis, phraseZooms, captionStyle, captionLook, captionPreset, captionPosition, captions
         case captionTranscript, sourceTranscripts, captionLanguage, captionAnimation, captionTranslations, captionDisplay
         case captionCollection
         case texts, media, voiceOvers, creatorStyle, textLook, textPreset, cover
@@ -503,6 +505,7 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         cropOffset = try container.decodeIfPresent(Double.self, forKey: .cropOffset) ?? 0
         showsCaptions = try container.decodeIfPresent(Bool.self, forKey: .showsCaptions) ?? false
         suggestsEmphasis = (try? container.decodeIfPresent(Bool.self, forKey: .suggestsEmphasis)) ?? false
+        phraseZooms = (try? container.decodeIfPresent([PhraseZoom].self, forKey: .phraseZooms)) ?? []
         captionCollection = container.decodeLenient(CaptionSettings.self, forKey: .captionCollection, report: report)
         captionStyle = try container.decodeIfPresent(CaptionStyle.self, forKey: .captionStyle) ?? .bold
         captionLook = container.decodeLenient(TextLook.self, forKey: .captionLook, report: report)
