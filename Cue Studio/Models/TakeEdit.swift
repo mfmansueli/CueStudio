@@ -192,7 +192,13 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     var shownCaptions: (main: [CaptionCue], second: [CaptionCue]) {
         let translation = captionDisplay.language.flatMap { language in captionTranslations.first { $0.language == language } }
         guard let translation else { return (editedCaptions, []) }
-        let translated = editedInstances(of: translation.lines.map(\.cue)).map(\.line)
+        // A translated line goes where its original goes, when the original has its own place (`CaptionLineStyle.y`).
+        let places = Dictionary(captions.compactMap { line in line.lineStyle?.y.map { (line.id, $0) } }) { first, _ in first }
+        let translated = editedInstances(of: translation.lines.map { line in
+            var cue = line.cue
+            if let y = line.cueIDs.lazy.compactMap({ places[$0] }).first { cue.lineStyle = CaptionLineStyle(y: y) }
+            return cue
+        }).map(\.line)
         switch captionDisplay {
         case .original: return (editedCaptions, [])
         case .translation: return (translated, [])

@@ -8,7 +8,8 @@ import SwiftUI
 /// Captions › Select, around the list of lines (as CapCut's batch edit keeps them at hand while the list scrolls; the panel
 /// grows to the styling panels' height meanwhile): above it, how many lines are picked, Select all and Done (`.header`, in
 /// place of the switch and chips); under it, what changes them together (`.actions`): Emphasize line (every word in the
-/// emphasis color and size), Size, a tenth of a second earlier or later, and Delete.
+/// emphasis color and size), Size, Place (their own place, top, middle or bottom, or with every caption), a tenth of a second
+/// earlier or later, and Delete.
 struct CaptionPickTools: View {
     enum Part {
         case header, actions
@@ -116,6 +117,29 @@ struct CaptionPickTools: View {
             .accessibilityLabel(Text("Size"))
             .accessibilityValue(Text(viewModel.captions.pickedCaptionSize?.label ?? ""))
             .accessibilityIdentifier("edit.captionPicks.size")
+            Menu {
+                Picker(String(localized: "Place"), selection: Binding(
+                    get: { viewModel.captions.pickedCaptionPlace },
+                    set: { if let place = $0 { viewModel.captions.setPickedCaptionsPlace(place) } }
+                )) {
+                    ForEach(CaptionPlace.allCases) { place in
+                        Text(place.label).tag(Optional(place))
+                    }
+                }
+            } label: {
+                chipLabel(placeChip, systemImage: "arrow.up.and.down", isOn: false)
+            }
+            .accessibilityLabel(Text("Place"))
+            .accessibilityValue(Text(viewModel.captions.pickedCaptionPlace?.label ?? ""))
+            .accessibilityIdentifier("edit.captionPicks.place")
+        }
+    }
+
+    /// "Place" while the picked lines go with every caption or differ; else where they are.
+    private var placeChip: String {
+        switch viewModel.captions.pickedCaptionPlace {
+        case .own(let position): position.label
+        case .withAll, nil: String(localized: "Place")
         }
     }
 

@@ -2053,7 +2053,14 @@ auditoria: `reports/editor-award-checklist.md`.
   comparar: no topo da lista elas sumiam ao rolar e as linhas mal cabiam): chip **Emphasize line** (em português **Enfatizar linha**; dono, canvas 2
   §7.1: o nome diz a ação e o alcance, e "Highlight" fica só com a palavra sendo dita): marca todas as palavras das linhas para ênfase, na cor e no
   tamanho de ênfase do estilo (§50); ligado em `accText` sobre `accSoft`; o VoiceOver ouve o que faz), menu **Size** (Regular, Bigger 1,25×, Biggest 1,5×, nunca
-  menor, para não cair abaixo do tamanho em que as cores foram medidas; dentro do limite da coleção), ‹ › (**Move earlier / Move later**, 0,1 s
+  menor, para não cair abaixo do tamanho em que as cores foram medidas; dentro do limite da coleção), menu **Place** (decisão D do E4, 07/11/2026;
+  `CaptionsViewModel+Places`, `CaptionLineStyle.y`): **With all captions**, **Top**, **Middle** ou **Bottom** põe as linhas escolhidas num lugar
+  só delas, um passo de desfazer, e voltar com as outras tira o lugar próprio (o reset local). Um trecho no lugar próprio vence a divisória da tela
+  dividida, e a tradução vai junto (sozinha no lugar do original; bilíngue logo abaixo dele, ou acima na metade de baixo). Na prévia, arrastar uma
+  linha com lugar próprio move só o trecho (as linhas do mesmo lugar; o rótulo diz "This stretch" ou "This line"; uma escolhida no Select move as
+  escolhidas, "Selected lines"), grudando no alto, no meio e embaixo, e não na divisória; arrastar outra move todas as legendas menos essas, e o
+  toast diz "N lines keep their own place" com **Move them too**. Linhas no lugar próprio formam blocos à parte (`CaptionBlocking` já separa por
+  estilo). ‹ › (**Move earlier / Move later**, 0,1 s
   por toque, todas juntas, até onde a que tem menos espaço pode ir: dentro do seu clipe e sem encostar numa linha não escolhida; "The lines
   can’t move further") e a lixeira ("N lines deleted" · Undo). Cada ação
   é um passo de desfazer (toques seguidos de mover são um). O estilo fica na linha (`CaptionCue.lineStyle`, `CaptionLineStyle`; linhas antigas

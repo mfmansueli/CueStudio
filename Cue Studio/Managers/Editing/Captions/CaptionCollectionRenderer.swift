@@ -137,7 +137,9 @@ nonisolated enum CaptionCollectionRenderer {
         case .trailing where leftmost <= rightmost: x = rightmost
         default: break
         }
-        let y = min(max(CGFloat(requested.clamped.y) * frame.height, safe.minY + size.height / 2), safe.maxY - size.height / 2)
+        // A line in its own place (`CaptionLineStyle.y`) goes there, the same side to side.
+        let height = cue.lineStyle?.y ?? requested.clamped.y
+        let y = min(max(CGFloat(height) * frame.height, safe.minY + size.height / 2), safe.maxY - size.height / 2)
         let origin = CGPoint(x: (x - size.width / 2).rounded(), y: (frame.height - y - size.height / 2).rounded())
         return Placement(text: text, size: size, origin: origin, widthFraction: widthFraction)
     }

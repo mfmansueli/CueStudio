@@ -38,17 +38,22 @@ nonisolated struct CaptionLineStyle: Codable, Hashable, Sendable {
     /// The whole line in the highlight color (or boxed, where the style boxes the word said), instead of word by word.
     var isEmphasized = false
     var size: Size = .regular
+    /// The line's own height on the frame (unit, from the top; the caption's middle), apart from every other caption (E4 D, owner
+    /// 07/11/2026): a stretch of lines in its own place. It beats the split screen's seam, and the line's translation goes with it.
+    /// Nil: where every caption goes.
+    var y: Double?
 
     /// A style that changes nothing reads as none.
-    var isPlain: Bool { !isEmphasized && size == .regular }
+    var isPlain: Bool { !isEmphasized && size == .regular && y == nil }
 
     private enum CodingKeys: String, CodingKey {
-        case isEmphasized, size
+        case isEmphasized, size, y
     }
 
-    init(isEmphasized: Bool = false, size: Size = .regular) {
+    init(isEmphasized: Bool = false, size: Size = .regular, y: Double? = nil) {
         self.isEmphasized = isEmphasized
         self.size = size
+        self.y = y.map { min(max($0, 0.1), 0.9) }
     }
 
     /// A size this version doesn't know reads as regular, never as a broken line.
@@ -56,5 +61,6 @@ nonisolated struct CaptionLineStyle: Codable, Hashable, Sendable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         isEmphasized = (try? container.decodeIfPresent(Bool.self, forKey: .isEmphasized)) ?? false
         size = (try? container.decodeIfPresent(Size.self, forKey: .size)) ?? .regular
+        y = (try? container.decodeIfPresent(Double.self, forKey: .y))?.flatMap { $0.isFinite ? min(max($0, 0.1), 0.9) : nil }
     }
 }

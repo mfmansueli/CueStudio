@@ -386,7 +386,7 @@ struct OverlayEditingLayer: View {
     private func captionHandle(_ id: UUID, frame: CGRect) -> some View {
         let isSelected = viewModel.selection == .caption(id)
         let draggedY: Double? = if case .caption(id, let y) = drag { y } else { nil }
-        let offset = draggedY.map { CGFloat($0 - viewModel.captions.captionY) * size.height } ?? 0
+        let offset = draggedY.map { CGFloat($0 - viewModel.captions.captionY(of: id)) * size.height } ?? 0
         return ZStack {
             Rectangle()
                 .fill(Color.clear)
@@ -400,20 +400,23 @@ struct OverlayEditingLayer: View {
                     .frame(width: frame.width + 8, height: frame.height + 8)
                     .allowsHitTesting(false)
             }
-            if draggedY != nil { captionScopeLabel(above: frame.midY + offset > size.height * 0.3, captionHeight: frame.height) }
+            if draggedY != nil {
+                captionScopeLabel(viewModel.captions.captionDragScope(id), above: frame.midY + offset > size.height * 0.3, captionHeight: frame.height)
+            }
         }
         .position(x: frame.midX, y: frame.midY + offset)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text("Caption"))
-        .accessibilityHint(Text("Drag up or down to move every caption"))
+        .accessibilityHint(viewModel.captions.captionDragLines(id) == nil
+            ? Text("Drag up or down to move every caption") : Text("Drag up or down to move these lines"))
         .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : .isButton)
         .accessibilityIdentifier("edit.captionHandle")
     }
 
-    /// While a caption moves: "All captions", on the side of it with room, so the creator knows what lands before letting go
-    /// (the place is the captions' layout, one for the whole video, DESIGN_PROJECT §50).
-    private func captionScopeLabel(above: Bool, captionHeight: CGFloat) -> some View {
-        Label("All captions", systemImage: "arrow.up.and.down")
+    /// While a caption moves: what moves ("All captions", or "This stretch", "This line", "Selected lines" for lines in their own
+    /// place), on the side of it with room, so the creator knows what lands before letting go (DESIGN_PROJECT §50).
+    private func captionScopeLabel(_ scope: String, above: Bool, captionHeight: CGFloat) -> some View {
+        Label(scope, systemImage: "arrow.up.and.down")
             .font(.footnote.weight(.semibold))
             .foregroundStyle(Palette.ink)
             .lineLimit(1)
@@ -433,16 +436,18 @@ struct OverlayEditingLayer: View {
                     viewModel.player.pause()
                     if viewModel.selection != .caption(id) { viewModel.selection = .caption(id) }
                 }
+                // A stretch in its own place beats the seam: it sticks only to top, middle and bottom.
+                let ownLines = viewModel.captions.captionDragLines(id) != nil
                 let placed = CaptionsViewModel.snappedCaption(
-                    viewModel.captions.captionY + Double(value.translation.height / max(1, size.height)),
-                    seam: viewModel.captions.splitSeamAtPlayhead
+                    viewModel.captions.captionY(of: id) + Double(value.translation.height / max(1, size.height)),
+                    seam: ownLines ? nil : viewModel.captions.splitSeamAtPlayhead
                 )
                 if placed.stop != nil, placed.y != draggedCaptionY { Haptics.snap() }
                 guides = (false, placed.stop == 0.5)
                 drag = .caption(id, y: placed.y)
             }
             .onEnded { value in
-                viewModel.captions.moveCaptions(toY: viewModel.captions.captionY + Double(value.translation.height / max(1, size.height)))
+                viewModel.captions.moveCaption(id, toY: viewModel.captions.captionY(of: id) + Double(value.translation.height / max(1, size.height)))
                 endDrag()
             }
     }
