@@ -11,8 +11,9 @@ import Foundation
 /// - at least `minimumDuration`, so a short line doesn't jolt: a shorter phrase holds that long from its start;
 /// - eases in and out over `ramp`, and at most 1.25× (`Strength.strong`), so a 1080p take stays sharp; with the clip's zoom,
 ///   never past `maximumTotal`;
-/// - toward the middle of the frame, and toward the face only where the creator turned Follow face on (its crop already follows
-///   the face); never turns Follow face on by itself;
+/// - toward the face when the recording has one face clearly in view, never cutting the head, never past what the recording's
+///   pixels allow (`ZoomAnchor`); else from the middle of the frame (also under Follow face, whose crop already follows the
+///   face); never turns Follow face on by itself;
 /// - on whatever plays in the main video then, the take or an imported clip (pinned to that recording); photos and videos laid over
 ///   it, and the split screen's other side, aren't zoomed.
 nonisolated struct PhraseZoom: Codable, Hashable, Identifiable, Sendable {

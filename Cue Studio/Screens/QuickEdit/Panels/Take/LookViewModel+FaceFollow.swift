@@ -60,7 +60,19 @@ extension LookViewModel {
         }
         guard edit.faceFollow != nil else { return nil }
         if let pending = MotionAnalysisNote.text(for: motionAnalysisStatus, purpose: .face) { return pending }
-        return takeMotionAnalysis.flatMap(FaceFollowLimit.of)?.note
+        return playedFaceFollowLimit?.note
+    }
+
+    /// What Follow face can't promise over every recording the edit plays, the take's and each imported one's (a horizontal video with
+    /// two people in a montage says so: plan §19): more than one face anywhere first, then a face lost in part of the video (or in a
+    /// whole recording, when another has one), then nobody at all.
+    var playedFaceFollowLimit: FaceFollowLimit? {
+        let analyses = playedRecordingURLs.compactMap { MotionAnalysisStore.complete(forRecording: $0) }
+        let limits = analyses.map(FaceFollowLimit.of)
+        if limits.contains(.severalFaces) { return .severalFaces }
+        if limits.contains(.partlyFound) { return .partlyFound }
+        guard limits.contains(.noFace) else { return nil }
+        return limits.allSatisfy { $0 == .noFace } ? .noFace : .partlyFound
     }
 
     /// The formats that give a Fill crop room to follow a face in a recording of `recordingAspect` (width over height): every one but

@@ -192,7 +192,7 @@ final class CreatorWorkflowUITests: XCTestCase {
 
     // MARK: - 3. Montage
 
-    /// Split later in the take, copy the clip, see the clips in order, hold a frame, and a Zoom on every cut.
+    /// Split later in the take, copy the clip, see the clips in order, hold a frame, a Zoom on every cut, and Punch in on cuts.
     func testMontageSplitDuplicateReorderFreezeAndATransitionOnEveryCut() {
         let app = EditorApp.open(demo: true)
         let flow = CreatorWorkflow("montage", app: app)
@@ -241,6 +241,19 @@ final class CreatorWorkflowUITests: XCTestCase {
         flow.tap(everyCut, "Use on every cut")
         XCTAssertTrue(flow.toastSays("Zoom on all"), "No toast after Use on every cut")
         flow.tap(app.buttons["edit.panel.apply"], "✓ on the transition")
+        flow.backToMainTools()
+
+        flow.step("A clip › Zoom › Punch in on cuts")
+        // One switch for the whole video, at the foot of the clip's Zoom (R1.3: it took a Punch in and a Paste look per clip).
+        flow.tap(EditorApp.mainTrack(app, at: 0.15))
+        flow.tool("zoom")
+        // A row with the toggle trait: not a button nor a switch to XCUITest, found by its identifier.
+        let cuts = flow.element("edit.zoom.cuts")
+        flow.reveal(cuts, "Punch in on cuts")
+        flow.tap(cuts, "Punch in on cuts")
+        XCTAssertTrue(flow.toastSays("Punch in on"), "No toast after Punch in on cuts")
+        XCTAssertTrue(flow.element("edit.zoom.cutsStrength.medium").exists, "No strength once Punch in on cuts is on")
+        flow.tap(app.buttons["edit.panel.apply"], "✓ on Zoom")
         flow.backToMainTools()
         flow.report()
     }

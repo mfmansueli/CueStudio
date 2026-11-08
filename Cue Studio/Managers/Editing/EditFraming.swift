@@ -35,6 +35,7 @@ nonisolated struct EditFraming {
     private let hasBehind: Bool
     private var follows: [Shown: FaceFollowPath?] = [:]
     private var steadyPaths: [String: StabilizationPath?] = [:]
+    private var faces: [UUID?: FaceZoomFocus?] = [:]
 
     init(edit: TakeEdit, take: URL, takeShape: Shape, shapes: [UUID: Shape], analyses: [UUID?: MotionAnalysis], cacheKey: String) {
         self.edit = edit
@@ -110,6 +111,26 @@ nonisolated struct EditFraming {
             result.steady = steadyPaths[key] ?? nil
         }
         return result
+    }
+
+    /// How the zooms Cue makes grow on `segment` (`ZoomAnchor`): toward its recording's one face, within what keeps the head in
+    /// the frame and what its pixels allow; as the handles over the preview have it (`FramePlacement.anchored`).
+    mutating func zoomAnchor(of segment: EditSegment) -> ZoomAnchor? {
+        guard let played = shapes[segment.sourceID] else { return nil }
+        let frame = frame(of: segment)
+        let size = frame.uprightSize
+        let topLeft = CGRect(x: frame.crop.minX, y: size.height - frame.crop.maxY, width: frame.crop.width, height: frame.crop.height)
+        var placement = FramePlacement(
+            uprightSize: played.uprightSize, crop: topLeft, orientation: segment.orientation, fits: edit.cropFit == .fit
+        )
+        placement.steady = frame.steady
+        if faces[segment.sourceID] == nil {
+            faces[segment.sourceID] = .some(analyses[segment.sourceID].flatMap(FaceZoomFocus.of))
+        }
+        return ZoomAnchor.make(
+            placement: placement, face: faces[segment.sourceID] ?? nil, followsFace: edit.faceFollow != nil && edit.cropFit == .fill,
+            at: (segment.sourceStart + segment.sourceEnd) / 2
+        )
     }
 
     /// The recording's background, prepared once.

@@ -15,7 +15,9 @@ import Testing
 @Suite("The render plan, and the preview's item following every clip setting")
 struct RenderPlanTests {
     /// Parts of a clip the item never depends on: a split gives new identities to the same picture.
-    private static let notPlayed: Set<String> = ["id"]
+    /// `punchesInOnCut` plays nothing alone: it marks a zoom Punch in on cuts put on the timeline drawn (never saved), and the zoom
+    /// it marks carries it into the plan (`CutZoomTests.thePreviewRebuildsForIt`, `itIsDrawnNeverSaved`).
+    private static let notPlayed: Set<String> = ["id", "punchesInOnCut"]
 
     /// How each part of the clip in the middle (the third) is changed here.
     private static let changes: [String: (inout EditSegment) -> Void] = [

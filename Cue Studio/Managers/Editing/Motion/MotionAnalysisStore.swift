@@ -24,6 +24,8 @@ nonisolated enum MotionAnalysisStore {
         var analysis: MotionAnalysis?
         /// Stabilize's path at each level (nil inside: no shake to take out).
         var steady: [StabilizationLevel: StabilizationPath?] = [:]
+        /// The face the zooms Cue makes grow toward, once worked out (nil inside: none to trust).
+        var face: FaceZoomFocus??
         /// When it was last read, to forget the oldest.
         var used: UInt64
     }
@@ -64,6 +66,20 @@ nonisolated enum MotionAnalysisStore {
             if state.files[key]?.stamp == entry.stamp { state.files[key]?.steady[level] = .some(path) }
         }
         return path
+    }
+
+    /// The recording's one face for a zoom to grow toward (`FaceZoomFocus`), from its complete analysis, worked out once while the
+    /// file doesn't change; nil without a complete analysis or a face to trust.
+    static func faceFocus(forRecording recording: URL) -> FaceZoomFocus? {
+        let file = url(forRecording: recording)
+        guard let entry = entry(for: file), let analysis = entry.analysis, analysis.isCurrent, analysis.isComplete else { return nil }
+        if let known = entry.face { return known }
+        let focus = FaceZoomFocus.of(analysis)
+        let key = file.standardizedFileURL
+        memory.withLock { state in
+            if state.files[key]?.stamp == entry.stamp { state.files[key]?.face = .some(focus) }
+        }
+        return focus
     }
 
     /// Keeps `analysis` next to the recording; nothing when the recording is gone (deleted while it was analyzed).

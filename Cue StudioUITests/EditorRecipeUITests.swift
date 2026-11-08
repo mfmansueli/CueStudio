@@ -41,7 +41,7 @@ final class EditorRecipeUITests: XCTestCase {
         step("R1.1", "Trim the start so the first word is at 0.2 s or less") { trimStart() }
         step("R1.2", "Remove silences over 0.4 s and filler words") { removePauses() }
         step("R1.2b", "Cut a word by its text") { cutAWordByText() }
-        step("R1.3", "Punch-in 115% on every 2nd cut, back to 100%") { punchIn(percent: nil, scrubbing: 120) }
+        step("R1.3", "Punch-in 115% on every 2nd cut, back to 100%") { punchInOnCuts() }
         step("R1.4", "Snap zoom 100→125% over 3 frames") { snapZoom() }
         finish()
     }
@@ -182,6 +182,23 @@ extension EditorRecipeUITests {
         return "PARTIAL: Zoom › Punch in (Intensity \(amount)) on one clip, Copy look, then per other clip Paste look › This clip (\(pasted); Zoom \(zoomOn); "
             + "toast \"\(toast)\"). "
             + "No 'every 2nd cut' or alternate-framing action; a 100% clip is just one left alone"
+    }
+
+    /// Zoom › Punch in on cuts: every other clip closer in one switch, at Subtle (1.1×, the nearest to 115%).
+    func punchInOnCuts() -> String {
+        scrub(by: 60)
+        guard tool("zoom") else { return "GAP: no Zoom" }
+        let cuts = element("edit.zoom.cuts")
+        guard cuts.exists(within: 3), onScreen(cuts) else { return punchIn(percent: nil, scrubbing: 120) }
+        cuts.tap()
+        taps += 1
+        let toast = toastText(within: 3)
+        let strength = element("edit.zoom.cutsStrength.medium").exists(within: 3)
+        tapButton("edit.zoom.cutsStrength.subtle")
+        tapButton("edit.panel.apply")
+        backToMain()
+        return "DONE: Zoom › Punch in on cuts (toast \"\(toast)\"; strength picker: \(strength)), Subtle 1.1×: every other clip closer, "
+            + "toward the face when it is clear; the first clip and clips under 1.2 s as filmed. 115% exactly is not a step (1.1 / 1.18 / 1.25×)"
     }
 
     func snapZoom() -> String {

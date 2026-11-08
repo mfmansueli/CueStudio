@@ -9,7 +9,7 @@ import SwiftUI
 /// grows to the styling panels' height meanwhile): above it, how many lines are picked, Select all and Done (`.header`, in
 /// place of the switch and chips); under it, what changes them together (`.actions`): Emphasize line (every word in the
 /// emphasis color and size), Size, Place (their own place, top, middle or bottom, or with every caption), Zoom (on the phrase,
-/// `PhraseZoom`), a tenth of a second
+/// `PhraseZoom`; the kit's strength said as the creator's, and a line when the video's pixels or the head hold it back), a tenth of a second
 /// earlier or later, and Delete.
 struct CaptionPickTools: View {
     enum Part {
@@ -84,6 +84,10 @@ struct CaptionPickTools: View {
                         HStack(spacing: 6) { Spacer(minLength: 0); moveAndDelete }
                     }
                 }
+                if let note = viewModel.phraseZoomLimitNote {
+                    PanelNote(text: note)
+                        .accessibilityIdentifier("edit.captionPicks.zoomLimit")
+                }
             }
         }
         .padding(.horizontal, 16)
@@ -141,7 +145,11 @@ struct CaptionPickTools: View {
             )) {
                 Text("No zoom").tag(PhraseZoom.Strength?.none)
                 ForEach(PhraseZoom.Strength.allCases) { strength in
-                    Text(strength.label).tag(Optional(strength))
+                    // The strength the creator's kit keeps (`BrandKitZoom`), said as theirs.
+                    Text(strength == viewModel.edit.phraseZoomStrength
+                        ? String(localized: "\(strength.label) · your style", comment: "Captions › Select › Zoom: the strength the creator's kit keeps")
+                        : strength.label)
+                        .tag(Optional(strength))
                 }
             }
         } label: {

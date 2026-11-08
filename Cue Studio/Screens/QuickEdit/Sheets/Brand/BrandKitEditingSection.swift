@@ -6,7 +6,8 @@
 import SwiftUI
 
 /// The kit editor's Editing and new videos (owner, 08/11/2026: "Meu estilo" is the kit). **Editing** keeps how this video is
-/// cleaned up and sounds (Clean up's pauses and gap, how music added starts, Studio Voice), said in words, taken again from this
+/// cleaned up, sounds and zooms (Clean up's pauses and gap, how music added starts, Studio Voice, Punch in on cuts and the phrase
+/// zooms' strength), said in words, taken again from this
 /// video or removed; putting it on a video readies the tools and cuts nothing. **Use on new videos**: a video edited for the
 /// first time opens in this kit (one kit at a time; saving it here takes the mark off another).
 struct BrandKitEditingSection: View {
@@ -32,6 +33,7 @@ struct BrandKitEditingSection: View {
                     Text(said.pauses)
                     Text(said.music)
                     Text(String(localized: "Studio Voice: \(said.voice)"))
+                    if let zoom = kept.zoom { Text(BrandViewModel.said(zoom)) }
                 }
                 .font(.footnote)
                 .foregroundStyle(Palette.ink)
@@ -43,7 +45,7 @@ struct BrandKitEditingSection: View {
                 }
             } else {
                 PanelNote(
-                    text: String(localized: "Keep how you clean up and set the sound: pauses, music level, Studio Voice. Nothing is cut until you tap Remove."),
+                    text: String(localized: "Keep how you clean up, set the sound and zoom: pauses, music level, Studio Voice, punch-ins. Nothing is cut until you tap Remove."),
                     teaches: true
                 )
                 takeFromVideo

@@ -28,7 +28,8 @@ extension QuickEditViewModel {
     /// Everything the timeline draws, for `heightClass`, each track `openLaneHeight` tall while every track is out. Reads the
     /// playhead only while a voice-over records (its track grows with it).
     func timelineInput(heightClass: EditorHeightClass, openLaneHeight: CGFloat? = nil) -> TimelineGeometry.Input {
-        let timeline = edit.timeline
+        // The clips as drawn: Punch in on cuts says where it lands in their badges.
+        let timeline = edit.punchedTimeline
         var input = TimelineGeometry.Input(duration: edit.editedDuration)
         var start: TimeInterval = 0
         input.clips = timeline.segments.map { segment in

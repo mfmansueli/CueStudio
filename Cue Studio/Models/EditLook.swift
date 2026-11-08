@@ -63,6 +63,11 @@ nonisolated struct EditLook: Codable, Hashable, Sendable {
     /// Added with Auto edit: what its last run did (nil is a value), and whether this step knew it (steps saved before leave it).
     var autoEdit: AutoEditRecord?
     var autoEditKnown: Bool?
+    /// Added with Punch in on cuts and kits' Zoom: `cutZoomKnown` is set in every step that has them (nil in steps saved before,
+    /// which leave them).
+    var cutZoom: CutZoom?
+    var phraseZoomStrength: PhraseZoom.Strength?
+    var cutZoomKnown: Bool?
 
     init(_ edit: TakeEdit) {
         exposure = edit.exposure
@@ -104,6 +109,9 @@ nonisolated struct EditLook: Codable, Hashable, Sendable {
         phraseZooms = edit.phraseZooms
         autoEdit = edit.autoEdit
         autoEditKnown = true
+        cutZoom = edit.cutZoom
+        phraseZoomStrength = edit.phraseZoomStrength
+        cutZoomKnown = true
     }
 
     /// Puts these settings on `edit`.
@@ -149,5 +157,9 @@ nonisolated struct EditLook: Codable, Hashable, Sendable {
         if let suggestsEmphasis { edit.suggestsEmphasis = suggestsEmphasis }
         if let phraseZooms { edit.phraseZooms = phraseZooms }
         if autoEditKnown == true { edit.autoEdit = autoEdit }
+        if cutZoomKnown == true {
+            edit.cutZoom = cutZoom
+            edit.phraseZoomStrength = phraseZoomStrength
+        }
     }
 }

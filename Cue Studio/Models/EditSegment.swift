@@ -34,6 +34,9 @@ nonisolated struct EditSegment: Codable, Hashable, Identifiable, Sendable {
     var zoom: SectionZoom?
     /// How strong the zoom is, 0 to 1 (1 is 1.3× at most); `defaultZoomAmount` for new clips.
     var zoomAmount: Double = EditSegment.defaultZoomAmount
+    /// Its `zoom` is Punch in on cuts' (`CutZoom.punched`), written only on the timeline a drawing reads, never saved: it grows
+    /// toward the face (`ZoomAnchor`), where a zoom the creator picked grows from the middle as it always did.
+    var punchesInOnCut = false
     /// The clip's own sound, 0 to 2 (200%), on top of the Voice tool's volume.
     var volume: Double = 1
     /// "Mute this clip".

@@ -46,6 +46,7 @@ nonisolated struct BrandKit: Codable, Identifiable, Hashable, Sendable {
         case .coverStyle: coverStyle != nil
         case .editing: editing != nil
         case .studioVoice: editing != nil
+        case .zoom: editing?.zoom != nil
         }
     }
 

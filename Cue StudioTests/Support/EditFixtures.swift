@@ -37,6 +37,8 @@ enum EditFixtures {
         autoEdit.ranSteps = [.speech, .captions, .zoom]
         autoEdit.offSteps = [.zoom]
         edit.autoEdit = autoEdit
+        edit.cutZoom = CutZoom(strength: .strong)
+        edit.phraseZoomStrength = .strong
         edit.cleanUpHearing = CleanUpHearing(wordsLanguage: "en")
         edit.volume = 0.5
         edit.enhancesVoice = false

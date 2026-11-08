@@ -11,9 +11,17 @@ import Foundation
 /// still missing before it starts, so it never comes out different from what the creator asked for; the preview uses the ones
 /// ready and is drawn again when another one is (`MotionAnalysisService`).
 nonisolated extension EditedComposition {
-    /// Whether anything in the edit reads a recording's motion analysis.
+    /// Whether the edit needs a recording's motion analysis to be drawn as asked (Follow face, Stabilize): an export makes the ones
+    /// missing first.
     static func usesMotion(_ edit: TakeEdit) -> Bool {
         (edit.faceFollow != nil && edit.cropFit == .fill) || edit.timeline.segments.contains { $0.stabilization != nil }
+    }
+
+    /// Whether anything in the edit reads a recording's motion analysis: what `usesMotion` says, and the zooms Cue makes (Punch in
+    /// on cuts, phrase zooms), which grow toward the face once the analysis is ready (`ZoomAnchor`) and from the middle until then.
+    /// The editor asks for the analysis as soon as one is made; an export doesn't wait for it, so it zooms as the preview showed.
+    static func readsMotion(_ edit: TakeEdit) -> Bool {
+        usesMotion(edit) || edit.cutZoom != nil || !edit.phraseZooms.isEmpty
     }
 
     /// The analyses of the recordings the edit plays, when it uses them; with `analyzesMissing`, the ones not made yet (or of
@@ -26,7 +34,8 @@ nonisolated extension EditedComposition {
         thermalState: @escaping @Sendable () -> ProcessInfo.ThermalState = { ProcessInfo.processInfo.thermalState },
         progress: (@Sendable (Double) -> Void)? = nil
     ) async throws -> [UUID?: MotionAnalysis] {
-        guard usesMotion(edit) else { return [:] }
+        guard readsMotion(edit) else { return [:] }
+        let analyzesMissing = analyzesMissing && usesMotion(edit)
         var recordings: [UUID?: URL] = [:]
         if edit.timeline.segments.contains(where: { $0.sourceID == nil }) { recordings[nil] = take }
         for clip in edit.playedSources { recordings[clip.id] = EditMediaFiles.url(for: clip.fileName) }

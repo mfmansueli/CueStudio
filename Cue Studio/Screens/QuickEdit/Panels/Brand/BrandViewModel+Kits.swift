@@ -78,6 +78,8 @@ extension BrandViewModel {
                 return editingChange(kit.editing, part: part)
             case .studioVoice:
                 return studioVoiceChange(kit.editing, part: part)
+            case .zoom:
+                return zoomChange(kit.editing?.zoom, part: part)
             }
         }
     }
@@ -112,6 +114,29 @@ extension BrandViewModel {
             ? String(localized: "\(levels) · this video already sounds like this")
             : String(localized: "\(levels) · the video's sound changes now", comment: "A kit's Studio Voice, said before it goes on a video")
         return KitChange(part: part, title: part.label, detail: detail, isAvailable: true)
+    }
+
+    /// Zoom: Punch in on cuts goes on (or off) as kept, which changes the picture at once, said so; the phrase zooms' strength is
+    /// only marked ("Punch in on cuts: Medium · Phrase zooms: Strong · the picture changes now").
+    private func zoomChange(_ zoom: BrandKitZoom?, part: BrandKitPart) -> KitChange {
+        guard let zoom else { return KitChange(part: part, title: part.label, detail: "", isAvailable: false) }
+        let said = Self.said(zoom)
+        let detail: String
+        if zoom.cutZoom == edit.cutZoom {
+            detail = said
+        } else if zoom.cutZoom != nil, edit.timeline.segments.count < 2 {
+            detail = String(localized: "\(said) · on the cuts you make", comment: "A kit's Zoom, said before it goes on a video without cuts")
+        } else {
+            detail = String(localized: "\(said) · the picture changes now", comment: "A kit's Zoom, said before it goes on a video")
+        }
+        return KitChange(part: part, title: part.label, detail: detail, isAvailable: true)
+    }
+
+    /// A kit's Zoom in words: "Punch in on cuts: Medium · Phrase zooms: Strong".
+    static func said(_ zoom: BrandKitZoom) -> String {
+        var parts = [zoom.cutZoom.map { String(localized: "Punch in on cuts: \($0.strength.label)") } ?? String(localized: "Punch in on cuts: off")]
+        if let strength = zoom.phraseStrength { parts.append(String(localized: "Phrase zooms: \(strength.label)")) }
+        return parts.joined(separator: " · ")
     }
 
     /// The creator's hand-made changes that putting `parts` of a kit on would replace too, if asked (`ManualStyleChanges`).
@@ -245,7 +270,8 @@ extension BrandViewModel {
     }
 
     /// Editing's values in the tools: Clean up's pauses and gap and how music added starts (nothing that plays changes); with
-    /// Studio Voice chosen, the take's voice treatment too (the sound changes now).
+    /// Studio Voice chosen, the take's voice treatment too (the sound changes now); with Zoom, Punch in on cuts (the picture
+    /// changes now).
     private static func wearEditing(_ editing: BrandKitEditing, parts: Set<BrandKitPart>, on snapshot: inout EditSnapshot) {
         guard snapshot.look != nil else { return }
         if parts.contains(.editing) {
@@ -258,6 +284,12 @@ extension BrandViewModel {
             snapshot.look?.audioVersion = VoiceProcessing.currentVersion
             snapshot.look?.voiceEnhancement = editing.voiceEnhancement
             snapshot.look?.noiseReduction = editing.noiseReduction
+        }
+        // Zoom: Punch in on cuts as kept (on or off), and the phrase zooms' strength marked; no phrase is zoomed by it.
+        if parts.contains(.zoom), let zoom = editing.zoom {
+            snapshot.look?.cutZoom = zoom.cutZoom
+            snapshot.look?.phraseZoomStrength = zoom.phraseStrength
+            snapshot.look?.cutZoomKnown = true
         }
     }
 

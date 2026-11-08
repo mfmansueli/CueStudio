@@ -2142,6 +2142,125 @@
         }
       }
     },
+    "%@ · on the cuts you make" : {
+      "comment" : "A kit's Zoom, said before it goes on a video without cuts; %@ is the kit's Zoom in words",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · على القطعات التي تصنعها"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · på de klip, du laver"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · an den Schnitten, die du machst"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · en los cortes que hagas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · sur les coupes que tu feras"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · आपके बनाए कट पर"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · di potongan yang kamu buat"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · sui tagli che farai"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · これから作るカットに"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · 앞으로 만드는 컷에"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · på klippene du lager"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · op de knippen die je maakt"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · nos cortes que você fizer"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · på klippen du gör"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · ที่จุดตัดที่คุณสร้าง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · yapacağın kesmelerde"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · ở các điểm cắt bạn tạo"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · 用于你之后的剪切"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · 用於你之後的剪接"
+          }
+        }
+      }
+    },
     "%@ · only this clip" : {
       "comment" : "Look panel subtitle (Adjust, Skin, Filters) from a clip: the clip (Clip 1 of 2, This clip), and the rest of the video stays as it is (short)",
       "localizations" : {
@@ -2618,6 +2737,125 @@
         }
       }
     },
+    "%@ · the picture changes now" : {
+      "comment" : "A kit's Zoom, said before it goes on a video; %@ is the kit's Zoom in words",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · تتغير الصورة الآن"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · billedet ændres nu"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · das Bild ändert sich jetzt"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · la imagen cambia ahora"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · l’image change maintenant"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · तस्वीर अभी बदलेगी"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · gambar berubah sekarang"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · l’immagine cambia subito"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · 映像がすぐに変わります"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · 화면이 바로 바뀌어요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · bildet endres nå"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · het beeld verandert nu"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · a imagem muda agora"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · bilden ändras nu"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · ภาพเปลี่ยนทันที"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · görüntü şimdi değişir"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · hình ảnh thay đổi ngay"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · 画面会立即改变"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · 畫面會立即改變"
+          }
+        }
+      }
+    },
     "%@ · this video already sounds like this" : {
       "comment" : "Kit sheet: Studio Voice levels the video already has",
       "localizations" : {
@@ -3090,6 +3328,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ · 你的腳本"
+          }
+        }
+      }
+    },
+    "%@ · your style" : {
+      "comment" : "Captions › Select › Zoom: the strength the creator's kit keeps; %@ is Subtle, Medium or Strong",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · أسلوبك"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · din stil"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · dein Stil"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · tu estilo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · ton style"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · आपकी स्टाइल"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · gayamu"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · il tuo stile"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · あなたのスタイル"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · 내 스타일"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · din stil"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · jouw stijl"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · seu estilo"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · din stil"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · สไตล์ของคุณ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · senin tarzın"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · phong cách của bạn"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · 你的风格"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · 你的風格"
           }
         }
       }
@@ -4518,6 +4875,311 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@：兩種方式比較"
+          }
+        }
+      }
+    },
+    "%lld clips closer · toward your face when it’s clear" : {
+      "comment" : "Under Punch in on cuts while it is on: how many clips it puts closer",
+      "localizations" : {
+        "ar" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld مقاطع أقرب · نحو وجهك عندما يكون واضحًا"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld مقطعًا أقرب · نحو وجهك عندما يكون واضحًا"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld مقطع أقرب · نحو وجهك عندما يكون واضحًا"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld مقطع أقرب · نحو وجهك عندما يكون واضحًا"
+                }
+              },
+              "two" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld مقطعان أقرب · نحو وجهك عندما يكون واضحًا"
+                }
+              },
+              "zero" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld مقطع أقرب · نحو وجهك عندما يكون واضحًا"
+                }
+              }
+            }
+          }
+        },
+        "da" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld klip tættere på · mod dit ansigt, når det er tydeligt"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld klip tættere på · mod dit ansigt, når det er tydeligt"
+                }
+              }
+            }
+          }
+        },
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Clip näher · zu deinem Gesicht hin, wenn es klar zu sehen ist"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Clips näher · zu deinem Gesicht hin, wenn es klar zu sehen ist"
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld clip closer · toward your face when it’s clear"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld clips closer · toward your face when it’s clear"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld clip más cerca · hacia tu cara cuando se ve claro"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld clips más cerca · hacia tu cara cuando se ve claro"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld clip plus près · vers ton visage quand il est net"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld clips plus près · vers ton visage quand il est net"
+                }
+              }
+            }
+          }
+        },
+        "hi" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld क्लिप पास · जब चेहरा साफ़ दिखे, उसकी ओर"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld क्लिप पास · जब चेहरा साफ़ दिखे, उसकी ओर"
+                }
+              }
+            }
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld klip lebih dekat · ke arah wajahmu saat terlihat jelas"
+          }
+        },
+        "it" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld clip più vicina · verso il tuo viso quando è chiaro"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld clip più vicine · verso il tuo viso quando è chiaro"
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld個のクリップを寄せる · 顔がはっきり映っていれば顔に向けて"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "클립 %lld개 더 가깝게 · 얼굴이 뚜렷하면 얼굴 쪽으로"
+          }
+        },
+        "nb" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld klipp nærmere · mot ansiktet ditt når det er tydelig"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld klipp nærmere · mot ansiktet ditt når det er tydelig"
+                }
+              }
+            }
+          }
+        },
+        "nl" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld clip dichterbij · naar je gezicht toe als het duidelijk is"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld clips dichterbij · naar je gezicht toe als het duidelijk is"
+                }
+              }
+            }
+          }
+        },
+        "pt" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld clipe mais perto · em direção ao seu rosto quando ele aparece bem"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld clipes mais perto · em direção ao seu rosto quando ele aparece bem"
+                }
+              }
+            }
+          }
+        },
+        "sv" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld klipp närmare · mot ditt ansikte när det syns tydligt"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld klipp närmare · mot ditt ansikte när det syns tydligt"
+                }
+              }
+            }
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ใกล้ขึ้น %lld คลิป · เข้าหาใบหน้าเมื่อเห็นชัด"
+          }
+        },
+        "tr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld klip daha yakın · net göründüğünde yüzüne doğru"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld klip daha yakın · net göründüğünde yüzüne doğru"
+                }
+              }
+            }
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld clip gần hơn · hướng về khuôn mặt khi thấy rõ"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 个片段推近 · 脸部清晰时朝向脸部"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 個片段拉近 · 臉部清楚時朝向臉部"
           }
         }
       }
@@ -32081,6 +32743,125 @@
         }
       }
     },
+    "Clips under %@ keep the zoom of the clip before them" : {
+      "comment" : "Zoom panel, Punch in on cuts on: the picked clip is too short to change; %@ is a duration like 1.2s",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "المقاطع الأقصر من %@ تحتفظ بتكبير المقطع الذي قبلها"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klip under %@ beholder zoomen fra klippet før"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clips unter %@ behalten den Zoom des Clips davor"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los clips de menos de %@ mantienen el zoom del clip anterior"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les clips de moins de %@ gardent le zoom du clip précédent"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ से छोटी क्लिप पिछली क्लिप का ज़ूम रखती हैं"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klip di bawah %@ memakai zoom klip sebelumnya"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le clip sotto %@ mantengono lo zoom della clip precedente"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@未満のクリップは前のクリップのズームのままです"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 미만 클립은 앞 클립의 확대를 유지해요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klipp under %@ beholder zoomen fra klippet før"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clips korter dan %@ houden de zoom van de clip ervoor"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clipes com menos de %@ mantêm o zoom do clipe anterior"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klipp under %@ behåller zoomen från klippet före"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "คลิปที่สั้นกว่า %@ ใช้การซูมของคลิปก่อนหน้า"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ altındaki klipler önceki klibin yakınlaştırmasını korur"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clip dưới %@ giữ mức thu phóng của clip trước"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "短于 %@ 的片段沿用前一个片段的缩放"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "短於 %@ 的片段沿用前一個片段的縮放"
+          }
+        }
+      }
+    },
     "Closes the invitation to Ultra AI." : {
       "comment" : "VoiceOver hint of the × button on the Ultra AI invitation",
       "localizations" : {
@@ -49749,6 +50530,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "所有回答、範例和 Cue 學到的內容都會被刪除。你的主題會保留。"
+          }
+        }
+      }
+    },
+    "Every other clip a little closer" : {
+      "comment" : "Under Punch in on cuts while it is off",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "كل مقطع ثانٍ أقرب قليلًا"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hvert andet klip lidt tættere på"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jeder zweite Clip etwas näher"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un clip sí y otro no, un poco más cerca"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un clip sur deux un peu plus près"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "हर दूसरी क्लिप थोड़ी पास"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Setiap klip kedua sedikit lebih dekat"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una clip sì e una no, un po' più vicina"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1つおきのクリップを少し寄せる"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "한 클립 걸러 조금 더 가깝게"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Annethvert klipp litt nærmere"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Om de andere clip iets dichterbij"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um clipe sim, outro não, um pouco mais perto"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vartannat klipp lite närmare"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "คลิปเว้นคลิปใกล้ขึ้นเล็กน้อย"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Her iki klipten biri biraz daha yakın"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cứ cách một clip lại gần hơn một chút"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每隔一个片段稍微推近"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每隔一個片段稍微拉近"
           }
         }
       }
@@ -71411,121 +72311,121 @@
         }
       }
     },
-    "Keep how you clean up and set the sound: pauses, music level, Studio Voice. Nothing is cut until you tap Remove." : {
-      "comment" : "Kit editor: what Editing keeps",
+    "Keep how you clean up, set the sound and zoom: pauses, music level, Studio Voice, punch-ins. Nothing is cut until you tap Remove." : {
+      "comment" : "The kit editor's Editing, before anything is kept",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "احتفظ بطريقة تنظيفك للكلام وضبطك للصوت: الوقفات، ومستوى الموسيقى، وصوت الاستوديو. لا يُقص شيء حتى تضغط إزالة."
+            "value" : "احتفظ بطريقة تنظيفك وضبطك للصوت والتكبير: التوقفات، مستوى الموسيقى، Studio Voice، الاقتراب. لا يُقص شيء حتى تضغط إزالة."
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gem, hvordan du rydder tale og indstiller lyden: pauser, musikniveau, Studiostemme. Intet klippes, før du trykker på Fjern."
+            "value" : "Gem, hvordan du rydder op, indstiller lyden og zoomer: pauser, musikniveau, Studio Voice, punch ins. Intet klippes, før du trykker på Fjern."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Merk dir, wie du Sprache putzt und den Ton einstellst: Pausen, Musiklautstärke, Studio-Stimme. Nichts wird geschnitten, bis du auf Entfernen tippst."
+            "value" : "Behalte, wie du aufräumst, den Ton einstellst und zoomst: Pausen, Musikpegel, Studio Voice, Punch-ins. Nichts wird geschnitten, bis du auf Entfernen tippst."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Guarda cómo limpias el habla y ajustas el sonido: pausas, nivel de la música, Voz de estudio. No se corta nada hasta que tocas Quitar."
+            "value" : "Guarda cómo limpias, ajustas el sonido y haces zoom: pausas, volumen de la música, Studio Voice, acercamientos. No se corta nada hasta que toques Quitar."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gardez votre façon de nettoyer et de régler le son : pauses, niveau de la musique, Voix studio. Rien n’est coupé avant que vous touchiez Retirer."
+            "value" : "Garde ta façon de nettoyer, de régler le son et de zoomer : pauses, niveau de la musique, Studio Voice, zooms secs. Rien n’est coupé avant que tu touches Retirer."
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "आप बोली कैसे साफ़ करते हैं और आवाज़ कैसे सेट करते हैं, वह रखें: ठहराव, म्यूज़िक लेवल, स्टूडियो आवाज़। हटाएँ टैप करने तक कुछ नहीं कटता।"
+            "value" : "आप कैसे साफ़ करते हैं, आवाज़ और ज़ूम कैसे सेट करते हैं, उसे रखें: रुकावटें, म्यूज़िक लेवल, Studio Voice, पंच इन। जब तक आप हटाएँ पर टैप न करें, कुछ नहीं कटता।"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Simpan cara kamu merapikan dan mengatur suara: jeda, level musik, Suara Studio. Tidak ada yang dipotong sampai kamu ketuk Hapus."
+            "value" : "Simpan cara kamu merapikan, mengatur suara, dan zoom: jeda, level musik, Studio Voice, zoom cepat. Tidak ada yang dipotong sampai kamu ketuk Hapus."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tieni come ripulisci e regoli il suono: pause, livello della musica, Voce da studio. Non si taglia nulla finché non tocchi Rimuovi."
+            "value" : "Conserva come ripulisci, regoli il suono e lo zoom: pause, livello della musica, Studio Voice, stacchi ravvicinati. Non si taglia nulla finché non tocchi Rimuovi."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "話の整え方と音の設定を保存：間、音楽の音量、スタジオ音声。「削除」をタップするまで何もカットされません。"
+            "value" : "整え方、音とズームの設定を保存：間、音楽の音量、Studio Voice、パンチイン。「削除」をタップするまで何もカットされません。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "말 다듬기와 소리 설정을 저장해요: 멈춤, 음악 음량, 스튜디오 음성. 제거를 탭하기 전엔 아무것도 잘리지 않아요."
+            "value" : "정리 방식, 소리와 확대 설정을 저장해요: 쉼, 음악 볼륨, Studio Voice, 펀치 인. 제거를 탭할 때까지 아무것도 잘리지 않아요."
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Behold hvordan du rydder tale og stiller inn lyden: pauser, musikknivå, Studiostemme. Ingenting klippes før du trykker på Fjern."
+            "value" : "Behold hvordan du rydder opp, stiller inn lyden og zoomer: pauser, musikknivå, Studio Voice, innzoominger. Ingenting klippes før du trykker på Fjern."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bewaar hoe je opschoont en het geluid instelt: pauzes, muziekniveau, Studiostem. Er wordt niets geknipt tot je op Verwijderen tikt."
+            "value" : "Bewaar hoe je opschoont, het geluid instelt en zoomt: pauzes, muziekniveau, Studio Voice, snelle inzooms. Er wordt niets geknipt tot je op Verwijder tikt."
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Guarde como você limpa a fala e ajusta o som: pausas, nível da música, Voz de estúdio. Nada é cortado até você tocar em Remover."
+            "value" : "Guarde como você limpa, ajusta o som e o zoom: pausas, volume da música, Studio Voice, aproximações. Nada é cortado até você tocar em Remover."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Spara hur du rensar tal och ställer in ljudet: pauser, musiknivå, Studioröst. Inget klipps förrän du trycker på Ta bort."
+            "value" : "Spara hur du rensar, ställer in ljudet och zoomar: pauser, musiknivå, Studio Voice, inzoomningar. Inget klipps förrän du trycker på Ta bort."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "เก็บวิธีเกลาคำพูดและตั้งเสียงของคุณ: ช่วงหยุด ระดับเพลง เสียงสตูดิโอ ไม่มีอะไรถูกตัดจนกว่าคุณจะแตะ เอาออก"
+            "value" : "เก็บวิธีเก็บงาน ตั้งเสียง และซูมของคุณ: ช่วงหยุด ระดับเพลง Studio Voice การซูมเข้า ไม่มีอะไรถูกตัดจนกว่าคุณจะแตะลบ"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Konuşmayı nasıl temizlediğini ve sesi nasıl ayarladığını sakla: duraklamalar, müzik seviyesi, Stüdyo Sesi. Kaldır'a dokunana kadar hiçbir şey kesilmez."
+            "value" : "Temizleme, ses ve yakınlaştırma ayarlarını sakla: duraklamalar, müzik seviyesi, Studio Voice, ani yakınlaşmalar. Kaldır'a dokunana kadar hiçbir şey kesilmez."
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Giữ cách bạn làm gọn lời và chỉnh âm thanh: khoảng dừng, mức nhạc, Giọng studio. Không cắt gì cho đến khi bạn chạm Bỏ."
+            "value" : "Giữ cách bạn dọn, chỉnh âm thanh và thu phóng: khoảng ngừng, mức nhạc, Studio Voice, phóng nhanh. Không gì bị cắt cho đến khi bạn chạm Xóa."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "保存你清理语音和设置声音的方式：停顿、音乐音量、录音棚人声。点按“移除”之前不会剪掉任何内容。"
+            "value" : "保留你的清理方式、声音和缩放设置：停顿、音乐音量、Studio Voice、快速推近。点按“移除”前不会剪掉任何内容。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "儲存你清理語音和設定聲音的方式：停頓、音樂音量、錄音室人聲。點一下「移除」之前不會剪掉任何內容。"
+            "value" : "保留你的清理方式、聲音和縮放設定：停頓、音樂音量、Studio Voice、快速拉近。點按「移除」前不會剪掉任何內容。"
           }
         }
       }
@@ -87011,6 +87911,125 @@
         }
       }
     },
+    "Needs a cut in the video" : {
+      "comment" : "Under Punch in on cuts when the video has one clip",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يحتاج إلى قطع في الفيديو"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kræver et klip i videoen"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Braucht einen Schnitt im Video"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Necesita un corte en el video"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il faut une coupe dans la vidéo"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "वीडियो में एक कट चाहिए"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perlu potongan di video"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serve un taglio nel video"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "動画にカットが必要です"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "영상에 컷이 있어야 해요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trenger et klipp i videoen"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heeft een knip in de video nodig"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Precisa de um corte no vídeo"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Behöver ett klipp i videon"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ต้องมีจุดตัดในวิดีโอ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Videoda bir kesme gerekir"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cần một điểm cắt trong video"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "视频中需要有剪切点"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "影片中需要有剪接點"
+          }
+        }
+      }
+    },
     "Never sent" : {
       "comment" : "What Ultra AI sends: section header",
       "localizations" : {
@@ -88316,6 +89335,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "此影片沒有字幕"
+          }
+        }
+      }
+    },
+    "No clip is long enough to punch in yet" : {
+      "comment" : "Toast: Punch in on cuts is on, but every clip is too short",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا يوجد مقطع طويل بما يكفي للاقتراب بعد"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Intet klip er langt nok til punch in endnu"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch ist kein Clip lang genug für einen Punch-in"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todavía ningún clip es lo bastante largo para acercar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun clip n’est encore assez long pour un zoom sec"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अभी कोई क्लिप पंच इन के लिए काफ़ी लंबी नहीं है"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Belum ada klip yang cukup panjang untuk zoom cepat"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ancora nessuna clip è abbastanza lunga per lo stacco"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "まだパンチインできる長さのクリップがありません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아직 펀치 인할 만큼 긴 클립이 없어요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingen klipp er lange nok til innzooming ennå"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nog geen clip is lang genoeg om in te zoomen"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhum clipe é longo o bastante para aproximar ainda"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inget klipp är långt nog för inzoomning än"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ยังไม่มีคลิปที่ยาวพอจะซูมเข้า"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Henüz yakınlaşacak kadar uzun klip yok"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chưa có clip nào đủ dài để phóng nhanh"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "还没有足够长的片段可以推近"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "還沒有夠長的片段可以拉近"
           }
         }
       }
@@ -98572,6 +99710,125 @@
         }
       }
     },
+    "Phrase zooms: %@" : {
+      "comment" : "A kit's Zoom in words: the strength of the creator's zooms on caption phrases; %@ is Subtle, Medium or Strong",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تكبير العبارات: %@"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoom på sætninger: %@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoom auf Sätze: %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoom en frases: %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoom sur les phrases : %@"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "वाक्य पर ज़ूम: %@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoom frasa: %@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoom sulle frasi: %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フレーズのズーム：%@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "구절 확대: %@"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoom på setninger: %@"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoom op zinnen: %@"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoom nas frases: %@"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoom på fraser: %@"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ซูมที่วลี: %@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İfade yakınlaştırma: %@"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thu phóng cụm từ: %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "句子缩放：%@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "句子縮放：%@"
+          }
+        }
+      }
+    },
     "Physical therapist" : {
       "comment" : "What kind of creator are you? (a chip in a long searchable list): a physical therapist who explains pain, posture and recovery",
       "localizations" : {
@@ -102852,6 +104109,787 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "求婚點子"
+          }
+        }
+      }
+    },
+    "Punch in on cuts" : {
+      "comment" : "Zoom panel: the switch that puts every other clip a little closer",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اقتراب عند القطعات"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Punch in ved klip"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Punch-in an Schnitten"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acercar en los cortes"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoom sec aux coupes"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कट पर पंच इन"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoom cepat di potongan"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stacco ravvicinato ai tagli"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カットでパンチイン"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "컷마다 펀치 인"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rask innzooming ved klipp"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Snel inzoomen bij knippen"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aproximar nos cortes"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Snabb inzoomning vid klipp"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ซูมเข้าที่จุดตัด"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kesmelerde ani yakınlaş"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Phóng nhanh ở điểm cắt"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "剪切处快速推近"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "剪接處快速拉近"
+          }
+        }
+      }
+    },
+    "Punch in on cuts off" : {
+      "comment" : "Toast: Punch in on cuts was turned off",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تم إيقاف الاقتراب عند القطعات"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Punch in ved klip er slået fra"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Punch-in an Schnitten aus"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acercar en los cortes desactivado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoom sec aux coupes désactivé"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कट पर पंच इन बंद"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoom cepat di potongan mati"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stacco ravvicinato ai tagli disattivato"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カットでパンチインをオフにしました"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "컷마다 펀치 인 끔"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rask innzooming ved klipp er av"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Snel inzoomen bij knippen uit"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aproximar nos cortes desligado"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Snabb inzoomning vid klipp av"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ปิดซูมเข้าที่จุดตัดแล้ว"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kesmelerde ani yakınlaşma kapalı"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đã tắt phóng nhanh ở điểm cắt"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已关闭剪切处快速推近"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已關閉剪接處快速拉近"
+          }
+        }
+      }
+    },
+    "Punch in on %lld clips" : {
+      "comment" : "Toast: Punch in on cuts put this many clips closer",
+      "localizations" : {
+        "ar" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "اقتراب على %lld مقاطع"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "اقتراب على %lld مقطعًا"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "اقتراب على %lld مقطع"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "اقتراب على %lld مقطع"
+                }
+              },
+              "two" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "اقتراب على %lld مقطعين"
+                }
+              },
+              "zero" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "اقتراب على %lld مقطع"
+                }
+              }
+            }
+          }
+        },
+        "da" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Punch in på %lld klip"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Punch in på %lld klip"
+                }
+              }
+            }
+          }
+        },
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Punch-in auf %lld Clip"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Punch-in auf %lld Clips"
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Punch in on %lld clip"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Punch in on %lld clips"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Acercar en %lld clip"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Acercar en %lld clips"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Zoom sec sur %lld clip"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Zoom sec sur %lld clips"
+                }
+              }
+            }
+          }
+        },
+        "hi" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld क्लिप पर पंच इन"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld क्लिप पर पंच इन"
+                }
+              }
+            }
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoom cepat di %lld klip"
+          }
+        },
+        "it" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Stacco ravvicinato su %lld clip"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Stacco ravvicinato su %lld clip"
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld個のクリップでパンチイン"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "클립 %lld개에 펀치 인"
+          }
+        },
+        "nb" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Rask innzooming på %lld klipp"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Rask innzooming på %lld klipp"
+                }
+              }
+            }
+          }
+        },
+        "nl" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Snel inzoomen op %lld clip"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Snel inzoomen op %lld clips"
+                }
+              }
+            }
+          }
+        },
+        "pt" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Aproximar em %lld clipe"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Aproximar em %lld clipes"
+                }
+              }
+            }
+          }
+        },
+        "sv" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Snabb inzoomning på %lld klipp"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Snabb inzoomning på %lld klipp"
+                }
+              }
+            }
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ซูมเข้า %lld คลิป"
+          }
+        },
+        "tr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld klipte ani yakınlaşma"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld klipte ani yakınlaşma"
+                }
+              }
+            }
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Phóng nhanh ở %lld clip"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 %lld 个片段上快速推近"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 %lld 個片段上快速拉近"
+          }
+        }
+      }
+    },
+    "Punch in on cuts: %@" : {
+      "comment" : "A kit's Zoom in words; %@ is Subtle, Medium or Strong",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الاقتراب عند القطعات: %@"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Punch in ved klip: %@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Punch-in an Schnitten: %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acercar en los cortes: %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoom sec aux coupes : %@"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कट पर पंच इन: %@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoom cepat di potongan: %@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stacco ravvicinato ai tagli: %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カットでパンチイン：%@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "컷마다 펀치 인: %@"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rask innzooming ved klipp: %@"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Snel inzoomen bij knippen: %@"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aproximar nos cortes: %@"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Snabb inzoomning vid klipp: %@"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ซูมเข้าที่จุดตัด: %@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kesmelerde ani yakınlaş: %@"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Phóng nhanh ở điểm cắt: %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "剪切处快速推近：%@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "剪接處快速拉近：%@"
+          }
+        }
+      }
+    },
+    "Punch in on cuts: off" : {
+      "comment" : "A kit's Zoom in words: Punch in on cuts is off",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الاقتراب عند القطعات: متوقف"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Punch in ved klip: fra"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Punch-in an Schnitten: aus"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acercar en los cortes: desactivado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoom sec aux coupes : désactivé"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कट पर पंच इन: बंद"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoom cepat di potongan: mati"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stacco ravvicinato ai tagli: disattivato"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カットでパンチイン：オフ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "컷마다 펀치 인: 끔"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rask innzooming ved klipp: av"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Snel inzoomen bij knippen: uit"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aproximar nos cortes: desligado"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Snabb inzoomning vid klipp: av"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ซูมเข้าที่จุดตัด: ปิด"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kesmelerde ani yakınlaş: kapalı"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Phóng nhanh ở điểm cắt: tắt"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "剪切处快速推近：关闭"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "剪接處快速拉近：關閉"
           }
         }
       }
@@ -129105,6 +131143,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "朋友匯出第一部影片：你獲得 +%lld 次匯出"
+          }
+        }
+      }
+    },
+    "This clip keeps the zoom and crop you gave it" : {
+      "comment" : "Zoom panel, Punch in on cuts on: the picked clip has its own zoom or crop",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يحتفظ هذا المقطع بالتكبير والقص اللذين اخترتهما"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dette klip beholder den zoom og beskæring, du gav det"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieser Clip behält den Zoom und Zuschnitt, den du ihm gegeben hast"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este clip conserva el zoom y el recorte que le diste"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce clip garde le zoom et le recadrage que tu lui as donnés"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "यह क्लिप आपका दिया ज़ूम और क्रॉप रखती है"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klip ini tetap memakai zoom dan potongan darimu"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Questa clip mantiene lo zoom e il ritaglio che le hai dato"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このクリップは設定したズームと切り抜きのままです"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 클립은 직접 정한 확대와 자르기를 유지해요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dette klippet beholder zoomen og beskjæringen du ga det"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deze clip houdt de zoom en uitsnede die je hem gaf"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este clipe mantém o zoom e o recorte que você deu"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Det här klippet behåller zoomen och beskärningen du gav det"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "คลิปนี้คงการซูมและการครอปที่คุณตั้งไว้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu klip verdiğin yakınlaştırma ve kırpmayı korur"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clip này giữ mức thu phóng và cắt khung bạn đã đặt"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此片段保留你设定的缩放和裁剪"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此片段保留你設定的縮放和裁切"
           }
         }
       }
@@ -620063,6 +622220,244 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "縮小"
+          }
+        }
+      }
+    },
+    "Zoom stops at %@ · the video has too few pixels for more" : {
+      "comment" : "Under a zoom Cue makes: %@ is the closest it goes, like 1.12×",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يتوقف التكبير عند %@ · الفيديو لا يحتوي على بكسلات كافية لأكثر"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoom stopper ved %@ · videoen har for få pixels til mere"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoom endet bei %@ · das Video hat zu wenige Pixel für mehr"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El zoom llega hasta %@ · el video no tiene píxeles para más"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le zoom s’arrête à %@ · la vidéo n’a pas assez de pixels pour plus"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ज़ूम %@ पर रुकता है · वीडियो में ज़्यादा के लिए पिक्सेल कम हैं"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoom berhenti di %@ · piksel video terlalu sedikit untuk lebih"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lo zoom si ferma a %@ · il video ha troppo pochi pixel per andare oltre"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ズームは%@までです · これ以上は動画の画素が足りません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "확대는 %@까지예요 · 영상의 픽셀이 더 확대하기에 부족해요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoomen stopper ved %@ · videoen har for få piksler til mer"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoom stopt bij %@ · de video heeft te weinig pixels voor meer"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O zoom para em %@ · o vídeo tem poucos pixels para mais"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoomen stannar vid %@ · videon har för få pixlar för mer"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ซูมได้ถึง %@ · วิดีโอมีพิกเซลไม่พอสำหรับมากกว่านี้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yakınlaştırma %@ değerinde durur · video daha fazlası için az piksel içeriyor"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thu phóng dừng ở %@ · video không đủ điểm ảnh để phóng thêm"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "缩放最多 %@ · 视频像素不足以放大更多"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "縮放最多 %@ · 影片像素不足以放大更多"
+          }
+        }
+      }
+    },
+    "Zoom stops at %@ · so your head stays in the frame" : {
+      "comment" : "Under a zoom Cue makes: %@ is the closest it goes, like 1.2×",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يتوقف التكبير عند %@ · ليبقى رأسك داخل الإطار"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoom stopper ved %@ · så dit hoved bliver i billedet"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoom endet bei %@ · damit dein Kopf im Bild bleibt"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El zoom llega hasta %@ · para que tu cabeza quede en el cuadro"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le zoom s’arrête à %@ · pour que ta tête reste dans le cadre"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ज़ूम %@ पर रुकता है · ताकि आपका सिर फ़्रेम में रहे"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoom berhenti di %@ · agar kepalamu tetap di bingkai"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lo zoom si ferma a %@ · così la testa resta nell’inquadratura"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ズームは%@までです · 頭が画面に収まるように"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "확대는 %@까지예요 · 머리가 화면 안에 있도록"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoomen stopper ved %@ · så hodet ditt blir i bildet"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoom stopt bij %@ · zodat je hoofd in beeld blijft"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O zoom para em %@ · para sua cabeça ficar no quadro"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoomen stannar vid %@ · så att ditt huvud stannar i bild"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ซูมได้ถึง %@ · เพื่อให้ศีรษะอยู่ในเฟรม"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yakınlaştırma %@ değerinde durur · başın kadrajda kalsın diye"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thu phóng dừng ở %@ · để đầu bạn vẫn trong khung"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "缩放最多 %@ · 让头部留在画面中"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "縮放最多 %@ · 讓頭部留在畫面中"
           }
         }
       }

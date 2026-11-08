@@ -2083,8 +2083,12 @@ auditoria: `reports/editor-award-checklist.md`.
   entre elas) como uma frase só; um passo de desfazer, a agulha volta 0,3 s antes para ver entrar; a linha mostra uma lupa no cabeçalho. Depois de
   criado, é independente: corrigir, dividir ou apagar a linha não mexe nele; não divide o clipe e soma ao Zoom do clipe. Limites (decididos
   08/11/2026, sem o dono): no mínimo 0,8 s (uma linha curta segura isso desde o começo), entra e sai em 0,2 s, no máximo 1,25× para um take em
-  1080p continuar nítido, e com o Zoom do clipe nunca passa de 1,45×; vai para o meio do quadro, e para o rosto só onde o criador ligou Follow face
-  (o recorte já segue o rosto); nunca liga o Follow face sozinho; vale para o que toca no vídeo principal (o take ou um clipe importado, preso à
+  1080p continuar nítido, e com o Zoom do clipe nunca passa de 1,45×; cresce em direção ao rosto quando a gravação tem um rosto confiável, sem
+  cortar a cabeça e sem passar do que os pixels da gravação permitem (`ZoomAnchor`, §39), senão do meio do quadro (também com Follow face, cujo
+  recorte já segue o rosto); sobre um Zoom escolhido pelo criador no clipe, cresce do meio como ele e só soma o que os limites deixam. No menu, a
+  força que o kit guarda aparece como "Medium · your style"; com as linhas escolhidas, uma linha diz quando o zoom para antes ("Zoom stops at 1.12×
+  · the video has too few pixels for more" ou "… · so your head stays in the frame"). Nunca liga o Follow face sozinho; vale para o que toca no
+  vídeo principal (o take ou um clipe importado, preso à
   gravação dele), não para fotos e vídeos por cima nem para o outro lado da tela dividida. Um corte antes dele o mantém nas palavras; com as
   palavras cortadas, some. O compositor e a prévia das áreas de desfoque e do tracking contam o zoom. Não tem faixa própria: na faixa de
   legendas da linha do tempo, a linha com zoom troca o ícone pela lupa (`TimelineGeometry.ItemInput.symbol`). **Place e Zoom pela linha do
@@ -2473,10 +2477,37 @@ Prévia e exportação passam pelo mesmo compositor (`CueVideoCompositor`), ent�
   vertical, nunca o liga. Arrastar o vídeo desliga ("Follow face is off · You moved the frame"). Sem espaço, a nota oferece os formatos com espaço
   para aquela gravação, nunca o escolhido ("Pick 4:5, 1:1, or 16:9 to follow your face" numa 9:16, "Pick 9:16, 4:5, or 1:1 …" numa 16:9;
   `LookViewModel.formatsWithRoom`); com Fit: "Follow face works with Fill". Ligado e com a análise pronta, o que ele não garante naquele vídeo
-  (`FaceFollowLimit`, pelos rostos de cada momento; a confiança do Vision não fica na análise, um rosto abaixo de 0,5 nem é guardado): sem
+  (`FaceFollowLimit`, pelos rostos de cada momento, em **cada gravação que a edição toca**: a take e cada vídeo importado da montagem, como um
+  horizontal com duas pessoas, `LookViewModel.playedFaceFollowLimit`; vale a nota mais forte, e uma gravação sem ninguém ao lado de outra com
+  rosto conta como rosto em parte do vídeo; a confiança do Vision não fica na análise, um rosto abaixo de 0,5 nem é guardado): sem
   ninguém, "No face found in this video"; dois rostos ou mais em 25% dos momentos com alguém, "More than one face in this video · the frame follows
   one"; alguém em menos de 60% dos momentos, "Your face is found in part of the video · the frame holds still where it’s lost". Nenhuma nota muda o
   enquadramento. A capa feita de um quadro usa o recorte daquele momento. Um passo de desfazer (`EditLook`). O painel Format passou a `.medium`.
+- **Zoom › Punch in on cuts** (E4, 08/11/2026; plano §11; R1.3/R2.1: eram 9–10 toques, clipe a clipe; `TakeEdit.cutZoom`, `CutZoom`,
+  `ClipsViewModel+CutZoom`, `ZoomPanel`): no rodapé do painel Zoom do clipe, sempre à vista, um interruptor para o vídeo inteiro: um clipe sim, outro
+  não, um pouco mais perto, como uma segunda câmera. **Só liga pelo criador** (ou pelo kit dele, abaixo); "Every other clip a little closer"
+  desligado, "N clips closer · toward your face when it’s clear" ligado, "Needs a cut in the video" com um clipe só. Ligado: **Subtle · Medium ·
+  Strong** (os mesmos 1,1 / 1,18 / 1,25× do zoom por frase; começa em Medium, ou na força que o kit marcou). Um passo de desfazer com toast
+  "Punch in on N clips" e Undo; a agulha toca do segundo antes do primeiro corte com zoom. É calculado ao desenhar (`TakeEdit.punchedTimeline`,
+  `EditSegment.punchesInOnCut`, nunca salvo no clipe): segue cada corte feito depois, e desligar tira só o que ele pôs. Regras (decididas
+  08/11/2026, sem o dono): o primeiro clipe fica como foi filmado; cada corte de verdade alterna entre como filmado e mais perto; onde nada foi
+  cortado (um clipe dividido para mudar uma parte) fica como estava; um clipe com menos de **1,2 s** fica no nível do anterior (nada de entrar e
+  sair num trecho curto: "Clips under 1.2s keep the zoom of the clip before them"); um clipe com Zoom ou Crop do criador fica como ele deixou ("This
+  clip keeps the zoom and crop you gave it") e conta como mais perto se tiver zoom. Com um zoom por frase por cima, nunca passa de 1,45×. As
+  etiquetas amarelas dos clipes na linha do tempo dizem "Punch in" onde ele cai. O ponto do painel Zoom no clipe (`ClipAppliedTools`) continua só
+  para o zoom do próprio clipe. Não promete retenção.
+- **Para onde os zooms do Cue crescem** (`ZoomAnchor`, `FaceZoomFocus`, `ZoomMoment`; Punch in on cuts e zoom por frase; decidido 08/11/2026): um
+  ponto por clipe, igual na prévia, na exportação e nas alças sobre a prévia (Blur area, Track). **Em direção ao rosto** quando a gravação inteira
+  tem um rosto confiável: rosto em pelo menos 80% dos momentos, um segundo rosto de tamanho real (30% do primeiro ou mais) em menos de 10% deles,
+  e o rosto parado (o décimo mais distante a no máximo 0,12 do quadro de onde ele fica); o zoom cresce em volta desse ponto, então o rosto fica
+  onde está e nada se mexe durante o zoom; **com duas pessoas ou detecção incerta, do meio**, e nunca troca de pessoa. **Nunca corta a cabeça**: a
+  caixa do rosto, crescida até o cabelo e o queixo, fica dentro do quadro. **Nunca passa dos pixels**: deixa ao menos **540 pixels** da gravação no
+  lado curto do quadro, seja qual for a qualidade da exportação (um horizontal 1080p cortado em 9:16 tem ~607: 1,12× no máximo; um take 1080p,
+  2×), e o painel diz quando o zoom para antes ("Zoom stops at 1.12× · the video has too few pixels for more", "… · so your head stays in the
+  frame"). Com Follow face (o recorte já segue o rosto) ou com a tela dividida, do meio. O Zoom escolhido pelo criador no clipe (Push in, Pull out,
+  Punch in) fica como era: do meio, sem limite. A análise de movimento é pedida assim que um desses zooms existe (`EditedComposition.readsMotion`);
+  até ficar pronta o zoom cresce do meio, e a exportação não espera por ela (usa a que a prévia usou). A capa ainda não conta esses zooms
+  (pendente, como o zoom por frase).
 - **Stabilize** (barra do clipe, entre Volume e Duplicate; `EditSegment.stabilization`, `StabilizationLevel`, `StabilizationPath`, `StabilizePanel`):
   **Off · Gentle · Standard · Strong** (suavização de 0,25 / 0,6 / 1,2 s; zoom de no máximo 5 / 9 / 14%). O caminho da câmera é suavizado nos
   dois sentidos; o zoom é o **menor** que esconde as bordas em 9 de cada 10 quadros; onde a câmera mexe mais (uma panorâmica), o caminho é mantido
@@ -3296,8 +3327,12 @@ Tudo fica neste iPhone.
   Reduce noise, parte própria porque muda o som na hora; a folha diz "the video's sound changes now"). Editing só prepara as ferramentas:
   "Clean up: pauses over 1.2s · Tight gap · Music you add: 25%, 18 dB down under the voice · nothing is cut"; nada é cortado até o Remove do
   Clean up, e a música adicionada depois entra nesse nível (`TakeEdit.newMusic`, "Music added at 0:10 · 25%"). No editor do kit
-  (`BrandKitEditingSection`): o resumo, **Take from this video** e Remove; **New kit from this video** já traz o Editing do vídeo. **Zoom
-  ainda não entra**: guardar o gosto por zoom e criar zooms na timeline são coisas diferentes, e a segunda espera o zoom por frase.
+  (`BrandKitEditingSection`): o resumo, **Take from this video** e Remove; **New kit from this video** já traz o Editing do vídeo. **Zoom**
+  (`BrandKitEditing.zoom`, `BrandKitZoom`, parte própria `BrandKitPart.zoom` porque Punch in on cuts muda a imagem na hora): guarda o Punch in on
+  cuts do vídeo (ligado na força dele, ou desligado) e a força que a maioria dos zooms por frase dele usa; só existe quando o vídeo tinha um dos
+  dois. Na folha: "Punch in on cuts: Strong · Phrase zooms: Subtle · the picture changes now" (num vídeo sem cortes, "… · on the cuts you make").
+  Aplicado (também em "Use on new videos"), liga ou desliga o Punch in on cuts como guardado e marca a força no menu Zoom das legendas ("· your
+  style"); nenhuma frase ganha zoom por isso, e nunca entram textos, mídias, capa ou tempos. Kits salvos antes não têm Zoom.
   **Ducking**: guardado (quanto a música baixa sob a voz e se volta nas pausas), vale para a música adicionada depois; a que já está no vídeo
   fica como está. **Efeito de voz**: o kit guarda o Studio Voice (Enhance voice e Reduce noise), que entra na hora em que o kit é aplicado com
   essa parte marcada (ou num vídeo novo), dito na folha e no aviso. Os **Voice effects** criativos de um clipe ou narração (Radio, Megaphone,
