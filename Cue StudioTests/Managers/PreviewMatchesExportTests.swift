@@ -217,6 +217,24 @@ extension RealExports {
             #expect(try RenderParity.meanDifference(frames[0], middle, size: size) > 2)
         }
 
+        /// The zoom cases: Punch in on cuts and a phrase zoom, alone and over the cut-out creator.
+        private func addZoom(_ feature: RenderFeature, to edit: inout TakeEdit, take: URL) async throws {
+            _ = edit.timeline.removeEdited(0.95...1.45)
+            if feature == .behindYouZoom {
+                // Plan §16 task 7: the cut-out creator, moved and resized over a video Behind you, with a phrase zoom and a
+                // punch-in on the cut: the zooms take the composed picture closer, the backdrop with it.
+                try await addLayer(.behindYou, to: &edit)
+                edit.cutZoom = CutZoom(strength: .medium)
+                edit.phraseZooms = [PhraseZoom(span: TimeSpan(start: 0.3, end: 0.9), strength: .strong)]
+                return
+            }
+            // The second clip punched in at Strong toward a face left of the middle, a phrase zoom over it on top (together held
+            // at what the 720 pixels allow).
+            edit.cutZoom = CutZoom(strength: .strong)
+            edit.phraseZooms = [PhraseZoom(span: TimeSpan(start: 2.8, end: 3.5), strength: .strong)]  // Edited 1.7 to 2.4.
+            MotionAnalysisStore.save(Self.steadyFace(width: 720, height: 1280), forRecording: take)
+        }
+
         /// An edit with both ends trimmed (0.6 s off the start, 0.4 s off the end) and the tool on.
         private func edit(for feature: RenderFeature, take: URL) async throws -> TakeEdit {
             var edit = TakeEdit(sourceDuration: 4, aspect: .portrait)
@@ -306,13 +324,8 @@ extension RealExports {
                     BlurKeyframe(time: 3.5, box: NormalizedBox(x: 0.6, y: 0.5, width: 0.3, height: 0.15)),
                 ]
                 edit.blurRegions = [region]
-            case .cutZoom:
-                // The second clip punched in at Strong toward a face left of the middle, a phrase zoom over it on top (together
-                // held at what the 720 pixels allow).
-                _ = edit.timeline.removeEdited(0.95...1.45)
-                edit.cutZoom = CutZoom(strength: .strong)
-                edit.phraseZooms = [PhraseZoom(span: TimeSpan(start: 2.8, end: 3.5), strength: .strong)]  // Edited 1.7 to 2.4.
-                MotionAnalysisStore.save(Self.steadyFace(width: 720, height: 1280), forRecording: take)
+            case .cutZoom, .behindYouZoom:
+                try await addZoom(feature, to: &edit, take: take)
             case .followFace:
                 edit.aspect = .square
                 edit.faceFollow = FaceFollow(pace: .quick)
@@ -334,7 +347,7 @@ extension RealExports {
 enum RenderFeature: String, CaseIterable, CustomTestStringConvertible {
     case look, crop, fit, clipZoom, shortClipTransition, slide, zoomTransition, flash, fade, push, wipe, blur, punch, speed,
          speedCurve, text, textEffects, turnedText, captions, stabilize, followFace, blurArea, background, backgroundKey, skin, mask,
-         splitScreen, behindYou, cutZoom
+         splitScreen, behindYou, cutZoom, behindYouZoom
 
     var testDescription: String { rawValue }
 
@@ -350,7 +363,7 @@ enum RenderFeature: String, CaseIterable, CustomTestStringConvertible {
         case .speedCurve: [0.3, 0.9, 1.5]
         // A video over the take: halfway between two frames of both (on a frame's edge, which of the two shows depends on the last
         // bit of a sum, in the take and in the video over it alike).
-        case .mask, .splitScreen, .behindYou: [0.45, 1.45, 2.45]
+        case .mask, .splitScreen, .behindYou, .behindYouZoom: [0.45, 1.45, 2.45]
         // On their way in, read, on their way out.
         case .textEffects: [0.35, 0.6, 1.4, 2.6, 2.75]
         // As filmed, punched in, punched in with the phrase zoom over it.

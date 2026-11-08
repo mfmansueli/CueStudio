@@ -217,4 +217,37 @@ struct QuickEditAutoEditTests {
         viewModel.openAutoEdit()
         #expect(!viewModel.autoEditCanPunchIn)
     }
+
+    /// Plan §19's acceptance: on a project with the creator's own work, the run's cuts move the texts and the voice-over with
+    /// the speech, and they come back with Turn off.
+    @Test func theCutsMoveTheCreatorsLayersWithTheSpeech() async throws {
+        let viewModel = await makeScenario().viewModel
+        var title = TextOverlay(role: .title, style: .bold, span: TimeSpan(start: 14, end: 16))
+        title.text = "After the pause"
+        let voice = VoiceOverClip(fileName: "vo.m4a", duration: 2, anchor: 20)
+        viewModel.changeEdit {
+            $0.texts = [title]
+            $0.voiceOvers = [voice]
+        }
+        let saved = viewModel.edit.editedDuration
+        viewModel.openAutoEdit()
+        viewModel.autoEdit?.set(.captions, on: false)
+        viewModel.runAutoEdit()
+        try await waitForResults(viewModel)
+        #expect(saved - viewModel.edit.editedDuration > 1)
+        // Texts and voice-overs of one take are pinned to its seconds: where they play in the edit moves with the cuts.
+        let timeline = viewModel.edit.timeline
+        let moved = try #require(viewModel.edit.texts.first)
+        #expect(moved.text == "After the pause")
+        let start = try #require(timeline.editedSpan(forSource: moved.span)?.start)
+        // The pause at 10–12 s came out before it (the one at 30 s is after it).
+        #expect(start < 13 && start > 11.99, "The text moved with the speech: \(start)")
+        #expect(abs((timeline.editedSpan(forSource: moved.span)?.duration ?? 0) - 2) < 0.01, "and kept its length")
+        let narration = try #require(viewModel.edit.voiceOvers.first)
+        let voiceStart = try #require(timeline.editedTime(forSource: narration.anchor))
+        #expect(abs(voiceStart - (start + 6)) < 0.01, "The voice-over moved with it")
+        viewModel.turnOffAutoEditStep(.speech)
+        let back = viewModel.edit.timeline.editedSpan(forSource: moved.span)?.start ?? 0
+        #expect(abs(back - 14) < 0.05, "Turned off, the text plays where it did")
+    }
 }
