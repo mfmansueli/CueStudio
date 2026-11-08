@@ -27,20 +27,27 @@ final class RealTakeEditorTrustUITests: XCTestCase {
         XCTAssertTrue(captions.exists(within: 5), "Auto edit didn't open")
         for step in ["zoom", "punchIn"] {
             let toggle = app.switches["edit.autoEdit.\(step)"]
-            // The switch itself, at the row's trailing edge: a tap on the row's middle lands on its words.
-            if toggle.exists, toggle.isEnabled, toggle.value as? String == "0" {
-                toggle.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5)).tap()
+            // Only a switch in sight: one under the pinned Auto edit button would take the tap and start the run.
+            for _ in 0..<3 where toggle.exists && !toggle.isHittable { app.swipeUp(velocity: .slow) }
+            if toggle.isHittable, toggle.isEnabled, toggle.value as? String == "0" {
+                toggle.switches.firstMatch.tap()
             }
+            say("\(step) is \(toggle.value as? String ?? "?")")
         }
         attach(app, "auto-edit-choosing")
         let started = Date()
-        app.buttons["edit.autoEdit.run"].tap()
+        let run = app.buttons["edit.autoEdit.run"]
+        if run.exists { run.tap() }
         let speech = app.descendants(matching: .any)["edit.autoEdit.result.speech"]
         XCTAssertTrue(speech.exists(within: 240), "Auto edit didn't finish in 4 minutes on a real take")
         say("auto edit took \(Int(Date().timeIntervalSince(started))) s")
         for step in ["speech", "captions", "zoom", "punchIn"] {
-            say("\(step): \(app.descendants(matching: .any)["edit.autoEdit.result.\(step)"].label)")
+            // The results are a list: a row under the fold is drawn once it scrolls in.
+            let row = app.descendants(matching: .any)["edit.autoEdit.result.\(step)"]
+            for _ in 0..<3 where !row.exists { app.swipeUp(velocity: .slow) }
+            say("\(step): \(row.exists ? row.label : "no row")")
         }
+        for _ in 0..<3 where !speech.isHittable { app.swipeDown(velocity: .slow) }
         attach(app, "auto-edit-results")
         let edited = EditorApp.length(app)
         say("length \(full) → \(edited)")
@@ -57,13 +64,12 @@ final class RealTakeEditorTrustUITests: XCTestCase {
         if edited != full, off.exists(within: 3) {
             off.tap()
             XCTAssertTrue(speech.label.contains("Turned off"), speech.label)
-            app.swipeDown(velocity: .fast)
-            XCTAssertTrue(app.buttons["edit.autoEdit.run"].isGone(within: 5))
+            closeSheet(app)
             XCTAssertEqual(EditorApp.length(app), full, "Turning the clean-up off didn't bring every cut back")
             app.buttons["edit.undoButton"].tap()
             XCTAssertEqual(EditorApp.length(app), edited, "Undo didn't take the turning off back")
         } else {
-            app.swipeDown(velocity: .fast)
+            closeSheet(app)
         }
         app.buttons["edit.undoButton"].tap()
         XCTAssertEqual(EditorApp.length(app), full, "One Undo didn't take the whole run back")
@@ -76,7 +82,10 @@ final class RealTakeEditorTrustUITests: XCTestCase {
         let full = EditorApp.length(app)
         EditorApp.openPauses(app)
         let quick = app.buttons["edit.pauses.quickPass"]
-        XCTAssertTrue(quick.exists(within: 120), "No Quick pass once Clean up listened")
+        // Quick pass waits for Clean up to listen: the pauses' list (or "no pauses") says it is done.
+        let listened = app.buttons["edit.pauses.apply"].exists(within: 120)
+            || app.descendants(matching: .any)["edit.pauses.empty"].exists
+        XCTAssertTrue(listened && quick.exists, "Clean up didn't finish listening in 2 minutes")
         guard quick.isEnabled else {
             say("Quick pass is off: nothing clear to take out")
             attach(app, "quick-pass-nothing")
@@ -117,8 +126,8 @@ final class RealTakeEditorTrustUITests: XCTestCase {
         if layer.exists(within: 5) {
             let from = layer.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
             from.press(forDuration: 0.1, thenDragTo: from.withOffset(CGVector(dx: -60, dy: 30)))
-            say("after the drag: \(place.label)")
-            XCTAssertTrue(place.label.contains("Moved"), "Dragging on the preview didn't move the person: \(place.label)")
+            let moved = app.staticTexts["Moved"]
+            XCTAssertTrue(moved.exists(within: 3), "Dragging on the preview didn't move the person")
             layer.pinch(withScale: 0.75, velocity: -1)
             say("after the pinch: \(app.descendants(matching: .any)["edit.personSize"].value as? String ?? "?")")
             attach(app, "cutout-moved")
@@ -149,7 +158,7 @@ final class RealTakeEditorTrustUITests: XCTestCase {
         for _ in 0..<4 where !reset.isHittable { panel.swipeUp(velocity: .slow) }
         if reset.exists, reset.isEnabled {
             reset.tap()
-            XCTAssertTrue(place.label.contains("As recorded"), "Back where you were recorded: \(place.label)")
+            XCTAssertTrue(app.staticTexts["As recorded"].exists(within: 3), "Back where you were recorded didn't bring the person back")
         }
         app.buttons["edit.panel.apply"].tap()
     }
@@ -179,7 +188,8 @@ final class RealTakeEditorTrustUITests: XCTestCase {
         XCTAssertTrue(cuts.exists(within: 5), "No Punch in on cuts in Zoom")
         cuts.tap()
         XCTAssertTrue(EditorApp.toastSays(app, "Punch in on", timeout: 5), "No toast after Punch in on cuts")
-        say("Punch in on cuts: \(cuts.label)")
+        let closer = app.staticTexts.matching(NSPredicate(format: "label CONTAINS 'clips closer'")).firstMatch
+        say("Punch in on cuts: \(cuts.value as? String ?? "?") · \(closer.label)")
         let limit = app.descendants(matching: .any)["edit.zoom.cutsLimit"]
         if limit.exists { say("limit: \(limit.label)") }
         attach(app, "punch-in")
@@ -188,8 +198,9 @@ final class RealTakeEditorTrustUITests: XCTestCase {
         EditorApp.mainTrack(app, at: 0.15).tap()
         EditorApp.tapTool(app, "zoom")
         for _ in 0..<4 where !cuts.isHittable { panel.swipeUp(velocity: .slow) }
-        say("after Undo: \(cuts.label)")
-        XCTAssertFalse(cuts.label.contains("clips closer"), "Undo left Punch in on cuts on: \(cuts.label)")
+        let on = app.staticTexts.matching(NSPredicate(format: "label CONTAINS 'clips closer'")).firstMatch
+        say("after Undo: \(cuts.value as? String ?? "?")")
+        XCTAssertFalse(on.exists, "Undo left Punch in on cuts on: \(on.label)")
     }
 
     // MARK: - Private
@@ -200,6 +211,14 @@ final class RealTakeEditorTrustUITests: XCTestCase {
         }
         let unscripted = ProcessInfo.processInfo.environment["CUE_REAL_TAKE_UNSCRIPTED"] != nil
         return EditorApp.open(arguments: ["-uiTestRealTake", take] + (unscripted ? ["-uiTestRealTakeUnscripted"] : []))
+    }
+
+    /// The sheet's ✕ (on the iPhone a swipe down can land on the results' list and leave the sheet open).
+    private func closeSheet(_ app: XCUIApplication) {
+        // The glass ✕ of `cueSheetChrome`: a system close button, found by its name.
+        let close = app.buttons.matching(NSPredicate(format: "label == 'Close' OR identifier == 'Close'")).firstMatch
+        if close.exists(within: 3) { close.tap() }
+        XCTAssertTrue(app.descendants(matching: .any)["edit.autoEdit.compare"].isGone(within: 5), "Auto edit didn't close")
     }
 
     private func say(_ text: String) {
