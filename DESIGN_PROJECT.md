@@ -1784,10 +1784,28 @@ verde/azul, e num vídeo sem tela verde Color "não fazia nada".
   Automatic. Com um fundo escolhido, o nome do cartão diz **In use** (o recorte está agindo). Em tela verde/azul: **Screen color** (Green | Blue, "Your own color" quando escolhida à mão), "Pick the screen's color", e **Tolerance, Edge,
   Spill** recolhidos em "Fine-tune the cutout" ("· adjusted" quando mudados), cada um com o que faz (`ChromaKeyCube`). Com Original: "Used once a
   background is picked".
+- **Where you are** (`PersonPlaceControls`), com um fundo escolhido (ou uma mídia Behind you no momento da agulha): "As recorded" ou "Moved",
+  **Your size** (30–150 %), "Drag yourself on the preview to move. Pinch to resize." e **Back where you were recorded**. Com o painel aberto e o vídeo
+  parado, a prévia mostra o contorno tracejado de onde a pessoa está (`PersonPlaceLayer`, `Palette.Editor.overlayOutline`): arrastar move, pinçar
+  escala (um gesto é um passo de desfazer; ações do VoiceOver Move up/down/left/right, Bigger, Smaller). O lugar é de cada gravação ou clipe
+  (`BackgroundEffect.person`, `PersonPlacement`; edições antigas leem "como gravado"). Com Blur e a pessoa movida, o lugar onde ela estava fica
+  desfocado sem ela (um desfoque normalizado que só soma o que é fundo). Em Original sem mídia atrás, a pessoa não move (nada novo apareceria).
+- **Check the cutout** (`CutoutCheckRow`), no cartão Cutout enquanto o Automatic age: lê os clipes que usam o recorte (15 quadros por segundo, com
+  o mesmo `PersonMaskTrack` da prévia) e diz "Checking the cutout · N%" com Stop (não guarda nada), depois "Found you in every frame" ou "Cue lost
+  you in N moments" com até 6 botões de tempo ("And N more"); tocar pausa e leva a agulha ao momento. O resultado vale até a edição mudar
+  (aí volta a oferecer a verificação); continua rodando se o criador trocar de painel.
+- **Máscara estável** (`PersonMaskTrack`, por gravação e fluxo da composição): a máscara do Vision é suavizada em ordem de reprodução, pouco onde
+  a pessoa se move (segue na hora) e mais onde ela está parada (tira o tremor da borda). Um quadro em que o Vision não acha ninguém, ou acha bem
+  menos que antes, mantém o último contorno por 0,5 s; depois, em 0,3 s, passa à máscara nova (a pessoa saiu) ou ao quadro como gravado. Um corte,
+  um salto da agulha ou 0,25 s sem quadro recomeçam do zero, então a exportação (que lê em ordem) é sempre igual e a prévia chega a ela poucos
+  quadros depois de um salto. A capa e a câmera ao vivo usam a máscara do quadro, sem suavizar.
 - Última linha: "Changes show in the preview and are saved as you make them. ✓ closes the panel."
 - Continua `.medium` (não expande: depende da trilha e da agulha), com a folga do Home Indicator (`EditorPanel.scrollsClearOfHomeIndicator`).
-- Contraste: `PaletteContrastTests.theBackgroundPanelsCutoutCardReads`; `PanelAdvancedButton` usa `ink2`.
-- Testes: `QuickEditBackgroundPanelTests`, `BackgroundPanelUITests` (6,1" e SE), `BackgroundCompositionTests`, `BackgroundDeviceTests`.
+- Contraste: `PaletteContrastTests.theBackgroundPanelsCutoutCardReads`; `PanelAdvancedButton` usa `ink2`; Where you are e Check the cutout só usam
+  `ink`, `ink2`, `warnText` e `successText` (já medidos).
+- Testes: `QuickEditBackgroundPanelTests`, `QuickEditCutoutTests`, `PersonMaskTrackTests`, `BackgroundPanelUITests` (6,1" e SE),
+  `BackgroundCompositingTests`, `BackgroundCompositionTests`, `PreviewMatchesExportTests` (`behindYou`), `BackgroundDeviceTests` (no iPhone: estabilidade
+  do contorno antes e depois, falhas seguidas, pan rápido e pouca luz, prévia contra exportação com a pessoa movida).
 
 ## 32. A primeira viagem: o guia do primeiro vídeo, em dicas
 
@@ -2184,7 +2202,11 @@ auditoria: `reports/editor-award-checklist.md`.
   valendo); num clipe, ele guarda só o que difere do vídeo.
 - **Painel da foto ou vídeo** (`MediaPanel`, dono, canvas 2 F5): um vídeo tem **Show | Part**. Show: Show as, Window ratio e Size (na janela),
   Opacity, Bring forward e Send backward; Part: o trecho abaixo. Uma foto não tem trecho, então fica só com Show, sem abas. Volume, Motion e Mask
-  continuam ferramentas próprias na barra do item.
+  continuam ferramentas próprias na barra do item. O Show começa com **Behind you** ("Cue cuts you out and puts this behind you",
+  `MediaLayout.behind`): ligado, a foto ou o vídeo vira o fundo atrás da pessoa recortada (o recorte do Background da gravação; Automatic quando ela
+  não tem fundo), textos, legendas e outras mídias continuam por cima, e o painel mostra Where you are (§31) no lugar de Show as, tamanho e
+  camadas; num vídeo, "Your voice stays. Its own sound is in Volume." (o som dele segue o Volume do item, mudo se não foi mantido). Um item atrás
+  por vez: ligar outro que cruza o tempo dele avisa "Something else is behind you then · one at a time". Subtítulo "Behind you · you stay on top".
 - **Trecho do B-roll** (`MediaOverlay.mediaStart`, `MediaTrimStrip`): escolhido antes de entrar (§51) e, depois, no painel da mídia (aba Part): **Part of the
   video** mostra a faixa do arquivo com o trecho ("0:03 to 0:05 of 0:06"); arrastar escolhe de onde começa sem mudar onde ele está no vídeo,
   **Duration** muda quanto toca (− e + repetem ao segurar, e a sequência é um passo de desfazer; tocar no valor oferece 1, 2, 3, 5 e 10 s, até o que
