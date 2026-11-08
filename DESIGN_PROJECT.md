@@ -2207,8 +2207,14 @@ auditoria: `reports/editor-award-checklist.md`.
   (`VolumeAdvancedReachUITests`; os da música, embaixo do abaixar sob a voz, são alcançados rolando até o fim).
 - **Templates** (`VideoTemplate`, painel Templates: Bold hook, Tutorial, Story, Clean, Interview): legendas (tema e revelação, mantendo linhas,
   posição e margens), tipo e animação de todos os textos (não dos gráficos) e o estilo dos próximos; sem texto, abre o vídeo com o título do
-  roteiro. As palavras, a posição de cada texto, os cortes, o som e os gráficos ficam; **um** Undo desfaz tudo ("Bold hook on the whole video" ·
-  Undo). Sem legendas, a aba diz "No captions yet…" com **Make captions**. **Legendas de cada template** (escolha do dono numa página de
+  roteiro. As palavras, a posição de cada texto, os cortes, o som e os gráficos ficam. **Tocar o cartão prova o template no vídeo**
+  (`tryVideoTemplate`, `TemplateTrial`, decisão do dono, 08/11/2026): ele já está na prévia (como fica de verdade, com o kit do vídeo) e uma
+  folha baixa (`TemplateTrialSheet`, metade da tela) diz o que muda e o que fica: "Caption style · Bold hook" com "Lines, timing and place stay",
+  "Type and motion on 3 texts · words and place stay", o "Opening text" que entra; num vídeo com kit, cada linha diz "keeps Acme's fonts and
+  colors" (a família e as cores das legendas e dos textos ficam; o template troca forma, tamanho e movimento); sem kit, se as legendas têm
+  cores Custom, "your Custom colors change too". O que foi ajustado à mão fica, com as chaves desmarcadas de `ManualChangesOptions` (abaixo).
+  **Apply** é **um** passo de Desfazer ("Bold hook on the whole video" · Undo); **Cancel** ou fechar a folha volta o vídeo ao que era, sem passo
+  (`EditDocument.cancelChanges`). Sem legendas, a aba diz "No captions yet…" com **Make captions**. **Legendas de cada template** (escolha do dono numa página de
   opções; `VideoTemplate.captionSettings`: tema, revelação, look de texto copiado nas legendas, tamanho e cor da palavra dita), todas sobre placa
   ou cartão, porque branco só com sombra some em cena clara: **Bold hook** Pop (letra grossa numa faixa violeta por linha), 1,2×, palavra dita em
   amarelo; **Tutorial** Educational com o look Label (maiúsculas num cartão escuro), palavra dita em amarelo; **Story** Editorial (serifa numa
@@ -3184,6 +3190,23 @@ Tudo fica neste iPhone.
   estilo, §50); a capa mantém as palavras. As fontes vão nos textos (no peso mais perto que a família tem), no título da capa e nas legendas.
   As cores do kit aparecem primeiro em toda paleta deste vídeo (`AppliedBrandKit`, `\.brandColors`). O cartão do kit aplicado fica marcado.
   **Atualizar ou apagar um kit nunca muda um vídeo já feito**: o vídeo guarda o que o kit pôs nele.
+- **Meu estilo é o kit** (decisões do dono F, G, H, 08/11/2026). Duas partes a mais: **Editing** (`BrandKitEditing`: Clean up › pausas mais
+  longas que e o espaço deixado, o volume em que a música adicionada entra e quanto ela baixa sob a voz) e **Studio Voice** (Enhance voice e
+  Reduce noise, parte própria porque muda o som na hora; a folha diz "the video's sound changes now"). Editing só prepara as ferramentas:
+  "Clean up: pauses over 1.2s · Tight gap · Music you add: 25%, 18 dB down under the voice · nothing is cut"; nada é cortado até o Remove do
+  Clean up, e a música adicionada depois entra nesse nível (`TakeEdit.newMusic`, "Music added at 0:10 · 25%"). No editor do kit
+  (`BrandKitEditingSection`): o resumo, **Take from this video** e Remove; **New kit from this video** já traz o Editing do vídeo. **Zoom
+  ainda não entra**: guardar o gosto por zoom e criar zooms na timeline são coisas diferentes, e a segunda espera o zoom por frase.
+- **Use on new videos** (uma chave no editor do kit; um kit só: salvar um tira a marca do outro, duplicar não copia, e um kit restaurado
+  depois de outro tomar o lugar volta sem ela; o cartão diz "New videos open in it"). Um vídeo aberto pela primeira vez no editor (sem edição
+  salva, nem rascunho) entra com tudo o que o kit pode pôr, num passo, com "Your style is on" · Undo ("· Studio Voice changes the sound" quando
+  o som muda). O Undo tira só desse vídeo, e ele não volta a entrar ao reabrir (`EditorPreferencesStore.newVideoKitOffered`, por take). Um
+  vídeo já editado continua como foi salvo.
+- **O que foi ajustado à mão fica** (H; `ManualStyleChanges`, `ManualChangesOptions`, no kit e no template): títulos com fonte, cor ou tamanho
+  mudados à mão (`TextOverlay.customized`) e linhas de legenda com visual próprio (Emphasize line, tamanho) mantêm o que têm. Quando existe
+  algum, a folha diz "What you changed by hand stays" e mostra chaves desmarcadas com as contagens: "Also replace my changes on titles" ·
+  "Titles changed by hand: 2 · font, color, size" e "Also replace my changes on caption lines" · "Lines with their own look: 3 · emphasized or
+  bigger" (só com a parte de legenda escolhida). Marcada, troca só aquilo; o lugar de cada texto e as palavras ficam sempre.
 - **Cores livres** (`OverlayColor` aceita "#RRGGBB"): o último poço de toda paleta do editor abre o seletor de cor do sistema; a cor entra quando
   o dedo para (0,35 s), então uma escolha é uma mudança e um Desfazer, e aparece na paleta enquanto está em uso. Edições antigas leem igual (o JSON continua texto); uma versão anterior do Cue lê uma cor livre como
   branco. A cor do texto é conteúdo do criador, não um token: o aviso de contraste das legendas (§50) continua valendo.
