@@ -50,6 +50,16 @@ final class EditorPreferencesStore: EditorPreferencesStoring {
         defaults.set(Array(entries.suffix(Self.keptTimelineLanes)), forKey: DefaultsKey.timelineLanes)
     }
 
+    func newVideoKitOffered(forTake id: UUID) -> Bool {
+        (defaults.stringArray(forKey: DefaultsKey.newVideoKitTakes) ?? []).contains(id.uuidString)
+    }
+
+    func markNewVideoKitOffered(forTake id: UUID) {
+        var takes = (defaults.stringArray(forKey: DefaultsKey.newVideoKitTakes) ?? []).filter { $0 != id.uuidString }
+        takes.append(id.uuidString)
+        defaults.set(Array(takes.suffix(Self.keptTimelineLanes)), forKey: DefaultsKey.newVideoKitTakes)
+    }
+
     /// "take id=track", the take edited last at the end.
     private var timelineLanes: [String] {
         defaults.stringArray(forKey: DefaultsKey.timelineLanes) ?? []

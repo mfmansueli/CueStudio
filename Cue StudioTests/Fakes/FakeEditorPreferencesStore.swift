@@ -13,6 +13,7 @@ final class FakeEditorPreferencesStore: EditorPreferencesStoring {
     var narrationScriptSpeed: Double?
     var lowPowerNoticeShownAt: Date?
     var timelineLanes: [UUID: TimelineLane] = [:]
+    var newVideoKitTakes: Set<UUID> = []
 
     init(showsNarrationScript: Bool = true, narrationScriptSpeed: Double? = nil) {
         self.showsNarrationScript = showsNarrationScript
@@ -25,5 +26,13 @@ final class FakeEditorPreferencesStore: EditorPreferencesStoring {
 
     func setTimelineLane(_ lane: TimelineLane, forTake id: UUID) {
         timelineLanes[id] = lane
+    }
+
+    func newVideoKitOffered(forTake id: UUID) -> Bool {
+        newVideoKitTakes.contains(id)
+    }
+
+    func markNewVideoKitOffered(forTake id: UUID) {
+        newVideoKitTakes.insert(id)
     }
 }

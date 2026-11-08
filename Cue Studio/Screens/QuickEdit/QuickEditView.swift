@@ -147,6 +147,10 @@ struct QuickEditView: View {
             Color.clear.sheet(item: Bindable(viewModel.brand).kitBeingEdited) { kit in
                 BrandKitEditorSheet(viewModel: viewModel, kit: kit)
             }
+            // Templates: the one tried on, with what it changes and keeps.
+            Color.clear.sheet(isPresented: Binding(get: { viewModel.templateTrial != nil }, set: { if !$0 { viewModel.dropVideoTemplate() } })) {
+                if let trial = viewModel.templateTrial { TemplateTrialSheet(viewModel: viewModel, trial: trial) }
+            }
         }
         .confirmationDialog(
             "This video has its own sound",

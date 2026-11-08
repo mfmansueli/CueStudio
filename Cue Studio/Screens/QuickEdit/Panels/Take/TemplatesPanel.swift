@@ -8,7 +8,8 @@ import SwiftUI
 /// Templates or the creator's brand kits (`TemplatesPanelSection`): two panels, each opened by its own button on the bars, with
 /// no tabs between them (owner, canvas 2 R3, 07/11/2026: the tabs scrolled away with the content, and the bar already has the
 /// two). **Templates**: a whole look for a kind of video (`VideoTemplate`), one card each with what it changes, the one the edit
-/// is in marked; one Undo puts everything back. **Brand**: the creator's brand kits (`BrandKitsSection`).
+/// is in marked; a tap tries it on the video with a sheet that says what it changes and keeps (`TemplateTrialSheet`), Apply keeps
+/// it and one Undo puts everything back. **Brand**: the creator's brand kits (`BrandKitsSection`).
 struct TemplatesPanel: View {
     let viewModel: QuickEditViewModel
 
@@ -28,7 +29,7 @@ struct TemplatesPanel: View {
         .accessibilityIdentifier("edit.panel.\(viewModel.templatesSection == .brand ? "brand" : "templates")")
     }
 
-    /// Templates: a whole look for a kind of video, in one tap (one Undo).
+    /// Templates: a whole look for a kind of video, tried on with a tap and kept with Apply (one Undo).
     private var templates: some View {
         VStack(alignment: .leading, spacing: 8) {
             // A template styles the captions: without them yet, one tap makes them first.
@@ -54,7 +55,7 @@ struct TemplatesPanel: View {
     private func templateCard(_ template: VideoTemplate, isOn: Bool) -> some View {
         Button {
             Haptics.selection()
-            viewModel.applyVideoTemplate(template)
+            viewModel.tryVideoTemplate(template)
         } label: {
             HStack(spacing: 12) {
                 Image(systemName: template.systemImage)
@@ -84,7 +85,7 @@ struct TemplatesPanel: View {
         .buttonStyle(.cuePressCard)
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(isOn ? .isSelected : [])
-        .accessibilityHint(Text("Applies to the whole video. Undo puts it back."))
+        .accessibilityHint(Text("Tries it on the whole video. Apply keeps it."))
         .accessibilityIdentifier("edit.template.\(template.rawValue)")
     }
 }

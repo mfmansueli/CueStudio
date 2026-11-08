@@ -74,8 +74,66 @@ extension BrandViewModel {
                         : String(localized: "\(logo.corner.label), over the whole video"),
                     isAvailable: true
                 )
+            case .editing:
+                return editingChange(kit.editing, part: part)
+            case .studioVoice:
+                return studioVoiceChange(kit.editing, part: part)
             }
         }
+    }
+
+    /// Editing: values ready in the tools, nothing that plays changes ("Clean up: pauses over 0.7s · Natural gap · Music you add:
+    /// 40%, 12 dB down under the voice · nothing is cut").
+    private func editingChange(_ editing: BrandKitEditing?, part: BrandKitPart) -> KitChange {
+        guard let editing else { return KitChange(part: part, title: part.label, detail: "", isAvailable: false) }
+        let said = Self.said(editing)
+        let detail = String(localized: "\(said.pauses) · \(said.music) · nothing is cut", comment: "A kit's Editing, said before it goes on a video")
+        return KitChange(part: part, title: part.label, detail: detail, isAvailable: true)
+    }
+
+    /// A kit's Editing in words: "Clean up: pauses over 0.7s · Natural gap", "Music you add: 40%, 12 dB down under the voice",
+    /// "Enhance voice Light · Reduce noise Off".
+    static func said(_ editing: BrandKitEditing) -> (pauses: String, music: String, voice: String) {
+        let pauses = String(localized: "Clean up: pauses over \(DurationText.tenths(editing.pauseThreshold)) · \(editing.pauseGap.label) gap")
+        let percent = Int((editing.music.volume * 100).rounded())
+        let depth = Int(editing.music.duck.depth.rounded())
+        let music = String(localized: "Music you add: \(percent)%, \(depth) dB down under the voice")
+        let voice = String(localized: "Enhance voice \(editing.voiceEnhancement.label) · Reduce noise \(editing.noiseReduction.label)")
+        return (pauses, music, voice)
+    }
+
+    /// Studio Voice: the one part of Editing that changes the sound at once, said so (owner, 08/11/2026).
+    private func studioVoiceChange(_ editing: BrandKitEditing?, part: BrandKitPart) -> KitChange {
+        guard let editing else { return KitChange(part: part, title: part.label, detail: "", isAvailable: false) }
+        let levels = Self.said(editing).voice
+        let same = edit.audioVersion >= 2 && edit.voiceEnhancement == editing.voiceEnhancement && edit.noiseReduction == editing.noiseReduction
+        let detail = same
+            ? String(localized: "\(levels) · this video already sounds like this")
+            : String(localized: "\(levels) · the video's sound changes now", comment: "A kit's Studio Voice, said before it goes on a video")
+        return KitChange(part: part, title: part.label, detail: detail, isAvailable: true)
+    }
+
+    /// The creator's hand-made changes that putting `parts` of a kit on would replace too, if asked (`ManualStyleChanges`).
+    func manualChanges(replacedBy parts: Set<BrandKitPart>) -> ManualStyleChanges {
+        var fields: Set<TextLookField> = []
+        if parts.contains(.textStyle) { fields.formUnion(ManualStyleChanges.wholeLook) }
+        if parts.contains(.fonts) { fields.formUnion(ManualStyleChanges.font) }
+        return ManualStyleChanges(in: EditSnapshot(edit), replacing: fields, touchesCaptions: parts.contains(.captionStyle))
+    }
+
+    /// A new video opens in the kit for new videos (owner, 08/11/2026, G): every part it can put on, as one undo step with
+    /// "Your style is on" and Undo (undone, the next videos still open in it). Studio Voice changes the sound, so the toast says it.
+    /// - Returns: whether a kit went on.
+    @discardableResult
+    func wearNewVideoKit() -> Bool {
+        guard let kit = kits.newVideoKit else { return false }
+        let parts = Set(changes(for: kit).filter(\.isAvailable).map(\.part))
+        guard !parts.isEmpty else { return false }
+        let message = parts.contains(.studioVoice)
+            ? String(localized: "Your style is on · Studio Voice changes the sound", comment: "Toast: a new video opened in the creator's kit")
+            : String(localized: "Your style is on", comment: "Toast: a new video opened in the creator's kit")
+        apply(kit, parts: parts, toast: message)
+        return true
     }
 
     /// Opens the parts to choose before `kit` goes on (all of those that can, picked).
@@ -83,8 +141,9 @@ extension BrandViewModel {
         kitToApply = kit
     }
 
-    /// Puts `parts` of `kit` on the video: one undo step, said in the toast with Undo.
-    func apply(_ kit: BrandKit, parts: Set<BrandKitPart>) {
+    /// Puts `parts` of `kit` on the video: one undo step, said in the toast with Undo (or `toast`'s words). What the creator styled
+    /// by hand stays unless `replacing` says otherwise.
+    func apply(_ kit: BrandKit, parts: Set<BrandKitPart>, replacing: ReplacedManualChanges = ReplacedManualChanges(), toast message: String? = nil) {
         guard isReady, !parts.isEmpty else { return }
         var logoMedia: ImportedMedia?
         if parts.contains(.logo), let logo = kit.logo, kits.hasLogoFile(kit), let name = try? EditMediaFiles.link(kits.url(of: logo)) {
@@ -94,18 +153,23 @@ extension BrandViewModel {
         let aspect = edit.aspect
         let current = edit
         change { snapshot in
-            Self.wear(kit, parts: parts, logo: logoMedia, on: &snapshot, edit: current, aspect: aspect)
+            Self.wear(kit, parts: parts, logo: logoMedia, on: &snapshot, edit: current, aspect: aspect, replacing: replacing)
         }
         kitToApply = nil
         let said = BrandKitPart.allCases.filter { parts.contains($0) && kit.has($0) }.map(\.label).joined(separator: ", ")
-        sayUndoable(String(localized: "\(kit.name) on this video · \(said)"))
+        sayUndoable(message ?? String(localized: "\(kit.name) on this video · \(said)"))
     }
 
     /// The kit's parts on `snapshot`. Texts keep their words, timing, motion and place; captions their lines, timing, size,
-    /// place and format; the cover its words. Graphics (arrows, circles, tags) keep their own look.
-    static func wear(_ kit: BrandKit, parts: Set<BrandKitPart>, logo: ImportedMedia?, on snapshot: inout EditSnapshot, edit: TakeEdit, aspect: AspectRatio) {
-        wearStyles(kit, parts: parts, on: &snapshot, aspect: aspect)
-        if parts.contains(.fonts) { wearFonts(kit, on: &snapshot, aspect: aspect) }
+    /// place and format; the cover its words. Graphics (arrows, circles, tags) keep their own look. What the creator changed by
+    /// hand on a text (`customized`) and caption lines with a look of their own stay, unless `replacing` says so.
+    static func wear(
+        _ kit: BrandKit, parts: Set<BrandKitPart>, logo: ImportedMedia?, on snapshot: inout EditSnapshot, edit: TakeEdit, aspect: AspectRatio,
+        replacing: ReplacedManualChanges = ReplacedManualChanges()
+    ) {
+        wearStyles(kit, parts: parts, on: &snapshot, aspect: aspect, replacing: replacing)
+        if parts.contains(.fonts) { wearFonts(kit, on: &snapshot, aspect: aspect, replacingTitles: replacing.titles) }
+        if let editing = kit.editing { wearEditing(editing, parts: parts, on: &snapshot) }
         if parts.contains(.logo), let logo, let kitLogo = kit.logo {
             placeLogo(logo, corner: kitLogo.corner, width: kitLogo.width, in: &snapshot, edit: edit)
         }
@@ -114,14 +178,24 @@ extension BrandViewModel {
         snapshot.brandKitKnown = true
     }
 
-    private static func wearStyles(_ kit: BrandKit, parts: Set<BrandKitPart>, on snapshot: inout EditSnapshot, aspect: AspectRatio) {
+    private static func wearStyles(
+        _ kit: BrandKit, parts: Set<BrandKitPart>, on snapshot: inout EditSnapshot, aspect: AspectRatio, replacing: ReplacedManualChanges
+    ) {
         if parts.contains(.textStyle), let style = kit.textStyle {
             snapshot.textLook = style.look
             snapshot.textPreset = nil
             for index in snapshot.texts.indices where snapshot.texts[index].graphic == nil {
-                style.look.apply(to: &snapshot.texts[index], keeping: [.position])
+                let mine = replacing.titles ? [] : snapshot.texts[index].customized
+                style.look.apply(to: &snapshot.texts[index], keeping: mine.union([.position]))
                 snapshot.texts[index].preset = nil
-                snapshot.texts[index].customized = []
+                snapshot.texts[index].customized = mine
+            }
+        }
+        if parts.contains(.captionStyle), replacing.captionLines, let lines = snapshot.captions {
+            snapshot.captions = lines.map { line in
+                var plain = line
+                plain.lineStyle = nil
+                return plain
             }
         }
         if parts.contains(.captionStyle), let style = kit.captionStyle {
@@ -141,10 +215,13 @@ extension BrandViewModel {
     }
 
     /// The kit's title font on the texts (at the nearest weight it has) and the cover's title; its caption font on the captions.
-    private static func wearFonts(_ kit: BrandKit, on snapshot: inout EditSnapshot, aspect: AspectRatio) {
+    private static func wearFonts(_ kit: BrandKit, on snapshot: inout EditSnapshot, aspect: AspectRatio, replacingTitles: Bool) {
         if let font = kit.titleFont {
             if snapshot.textLook != nil { snapshot.textLook?.font = font }
             for index in snapshot.texts.indices where snapshot.texts[index].graphic == nil {
+                // A font picked by hand for one title stays (owner, 08/11/2026), unless the creator asked to replace it.
+                if snapshot.texts[index].customized.contains(.font), !replacingTitles { continue }
+                snapshot.texts[index].customized.subtract(ManualStyleChanges.font)
                 snapshot.texts[index].font = font
                 if !font.weights.contains(snapshot.texts[index].weight) {
                     snapshot.texts[index].weight = TextOverlayWeight.nearest(to: snapshot.texts[index].weight.value, in: font.weights)
@@ -166,10 +243,28 @@ extension BrandViewModel {
         }
     }
 
+    /// Editing's values in the tools: Clean up's pauses and gap and how music added starts (nothing that plays changes); with
+    /// Studio Voice chosen, the take's voice treatment too (the sound changes now).
+    private static func wearEditing(_ editing: BrandKitEditing, parts: Set<BrandKitPart>, on snapshot: inout EditSnapshot) {
+        guard snapshot.look != nil else { return }
+        if parts.contains(.editing) {
+            snapshot.look?.pauseThreshold = editing.pauseThreshold
+            snapshot.look?.pauseGap = editing.pauseGap
+            snapshot.look?.newMusic = editing.music
+            snapshot.look?.newMusicKnown = true
+        }
+        if parts.contains(.studioVoice) {
+            snapshot.look?.audioVersion = VoiceProcessing.currentVersion
+            snapshot.look?.voiceEnhancement = editing.voiceEnhancement
+            snapshot.look?.noiseReduction = editing.noiseReduction
+        }
+    }
+
     // MARK: - Making and keeping kits
 
     /// A kit from what this video wears: its text style (the one new texts start in, or the first text's), its captions' style,
-    /// its cover's style, the colors its words use, its fonts and its logo. Not saved until the creator saves it.
+    /// its cover's style, the colors its words use, its fonts, its logo and how it was edited (Clean up's pauses, its music's
+    /// level, Studio Voice). Not saved until the creator saves it.
     func kitFromThisVideo() -> BrandKit {
         var kit = BrandKit(name: kits.nextName())
         let videoStyle = String(localized: "This video’s")
@@ -187,6 +282,7 @@ extension BrandViewModel {
             if kit.titleFont == nil { kit.titleFont = composition.title.font.face }
         }
         kit.colors = Self.colors(of: edit)
+        kit.editing = BrandKitEditing(of: edit)
         if let logo = edit.media.first(where: { $0.isLogo == true }), let name = try? kits.keepLogo(at: EditMediaFiles.url(for: logo.fileName)) {
             kit.logo = BrandKitLogo(fileName: name, aspect: logo.aspect, name: String(localized: "Logo"), corner: .topRight, width: logo.width)
         }

@@ -163,6 +163,8 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     /// Blur area: faces, plates and names hidden, followed and checked (`BlurViewModel`).
     let blur: BlurViewModel
     /// Where a failure the creator saw is written down (`noteFailure`): Console and Crashlytics; tests read it.
+    /// A template on the video while its sheet is open (`QuickEditViewModel+Templates`).
+    var templateTrial: TemplateTrial?
     @ObservationIgnored var reportFailure: (EditorFailureReport) -> Void = { $0.send() }
     /// Everything the editor started and waits for (`EditorJobs`): Auto, captions, Track, the cover, a short preview, the
     /// sound compared, the draft, beats, Clean Up and tools' work. Closing cancels it all.
@@ -278,6 +280,10 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         sayMissingMedia()
         clips.opened()
         source = .ready
+        // A video edited for the first time opens in the creator's style, once: undone, it stays as filmed next time too.
+        if take.edit == nil, !restored, case .none = reading, !editorPreferences.newVideoKitOffered(forTake: take.id), brand.wearNewVideoKit() {
+            editorPreferences.markNewVideoKitOffered(forTake: take.id)
+        }
         // What was read in part is written again as it now is (the file as it was is kept), so the chip says Saved truly.
         if partial {
             draftKeeper.changed(hasChanges: hasUnsavedChanges)

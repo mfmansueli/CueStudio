@@ -256,6 +256,7 @@ final class CreatorWorkflowUITests: XCTestCase {
         flow.tool("templates")
         let boldHook = app.buttons["edit.template.boldHook"]
         flow.tap(boldHook, "Bold hook")
+        flow.tap(app.buttons["edit.template.apply"], "Apply")
         XCTAssertTrue(flow.toastSays("Bold hook on the whole video"))
         XCTAssertTrue(boldHook.isSelected)
 
@@ -263,6 +264,7 @@ final class CreatorWorkflowUITests: XCTestCase {
         let story = app.buttons["edit.template.story"]
         flow.reveal(story, "Story")
         flow.tap(story, "Story")
+        flow.tap(app.buttons["edit.template.apply"], "Apply")
         XCTAssertTrue(flow.toastSays("Story on the whole video"))
         XCTAssertTrue(story.isSelected)
         XCTAssertFalse(boldHook.isSelected)

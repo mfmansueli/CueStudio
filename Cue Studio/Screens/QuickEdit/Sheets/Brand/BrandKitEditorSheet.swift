@@ -7,7 +7,8 @@ import SwiftUI
 
 /// A brand kit, made or changed: its name; its colors (up to six, any color: the palette's or the brand's exact one); its
 /// title and caption fonts (the imported ones first, and Import font); its logo (one of the library's pictures) and corner;
-/// and which of the creator's own styles it keeps: this video's, or one they saved, for texts, captions and the cover.
+/// which of the creator's own styles it keeps: this video's, or one they saved, for texts, captions and the cover; and its
+/// Editing and whether new videos open in it (`BrandKitEditingSection`).
 /// Nothing is saved until Save; saving never changes a video. Closed by a swipe, its changes stay as a draft that comes back the next
 /// time (`BrandViewModel+KitDraft`); Cancel throws them away.
 struct BrandKitEditorSheet: View {
@@ -50,6 +51,10 @@ struct BrandKitEditorSheet: View {
                     fonts
                     logo
                     styles
+                    BrandKitEditingSection(
+                        kit: $kit, edit: viewModel.edit,
+                        otherNewVideoKit: brand.kits.newVideoKit.flatMap { $0.id == kit.id ? nil : $0.name }
+                    )
                 }
                 .padding(.bottom, 12)
             }

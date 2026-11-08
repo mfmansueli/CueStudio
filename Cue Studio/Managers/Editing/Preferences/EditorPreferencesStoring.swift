@@ -17,4 +17,8 @@ protocol EditorPreferencesStoring: AnyObject {
     /// The track the timeline showed under the video when the take was last edited (`TimelineTrackChoice.current`).
     func timelineLane(forTake id: UUID) -> TimelineLane?
     func setTimelineLane(_ lane: TimelineLane, forTake id: UUID)
+    /// Whether the kit for new videos already went on this take once (`BrandViewModel.wearNewVideoKit`): undone, it isn't put
+    /// on again the next time the take opens.
+    func newVideoKitOffered(forTake id: UUID) -> Bool
+    func markNewVideoKitOffered(forTake id: UUID)
 }

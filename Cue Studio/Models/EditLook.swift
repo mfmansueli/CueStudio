@@ -50,6 +50,9 @@ nonisolated struct EditLook: Codable, Hashable, Sendable {
     var pauseThreshold: TimeInterval
     /// Added with "Gap left": nil in steps saved before, which leave it as it is.
     var pauseGap: PauseGap?
+    /// Added with a kit's Editing: `newMusicKnown` nil in steps saved before, which leave it as it is.
+    var newMusic: MusicDefaults?
+    var newMusicKnown: Bool?
 
     init(_ edit: TakeEdit) {
         exposure = edit.exposure
@@ -83,6 +86,8 @@ nonisolated struct EditLook: Codable, Hashable, Sendable {
         showsCaptions = edit.showsCaptions
         pauseThreshold = edit.pauseThreshold
         pauseGap = edit.pauseGap
+        newMusic = edit.newMusic
+        newMusicKnown = true
     }
 
     /// Puts these settings on `edit`.
@@ -123,5 +128,6 @@ nonisolated struct EditLook: Codable, Hashable, Sendable {
         edit.showsCaptions = showsCaptions
         edit.pauseThreshold = pauseThreshold
         if let pauseGap { edit.pauseGap = pauseGap }
+        if newMusicKnown == true { edit.newMusic = newMusic }
     }
 }

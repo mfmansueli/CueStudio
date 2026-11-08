@@ -152,6 +152,21 @@ final class EditDocument {
         endAllChanges()
     }
 
+    /// The change still going is called off (a sheet trying something on, Cancel): the edit goes back to where it began, with no
+    /// undo step.
+    func cancelChanges() {
+        changeOwners = []
+        guard let base = changeBase else { return }
+        changeBase = nil
+        restore(base)
+    }
+
+    /// The change still going starts again from where it began, still one step (a sheet trying something else on).
+    func restartChange() {
+        guard let base = changeBase else { return }
+        restore(base)
+    }
+
     /// Whatever is still changing is over (Undo, Done, another panel opening): one undo step back to where it began.
     func endAllChanges() {
         changeOwners = []

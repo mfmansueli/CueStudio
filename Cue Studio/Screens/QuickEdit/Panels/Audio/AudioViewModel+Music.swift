@@ -12,7 +12,7 @@ import Foundation
 /// an undo step; a slider is one.
 extension AudioViewModel {
     /// New music goes in at 40%, under the voice.
-    static let newMusicVolume: Double = 0.4
+    static let newMusicVolume = MusicDefaults.standardVolume
 
     var musicBars: [LayerBar] {
         edit.music.compactMap { clip in
@@ -98,15 +98,18 @@ extension AudioViewModel {
         var clip = MusicClip(
             fileName: imported.fileName, title: imported.title, fileDuration: imported.duration, start: slot.start, length: length
         )
-        clip.volume = Self.newMusicVolume
-        clip.duck = .standard
+        // A kit's Editing says how music starts on this video (`TakeEdit.newMusic`).
+        let start = edit.newMusic ?? MusicDefaults(volume: Self.newMusicVolume, duck: .standard)
+        clip.volume = start.volume
+        clip.duck = start.duck
         clip.libraryTrack = imported.libraryTrack
         change { $0.music = ($0.music ?? []) + [clip] }
         findBeatsIfNeeded()
         selectedMusicID = clip.id
         player.pause()
         player.seek(to: slot.start)
-        sayUndoable(String(localized: "Music added at \(DurationText.editor(slot.start)) · 40%"))
+        let percent = Int((start.volume * 100).rounded())
+        sayUndoable(String(localized: "Music added at \(DurationText.editor(slot.start)) · \(percent)%", comment: "Toast: where the music went in and the volume it starts at"))
     }
 
     /// "Replace": the clip keeps its place, volume and fades, and plays the new file from its

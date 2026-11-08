@@ -523,7 +523,8 @@ final class EditorUITests: XCTestCase {
     // MARK: - Timeline
 
     /// Templates and the brand kits are two panels, each from its own button with no tab to the other (canvas 2 R3); a template
-    /// applies to the whole video, is marked as the one in use and comes off with one Undo.
+    /// is tried on with a sheet (× leaves no trace), applies to the whole video, is marked as the one in use and comes off with
+    /// one Undo.
     func testTemplatesOpenOnTheirTabApartFromBrandKits() {
         let app = EditorApp.open()
         EditorApp.tapTool(app, "brandKit")
@@ -535,7 +536,19 @@ final class EditorUITests: XCTestCase {
         let boldHook = app.buttons["edit.template.boldHook"]
         XCTAssertTrue(boldHook.exists(within: 5))
         XCTAssertFalse(app.buttons["edit.brand.newKit"].exists)
+        // A tap tries it on, with a sheet saying what changes; × leaves the video as it was.
         boldHook.tap()
+        let apply = app.buttons["edit.template.apply"]
+        XCTAssertTrue(apply.exists(within: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["edit.template.change.captions"].exists)
+        app.buttons["sheet.cancel"].firstMatch.tap()
+        XCTAssertFalse(apply.exists(within: 3))
+        XCTAssertFalse(boldHook.isSelected)
+        XCTAssertFalse(app.buttons["edit.undoButton"].isEnabled, "Cancelling a template left an undo step")
+        // Apply keeps it: one Undo takes it off.
+        boldHook.tap()
+        XCTAssertTrue(apply.exists(within: 5))
+        apply.tap()
         XCTAssertTrue(EditorApp.toastSays(app, "Bold hook on the whole video"))
         XCTAssertTrue(boldHook.isSelected)
         app.buttons["edit.undoButton"].tap()

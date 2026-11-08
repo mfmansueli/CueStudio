@@ -54,14 +54,23 @@ final class BrandKitStore {
         kits.first { $0.id == id }
     }
 
-    /// Saves `kit` (new, or changed), first in the list.
+    /// The kit new videos open in, if the creator chose one.
+    var newVideoKit: BrandKit? {
+        kits.first { $0.usesOnNewVideos == true }
+    }
+
+    /// Saves `kit` (new, or changed), first in the list. A kit saved for new videos is the only one: another that was stops being.
     func save(_ kit: BrandKit) {
         var kit = kit
         kit.name = String(kit.name.trimmingCharacters(in: .whitespacesAndNewlines).prefix(40))
         if kit.name.isEmpty { kit.name = nextName() }
         kit.colors = Array(kit.colors.prefix(BrandKit.maximumColors))
         kit.updatedAt = .now
+        if kit.usesOnNewVideos != true { kit.usesOnNewVideos = nil }
         kits.removeAll { $0.id == kit.id }
+        if kit.usesOnNewVideos == true {
+            for index in kits.indices { kits[index].usesOnNewVideos = nil }
+        }
         kits.insert(kit, at: 0)
         persist()
     }
@@ -83,6 +92,7 @@ final class BrandKitStore {
         copy.id = UUID()
         copy.name = String(localized: "\(copy.name) copy")
         copy.createdAt = .now
+        copy.usesOnNewVideos = nil
         if let logo = copy.logo { copy.logo?.fileName = (try? keepLogo(at: url(of: logo))) ?? logo.fileName }
         save(copy)
         return copy
@@ -99,6 +109,9 @@ final class BrandKitStore {
 
     func restore(_ kit: BrandKit) {
         guard !kits.contains(where: { $0.id == kit.id }) else { return }
+        var kit = kit
+        // Put back after another took its place for new videos: that one stays.
+        if newVideoKit != nil { kit.usesOnNewVideos = nil }
         kits.append(kit)
         kits.sort { $0.updatedAt > $1.updatedAt }
         persist()

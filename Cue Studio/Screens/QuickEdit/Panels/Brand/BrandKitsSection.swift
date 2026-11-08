@@ -46,6 +46,11 @@ struct BrandKitsSection: View {
                         .font(.footnote)
                         .foregroundStyle(Palette.ink2)
                         .fixedSize(horizontal: false, vertical: true)
+                    if kit.usesOnNewVideos == true {
+                        Label(String(localized: "New videos open in it"), systemImage: "sparkles")
+                            .font(.footnote.weight(.semibold))
+                            .foregroundStyle(Palette.accText)
+                    }
                     if !kit.colors.isEmpty {
                         HStack(spacing: 4) {
                             ForEach(kit.colors) { color in

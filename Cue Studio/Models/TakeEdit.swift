@@ -55,6 +55,8 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     var evensOutVoices = true
     /// The creator's music and sounds, under the video.
     var music: [MusicClip] = []
+    /// How music added starts (a kit's Editing, `MusicDefaults`); nil: the editor's.
+    var newMusic: MusicDefaults?
     /// Beats › Snap to beats: the playhead and the handles stick to the music's beats.
     var snapsToBeats = true
     /// Texts, photos or videos, music and voice-overs locked in place on the timeline (Edits' clip lock): no handles, so a
@@ -417,6 +419,7 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         case captionCollection
         case texts, media, voiceOvers, creatorStyle, textLook, textPreset, cover
         case splitScreen, brandKit, blurRegions, blurLook
+        case newMusic
     }
 
     /// Edits saved before the timeline had pieces: trim handles, cut points, deleted sections and
@@ -475,6 +478,8 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         faceFollow = container.decodeLenient(FaceFollow.self, forKey: .faceFollow, report: report)
         // An "eyeContact" key that edits saved with Eye Contact (removed 22/10/2026) still hold is left unread.
         pauseThreshold = (try? container.decodeIfPresent(TimeInterval.self, forKey: .pauseThreshold)) ?? 0.7
+        // Added with a kit's Editing (08/11/2026): edits saved before start music the editor's way.
+        newMusic = try? container.decodeIfPresent(MusicDefaults.self, forKey: .newMusic)
         // Added with "Gap left": edits saved before left the natural gap.
         pauseGap = container.decodeChoice(PauseGap.self, forKey: .pauseGap, unknown: .natural, report: report) ?? .natural
         cleanUpHearing = try? container.decodeIfPresent(CleanUpHearing.self, forKey: .cleanUpHearing)

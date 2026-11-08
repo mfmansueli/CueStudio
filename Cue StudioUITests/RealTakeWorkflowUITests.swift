@@ -85,6 +85,7 @@ final class RealTakeWorkflowUITests: XCTestCase {
         flow.step("Templates › Bold hook")
         flow.tool("templates")
         flow.tap(app.buttons["edit.template.boldHook"], "Bold hook")
+        flow.tap(app.buttons["edit.template.apply"], "Apply")
         XCTAssertTrue(flow.toastSays("Bold hook", timeout: 5))
         flow.capture("bold-hook")
         closePanel(app)
