@@ -10,8 +10,8 @@ import Foundation
 /// for the whole take or the picked clip, and the recordings' motion analysis that Follow face and Stabilize read. What it keeps
 /// is its panels' state; the look itself is in the edit, and every change is an undo step through the session.
 ///
-/// Each part of the work is in its own extension (`+Adjust`, `+Auto`, `+Skin`, `+ClipScope`, `+Background`, `+CopyLook`, `+Format`,
-/// `+SafeGuide`, `+FaceFollow`, `+Stabilize`, `+MotionAnalysis`).
+/// Each part of the work is in its own extension (`+Adjust`, `+Auto`, `+Skin`, `+ClipScope`, `+Background`, `+Cutout`, `+CopyLook`,
+/// `+Format`, `+SafeGuide`, `+FaceFollow`, `+Stabilize`, `+MotionAnalysis`).
 @MainActor
 @Observable
 final class LookViewModel: EditorPart {
@@ -38,6 +38,11 @@ final class LookViewModel: EditorPart {
     /// Whether this iPhone can find people in video; nil until checked.
     var canFindPeople: Bool?
     var isImportingBackground = false
+    /// Background's Check the cutout (`+Cutout`).
+    var cutoutCheck: CutoutCheckState = .idle
+    @ObservationIgnored var cutoutCheckTask: Task<Void, Never>?
+    /// Reads the recordings for Check the cutout; a test hands its own.
+    @ObservationIgnored var cutoutChecker: CutoutChecking = CutoutChecker()
     /// Adjust, Filters or Background was opened from a picked clip: it changes that clip only, and follows the picked clip.
     /// Opened from the main toolbar it changes the whole take.
     var lookScopeIsClip = false

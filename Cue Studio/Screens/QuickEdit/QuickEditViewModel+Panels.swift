@@ -56,6 +56,16 @@ extension QuickEditViewModel {
         }
     }
 
+    /// The cut-out creator can be moved on the preview: Background is open with something new behind them, or the panel of a photo
+    /// or video shown Behind you (`PersonPlaceLayer`).
+    var showsPersonPlace: Bool {
+        switch panel {
+        case .background?: look.canPlacePerson
+        case .media?: selectedMedia?.layout == .behind
+        default: false
+        }
+    }
+
     func panelTitle(_ panel: EditorPanel) -> String {
         if panel == .textStyle, let text = selectedText { return text.graphic?.kind.label ?? text.role.label }
         if panel == .media, selectedMedia?.layout == .split { return String(localized: "Split screen") }
@@ -74,12 +84,21 @@ extension QuickEditViewModel {
         case .voiceOver: String(localized: "From the playhead · video muted")
         case .beats: audio.beatsSubtitle
         case .voiceEffects: audio.voiceEffectsSubtitle
-        case .media: selectedMedia?.layout == .split ? splitSubtitle : String(localized: "On top of the video")
+        case .media: mediaSubtitle
         case .mask: maskSubtitle
         case .motion: String(localized: "\(selectedMedia?.kind == .photo ? String(localized: "Photo") : String(localized: "Video")) · how it moves")
         case .blur: blurSubtitle
         case .transition: transitionSubtitle
         case .templates: templatesSubtitle
+        }
+    }
+
+    /// Where the picked photo or video shows.
+    private var mediaSubtitle: String {
+        switch selectedMedia?.layout {
+        case .split?: splitSubtitle
+        case .behind?: String(localized: "Behind you · you stay on top")
+        default: String(localized: "On top of the video")
         }
     }
 

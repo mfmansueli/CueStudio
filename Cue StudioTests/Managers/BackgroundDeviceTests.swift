@@ -40,7 +40,7 @@ struct BackgroundDeviceTests {
             .cropped(to: CGRect(origin: .zero, size: size))
     }
 
-    private func note(_ line: String) {
+    func note(_ line: String) {
         print(line)
         Attachment.record(line, named: "BACKGROUND \(abs(line.hashValue)).txt")
     }

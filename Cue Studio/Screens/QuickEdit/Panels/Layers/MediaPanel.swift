@@ -8,8 +8,9 @@ import SwiftUI
 /// A photo or video on top of the take, picked (a support of the split screen has its own panel, `SplitScreenPanel`). A video
 /// has two tabs (owner, canvas 2 F5, 07/11/2026): Show, full screen or in a window (its shape and size; on the preview, drag
 /// it to move it and pinch to resize it), how opaque it is and its place among the others; Part, which part of it plays and
-/// for how long (`MediaTrimStrip`). A photo has no part, so it has Show alone, without tabs. Its sound (Volume), motion
-/// (Motion) and mask (Mask) stay tools of their own on its toolbar.
+/// for how long (`MediaTrimStrip`). A photo has no part, so it has Show alone, without tabs. Show starts with **Behind you**: on,
+/// the creator is cut out of the recording and stands over it (where and how big, `PersonPlaceControls`), in place of Show as, the
+/// window, Opacity and the order. Its sound (Volume), motion (Motion) and mask (Mask) stay tools of their own on its toolbar.
 struct MediaPanel: View {
     @Bindable var viewModel: QuickEditViewModel
 
@@ -41,6 +42,24 @@ struct MediaPanel: View {
 
     @ViewBuilder
     private func show(_ media: MediaOverlay) -> some View {
+        // The owner's call (plan, section 19): the cut-out creator over a photo or video is this item shown Behind you.
+        PanelToggleRow(
+            label: String(localized: "Behind you"),
+            detail: String(localized: "Cue cuts you out and puts this behind you"),
+            isOn: media.layout == .behind, identifier: "edit.mediaBehind"
+        ) { viewModel.overlays.setMediaBehind(media.id, media.layout != .behind) }
+        if media.layout == .behind {
+            PersonPlaceControls(viewModel: viewModel)
+            if media.kind == .video {
+                PanelNote(text: String(localized: "Your voice stays. Its own sound is in Volume."))
+            }
+        } else {
+            overTheVideo(media)
+        }
+    }
+
+    @ViewBuilder
+    private func overTheVideo(_ media: MediaOverlay) -> some View {
         PanelSegmented(
             label: String(localized: "Show as"), options: MediaLayout.offered.map { PanelOption($0, $0.label) },
             selection: media.layout, identifier: "edit.mediaLayout"
