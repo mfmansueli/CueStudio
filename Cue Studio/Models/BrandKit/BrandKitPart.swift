@@ -7,7 +7,7 @@ import Foundation
 
 /// A part of a brand kit the creator chooses to put on a video.
 nonisolated enum BrandKitPart: String, CaseIterable, Identifiable, Hashable, Sendable {
-    case textStyle, captionStyle, coverStyle, fonts, colors, logo, editing, studioVoice
+    case textStyle, captionStyle, coverStyle, fonts, colors, logo, editing, studioVoice, zoom
 
     var id: String { rawValue }
 
@@ -21,6 +21,7 @@ nonisolated enum BrandKitPart: String, CaseIterable, Identifiable, Hashable, Sen
         case .logo: String(localized: "Logo")
         case .editing: String(localized: "Editing", comment: "A brand kit's part: how the creator cleans up a video and starts its music")
         case .studioVoice: String(localized: "Studio Voice")
+        case .zoom: String(localized: "Zoom")
         }
     }
 
@@ -34,6 +35,7 @@ nonisolated enum BrandKitPart: String, CaseIterable, Identifiable, Hashable, Sen
         case .logo: "seal"
         case .editing: "slider.horizontal.3"
         case .studioVoice: "waveform"
+        case .zoom: "plus.magnifyingglass"
         }
     }
 }
