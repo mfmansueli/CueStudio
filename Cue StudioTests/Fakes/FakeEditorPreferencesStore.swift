@@ -10,6 +10,7 @@ import Foundation
 @MainActor
 final class FakeEditorPreferencesStore: EditorPreferencesStoring {
     var showsNarrationScript: Bool
+    var showsSafeGuide = false
     var narrationScriptSpeed: Double?
     var lowPowerNoticeShownAt: Date?
     var timelineLanes: [UUID: TimelineLane] = [:]

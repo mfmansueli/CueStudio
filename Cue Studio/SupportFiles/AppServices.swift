@@ -122,6 +122,8 @@ struct AppServices {
     let fakesShareSheet: Bool
     /// UI tests: the editor reads Low Power Mode as on.
     let forcesLowPowerMode: Bool
+    /// UI tests: a white or black frame in place of the editor's video.
+    let previewStandInFrame: PreviewStandInFrame?
     let logsDockMotion: Bool
 
     init(options: LaunchOptions) {
@@ -163,6 +165,7 @@ struct AppServices {
         milestoneToShow = options.milestoneToShow
         fakesShareSheet = options.fakesShareSheet
         forcesLowPowerMode = options.forcesLowPowerMode
+        previewStandInFrame = options.previewStandInFrame
         logsDockMotion = options.logsDockMotion
         profile = CreatorProfileService(defaults: options.defaults)
         session = SessionService(defaults: options.defaults, checker: options.credentialChecker)
@@ -557,6 +560,7 @@ extension View {
             .environment(\.storyFrozenAt, services.storyFrozenTime)
             .environment(\.fakesShareSheet, services.fakesShareSheet)
             .environment(\.forcesLowPowerMode, services.forcesLowPowerMode)
+            .environment(\.previewStandInFrame, services.previewStandInFrame)
             .environment(\.logsDockMotion, services.logsDockMotion)
     }
 }

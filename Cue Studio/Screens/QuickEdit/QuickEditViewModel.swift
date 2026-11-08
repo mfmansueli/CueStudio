@@ -220,7 +220,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
             session: session, editing: editing, pictures: coverPictures ?? CoverPictureService(), importer: mediaImporter,
             styles: styles, fontPacks: fontPacks, customFonts: fonts, writingLanguages: writingLanguages
         )
-        look = LookViewModel(session: session, editing: editing, motion: motion)
+        look = LookViewModel(session: session, editing: editing, motion: motion, preferences: preferences)
         clips = ClipsViewModel(session: session, editing: editing, takes: takes, library: library, speechLanguage: speechLanguage)
         overlays = OverlaysViewModel(
             session: session, styles: styles, library: library, tracker: tracker, faces: faceFinder

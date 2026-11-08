@@ -180,17 +180,7 @@ nonisolated struct EditStepSummary: Equatable, Sendable {
     private static func wholeVideoName(_ earlier: TakeEdit, _ later: TakeEdit) -> String {
         let before = EditSnapshot(earlier), after = EditSnapshot(later)
         let lookBefore = EditLook(earlier), lookAfter = EditLook(later)
-        if before.captionTranslations != after.captionTranslations || before.captionLanguage != after.captionLanguage
-            || lookBefore.showsCaptions != lookAfter.showsCaptions {
-            return String(localized: "Captions")
-        }
-        // A new shape brings the captions' margins with it (`LookViewModel.setAspect`): it is the shape that changed.
-        if (before.captionCollection != after.captionCollection && lookBefore.aspect == lookAfter.aspect) || before.captionStyle != after.captionStyle
-            || before.captionLook != after.captionLook || before.captionPreset != after.captionPreset
-            || before.captionAnimation != after.captionAnimation || before.captionPosition != after.captionPosition
-            || before.captionDisplay != after.captionDisplay {
-            return String(localized: "Caption style")
-        }
+        if let captions = captionsName(before, after, lookBefore, lookAfter) { return captions }
         if before.lockedLayers != after.lockedLayers { return String(localized: "Lock") }
         if before.cover != after.cover { return String(localized: "Cover") }
         if before.splitScreen != after.splitScreen { return String(localized: "Split screen") }
@@ -215,6 +205,25 @@ nonisolated struct EditStepSummary: Equatable, Sendable {
         }
         if before.suggestions != after.suggestions { return String(localized: "Clean up") }
         return String(localized: "Edit")
+    }
+
+    /// The captions' own changes: shown or translated ("Captions"), restyled or moved ("Caption style"), or put clear of another
+    /// app's buttons ("Safe zones"); nil when they didn't change on their own.
+    private static func captionsName(_ before: EditSnapshot, _ after: EditSnapshot, _ lookBefore: EditLook, _ lookAfter: EditLook) -> String? {
+        if before.captionTranslations != after.captionTranslations || before.captionLanguage != after.captionLanguage
+            || lookBefore.showsCaptions != lookAfter.showsCaptions {
+            return String(localized: "Captions")
+        }
+        // Another safe zone guide brings the captions' margins with it (`LookViewModel.pickSafeGuide`): it is the guide that changed.
+        if lookBefore.safeGuide != lookAfter.safeGuide, lookBefore.aspect == lookAfter.aspect { return String(localized: "Safe zones") }
+        // A new shape brings the captions' margins with it (`LookViewModel.setAspect`): it is the shape that changed.
+        if (before.captionCollection != after.captionCollection && lookBefore.aspect == lookAfter.aspect) || before.captionStyle != after.captionStyle
+            || before.captionLook != after.captionLook || before.captionPreset != after.captionPreset
+            || before.captionAnimation != after.captionAnimation || before.captionPosition != after.captionPosition
+            || before.captionDisplay != after.captionDisplay {
+            return String(localized: "Caption style")
+        }
+        return nil
     }
 
     /// Clean up's Pauses longer than and Gap left ("Pauses"), and Beats' Snap to beats, by their own word (canvas 2 bug 3).

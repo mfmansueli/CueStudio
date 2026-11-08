@@ -55,7 +55,7 @@ extension OverlaysViewModel {
 
     /// The platform's safe area on a preview of `size`: what shows dashed while a text moves.
     func safeArea(in size: CGSize) -> CGRect {
-        let unit = (edit.captionCollection?.safeMargins ?? CaptionsViewModel.captionSafeMargins(for: take, aspect: edit.aspect)).unitContentRect
+        let unit = (edit.captionCollection?.safeMargins ?? CaptionSafeArea.margins(for: take, aspect: edit.aspect, pick: edit.safeGuide)).unitContentRect
         return CGRect(x: unit.minX * size.width, y: unit.minY * size.height, width: unit.width * size.width, height: unit.height * size.height)
     }
 }

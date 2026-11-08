@@ -63,6 +63,7 @@ enum EditFixtures {
         edit.cropOffset = 0.3
         edit.cropFit = .fit
         edit.faceFollow = FaceFollow()
+        edit.safeGuide = .platform(.shorts)
         edit.showsCaptions = true
         edit.captionCollection = CaptionSettings(theme: .pop)
         edit.captionStyle = .classic

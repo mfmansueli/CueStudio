@@ -60,6 +60,8 @@ nonisolated enum DefaultsKey {
     /// absent = the prompter's), `EditorPreferencesStore`.
     static let narrationScriptShown = "editor.narrationScriptShown"
     static let narrationScriptSpeed = "editor.narrationScriptSpeed"
+    /// Quick edit's safe zone guide drawn over the preview (Aspect ratio › Safe zones); off until turned on, on every video after.
+    static let safeGuideShown = "editor.safeGuideShown"
     /// When the editor last said Low Power Mode was on (`LowPowerNotice`: once a day).
     static let lowPowerNoticeShownAt = "editor.lowPowerNoticeShownAt"
     /// The timeline's current track for each take edited lately (`[String]` of "take id=track", the last edited at the end;

@@ -5,17 +5,18 @@
 
 import SwiftUI
 
-/// Editing right on the preview. Every text on screen can be tapped: the picked one gets a yellow
-/// outline 5 pt around it, turned with it, a ✕ to delete it, a corner handle that resizes and turns it and a tab on each side
-/// that makes its lines longer or shorter (`TextHandle`); tapped again, Text style opens. One finger on a text moves it; two
-/// (anywhere on the preview once a text is picked) move, resize and turn it at once, and lifting or adding a finger midway
-/// carries on without a jump (`TextTransformRecognizer`). It sticks to the middle lines and to straight, with a tick; the
-/// platform's safe area shows dashed, and its turn in degrees while it turns. With keyframes, the gesture sets the one at the
-/// playhead. Dragging the caption moves every caption up or down (sticking to top, middle and bottom), and a label on it
-/// says so while it moves, before it lands. Each photo or video in a window showing at the playhead has its handle, stacked
-/// as the video draws them (the picked one on top, so it can be moved even where another covers it); a tap goes to the one
-/// under the finger, and tapping again where several overlap goes to the next one down (`QuickEditViewModel.tapMedia`). It
-/// moves (with the same guides) and pinches. A split screen's areas are under all of it (`SplitAreaLayer`).
+/// Editing right on the preview. Every text on screen can be tapped: the picked one gets a yellow outline 5 pt around it,
+/// turned with it, a ✕ to delete it, a corner handle that resizes and turns it and a tab on each side that makes its lines
+/// longer or shorter (`TextHandle`); tapped again, Text style opens. One finger on a text moves it; two (anywhere on the
+/// preview once a text is picked) move, resize and turn it at once, and lifting or adding a finger midway carries on without a
+/// jump (`TextTransformRecognizer`). It sticks to the middle lines and to straight, with a tick; the safe zone guide's clear
+/// area shows dashed with its app's name (unless the guide is on), and its turn in degrees while it turns. With keyframes, the
+/// gesture sets the one at the playhead. Dragging the caption moves every caption up or down (sticking to top, middle and
+/// bottom), and a label on it says so while it moves, before it lands. Each photo or video in a window showing at the playhead
+/// has its handle, stacked as the video draws them (the picked one on top, so it can be moved even where another covers it); a
+/// tap goes to the one under the finger, and tapping again where several overlap goes to the next one down
+/// (`QuickEditViewModel.tapMedia`). It moves (with the same guides) and pinches. A split screen's areas are under all of it
+/// (`SplitAreaLayer`).
 ///
 /// Texts, photos and videos are drawn into the video exactly as they export; while a finger moves one, the video leaves it
 /// out (`beginOverlayDrag`) and a copy follows the finger, so it never shows twice; the change lands when it lifts, one undo
@@ -107,14 +108,21 @@ struct OverlayEditingLayer: View {
 
     // MARK: - Guides
 
+    /// While something moves: the middle lines it sticks to and, unless the safe zone guide is already on the preview, the guide's
+    /// clear area dashed (white over its halo, as on any picture) with the label naming its app.
     @ViewBuilder
     private var dragGuides: some View {
-        let safe = viewModel.overlays.safeArea(in: size)
-        RoundedRectangle(cornerRadius: Metrics.editorHandleRadius, style: .continuous)
-            .strokeBorder(Palette.Camera.safeZoneLine, style: StrokeStyle(lineWidth: 1, dash: [4, 3]))
-            .frame(width: safe.width, height: safe.height)
-            .offset(x: safe.minX, y: safe.minY)
-            .allowsHitTesting(false)
+        if !viewModel.showsSafeGuideOverlay {
+            let safe = viewModel.overlays.safeArea(in: size)
+            let edge = RoundedRectangle(cornerRadius: Metrics.editorHandleRadius, style: .continuous)
+            edge.strokeBorder(Palette.Editor.safeGuideHalo, style: StrokeStyle(lineWidth: 3, dash: [4, 3]))
+                .overlay(edge.strokeBorder(Palette.Editor.safeGuideLine, style: StrokeStyle(lineWidth: 1, dash: [4, 3])).padding(1))
+                .frame(width: safe.width, height: safe.height)
+                .offset(x: safe.minX, y: safe.minY)
+                .allowsHitTesting(false)
+            SafeGuideBadge(look: viewModel.look, maxWidth: size.width - 16, isInteractive: false)
+                .offset(x: 8, y: 8)
+        }
         let guides = manipulation?.guides ?? guides
         if guides.vertical {
             Rectangle().fill(Palette.acc).frame(width: 1, height: size.height)

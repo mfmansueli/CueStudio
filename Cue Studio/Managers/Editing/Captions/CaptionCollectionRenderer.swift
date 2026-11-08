@@ -330,7 +330,7 @@ nonisolated enum CaptionCollectionRenderer {
     }
 
     static func contentRect(_ settings: CaptionSettings, frame: CGSize) -> CGRect {
-        let margins = frame.width > frame.height ? SafeZoneMargins(top: 5, bottom: 7, left: 6, right: 6) : settings.safeMargins
+        let margins = frame.width > frame.height ? SafeZoneMargins.frameEdges : settings.safeMargins
         let unit = margins.unitContentRect
         return CGRect(x: unit.minX * frame.width, y: unit.minY * frame.height, width: unit.width * frame.width, height: unit.height * frame.height)
     }

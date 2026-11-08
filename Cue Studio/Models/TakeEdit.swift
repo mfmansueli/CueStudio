@@ -100,6 +100,9 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     var cropFit: CropFit = .fill
     /// Follow face: a Fill crop moves with the creator's face (`FaceFollowPath`); nil keeps it where `cropOffset` puts it.
     var faceFollow: FaceFollow?
+    /// The safe zone guide picked for this video in the editor (Aspect ratio › Safe zones, or the guide's label on the preview); the
+    /// captions keep to its clear area (`CaptionSafeArea`). Nil follows the script's platform, or the generic guide without one.
+    var safeGuide: SafeGuideChoice?
 
     // MARK: Captions
     var showsCaptions = false
@@ -419,7 +422,7 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         audioVersion, voiceEnhancement, noiseReduction, voiceReach, evensOutVoices, music, backgrounds, exposure, contrast, warmth, filter
         case snapsToBeats, lockedLayers
         case saturation, highlights, shadows, sharpness, filterAmount, cropFit, pauseThreshold, pauseGap, cleanUpHearing
-        case vibrance, tint, autoCorrection, autoAmount, lookVersion, skin, faceFollow
+        case vibrance, tint, autoCorrection, autoAmount, lookVersion, skin, faceFollow, safeGuide
         case aspect, cropOffset, showsCaptions, captionStyle, captionLook, captionPreset, captionPosition, captions
         case captionTranscript, sourceTranscripts, captionLanguage, captionAnimation, captionTranslations, captionDisplay
         case captionCollection
@@ -491,6 +494,9 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         pauseGap = container.decodeChoice(PauseGap.self, forKey: .pauseGap, unknown: .natural, report: report) ?? .natural
         cleanUpHearing = try? container.decodeIfPresent(CleanUpHearing.self, forKey: .cleanUpHearing)
         aspect = try container.decode(AspectRatio.self, forKey: .aspect)
+        // Added with the editor's safe zone guide (08/11/2026): edits saved before follow the script's platform, and one an older
+        // version can't name is let go (the guide is only drawn in the editor).
+        safeGuide = try? container.decodeIfPresent(SafeGuideChoice.self, forKey: .safeGuide)
         cropOffset = try container.decodeIfPresent(Double.self, forKey: .cropOffset) ?? 0
         showsCaptions = try container.decodeIfPresent(Bool.self, forKey: .showsCaptions) ?? false
         captionCollection = container.decodeLenient(CaptionSettings.self, forKey: .captionCollection, report: report)

@@ -275,8 +275,9 @@ extension CaptionsViewModel {
         toast.show(String(localized: "Back to the whole \(current.theme.label) style: look, size and position"), action: undoAction)
     }
 
+    /// The margins of the video's safe zone guide (`TakeEdit.safeGuide`) on its shape.
     var captionSafeMargins: SafeZoneMargins {
-        Self.captionSafeMargins(for: session.take, aspect: edit.aspect)
+        CaptionSafeArea.margins(for: session.take, aspect: edit.aspect, pick: edit.safeGuide)
     }
 
     static func captionSafeMargins(for take: Take, aspect: AspectRatio) -> SafeZoneMargins {

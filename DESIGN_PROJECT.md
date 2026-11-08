@@ -2390,11 +2390,37 @@ Prévia e exportação passam pelo mesmo compositor (`CueVideoCompositor`), ent�
   quando o nome não cabe ao lado, nos maiores tamanhos de texto; `PanelTiles(isCompact:)`), Framing Fill · Fit e Follow face à vista ao abrir.
   **Reset** no cabeçalho (`LookViewModel+Format`) aparece quando o formato difere de como o vídeo começou e volta à proporção da gravação
   (`Take.aspect`), Fill, sem deslocamento e Follow face desligado, num passo de desfazer. Trocar o formato (ou o Reset) troca junto as
-  **margens seguras das legendas** (`CaptionSafeArea`): as da plataforma no formato dela, as genéricas nos outros (um vídeo do TikTok em 1:1 fica com
-  a legenda a 7% da borda de baixo, não a 25%), iguais na prévia e no arquivo; um projeto salvo antes com as margens da gravação noutro formato abre
-  com as certas. Quando o recorte deixa menos pixels que a qualidade, uma
+  **margens seguras das legendas** (`CaptionSafeArea`): a parte livre da guia de áreas seguras do vídeo naquele formato (abaixo; um vídeo do TikTok
+  em 1:1 fica com a legenda a 7% da borda de baixo, não a 25%), iguais na prévia e no arquivo; um projeto salvo antes com as margens da gravação
+  noutro formato abre com as certas. Quando o recorte deixa menos pixels que a qualidade, uma
   linha sob os blocos diz o arquivo de verdade: **"This format exports at 606×1080 · never enlarged"** (um vídeo deitado de 1080p em 9:16;
   `ExportFrameSize`, a mesma regra da exportação, pela qualidade e o Pro da revisão de onde o editor abriu; sem revisão, nada).
+- **Áreas seguras** (`SafeGuideOverlay`, `SafeGuideBadge`, `LookViewModel+SafeGuide`, `SafeGuideZones`; decisão B do dono, 07/11/2026): no fim
+  de Aspect ratio, a chave **Safe zones** ("Where an app’s buttons cover your video · approximate") mostra sobre a prévia onde os botões, a legenda e
+  o cabeçalho de um app cobrem o vídeo: as partes cobertas sombreadas de leve (`Palette.Editor.safeGuideShade`) e a borda da parte livre numa linha
+  branca **sólida** sobre um halo escuro (`safeGuideLine`, `safeGuideHalo`; sólida para nunca parecer o contorno tracejado de uma foto ou vídeo).
+  Ligada, fica ligada em todo vídeo (`EditorPreferencesStoring.showsSafeGuide`, desligada até ser ligada): é o jeito de trabalhar, não uma mudança
+  do vídeo, então não é passo de desfazer nem mudança a salvar. Abre na **plataforma do roteiro** (`Take.platform`) quando os botões dela foram
+  medidos no formato; sem plataforma conhecida, **Generic**: no 9:16, livre de todos os apps verticais medidos ao mesmo tempo (borda a borda, o
+  maior de TikTok, Reels, Shorts e Stories: 13% em cima, 25% embaixo); nos formatos com um app medido ou nenhum (4:5, 1:1, 16:9), as bordas do
+  quadro (`SafeZoneMargins.frameEdges`, 5/7/6/6%). Com ela ligada, chips trocam o app (os medidos no formato, depois Generic) e uma nota diz de
+  onde veio a sugestão ("Suggested by your script: TikTok", "No app on your script for this format: generic guide"). Na prévia, no canto de cima
+  à esquerda, o rótulo **"TikTok · approximate"** (`ink` sobre a placa `safeGuidePlate`; cresce até Acessibilidade 2 e, numa prévia estreita,
+  fica só com o nome do app) é um `Menu` do sistema: o app (o do roteiro com "· your script") ou **Hide safe zones**, ali mesmo. **A troca é deste
+  vídeo** (`TakeEdit.safeGuide`; um projeto salvo antes abre com nil, a sugestão) **e um passo de desfazer** ("Safe zones"), porque as legendas
+  vão junto: as margens delas passam a ser a parte livre da guia escolhida (`CaptionSafeArea.margins(for:aspect:pick:)`), na prévia e no
+  arquivo; trocar o formato mantém a escolha (volta quando o formato tem aquele app). Desfazer volta o app e as legendas, não esconde a guia.
+  Um projeto salvo antes da guia mostra a do app para o qual as legendas dele foram postas (`SafeGuideZones.active`: um take sem plataforma
+  tinha as do Reels no 9:16 e as do LinkedIn no 4:5). A guia só existe na prévia do editor: some em tela cheia, sob o roteiro da narração e no
+  recorte de um clipe, e nunca entra na composição (arquivo, vídeo da prévia, capa). Arrastar um texto ou a legenda com a guia escondida mostra
+  a parte livre tracejada (as mesmas cores) e o rótulo, sem toque. VoiceOver: a chave (Safe zones, On/Off), os chips (selecionado), o rótulo
+  ("Safe zones: TikTok · approximate", dica "Switches the app or hides the guide") e um anúncio a cada troca. Testes: `SafeGuideZonesTests`,
+  `QuickEditSafeGuideTests`, exportação real `RealExports/SafeGuideExportTests` (nada da guia no arquivo nem no vídeo da prévia; uma linha
+  embaixo fica na parte livre do app escolhido, igual na prévia e no arquivo, mais baixa com Stories que com TikTok),
+  `PaletteContrastTests.theSafeGuideReadsOverAnyPicture`, `SafeGuideUITests`; fotos sobre um quadro branco e um preto (`-uiTestPreviewFrame`,
+  `SafeGuideCaptureTests`, opt-in). Medido nas fotos do iPhone SE (tamanho padrão e Acessibilidade 3, 08/11/2026): o rótulo, no pior ponto
+  (placa sobre a parte livre de um quadro branco), 9,29:1; sobre a sombra, 12,3:1; sobre preto, 21:1. A linha: num quadro branco o halo fica
+  10,37:1 contra a parte livre e 4,89:1 contra a sombra; num preto, o branco da linha fica 21:1.
 - **Format › Follow face** (`TakeEdit.faceFollow`, `FaceFollow`, `FollowPace`, `FaceFollowPath`): com Fill e um formato que corta (qualquer um que não
   seja o da gravação; numa montagem, qualquer um), o recorte acompanha o rosto como um operador de câmera: fica parado enquanto o rosto anda numa
   zona calma, vai atrás quando ele sai, nunca mais rápido que o ritmo, começa e para suave (caminho suavizado nos dois sentidos, sem atraso), com
