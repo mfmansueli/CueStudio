@@ -324,7 +324,7 @@ struct QuickEditClipLookTests {
             "adjust", "skin", "filters", "background", "clipCrop", "mirror", "stabilize", "blurArea", "copyLook", "pasteLook",
             "transition", "clipAnimation", "duplicate", "freeze", "reverse", "replace", "reorder", "extractAudio", "voiceEffects", "resetClip",
             "text", "addMedia", "audio",
-            "pauses", "editByText", "voice", "captions", "format", "templates", "brandKit", "cover", "delete",
+            "pauses", "autoEdit", "editByText", "voice", "captions", "format", "templates", "brandKit", "cover", "delete",
         ])
     }
 }

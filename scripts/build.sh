@@ -6,7 +6,8 @@
 #   scripts/build.sh device     app + tests for a generic iPhone, unsigned (the device SDK flags concurrency differently)
 #   scripts/build.sh release    the app in Release for the simulator (Release has to compile too)
 #   scripts/build.sh install    the signed app on the iPhone named in CUE_DEVICE (xcrun devicectl list devices): builds, installs, launches
-#                               (Debug; CUE_CONFIGURATION=Release for what ships, e.g. to judge work that is slow without optimization)
+#                               (Debug; CUE_CONFIGURATION=Release for what ships, e.g. to judge work that is slow without optimization;
+#                               CUE_REGISTER_DEVICE=1 also adds a new iPhone to the team's devices, which changes the developer account)
 
 source "$(dirname "$0")/_xcode.sh"
 
@@ -31,7 +32,9 @@ case "$mode" in
         # A device test run embeds the unit test bundle and its symbols in the app (PlugIns, ~290 MB), and a plain build keeps them:
         # the app is put together again so the iPhone gets only the app.
         rm -rf "$app"
-        xcb "build-install" -configuration "$configuration" -destination "$destination" -allowProvisioningUpdates build
+        register=()
+        [ "${CUE_REGISTER_DEVICE:-}" = 1 ] && register=(-allowProvisioningDeviceRegistration)
+        xcb "build-install" -configuration "$configuration" -destination "$destination" -allowProvisioningUpdates ${register[@]+"${register[@]}"} build
         echo "▸ Installing on $CUE_DEVICE"
         xcrun devicectl device install app --device "$CUE_DEVICE" "$app"
         xcrun devicectl device process launch --device "$CUE_DEVICE" --terminate-existing com.cuestudioteleprompter ||
