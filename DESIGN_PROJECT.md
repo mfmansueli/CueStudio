@@ -27,7 +27,9 @@ reproduz a pílula violeta) e as dicas (`TipCard`: a da primeira viagem e a do M
 
 **Avisos (toasts)** (`ToastView`, `ToastIcon`, `ToastService`; os mesmos no app e no editor; o iOS não tem toast nativo): uma pílula **opaca** no topo
 (`Palette.Toast`, `toastSurface(in:)`: `#2B2F48`, contorno claro de 24%, 40% com Aumentar Contraste, e sombra), para ler sobre a noite do app, o céu e um
-vídeo claro; texto 15 pt semibold em até duas linhas (Dynamic Type); o botão (**Undo**, **Settings**, **Write it**) é amarelo com texto preto. À esquerda,
+vídeo claro; texto 15 pt semibold em até duas linhas (Dynamic Type; nos tamanhos de acessibilidade, um toast com botão dá a largura toda ao
+texto, sem limite de linhas, e põe os botões embaixo, porque na linha o alemão virava "Look auf…" e "Änder/n" no SE); o botão (**Undo**, **Settings**,
+**Write it**) é amarelo com texto preto. À esquerda,
 o ícone do tipo (`ToastKind`), escolhido em cada chamada:
 - **✓ verde** (`.done`, o padrão): o que o criador fez está feito, ou já estava ("Duplicated", "Every cut already has it", todo `sayUndoable` do editor).
   Sem vibração: o toque do criador já teve a dele.
@@ -824,6 +826,15 @@ lost. You've used your 3 free exports.", **Export with Cue Pro** com brilho e **
 PRO") e toast "Saved in Takes · export with Pro anytime"; Export with Cue Pro abre o **Pro calmo** (`PaywallContext.export`, §12), que diz os preços;
 assinando, a exportação segue sozinha. Com os convites oferecidos, um link amarelo entre os dois, **Or invite friends · +3 exports for each friend**, fecha a
 folha como Not now e abre os convites (§60). Pro: "PRO · UNLIMITED EXPORTS", sem Go Pro.
+- **A pergunta vem antes de qualquer trabalho** (plano do editor, 06/11/2026): com 0, a revisão confere se **este vídeo** (o take, a edição e as opções,
+  `ExportFingerprint`) já saiu do Cue, nunca só "o take". Uma edição corrigida de um vídeo já exportado é outro vídeo (decisão do dono, 06/11: corrigir
+  custa outra exportação) e abre "Your video is ready" sem "Exporting your video", sem render e sem ouvir legendas; o mesmo vídeo de novo (o arquivo ainda
+  lá ou refeito) e uma edição dentro de uma fila de "Share to universe" que já contou (§15) seguem sem pergunta e sem contar.
+- **No Done do editor** ("Is it ready to post?", `EditorDoneSheet`), uma linha mono sob a pergunta, com as palavras e cores do medidor de Share:
+  **LAST FREE EXPORT** (amarelo, `accText`) com uma sobrando, **0 OF 3 LEFT · EXPORT WITH PRO** (laranja, `warnText`) sem nenhuma. Só quando
+  compartilhar ou baixar aquela edição gastaria (`TakeReviewViewModel.doneExportNote`): nada no Pro, com 2 ou mais, ou para um vídeo já contado.
+  Nenhum fluxo novo: as respostas são as mesmas e, sem exportações, Share e Download abrem "Your video is ready" como acima. A linha discreta das
+  opções sob as respostas (§12) abre a segunda página da mesma folha, sem esses avisos: eles ficam com as respostas, num nível próprio.
 
 ## 12. Pro (11.4)
 
@@ -863,6 +874,32 @@ acima). Tudo cabe sem rolar do SE ao Pro Max (a rolagem só existe para o Dynami
   "ULTRA AI", "Keep writing with Ultra AI.", "Your 3 free scripts are written. Cue Pro adds 30 a month.", galáxia violeta com o anel dos 30 roteiros do mês
   aceso, o destaque da Ultra AI primeiro.
 - Onde a Ultra AI existe, a linha sob o título do Pro normal é "Free to try · 3 exports and 3 Ultra AI scripts included."
+- **Exportar em 4K é Pro** (decisão do dono, 06/11/2026; é o "up to 4K" do destaque). Só uma gravação em 4K tem qualidade para escolher: uma em
+  1080p ou 720p mostra em Export options › Quality a própria resolução, sem escolha nem Pro (`share.qualityRecorded`; o arquivo nunca é maior que a
+  gravação), e com o Pro uma gravação em 4K já começa em 4K. Numa gravação em 4K (§15) o segmento é **4K · Pro**
+  sem o Pro; tocá-lo não muda a qualidade e abre o alerta do sistema **"4K export is Cue Pro"** ("Without Pro, this video exports in 1080p. Your
+  recording and edit stay as they are.") com **Go Pro** (este Pro, `.profile`, por cima das opções) e **Keep 1080p**; assinando dali, a qualidade
+  passa a 4K. Uma gravação em 4K sem o Pro diz sob a qualidade "Recorded in 4K · exports in 1080p without Pro" (`ink2` sobre `surface2`). Todo
+  caminho de exportação (Save, Share, Try again, a fila, o arquivo refeito, o Download do editor) usa `TakeReviewViewModel.exportQuality`: um plano
+  que acabou com 4K escolhido exporta em 1080p. A gravação, o rascunho e a edição nunca mudam; nenhuma ferramenta do editor pede o Pro.
+- **Export options, um estado e um componente** (D11, `ExportOptionsForm`, `TakeReviewViewModel+ExportOptions`, `ExportOutputChoice`): as
+  mesmas opções (legendas no vídeo, idioma delas, qualidade) para Save, Share e as respostas do Done, abertas de três lugares: **Options · 1080p**
+  em Share to universe, a linha discreta **"Export options · 1080p · captions on ›"** sob o rodapé de exportações da revisão (`review.exportOptions`,
+  quem salva sem passar por Share), as duas numa folha própria (`ShareExportOptions`: título e o formulário), e a mesma linha sob as quatro respostas
+  do Done do editor (`edit.done.exportOptions`; sobre a edição que o Done vai salvar), que **vira a própria folha do Done para a segunda página**
+  (F19, nenhuma folha sobre outra): "‹ Export options" (`edit.done.optionsBack` volta às respostas, o VoiceOver vai ao título e de volta à linha) e
+  o formulário, só ele (os avisos de exportações grátis e de fonte ficam na página das respostas, em mono e cor; as opções em texto comum `ink2`).
+  A página desliza da direita (só esmaece com Reduzir Movimento) e a folha toma a altura da página que mostra. Linha em `footnote`, `ink2`, alvo de
+  44 pt (`ExportOptionsLine`). **Tamanho real** (erro 10, `ExportFrameSize`, a regra da própria exportação: o recorte do formato na gravação em pé,
+  reduzido à qualidade, nunca ampliado): quando o recorte do formato deixa o arquivo com menos pixels do que a qualidade diz (e do que a gravação
+  inteira teria; uma gravação menor que o nome da qualidade não é obra do recorte e não aparece aqui), a linha e "Options ·" dizem o tamanho
+  ("606×1080 · captions on", um vídeo deitado de 1080p em 9:16; "1080×606" de uma gravação do Cue em 16:9) e sob Quality aparece "This format
+  exports at 606×1080 · never enlarged" (`share.outputSize`); o "Ready to travel" diz "606×1080 · 9:16". A revisão lê a forma da gravação no
+  arquivo ao abrir; antes disso uma gravação do Cue conta como o sensor em pé inteiro e um vídeo importado não diz tamanho. As legendas começam do editor (mostradas ou não, no
+  idioma que ele mostra, tradução incluída); uma escolha diferente vale só para a exportação daquela versão e diz isso sob o cartão
+  ("Captions in this export only · your edit stays as it is", "No captions in this export · your edit keeps them", "Caption language for this
+  export only · your edit keeps its own"); a edição salva nunca muda. Se o editor muda as legendas dele, a exportação volta a partir dele. A
+  qualidade só é escolha numa gravação em 4K (as outras mostram a própria resolução, `share.qualityRecorded`).
 - Reduzir Movimento: nada gira nem voa, a abertura é um fade de 0,3 s e a compra fecha na hora. `-uiTestProAt <s>`.
 
 ## 13. Profile (9.1) e Edit Profile
@@ -923,7 +960,9 @@ os ícones (§16), e só promete um ícone ainda não destravado; passado o últ
 
 Na revisão, o botão amarelo **Share to universe** renderiza o arquivo (1080 × 1920, sem marca d'água; nada sai do Cue, nada é contado) e abre **Ready to
 travel** com as redes (`ShareNetworkPicker`: TikTok "· from your script", Reels, Shorts, YouTube ("POSTS AS A SHORT" até 3 min na vertical), LinkedIn, "Also
-save to Photos", "Share to n networks", "Uses 1 free export · k left after this"; embaixo, legendas e qualidade). Fechado o sheet, Ready mostra **Share to
+save to Photos", "Share to n networks", "Uses 1 free export · k left after this"; no canto, o botão de vidro **Options · 1080p** (ou "· 4K",
+"· 720p": a qualidade com que o arquivo sai, com a regra do Pro aplicada) abre **Export options**: legendas e qualidade, 1080p ou 4K, que é Pro
+(§12)). Fechado o sheet, Ready mostra **Share to
 universe · Save video · compartilhar** (folha do sistema). **Uma exportação por envio** (um arquivo para todas as redes; reexportar na fila não gasta
 outra: `ExportLedgerService.begin(inheritingCountFrom:)`).
 **A fila** (`ShareQueue`, `ShareQueueService`, `ShareFlow`): "Posting to n networks" (com 2+, nas 2 primeiras vezes); o passo de cada rede ("1 OF 3",
@@ -1041,8 +1080,9 @@ mínima (9.2).
 **Painel próprio** (`SkinPanel`, `LookViewModel+Skin`), fora do Adjust: do vídeo inteiro pela barra principal (numa barra de item, com o selo ALL,
 §55), do clipe pela barra do clipe (`LookViewModel+ClipScope`). Em cima, **Natural** e **Studio** (`SkinPreset`) põem todos os controles de uma vez;
 ao lado, "Custom" quando um controle sai do preset e "Off" com tudo em 0 (o lugar fica reservado: o painel não pula). Chips **Smooth** · **Face
-light** · **Anti-shine** · **Refine** (a Texture da suavização), cada um com o valor quando ligado; embaixo, o nome, o valor, o Reset daquele
-controle e a régua 0–100. Refine espera a suavização ("Turn up Smooth to refine its texture"). O Reset do painel desliga tudo; ◐ segurado mostra o
+light** · **Anti-shine** · **Texture** (a textura da suavização; o mesmo nome no chip e na régua), cada um com o valor quando age; embaixo, o
+nome, o valor, o Reset daquele controle e a régua 0–100. Texture espera a suavização ("Turn up Smooth to refine its texture"). Tocar num preset
+aplica; tocar num chip só escolhe a régua. O Reset do painel desliga tudo; ◐ segurado mostra o
 vídeo sem Skin (cor, filtro, fundo e textos ficam; selo "Without Skin"). **Abrir não aplica nada**: tudo começa em 0, e o "Try it" da descoberta
 (`EditorTool.skinSmoothing`, nome mantido para notificações já agendadas) abre o painel do vídeo inteiro em Smooth. Cada mudança é um passo de
 desfazer (os movimentos rápidos de uma régua são um). VoiceOver: nome, valor e uma dica por controle. Presets: **Natural** Smooth 40 · Texture 60 ·
@@ -1232,7 +1272,10 @@ dedo, 22/10/2026), com um tique e "Take 2 of 3" por 1,4 s. **Estrela**: pula e s
 **Trilha**: a barra do estágio atual se preenche ao abrir e quando avança (`Haptics.success` ao subir). **Save**: gira enquanto salva e mostra ✓ verde
 "Saved" por 2,2 s quando o vídeo chega às Fotos (depois de fechar "Ready to travel"). Reduzir Movimento: sem pulos, faíscas nem preenchimento.
 
-**Quick edit:** barra do sistema (`EditorTopBar` como `ToolbarContent`, `NavigationStack` próprio): voltar, "● IN EDIT · AUTOSAVED", **Done** em
+**Quick edit:** barra do sistema (`EditorTopBar` como `ToolbarContent`, `NavigationStack` próprio): voltar, o selo do rascunho (`EditorDraftKeeper`:
+"● NO CHANGES YET", "● IN EDIT · SAVING…" até a mudança estar no disco, "● IN EDIT · AUTOSAVED" quando está, "● IN EDIT · NOT SAVED" em `warnText` quando a
+gravação falhou; onde não cabe, só a parte que importa: "SAVING…", "SAVED", "NOT SAVED"; uma gravação antiga que termina depois de uma mudança nova nunca
+diz Saved), **Done** em
 `.glassProminent` amarelo com texto `accInk` (`ink2` enquanto carrega). Some em tela cheia. `EditorLayout` usa a altura sob a barra (`EditorHeightClass`:
 regular a partir de 696, compacta de 636). Painéis: §29, §31.
 
@@ -1266,7 +1309,8 @@ cada faixa tem um toque da cor dela (6%, a atual 12%), e **a faixa com as ferram
 amarelo): contorno de 1,5 pt na cor dela a 85% (3:1 contra a faixa e o preto; o fundo não pode clarear mais, a dica de uma faixa vazia precisa de
 4,5:1) e o quadrado do ícone como apertado (`TimelineLaneTint.litRing`), e o ícone e o ▾ da atual ficam sobre **um quadrado de cantos arredondados** na cor dela (22%,
 contorno de 1 pt a 50%): 40 × 36 pt com cantos de 9 numa faixa de 44 (4 pt menor que a faixa em cada borda, nunca abaixo de 26; cantos de 10 a cada
-40 pt de altura, `TimelineLaneLook.chooserHeight`/`chooserRadius`). **▾** ao lado do ícone da faixa atual (a célula toda, sem tocar a faixa do vídeo) põe todas as faixas
+40 pt de altura, `TimelineLaneLook.chooserHeight`/`chooserRadius`). **▾** ao lado do ícone da faixa atual (dono, 07/11/2026: a seta, não
+uma pilha com a contagem; vira ▴ com todas para fora). Tocar a célula (toda, sem tocar a faixa do vídeo) põe todas as faixas
 para fora no lugar, e **todas aparecem, sem rolar** (dono 28/10/2026): elas encolhem para o vídeo ficar pelo menos do tamanho de tudo abaixo dele
 (barra do player + timeline + ferramentas; `EditorLayout.openLaneHeight`), de 44 pt até 28, 6 pt entre elas; se nem com 28 cabem nessa metade, a
 timeline passa da metade e o vídeo cede (só abaixo do mínimo do vídeo, 30% da altura, elas rolariam). No iPhone 17, uma edição nova fica com faixas de
@@ -1280,22 +1324,25 @@ jogada (mais de 350 pt/s), com uma mola que passa um pouco da marca (`TimelineRe
 abre e fecha com a mesma mola. Com todas para fora e mais faixas que espaço (só sob o mínimo do vídeo), o arraste rola as faixas primeiro e só recolhe
 com a primeira à vista. Um toque durante a mola põe as faixas no lugar e vale. Com elas para fora, **um toque numa faixa a escolhe e ela já
 vem selecionada** (dono 28/10/2026): as outras voltam para dentro na mesma mola do ▾ e as ferramentas dela abrem, acesa na cor dela; com um
-painel aberto o toque só escolhe; nada é adicionado. **Toda faixa tem a sua barra** (`EditorToolMenu`, dono 28/10/2026), aberta pelo toque na faixa
-(recolhida ou para fora) ou pela ferramenta da barra principal, e um segundo toque na faixa a fecha. Cada uma traz o que age na faixa inteira ou
-adiciona nela (o que é de um item vem com o item):
-- **Text**: Title, Subtitle, Hook, Callout, seta, círculo, etiqueta, Comment, Style all e, depois de uma linha fina, **Brand kit** (✦ Smart › Brand kit:
-  as fontes e cores do kit nos textos).
-- **Captions**, com linhas: **Show** (o interruptor do painel: aceso enquanto as linhas aparecem, olho cortado quando escondidas, um passo de desfazer),
-  Add line, All lines, Style, **Translate** (o nome do idioma quando traduzidas; abre o painel com a folha de tradução, o mesmo caminho do "Try it"
-  da notificação), Find and replace, Edit by text e Delete all fixo no fim. Sem linhas: Auto captions, Write captions, Edit by text.
-- **Audio**: Studio Voice, Music, **Sound effects** (a folha só com os efeitos do Cue, título "Sound effects", sem a música), Voice-over, **Text to
-  speech** e, depois de uma linha fina, o som do clipe sob a agulha: **Volume**, **Voice effects** e **Extract audio** (§56).
+painel aberto o toque só escolhe; nada é adicionado. **As faixas de texto, áudio e mídia têm a sua barra** (`EditorToolMenu`, dono 28/10/2026),
+aberta pelo toque na faixa (recolhida ou para fora) ou pela ferramenta da barra principal, e um segundo toque na faixa a fecha; as de **legendas** e
+**Blur area** abrem o painel que o botão da barra principal abre (dono, 07/11/2026: uma porta, uma tela; §55). Cada barra traz o que age na faixa
+inteira ou adiciona nela (o que é de um item vem com o item):
+- **Text**: Title, Subtitle, Hook, Callout, seta, círculo, etiqueta, Comment (balão de citação), Style all e, depois de uma linha fina, **Brand kit**
+  (Templates › Kit de marca: as fontes e cores do kit nos textos).
+- **Audio**: Music, **Sound effects** (a mesma folha "Add music or a sound", aberta na parte Sound effects), Voice-over, **Text to speech** (uma
+  pessoa falando) e, depois de uma linha fina, o que trata o som que já está lá: **Studio Voice**, e do clipe sob a agulha **Volume**, **Voice
+  effects** (onda com uma pessoa) e **Extract audio** (§56).
 - **Media**: as formas de pôr uma foto ou vídeo, os cartões da folha (**Split screen · Window · Full screen · In sequence**, cada uma abrindo a
   galeria já nela, com os cartões no topo para trocar); depois de uma linha fina, **Your library** (a folha na biblioteca) e **Brand kit** (o logo do
   kit). A faixa de mídia não abre mais a folha direto: a barra dela é o caminho (adicionar uma janela: Window e a foto).
-- **Blur area**: **Blur area** (o primeiro passo, os rostos do quadro), **Draw an area** (uma área desenhada no meio, sem passar pelos rostos, assim
-  que o tamanho do vídeo é lido) e, depois de uma linha fina, **Compare** (◐: o vídeo sem as áreas enquanto aceso; apaga quando a barra fecha, e
-  o painel tem o seu).
+- **Legendas** (a faixa abre o painel): no topo, o interruptor, o idioma, **Translate**, Style e **•••** (no cabeçalho, antes do ✓; o menu do sistema: Find and replace,
+  Select lines, Edit by text, Add a line at the playhead, **My words** (§62) e, depois de um separador, **Delete all captions**, vermelho, que pergunta antes, "Delete
+  all 12 caption lines?" · "Undo brings them back.", e o toast "12 lines deleted" tem Undo). **Delete all** também está na barra de uma linha
+  escolhida (tocar a faixa cheia escolhe a linha tocada; dono, 07/11/2026: apagar tudo à vista onde se toca), com a mesma pergunta. Add a line também fica no fim da lista. Sem linhas, o
+  painel oferece fazê-las (Auto captions) ou escrevê-las.
+- **Blur area** (a faixa abre o primeiro passo, os rostos do quadro, como a barra): **Draw an area** e All but the largest no passo; ◐ no topo
+  compara o vídeo inteiro sem as áreas quando já há alguma (apaga quando o painel fecha).
 - O **vídeo** não tem barra: tocar nele escolhe o clipe, com as ferramentas do clipe.
 
 Um interruptor na barra (Show, Compare; `EditorToolbarItem.isOn`) fica aceso como o ◐ dos painéis: o ícone em `accInk` sobre um quadrado
@@ -1555,16 +1602,29 @@ Sistema completo em `NOTIFICATIONS.md`. Na interface:
 - **O painel cresce** (`EditorPanelContainer(expansion:)`): alça (decorativa) e botão de expandir no cabeçalho (44 pt, "Expand panel" / "Collapse panel");
   arrastar o cabeçalho 24 pt faz o mesmo. Expandido, o vídeo vai ao menor tamanho do editor (`EditorLayout(panelIsExpanded:)`); a escolha vale para os dois
   painéis enquanto o editor está aberto (`stylePanelIsExpanded`). Altura normal de um painel `.full`: metade da tela (330–420 pt). No iPhone SE o painel é
-  folha e o botão troca as duas alturas. O conteúdo para 18 pt acima do Home Indicator (`Metrics.editorStylePanelBottomClearance`) e some em degradê
+  folha e o botão troca as duas alturas; ao lado dele, **⌄ "Show timeline"** (dono, canvas 2 R10 §7.3) tira a folha da frente sem fechar o painel: a
+  timeline volta inteira para escolher outro texto, legenda ou ponto, e no lugar das ferramentas fica uma barra com o nome do painel (˄, traz a folha
+  de volta como estava: item, aba, estilo, playhead) e ✓ (`PanelTuckedBar`, `QuickEditViewModel.panelIsTucked`); abrir outro painel também a traz.
+  Nas outras telas, **acima do painel ficam a régua e a faixa dele** (Texto ou Legendas, sem a faixa do vídeo; `TimelineGeometry.Input.panelIsFull`):
+  tocar outro texto ou legenda ali troca o que o painel estiliza. O vídeo fica no menor tamanho dele e o painel cede o que isso pede, até 330 pt
+  (`EditorPanelSize.fullMinimum`, uma fileira inteira de estilos); expandido ou digitando, a timeline sai. O conteúdo para 18 pt acima do Home Indicator (`Metrics.editorStylePanelBottomClearance`) e some em degradê
   (`scrollEdgeEffectStyle(.soft)`).
-- **Abas na largura toda** (Text style: **Animated · Styles · Custom**; Caption style: Styles · Format · Animation · Adjust, §50), 44 pt, com pelo menos 16 pt entre os nomes (sem esse espaço, rolam de lado); campo e abas
-  fixos, só o resto rola; trocar de aba volta ao topo (`contentKey`), menos Styles do Caption style, que volta onde estava (`keptOffset`). Em tamanhos de acessibilidade só as abas ficam fixas: o campo rola com o resto
-  e os controles da aba vêm antes de "Style applies to". Cores (`PanelSwatches`) de 34 pt, a paleta em linhas (§44), segmentos de 38 pt.
+- **Abas na largura toda** (Text style: **Styles · Font · Color · Motion**, um nível só, dono, canvas 2 R3; um gráfico: **Style · Motion**; Caption style: Styles · Layout · Animation · Custom, §50), 44 pt, com pelo menos 16 pt entre os nomes (sem esse espaço, rolam de lado); campo e abas
+  fixos, só o resto rola; trocar de aba volta ao topo (`contentKey`), menos Styles do Caption style, que volta onde estava (`keptOffset`) e, sem
+  lugar guardado, abre na seção do estilo que as legendas usam (`revealID`), e Custom do Caption style, que volta onde estava depois de Choose words
+  to emphasize (§50); enquanto o conteúdo se arma, o topo em que ele nasce não apaga o lugar guardado. Cada
+  painel volta na aba e com o Advanced como foi deixado neste vídeo (`PanelMemory`, dono, canvas 2 R7); os de um item (Volume, Text, Mask…) por
+  item: outro clipe ou texto abre como foi deixado para ele, ou como o painel começa. Um caminho que pede uma aba (Animation pela barra de um
+  texto) continua abrindo nela. Em tamanhos de acessibilidade só as abas ficam fixas: o campo rola com o resto. Cores (`PanelSwatches`) de 34 pt, a paleta em linhas (§44), segmentos de 38 pt.
 - **Digitando** (teclado no campo): só cabeçalho, campo e abas sobre o teclado (`EditorLayout.typingPanelHeight`, 180 pt); o vídeo fica com o resto
   e mostra o texto mudando. Tocar numa aba guarda o teclado e mostra os controles dela (como no CapCut). Com texto grande (xxLarge ou
   mais) isso não caberia: os controles ficam e rolam sobre o teclado (`TextStylePanel.hidesControlsWhileTyping`).
 - **Os estilos do Caption style em grade** (colunas de 104 pt: três por linha no iPhone), por grupo, com filtros (§50).
-- **Text style abre na aba do que o texto veste** (efeito → Animated; senão Styles); Custom volta à seção em que estava (`lastTextCustomSection`).
+- **Text style abre em Styles** (ou na aba em que foi deixado para aquele texto, `PanelMemory`). **Styles** tem os filtros **All · Animated · Mine**
+  (`TextStyleFilter`, `edit.textFilter.*`, guardado enquanto o vídeo está aberto): em All, **Mine** (os salvos, com **Save style** no fim; some sem
+  nenhum), **Animated** (os seis, com os ajustes do escolhido logo abaixo dos cartões) e **Made by Cue** (os clássicos; Save style no fim quando não há
+  Mine). Animated era uma aba e virou filtro de Styles (dono, canvas 2 R3 e F3: são estilos prontos como os outros). Mine vazio diz "Save the look on
+  screen to use it in your next videos." com Save style.
   - **Animated:** grade (104 pt) dos seis efeitos de texto (`TextEffectKind`, `TypePreset.effectPresets`), cada cartão animando nas palavras do
     criador (`TextEffectCardSamples`; com Reduzir Movimento o cartão fica parado): **Gold metal** (metal com brilho e faíscas curtas), **Type wave**
     (letras chegam em onda), **Pop 3D** (letras com profundidade que saltam), **Neon** (tubo aceso num halo), **Editorial reveal** (palavras sobem sobre
@@ -1572,14 +1632,14 @@ Sistema completo em `NOTIFICATIONS.md`. Na interface:
     nome do que muda (Shine, Wave height, Depth, Glow, Band height, Sheen), **Duration** da entrada (só animado), **Direction** (Pop 3D: Depth
     direction, também parado) e **Remove effect** (a tipografia fica). O efeito vai nas palavras do criador, nunca inventa texto; trocar de efeito
     mantém palavras, lugar, tamanho posto à mão, giro, tempo, âncora e keyframes. Legendas e gráficos nunca levam efeito.
-  - **Styles:** Save style, os salvos e os estilos clássicos (sem efeito; escolher um tira o efeito).
-  - **Custom:** segmentado **Font · Color · Motion**. Font: **Size** e **Turn** no topo (uma linha cada, sempre à vista), depois as fontes, Import e o
-    peso. Color: as cores e Glow; com efeito, o metal (Gold) ou a cor do texto e a segunda cor, e a nota de que o efeito faz a própria luz e sombra
-    (sem fundo nem contorno). Motion: `MotionKeyframeControls`.
+  - Os clássicos não têm efeito: escolher um tira o efeito.
+  - **Font:** **Size** e **Turn** no topo (uma linha cada, sempre à vista), depois as fontes, Import e o
+    peso. **Color:** as cores e Glow; com efeito, o metal (Gold) ou a cor do texto e a segunda cor, e a nota "The effect makes its own light and
+    shadow. Pick a style without it to use a background or an outline." **Motion:** `MotionKeyframeControls`.
   - **Um jeito de entrar por vez:** o efeito animado faz o que o cartão promete. Escolher em Animated um efeito que se move, ou pôr **Animated** nele,
-    tira o Motion do texto no mesmo passo, com toast e Undo ("Gold metal on this text · Motion removed, the style moves it"). Em Custom › Motion, um
+    tira o Motion do texto no mesmo passo, com toast e Undo ("Gold metal on this text · Motion removed, the style moves it"). Em Motion, um
     texto com efeito tem **None · Effect's own · os Motions**, um marcado por vez: um Motion (ou None) deixa o efeito **parado** com o acabamento (a
-    aba Animated mostra Still); Effect's own devolve a entrada do efeito. Keyframes convivem com tudo.
+    filtro Animated mostra Still); Effect's own devolve a entrada do efeito. Keyframes convivem com tudo.
   - Prévia = exportação em qualquer instante (o mesmo `TextEffectComposer`, determinístico); Reduzir Movimento só para os cartões e a interface,
     nunca o vídeo. Letras por grafema (acento e emoji inteiros); árabe, hindi e tailandês por palavra (nunca quebra a ligação).
   - **Desenho:** cada camada de cada letra é pintada uma vez (Core Graphics, `TextEffectPainter`) e guardada na GPU; cada quadro só posiciona esses
@@ -1592,8 +1652,13 @@ Sistema completo em `NOTIFICATIONS.md`. Na interface:
   e contorno (uma caixa com sombra projeta a própria). O que precisa de espaço além da caixa vai na sangria do desenho (`Drawing.bleed`), nunca na
   caixa. Textos e estilos salvos antes leem `centered` e continuam desenhados como eram (`LegacyCaptionLookTests`); escolher um estilo hoje passa a
   desenhar do jeito novo.
-- **Escopo só do visual:** "Style applies to" **This title | All texts · N** em Animated, Styles, Font e Color ("Words, timing and motion stay with each
-  text."); em Custom › Motion: "Motion and timing change only this text".
+- **Escopo só do visual, no cabeçalho** (`TextScopeChoice`, dono, canvas 2 R2): no lugar do subtítulo, **This title | All 3 texts** em Styles, Font e
+  Color, sempre à vista e a um toque (ocupava uma linha entre as abas e os estilos); cada escolha tem a largura das suas palavras ("Alle 2 Texte" inteiro
+  em alemão) e, grande demais ao lado dos botões, o cabeçalho põe os botões numa linha só deles. Enquanto as palavras são digitadas, o subtítulo volta
+  no lugar dela, para o campo e as abas caberem acima do teclado. Só aparece com mais de um texto (gráficos não contam: têm painel próprio; com um texto só, o subtítulo "Only this title changes").
+  Com **All 3 texts** a timeline acende os três como escolhidos (`TimelineGeometry.Input.alsoSelected`). Em Motion o cabeçalho diz "Only this text
+  moves" e a escolha some; o alcance fica como estava, então o Motion da barra (que abre direto em Motion) não o troca e Font ou Color depois dele
+  ainda valem para todos se valiam antes. O **Style all** do menu Text continua como atalho (abre com All).
 - **Apply this style to captions** (`PanelButton` no fim de Animated, Styles, Font e Color, quando há legendas): pergunta antes (alerta: o que troca, o que fica, e
   a nova cor de destaque se a atual sumiria, `CaptionAccent.standingOut`); copia **uma vez** (`CaptionStyleCopy`), um passo de desfazer, toast "Captions use
   this style" com Undo; nada fica ligado. A cópia vira mudanças sobre o estilo (`CaptionSettings.adjustments`, `withoutCopiedLook`), desenhadas pelo
@@ -1716,13 +1781,31 @@ verde/azul, e num vídeo sem tela verde Color "não fazia nada".
   clipes que têm o seu.
 - **Behind you:** Original · Blur · Color · Image e só o controle da escolhida (Blur strength, cores, foto; em Original, uma linha).
 - **Cutout** em cartão próprio (`Palette.Editor.panelCard`): **Automatic | Green or blue screen** com uma frase de cada; "Can't find people here" no
-  Automatic. Em tela verde/azul: **Screen color** (Green | Blue, "Your own color" quando escolhida à mão), "Pick the screen's color", e **Tolerance, Edge,
+  Automatic. Com um fundo escolhido, o nome do cartão diz **In use** (o recorte está agindo). Em tela verde/azul: **Screen color** (Green | Blue, "Your own color" quando escolhida à mão), "Pick the screen's color", e **Tolerance, Edge,
   Spill** recolhidos em "Fine-tune the cutout" ("· adjusted" quando mudados), cada um com o que faz (`ChromaKeyCube`). Com Original: "Used once a
   background is picked".
+- **Where you are** (`PersonPlaceControls`), com um fundo escolhido (ou uma mídia Behind you no momento da agulha): "As recorded" ou "Moved",
+  **Your size** (30–150 %), "Drag yourself on the preview to move. Pinch to resize." e **Back where you were recorded**. Com o painel aberto e o vídeo
+  parado, a prévia mostra o contorno tracejado de onde a pessoa está (`PersonPlaceLayer`, `Palette.Editor.overlayOutline`): arrastar move, pinçar
+  escala (um gesto é um passo de desfazer; ações do VoiceOver Move up/down/left/right, Bigger, Smaller). O lugar é de cada gravação ou clipe
+  (`BackgroundEffect.person`, `PersonPlacement`; edições antigas leem "como gravado"). Com Blur e a pessoa movida, o lugar onde ela estava fica
+  desfocado sem ela (um desfoque normalizado que só soma o que é fundo). Em Original sem mídia atrás, a pessoa não move (nada novo apareceria).
+- **Check the cutout** (`CutoutCheckRow`), no cartão Cutout enquanto o Automatic age: lê os clipes que usam o recorte (15 quadros por segundo, com
+  o mesmo `PersonMaskTrack` da prévia) e diz "Checking the cutout · N%" com Stop (não guarda nada), depois "Found you in every frame" ou "Cue lost
+  you in N moments" com até 6 botões de tempo ("And N more"); tocar pausa e leva a agulha ao momento. O resultado vale até a edição mudar
+  (aí volta a oferecer a verificação); continua rodando se o criador trocar de painel.
+- **Máscara estável** (`PersonMaskTrack`, por gravação e fluxo da composição): a máscara do Vision é suavizada em ordem de reprodução, pouco onde
+  a pessoa se move (segue na hora) e mais onde ela está parada (tira o tremor da borda). Um quadro em que o Vision não acha ninguém, ou acha bem
+  menos que antes, mantém o último contorno por 0,5 s; depois, em 0,3 s, passa à máscara nova (a pessoa saiu) ou ao quadro como gravado. Um corte,
+  um salto da agulha ou 0,25 s sem quadro recomeçam do zero, então a exportação (que lê em ordem) é sempre igual e a prévia chega a ela poucos
+  quadros depois de um salto. A capa e a câmera ao vivo usam a máscara do quadro, sem suavizar.
 - Última linha: "Changes show in the preview and are saved as you make them. ✓ closes the panel."
 - Continua `.medium` (não expande: depende da trilha e da agulha), com a folga do Home Indicator (`EditorPanel.scrollsClearOfHomeIndicator`).
-- Contraste: `PaletteContrastTests.theBackgroundPanelsCutoutCardReads`; `PanelAdvancedButton` usa `ink2`.
-- Testes: `QuickEditBackgroundPanelTests`, `BackgroundPanelUITests` (6,1" e SE), `BackgroundCompositionTests`, `BackgroundDeviceTests`.
+- Contraste: `PaletteContrastTests.theBackgroundPanelsCutoutCardReads`; `PanelAdvancedButton` usa `ink2`; Where you are e Check the cutout só usam
+  `ink`, `ink2`, `warnText` e `successText` (já medidos).
+- Testes: `QuickEditBackgroundPanelTests`, `QuickEditCutoutTests`, `PersonMaskTrackTests`, `BackgroundPanelUITests` (6,1" e SE),
+  `BackgroundCompositingTests`, `BackgroundCompositionTests`, `PreviewMatchesExportTests` (`behindYou`), `BackgroundDeviceTests` (no iPhone: estabilidade
+  do contorno antes e depois, falhas seguidas, pan rápido e pouca luz, prévia contra exportação com a pessoa movida).
 
 ## 32. A primeira viagem: o guia do primeiro vídeo, em dicas
 
@@ -1914,17 +1997,25 @@ auditoria: `reports/editor-award-checklist.md`.
   velocidade só muda onde ele toca. Capas antigas (`.frame(segundos)`) são quadros do take. **Se o trecho sai da edição**, a capa continua a mesma
   (da gravação); a etapa Picture mostra a faixa da edição de agora, e escolher outro quadro troca a capa.
 - **Cover Studio** (`Screens/QuickEdit/CoverStudio/`, `CoverStudioViewModel`, `CoverComposition`): a capa é feita em tela cheia, sobre o editor (Capa
-  na barra, o bloco de capa da timeline, "Try it" de notificação), em **cinco etapas** com Next e barra de etapas: **Picture** (quadro da faixa, ±1
-  quadro, ou foto; zoom/mover com os dedos ou o controle, Reset; no antes/depois, Before | After com a metade emoldurada em amarelo, rótulos
-  editáveis), **Template** (Educational, Opinion, List, Demo, Before/After, Series, cada miniatura desenhada com a foto e o título reais; trocar de
-  modelo mantém título, destaques, enquadramento, segunda foto e os gráficos do criador; os do modelo, se não tocados, são trocados), **Title**
-  (texto ou ✦ sugestões, palavras em destaque (várias), Type: fonte, tamanho, largura, alinhamento, maiúsculas; Color: texto, destaque e "Color |
-  Box"; Readability: None, Shadow, Outline, Box + cor da caixa; Line above), **Graphics** (Arrow, Circle, Tag, @handle como objetos: tocar,
-  arrastar, pinçar e girar com dois dedos ou a alça do canto, ✕, cor, texto, tamanho e giro por controle, Copy, In front, Behind, Delete) e
-  **Finish** (Clean, Text behind me, Outline me, Dim, Blur com Strength; sem pessoa: "No person found" e a explicação; My cover style: Save as my
-  style / Use my style; Remove cover). Desfazer/refazer próprio; Done é **um** passo no editor; Cancel com mudanças pergunta. Guias amarelas no
+  na barra, o bloco de capa da timeline, "Try it" de notificação), em **cinco etapas** com "Next: <etapa>" e barra de etapas: **Picture** (Frame
+  from video | Photo, a faixa de quadros, e logo abaixo **Zoom e Reset numa fileira de 44 pt**, à vista sem rolar do iPhone SE ao Pro Max; depois
+  ±1 quadro com o tempo e a dica de arrastar/pinçar; zoom e mover também com os dedos; no antes/depois, Before | After em cima, com a metade
+  emoldurada em amarelo, e rótulos editáveis no fim), **Template** (os estilos salvos do criador, depois Educational, Opinion, List, Demo,
+  Before/After, Series, cada miniatura desenhada com a foto e o título reais; trocar de modelo mantém título, destaques, enquadramento, segunda
+  foto e os gráficos do criador; os do modelo, se não tocados, são trocados; **Save style** é o cartão tracejado, do tamanho das miniaturas, no fim
+  dos estilos do criador ou, sem nenhum, no fim da fileira: `CoverGalleryCard`), **Title** (o campo; ✦ sugestões quando vazio ou digitando, nunca
+  a que repete o título atual, sem diferença de maiúsculas ou espaços; embaixo, **Words · Type · Color · Box**, abrindo em Words e lembrado
+  enquanto o estúdio está aberto: Words = palavras em destaque (várias) e Line above; Type = fonte, peso, tamanho, largura, alinhamento,
+  maiúsculas; Color = texto, destaque e "Highlight shows as"; Box = None, Shadow, Outline, Box + cor da caixa), **Graphics** (Arrow, Circle, Tag,
+  @handle como objetos: tocar, arrastar, pinçar e girar com dois dedos ou a alça do canto, ✕; com um escolhido, **os controles dele primeiro**
+  (texto, cor, tamanho, giro, Duplicate, In front, Behind, Delete) e depois a fileira pequena de adicionar, chips de 44 pt; sem escolhido, a
+  fileira e a dica) e **Effects** (Clean, Text behind me, Outline me, Dim, Blur com Strength; sem pessoa: "No person found" e a explicação; Remove
+  cover quando o vídeo já tinha capa). Desfazer/refazer próprio; Done é **um** passo no editor; Cancel com mudanças pergunta. Guias amarelas no
   meio e nos terços; guia de recorte "Profile grid 3:4 · approx." / "Square 1:1 · approx." (aproximações: o Cue não define a capa em nenhuma rede).
-  O teclado esconde a barra de etapas; tocar na capa o recolhe. A timeline mostra a capa desenhada no bloco de capa.
+  **Com o teclado aberto** (título, Line above, etiqueta ou @handle, rótulos do antes/depois) somem a barra de etapas e o cabeçalho da etapa, e os
+  controles ganham a altura que a capa cede (ela fica com 28% do que sobra acima do teclado, até 150 pt): no Title, o campo, Words e as palavras em destaque ficam acima do teclado,
+  e Line above, tocado, sobe para cima do teclado; tocar na capa recolhe o teclado. A faixa de quadros é um editor local da capa (R10): escolher quadros muda só a
+  prévia da capa; abrir e fechar o estúdio deixa a agulha do editor onde estava. A timeline mostra a capa desenhada no bloco de capa.
 - **Texto da capa** (`CoverTextLayout`, Core Text): o bloco inteiro cabe — a letra diminui (até 3,4% da largura) até a palavra mais longa, as
   linhas (até 6) e a altura caberem, sempre dentro da capa em volta do centro e longe de tags, @handle e rótulos do antes/depois. Quebra só no
   início de uma palavra (separação de palavras do sistema: espaços, ou dicionário em japonês, chinês e tailandês); RTL alinha do próprio lado;
@@ -1945,6 +2036,20 @@ auditoria: `reports/editor-award-checklist.md`.
 - **Clean Up na montagem** (`CleanUpSuggestion.sourceID`, `EditTimeline+CleanUp`, `TakeEdit.cleanUpAnalyzedSources`): ouve cada gravação uma vez (uma
   nova, ao abrir de novo); a lista segue a ordem em que tocam e o cartão diz de onde é ("Interview · 00:22.0"). Remover corta aquela gravação onde ela
   toca (em cada cópia, na velocidade dela), nunca outra no mesmo segundo. Uma gravação que não pôde ser ouvida não apaga as sugestões das outras.
+- **Pausas numa sala barulhenta** (D16, `SilenceDetector.pauses`, `BackgroundLevel`, `PauseDetection`, `PauseHearing`): cada gravação é medida
+  antes (o fundo é o P10 dos níveis de 50 ms, a voz o P90; o silêncio digital fica de fora). Numa sala silenciosa, com a voz ao menos 18 dB acima
+  de −42 dBFS, as pausas são as de sempre (o mesmo nível fixo, marcadas como antes). Com o fundo acima de −42 (ventilador, rua, música), o nível
+  sobe com ele (fundo + 2,5 a 6 dB, conforme o quanto ele oscila); com a voz baixa demais, o nível desce para 18 dB abaixo dela. O que um nível
+  movido acha é **menos seguro**: entra na lista, **nunca vem marcado** (confiança 0,5 nas longas, 0,4 nas curtas), as bordas ficam onde o som
+  assentou no fundo, com 0,25 s de respiro de cada lado, só a partir de 0,5 s, e uma pausa cuja fala vizinha (2,5 s de cada lado) não fica 8 dB
+  acima do nível é deixada passar (na dúvida, a pausa fica; nunca fala válida). O cartão diz "Listen first · none is marked"; o comprimento
+  mostrado e o filtro "Pauses longer than" usam o silêncio ouvido, não o corte (`CleanUpSuggestion.silence`). Com a voz a menos de 12 dB do fundo
+  (descontada a oscilação), ou nada sob o fundo, o resultado é **"Too much background sound"** (`PauseHearing.tooMuchBackgroundSound`,
+  `isInconclusive`), nenhuma pausa nova listada, com "Pauses can’t be found reliably here. Try Edit by text."; não é o mesmo que "No long pauses".
+  `ClipsViewModel.cleanUpPauseHearing` dá o caso mais cauteloso entre as gravações tocadas e `TakeEdit.pauseHearings` o guarda com a edição.
+  Ouvir de novo troca só as sugestões ainda abertas: cortes aplicados e decisões ficam (`CleanUpAnalyzer.merged`). Medido no corpus
+  determinístico `NoisyRoomPauseTests` (leituras FLEURS em pt, en, es com consoantes, respirações e fundos feitos no teste); **não ouvido no
+  iPhone**.
 - **Mídias sobrepostas** (`OverlaysViewModel+Picking`): cada janela visível tem sua alça, na ordem em que o vídeo empilha (a escolhida por cima,
   para alcançá-la mesmo coberta). Um toque pega a de cima; tocar de novo onde elas se cobrem pega a de baixo; tocar a escolhida sozinha abre o painel.
   Contorno das não escolhidas: branco tracejado com halo escuro (`Palette.Editor.overlayOutline`/`overlayOutlineHalo`). **Durante o arraste o vídeo
@@ -1957,14 +2062,42 @@ auditoria: `reports/editor-award-checklist.md`.
   contam: "e" não acha "é"). Cada resultado mostra a linha com a palavra em amarelo (`accText`, negrito) e **Replace**; **Replace all** troca
   todas num passo de desfazer ("Replaced N times" · Undo). Só o texto muda: a linha guarda seus tempos e as palavras que continuam iguais, os da
   voz (`CaptionRevision.retimed`); linhas de trechos cortados ficam como estão. Tocar num resultado leva a agulha à linha (a folha fica a meia
-  altura, com o vídeo à vista).
+  altura, com o vídeo à vista). Sob os campos, **Add “caldo” to My words** guarda a grafia que o botão mostra em My words (§62), sem mudar
+  nenhuma linha; Replace nunca guarda palavra.
 - **Várias linhas de legenda de uma vez** (`CaptionPickTools`, `CaptionsViewModel+Picks`; Captions › **Select lines**, ou segurar uma
   linha › Select lines, como a edição em lote do CapCut): cada linha ganha um círculo; tocar põe ou tira. Enquanto escolhe, o painel cresce até
   a altura dos painéis de estilo (`openPanelSize`), no lugar da chave e dos chips fica "N selected", **Select all** / **Deselect all** e **Done**,
   e as ações ficam fixas embaixo da lista (rodapé do painel, como no CapCut, que as mantém à mão enquanto a lista rola; decisão depois de
-  comparar: no topo da lista elas sumiam ao rolar e as linhas mal cabiam): chip **Emphasis** (a linha inteira na cor de destaque, como a palavra
-  dita; em caixa onde a revelação usa caixa; ligado em `accText` sobre `accSoft`), menu **Size** (Regular, Bigger 1,25×, Biggest 1,5×, nunca
-  menor, para não cair abaixo do tamanho em que as cores foram medidas; dentro do limite da coleção), ‹ › (**Move earlier / Move later**, 0,1 s
+  comparar: no topo da lista elas sumiam ao rolar e as linhas mal cabiam; numa linha quando cabe, senão os chips numa fileira que rola de lado, com
+  mover e apagar embaixo: um chip por fileira deixava 20 pt para as linhas num iPhone 17): chip **Emphasize line** (em português **Enfatizar linha**; dono, canvas 2
+  §7.1: o nome diz a ação e o alcance, e "Highlight" fica só com a palavra sendo dita): marca todas as palavras das linhas para ênfase, na cor e no
+  tamanho de ênfase do estilo (§50); ligado em `accText` sobre `accSoft`; o VoiceOver ouve o que faz), menu **Size** (Regular, Bigger 1,25×, Biggest 1,5×, nunca
+  menor, para não cair abaixo do tamanho em que as cores foram medidas; dentro do limite da coleção), menu **Place** (decisão D do E4, 07/11/2026;
+  `CaptionsViewModel+Places`, `CaptionLineStyle.y`): **With all captions**, **Top**, **Middle** ou **Bottom** põe as linhas escolhidas num lugar
+  só delas, um passo de desfazer, e voltar com as outras tira o lugar próprio (o reset local). Um trecho no lugar próprio vence a divisória da tela
+  dividida, e a tradução vai junto (sozinha no lugar do original; bilíngue logo abaixo dele, ou acima na metade de baixo). Na prévia, arrastar uma
+  linha com lugar próprio move só o trecho (as linhas do mesmo lugar; o rótulo diz "This stretch" ou "This line"; uma escolhida no Select move as
+  escolhidas, "Selected lines"), grudando no alto, no meio e embaixo, e não na divisória; arrastar outra move todas as legendas menos essas, e o
+  toast diz "N lines keep their own place" com **Move them too**. Linhas no lugar próprio formam blocos à parte (`CaptionBlocking` já separa por
+  estilo). Menu **Zoom** (zoom por frase, E4 07/11/2026; `PhraseZoom`, `PhraseZoomWindow`, `CaptionsViewModel+PhraseZoom`): **No zoom**,
+  **Subtle** 1,1×, **Medium** 1,18× ou **Strong** 1,25× nos segundos da gravação das linhas escolhidas, linhas ditas em sequência (menos de 0,35 s
+  entre elas) como uma frase só; um passo de desfazer, a agulha volta 0,3 s antes para ver entrar; a linha mostra uma lupa no cabeçalho. Depois de
+  criado, é independente: corrigir, dividir ou apagar a linha não mexe nele; não divide o clipe e soma ao Zoom do clipe. Limites (decididos
+  08/11/2026, sem o dono): no mínimo 0,8 s (uma linha curta segura isso desde o começo), entra e sai em 0,2 s, no máximo 1,25× para um take em
+  1080p continuar nítido, e com o Zoom do clipe nunca passa de 1,45×; cresce em direção ao rosto quando a gravação tem um rosto confiável, sem
+  cortar a cabeça e sem passar do que os pixels da gravação permitem (`ZoomAnchor`, §39), senão do meio do quadro (também com Follow face, cujo
+  recorte já segue o rosto); sobre um Zoom escolhido pelo criador no clipe, cresce do meio como ele e só soma o que os limites deixam. No menu, a
+  força que o kit guarda aparece como "Medium · your style"; com as linhas escolhidas, uma linha diz quando o zoom para antes ("Zoom stops at 1.12×
+  · the video has too few pixels for more" ou "… · so your head stays in the frame"). Nunca liga o Follow face sozinho; vale para o que toca no
+  vídeo principal (o take ou um clipe importado, preso à
+  gravação dele), não para fotos e vídeos por cima nem para o outro lado da tela dividida. Um corte antes dele o mantém nas palavras; com as
+  palavras cortadas, some. O compositor e a prévia das áreas de desfoque e do tracking contam o zoom. Não tem faixa própria: na faixa de
+  legendas da linha do tempo, a linha com zoom troca o ícone pela lupa (`TimelineGeometry.ItemInput.symbol`). **Place e Zoom pela linha do
+  tempo** (canvas 2 §6, decisão D: escolher o trecho na timeline principal e saber o alcance antes do gesto): tocar numa legenda da faixa abre a
+  barra dela com **Place** e **Zoom** depois de Emphasize; cada um abre um menu (`CaptionLineChoiceDialog`) cujo cabeçalho diz a linha, o
+  tempo dela e o que está valendo ("“We grew 40%” · 00:02.0–00:04.1 · Now: With all captions. Only this line changes."); a escolha vale só para
+  ela, um passo de desfazer. Sem estilo de legenda, o toast pede "Pick a caption style first to place lines on their own". Arrastar a legenda
+  escolhida na prévia já mostra o rótulo do alcance antes do primeiro movimento. ‹ › (**Move earlier / Move later**, 0,1 s
   por toque, todas juntas, até onde a que tem menos espaço pode ir: dentro do seu clipe e sem encostar numa linha não escolhida; "The lines
   can’t move further") e a lixeira ("N lines deleted" · Undo). Cada ação
   é um passo de desfazer (toques seguidos de mover são um). O estilo fica na linha (`CaptionCue.lineStyle`, `CaptionLineStyle`; linhas antigas
@@ -1978,6 +2111,31 @@ auditoria: `reports/editor-award-checklist.md`.
   transição e look. Textos, mídias e narrações presos ao clipe ficam no mesmo momento dele. Legendas e Studio Voice são da gravação: a nova não
   tem legendas até Auto captions ouvir de novo. A gravação antiga nunca muda; um Undo ("Clip replaced" · Undo) a traz de volta. Foto: "Pick a
   video first"; menos de 0,3 s: "Video too short to add".
+- **Relações no tempo** (`CutFollowing`, aplicado em `EditDocument.commit` a toda mudança dos cortes, a partir de onde um gesto começou;
+  `TakeEdit.removingClip` ao apagar um clipe; plano §6, matriz §4 de `reports/editor-trust-matrix.md`). Uma regra por tipo de camada, a mesma num
+  vídeo de uma take e numa montagem:
+  - **Textos e fotos ou vídeos por cima** ficam sobre o que foram postos: aparecem do primeiro ao último momento daquilo que continua no vídeo.
+    Em parte sobre o que saiu, mantêm o resto (o clipe onde começavam apagado, ficam na parte sobre o próximo); um congelamento ou clipe posto no
+    meio deles, terminam com a fala (cobrem o inserido); uma pausa tirada sob eles, encurtam. Um momento só "continua" no clipe que o tocava ou num
+    clipe feito dele nessa mudança (a parte direita de uma divisão, o que o Clean Up deixou), nunca noutra cópia dos mesmos segundos. Clipes postos
+    em outra ordem levam o que começa neles, como antes. Uma foto ou vídeo que segue os cortes guarda o passo da fala (o arquivo do segundo a que
+    tinha chegado) e seus keyframes ficam nos quadros onde foram postos quando um clipe abre um vão no meio dela; um vídeo antigo, que toca direto,
+    mostra o arquivo do segundo a que tinha chegado quando o começo dele foi aparado ou apagado (prévia e arquivo iguais,
+    `PreviewMatchesExportTests`).
+  - **Tudo sobre o clipe apagado** vai com ele e o aviso conta: textos, fotos e vídeos (num vídeo de uma take ficam presos aos segundos dela,
+    escondidos, e voltam se uma alça traz esses segundos; numa montagem saem da edição, pois só o Undo traz o clipe), efeitos e sons extraídos
+    postos nos seus momentos (nunca vão para o começo do próximo clipe).
+  - **Narração** toca inteira, nunca cortada nem comprimida com a fala sob ela; a que começava num momento que saiu começa onde a edição continua
+    (no corte), nunca no mesmo segundo de outra gravação; sem nada depois dela, vai com o clipe.
+  - **Música** fica no seu lugar da edição, inclusive sob uma introdução posta antes (decisão do dono, 06/11/2026): **In sequence** diz "· the music
+    stays where it was" e oferece **Move music along** (a música que começava dali em diante anda o tamanho do clipe novo, um passo de desfazer; se
+    o vídeo mudou antes do toque, "The video changed meanwhile · Move the music on its track"). Uma música que ficaria inteira depois do novo fim
+    fica à vista no fim (os últimos 0,5 s), para ser arrastada de volta.
+  - **Keyframes** contam do começo do item e nunca esticam: um clipe mais rápido encurta o texto, e a saída de Motion (In and out) ainda acontece no
+    novo fim. **Transição**: o clipe que passa a ser o primeiro toca de um corte seco (nada vem antes); levado ao meio, mantém a sua; Undo traz de volta.
+  - Desfazer e refazer trazem tudo junto (cortes, camadas, sons e onde estavam). Limite conhecido: numa montagem, uma alça que apara sob um texto o
+    deixa no que sobrou; arrastar a alça de volta num gesto seguinte não o faz crescer de novo (o Undo faz). Testes: `CutFollowingTests`,
+    `ClipsTimeRelationsTests`, `MediaPiecesTests`, `MusicClipTimelineTests`.
 - **Extract audio** (barra do clipe e, num vídeo com som por cima, a da mídia; `AudioViewModel+ExtractAudio`, `SoundExtractor`,
   `TakeEditing.extractSound`): o som do clipe sai para a faixa de música como um clipe próprio ("Sound · Clip 2" / "Sound · Video",
   `MusicClip.extractedFrom`), onde tocava, no volume do clipe (ou do vídeo), sem fades e sem abaixar sob a voz, e o clipe (ou o vídeo) fica mudo:
@@ -1992,10 +2150,12 @@ auditoria: `reports/editor-award-checklist.md`.
   deleted", "Found 1 pause", "Cut 1 word from the video", "1 word cut · 0.8 s", "Frame frozen for 2 seconds", "3 matches"…) escolhem a forma
   de cada idioma (árabe com as seis); o botão de Edit by text diz "Cut N words from the video" e o toast "N words cut · 0,8 s".
 - **Barras como um editor de celular (decisão do dono, 16/10/2026, depois de comparar com CapCut, Edits e InShot; diverge da ordem do quadro
-  v29 · 7.2).** Principal: todas as ferramentas do editor numa barra só, em grupos, na ordem em que um vídeo falado é feito (§55). **Format**
-  abre o painel "Format" ("Whole video · format for where you post").
+  v29 · 7.2).** Principal: todas as ferramentas do editor numa barra só, em grupos, na ordem em que um vídeo falado é feito (§55). **Aspect ratio**
+  (em português **Proporção**, dono 07/11/2026) abre o painel do mesmo nome ("Whole video · format for where you post"); numa foto ou vídeo por cima,
+  a forma da janela é **Window ratio** (Proporção da janela), e o que aparece dentro dela é Crop (Recorte).
   Clipe: as dele em três grupos, o essencial primeiro (§55; Stabilize e Reverse: §39; Blur area: §54), depois o que vai por cima e, por último,
-  tudo o que muda o vídeo inteiro, com o selo "All"; Delete fixo no fim. Texto ganha **Motion** (Style › Motion); mídia ganha **Mask** e **Blur area** (§54), **Split** (em dois na agulha), **Replace**,
+  tudo o que muda o vídeo inteiro, com o selo "All"; Delete fixo no fim. Texto ganha **Motion** (Style › Motion; com o texto escolhido e o vídeo parado, a prévia o mostra inteiro mesmo na entrada ou na saída, sem a agulha
+  pular, `PreviewMotionHold`; Play e Preview mostram a entrada, e a exportação nunca lê isso; dono, canvas 2 F15); mídia ganha **Mask** e **Blur area** (§54), **Split** (em dois na agulha), **Replace**,
   **Track** (§39), **Duplicate** (por cima, mesmo arquivo) e, num vídeo com som, **Extract audio**; um apoio da tela dividida não tem Track nem
   Duplicate nem Mask e ganha **Close gap** quando há espaço antes dele (§51).
 - **Reordenar clipes** (`ClipOrderSheet`): **segurar um clipe** na timeline (0,45 s, toque háptico) ou **Reorder** na barra do clipe abre a lista dos
@@ -2008,64 +2168,110 @@ auditoria: `reports/editor-award-checklist.md`.
 - **Arrastar no tempo:** com um texto, mídia, legenda ou som escolhido, arrastar o **corpo** do bloco o move (o tamanho fica), grudando nos cortes e
   bordas com toque háptico; as pontas amarelas continuam aparando (`TimelineGeometry.bodies`, `HandleTarget.move`).
 - **Marcas de corte sempre à mão:** com um clipe escolhido, os outros cortes mantêm a marca (tocar abre Transitions); só as bordas do clipe
-  escolhido a cedem às alças. **Use on every cut** fica num rodapé fixo do painel de transição (sempre visível, mesmo no SE).
+  escolhido a cedem às alças. Os dez estilos de transição ficam numa fileira que rola para o lado (o próximo aparece na borda); a régua de
+  **Duration**, inteira, e **Use on all N cuts** (o número de cortes) ficam num rodapé fixo (sempre visível, mesmo no SE).
 - **Nada termina em silêncio:** Paste look que não muda nada diz "Every clip already looks like this" / "This clip already looks like this";
   Edit by text que não ouviu palavras mostra o motivo (`CaptionState.message`, em `warnText`) e só oferece **Try again** quando pode ajudar.
-- **Edit by text à vista:** primeiro bloco de ✦ Smart › Tools, botão "Edit by text · cut words from the video" no painel de legendas, o menu da faixa
-  e as ferramentas do clipe (Edit, logo depois de Split, com Remove pauses; §48).
+- **Edit by text à vista:** na barra principal, no ••• do painel de legendas ("Edit by text · cut words from the video") e nas ferramentas do
+  clipe, com Clean up (§48, §55).
 - **Mídia na barra principal** (**Media**, `.openMenu(.media)`): abre a barra Media, como Texto e Áudio (§55 e a timeline acima): as quatro formas
   de pôr uma foto ou vídeo e **Your library**. Cada forma abre a folha nela (`.addMediaAs`), e a folha diz onde a escolha vai (§51) —
   **Sobreposição, ao mesmo tempo que o vídeo**: **Split screen**, **Window**, **Full screen** (B-roll); ou **Sequence**: **In sequence** ("Adds
   time: becomes a clip of its own at the playhead, and the video gets longer. Videos only.") — e diz, antes de escolher, onde e por quanto tempo
   (§48). **Your library** (`.addMediaFromLibrary`) abre na última sobreposição usada, já na biblioteca.
 - **Animações prontas** (`MotionPreset`, `OverlayAnimation`, `MotionPresetPicker` no topo do painel de movimento de textos, gráficos e mídias):
-  Fade, Slide up, Slide in, Gentle zoom, Pop e In and out, com **Duration** (0,2–1,5 s) e **Strength**; **Preview** no cabeçalho a toca. A animação é calculada por
-  cima dos keyframes (base + animação), então a edição manual em **Keyframes** ("To move it your own way") continua valendo junto.
-- **Copiar e colar o look** (`CopiedClipLook`, `ClipLookPart`, `PasteLookSheet`): **Copy look** na barra do clipe guarda Adjust, Filter,
-  Background e Zoom do clipe; **Paste look** abre a folha para escolher as partes ("The words, sound and timing stay") e colar no clipe ou em
-  **Every clip**, num passo de desfazer. Em todos os clipes, o look vai para os ajustes do vídeo e cada clipe perde a cópia própria das partes
-  coladas (Filters, Adjust e Background do vídeo inteiro continuam valendo); num clipe, ele guarda só o que difere do vídeo.
-- **Trecho do B-roll** (`MediaOverlay.mediaStart`, `MediaTrimStrip`): escolhido antes de entrar (§51) e, depois, no painel da mídia: **Part of the
+  **Pop** primeiro, depois Fade, Slide up, Slide in, Gentle zoom e In and out (`MotionPreset.panelOrder`; o que já está salvo não muda), com
+  **Duration** (0,2–1,5 s) e **Strength**; **Preview** no cabeçalho a toca. O painel segue a ordem de uso (dono, canvas 2 F15): as prontas com a
+  duração, **Track**, **Keyframes** ("To move it your own way") e, em **Advanced**, **Starts** e **Ends**. A animação é calculada por cima dos keyframes
+  (base + animação), então a edição manual continua valendo junto. Escolher uma deixa a agulha onde está (fora do item, vai para o começo dele).
+- **Item inteiro na prévia parada** (`PreviewMotionHold`): com um texto, gráfico, foto ou vídeo escolhido e o vídeo parado, a prévia o desenha como
+  ele fica entre a entrada e a saída (o primeiro quadro de um Pop, o fim de um In and out, a entrada de um efeito que se move), para a pessoa ver o que
+  está editando sem a agulha pular a animação. Só a prévia do editor lê isso (`EditedComposition.Options.showsPickedWhole`): a revisão e a
+  exportação desenham o movimento como ele é, e Play o solta antes de tocar. O compositor lê a cada quadro, então pausar e tocar não reconstroem a
+  prévia; ao mudar, o quadro parado é pedido de novo (`redrawPausedFrame`). O Simulator do iOS 27 não toca composições de vídeo, então esse
+  desenho só se confere no aparelho.
+- **Copiar e colar o look** (`CopiedClipLook`, `ClipLookPart`, `PasteLookChoice`, `PasteLookSheet`; dono, 07/11/2026): **Copy look** na barra do
+  clipe guarda Adjust, Skin, Filter, Background e Zoom do clipe. O **primeiro Paste look** do projeto abre a folha para escolher as partes ("The
+  words, sound and timing stay") e colar no clipe ou em **Every clip**, num passo de desfazer. Depois, Paste look **repete a última escolha** sem a
+  folha onde ela cabe (`PasteLookChoice.repeated`): com um clipe escolhido, vai nesse clipe com as mesmas partes (também quando a última foi Every
+  clip: um toque nunca muda clipes fora da vista sem a folha); sem clipe escolhido, só Every clip se repete. A escolha **não cabe**, e a folha
+  abre de novo já com ela, quando nenhuma das partes mudaria nada no destino (o clipe de onde o look veio, um clipe que já o recebeu); nenhuma
+  parte depende do tipo de clipe (freeze frame, invertido, vídeo do Fotos, clipe curto levam as cinco). **Uma foto sobre o vídeo** ainda não
+  tem look próprio (decisão do dono, 08/11/2026; cor e filtro em fotos ficam para uma decisão separada): com um look copiado, a barra da foto
+  mostra Paste look apagado, e tocá-lo diz "You can paste this look on video clips and freeze frames.", sem passo de desfazer nem mudança a
+  salvar; a foto e o look copiado ficam. O Copy look é só visual: efeito de voz não entra. Toda colagem diz **"Look pasted · N
+  parts"** (ou "Look pasted on every clip · N parts") com **Undo** e **Change** no toast (`ToastService.secondaryAction`, Change antes do Undo,
+  em `ink`). **Change** abre a folha na escolha usada ("Pick again. It replaces the paste you just made."), no clipe que recebeu a colagem, e o que
+  ela cola **toma o lugar** da colagem: desfaz a colagem e cola de novo, num passo só, então um Undo volta a antes da primeira. Se outro passo veio
+  depois, Change abre a folha como colagem nova. O look copiado e a última escolha ficam **com o projeto** (`TakeEdit.copiedLook`,
+  `pasteLookChoice`, `EditDocument.remember`): fora dos passos de desfazer e **sem contar como mudança** (dono, 08/11/2026;
+  `hasUnsavedChanges` os ignora): copiar e sair não salva rascunho nem diz "Draft saved", e a take não vira editada. Ficam guardados por take,
+  fora da edição (`RememberedLook`, `EditorPreferencesStore`, as 200 takes editadas por último), e voltam ao reabrir; também vão no rascunho e
+  na take quando eles são gravados por uma mudança de verdade (colar é uma). Edições antigas abrem sem eles. Em todos os clipes, o
+  look vai para os ajustes do vídeo e cada clipe perde a cópia própria das partes coladas (Filters, Adjust e Background do vídeo inteiro continuam
+  valendo); num clipe, ele guarda só o que difere do vídeo.
+- **Painel da foto ou vídeo** (`MediaPanel`, dono, canvas 2 F5): um vídeo tem **Show | Part**. Show: Show as, Window ratio e Size (na janela),
+  Opacity, Bring forward e Send backward; Part: o trecho abaixo. Uma foto não tem trecho, então fica só com Show, sem abas. Volume, Motion e Mask
+  continuam ferramentas próprias na barra do item. O Show começa com **Behind you** ("Cue cuts you out and puts this behind you",
+  `MediaLayout.behind`): ligado, a foto ou o vídeo vira o fundo atrás da pessoa recortada (o recorte do Background da gravação; Automatic quando ela
+  não tem fundo), textos, legendas e outras mídias continuam por cima, e o painel mostra Where you are (§31) no lugar de Show as, tamanho e
+  camadas; num vídeo, "Your voice stays. Its own sound is in Volume." (o som dele segue o Volume do item, mudo se não foi mantido). Um item atrás
+  por vez: ligar outro que cruza o tempo dele avisa "Something else is behind you then · one at a time". Subtítulo "Behind you · you stay on top".
+- **Trecho do B-roll** (`MediaOverlay.mediaStart`, `MediaTrimStrip`): escolhido antes de entrar (§51) e, depois, no painel da mídia (aba Part): **Part of the
   video** mostra a faixa do arquivo com o trecho ("0:03 to 0:05 of 0:06"); arrastar escolhe de onde começa sem mudar onde ele está no vídeo,
-  **Plays for** muda a duração; nunca passa do fim do arquivo. Mover a barra mantém o trecho; aparar o começo dela apara o começo do trecho junto
+  **Duration** muda quanto toca (− e + repetem ao segurar, e a sequência é um passo de desfazer; tocar no valor oferece 1, 2, 3, 5 e 10 s, até o que
+  o arquivo tem; abrir a lista sozinha não muda nada; dono, canvas 2 R12); nunca passa do fim do arquivo. Mover a barra mantém o trecho; aparar o começo dela apara o começo do trecho junto
   (o que aparece em cada momento que fica não muda), como no CapCut. Edições antigas: do 0.
 - **Efeitos sonoros** (`SoundEffect`, `SoundEffectSynth`, parte **Sound effects** da folha "Add music or a sound"): 25 sons **sintetizados no
   aparelho pelo próprio Cue**, em cinco grupos por uso (§56) — "Made by Cue · free to use in your videos": nenhum arquivo de terceiros, nenhum
   download. Ouvir antes, adicionar na agulha; entram na faixa de música como clipes curtos (mínimo 0,5 s, mesma intensidade percebida, pico até
   −3 dBFS).
 - **Gráficos no vídeo** (`TextOverlay.graphic`, desenhados por `CoverCompositionRenderer` como na capa): o menu de texto ganha **Arrow, Circle e
-  Tag**; mover, pinçar, girar, cor e animação como um texto (`GraphicStylePanel`); "Style all" não muda gráficos.
-- **Edit by text** (`TranscriptEditSheet`, `TranscriptEditing`, menu de legendas): **Listen to the video** transcreve no aparelho (Speech, nada sai
+  Tag**; mover, pinçar, girar, cor e animação como um texto (`GraphicStylePanel`, em duas abas, dono, canvas 2 F4: **Style** com as palavras de
+  uma etiqueta fixas em cima, cor, tamanho e giro; **Motion**, o mesmo do texto); "Style all" não muda gráficos.
+- **Edit by text** (Clean up › **Text**, §61; `CleanUpTextTab`, `TranscriptEditing`, menu de legendas): **Listen to the video** transcreve no aparelho (Speech, nada sai
   do iPhone); tocar uma palavra e outra escolhe o intervalo. **Cut N words from the video** corta o vídeo (com 0,05 s antes e 0,15 s depois, sem
   invadir as palavras vizinhas); **Fix caption text** muda só o texto da legenda; palavras cortadas aparecem riscadas, com **Put back**. A
-  explicação "Cut removes the words from the video. Fix caption text only changes what the caption says." fica na folha. Na fala corrida o
+  explicação "Cut removes the words from the video. Fix caption text only changes what the caption says." fica no rodapé da aba. Na fala corrida o
   reconhecedor dá a duas palavras coladas uma borda só; ao transcrever, essa borda vai para a pausa entre elas (12 dB mais baixa, até 80 ms;
   `WordBoundaries`), e o corte não leva mais a palavra vizinha (inglês lido por pessoas: 5 de 5). Quando o modelo do ditado já está no iPhone,
   ele ouve a take junto, na mesma passada, e as palavras do transcritor ficam com os tempos dele (`DictationTiming`): o transcritor começa as
   palavras até 0,3 s depois da voz e o ditado não; português lido por pessoas passou de 0 a 4 cortes limpos em 4 (`LOCALIZATION.md` §5).
   Sem o modelo do ditado, nenhum download começa e vale o tempo do transcritor.
-- **✦ Smart em duas categorias** (`SmartPanelSection`, abas **Tools | Templates** no topo do painel): Tools são os blocos violeta (Edit by text, Auto captions,
-  Remove pauses, Studio Voice, Auto adjust, Background); Templates é a lista de modelos, cada um num cartão com o que muda ("Big captions that light
-  each word · a hook that pops in") e o ✓ amarelo no que a edição está usando (`appliedVideoTemplate`).
+- **Painel Templates** (`TemplatesPanel`, `TemplatesPanelSection`, abas **Templates | Kit de marca**, abertas cada uma pelo seu botão): Templates é
+  a lista de modelos, cada um num cartão com o que muda ("Big captions that light each word · a hook that pops in") e o ✓ amarelo no que a edição
+  está usando (`appliedVideoTemplate`).
 - **Texto grande** (tamanhos de acessibilidade, conferido no iPhone SE em AX L): blocos de opção em 3 colunas, subtítulo do painel em até 2 linhas;
   no Cover Studio, "Next" sem o nome da etapa, "Video" no lugar de "Frame from video" e a barra de etapas só com ícones. Na linha de cima das
   legendas, quando não cabe numa linha (SE, texto grande): a chave e Style em cima, idioma e tradução embaixo; no cartão da linha, More desce
-  para baixo de ‹ 3/12 ›. "Is it ready to post?" rola quando passa da altura da tela (começa pelo "EDIT SAVED"). O título "Cover" do Cover
+  para baixo de ‹ 3/12 ›. "Is it ready to post?" rola quando passa da altura da tela (começa pelo "EDIT SAVED"); nos tamanhos de acessibilidade
+  cada resposta dá a largura inteira ao título e ao detalhe (quebram entre palavras) e o selo (SHARED, IN PHOTOS…) desce para baixo deles, com
+  altura que cresce com o texto (F17: ao lado, o selo deixava "Download" uma letra por linha). O título "Cover" do Cover
   Studio só aparece quando cabe inteiro (no SE, não).
 - **Painéis com texto grande e em telas estreitas** (`EditorLayout.largeTextPanelGrowth`, controles de `Panels/Controls`): de xxLarge para cima um
   painel mini ou médio cresce até 1,5× a sua altura e o vídeo cede até o mínimo (régua e trilha do vídeo ficam); os painéis de estilo não mudam.
-  Nenhum rótulo quebra no meio da palavra nem botão empilha letras: **Adjust** põe nome, valor, ◐ e Auto numa linha; a nota de um clipe ("From the
+  Nenhum rótulo quebra no meio da palavra nem botão empilha letras: **Adjust** põe nome, valor, ◐ e **Measure** numa linha (o chip **Auto** só
+  escolhe a régua do Auto, como os outros chips; quem mede o vídeo é Measure, sempre à vista, também com o Auto aberto; medir segue a um toque;
+  dono, canvas 2 R5); a nota de um clipe ("From the
   whole take") fica embaixo do nome, na mesma altura, quando não cabe ao lado (iPhone 17 e SE), e com texto grande nome, nota e botões têm
   linhas próprias; segmentos (Speed) com
-  mais de 3 opções vão em linhas de 3 nos tamanhos de acessibilidade; os cartões de **Filters** se alinham pelo topo e alargam com o texto (até
-  96 pt). **Pauses:** cartão em duas linhas (duração e Remove/Keep; quando e o círculo de Listen, 44 pt de toque), a 8 pt do "Pauses longer than",
-  inteiro no SE; a largura deixa o próximo cartão aparecendo na borda quando há mais (`PausesPanel.cardWidth`); com texto grande o botão "Remove N
+  mais de 3 opções vão em linhas de 3 nos tamanhos de acessibilidade; os cartões de **Filters** têm a miniatura de 64 pt de altura, se alinham pelo
+  topo e alargam com o texto (até 96 pt), e Intensity fica em cima deles quando há filtro (dono, canvas 2 F8: o painel continua pequeno). **Pauses:** cartão em duas linhas (duração e Remove/Keep; quando e o círculo de Listen, 44 pt de toque), a 8 pt do "Pauses longer than",
+  inteiro no SE; a largura deixa o próximo cartão aparecendo na borda quando há mais (`CleanUpCardRow.cardWidth`); com texto grande o botão "Remove N
   pauses" desce para uma linha própria. **Volume:** sem os rótulos 0%/200% (o valor fica escrito em cima), e "Mute this clip" a 8 pt do slider,
-  inteiro acima do Home Indicator.
-- **Templates** (`VideoTemplate`, ✦ Smart › **Templates**: Bold hook, Tutorial, Story, Clean, Interview): legendas (tema e revelação, mantendo linhas,
+  inteiro acima do Home Indicator; com Advanced aberto, o painel do clipe passa a médio, e Fade in e Fade out aparecem inteiros
+  (`VolumeAdvancedReachUITests`; os da música, embaixo do abaixar sob a voz, são alcançados rolando até o fim).
+- **Templates** (`VideoTemplate`, painel Templates: Bold hook, Tutorial, Story, Clean, Interview): legendas (tema e revelação, mantendo linhas,
   posição e margens), tipo e animação de todos os textos (não dos gráficos) e o estilo dos próximos; sem texto, abre o vídeo com o título do
-  roteiro. As palavras, a posição de cada texto, os cortes, o som e os gráficos ficam; **um** Undo desfaz tudo ("Bold hook on the whole video" ·
-  Undo). Sem legendas, a aba diz "No captions yet…" com **Make captions**. **Legendas de cada template** (escolha do dono numa página de
+  roteiro. As palavras, a posição de cada texto, os cortes, o som e os gráficos ficam. **Tocar o cartão prova o template no vídeo**
+  (`tryVideoTemplate`, `TemplateTrial`, decisão do dono, 08/11/2026): ele já está na prévia (como fica de verdade, com o kit do vídeo) e uma
+  folha baixa (`TemplateTrialSheet`, metade da tela; nos tamanhos de texto de acessibilidade ela, a do kit e a do Paste look abrem na altura
+  toda, `bigTextSheetDetents`, porque no SE mostravam uma linha da lista ou cortavam os botões) diz o que muda e o que fica: "Caption style · Bold hook" com "Lines, timing and place stay",
+  "Type and motion on 3 texts · words and place stay", o "Opening text" que entra; num vídeo com kit, cada linha diz "keeps Acme's fonts and
+  colors" (a família e as cores das legendas e dos textos ficam; o template troca forma, tamanho e movimento); sem kit, se as legendas têm
+  cores Custom, "your Custom colors change too". O que foi ajustado à mão fica, com as chaves desmarcadas de `ManualChangesOptions` (abaixo).
+  **Apply** é **um** passo de Desfazer ("Bold hook on the whole video" · Undo); **Cancel** ou fechar a folha volta o vídeo ao que era, sem passo
+  (`EditDocument.cancelChanges`). Sem legendas, a aba diz "No captions yet…" com **Make captions**. **Legendas de cada template** (escolha do dono numa página de
   opções; `VideoTemplate.captionSettings`: tema, revelação, look de texto copiado nas legendas, tamanho e cor da palavra dita), todas sobre placa
   ou cartão, porque branco só com sombra some em cena clara: **Bold hook** Pop (letra grossa numa faixa violeta por linha), 1,2×, palavra dita em
   amarelo; **Tutorial** Educational com o look Label (maiúsculas num cartão escuro), palavra dita em amarelo; **Story** Editorial (serifa numa
@@ -2080,14 +2286,17 @@ auditoria: `reports/editor-award-checklist.md`.
 - **Freeze frame** (barra do clipe, `StillClipWriter`, fora da thread da interface, toast "Freezing the frame…"; se os cortes mudarem enquanto o
   quadro é feito, nada entra e o toast pede para congelar de novo): o quadro da agulha vira um vídeo
   mudo de 5 s na mídia da edição e entra como clipe de 2 s ali (o clipe é dividido; colado no início de um clipe, entra antes dele), com o look e o
-  fundo do clipe de origem; a alça do fim estica até 5 s. A música e as narrações continuam; a gravação nunca muda. Numa gravação **HDR**
+  fundo do clipe de origem; a alça do fim estica até 5 s. A música e as narrações continuam; um texto sobre o ponto congelado termina com a
+  fala sobre a qual foi posto (cobre o quadro congelado e não acaba 2 s antes); a gravação nunca muda. Numa gravação **HDR**
   (`.containsHDRVideo`, como as do iPhone em HLG) o quadro congelado é o próprio quadro decodificado em 10 bits, gravado em HEVC Main 10 com as
   mesmas primárias, função de transferência e matriz e a mesma rotação da gravação, para o editor convertê-lo como os clipes vizinhos; numa SDR,
   uma imagem em pé em H.264. Se o HDR não puder ser gravado, o quadro congela em SDR (nunca falha por isso).
 - **Efeitos sonoros seguem o momento** (`MusicClip.following`): um corte antes de um efeito o traz junto, como textos e legendas; a música fica.
-- **Use on every cut** copia também a duração; se todos já têm, o toast diz "Every cut already has it".
-- **Edit by text numa montagem** corta só o clipe onde as palavras foram lidas (uma cópia as mantém); palavras com 44 pt; a nota diz que Undo traz
-  de volta o que foi cortado.
+  Apagar o clipe onde um efeito (ou um som extraído) foi posto o leva junto, sem amontoar no começo do próximo (relações no tempo, abaixo).
+- **Use on all N cuts** copia também a duração, num passo de desfazer; o toast conta os cortes ("Dissolve on all 4 cuts") e tem Undo; se todos já
+  têm, diz "Every cut already has it".
+- **Edit by text numa montagem** corta só o clipe onde as palavras foram lidas (uma cópia as mantém); palavras com 44 pt; as cortadas aparecem
+  riscadas depois do clipe onde tocavam e **Put back** as devolve ali (`EditTimeline.putBack`); sem lugar, o toast diz por quê.
 - **iPhone quente e espaço:** ficam na exportação da revisão (§38).
 - **Arquivos:** no lançamento, `EditStorageCleaner` apaga os sons temporários de sessões passadas, ao lado das gravações as análises
   `.cueeyes` que nada lê mais, e as mídias das edições que nenhum JSON do Cue nomeia há uma semana (`orphanedMedia`).
@@ -2102,8 +2311,10 @@ auditoria: `reports/editor-award-checklist.md`.
   legendas…) são lidos item por item (`LossyList`); um item ilegível fica de fora sozinho e o arquivo como era é guardado ao lado
   (`takes-kept-…`/`scripts-kept-…`); uma biblioteca que não pôde ser lida nunca é gravada por cima. **Sair do editor só diz "salvo" quando está no
   disco:** se o Done não consegue gravar a take, a edição fica como rascunho que o Edit reabre ("Couldn't save the edits · Kept as a draft"); se nem o
-  rascunho pode ser gravado (Back, Not yet ou Done), "Couldn't save the edits · Free up space on this iPhone", nunca "Draft saved"
-  (`TakeLibraryService.applyEdit` e `QuickEditDraftStoring.save` lançam o erro). **Roteiros e takes que não puderam ser gravados** ficam na
+  rascunho pode ser gravado (Back, Not yet ou Done), o editor **fica aberto** e diz por quê, com **Leave anyway**: "Couldn't save the edits · Free up space on
+  this iPhone" só quando é falta de espaço (`QuickEditDraftSaveFailure`), senão "Couldn't save the edits · Try again"; pedir para sair de novo (ou Leave
+  anyway) sai, com o último rascunho gravado. Nunca "Draft saved" sem gravar (`TakeLibraryService.applyEdit` e `QuickEditDraftStoring.save` lançam o erro).
+  O autosalvamento que falha avisa uma vez ("· Free up space on this iPhone" ou "· Cue keeps trying") e tenta de novo a cada 5 s. **Roteiros e takes que não puderam ser gravados** ficam na
   memória (`saveFailed`): o Cue grava de novo ao voltar para a frente (`AppServices.reloadWhatCouldntBeRead`) e, com o Cue na frente, avisa
   "Couldn't save your work · Free up space on this iPhone" (`RootView`); uma falha em segundo plano (bloqueado) só avisa se a nova tentativa também
   falhar. A página do roteiro não diz "Saved as v…" sem gravar. Travamentos, CPU e escrita em disco medidos pelo MetricKit chegam ao Crashlytics como non-fatal (`DiagnosticsObserver`).
@@ -2129,7 +2340,7 @@ auditoria: `reports/editor-award-checklist.md`.
   `QuickEditMontageCaptionTests`, `OverlayAnimationTests`, `QuickEditMotionPresetTests`, `QuickEditCopyLookTests`, `BrollPartTests`/`BrollPartExportTests`,
   `SoundEffectSynthTests`/`SoundEffectExportTests`, `QuickEditSoundEffectTests`, `QuickEditGraphicsTests`, `QuickEditTranscriptEditTests`,
   `QuickEditVideoTemplateTests`, `TransitionDrawingTests`, `CodeCreditTests`, `QuickEditFreezeFrameTests`/`FreezeFrameExportTests`,
-  `PaletteContrastTests.theEditorsPickedTilesRead`, `EditorUITests.testSmartHasTemplatesInATabOfTheirOwn`, `NarrationScriptPaceTests`,
+  `PaletteContrastTests.theEditorsPickedTilesRead`, `EditorUITests.testTemplatesOpenOnTheirTabApartFromBrandKits`, `NarrationScriptPaceTests`,
   `QuickEditNarrationScriptTests`, `PaletteContrastTests.theNarrationScriptReadsOverAnyPicture`,
   `EditorUITests.testVoiceOverShowsTheScriptOverThePreviewUntilItsSwitchIsOff`.
 
@@ -2145,14 +2356,22 @@ A exportação é a da revisão da take (`TakeReviewViewModel`: Save, Share to u
     progresso numa Live Activity ("Exporting your video", a take); se o iOS encerrar a tarefa, o trabalho é cancelado, o arquivo parcial é apagado
     e o cartão **Couldn’t export** da revisão diz "iOS stopped the export before it finished." com **Try again** (§58).
   - Sem GPU em segundo plano, ou com o pedido recusado, a exportação roda como antes, com o tempo que o iOS dá a um app que sai
-    (`beginBackgroundTask`). **Nunca** uma tarefa só de CPU: medida no 15 Pro, ela mantinha o Cue acordado sem desenhar os quadros e a exportação
+    (`beginBackgroundTask`), e o iPhone **não bloqueia sozinho** enquanto ela roda: `ScreenAwake` segura o `isIdleTimerDisabled` por nome
+    (o prompter, o controle remoto e cada exportação têm o seu) e só devolve o bloqueio automático quando o último solta; a exportação solta no
+    fim, seja ela concluída, falhada ou cancelada (ou se a tela some, porque quem segura é o trabalho, não a tela). Com a tarefa contínua aceita, o
+    bloqueio automático fica como está. **Nunca** uma tarefa só de CPU: medida no 15 Pro, ela mantinha o Cue acordado sem desenhar os quadros e a exportação
     não terminava.
   - **Medido no iago Lima iphone (iPhone 15 Pro, iOS 27):** `supportedResources` vazio (sem GPU em segundo plano); pedido com GPU recusado, sem GPU
     aceito. Take de 2:30 em 1080p com legendas: 37 s com o Cue aberto, e pronta na volta depois de 60 s fora (Home + Câmera). Take de 6:40: 73% na
     volta depois de 60 s fora, seguiu e terminou em 97 s, o mesmo tempo de com o Cue aberto. **Mansuelli iPhone 18 Pro Max:** também sem GPU
     em segundo plano; 2:30 em 22 s com o Cue aberto; 6:40 com 60 s fora, 88% na volta e pronta em 71 s. Medido sob XCUITest; o uso à mão
     confirma no roteiro do dono. iPhone 15 comum (A16) e o caminho com GPU e Live Activity: **não validados**.
-- **Na revisão, enquanto exporta** (`ExportProgressCard`, sobre `surface2`): "Exporting · N%" com barra; embaixo "You can leave Cue. The export goes
+- **Na revisão, enquanto exporta** (`ExportProgressCard`, sobre `surface2`): "Exporting" e, embaixo, a etapa real (`ExportProgress`): "Preparing the
+  video", "Downloading fonts" (só quando uma fonte de outra escrita ainda falta), "Analyzing motion" (Seguir rosto ou Estabilizar sem análise
+  pronta: feita antes de tudo, com a porcentagem que o analisador mede), "Preparing the sound" (Studio Voice e a mixagem de mais de um som) e
+  "Rendering the video". Só a análise de movimento e a renderização têm número e barra; uma etapa que não se mede mostra o nome e um indicador
+  girando no lugar do número, e a barra some sem mudar a altura do cartão (nada de 0% parado nem 8% inventado). A etapa nunca volta atrás. A Live
+  Activity do iOS ouve só a fração da renderização. Embaixo, "You can leave Cue. The export goes
   on." (tarefa aceita) ou "Keep Cue open until it’s done."; com o iPhone quente (`thermalState` `.serious`/`.critical`, `DeviceHeat`), "The iPhone
   is hot, so the export takes longer. Let it cool down if you can." (`warnText`). A qualidade e as animações não mudam.
 - **Sair da revisão enquanto exporta** (decisão do dono, 01/11): Voltar e a troca de take (deslizar, as setas do menu do título) passam pela
@@ -2169,9 +2388,28 @@ A exportação é a da revisão da take (`TakeReviewViewModel`: Save, Share to u
   .exportsInFlight`); marcada no lançamento seguinte vira `stoppedExports`, e a revisão dela mostra `ExportStoppedCard` (ícone, "The last export
   stopped" e × numa linha; "Cue closed before it finished. Export again to get the video."; **Save video**). Um vídeo não continua do meio:
   exportar de novo recomeça. Contraste medido na captura: título 15,7:1, texto `ink2` 5,6:1, barra amarela 11,1:1 sobre `surface2`.
-- **Interrompida pelo iOS** (`AVError.operationInterrupted` → `VideoExportError.interrupted`): o mesmo toast de tentar de novo; o arquivo parcial
-  é apagado.
-- **Testes:** `BackgroundExportRunnerTests`, `TakeReviewBackgroundExportTests`, `ContinuedTaskDeviceTests` (aparelho: o que o iOS responde),
+- **Interrompida pelo iOS** (`AVError.operationInterrupted` → `VideoExportError.interrupted`, ou a tarefa contínua encerrada): o cartão
+  **Couldn’t export** diz "iOS stopped the export before it finished. Your edit is safe." com **Try again**; o arquivo parcial é apagado. A edição
+  não muda; o que já ficou pronto é reaproveitado (a análise de movimento continua de onde parou, os sons do Studio Voice ficam no cache); os
+  quadros recomeçam do início.
+- **Cancelar** para todas as etapas: a espera das fontes, o Studio Voice que ainda não começou, a análise de movimento, a mixagem (`Mixdown`,
+  entre dois buffers), o limitador, o ajuste ao teto e a renderização. O estado da revisão volta ao normal pelo mesmo caminho do fim.
+- **Arquivos intermediários:** a mixagem em ponto flutuante (`Cue-master-`, ~384 KB/s) sai assim que o limitador termina; a mixagem limitada que o
+  vídeo toca (`Cue-mixdown-`) sai quando o arquivo é escrito, concluído, falhado ou cancelado; um render de som interrompido apaga o que escreveu.
+  Os sons do Studio Voice, as curvas e as análises de movimento **ficam** (a prévia e a próxima tentativa usam). A limpeza do lançamento
+  (`EditStorageCleaner`) continua como rede de segurança.
+- **Fontes e reaproveitamento:** uma fonte de outra escrita que não chegou em 15 s (`VideoExportService.fontWait`) e uma fonte importada que não
+  está no iPhone saem na face do sistema, **e o criador é avisado**: "Ready to travel" mostra "Some words use the system font" com "Their font
+  hadn’t downloaded. Export again when you’re online." (ou "A font you imported isn’t on this iPhone."), no mesmo estilo do aviso de legendas, e a
+  mensagem depois de enviar termina com "Some words use the system font". Um arquivo só é reaproveitado numa nova tentativa quando o que o
+  desenhou é o mesmo de agora (`ExportRenderStamp`: as fontes de outras escritas e se cada uma foi desenhada, o arquivo de cada fonte importada,
+  tamanho e data de cada mídia da edição, a versão do Cue), guardado no próprio arquivo (atributo estendido, `ExportedFileRecord`); um arquivo sem
+  esse registro não é reaproveitado. Isso não muda a contagem: para as exportações grátis, o mesmo vídeo continua sendo a mesma take, edição e
+  configuração (`ExportFingerprint`), então exportar de novo depois que a fonte chegou não gasta outra exportação. Uma edição que não pode ser
+  lida como texto nunca coincide com outra.
+- **Testes:** `BackgroundExportRunnerTests` (bloqueio automático nos três finais e com outro dono), `ScreenAwakeTests`,
+  `MixdownCancellationTests`, `RealExports/ExportIntermediatesTests`, `ExportProgressTests`, `ExportRenderStampTests`,
+  `TakeReviewExportIdentityTests`, `TakeReviewBackgroundExportTests`, `ContinuedTaskDeviceTests` (aparelho: o que o iOS responde),
   `BackgroundExportDeviceUITests` (aparelho: take real com Save e Câmera; takes longas em memória, `-uiTestLongTake <s>`), `ExportProgressUITests`
   (os dois cartões; `-uiTestSlowExport`, `-uiTestStoppedExport`).
 
@@ -2195,30 +2433,100 @@ Prévia e exportação passam pelo mesmo compositor (`CueVideoCompositor`), ent�
   Exportar com Seguir rosto ou Estabilizar faz a análise que faltar antes de começar, fora da thread principal; se o iPhone esquenta (sério ou
   crítico) ela para, o que foi feito fica salvo e a exportação diz "Your iPhone is too warm to finish this video. Let it cool down, then export
   again." (nunca sai um vídeo diferente do que o criador pediu). Os painéis dizem quanto falta: "Finding your face · 40%", "Measuring the shake · 40%", "Waiting for the
-  iPhone to cool down · 40%", "Goes on when Cue is open · 40%", "This video couldn’t be read".
-- **Format › Follow face** (`TakeEdit.faceFollow`, `FaceFollow`, `FollowPace`, `FaceFollowPath`): com Fill e um formato que corta (4:5, 1:1 ou 16:9 de
-  uma gravação 9:16; numa montagem, qualquer um), o recorte acompanha o rosto como um operador de câmera: fica parado enquanto o rosto anda numa
+  iPhone to cool down · 40%", "Goes on when Cue is open · 40%", "This video couldn’t be read"; com o painel fechado, a mesma frase fica sobre o pé da
+  prévia (`MotionPendingPill`), porque até lá o clipe toca como gravado.
+- **Aspect ratio** (`CropPanel`, F16, dono 07/11/2026): os quatro formatos em blocos baixos (44 pt, o ícone ao lado do nome; empilhados de novo
+  quando o nome não cabe ao lado, nos maiores tamanhos de texto; `PanelTiles(isCompact:)`), Framing Fill · Fit e Follow face à vista ao abrir.
+  **Reset** no cabeçalho (`LookViewModel+Format`) aparece quando o formato difere de como o vídeo começou e volta à proporção da gravação
+  (`Take.aspect`), Fill, sem deslocamento e Follow face desligado, num passo de desfazer. Trocar o formato (ou o Reset) troca junto as
+  **margens seguras das legendas** (`CaptionSafeArea`): a parte livre da guia de áreas seguras do vídeo naquele formato (abaixo; um vídeo do TikTok
+  em 1:1 fica com a legenda a 7% da borda de baixo, não a 25%), iguais na prévia e no arquivo; um projeto salvo antes com as margens da gravação
+  noutro formato abre com as certas. Quando o recorte deixa menos pixels que a qualidade, uma
+  linha sob os blocos diz o arquivo de verdade: **"This format exports at 606×1080 · never enlarged"** (um vídeo deitado de 1080p em 9:16;
+  `ExportFrameSize`, a mesma regra da exportação, pela qualidade e o Pro da revisão de onde o editor abriu; sem revisão, nada).
+- **Áreas seguras** (`SafeGuideOverlay`, `SafeGuideBadge`, `LookViewModel+SafeGuide`, `SafeGuideZones`; decisão B do dono, 07/11/2026): no fim
+  de Aspect ratio, a chave **Safe zones** ("Where an app’s buttons cover your video · approximate") mostra sobre a prévia onde os botões, a legenda e
+  o cabeçalho de um app cobrem o vídeo: as partes cobertas sombreadas de leve (`Palette.Editor.safeGuideShade`) e a borda da parte livre numa linha
+  branca **sólida** sobre um halo escuro (`safeGuideLine`, `safeGuideHalo`; sólida para nunca parecer o contorno tracejado de uma foto ou vídeo).
+  Ligada, fica ligada em todo vídeo (`EditorPreferencesStoring.showsSafeGuide`, desligada até ser ligada): é o jeito de trabalhar, não uma mudança
+  do vídeo, então não é passo de desfazer nem mudança a salvar. Abre na **plataforma do roteiro** (`Take.platform`) quando os botões dela foram
+  medidos no formato; sem plataforma conhecida, **Generic**: no 9:16, livre de todos os apps verticais medidos ao mesmo tempo (borda a borda, o
+  maior de TikTok, Reels, Shorts e Stories: 13% em cima, 25% embaixo); nos formatos com um app medido ou nenhum (4:5, 1:1, 16:9), as bordas do
+  quadro (`SafeZoneMargins.frameEdges`, 5/7/6/6%). Com ela ligada, chips trocam o app (os medidos no formato, depois Generic) e uma nota diz de
+  onde veio a sugestão ("Suggested by your script: TikTok", "No app on your script for this format: generic guide"). Na prévia, no canto de cima
+  à esquerda, o rótulo **"TikTok · approximate"** (`ink` sobre a placa `safeGuidePlate`; cresce até Acessibilidade 2 e, numa prévia estreita,
+  fica só com o nome do app) é um `Menu` do sistema: o app (o do roteiro com "· your script") ou **Hide safe zones**, ali mesmo. **A troca é deste
+  vídeo** (`TakeEdit.safeGuide`; um projeto salvo antes abre com nil, a sugestão) **e um passo de desfazer** ("Safe zones"), porque as legendas
+  vão junto: as margens delas passam a ser a parte livre da guia escolhida (`CaptionSafeArea.margins(for:aspect:pick:)`), na prévia e no
+  arquivo; trocar o formato mantém a escolha (volta quando o formato tem aquele app). Desfazer volta o app e as legendas, não esconde a guia.
+  Um projeto salvo antes da guia mostra a do app para o qual as legendas dele foram postas (`SafeGuideZones.active`: um take sem plataforma
+  tinha as do Reels no 9:16 e as do LinkedIn no 4:5). A guia só existe na prévia do editor: some em tela cheia, sob o roteiro da narração e no
+  recorte de um clipe, e nunca entra na composição (arquivo, vídeo da prévia, capa). Arrastar um texto ou a legenda com a guia escondida mostra
+  a parte livre tracejada (as mesmas cores) e o rótulo, sem toque. VoiceOver: a chave (Safe zones, On/Off), os chips (selecionado), o rótulo
+  ("Safe zones: TikTok · approximate", dica "Switches the app or hides the guide") e um anúncio a cada troca. Testes: `SafeGuideZonesTests`,
+  `QuickEditSafeGuideTests`, exportação real `RealExports/SafeGuideExportTests` (nada da guia no arquivo nem no vídeo da prévia; uma linha
+  embaixo fica na parte livre do app escolhido, igual na prévia e no arquivo, mais baixa com Stories que com TikTok),
+  `PaletteContrastTests.theSafeGuideReadsOverAnyPicture`, `SafeGuideUITests`; fotos sobre um quadro branco e um preto (`-uiTestPreviewFrame`,
+  `SafeGuideCaptureTests`, opt-in). Medido nas fotos do iPhone SE (tamanho padrão e Acessibilidade 3, 08/11/2026): o rótulo, no pior ponto
+  (placa sobre a parte livre de um quadro branco), 9,29:1; sobre a sombra, 12,3:1; sobre preto, 21:1. A linha: num quadro branco o halo fica
+  10,37:1 contra a parte livre e 4,89:1 contra a sombra; num preto, o branco da linha fica 21:1.
+- **Format › Follow face** (`TakeEdit.faceFollow`, `FaceFollow`, `FollowPace`, `FaceFollowPath`): com Fill e um formato que corta (qualquer um que não
+  seja o da gravação; numa montagem, qualquer um), o recorte acompanha o rosto como um operador de câmera: fica parado enquanto o rosto anda numa
   zona calma, vai atrás quando ele sai, nunca mais rápido que o ritmo, começa e para suave (caminho suavizado nos dois sentidos, sem atraso), com
   os olhos um pouco acima do meio e sem sair da gravação. **Pace:** Calm · Natural · Quick. Segue o rosto mais próximo do que vinha seguindo (o
-  maior no começo); sem rosto, a cabeça do corpo. Arrastar o vídeo desliga ("Follow face is off · You moved the frame"). Sem espaço: "Pick 4:5,
-  1:1 or 16:9 to follow your face"; com Fit: "Follow face works with Fill"; sem rosto: "No face found in this video". A capa feita de um quadro
-  usa o recorte daquele momento. Um passo de desfazer (`EditLook`). O painel Format passou a `.medium`.
+  maior no começo); sem rosto, a cabeça do corpo. **Só liga pelo botão** (dono, 07/11/2026): escolher um formato, também de um vídeo deitado para
+  vertical, nunca o liga. Arrastar o vídeo desliga ("Follow face is off · You moved the frame"). Sem espaço, a nota oferece os formatos com espaço
+  para aquela gravação, nunca o escolhido ("Pick 4:5, 1:1, or 16:9 to follow your face" numa 9:16, "Pick 9:16, 4:5, or 1:1 …" numa 16:9;
+  `LookViewModel.formatsWithRoom`); com Fit: "Follow face works with Fill". Ligado e com a análise pronta, o que ele não garante naquele vídeo
+  (`FaceFollowLimit`, pelos rostos de cada momento, em **cada gravação que a edição toca**: a take e cada vídeo importado da montagem, como um
+  horizontal com duas pessoas, `LookViewModel.playedFaceFollowLimit`; vale a nota mais forte, e uma gravação sem ninguém ao lado de outra com
+  rosto conta como rosto em parte do vídeo; a confiança do Vision não fica na análise, um rosto abaixo de 0,5 nem é guardado): sem
+  ninguém, "No face found in this video"; dois rostos ou mais em 25% dos momentos com alguém, "More than one face in this video · the frame follows
+  one"; alguém em menos de 60% dos momentos, "Your face is found in part of the video · the frame holds still where it’s lost". Nenhuma nota muda o
+  enquadramento. A capa feita de um quadro usa o recorte daquele momento. Um passo de desfazer (`EditLook`). O painel Format passou a `.medium`.
+- **Zoom › Punch in on cuts** (E4, 08/11/2026; plano §11; R1.3/R2.1: eram 9–10 toques, clipe a clipe; `TakeEdit.cutZoom`, `CutZoom`,
+  `ClipsViewModel+CutZoom`, `ZoomPanel`): no rodapé do painel Zoom do clipe, sempre à vista, um interruptor para o vídeo inteiro: um clipe sim, outro
+  não, um pouco mais perto, como uma segunda câmera. A força e os avisos dele ficam na parte que rola, depois das escolhas do clipe (no rodapé,
+  deixavam 6 pt para Push in e os outros num iPhone 17). **Só liga pelo criador** (ou pelo kit dele, abaixo); "Every other clip a little closer"
+  desligado, "N clips closer · toward your face when it’s clear" ligado, "Needs a cut in the video" com um clipe só. Ligado: **Subtle · Medium ·
+  Strong** (os mesmos 1,1 / 1,18 / 1,25× do zoom por frase; começa em Medium, ou na força que o kit marcou). Um passo de desfazer com toast
+  "Punch in on N clips" e Undo; a agulha toca do segundo antes do primeiro corte com zoom. É calculado ao desenhar (`TakeEdit.punchedTimeline`,
+  `EditSegment.punchesInOnCut`, nunca salvo no clipe): segue cada corte feito depois, e desligar tira só o que ele pôs. Regras (decididas
+  08/11/2026, sem o dono): o primeiro clipe fica como foi filmado; cada corte de verdade alterna entre como filmado e mais perto; onde nada foi
+  cortado (um clipe dividido para mudar uma parte) fica como estava; um clipe com menos de **1,2 s** fica no nível do anterior (nada de entrar e
+  sair num trecho curto: "Clips under 1.2s keep the zoom of the clip before them"); um clipe com Zoom ou Crop do criador fica como ele deixou ("This
+  clip keeps the zoom and crop you gave it") e conta como mais perto se tiver zoom. Com um zoom por frase por cima, nunca passa de 1,45×. As
+  etiquetas amarelas dos clipes na linha do tempo dizem "Punch in" onde ele cai. O ponto do painel Zoom no clipe (`ClipAppliedTools`) continua só
+  para o zoom do próprio clipe. Não promete retenção.
+- **Para onde os zooms do Cue crescem** (`ZoomAnchor`, `FaceZoomFocus`, `ZoomMoment`; Punch in on cuts e zoom por frase; decidido 08/11/2026): um
+  ponto por clipe, igual na prévia, na exportação e nas alças sobre a prévia (Blur area, Track). **Em direção ao rosto** quando a gravação inteira
+  tem um rosto confiável: rosto em pelo menos 80% dos momentos, um segundo rosto de tamanho real (30% do primeiro ou mais) em menos de 10% deles,
+  e o rosto parado (o décimo mais distante a no máximo 0,12 do quadro de onde ele fica); o zoom cresce em volta desse ponto, então o rosto fica
+  onde está e nada se mexe durante o zoom; **com duas pessoas ou detecção incerta, do meio**, e nunca troca de pessoa. **Nunca corta a cabeça**: a
+  caixa do rosto, crescida até o cabelo e o queixo, fica dentro do quadro. **Nunca passa dos pixels**: deixa ao menos **540 pixels** da gravação no
+  lado curto do quadro, seja qual for a qualidade da exportação (um horizontal 1080p cortado em 9:16 tem ~607: 1,12× no máximo; um take 1080p,
+  2×), e o painel diz quando o zoom para antes ("Zoom stops at 1.12× · the video has too few pixels for more", "… · so your head stays in the
+  frame"). Com Follow face (o recorte já segue o rosto) ou com a tela dividida, do meio. O Zoom escolhido pelo criador no clipe (Push in, Pull out,
+  Punch in) fica como era: do meio, sem limite. A análise de movimento é pedida assim que um desses zooms existe (`EditedComposition.readsMotion`);
+  até ficar pronta o zoom cresce do meio, e a exportação não espera por ela (usa a que a prévia usou). A capa ainda não conta esses zooms
+  (pendente, como o zoom por frase).
 - **Stabilize** (barra do clipe, entre Volume e Duplicate; `EditSegment.stabilization`, `StabilizationLevel`, `StabilizationPath`, `StabilizePanel`):
   **Off · Gentle · Standard · Strong** (suavização de 0,25 / 0,6 / 1,2 s; zoom de no máximo 5 / 9 / 14%). O caminho da câmera é suavizado nos
   dois sentidos; o zoom é o **menor** que esconde as bordas em 9 de cada 10 quadros; onde a câmera mexe mais (uma panorâmica), o caminho é mantido
   dentro do corredor que esse zoom permite e suavizado de novo, então nunca aparece borda nem tranco. Cada quadro da gravação tem a sua
   correção, mesmo quando a edição o segura (câmera lenta, gravação de 15 ou 24 quadros por segundo). Mostra "Zoomed in 6% to hide the edges",
-  "Steady already · no zoom needed" ou "No shake found in this clip"; **Use on every clip** num passo.
+  "Steady already · no zoom needed" ou "No shake found in this clip"; **Use on all 3 clips** num passo, com Undo no aviso ("Stabilize on all 3 clips"; o número diz o que muda antes do toque, dono, canvas 2 R2).
 - **Track** (texto, gráfico ou mídia: barra do item e o painel de movimento; `ObjectTracker`, `FramePlacement`, `TrackedMotion`): o criador põe o
   item em cima do que ele deve seguir, na agulha, e toca **Track**; o Cue segue, com o Vision, o que está sob o centro do item (um quadrado de 14%
-  da largura do vídeo) para a frente e para trás, enquanto o item aparece no clipe da agulha ("Tracking · 40%", Cancel). O caminho vira
+  da largura do vídeo) para a frente e para trás, enquanto o item aparece no clipe da agulha ("Tracking · 40%", **Stop**: para ali e guarda o que já seguiu, num passo que o Undo tira,
+  "Stopped · 12 keyframes kept", como o Stop do Blur area; dono, canvas 2 R6). O caminho vira
   **keyframes editáveis** (os mínimos que ficam a 0,4% do caminho, em ritmo constante, mantendo tamanho e opacidade), num passo de desfazer;
   os keyframes que havia no trecho seguido saem, os outros ficam. Se perde o objeto: "Lost it after 3.2 s · It holds from there". O Vision roda
   fora da thread principal; o ponto do vídeo leva em conta a correção do Stabilize do clipe (`FramePlacement.steady`). Um resultado só entra se é
   da corrida em curso, com o editor aberto e o vídeo e o item como estavam ("The video changed meanwhile · Track it again"); fechar o editor
   cancela.
 - **Speed › Curve** (`EditSegment.speedCurve`, `SpeedCurve`, `SpeedCurvePreset`, `SpeedCurvePanel`, `SpeedCurveEditor`): o painel Speed tem
-  **Normal | Curve**. Curve: None, **Hero, Bullet, Ramp up, Ramp down, Montage, Flash in, Flash out** (cada cartão desenha a curva) e **Custom**
+  **Normal | Curve**, que só trocam a vista (cada clipe abre na sua: a escolhida para ele, senão Curve quando tem curva). Curve: None, **Hero, Bullet, Ramp up, Ramp down, Montage, Flash in, Flash out** (cada cartão desenha a curva) e **Custom**
   (cinco pontos a 1×); o editor mostra a curva (0,25× a 4×, a faixa do varispeed da Apple, para o som sem "Keep voice pitch" nunca se afastar
   da imagem; escala logarítmica, linha de 1×, agulha) e os pontos: arrastar para cima acelera,
   para baixo desacelera, os de dentro também andam para os lados (VoiceOver: ajustável). A velocidade flui entre os pontos (cúbica monótona em
@@ -2229,25 +2537,35 @@ Prévia e exportação passam pelo mesmo compositor (`CueVideoCompositor`), ent�
   últimos). Enquanto um dedo arrasta um ponto da curva ou uma alça de clipe, a prévia estica o som em passos (instantâneo) e o renderiza quando o
   dedo solta (`EditPlayback.stepsCurveSound`). Dividir um clipe curvo mantém a parte da curva de cada lado (no máximo 25 amostras da curva, mais os
   pontos de dentro quando são até 8: cortar muitas vezes, como em Cut on the beats, nunca a faz crescer); aparar pelas alças estica a curva
-  no que sobrou; na prévia, as alças alcançam o resto da gravação na velocidade da ponta. Escolher uma velocidade em Normal tira a curva. Selo do clipe: o nome da curva ou "Curve".
+  no que sobrou; na prévia, as alças alcançam o resto da gravação na velocidade da ponta. Escolher uma velocidade em Normal (com curva, nenhuma
+  fica acesa, então até 1× pode ser escolhido) tira a curva num passo de desfazer, e o toast diz "Curve replaced by 1×" com Undo. Keep voice
+  pitch fica antes de Advanced em Normal e depois do editor em Curve. Selo do clipe: o nome da curva ou "Curve".
 - **Reverse** (barra do clipe, depois de Freeze frame; `ReversedClipWriter`, `ReversedSound`, `ClipReversal`): o trecho do clipe é escrito de trás
   para a frente, imagem e som, como um vídeo próprio na mídia da edição (HEVC no tamanho, quadros por segundo e orientação da gravação; alguns
   quadros por vez, no máximo ~100 MB na memória), e o clipe passa a tocá-lo, com a mesma velocidade, look e lugar; textos, mídias e voice-overs em
-  cima ficam onde estavam no vídeo. **Reverse de novo** volta ao original; mais uma vez, toca o vídeo invertido já escrito (ir e voltar nunca escreve
+  cima ficam onde estavam no vídeo (também os da parte direita de um clipe dividido, que continuam nomeando a esquerda: `TakeEdit.layersStarting`;
+  Duplicate copia os mesmos). As legendas da fala não aparecem sobre o clipe invertido (de propósito: as palavras tocam de trás para a frente)
+  e voltam quando ele toca para a frente de novo. **Reverse de novo** volta ao original; mais uma vez, toca o vídeo invertido já escrito (ir e voltar nunca escreve
   outro arquivo). Vídeos invertidos que nada toca saem da edição no Done; se o editor fecha enquanto um é escrito, ele é apagado. Até 2 minutos ("Reverse works on clips up to 2 minutes · Split it first"). Um passo
   de desfazer; a gravação nunca muda.
 - **Beats** (para música, dos Files ou da biblioteca do Cue; efeitos sonoros e sons extraídos do vídeo não têm; `BeatDetector`, `BeatTracker`, `BeatStore`, `BeatCuts`,
   `BeatsPanel`): as de uma faixa da biblioteca vêm da partitura dela, exatas, sem procurar; as de um arquivo dos Files são achadas no iPhone quando a música entra (fluxo espectral, tempo pela autocorrelação entre 60 e 200 BPM, batidas
   por programação dinâmica), guardadas ao lado do arquivo (`<arquivo>.cuebeats`) e aparecem como risquinhos na faixa da música. **Beats** na barra
-  da música: **Snap to beats** (a agulha e as bordas grudam nas batidas; `TakeEdit.snapsToBeats`, ligado), **Move cuts to the beats** (cada corte
-  vai para a batida mais próxima, até 0,5 s, encurtando ou alongando o clipe antes dele, nunca além da gravação nem para dentro da parte seguinte)
-  e **Cut on** Every beat · Every 2 · Every 4 › **Cut the video on the beats**. Subtítulo: "112 BPM · 48 beats in the video", "Finding the
-  beats…" ou "No steady beat in this music". Cada ação é um passo de desfazer.
+  da música, nesta ordem: **Cut on** Every beat · Every 2 · Every 4 e o botão que diz o intervalo (**Cut on every beat** / **Cut every 2 beats** /
+  **Cut every 4 beats**: corta o vídeo); **Snap to beats** (a agulha e as bordas grudam nas batidas; `TakeEdit.snapsToBeats`, ligado); **Move my
+  cuts to the nearest beat** (não cria corte: cada corte já feito vai para a batida mais próxima, até 0,5 s, encurtando ou alongando o clipe antes
+  dele, nunca além da gravação nem para dentro da parte seguinte). A nota diz de onde vieram as batidas: "Found on your iPhone in this music from
+  Cue." ou "…in the music you added from Files.". Subtítulo: "112 BPM · 48 beats in the video", "Finding the beats…", "No steady beat in this
+  music", ou, antes disso, "Cue’s music" / "Music from Files". Cada ação é um passo de desfazer.
 - **Barras** (a de hoje; a ordem de cada uma está em §54 › Barras): Clipe: Split · Speed · Volume · **Mute** · Zoom | Adjust · Skin · Filters · Background · Stabilize · Blur area · Copy look · Paste look | **Transition** · Duplicate · Freeze frame · Reverse · Replace · Reorder · Extract audio · Voice effects (e as do vídeo, §55) · Delete. Texto: Edit · Style · Motion · Keyframe · **Track** · Duplicate · Delete. Foto ou vídeo por cima: Edit · Volume · Motion ·
   Mask · Split · Replace · Blur area · **Track** · Keyframe · Duplicate · Save to library · Delete; um apoio da tela dividida e a área do vídeo
   principal: §54. Música: Volume · **Beats** ·
   Replace · Delete (efeitos sonoros e sons extraídos sem Beats). Voice-over: Volume · Re-record (ou **Edit text**, se foi falado a partir de
   texto) · **Voice effects** · Lock · Delete (§56).
+- **O que já mudou no clipe** (dono, canvas 2 M2; `ClipAppliedTools`): na barra do clipe, um ponto de 6 pt em `acc` no canto do ícone de cada ferramenta
+  que já mudou o clipe escolhido (Speed, Volume com fades, Zoom, Adjust, Skin, Filters, Background, Crop e giro, Stabilize, Animation, Voice effects e
+  Transition: o corte depois dele, ou antes no último); VoiceOver diz "Changed on this clip". Vem do próprio clipe: muda com outro clipe, Reset clip e
+  Undo. Mute e Mirror já são chaves acesas; Blur area é da faixa dela.
 - **Comparação com CapCut, Edits e InShot** (17/10/2026): Follow face é o "Auto reframe" do CapCut (formato + velocidade do acompanhamento), no
   painel de formato; Stabilize tem três níveis como o do CapCut, por clipe, e ganha "Use on every clip"; Track: no CapCut se arrasta uma caixa
   sobre o objeto; no Cue o próprio item é a caixa (põe e toca Track), um passo a menos, sem caixa de tamanho ajustável; Speed com Normal | Curve
@@ -2268,6 +2586,8 @@ Prévia e exportação passam pelo mesmo compositor (`CueVideoCompositor`), ent�
   idioma que você fala…" (1–3 s num iPhone 15 Pro). Também vale para as legendas feitas na exportação de um vídeo nunca editado.
 - **Com roteiro:** no Auto, o idioma do roteiro, sem espera. Um idioma escolhido no seletor diferente do roteiro é tratado como
   engano provável: compara os dois, legenda no falado e o seletor passa a mostrar esse. Sem aviso (decisão do dono).
+- **O chip diz o que ouviu:** no Auto, com linhas feitas, o chip de idioma mostra "Auto · Português" (o nome sem a região, para caber ao lado de
+  Translate e Style); antes das linhas, só "Auto". Assim legendas ouvidas no idioma errado dizem isso onde se troca (dono, 07/11/2026).
 - **Onde não julga:** idiomas que só o ditado ouve (id, ar, tr, th, vi, nl, sv, da, nb no iPhone; todos num aparelho sem
   `SpeechTranscriber`, como o iPad Pro A12Z) seguem no idioma de antes.
 - **Como decide:** além da confiança de cada reconhecedor, lê o texto que cada um escreveu. Um reconhecedor escreve o que ouve no
@@ -2375,12 +2695,19 @@ de tela e os 25 estados). O relógio é **companion**: grava, encerra, ensaia e 
 ## 44. Quick edit: um sistema para todas as ferramentas (23 de outubro de 2026; pedido do dono)
 
 O editor segue o canvas "Cue: um sistema para todas as ferramentas" (aprovado pelo dono; regras 01–17), mantendo o que já fazia bem: o
-Excluir fixo no canto da barra, o ✓ amarelo, o ‹ do contexto, as marcas no clipe e os ícones de hoje. Captions e ✦ Smart ficam na estrutura de
-antes (o dono achou a versão redesenhada pior). Comparado com CapCut, Edits e InShot (página "Referências" do canvas): 11 de 13 convenções
+Excluir fixo no canto da barra, o ✓ amarelo, o ‹ do contexto, as marcas no clipe e os ícones de hoje. Captions fica na estrutura de antes (o
+dono achou a versão redesenhada pior). Comparado com CapCut, Edits e InShot (página "Referências" do canvas): 11 de 13 convenções
 iguais ou melhores; o fundo e o recorte num painel só, de propósito.
 - **Cabeçalho de painel** (`EditorPanelContainer`): título, **escopo** na linha de baixo ("Clip 2 of 3" numa montagem, "This clip" com um
-  clipe, "Whole video"), **Reset** à esquerda de ◐ e ✓ assim que algo mudou (`QuickEditViewModel+PanelReset`: Speed, Zoom, Volume, Stabilize,
-  Transition e Studio Voice; Adjust, Filters, Background e Caption style com o seu), num passo de desfazer.
+  clipe, "Whole video"), curto, numa linha, dizendo qual clipe e o que muda (dono, canvas 2 R1: "Clip 1 of 2 · camera move", "Clip 1 of 2 · only
+  this clip", "Whole video · marked in yellow", "From the playhead · video muted"); no Text style o lugar do subtítulo é a escolha do alcance
+  (`subtitleChoice`, abaixo). Botões na ordem de sempre (Reset, ◐ ou ▶ PREVIEW, expandir, ✓ amarelo por último); **Reset** à esquerda de ◐ e ✓ assim que algo mudou (`QuickEditViewModel+PanelReset`: Speed, Zoom, Volume, Stabilize,
+  Crop, Animation, Transition e Studio Voice; Adjust, Skin, Filters, Background, Mask e Caption style com o seu), num passo de desfazer. Com
+  alcance definido (dono, canvas 2 R5; `QuickEditViewModel+LayerReset`): **Text** (um texto) volta ao visual com que um texto do papel dele
+  começa neste vídeo e sem movimento, ficando palavras, lugar, tempo e giro; **Graphic** volta à cor do tipo, 100%, sem giro e sem movimento;
+  **Motion** de uma foto ou vídeo tira entrada, saída e keyframes; **Photo or video** volta a janela a Original, tamanho e opacidade de quando
+  entrou (como aparece, a parte que toca e a ordem ficam). Com o estilo de todos os textos, não há Reset de um texto. O Background do vídeo
+  inteiro não tem Reset: o caminho de volta é o tile Original.
 - **◐ Compare with original** (`PanelCompare`, `PanelCompareButton`) no cabeçalho de Adjust, Filters, Background e Studio Voice: toque mostra
   o original até o próximo toque; segurar mostra só enquanto o dedo está; esmaecido quando não há o que comparar. A prévia diz "Original" (a
   imagem como gravada: sem Auto, Adjust, filtro **nem fundo**, `TakeEdit.withoutPictureLook`) ou "Original audio".
@@ -2410,7 +2737,7 @@ iguais ou melhores; o fundo e o recorte num painel só, de propósito.
 - **Fontes:** uma lista para textos, legendas e capa (`TextOverlayFont.editorFonts`, 15): Montserrat, TikTok Sans, Poppins, Rubik, DM Sans,
   SF Pro, Space Grotesk, Unbounded, Syne, Anton, Bangers, DM Serif Display, Instrument Serif, Caveat, Space Mono (as favoritas das legendas
   primeiro; as cinco primeiras e Bangers vieram da pesquisa de 2025–26, SIL OFL 1.1, em Acknowledgements). A capa usa as mesmas e seus pesos
-  (`CoverFont` = família + peso; capas antigas com "Grotesk", "Serif" abrem nas mesmas faces). Caption style › Adjust troca a família **sobre um
+  (`CoverFont` = família + peso; capas antigas com "Grotesk", "Serif" abrem nas mesmas faces). Caption style › Custom troca a família **sobre um
   estilo** (`CaptionSettings.face`, chip "Style's font" volta à dele) e mantém o resto; escolher outro estilo traz a fonte dele. Texto numa escrita que a
   família não tem (japonês, chinês, coreano, árabe, hindi, tailandês) sai numa face daquela escrita com o mesmo caráter do estilo, e o latim da
   mesma linha fica na família; vietnamita numa família sem as letras dele sai inteiro numa família latina do mesmo caráter (§59).
@@ -2426,7 +2753,7 @@ iguais ou melhores; o fundo e o recorte num painel só, de propósito.
   dele ou o do vídeo inteiro (Original próprio quando o vídeo inteiro tem filtro; `LookViewModel.resetFilter`). Reset clip também.
 - **Texto do tamanho do iPhone:** painéis, folhas, avisos, o tempo do player, o chip de status, as palavras da capa e os chips crescem com o
   Dynamic Type (estilos de texto, ou `@ScaledMetric` onde o tamanho do desenho fica entre dois); o tempo para em xxLarge (a barra mantém a
-  altura); os blocos do Smart crescem com o nome. A barra de ferramentas mantém a altura: com os maiores tamanhos, segurar mostra o nome grande
+  altura). A barra de ferramentas mantém a altura: com os maiores tamanhos, segurar mostra o nome grande
   (Large Content Viewer), como a barra de abas do sistema. As etiquetas da timeline (desenhadas em UIKit, faixas de altura fixa) não crescem.
 - **Modo de Pouca Energia** (`QuickEditViewModel+LowPower`, `LowPowerNotice`, `LowPowerNoticeBanner`): enquanto ligado, um aviso no pé da prévia
   diz que a tela fica em 60 quadros e editar e exportar ficam mais lentos, e onde desligar (Central de Controle; nenhum app desliga nem abre a
@@ -2437,7 +2764,9 @@ iguais ou melhores; o fundo e o recorte num painel só, de propósito.
 - **Barra de ferramentas:** principal e barras de item em §55; o esmaecido só no lado onde há mais ferramentas; "Add
   line" adiciona uma linha na agulha; Text › **Motion** (antes "Animation"); Subheading e Hook com o símbolo do papel.
 - **Avisos** (`EditorPart+Toasts`, o toast do app, §1): dividir, duplicar, apagar e adicionar dizem o quê e onde ("Clip 2 deleted", "Photo added at
-  00:07.0"), com ✓ e **Undo**; o que não pode acontecer diz por quê, com !.
+  00:07.0"), com ✓ e **Undo**; o que não pode acontecer diz por quê, com !. Apagar um clipe diz o que foi junto ("Clip 2 deleted, with 1 text
+  and 2 sounds", `ClipsViewModel.deletedMessage`), sem pedir confirmação a cada corte. O botão de um toast que diz o que fez ("Undid · Split",
+  "Unlocked") deixa esse toast novo no lugar (`EditorToastHost`); senão o toast sai.
 - **Dois toques** num texto ou legenda no vídeo abrem as palavras com o teclado (Text style ou a linha em Captions).
 - **Texto à mão na prévia** (`TextTransformRecognizer`, `TextHandle`, `OverlaysViewModel+TextTransform`): um dedo arrasta; dois dedos aumentam e giram
   juntos, sem saltos (a cópia sob os dedos é o mesmo desenho do vídeo; num texto com efeito, a pintura que a prévia já fez, 4–7 ms no iPhone 15 Pro);
@@ -2445,6 +2774,15 @@ iguais ou melhores; o fundo e o recorte num painel só, de propósito.
   nova (6–65 ms) fica fora da linha principal, uma por vez, e o lado oposto não sai do lugar quando ela chega (`TextPictureDrawer`). Redimensionado como um todo, o texto cresce sem quebrar as linhas de outro jeito. O giro gruda no reto perto de
   cada 90° (com háptico), e o arraste nas guias do centro. Cada gesto é um passo de desfazer, com os mesmos limites durante e ao soltar; com keyframes, o gesto muda o keyframe da
   agulha. VoiceOver gira de 15° em 15°; Custom › Font › Turn faz o mesmo por slider.
+- **Toque não é arraste** (`OverlayEditingLayer`, `TextTransformRecognizer.slop`): um texto, foto, vídeo ou legenda ainda não escolhido só começa a
+  andar depois de 10 pt (a distância do pan do sistema; um toque que rola um pouco escolhe, ou dá play); o escolhido anda já (4 pt no texto, 3 pt na
+  mídia e na legenda). Mover e pinçar uma foto ou vídeo no mesmo gesto é **um** passo de desfazer, e o gesto seguinte é outro, por mais rápido que
+  venha (`OverlaysViewModel.placeKey`, uma chave por gesto).
+- **Lock vale na timeline e na prévia** (`EditorPart+Lock`): um item travado não anda, não cresce e não gira (dedo, alça, VoiceOver Move/Bigger/Turn);
+  escolhê-lo (prévia ou timeline; uma vez, quando passa a ser o escolhido, não a cada toque nele) ou tentar movê-lo (a cada gesto) diz "Locked in
+  place" com **Unlock** no toast (o arraste continua do texto: a prévia não desliza para a tela cheia), e Unlock diz "Unlocked · It moves and trims
+  again" (um passo de desfazer). Na prévia, o texto travado e escolhido troca a alça do canto por um cadeado (sem as abas laterais) e a foto ou vídeo
+  mostra um cadeado no contorno; VoiceOver lê "Locked". Lock da barra do item continua o mesmo botão.
 - **Folhas:** Translate captions fecha com o X do sistema e escolhe o idioma numa lista com check; Auto captions escolhe o idioma falado numa
   linha que abre a lista no lugar (Automatic primeiro).
 - **Estilos salvos** das legendas, dos textos e das capas: §50.
@@ -2473,7 +2811,13 @@ O editor por dentro, para milhares de criadores: nada se perde, nada some, nada 
 - **Prévia:** a composição é montada fora da linha principal (§42). Dois clipes dos mesmos segundos de gravações diferentes trocados reconstroem a prévia
   (`ItemKey.sources`; teste Mirror de `EditSegment`). Um item que falha depois de tocar mostra "The preview couldn't be built · Your edit is safe" com
   **Try again**, e o Cue tenta sozinho ao voltar para a frente.
-- **Sair do editor** cancela tudo que ele começou (`startJob`, prévias curtas, comparação, tradução); o que termina depois é descartado.
+- **Sair do editor** cancela tudo que ele começou (`startJob`, prévias curtas, comparação, tradução); o que termina depois é descartado. O trabalho que muda a
+  edição quando termina (`EditorPendingWork`: legendas, tradução, Track, Desfocar área seguindo, um clipe sendo feito, Auto) segura o **Done** com a frase do
+  que falta ("Captions are still being made · Wait a moment"…); o **Back** guarda o rascunho, para o trabalho e diz qual não terminou ("Draft saved ·
+  Captions weren't finished"…). Back enquanto o vídeo carrega, ou depois de ele não abrir, deixa o rascunho de antes como estava.
+- **Rascunho que não abre inteiro** (`QuickEditDraftReading`): um rascunho ilegível (danificado, ou de um Cue mais novo) abre a edição da take com "Couldn't
+  open your draft · A copy is kept on this iPhone"; um lido em parte abre com "Draft restored · Some parts couldn't be read" e é gravado de novo. Nos dois, o
+  arquivo como era é guardado em `Kept/` antes de qualquer gravação por cima (os 3 mais novos por take; excluir a take leva os dela, `forget`).
 - **Rascunho:** gravado 600 ms depois de cada mudança numa fila em segundo plano, com os passos de desfazer finos (legendas e traduções iguais às do passo
   seguinte ficam de fora; ~5× menor num vídeo longo). Leituras, descartes e o rascunho guardado ao sair esperam a fila. As legendas que uma exportação
   ouviu enquanto o rascunho esperava (guardadas no take) entram no rascunho ao reabrir, se ele nunca teve legendas próprias, e os passos de desfazer
@@ -2481,7 +2825,9 @@ O editor por dentro, para milhares de criadores: nada se perde, nada some, nada 
 - **Falhas que o criador vê** (exportar, salvar, rascunho, prévia, importar, congelar, inverter, extrair, legendas, Clean Up, Track, traduzir, voice-over)
   vão ao Crashlytics como non-fatal `Editor.<operação>.<motivo>` com contagens e o estado do aparelho, nunca conteúdo (`EditorFailureReport`).
 - **Robustez:** mídia de edição que nada cita há 7 dias é apagada no lançamento (busca do nome em todo JSON do app; um arquivo ilegível cancela a
-  varredura); voice-over interrompido por ligação ou outro app para e guarda o que gravou ("Recording stopped · Another app took the microphone"), e um
+  varredura); voice-over interrompido por ligação ou outro app para e guarda o que gravou ("Recording stopped · Another app took the microphone");
+  a Central de Controle ou uma notificação puxada não param a gravação (o Cue segue na tela), e sair do Cue para ali, guarda o trecho como clipe e diz na
+  volta "Voice-over stopped when you left Cue · What you recorded is kept"; um
   arquivo que não grava é descartado com aviso; Cancel e "Not yet" durante a gravação guardam a narração no rascunho; foto importada já reduzida a 2160
   px pelo `CGImageSource`; erros do sistema viram frases (iPhone cheio, microfone ocupado, Fotos sem conexão; `EditorErrorMessage`), e "The microphone is off
   for Cue" tem o botão Settings.
@@ -2491,9 +2837,20 @@ O editor por dentro, para milhares de criadores: nada se perde, nada some, nada 
   velocidade, quadros da capa, passos de linha, keyframe e quadro); voltar é `chevron.backward`; toasts e escolhas segmentadas usam duas linhas antes de
   cortar.
 - **VoiceOver:** textos e fotos sobre o vídeo são ativados como um toque e têm Move up/down/left/right, Bigger, Smaller; a linha do tempo anda 1 s por
-  gesto e tem Next cut / Previous cut; Desfazer e Refazer são anunciados; o título do painel recebe o foco e o escape (Z com dois dedos) fecha o painel;
+  gesto e tem Next cut / Previous cut; Desfazer e Refazer são anunciados pelo toast; o título do painel recebe o foco e o escape (Z com dois dedos) fecha o painel;
   um contador é um valor ajustável. `EditorUITests.testTheEditorPassesTheAccessibilityAudit` roda a auditoria do Xcode (tamanhos de texto limitados de
   propósito e o esmaecimento da borda da barra à parte).
+- **Desfazer diz o quê** (`QuickEditViewModel+Undo`, `EditStepSummary`): o histórico guarda estados, então o nome sai da diferença entre os dois,
+  com a palavra da ferramenta: "Undid · Split", "Undid · Clip 2 · Speed" (um clipe mudado no lugar diz o número e a ferramenta; movido ou
+  aparado, só o número; num vídeo de um clipe, só a ferramenta), "Undid · Transition", "Undid · Stabilize" (vários clipes, como Use on all),
+  "Undid · Pauses" (Pauses longer than e Gap left), "Undid · Beats", "Redid · Text", "Undid · Format", "Undid · Lock"… ("Edit" quando nada
+  conhecido mudou; dono, canvas 2 erro 3). Quando o que voltou está fora do que a timeline mostra (~150 pt de cada lado da agulha, na escala do zoom), a agulha vai até o começo
+  dele; o que já está à vista não pula.
+- **Done encerra o histórico:** Done grava a edição na take e descarta o rascunho, e o rascunho é o que marca o vídeo "In edit" (Takes, cartões,
+  lembretes); por isso a próxima visita abre a edição salva sem nada para desfazer. Back e Not yet guardam o rascunho com os passos.
+- **Testes do toque, do Lock e do Desfazer:** `QuickEditGestureTrustTests`; `EditorTaskUITests.testDeletingAllCaptionsAtOnceCanBeUndone` (a pergunta),
+  `testUndoAndRedoSayWhatTheyTookBack`; `TextPresetsUITests.testALockedTextStaysPutOnThePreviewAndSaysHowToUnlock`. Contraste:
+  `PaletteContrastTests.theCaptionScopeAndTheLockReadOverAnyPicture` ("All captions" `ink` sobre o pill do toast 13,1:1; cadeado preto no disco branco 21:1).
 - **Testes:** `RealMedia` (tag `.realMedia`, fora do Fast): o editor numa gravação real, com o serviço, o player e os arquivos de verdade, pelos passos de
   um criador.
 - **Ainda não feito (Fase C):** divisão do `QuickEditViewModel` por ferramenta, `RenderPlan` no lugar da chave do player, reuso das camadas da
@@ -2516,7 +2873,15 @@ O editor organizado para crescer sem quebrar: cada coisa num lugar, e a prévia 
 - **Prévia = exportação** (`EditRenderRequest`, `EditRenderPurpose`): o mesmo preparo para a prévia do editor, a da revisão e a exportação. A prévia do editor
   toca a timeline esticada até a gravação inteira (as alças mostram quadros de verdade sem reconstruir), mas o zoom de um clipe e as transições são
   medidos na edição como ela é: com o primeiro clipe aparado, o zoom se espalhava pelo clipe inteiro e uma transição ao lado de um clipe curto ficava mais
-  longa que na exportação. `PreviewMatchesExportTests` compara 18 ferramentas quadro a quadro, com as duas pontas aparadas.
+  longa que na exportação. `PreviewMatchesExportTests` compara 27 ferramentas quadro a quadro, com as duas pontas aparadas (entre elas Fundo com pessoa e
+  com chroma, Pele, Máscara, tela dividida e curva de velocidade), nos meios de quadro (na borda, qual quadro aparece depende de arredondamento). Diferença
+  conhecida, para a etapa 2: um vídeo por cima preso aos segundos da take, cujo começo o corte inicial cortou, recomeça do primeiro quadro no arquivo e
+  segue a take na prévia (`aVideoPinnedToTrimmedSecondsShowsTheSameFrameInPreviewAndFile`, `withKnownIssue`). **Som:** o AVPlayer não deixa processar a
+  soma das faixas, então o limitador da exportação (`Mixdown`) não toca na prévia; medido nos arquivos renderizados (`PreviewExportSoundTests`), uma mistura
+  sob o teto é igual nos dois (0,001 dB) e uma acima dele (voz alta com música a 150%) estoura na prévia (3,7% das amostras) e sai 2,5 dB mais baixa no
+  arquivo. Por isso o painel **Volume**, enquanto aberto, mistura os sons em segundo plano como a exportação (`Mixdown.peak`, 0,7 s depois que a
+  mudança para; sair do painel cancela) e, quando a soma passa do fundo da escala, diz em laranja (`warnText`) "Too loud together · the preview may
+  distort, the video won’t" (`edit.volume.loudMix`; decisão de 06/11, opção a: um aviso, não um segundo motor de prévia). Com um som só, nada é medido.
 - **Versões de leitura** (`ReadingVersion`): uma tabela para o look, o Studio Voice, os estilos de legenda, a transcrição e o Auto (versão de hoje,
   primeira, e o que vale quando a edição salva não tem o número). Uma medição do Auto feita por um Cue mais novo não é desenhada (fica salva).
 - **Vídeos longos**: as legendas cronometradas na edição são calculadas uma vez por mudança e achadas por linha ou por momento (`CaptionMap`); a lista de
@@ -2568,9 +2933,9 @@ Refinamento, não redesenho: a estrutura de hoje fica (barra principal, ferramen
 encaixe, Desfazer, rascunho automático, a grade de presets das legendas). O que mudou é o que deixava a pessoa adivinhando. Comparado com CapCut,
 InShot, Edits, Descript e Captions (pesquisa de 24/10: os apps põem a limpeza da fala junto das legendas ou logo depois de importar; o iMovie pergunta
 "por cima ou na sequência" a partir da agulha; o Edits deixa dúvida se o trabalho foi salvo ao sair).
-- **Cortar erros sem saber do ✦ Smart:** as ferramentas do clipe (Edit, a tesoura) trazem, logo depois de Split, **Edit by text** e **Remove
-  pauses**, as mesmas que ✦ Smart abre (a mesma folha e o mesmo painel); as duas também estão na barra principal, no grupo da fala (§55). Pauses
-  diz o escopo: "Whole video · marked in yellow on the timeline", e o clipe continua escolhido (✓ devolve as ferramentas dele).
+- **Cortar erros de qualquer barra:** as ferramentas do clipe (Edit, a tesoura) trazem **Clean up** e **Edit by text** no grupo do vídeo
+  inteiro, a mesma limpeza da barra principal (Clean up é a 5ª dela; §55), o mesmo painel (§61: Clean up abre na aba Pauses, Edit by
+  text na Text). Pauses diz o escopo: "Whole video · marked in yellow on the timeline", e o clipe continua escolhido (✓ devolve as ferramentas dele).
 - **O ‹ diz o que está escolhido** (`toolbarContextName`): "Clip 2" numa montagem ("Clip" com um só), "Photo" ou "Video", o tipo do texto ("Title",
   "Subheading", "Hook", "Callout") ou do gráfico ("Arrow", "Circle", "Tag"); "Caption", "Music", "Voice-over", "Transition"; o menu aberto. O tipo
   continua sendo a identidade das ferramentas (`toolbarContextLabel`): escolher outro clipe não volta a barra para o começo.
@@ -2584,7 +2949,11 @@ InShot, Edits, Descript e Captions (pesquisa de 24/10: os apps põem a limpeza d
   mesma palavra (Subtítulo, Sous-titre); agora "Texto secundario", "Texte secondaire", "Subkop" (nl), "Underoverskrift" (da, nb), "उपशीर्षक" (hi). Em
   português continua "Subtítulo" × "Legenda".
 - **Concluir:** a folha de Done já separava as quatro saídas (compartilhar, baixar, publicar depois, continuar editando), cada uma com o destino; o de
-  Download video dizia "SAVED", que se confundia com o "EDIT SAVED" de cima: agora "IN PHOTOS". A organização dos projetos (Takes: To pick, In edit,
+  Download video dizia "SAVED", que se confundia com o "EDIT SAVED" de cima: agora "IN PHOTOS". Quando compartilhar ou baixar a edição usaria a
+  última exportação grátis, ou não há nenhuma, uma linha sob a pergunta diz "LAST FREE EXPORT" ou "0 OF 3 LEFT · EXPORT WITH PRO" (§11). Quando
+  algumas palavras sairiam na fonte do sistema, outra linha laranja (`warnText`) diz o que resolve, antes de escolher a saída
+  (`QuickEditViewModel.fontsNotReady`, `EditorDoneFontNote`): "A FONT YOU IMPORTED ISN’T ON THIS IPHONE · IMPORT IT AGAIN OR PICK ANOTHER" ou
+  "A FONT IS STILL DOWNLOADING · STAY ONLINE TO EXPORT IT" (a exportação ainda espera até 15 s por ela). A organização dos projetos (Takes: To pick, In edit,
   Ready, Shared) fica igual. Uma edição deixada aberta é achada onde ficou: o cartão "In edit", o Edit de Takes e o lembrete de terminar abrem o take
   dessa edição (a deixada por último, se há mais de uma), nunca uma edição nova no melhor take; na revisão, **Continue** aparece no take da edição
   aberta, e nos outros takes do vídeo **Edit** começa a edição deles (o que o fim do editor compartilha é sempre o take editado). **Save** e
@@ -2598,7 +2967,8 @@ InShot, Edits, Descript e Captions (pesquisa de 24/10: os apps põem a limpeza d
   perguntam antes com **"Missing media"** ("Some photos, videos or sounds in this edit are no longer on this iPhone. Fix them in the editor,
   or remove them and export."), **Open editor**, **Remove and export** (a edição concluída fica sem o que sumiu; o fundo volta ao original e a
   capa a um quadro do vídeo) e Cancel; quando todo clipe toca uma gravação que sumiu, só **Open editor** ("Replace it in the editor to
-  export."). O editor diz o mesmo ao abrir, num toast com **Remove** (um passo de desfazer) ou pedindo o Replace (`TakeEdit+MissingMedia`).
+  export."). O editor marca o mesmo sobre o pé da prévia enquanto faltar (`MissingMediaNotice`, no lugar do toast que sumia e escondia "Draft restored"), com
+  **Remove** (um passo de desfazer; Desfazer que traz o arquivo de volta marca de novo) ou pedindo o Replace, e ✕ que esconde nesta visita (`TakeEdit+MissingMedia`).
   Um Done cuja edição não pôde ser salva no take volta à revisão como "Not yet" (rascunho), sem compartilhar nem
   baixar o vídeo como estava. O rascunho que não pôde ser gravado quando o Cue vai para o segundo plano (iPhone cheio) é dito na hora ("Couldn't save
   the edits · Free up space on this iPhone") e gravado de novo na volta.
@@ -2616,11 +2986,17 @@ InShot, Edits, Descript e Captions (pesquisa de 24/10: os apps põem a limpeza d
 
 O que a legenda **diz** (as palavras, as correções, os tempos de cada palavra, as marcas de revisão) fica separado de **como ela é cortada** no que aparece
 de uma vez. Trocar o corte, o preset, a fonte ou o tamanho nunca pede outra transcrição nem apaga uma decisão do criador.
-- **Format** (Caption style › Presets, acima da grade; `CaptionFormat` em `CaptionSettings.format`): **One word** (só a palavra que está sendo dita, trocada
+- **Text per caption** (em português **Texto por legenda**; Caption style › Layout; `CaptionFormat` em `CaptionSettings.format`): **One word** (só a palavra que está sendo dita, trocada
   pela seguinte, no mesmo lugar), **Short phrase** (um grupo que faz sentido, numa linha; a segunda só para uma palavra não ficar sozinha; o padrão) e **Two lines** (blocos
   de até duas linhas, quebradas por igual). Legendas novas nascem em Short phrase, ou no formato do My style salvo. Uma edição de antes dos formatos fica
-  como era ("Format · as they were made", nada marcado) até alguém escolher um: escolher corta as mesmas palavras de novo, num passo de desfazer, com o
+  como era ("Format · as they were made", nada marcado) até alguém escolher um: escolher corta as mesmas palavras de novo, num passo de desfazer, com
   o Undo da barra do player (sem toast: a prévia já mostra; o VoiceOver ouve "Captions format: …").
+- **O nome cabe nos 20 idiomas** (o app não tem finlandês; `CaptionLayoutLabelFitTests` mede com as fontes do painel na largura do iPhone SE,
+  343 pt): "Text per caption" fica numa linha em todos, do coreano "자막당 글자" (69 pt) ao italiano "Testo per sottotitolo" (145 pt) no tamanho padrão
+  e até 193 pt (it, th) no maior antes dos de acessibilidade. No padrão, o nome e "as they were made" dividem a linha em todos (o francês, o mais
+  longo, usa 307 de 343 pt); no maior, em de, fr, it, nl e tr o detalhe quebra em duas linhas à direita (só aparece numa edição de antes dos
+  formatos). As três escolhas cabem inteiras no seu terço (110 pt; a maior no padrão, "Phrase courte", 89 pt); no maior, as de duas palavras
+  quebram entre as palavras, nunca no meio de uma.
 - **Medido como o desenho mede** (`CaptionBlocking`, `CaptionCollectionRenderer.measure`): fonte, peso, tamanho, maiúsculas, espaçamento entre letras, o
   contorno e a sobra das margens e da caixa, no formato do vídeo. Um bloco termina no fim de uma frase ("Dr." e iniciais não contam) ou numa pausa de
   0,6 s; uma frase curta gosta de terminar numa vírgula ou numa pausa de 0,3 s; nunca termina numa palavra que se apoia na seguinte ("the", "de", "and",
@@ -2642,8 +3018,21 @@ de uma vez. Trocar o corte, o preset, a fonte ou o tamanho nunca pede outra tran
 - **Word timing** (Caption › More, `WordTimingStrip`): as palavras da linha lado a lado, cada uma da largura do tempo em que é dita; a alça amarela entre
   duas move onde uma acaba e a outra começa (nunca a menos de 0,1 s das outras pontas), um passo de desfazer por arraste. Tempo medido ou posto pelo
   criador é sólido; estimado é tracejado. VoiceOver: cada alça se ajusta de 0,1 em 0,1 s. Quando nenhuma palavra fica estimada, "Check timing" sai.
+  Uma linha ouvida arrastada na timeline 0,1 s ou mais para longe da fala ganha "Check timing" no mesmo passo, com o toast "Line moved · Check timing
+  in Captions" (`CaptionsViewModel.noteMovedOffTheVoice`).
+  **Alongar uma linha** (as alças na timeline, Start e End −/+ no painel; dono, 08/11/2026) leva cada ponta até o primeiro limite que ela encontra: o
+  começo da próxima linha (ou o fim da anterior) ou o corte do clipe em que a linha aparece (`CaptionStretchRoom`). A vizinha guarda o tempo dela e as
+  palavras o delas: uma linha inteira aparece pelo tempo que tem, mesmo passando das palavras; só um corte que atravessa a linha a deixa com o tempo das
+  palavras que ficaram (`CaptionTimelineMapping`). No limite, a bolha da alça diz "Stops at the next line", "Stops at the line before" ou "Stops at the
+  cut" (o VoiceOver ouve), com um toque háptico por gesto; no começo ou no fim do vídeo não diz nada. Ao soltar, um passo de desfazer se a linha mudou e
+  nenhum se ela já estava no limite; o −/+ do painel no limite diz o mesmo num toast, sem passo.
   Contraste medido nos três cartões da linha (`panelCard`, `accCard`, `surface2` sobre o painel), com e sem Aumentar Contraste: palavra medida `ink`
   sobre `segmentOn`, palavra estimada e o tracejado em `ink2` (4,5:1), alça `acc` (3:1) (`PaletteContrastTests.theWordTimingStripReadsOnTheLineCard`).
+- **Correção que mexe no tempo** (E4, "Avisar quando uma correção mexe no tempo"; `CaptionsViewModel+TimingNotice`): uma correção que precisou
+  adivinhar tempos diz isso onde aconteceu e a linha fica com "Check timing": palavras digitadas sem voz embaixo (o toast aparece uma vez, quando
+  a linha passa a pedir revisão), Replace e Replace all ("Replaced · Timing guessed in 1 line · Check timing") e dividir uma linha sem tempo por
+  palavra (as duas metades por tamanho, com Undo). Uma correção que mantém os tempos da voz não fala de tempo; arrastar uma linha para longe da voz
+  já avisava (`noteMovedOffTheVoice`).
 - **Traduções:** cada linha traduzida guarda o próprio texto e o próprio tempo (nunca é cortada palavra por palavra) e passa a apontar para os blocos sobre
   os quais toca; a linha escolhida continua escolhida no bloco que contém o começo dela.
 - **Cortes, cópias, montagem e velocidade:** os blocos são cortados no tempo da gravação (como as linhas sempre foram), então o mapa das legendas na edição
@@ -2663,26 +3052,40 @@ Um estilo de legenda tem duas metades que o Cue trata separadas: o **look** (o e
 estilo troca, e o **layout** (tamanho, posição, largura, alinhamento, formato), que fica quando o estilo muda (`CaptionSettings.restyled`). Comparado
 com CapCut, Captions, Submagic, Edits, Descript e VEED (pesquisa de 24/10): nenhum documenta o que acontece com vídeos já feitos quando um estilo salvo
 muda, Desfazer ao excluir, estilo padrão, nem "voltar ao estilo"; nenhum mostra os cartões com as palavras do próprio vídeo.
-- **Caption style em quatro abas** (`EditorPanelTab.captionStyle`): **Styles** (o catálogo e os estilos do criador), **Format** (Format, Position, Size,
-  Width, Alignment: o que fica quando o estilo muda), **Animation** (entrada e saída, revelação, a palavra sendo dita e a cor do destaque) e **Adjust**
-  (os detalhes do look sobre qualquer estilo). O painel cresce como antes, o vídeo fica à vista e cada escolha toca a linha atual.
-- **Size no topo de Styles** (S · M · L · XL, o mesmo de Format): é o que quase todo criador ajusta logo depois do estilo. Nos estilos do catálogo o
+- **Caption style em quatro abas** (`EditorPanelTab.captionStyle`): **Styles** (o catálogo e os estilos do criador), **Layout** (Text per caption, uma
+  palavra por legenda incluída, Position, Size, Width, Alignment: o que fica quando o estilo muda), **Animation** (entrada e saída, palavra por palavra e
+  como a palavra sendo dita se destaca) e **Custom** (em português **Personalizar**, como no Text style: os detalhes do look sobre qualquer estilo, as cores
+  todas, a do destaque incluída, e Choose words to emphasize; dono 07/11/2026 e canvas 2 F2). O painel cresce como antes, o vídeo fica à vista e cada
+  escolha toca a linha atual.
+- **Size em Styles, numa linha** ("Size" e S · M · L · XL lado a lado, o mesmo de Layout, onde fica o ajuste com o resto do layout; com os tamanhos de
+  acessibilidade, o nome em cima): é o que quase todo criador ajusta logo depois do estilo, e numa linha não tira os estilos da primeira vista (dono,
+  canvas 2 F2). Nos estilos do catálogo o
   tamanho escala **a legenda inteira**: a largura máxima da linha cresce e encolhe com a letra (`widthScalesWithSize`), as mesmas palavras ficam em cada
   linha e a legenda ocupa mais ou menos tela, até a área segura; nas leituras antigas, só a letra muda, como era.
-- **Modelos de vídeo** (✦ Smart › Templates) usam o catálogo: o visual do modelo vira mudanças sobre o estilo e o jeito de mostrar as palavras vira o
+- **Modelos de vídeo** (Templates) usam o catálogo: o visual do modelo vira mudanças sobre o estilo e o jeito de mostrar as palavras vira o
   movimento (`VideoTemplate.captionSettings`); um look copiado de texto com movimento também é desenhado pela coleção (a palavra dita acende).
 - **Um cartão marcado, nunca dois:** o último tocado ou salvo, senão o estilo salvo que o vídeo usa (`savedStyleID`), senão o do catálogo com o mesmo look.
 - **Styles:** filtros **All · Favorites · Mine · Cue · Essentials · Impact · Editorial · Colorful** (`CaptionCatalogFilter`; "Cue" a mais que o pedido, senão
   os quatro do Cue só apareceriam em All), lembrado entre vídeos (`TextStyleStoring.captionCatalogFilter`); a rolagem volta onde estava ao voltar de outra
-  aba. Em All: o cartão **This video** (quando nenhum estilo é o das legendas: um ajuste, um texto copiado, um estilo de antes do catálogo), **Mine** com
-  "Save style" primeiro, e os 20 por grupo. O cartão escolhido tem anel amarelo **e** ✓ (não só cor), o favorito ★, o padrão "Default"; o VoiceOver lê
-  nome, o que o estilo é (`CaptionTheme.summary`), as marcas e "Selected". Segurar (ou as ações do VoiceOver) abre o menu: Add to favorites, Use for new
-  videos, Save a copy as mine e, nos do criador, Rename, Update with this look, Delete.
+  aba. **Abre nos estilos, com o atual marcado** (dono, canvas 2 F2): a primeira vista tem Size, os filtros e uma fileira de cartões inteiros; quando o
+  estilo das legendas está num grupo depois do primeiro, Styles abre com esse grupo no topo (`captionRevealedSection`). Em All: o cartão **This video**
+  (quando nenhum estilo é o das legendas: um ajuste, um texto copiado, um estilo de antes do catálogo), **Mine** só quando o criador tem um estilo, e os
+  20 por grupo. **Save style é o último cartão da galeria:** de Mine, ou, sem Mine, do último grupo de All (Colorful); no filtro Mine também é o
+  último (`CaptionCardSection.endsWithSave`). O cartão escolhido tem anel amarelo **e** ✓ (não só cor), o favorito ★, o padrão "Default" embaixo do nome; o VoiceOver
+  lê nome, o que o estilo é (`CaptionTheme.summary`), as marcas e "Selected". **•••** no canto de baixo da imagem, com a amostra desenhada acima dele, sem
+  nunca cobrir as palavras (dono, canvas 2 F3; `ItemMoreMenu`, em todo cartão, fora
+  do botão do cartão: abre o menu sem escolher o estilo; dono 07/11/2026), segurar ou as ações do VoiceOver abrem o mesmo menu: Add to favorites, Use for
+  new videos, Save a copy as mine e, nos do criador, Rename, Update with this look, Delete. Os estilos de texto e os looks da capa têm o mesmo •••;
+  Favorites vazio diz "Tap ••• on a style to add it".
 - **Cartões desenhados pelo renderizador da exportação** (`CaptionCardSamples`, fora da linha principal, guardados pelo que desenham) com **as palavras
   do próprio vídeo** (até quatro da linha na agulha quando o painel abre; sem legendas, uma frase traduzida no idioma das legendas), a palavra dita
   acesa e a terceira marcada como ênfase, sobre um quadro do vídeo. Só o escolhido toca o movimento do estilo (parado com Reduzir Movimento).
 - **Trocar de estilo** troca o look e o movimento e mantém tamanho, posição, largura, alinhamento, formato e as palavras marcadas; uma nota diz "Your
-  size, position and format stayed." com **Use <estilo>'s size and position** (o estilo inteiro, um Desfazer). Reset no cabeçalho põe o estilo inteiro.
+  size, position and format stayed." com **Use <estilo>'s size and position** (o estilo inteiro, um Desfazer).
+- **Cada volta diz o seu alcance** (dono, canvas 2 F2): **Reset** no cabeçalho põe o estilo inteiro (look, movimento, tamanho, posição, largura e
+  alinhamento; Text per caption e as palavras marcadas ficam), e o aviso diz "Back to the whole Cue style: look, size and position" com Undo (nada a
+  dizer quando nada mudou); **Back to <estilo>'s look** (Custom e Animation) só o look; **Style's color** ao lado de uma cor, só aquela cor;
+  **Use <estilo>'s size and position**, só o layout do estilo escolhido.
 - **Catálogo de 20** (`CaptionStyleSpec+Catalog`, leitura 3; nomes sem marcas): Cue (Cue, Glide, Spotlight, Reveal), Essentials (Clean, Dark box,
   Outline, Band), Impact (Condensed, Bold, Comic, Punch), Editorial (Serif, Paper, Interview, Mono), Colorful (Violet, Light pill, Coral, Cyan night).
   Cada um é uma receita inteira (família, maiúsculas, fundo, palavra dita, entrada; dois quaisquer diferem em pelo menos duas dessas,
@@ -2695,35 +3098,55 @@ muda, Desfazer ao excluir, estilo padrão, nem "voltar ao estilo"; nenhum mostra
   (`CaptionCatalogContrastTests`; números em `CaptionCatalogCaptureTests`). Adjust avisa "Hard to read on bright scenes…" quando um ajuste deixaria as
   palavras abaixo de 4,5:1 sobre branco; não muda nada sozinho.
 - **Format › Alignment** leva a legenda para o lado escolhido da área segura (Left, Right), além de alinhar as linhas dentro dela; à mão a legenda só
-  sobe e desce. **Tudo entrega:** `CaptionControlsDeliverTests` desenha cada família e cada peso dela, cada escolha de Adjust, Animation e Format e
+  sobe e desce, e move **todas** as legendas (a posição é do layout inteiro): enquanto o dedo arrasta, uma etiqueta "All captions" ↕ sobre a
+  legenda diz isso antes de soltar (decorativa, escondida do VoiceOver). **Tudo entrega:** `CaptionControlsDeliverTests` desenha cada família e cada peso dela, cada escolha de Adjust, Animation e Layout e
   confere que o desenho muda.
 - **Animation** (`CaptionMotion`): **In and out** (None, Fade, Pop, Rise: sobe 10 pt enquanto aparece), **Reveal** (Whole line, Word by word; desligado
   com o formato One word, com o motivo) e **Word being said** (None, Color, Box, Sliding box: a caixa desliza de uma palavra à outra em dois estados de
-  30 ms, e desliza também depois de um respiro curto, Pop: a palavra cresce até 12% passando um pouco antes de assentar, em três estados). Caixa e pop
+  30 ms, e desliza também depois de um respiro curto, Pop: a palavra cresce até 12% passando um pouco antes de assentar, em três estados). A cor do
+  destaque fica em Custom, com as outras cores; Animation só avisa, em `warnText`, quando a palavra dita teria a cor das outras ("…change Highlight color
+  in Custom"). Caixa e pop
   são desenhados por cima, a diagramação nunca se mexe; prévia e exportação tocam os mesmos estados. A entrada e a saída correm por todos os estados
   da linha, contadas do começo e até o fim dela (`FrameOverlay.entryStart`, `exitEnd`): um pop de 45 ms na primeira palavra não corta o fade. Um estilo com pop deixa espaço a mais entre as
   palavras (`wordSpacing`, 0,22 do tamanho da letra, também na medição que corta as linhas) e a palavra cresce só no espaço que a linha tem, mais para o
   lado livre, guardando quase um espaço até a vizinha e o contorno dela (`popRoom`): nunca encosta. Edições de antes de `motion` tocam `captionAnimation` como sempre e mostram nas três escolhas o
   que tocam; `captionAnimation` continua gravado com o mais próximo, para versões anteriores.
-- **Adjust** (`CaptionAdjustments`, cada campo nil até mudar): fonte (Style's font + as 15), peso (só os que a família tem; some com um), Case (Aa · AA ·
-  aa, com o idioma da linha: turco "İ" e "ı"), Text color e, com a palavra dita acesa, Highlight color ao lado (também em Animation; um aviso quando é a
-  cor das outras palavras e o destaque não apareceria), Background (None, Box, Lines, Band, Pill, com cor e opacidade de 30 a 100%), Outline (None,
-  Thin, Thick, com cor), Shadow (None, Soft, Halo, Glow); Emphasis color e Emphasis size quando há palavra marcada (senão, onde marcar); Advanced: Letter
-  spacing. Cada cor volta à do estilo por "Style's". **Back to <estilo>'s look** (em Adjust e em Animation) põe o estilo de volta inteiro, como o
+- **Custom** (`.adjust`, `CaptionAdjustments`, cada campo nil até mudar): primeiro Text color e, com a palavra dita acesa, Highlight color ao
+  lado (só aqui; um aviso quando é a cor das outras palavras e o destaque não apareceria): as cores à vista sem rolar o painel médio (receita
+  R1.6, 08/11/2026); depois fonte (Style's font + as 15), peso (só os que a família tem; some com um), Case (Aa · AA · aa, com o idioma da linha:
+  turco "İ" e "ı"), Background (None, Box, Lines, Band, Pill, com cor e opacidade de 30 a 100%), Outline (None,
+  Thin, Thick, com cor), Shadow (None, Soft, Halo, Glow); Emphasis color e Emphasis size quando há palavra marcada, e **Choose words to emphasize**
+  (abaixo); Advanced: Letter spacing. Cada cor volta à do estilo por **Style's color**. **Back to <estilo>'s look** (em Custom e em Animation) põe o estilo de volta inteiro, como o
   cartão dele mostra, num Desfazer: fonte, mudanças, cor do destaque e movimento; tamanho, posição, largura, alinhamento e formato ficam. Mudar a cor do
   destaque ou o movimento conta como mudança do look ("This video" no lugar do cartão), como mudar a fonte.
 - **Ênfase por palavra** (`CaptionCue.emphasis`, os índices das palavras; gravado só quando há): Caption › More › **Emphasis** (as palavras em chips, um
-  toque marca, um Desfazer cada; mais de duas na linha, uma nota) e Select › Emphasis (todas as palavras das linhas escolhidas). Fica na cor e no tamanho
+  toque marca, um Desfazer cada; mais de duas na linha, uma nota) e Select › **Emphasize line** (todas as palavras das linhas escolhidas). Fica na cor e no tamanho
   de ênfase do estilo (1 · 1,15 · 1,3) enquanto a linha aparece, ao contrário da palavra dita; entra na medição e no corte das linhas
   (`CaptionBlocking`, `CaptionLineSizes`) e sobrevive a correções (`WordAlignment`), Split, Join, formatos e cortes do vídeo (a marca segue a palavra que
   fica). Marcar não corta as linhas de novo (a linha aberta continua a mesma): o desenho dá à palavra maior o seu lugar, e o próximo corte (um formato,
   um tamanho, um estilo) a mede. Traduções não herdam a ênfase.
+- **Suggest emphasis** (dono, 08/11/2026; `TakeEdit.suggestsEmphasis`, `CaptionEmphasisSuggester`): uma chave no alto da Emphasis da linha, desligada por
+  padrão, para o vídeo inteiro. Ligada, marca no máximo uma palavra nas linhas de três palavras ou mais que têm uma clara, pela regra do aparelho
+  (NaturalLanguage, sem rede): um **valor** (número com dinheiro, %, "3x", "5 mil") quando é o único da linha; sem valor, um **número** ou um **nome de
+  uma palavra** (pessoa, lugar, organização) quando é o único. Números de passagem não contam (horas, datas, anos, ordinais, "step 1", "às 6"); dois
+  do mesmo tipo ("25 to 30 years"), um nome cortado no fim da linha ("Reino | Unido") ou nada claro deixam a linha sem marca. Pula linhas com marcas do
+  criador. As sugestões (`CaptionCue.suggestedEmphasis`) aparecem com ✨ no chip e "✨ Suggested" no cabeçalho da linha, cujo More abre sozinho para
+  revisar; um toque tira a sugestão, que vira recusada (`declinedEmphasis`) e não volta sozinha; marcar à mão a torna do criador. Desligar tira só as
+  sugestões ("Suggested emphasis off · your marks stay"). Ligar e desligar são um passo de desfazer cada, com o toast dizendo quantas linhas. As três
+  marcas atravessam correções, Split, Join, formatos e cortes juntas. É separada do destaque da palavra dita. **Validado** (testes, regra pura):
+  português e inglês, em legendas ouvidas de pessoas reais (FLEURS) e roteiros reais (6 de 713 linhas marcadas); os outros 18 idiomas **não
+  validados** (a regra roda, os sinais de nome do NaturalLanguage variam por idioma).
+- **Choose words to emphasize** (Caption style › Custom, em português "Escolher palavras para enfatizar"; dono, canvas 2 F1;
+  `CaptionsViewModel+EmphasisTrip`): abre Captions na linha sob a agulha (a um quadro do início dela já conta; sem linha ali, na próxima, e a agulha vai até ela), escolhida e com o More
+  aberto, rolado até as palavras (marcar uma palavra só leva a agulha à linha quando ela não está nela). O Style da fileira de cima vira **‹ Style** ("Back to Caption style" no VoiceOver); ele ou ✓ voltam ao Caption style
+  na aba Custom, rolado onde estava, com a agulha onde estava e o que estava escolhido escolhido de novo; o próximo ✓ fecha. Sair das Legendas por outro
+  caminho (outra ferramenta, a faixa) só sai. Sem linhas, o botão não aparece.
 - **Estilos salvos** (`StyleLibrary`: nome, favoritos e padrão; o mesmo para legendas, textos e capas, `TextStyleStoring`): Save style pede o nome
   ("My style", "My style 2"…), Rename, Update with this look, Save a copy as mine, Add to favorites, Use for new videos/texts/covers (um preset ou um
   salvo; legendas novas num vídeo nunca estilizado nascem nele inteiro, textos novos num vídeo sem estilo próprio, capas novas), Delete com **Undo** no
   aviso (fora do Desfazer da edição). Cada vídeo guarda a própria cópia: mudar ou apagar um estilo salvo nunca muda um vídeo feito. O "My style" único de
   antes vira o primeiro da biblioteca (padrão nas legendas e capas, como já era) e a chave antiga fica, para uma versão anterior; estilos salvos que esta
-  versão não consegue ler (de uma mais nova) nunca são substituídos. Apagar dados apaga todos. Texto: os salvos (favoritos primeiro) antes dos presets, amostra traduzida. Capa: os salvos primeiro em Template; Finish › Save style.
+  versão não consegue ler (de uma mais nova) nunca são substituídos. Apagar dados apaga todos. Texto: os salvos (favoritos primeiro) antes dos presets, amostra traduzida. Capa: os salvos primeiro em Template, e o cartão Save style no fim deles (sem nenhum, no fim da fileira).
 - **Achados corrigidos:** trocar de preset zerava o tamanho; copiar um texto e salvar mostrava dois cartões iguais marcados (a "sensação de acúmulo": o
   Cue guardava um só estilo, mas a grade juntava Save, My style, Custom e o Clean antigo); "My style" não tinha como sair e sobrevivia a Apagar dados; a
   amostra era sempre em português; cor de destaque em Font e tamanho em Position. "Emphasis" e "Highlight color" eram a mesma palavra em português,
@@ -2733,7 +3156,10 @@ muda, Desfazer ao excluir, estilo padrão, nem "voltar ao estilo"; nenhum mostra
 - **Testes:** `LegacyCaptionLookTests`, `CaptionCatalogTests`, `CaptionCatalogContrastTests`, `CaptionStyleFindingsTests`, `QuickEditCaptionStyleLibraryTests`,
   `CaptionStyleCopyTests`, `QuickEditCaptionStyleCopyTests`, `QuickEditCaptionPicksTests`, `CoverStudioViewModelTests`, `QuickCreatorViewModelTests`,
   `CaptionControlsDeliverTests`, `CaptionReviewFixesTests` (o que a revisão independente achou), `CaptionMotionCostTests`,
-  `CaptionStyleCatalogUITests` (filtro, salvar e apagar com Undo, tamanho mantido, Animation e Adjust, ênfase), `TextStyleUITests`; capturas opt-in
+  `QuickEditCaptionStyleGalleryTests` (sem Mine vazio, Save style no fim, seção do estilo usado, Choose words to emphasize e a volta, o aviso do Reset),
+  `CaptionLayoutLabelFitTests` (Text per caption nos 20 idiomas),
+  `CaptionStyleCatalogUITests` (filtro, salvar e apagar com Undo, tamanho mantido, Animation e Custom, ênfase, primeira vista com estilos inteiros,
+  Choose words to emphasize de ida e volta), `CaptionToolsUITests` (Emphasize line), `TextStyleUITests`; capturas opt-in
   `CaptionCatalogCaptureTests` (`TEST_RUNNER_CUE_CAPTION_CATALOG`).
 
 ## 51. Tela dividida: o vídeo principal e os apoios ao mesmo tempo (Fase 4 do refinamento, 25 de outubro de 2026; pedido do dono)
@@ -2743,7 +3169,8 @@ fotos e vídeos com cortes, durações e trechos próprios que se sucedem na out
 qualquer área; não precisa haver apresentador. **Dividir** (a tesoura) corta no tempo; **Tela dividida** organiza no espaço. Referência do dono: o
 formato "apresentador embaixo, demonstrações trocando em cima" das redes; o Cue o torna um layout pronto em vez da montagem à mão por Overlay e
 máscara do CapCut/InShot (o iMovie tem um "Split Screen" fixo em 50/50).
-- **Onde se faz** (`AddMediaSheet`, `MediaModeCards`, `MediaLayoutDiagram`): **Media** abre em onde a escolha vai, em cartões desenhados:
+- **Onde se faz** (`AddMediaSheet`, `MediaModeCards`, `MediaLayoutDiagram`): **Media** abre alta (dono, canvas 2 F14 e R4) em onde a escolha
+  vai, em cartões desenhados e baixos (desenho de 16 × 28 pt, cartão de 62 pt) com uma linha de explicação, para a galeria ter mais fileiras:
   **Sobreposição · ao mesmo tempo** (**Split screen**, **Window**, **Full screen**) ou **Sequence** (**In sequence**, que acrescenta tempo). Por cima
   do vídeo, vários de uma vez, na ordem em que foram tocados (o Fotos numera), com **Continue · 3**. Um vídeo só abre **Pick the part**
   (`MediaPartStep`, `MediaPartStrip`, `MediaPartPreview`: a janela amarela sobre os quadros do vídeo, as pontas para encurtar, ▶ toca o trecho
@@ -2751,7 +3178,9 @@ máscara do CapCut/InShot (o iMovie tem um "Split Screen" fixo em 50/50).
   Entram um depois do outro a partir da agulha (na tela dividida, depois do apoio que estiver na agulha), cada vídeo com o trecho inteiro (ou o
   escolhido), uma foto com 3 s, **sem nunca alongar o vídeo principal**: o que não cabe até o fim (ou até o próximo apoio) é dito antes, em
   `warnText` ("the last one is shortened to fit", "1 don’t fit before the end and stay out"), e só isso é encurtado ou fica de fora (`MediaRun`).
-  Tudo entra num passo de desfazer, mudo, e o aviso diz "3 added to the split screen from 00:07.0 · muted" com Undo. A última sobreposição usada é
+  Com algo escolhido, arrastar a folha não a fecha, e **Cancel** (ou Back na revisão de vários) pergunta "Discard what you picked?" ·
+  "Picked: 3 · nothing is added" · **Discard 3** / **Keep picking** (dono, canvas 2 R11); sem nada escolhido, fecha direto. Tudo entra num passo
+  de desfazer, mudo, e o aviso diz "3 added to the split screen from 00:07.0 · muted" com Undo. A última sobreposição usada é
   a que Your library (da barra Media) abre de novo; o "+" depois dos clipes abre na sequência.
 - **A folha fica parada** (pedido do dono, 25/10: os elementos pulavam ao trocar de modo e Continue ficava fora da folha): título, cartões, a
   explicação (que guarda o espaço da mais longa das quatro) e a nota de onde entra (duas linhas guardadas) nunca mudam de lugar; a origem é o
@@ -2808,7 +3237,7 @@ máscara do CapCut/InShot (o iMovie tem um "Split Screen" fixo em 50/50).
   principal só enquanto o apoio aparece, até 0 para ouvir só o apoio, com rampa de 30 ms nas pontas) e **This support** (o som próprio); **Mute
   all supports** cala todas as mídias por cima, cada uma guardando o seu volume. Cada vídeo tem uma faixa de som só: trocar de layout nunca duplica
   imagem nem som. Abaixar o apoio sob a voz automaticamente fica para depois.
-- **Legendas**: continuam desenhadas por cima de tudo e no tempo da fala. **On the seam during the split screen** (Caption style › Format,
+- **Legendas**: continuam desenhadas por cima de tudo e no tempo da fala. **On the seam during the split screen** (Caption style › Layout,
   `SplitScreen.captionsOnSeam`, ligada ao criar a primeira tela dividida, como nos vídeos desse formato) centraliza na emenda as linhas ditas
   enquanto um apoio aparece (cima/baixo; lado a lado não tem emenda na
   horizontal), dentro das margens seguras; o resto fica onde o criador pôs. Com a tela dividida na agulha, a legenda arrastada **gruda na emenda** (a
@@ -2866,7 +3295,7 @@ Tudo fica neste iPhone.
   (tela dividida, janela, tela cheia) ou como clipe na sequência, conforme o modo. Um **logo** entra num toque: janela pequena (20% da largura) no
   canto de cima à direita, dentro da área segura, sobre o vídeo inteiro, transparência mantida (`MediaOverlay.isLogo`); um segundo logo troca a
   imagem do primeiro onde ele está. Entram arquivos por **Add from Photos** e **Add from Files** (PNG de logo, vídeos) sem sair da folha, e
-  **Save to library** na barra de uma mídia escolhida guarda a mídia do vídeo. Segurar um cartão: **Rename**, **Add to favorites**, **Use as a
+  **Save to library** na barra de uma mídia escolhida guarda a mídia do vídeo. **•••** ao lado do nome (sem escolher a mídia) ou segurar um cartão: **Rename**, **Add to favorites**, **Use as a
   logo / Use as a photo**, **Remove from library** (aviso com Undo; "videos that use it keep it" quando algum vídeo usa).
 - **Propriedade dos arquivos**: a biblioteca guarda um **link físico** (hard link) para os bytes que o Cue já tem (a importação, a mídia de
   um vídeo); inserir num vídeo cria outro link na pasta do editor (`EditMediaFiles`). Cada um (biblioteca, cada vídeo, cada kit) tem o seu nome
@@ -2877,14 +3306,15 @@ Tudo fica neste iPhone.
 - **O que sai e quando** (`LibraryFileSweep`, num lançamento, depois da limpeza do editor): um item tirado da biblioteca some da lista na hora,
   mas o arquivo fica até um lançamento seguinte (Undo funciona na sessão); arquivos que a lista não cita (importação cancelada no meio, item
   removido) e que não mudaram nos últimos 10 minutos são apagados; nunca um que a lista cita. A pasta do editor segue a regra de antes (§37).
-- **Kits de marca** (`BrandKit`, `BrandKitStore`, Application Support/BrandKits com `kits.json`): em **✦ Smart › Brand** (em português **Kit de marca**, decisão do dono, 25/10; chave própria `smart.brandKits`, porque o "Brand" do
-  briefing de publicidade continua "Marca"; terceira seção, ao lado de
+- **Kits de marca** (`BrandKit`, `BrandKitStore`, Application Support/BrandKits com `kits.json`): em **Templates › Brand** (em português **Kit de marca**, decisão do dono, 25/10; chave própria `smart.brandKits`, porque o "Brand" do
+  briefing de publicidade continua "Marca"; aba ao lado de
   Templates: os looks do Cue e os seus). Um kit tem nome, **cores** (até 6; cada uma é um poço que abre o seletor de cor do sistema e muda ali
   mesmo, **+** acrescenta uma, − tira), **fontes** (títulos e legendas), **logo** (um link
   próprio para a imagem, com o canto) e cópias dos **estilos de texto, legenda e capa** do criador (os salvos, §50, ou os "deste vídeo"; mudar ou
   apagar o estilo salvo depois não muda o kit). Vários kits, para quem trabalha com marcas diferentes. **New kit from this video** começa um com o
   que o vídeo usa (o estilo dos textos, das legendas e da capa, as cores mais usadas sem branco e preto, as fontes e o logo); nada é salvo até
-  **Save kit**. Segurar o cartão: **Edit kit**, **Duplicate**, **Delete kit** (Undo).
+  **Save kit**; fechado por um arraste, o que mudou fica como rascunho e volta ao abrir o mesmo kit (ou ao começar outro novo), com "Your changes
+  from before are back · Cancel discards them"; **Cancel** no cabeçalho joga fora (dono, canvas 2 R11). **•••** no fim do cartão (sem aplicar o kit) ou segurar: **Edit kit**, **Duplicate**, **Delete kit** (Undo).
 - **Aplicar é explícito** (`BrandKitApplySheet`): tocar o kit abre a lista das partes que ele tem, cada uma dizendo o que muda neste vídeo
   (a linha "Text style · Acme title" diz "On 4 texts · words, timing and place stay"; "Replaces the video’s logo, where it is"; "No cover yet ·
   make one to use it");
@@ -2894,12 +3324,40 @@ Tudo fica neste iPhone.
   estilo, §50); a capa mantém as palavras. As fontes vão nos textos (no peso mais perto que a família tem), no título da capa e nas legendas.
   As cores do kit aparecem primeiro em toda paleta deste vídeo (`AppliedBrandKit`, `\.brandColors`). O cartão do kit aplicado fica marcado.
   **Atualizar ou apagar um kit nunca muda um vídeo já feito**: o vídeo guarda o que o kit pôs nele.
+- **Meu estilo é o kit** (decisões do dono F, G, H, 08/11/2026). Duas partes a mais: **Editing** (`BrandKitEditing`: Clean up › pausas mais
+  longas que e o espaço deixado, o volume em que a música adicionada entra e quanto ela baixa sob a voz) e **Studio Voice** (Enhance voice e
+  Reduce noise, parte própria porque muda o som na hora; a folha diz "the video's sound changes now"). Editing só prepara as ferramentas:
+  "Clean up: pauses over 1.2s · Tight gap · Music you add: 25%, 18 dB down under the voice · nothing is cut"; nada é cortado até o Remove do
+  Clean up, e a música adicionada depois entra nesse nível (`TakeEdit.newMusic`, "Music added at 0:10 · 25%"). No editor do kit
+  (`BrandKitEditingSection`): o resumo, **Take from this video** e Remove; **New kit from this video** já traz o Editing do vídeo. **Zoom**
+  (`BrandKitEditing.zoom`, `BrandKitZoom`, parte própria `BrandKitPart.zoom` porque Punch in on cuts muda a imagem na hora): guarda o Punch in on
+  cuts do vídeo (ligado na força dele, ou desligado) e a força que a maioria dos zooms por frase dele usa; só existe quando o vídeo tinha um dos
+  dois. Na folha: "Punch in on cuts: Strong · Phrase zooms: Subtle · the picture changes now" (num vídeo sem cortes, "… · on the cuts you make").
+  Aplicado (também em "Use on new videos"), liga ou desliga o Punch in on cuts como guardado e marca a força no menu Zoom das legendas ("· your
+  style"); nenhuma frase ganha zoom por isso, e nunca entram textos, mídias, capa ou tempos. Kits salvos antes não têm Zoom.
+  **Ducking**: guardado (quanto a música baixa sob a voz e se volta nas pausas), vale para a música adicionada depois; a que já está no vídeo
+  fica como está. **Efeito de voz**: o kit guarda o Studio Voice (Enhance voice e Reduce noise), que entra na hora em que o kit é aplicado com
+  essa parte marcada (ou num vídeo novo), dito na folha e no aviso. Os **Voice effects** criativos de um clipe ou narração (Radio, Megaphone,
+  Robot, Deep voice, Chipmunk, Echo, Hall) são outra ferramenta e **não entram no kit**: pendente, decisão separada do dono.
+- **Use on new videos** (uma chave no editor do kit; um kit só: salvar um tira a marca do outro, duplicar não copia, e um kit restaurado
+  depois de outro tomar o lugar volta sem ela; o cartão diz "New videos open in it"). Um vídeo aberto pela primeira vez no editor (sem edição
+  salva, nem rascunho) entra com tudo o que o kit pode pôr, num passo, com "Your style is on" · Undo ("· Studio Voice changes the sound" quando
+  o som muda). O Undo tira só desse vídeo, e ele não volta a entrar ao reabrir (`EditorPreferencesStore.newVideoKitOffered`, por take). Um
+  vídeo já editado continua como foi salvo.
+- **O que foi ajustado à mão fica** (H; `ManualStyleChanges`, `ManualChangesOptions`, no kit e no template): títulos com fonte, cor ou tamanho
+  mudados à mão (`TextOverlay.customized`) e linhas de legenda com visual próprio (Emphasize line, tamanho) mantêm o que têm. Quando existe
+  algum, a folha diz "What you changed by hand stays" e mostra chaves desmarcadas com as contagens: "Also replace my changes on titles" ·
+  "Titles changed by hand: 2 · font, color, size" e "Also replace my changes on caption lines" · "Lines with their own look: 3 · emphasized or
+  bigger" (só com a parte de legenda escolhida). Marcada, troca só aquilo; o lugar de cada texto e as palavras ficam sempre.
 - **Cores livres** (`OverlayColor` aceita "#RRGGBB"): o último poço de toda paleta do editor abre o seletor de cor do sistema; a cor entra quando
   o dedo para (0,35 s), então uma escolha é uma mudança e um Desfazer, e aparece na paleta enquanto está em uso. Edições antigas leem igual (o JSON continua texto); uma versão anterior do Cue lê uma cor livre como
   branco. A cor do texto é conteúdo do criador, não um token: o aviso de contraste das legendas (§50) continua valendo.
 - **Fontes próprias** (`CustomFontStore`, `CustomFontInspector`, `CustomFontRegistry`, Application Support/Fonts com `fonts.json`): **Import font**
-  (Arquivos, TTF, OTF e coleções, vários de uma vez) em Text style › Font, Caption style › Adjust e ✦ Smart › Brand › Your fonts; a família
-  importada aparece primeiro em todo seletor de fonte (texto, legenda, capa, kits), escrita nela mesma. Antes de guardar, o arquivo é lido
+  (Arquivos, TTF, OTF e coleções, vários de uma vez) em Text style › Font, Caption style › Custom e Templates › Brand › Your fonts; a família
+  importada aparece primeiro em todo seletor de fonte (texto, legenda, capa, kits), escrita nela mesma; em Text style › Font, Caption style ›
+  Custom e no Title da capa ela fica no grupo **My fonts** (`MyFontsGroup`, dono, canvas 2 F12), com **Edit** à direita: Edit põe um menos em cada
+  família e um toque a remove (Done encerra); segurar o chip oferece Remove também. A família que o texto usa continua no grupo, escolhida, depois
+  de removida (não dá para remover duas vezes). Antes de guardar, o arquivo é lido
   inteiro: precisa ser fonte que o Core Text monta, com tabela 'head', letras (uma fonte de ícones é recusada) e no máximo 40 MB; nome da família,
   estilos e peso vêm da própria fonte (tabela OS/2, e o eixo de peso de uma fonte variável). Uma fonte com o mesmo nome PostScript de uma que o
   iPhone ou o Cue já têm é recusada ("… is already on this iPhone"); o mesmo arquivo de novo diz "already in your fonts"; um arquivo que falha não
@@ -2911,7 +3369,7 @@ Tudo fica neste iPhone.
   de dizer "already in your fonts": o arquivo volta com o nome que a família guarda, é registrado, a prévia é desenhada de novo e a nota some
   ("… is back · videos that use it show it again"); nada é duplicado. A nota acompanha as famílias que o Cue consegue desenhar agora
   (`CustomFontStore.drawable`), então some assim que a fonte volta.
-  Importar de novo uma família removida a devolve aos seletores. **Remover** (Your fonts, com Undo) tira dos seletores, mas o vídeo, estilo salvo ou kit que usa continua desenhando nela; os arquivos só são
+  Importar de novo uma família removida a devolve aos seletores. **Remover** (Your fonts ou My fonts, com Undo; `FontRemoval`, uma frase só) tira dos seletores, mas o vídeo, estilo salvo ou kit que usa continua desenhando nela; os arquivos só são
   apagados num lançamento em que nada salvo cita a família (vídeos, rascunhos com o desfazer, estilos salvos, kits). Só fontes que o criador
   pode usar: o Cue não traz fontes comerciais de terceiros nem presume direito de redistribuição, e diz isso sob o botão.
 - **Fontes baixadas** (§59): as famílias das bibliotecas de outras escritas que estão no iPhone aparecem em Your fonts, em "Downloaded fonts"
@@ -2926,7 +3384,7 @@ Tudo fica neste iPhone.
   "fontes de subtítulo/corpo" separadas (títulos e legendas). Cores do kit não recolorem nada sozinhas: entram nas paletas (os estilos do kit já
   trazem as cores deles). A capa sem composição ainda não recebe o estilo do kit (o cartão diz).
 - **Testes:** `MediaLibraryStoreTests`, `CustomFontStoreTests` (a Anton do app renomeada vira uma fonte nova para importar; o texto que a exportação
-  desenha nela sai letra por letra igual à Anton), `OverlayColorCustomTests`, `QuickEditBrandKitTests`, `BrandLibraryUITests` (`-uiTestSeedLibrary`,
+  desenha nela sai letra por letra igual à Anton), `MyFontsUITests` (`-uiTestImportedFont Qbrnd`), `OverlayColorCustomTests`, `QuickEditBrandKitTests`, `BrandLibraryUITests` (`-uiTestSeedLibrary`,
   `-uiTestAssetRoot`). As duas primeiras também no aparelho (`CUE_DEVICE=<iPhone> scripts/test.sh device CustomFontStoreTests` e
   `MediaLibraryStoreTests`; 25/10 no iPhone 15 Pro: 7 e 6 de 6 passam, registro do Core Text e links físicos de verdade).
 
@@ -2966,7 +3424,8 @@ Profile, Pro, celebrações) tinha tamanho fixo copiado do quadro, e várias tel
 ## 54. Máscara e Desfocar área (Fase 6 do refinamento, 26 de outubro de 2026; pedido do dono)
 
 Duas ferramentas, com nomes que não se confundem com o que já existe: **Mask** (uma forma desenhada que mostra só parte de uma foto ou vídeo por
-cima) e **Blur area** (esconde um rosto, uma placa ou um nome numa tela, e o segue). Não são o **Recorte** do Fundo (a pessoa achada pelo Vision)
+cima) e **Blur area** (esconde um rosto, uma placa ou um nome numa tela, e o segue). Não são o **Contorno** do Fundo (Cutout: a pessoa achada pelo Vision; em português deixou de ser "Recorte" para não se confundir com o Crop,
+"Recortar", canvas 2)
 nem o **Desfoque** do Fundo (atrás do criador). Comparado com CapCut, InShot e Edits (pesquisa de fluxos e de fóruns, 26/10): nenhum dos três avisa
 quando o tracking perde o alvo, nenhum move o vídeo sob uma máscara parada, e no CapCut esconder um rosto pede duplicar o clipe, efeito, máscara e
 keyframes; o Cue faz cada uma dessas coisas direto. Plano aprovado pelo dono: https://claude.ai/artifact/UpoEnj7t6wAUpmGeCG8PpW.
@@ -3083,7 +3542,8 @@ keyframes; o Cue faz cada uma dessas coisas direto. Plano aprovado pelo dono: ht
     "This video has no sound"); **Motion** abre o painel próprio (`MediaMotionPanel`: animações prontas, Track, keyframes, Starts/Ends). O painel
     **Edit** perdeu o Advanced e ganhou **Opacity** (10–100%, `MediaOverlay.opacity`, multiplicada pela dos keyframes).
   - **Clipe:** Split · Speed · **Volume** · Mute · Zoom… (o volume de cada clipe de uma montagem volta à tela); a ordem inteira está em §55.
-  - **Legenda:** Edit · Split · Join next · **Emphasis** · Style · Delete (Emphasis abre a linha com o More aberto, nas palavras a destacar).
+  - **Legenda:** Edit · **Style** · Split · Join next · **Emphasis** · Delete (dono, canvas 2 N2, 07/11: Style logo depois de Edit; Emphasis abre a
+    linha com o More aberto e rola até as palavras a destacar).
   - Split de uma mídia usa o mesmo ícone do Split do clipe; em inglês, Blur area usa "Track" como o resto do app (em português, "Seguir").
 - **Áreas pequenas medidas no iPhone 15 Pro** (`BlurTrackingDeviceTests`, 26/10, na take do dono): ovais desenhadas sobre o nariz (227×269 px),
   um olho (189×58 px) e a boca (343×160 px), seguidas pelo Vision e conferidas em cada um dos 882 quadros contra os pontos do rosto que o Vision
@@ -3103,23 +3563,36 @@ keyframes; o Cue faz cada uma dessas coisas direto. Plano aprovado pelo dono: ht
 
 ## 55. Quick edit: todas as ferramentas na barra (26 de outubro de 2026; pedido do dono)
 
-A barra funciona como antes: uma só, que troca para as ferramentas do item escolhido, com "‹ Nome" e o Delete fixo no fim. O que mudou é o
+A barra funciona como antes: uma só, que troca para as ferramentas do item escolhido, com "‹ Nome" e o Delete do item fixo no fim. O que mudou é o
 alcance: toda ferramenta do editor está na barra principal, e a barra de qualquer item escolhido traz, depois das dele, as outras. Agrupada por
 afinidade, uma barra longa como a do InShot (decisão do dono, 26/10; o desenho com faixa de contexto, lixeira separada e catálogo "All" foi
 recusado).
 - **Barra principal** (`QuickEditViewModel.mainToolGroups`, `EditorToolbarTool`, 33 ferramentas, uma linha fina entre os grupos), na mesma
   ordem da barra do clipe, para cada ferramenta ficar entre as mesmas vizinhas nas duas (dono, 28/10/2026): **Edit · Split · Captions · Text ·
-  ✦ Smart · Media · Audio** | Speed · Volume · Zoom | Adjust · Skin · Filters · Background · Crop · Stabilize · Blur area · Copy look · Paste look |
-  Animation · Duplicate · Freeze frame · Reverse · Replace · Reorder · Extract audio | Edit by text · Remove pauses · Studio Voice · Format ·
-  Templates · Brand kit · Cover. As cinco primeiras cabem na tela de um iPhone de 6,1"; Delete nunca está nela. Mute, Mirror, Transition e Reset
+  Clean up · Media · Audio** | Speed · Volume · Zoom | Adjust · Skin · Filters · Background · Crop · Stabilize · Blur area · Copy look · Paste look |
+  Animation · Duplicate · Freeze frame · Reverse · Replace · Reorder · Extract audio | Auto edit · Edit by text · Studio Voice · Format · Templates ·
+  Brand kit · Cover (Auto edit, §63, também vem depois de Clean up nos atalhos da barra do clipe). As cinco primeiras cabem na tela de um iPhone de 6,1"; Delete nunca está nela. **Clean up** (em português **Limpar fala**) é a limpeza da
+  fala, no 5º lugar (dono, 07/11/2026); cada ferramenta automática tem um botão só (Edit by text, Studio Voice e Background na barra, Auto
+  captions no Captions, Auto adjust no Auto do Adjust). Adjust, Skin, Filters e Background levam o selo
+  do vídeo inteiro também aqui, porque a barra do clipe tem ferramentas com o mesmo nome só para o clipe; as outras dizem o alcance no painel.
+  Todas mostram o nome sob o ícone em todo iPhone, o SE também, em 11 pt a qualquer tamanho de texto (dono, 07/11/2026); a barra mantém a altura,
+  e nos tamanhos de acessibilidade segurar mostra o nome grande. Mute, Mirror, Transition e Reset
   clip são só da barra do clipe (agem no clipe escolhido; sem ele, Mute e Mirror mudariam de estado com a agulha, e Reset clip desfaria um clipe
   que a pessoa não escolheu).
 - **Ferramentas do clipe sem escolher o clipe** (`QuickEditViewModel+Toolbar`): Speed, Volume, Zoom, Stabilize, Crop e Animation abrem o painel no clipe sob a
   agulha, que fica contornado como escolhido pelo painel enquanto ele está aberto (mover a agulha não troca o clipe; escolher outro é escolha da
   pessoa e vale); ✓ devolve como estava, sem nada escolhido. Duplicate, Replace, Extract audio, Copy look e Paste look escolhem o clipe sob a agulha
-  e mostram as ferramentas dele; Reverse e Freeze frame agem nele; Split divide na agulha; Reorder com um clipe só diz por quê. Num vídeo sem
+  e mostram as ferramentas dele; Reverse e Freeze frame agem nele e o escolhem (Reverse diz qual, "Clip 2 reversed" ou "Clip 2 plays forward
+  again" numa montagem; o quadro congelado fica escolhido, com a ponta para arrastar); Split divide na agulha; Reorder com um clipe só diz por quê. Num vídeo sem
   cortes, o clipe é o vídeo.
-- **Skin** abre o painel Skin (§20) do vídeo inteiro na barra principal e do clipe na barra do clipe; **Templates** e **Brand kit** abrem a aba deles no ✦ Smart.
+- **Skin** abre o painel Skin (§20) do vídeo inteiro na barra principal e do clipe na barra do clipe; **Templates** e **Brand kit** abrem cada um
+  o seu painel (`TemplatesPanel` com `templatesSection`), sem abas entre eles (dono, canvas 2 R3: as abas rolavam com o conteúdo e sumiam).
+- **Faixas:** tocar a faixa de texto, de mídia ou de áudio abre a barra dela (`EditorToolMenu`); tocar a de **legendas** ou a de **Blur area** abre
+  o mesmo painel que o botão da barra principal abre (o painel de legendas; os rostos do quadro), e um segundo toque fecha (dono, 07/11/2026: uma
+  porta, uma tela). No painel de legendas, **•••** no cabeçalho, antes do ✓, guarda Find and replace, Select lines, Edit by text, Add a line, My words e Delete all (que
+  pergunta antes); Add a line também fica no fim da lista. No passo dos rostos, **◐** compara o vídeo inteiro sem as áreas quando já há alguma.
+- **Audio** começa pelo que se acrescenta: Music · Sound effects · Voice-over · Text to speech | Studio Voice · Volume · Voice effects · Extract
+  audio (dono, 07/11/2026).
 - **Barra do clipe** (`clipItems`, `clipShortcutGroups`; dono, 28/10/2026: estava num bloco só de 20, com o que muda o vídeo inteiro no meio),
   em cinco grupos:
   1. **O essencial do clipe**, as cinco na tela de 6,1": Split · Speed · Volume · **Mute** · Zoom. **Mute** é o "Mute this clip" do Volume como
@@ -3131,10 +3604,10 @@ recusado).
      **Transition** escolhe o corte depois do clipe (no último, o de antes) com o painel aberto: com o clipe escolhido, as marcas dos cortes dele
      cedem às alças, e era preciso soltá-lo para chegar à transição. Num vídeo de um clipe só fica esmaecida e diz "Split or add a clip to add a
      transition". Reset clip fica esmaecida enquanto o clipe está como gravado.
-  4. **Por cima:** Text · Media · Audio · ✦ Smart (cada um abre a barra da faixa dele).
-  5. **O vídeo inteiro**, todos com o selo: Edit by text · Remove pauses · **Studio Voice** · Captions · Format · Templates · Brand kit, e Cover.
+  4. **Por cima:** Text · Media · Audio (cada um abre a barra da faixa dele).
+  5. **O vídeo inteiro**, todos com o selo: Clean up · Edit by text · **Studio Voice** · Captions · Format · Templates · Brand kit, e Cover.
 - **Barras dos outros itens** (`itemShortcutGroups`): as ferramentas do item primeiro, como sempre (as quatro na tela são as que um criador mais
-  usa nele); depois de uma linha fina, **Clip** (vai às ferramentas do clipe sob a agulha) | Captions · Text · Media · Audio · ✦ Smart | Remove pauses · Edit by text |
+  usa nele); depois de uma linha fina, **Clip** (vai às ferramentas do clipe sob a agulha) | Captions · Text · Media · Audio · Clean up | Edit by text |
   Format · Adjust · Skin · Filters · Background · Blur area | Templates · Brand kit · Cover. Nunca o que pareceria agir no item (Split, Speed ou
   Volume do vídeo ao lado de um texto) nem o que as ferramentas dele já alcançam (a legenda não repete Captions).
 - **Crop do clipe** (`ClipCropPanel`, `ClipCropLayer`, `ClipsViewModel+Shape`; dono, 28/10/2026): Original · Free · 9:16 · 4:5 · 1:1 · 16:9,
@@ -3158,7 +3631,10 @@ recusado).
   clipe); o som sobe do silêncio no começo e desce a ele no fim, nunca menos que a curva curta de um corte (`EditedComposition.levels`). O fade
   out espera a rampa de abertura do clipe (a do silêncio, a do corte ou a que leva ao volume dele): uma rampa que começa dentro de outra faz o
   AVFoundation encerrar o app (o fade out no máximo do slider começava 5 ms depois da rampa ao volume do clipe), e `VolumeRamp` ainda as põe uma
-  depois da outra no relógio da composição. O Reset do Volume zera os fades também.
+  depois da outra no relógio da composição. O Reset do Volume zera os fades também. Numa foto ou vídeo por cima, o Reset do Volume mexe só no som
+  dela e o volta a como entrou: mudo, ou 100% se a pessoa disse para manter o som (`MediaOverlay.keptSoundWhenAdded`); o clipe embaixo fica. Ali,
+  barra, título e controle dizem **Volume** ("Video · its own volume"; dono, canvas 2 R6 e erro 9). Ao entrar um vídeo com som, a pergunta diz onde
+  mudar depois: Volume na barra dele, ou **Sound** na barra de um apoio da tela dividida (`soundChoiceHint`, erro 12).
 - **Reset clip** (`ClipsViewModel+Reset`): num passo de desfazer, o clipe volta como gravado: 1×, sem curva, som em 100% e ligado, sem Zoom,
   Adjust, Skin, filtro e fundo (os próprios e também os do vídeo inteiro e da gravação, desligados só nele: `ClipLook.asFilmed`; dono 29/10/2026,
   o Studio do vídeo inteiro ficava e o aviso dizia que o clipe já estava como gravado), Stabilize, Crop, Rotate, Mirror, Animation e fades, e
@@ -3221,10 +3697,18 @@ som, decisões técnicas e limites: `AUDIO_LIBRARY.md`.
   **Lower under voice** (interruptor) com o alcance embaixo, pelo que toca sob aquela música: "Under your voice", "Under your voice and 2
   voice-overs", "Under 2 voice-overs" ou "Nobody speaks while it plays". Ligado: **Lower by** 3–30 dB (12 por padrão) e **In pauses** (segmentado):
   **Stays low** (pausas de até ~3 s não trazem a música de volta: nada de "bombear" entre frases) ou **Comes back up** (volta em pausas a partir de
-  ~1,2 s). As rampas são suaves (em dB, começam 0,4 s antes da voz e voltam em 1 s; em Comes back up, 0,25 e 0,4 s). Conta como voz a fala dos
+  ~1,2 s). Embaixo do interruptor, uma nota diz onde a música fica **na mesma unidade do slider** (E4, "numa linguagem só"; `AudioViewModel.musicLevels`):
+  "While you talk and in pauses: 10%" ou "While you talk: 10% · in pauses: 40%" (a porcentagem do nível do arquivo: 40% abaixado 12 dB são 10%);
+  o Editing de um kit diz com as mesmas palavras ("Music you add: 40% · While you talk and in pauses: 10%"). **Volume medido no arquivo**
+  (08/11/2026, `LoudnessReportExportTests` + `tools/audio/loudness_report.py`, BS.1770, pico real 4×; Simulator): quatro leituras FLEURS (pt-BR,
+  en-US) como voice-over exportadas como o criador deixa saem a **−13,3 a −14,8 LUFS** (a fonte tinha −16,2 a −17,8) com pico real de **−1,0 a
+  −2,8 dBTP** (a fonte de −0,5 vira −1,0: o limitador e o teto de −1 dBFS, `AudioCeiling`, seguram depois do AAC); a música da biblioteca a
+  40% sozinha fica em −25 LUFS, e sob a voz não muda o total (+0,1 dB). Já perto dos −14 LUFS que as redes usam e sem passar de −1 dBTP:
+  **nenhuma normalização foi acrescentada**. Não medido: a voz da própria take (o Simulator não monta uma take de teste com som numa
+  composição, −12780) e no iPhone. As rampas são suaves (em dB, começam 0,4 s antes da voz e voltam em 1 s; em Comes back up, 0,25 e 0,4 s). Conta como voz a fala dos
   clipes que tocam (um clipe mudo, a 0% ou cujo som foi para uma faixa não conta) e cada voice-over, gravado ou falado a partir de texto, onde ele
   realmente tem som. **◐** toca aquela música sem abaixar, a partir de um pouco antes da primeira voz sob ela (as outras músicas continuam como
-  estão); apaga ao sair do painel. **Use on all music** aparece quando outra música abaixa diferente e copia o interruptor, a profundidade e as
+  estão); apaga ao sair do painel. **Use on all 3 music clips** (com o número, canvas 2 R2) aparece quando outra música abaixa diferente e copia o interruptor, a profundidade e as
   pausas para todas (efeitos sonoros e sons extraídos ficam de fora), num passo de desfazer, "Used on all 3 music clips". Música nova entra
   com 12 dB e Stays low. Uma música de uma edição salva antes continua abaixando como sempre (a 25%, rampas de 0,25 s, só sob a fala da
   gravação) até alguém mexer num desses controles; aí passa aos novos com o que tinha (12 dB). Volume, fades, cortes e sincronia não mudam.
@@ -3238,11 +3722,14 @@ som, decisões técnicas e limites: `AUDIO_LIBRARY.md`.
   Settings › Acknowledgements).", os termos, o crédito ("No credit needed.": as bibliotecas são todas CC0) e "Sample libraries: …") e **+** (adiciona na agulha a 40%, abaixando 12 dB sob a
   voz, com as batidas da partitura, do manifesto da biblioteca, prontas para Beats; a folha fecha). Nos tamanhos de texto de
   acessibilidade o ▶ fica acima do texto e ⓘ e + embaixo, para o texto ter a largura do cartão. Sem resultado: "No track matches · Try
-  another word or filter". Embaixo, **Browse Files** e a nota de direitos, como antes. Pelo **Replace** de uma música, a folha se chama "Replace
+  another word or filter". **Browse Files** (a música do criador, nos Arquivos) fica logo abaixo da busca, antes das faixas do Cue; a nota de
+  direitos fica no fim. A folha abre alta (`.large`, dono, canvas 2 F13 e R4: escolher numa biblioteca), com **Music | Sound effects** sempre à
+  vista: Music e Sound effects da barra abrem cada um a sua parte. Pelo **Replace** de uma música, a folha se chama "Replace
   music" e mostra só a música (a faixa entra no lugar do clipe, com o lugar, o volume e o abaixar dele). O clipe guarda qual faixa é
   (`MusicClip.libraryTrack`).
-- **Efeitos sonoros** (parte **Sound effects**, ou a folha sozinha pela barra do Audio; `SoundEffectsSection`, `SoundEffectCell`,
-  `SoundEffectCategory`, `SoundEffectFiles`): título "Sound effects" com "Free to use in your videos · no credit needed"; chips **All ·
+- **Efeitos sonoros** (parte **Sound effects**, aberta direto pela barra do Audio; `SoundEffectsSection`, `SoundEffectCell`,
+  `SoundEffectCategory`, `SoundEffectFiles`): "Made by Cue" com "Free to use in your videos · no credit needed" (o nome da parte é o do
+  segmentado, sem repetir); chips **All ·
   Transitions · Text & graphics · Reactions · Comedy · Big moments · Alerts & time** (a fila rola para o lado); em All, cada grupo com o
   nome em cima. Duas colunas (uma nos tamanhos de acessibilidade; o nome numa linha, um pouco menor se precisar, nunca partido): tocar o
   cartão ouve (o ícone vira um alto-falante animado e o cartão fica marcado enquanto toca; outro toque para), **+** adiciona na agulha. 42
@@ -3260,7 +3747,9 @@ som, decisões técnicas e limites: `AUDIO_LIBRARY.md`.
   primeiro e as Eloquence, como Eddy e Flo, por último; quando um idioma só tem vozes compactas, a nota diz onde
   baixar melhores; sem voz no idioma, "No voice for this language on this iPhone."), **Speed** 0.75× · 1× · 1.25× · 1.5×, **Hear** (a primeira
   frase, na voz e na velocidade escolhidas; pílula cinza do editor) e **Add** (amarela, na agulha), lado a lado (um sobre o outro nos tamanhos de acessibilidade). Enquanto é feito, "Making the voice-over…" com **Cancel**; a folha não fecha
-  arrastando. Entra como um voice-over ("Voice-over added" · Undo), escolhido, que se apara, move, muda de volume e apaga como um gravado; na
+  arrastando. Fechada por um arraste, a folha guarda o texto, o idioma, a voz e a velocidade (`TextToSpeechDraft`, dono, canvas 2 R11), que
+  voltam na próxima abertura para o mesmo lugar (uma narração nova, ou o Edit text da mesma voz) com "Your text from before is back · Cancel
+  discards it"; **Cancel** no cabeçalho joga fora; Add encerra. Entra como um voice-over ("Voice-over added" · Undo), escolhido, que se apara, move, muda de volume e apaga como um gravado; na
   barra dele, **Edit text** no lugar de Re-record reabre a folha com o texto, a voz e a velocidade, e o novo entra no mesmo lugar, com o volume e
   o efeito de voz ("Voice-over replaced").
 - **Voice effects** (painel `.voiceEffects`, `VoiceEffectsPanel`, `AudioViewModel+VoiceEffects`, `VoiceEffectRenderer`): na barra do clipe, de um
@@ -3619,7 +4108,7 @@ escolher, baixadas só quando usadas.
 - **Biblioteca** (`SupportFiles/FontPacks.json`, 58 famílias do Google Fonts, todas SIL OFL 1.1; gerado por `tools/fonts/make_manifest.py` de
   `tools/fonts/packs.py`, presos a um commit de google/fonts, com SHA-256 e tamanho de cada arquivo): japonês 10, chinês simplificado 7, chinês
   tradicional 5, coreano 8, árabe 10, hindi 9, tailandês 9. O app leva só o manifesto (55 KB), nunca as fontes.
-- **Onde aparece** (`ScriptLibraryOffer`): Text style › Font, Caption style › Adjust e o título da capa mostram a biblioteca de uma escrita só
+- **Onde aparece** (`ScriptLibraryOffer`): Text style › Font, Caption style › Custom e o título da capa mostram a biblioteca de uma escrita só
   quando as palavras sendo estilizadas estão nela, ou quando o idioma da legenda, do roteiro ou da interface a usa; as escritas do texto vêm
   primeiro. Um criador só em idiomas latinos não vê nada (nem seção, nem selo). Cada biblioteca fica depois das famílias latinas: título
   ("Japanese fonts"), chips com amostra na escrita e o nome da família, desenhados na própria família, e a marca de estado: nuvem (baixa ao
@@ -3631,7 +4120,8 @@ escolher, baixadas só quando usadas.
   registrado de novo nos lançamentos seguintes sem rede. A fonte vem por `FontPackSource` (hoje `GoogleFontsPackSource`, raw.githubusercontent.com;
   testes, prévias e `-uiTestInMemory` usam `OfflineFontPackSource`). Apagar tudo (Settings) apaga também as fontes baixadas.
 - **Exportação** (`VideoExportService.fontWait`): pede as famílias que o vídeo usa e espera por elas no máximo 15 s; a que não chegou sai na face
-  do sistema da escrita (nunca um quadrado). Um arquivo que chega durante a exportação só entra depois dela, então um vídeo nunca troca de face
+  do sistema da escrita (nunca um quadrado), e "Ready to travel" avisa (§38); exportar de novo depois que ela chegou desenha outra vez, sem gastar
+  outra exportação. Um arquivo que chega durante a exportação só entra depois dela, então um vídeo nunca troca de face
   no meio.
 - **Créditos:** Settings › Acknowledgements › Fonts for other scripts (cada família por escrita, com o texto da OFL).
 - **Medido:** contraste dos chips e notas com os tokens de `Palette` já medidos (`ink`, `inkSoft`, `warnText`). Folhas de contato:
@@ -3734,3 +4224,146 @@ take specific actions" (3.2.2(x)). O dono marca uma consulta com o App Review (M
   `surface`, `fill` e `sheetNight`; o par mais fraco é ink2 na pílula e no campo (5,0:1), "Copied" verde 5,9:1, o ganho amarelo 12,6:1; conferido
   nas fotos do iPhone 17 e do SE no maior tamanho de texto (`TEST_RUNNER_CUE_AUDIT_SIZE`).
 
+## 61. Clean up (Limpar fala; etapa 3 do plano do editor, D6–D9, 7 de novembro de 2026; decisão do dono)
+
+Um painel só (`CleanUpPanel`, `EditorPanel.pauses`, título **Clean up**, pt "Limpar fala"; `ClipsViewModel+CleanUpPanel`) com três abas,
+**Pauses · Words · Text** (pt Pausas · Palavras · Texto, `EditorPanelTab.cleanUp`). A ferramenta Pauses abre na aba Pauses; **Edit by text** (barra,
+menu de legendas, ✦ Smart) abre o mesmo painel na aba Text, já alto. As marcas (Remove/Keep) são as mesmas nas três abas e na timeline (amarelo
+vai, cinza fica); **Remove** tira tudo o que está marcado nas três; **✓ fecha sem tirar nada**, e o que só estava marcado é esquecido (reabrir volta
+ao padrão: pausas marcadas, palavras só quando o Clean up tem certeza, tentativas nunca). O painel é médio (nunca vira folha, nem no SE) e cresce no
+mesmo lugar pelo botão de expandir ou ao ir para Text (o vídeo fica no mínimo, tocando); trocar de aba não o encolhe e mantém a aba, as marcas e a
+escolha de palavras. Em Pauses ele abre na **fileira de pausas**; "Pauses longer than" e "Gap left" ficam atrás do botão do cabeçalho
+(`CleanUpSettingsButton`, com o limite em uso no rótulo, "0.7s"; aceso quando aberto, lembrado com o painel como o Advanced; dono, canvas 2 F10).
+
+- **Da marca ao cartão** (dono, canvas 2 M3): tocar numa marca da timeline leva ao cartão dela (a aba dele, rolado até à vista, com um anel `ink`
+  por fora) e mostra o momento, **sem mudar nada**; um segundo toque na mesma marca troca Remove/Keep, como o toque no cartão. Tocar num cartão
+  também o acende (a marca dele está sob a agulha) e o VoiceOver diz "Remove" ou "Keep". Nada muda o que sai sem o cartão à vista; o rodapé
+  conta de novo a cada troca. Reabrir o painel não traz cartão aceso.
+
+- **Pauses** (`CleanUpPausesTab`): pelo botão do cabeçalho, "Pauses longer than" (0,3 a 3 s, padrão 0,7) e **Gap left: Tight · Natural · Relaxed** (pt Respiro: Curto ·
+  Natural · Longo; 0,12 · 0,24 · 0,40 s de silêncio, metade de cada lado; Natural é o corte de antes; `PauseGap`, `TakeEdit.pauseGap`, passo de
+  Desfazer). Uma pausa só entra se sobra algo a cortar (nunca alonga uma pausa mais curta que o respiro); lista, marcas, Listen, tempo economizado e
+  corte leem a mesma regra (`CleanUpSuggestion.cut(leaving:)`). Mudar o respiro não mexe no que já foi cortado (o corte fica em `removedSpan`).
+  Depois, a **linha do começo** quando o take abre com pelo menos 0,3 s de silêncio antes da primeira palavra (`CleanUpStart`): "Starts at
+  “Today…” · 1.8s before the first word", Listen (só ao tocar; toca o novo começo) e **Trim −1.8s**, que apara até 0,2 s antes do primeiro som
+  (o silêncio vem da escuta, a palavra só pode adiantar), a partir de onde a edição começa agora, com toast "Starts at “Today” · −1.8s" e Undo.
+  Um texto, foto ou vídeo que o criador pôs nesse começo o mantém ("Kept: your text or video starts there"). Só o começo (o fim, não). Depois os
+  cartões de pausa e **Removed**: cada pausa tirada, em cada lugar onde pode voltar ("Pause · 1.2s", "00:04.1", **Put back**).
+- **Words** (`CleanUpWordsTab`): "Ums, uhs and words said twice. Tap one to keep it.", os cartões de hesitação e repetição e as **linhas do
+  roteiro ditas mais de uma vez** (`ScriptRetakeDetector`, plano §10): "Said 3 times", a linha, e cada tentativa ("Try 2 of 3") com Listen (toca
+  só ela) e **Keep this one** (marca as outras para sair); nada vem marcado e a última não é escolhida sozinha. A escolha fica **salva no
+  projeto** (`Attempt.kept`): fechar o Clean up ou o editor não a perde, e ela é um passo do Desfazer ("Undid · Clean up"). Numa montagem, cada take
+  é ouvido contra **o seu próprio roteiro**, no idioma dele (`ClipSource.script`); um vídeo trazido do Fotos, sem roteiro, no idioma do take.
+  Sem roteiro, só repetições seguidas ("This take has no script…"). Avisos: palavras não ouvidas ("Cue couldn't hear the words of this take on this iPhone. Pauses still
+  work.") e idioma sem hesitações conhecidas ("Ums: English, Portuguese and Spanish. Pauses work in every language."). Removed como em Pauses.
+  **Abertura de uma linha** (`ScriptRetakeDetector`): a primeira palavra igual e no máximo uma das quatro ouvida diferente; ou a primeira
+  ouvida parecida (mesma letra inicial e boa parte do tamanho: um nome, "Gridley" ouvido "gitley") e as outras iguais; ou a primeira não ouvida e
+  as outras iguais, quando passam de 12 letras (não uma frase do dia a dia como "I think that"). Num roteiro escrito sem espaços (japonês,
+  chinês) a abertura é comparada letra a letra (o reconhecedor devolve um caractere por vez). ؟, ۔, । e ॥ também fecham frases.
+  **Idiomas testados** (`RetakeLanguagesTests`, 08/11/2026): palavras reais, leituras FLEURS de pessoas ouvidas pelo reconhecedor do iPhone, com a
+  repetição **montada** (1,5 s do começo, meio segundo de silêncio, a leitura inteira de novo), não uma pessoa repetindo de verdade: en, es, da, de,
+  id, it, vi 4 de 4; ar, fr, hi, ja, nb, pt, th, tr, zh-CN 3 de 4; nl, sv, zh-TW 2 de 4; ko 1 de 4 (62 de 80). O que falta é a abertura ouvida com
+  duas palavras erradas ou mais ("Giancarlo Fisichella" como "garlo ficella"): a repetição não é sugerida e nada é cortado. Tailandês não separa
+  frases sem pontuação (a leitura inteira vira uma linha). Uma repetição real gravada por uma pessoa: **não validada** em nenhum idioma além dos
+  takes de teste em pt e en.
+- **Text** (`CleanUpTextTab`, `CleanUpTextActions`): o Edit by text (§37), com as hesitações sublinhadas (amarelo quando marcadas) e cada pausa como
+  uma marca com a duração entre as palavras; tocar numa marca alterna Remove/Keep. Como escolher palavras ("Tap the first word of the part to
+  cut, then its last word…") fica no alto da aba enquanto nada está escolhido, com pausas marcadas ou não (canvas 2, erro 7). Com palavras
+  escolhidas, o rodapé é o delas (Cut, Fix caption text, Put back); sem escolha, o Remove de sempre. Corrigir o texto da legenda continua separado de cortar o vídeo.
+- **Quick pass** (pt **Passada rápida**; `CleanUpQuickPassButton` no cabeçalho, ao lado do botão de pausas; `ClipsViewModel+QuickPass`;
+  decisão A do E4): um toque marca tudo o que o Clean up tem certeza (pausas e hesitações já vêm marcadas) e, em cada linha dita mais de uma vez
+  sem escolha, **fica a última tentativa** e saem as anteriores (decisão de 08/11/2026, sem o dono, a confirmar no teste final: a última costuma
+  ser a que deu certo; o Keep this one de sempre não escolhe sozinho). Nada sai até o **Remove**, que é um passo de desfazer; cada marca ainda
+  troca; uma tentativa que o criador desmarcou fica desmarcada, e uma linha com tentativa escolhida fica como está. Toast "Marked 5 · the last try
+  of each repeated line stays · Remove takes out 6.1s", "Marked 3 · Remove takes out 2.4s" ou "Nothing clear to take out". Só fala: não mexe em
+  legendas, zoom ou camadas (o resto da edição automática é o Auto edit, §63).
+- **Remove** diz o que tira: "Remove 3 pauses", "Remove hesitations", "Remove repeats", "Remove pauses and hesitations", … , "Nothing selected"
+  (texto `ink2`, não `ink3`). O tempo economizado conta cada segundo uma vez, por mais que as marcas se sobreponham, em cada lugar que toca (um
+  clipe copiado conta duas vezes, porque o corte sai dos dois). Toast "Removed 4 pauses · 4.1s" (ou "Speech cleaned up · 4.1s") **com Undo**.
+- **Put back** (`EditTimeline+PutBack`, `ClipsViewModel+PutBack`): devolve só aquele trecho, ao lado do clipe que tocava logo antes dele (ou logo
+  depois, quando o de antes saiu); um clipe movido ou com outra velocidade não impede (volta na velocidade do clipe ao lado); um clipe copiado é
+  um lugar a mais. Uma pausa no fim (ou no começo) do take, que ao sair moveu o fim (ou o começo) do vídeo, volta levando a borda
+  de novo para fora (08/11/2026; antes ela não voltava); depois de uma borda que o criador arrastou para dentro, continua cortada. O resto da edição, as camadas presas (`CutFollowing`) e o histórico ficam; toast "Pause put back · +1.2s" com Undo. Sem lugar, a
+  linha diz por quê e o que fazer: "Can't put back · the clips around it were deleted. Undo brings them back." ou "…it's past where the video now
+  starts or ends. Drag that edge to bring it back." Nunca devolve aproximado. Não cobre: um trecho cortado à mão (Split/Delete), que não é uma
+  sugestão; uma pausa cujos clipes dos dois lados foram apagados; um clipe com curva de velocidade volta como clipe próprio na velocidade da borda.
+- **Mensagens:** nada achado "No pauses longer than 0.7s · Your take flows." com **Try 0.5s** (some no mínimo, 0,3 s); falha "Couldn't listen to
+  this take · Nothing was changed." com Try again. Sala barulhenta (D16, `ClipsViewModel.cleanUpPauseHearing`, o caso mais cauteloso das
+  gravações tocadas): com `tooMuchBackgroundSound`, um cartão com o `title` e o `detail` de `PauseHearing` ("Too much background sound ·
+  Pauses can’t be found reliably here. Try Edit by text.") e o botão **Edit by text** (vai à aba Text), nunca "Your take flows"; com
+  `overBackgroundSound` ou `softVoice`, uma linha acima dos cartões ("Heard over background sound · Listen first · none is marked") e as pausas
+  dela listadas sem marca (`isMarkedByDefault`). "Gap left" nunca estreita as bordas de uma pausa assim (Tight vale Natural nela; Relaxed alarga).
+- **Escuta** (`TakeEditing.cleanUpFindings`): pausas pelo volume (todo idioma), palavras pelo transcritor, tentativas pelo roteiro do take; o que ela
+  soube das palavras fica em `TakeEdit.cleanUpHearing` e o que soube das pausas em `TakeEdit.pauseHearings` (os dois fora do histórico).
+- **Contraste:** só tokens de texto (`ink`, `ink2`, `accText`, `accInk` sobre `acc`, `warnText`) sobre `Palette.Editor.panelCard` e `fill`;
+  nenhum token novo.
+- **Testes:** `QuickEditCleanUpPanelTests`, `QuickEditQuickPassTests`, `EditTimelinePutBackTests`, `PauseGapTests`, `CleanUpStartTests`, `ScriptRetakeDetectorTests`,
+  `QuickEditTranscriptEditTests` (montagem reordenada), `QuickEditPausesPanelTests`; `CleanUpUITests` (abrir por Pauses e por Edit by text, abas,
+  Remove com Undo, Put back).
+
+## 62. My words (Minhas palavras; etapa 4 do plano do editor, decisão C do dono, 7 de novembro de 2026)
+
+Uma lista do criador de nomes e termos (marca, pessoas, jargão), escritos como ele quer, que o reconhecimento de fala ouve nas próximas
+legendas e gravações. Fica só neste iPhone (`MyWordsStore`, `DefaultsKey.myWords`; Delete my Cue data a apaga), separada do perfil de escrita
+da IA (My Cue Voice): nada dela entra num rascunho. Guardar uma palavra nunca muda as legendas de um vídeo nem é um passo de Desfazer; trocar
+texto no vídeo é o Find and replace, e ele nunca guarda palavra (dono: "Adicionar uma palavra à lista e substituir texto no vídeo são ações
+distintas").
+
+- **Onde:** Captions › **•••** › **My words** (pt Minhas palavras; abre também sem linhas) e **Add “…” to My words** no Find and replace (§37).
+- **A folha** (`MyWordsSheet`, `CaptionsViewModel+MyWords`; meia altura, como Find and replace): título **My words**, "Names and terms Cue
+  listens for in new captions and recordings."; o campo "A name or term, as it's spelled" com **Add** (ou Return), sem maiúscula automática nem
+  correção (as maiúsculas são as que o criador digita, "iPhone"); a lista, a mais nova no topo; tocar numa palavra abre **Change spelling**
+  ("Saved exactly as you type it."); arrastar para o lado apaga. Vazia: "No words yet" · "Add your brand, the people you mention and the terms
+  you use.". No rodapé, "On this iPhone only. Never used for drafts." e a conta "3 of 50". Repetida: "“TikTok” is already in My words"; cheia:
+  "My words is full · Delete one to add another".
+- **A lista** (`MyWordsList`): até 50 entradas de até 40 caracteres; uma por palavra sem contar maiúsculas nem largura (acentos contam, como no
+  Find and replace: "cafe" e "café" são duas). A mesma palavra com outras maiúsculas toma o lugar da antiga ("Saved as “TikTok” in My words").
+  Aspas em volta e espaços sobrando saem; o resto fica como digitado ("C#", "Node.js", "Cue Studio").
+- **No Find and replace:** o botão diz a grafia que vai guardar antes do toque: a de **Replace with** (a grafia certa que o criador está pondo
+  no vídeo), senão a de **Find**. Sob ele, "For new captions and recordings. This video stays as it is.". Tocado, toast "“TikTok” added to My
+  words" e o botão passa a "“TikTok” is in My words".
+- **O reconhecimento** (`RecognitionHints`): as legendas (`CaptionTranscriber`, também as feitas na exportação) e o Voice Following e o ditado
+  (`SpeechRecognitionManager`) recebem como dicas (`contextualStrings`) as palavras do roteiro primeiro e depois My words, cada uma uma vez (a
+  que está nos dois vai na grafia de My words), até 100 no total: todas as de My words cabem, as do roteiro preenchem o resto. As dicas valem
+  para o que for ouvido daqui em diante; legendas refeitas num vídeo já ouvido reaproveitam o que foi ouvido (só a grafia abaixo se aplica).
+- **A grafia nas legendas** (`MyWordsSpelling`, depois do `ScriptSpelling`): só uma palavra ouvida inteira que é a palavra guardada a menos de
+  maiúsculas ("tiktok," → "TikTok,"; nunca "tiktoks", "tick tock" ou uma frase), e só quando a palavra guardada tem maiúscula depois de
+  minúscula ("iPhone", "TikTok", "CapCut", "YouTube"): em minúsculas ela não é palavra do dia a dia. "Cue", "Apple", "Notion" ou "US" têm um
+  gêmeo comum ("take your cue", "tell us") e ficam só como dica: o reconhecedor decide pela frase. Os tempos das palavras nunca mudam.
+- **Não validado:** o Simulator não roda o reconhecimento; o efeito das dicas numa fala de verdade não foi medido no iPhone.
+- **Contraste:** só tokens de texto (`ink`, `ink2`) sobre `fill` e `Palette.Editor.panelCard`, como o Find and replace; nenhum token novo.
+- **Testes:** `MyWordsListTests`, `MyWordsStoreTests`, `RecognitionHintsTests`, `MyWordsSpellingTests`, `CaptionsMyWordsTests`,
+  `DataEraserServiceTests`; `CaptionToolsUITests/testMyWordsKeepsAWordWithoutChangingTheCaptions`.
+
+## 63. Auto edit (Edição automática; etapa 5 do plano do editor, §14, 8 de novembro de 2026; ponto de entrada a confirmar pelo dono)
+
+Uma primeira passada que junta etapas que já funcionam sozinhas (`QuickEditViewModel+AutoEdit`, `AutoEditSheet`, `AutoEditSession`,
+`AutoEditRecord` salvo em `TakeEdit.autoEdit`). **Ponto de entrada:** a ferramenta **Auto edit** (pt **Edição automática**, `wand.and.stars`)
+abrindo o último grupo da barra principal e nos atalhos depois de Clean up; não fica no Clean up porque mexe também em legendas e zoom (decisão de
+08/11/2026, sem o dono, marcada para o teste final; o ✦ Smart saiu na D1). Abre uma folha média (a prévia fica à vista), em três momentos:
+
+- **Escolher:** três chaves nativas, cada uma com o que faz. **Clean up speech** (ligada): pausas claras, hesitações e as tentativas anteriores de
+  uma linha, a última fica (a regra do Quick pass, §61). **Captions** (ligada quando o vídeo não tem legendas): da voz, no estilo de legenda do
+  criador; com legendas, desligada e "This video has captions: they stay as they are" (as do criador nunca são trocadas). **Zoom on key lines**
+  (desligada; só com legendas ou com Captions ligada): zoom por frase (§29) nas linhas com número, valor ou nome claro
+  (`CaptionEmphasisSuggester`), no mínimo 6 s entre um e outro, nunca sobre um zoom que já está lá (`AutoEditZoomPicker`), na força escolhida no
+  seletor (Subtle por padrão). **Punch in on cuts** (desligada; regra F16): liga o Punch in on cuts do Zoom (§11 do plano, `CutZoom`) nos
+  cortes que existem depois da limpeza da fala, na mesma força; com ele já ligado pelo criador, desligada e "Already on in this video".
+  Rodapé: "No music, effects, styles or other cuts are added." O botão **Auto edit** fica fixo embaixo.
+  Studio Voice não é etapa (já vem ligado, suave, em todo take); aparar o começo (§61) também não (é escolha à parte do Clean up).
+- **Rodando:** "Listening to the speech…", "Making captions…", "Putting it together…" e **Cancel**. Ouvir não muda nada; tudo o que a passada
+  aplica é **um passo de desfazer** (`EditDocument.beginChange`), e Cancel (ou fechar a folha) enquanto roda deixa a edição como estava. A folha
+  não fecha arrastando enquanto roda.
+- **Depois:** **Before | After** (segmentado) troca a prévia entre a edição sem e com a passada, enquanto ela é o último passo (depois de outra
+  mudança, a nota diz que o Desfazer ainda volta tudo); fechar em Before volta para After. Cada etapa com o que fez: "4 cuts · −3.2s", "12 lines
+  to check", "Zoom on 2 lines", "Punch in on 3 clips", ou por que não fez ("Needs a cut in the video", "Nothing clear to take out", "Your captions stay", "No line with a clear number or name",
+  "Didn't run" quando a escuta falhou) e **Turn off**, que desfaz só ela, um passo de desfazer, com toast "Captions turned off" e Undo: os cortes da
+  fala voltam pelo Put back (§61), as legendas se escondem (as linhas ficam; Captions mostra de novo), os zooms dela saem (os do criador ficam),
+  o Punch in on cuts desliga. **Run again** volta a escolher; a passada nova soma à anterior, e Turn off desfaz as duas. Reabrir o Auto edit mostra o resultado enquanto alguma etapa dele está ligada.
+- **Preserva a edição manual:** os cortes são os do Clean up, então legendas, textos, mídias e áudio presos ao vídeo andam juntos
+  (`CutFollowing`); nada de música, efeitos, estilos, transições ou cortes que o criador não escolheu.
+- **Contraste:** só `ink` e `ink2` sobre o fundo da folha (`cueSheetChrome`) e o botão primário do Design System; nenhum token novo.
+- **Testes:** `QuickEditAutoEditTests` (um passo de desfazer, Cancel no meio das legendas, cada etapa desligada sozinha e os zooms do criador
+  ficando, vídeo com legendas, Before/After, reabrir), `AutoEditZoomPickerTests`, `QuickEditToolbarTests`; `EditorTaskUITests.testAutoEdit…`
+  (na edição de demonstração: legendas ficam, quatro pausas saem, Before/After, Turn off, Undo). No aparelho: **não validado** (o Simulator não
+  ouve a fala; a demonstração já traz as pausas achadas).

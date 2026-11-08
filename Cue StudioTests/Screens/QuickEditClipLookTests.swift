@@ -58,7 +58,7 @@ struct QuickEditClipLookTests {
         pick(viewModel, clip: 1)
         viewModel.perform(.open(.adjust))
         #expect(viewModel.look.lookClip?.id == viewModel.edit.timeline.segments[1].id)
-        #expect(viewModel.panelSubtitle(.adjust) == "Clip 2 of 3 · the rest stays as it is")
+        #expect(viewModel.panelSubtitle(.adjust) == "Clip 2 of 3 · only this clip")
         viewModel.look.setAdjustment(.exposure, 40)
         #expect(viewModel.edit.exposure == 0)
         #expect(viewModel.edit.timeline.segments[1].look?.exposure == 40)
@@ -323,8 +323,8 @@ struct QuickEditClipLookTests {
             "split", "speed", "volume", "mute", "zoom",
             "adjust", "skin", "filters", "background", "clipCrop", "mirror", "stabilize", "blurArea", "copyLook", "pasteLook",
             "transition", "clipAnimation", "duplicate", "freeze", "reverse", "replace", "reorder", "extractAudio", "voiceEffects", "resetClip",
-            "text", "addMedia", "audio", "smart",
-            "editByText", "pauses", "voice", "captions", "format", "templates", "brandKit", "cover", "delete",
+            "text", "addMedia", "audio",
+            "pauses", "autoEdit", "editByText", "voice", "captions", "format", "templates", "brandKit", "cover", "delete",
         ])
     }
 }

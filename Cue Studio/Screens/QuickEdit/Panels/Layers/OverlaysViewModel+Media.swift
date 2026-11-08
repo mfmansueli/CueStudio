@@ -82,10 +82,22 @@ extension OverlaysViewModel {
         sayUndoable(imported.kind == .photo ? String(localized: "Photo added at \(place)") : String(localized: "Video added at \(place)"))
     }
 
+    /// Where the video just added has its sound changed later: Volume on its bar, or Sound on a split screen support's (owner,
+    /// canvas 2 bug 12: the hint points at the button that is there).
+    func soundChoiceHint(for id: UUID) -> String {
+        edit.media.first { $0.id == id }?.layout == .split
+            ? String(localized: "You can change it later in Sound, on the support’s bar.")
+            : String(localized: "You can change it later in Volume, on the media’s bar.")
+    }
+
     /// Answers "keep its sound?" for a video just added: kept at full volume, or muted.
     func chooseSound(for id: UUID, keeps: Bool) {
         if soundChoiceMediaID == id { soundChoiceMediaID = nil }
-        if keeps { setMediaSoundVolume(id, 1) }
+        guard keeps else { return }
+        updateMedia(id) {
+            $0.audioVolume = 1
+            $0.keptSoundWhenAdded = true
+        }
     }
 
     /// A video's own sound: 0 mutes it.
@@ -94,8 +106,8 @@ extension OverlaysViewModel {
         updateMedia(id) { $0.audioVolume = clamped > 0.001 ? clamped : nil }
     }
 
-    func updateMedia(_ id: UUID, _ update: (inout MediaOverlay) -> Void) {
-        change { snapshot in
+    func updateMedia(_ id: UUID, key: String? = nil, _ update: (inout MediaOverlay) -> Void) {
+        change(key: key) { snapshot in
             guard let index = snapshot.media.firstIndex(where: { $0.id == id }) else { return }
             update(&snapshot.media[index])
         }
@@ -153,6 +165,25 @@ extension OverlaysViewModel {
         }
         selection = .media(copy.id)
         sayUndoable(String(localized: "Media duplicated"))
+    }
+
+    /// Shows the photo or video Behind you (the creator cut out over it, `MediaLayout.behind`), or over the video again (full
+    /// screen), as one undo step; everything else set on it stays. One at a time behind the creator: another one showing then
+    /// keeps its place, and the toast says so.
+    func setMediaBehind(_ id: UUID, _ behind: Bool) {
+        guard let media = edit.media.first(where: { $0.id == id }), (media.layout == .behind) != behind else { return }
+        if behind, let span = mediaBars.first(where: { $0.id == id })?.span {
+            let others = edit.media.filter { $0.id != id && $0.layout == .behind }.compactMap { other in mediaBars.first { $0.id == other.id }?.span }
+            guard !others.contains(where: { $0.overlaps(span) }) else {
+                toast.show(String(localized: "Something else is behind you then · one at a time"), kind: .problem)
+                return
+            }
+        }
+        changeEdit { edit in
+            guard let index = edit.media.firstIndex(where: { $0.id == id }) else { return }
+            edit.media[index].layout = behind ? .behind : .fullFrame
+        }
+        sayUndoable(behind ? String(localized: "Behind you · you're cut out over it") : String(localized: "Over your video again"))
     }
 
     /// Takes the photo or video out (Undo brings it back). A support leaves its space: the main video has the whole frame there.

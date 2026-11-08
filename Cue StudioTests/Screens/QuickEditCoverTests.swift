@@ -42,6 +42,30 @@ struct QuickEditCoverTests {
         #expect(viewModel.edit.cover == nil)
     }
 
+    /// R10: the frame strip is the cover's own; picking frames there never moves the editor's playhead, after Done or Cancel.
+    @Test func pickingCoverFramesLeavesTheEditorsPlayheadWhereItWas() async throws {
+        let (viewModel, player, _) = await makeViewModel()
+        player.seek(to: 21)
+        viewModel.cover.openCoverStudio()
+        let studio = try #require(viewModel.cover.coverStudio)
+        studio.beginGesture()
+        for time in stride(from: 2.0, through: 40, by: 6) { studio.useFrame(atEdited: time) }
+        studio.endGesture()
+        studio.stepFrame(by: 1, frameRate: 30)
+        #expect(player.currentTime == 21)
+        viewModel.cover.finishCoverStudio(studio)
+        #expect(viewModel.edit.cover?.source.frame?.time ?? 0 > 38)
+        #expect(player.currentTime == 21)
+        #expect(!player.isPlaying)
+
+        viewModel.cover.openCoverStudio()
+        let again = try #require(viewModel.cover.coverStudio)
+        again.step = .image
+        again.useFrame(atEdited: 5)
+        viewModel.cover.cancelCoverStudio(again)
+        #expect(player.currentTime == 21)
+    }
+
     @Test func doneIsOneUndoStepAndCancelKeepsTheCover() async throws {
         let (viewModel, _, _) = await makeViewModel()
         viewModel.cover.openCoverStudio()

@@ -4,12 +4,13 @@
 //
 
 import CoreGraphics
+import CoreImage
 import Foundation
 
 /// How the compositor frames one recording's frame (`CueVideoCompositor`): where it lands on the take's frame (`frame`:
 /// crop, scale, Follow face, Stabilize, background), Fill or Fit, its look (the clip's own over the take's), the name of the
 /// moment for the person masks kept, the moment for Skin Smoothing, and the moment of the recording it shows (where Follow
-/// face has the crop and Stabilize its correction). `FramePipeline.framed` draws it.
+/// face has the crop and Stabilize its correction), and the photo or video shown Behind you then. `FramePipeline.framed` draws it.
 nonisolated struct Framing {
     let frame: SourceFrame
     let cropFit: CropFit
@@ -25,13 +26,17 @@ nonisolated struct Framing {
     var area: (size: CGSize, framing: AreaFraming)?
     /// The Blur areas on this frame of the recording (`BlurResolver`), hidden before anything else moves the picture.
     var blurs: [BlurShown] = []
+    /// A photo or video shown Behind you at this moment (upright, its corner at the origin): it fills the frame behind the cut-out
+    /// creator, in place of the recording's own background effect.
+    var backdrop: CIImage?
 
     init(
         frame: SourceFrame, cropFit: CropFit, look: LookSettings, key: String, moment: SmoothingMoment, sourceTime: TimeInterval,
-        lookTime: TimeInterval? = nil, area: (size: CGSize, framing: AreaFraming)? = nil, blurs: [BlurShown] = []
+        lookTime: TimeInterval? = nil, area: (size: CGSize, framing: AreaFraming)? = nil, blurs: [BlurShown] = [], backdrop: CIImage? = nil
     ) {
         self.area = area
         self.blurs = blurs
+        self.backdrop = backdrop
         self.frame = frame
         self.cropFit = cropFit
         self.look = look

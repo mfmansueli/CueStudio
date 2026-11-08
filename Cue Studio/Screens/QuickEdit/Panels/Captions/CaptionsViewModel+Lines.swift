@@ -49,11 +49,14 @@ extension CaptionsViewModel {
                     let outcome: CaptionOutcome
                     if let cached = transcript(of: recording.source), canReuse(cached, for: recording.language, among: isAuto ? recording.candidates : []) {
                         // Lining the words up with the script (spelling, languages) is the same work
-                        // `TakeEditService` does after listening: off the main actor, like there.
+                        // `TakeEditService` does after listening: off the main actor, like there. My words' capitals too.
                         let words = cached.words
                         let script = recording.script
                         let language = CueLanguage.matching(languageCode: cached.languageCode)
-                        let lines = await Task.detached { CaptionBuilder.captions(heard: words, script: script, language: language) }.value
+                        let myWords = myWordsStore.words.words
+                        let lines = await Task.detached {
+                            CaptionBuilder.captions(heard: words, script: script, language: language, myWords: myWords)
+                        }.value
                         try Task.checkCancellation()
                         outcome = .captions(lines, transcript: cached)
                     } else {
@@ -96,9 +99,7 @@ extension CaptionsViewModel {
         )
         var result = [take]
         for source in edit.sources where edit.timeline.segments.contains(where: { $0.sourceID == source.id }) {
-            let script = source.scriptReference ?? source.takeID
-                .flatMap { id in takes.takes.first { $0.id == id } }
-                .flatMap { $0.captionScript(current: library.script(id: $0.scriptID)) }
+            let script = source.script(takes: takes, library: library)
             let language = edit.captionLanguage.map(SpeechLanguageRequest.language) ?? speechLanguageFor(script)
             result.append(CaptionRecording(
                 source: source.id, url: EditMediaFiles.url(for: source.fileName), script: script?.text ?? "", language: language,
@@ -259,10 +260,12 @@ extension CaptionsViewModel {
     }
 
     /// Reset: the style the captions are in, whole (its look, motion, size and place), one undo step; how they are cut and the
-    /// words marked for emphasis stay.
+    /// words marked for emphasis stay. The toast says what came back, with Undo, so Reset's reach is never a guess (owner,
+    /// canvas 2 F2).
     func resetCaptionTheme() {
         guard let current = edit.captionCollection else { return }
         let aspect = edit.aspect
+        let was = (edit.captionCollection, edit.captionPosition, edit.captionAnimation)
         change { snapshot in
             let before = snapshot.captionCollection
             let next = current.restyled(current.theme, full: true)
@@ -271,10 +274,13 @@ extension CaptionsViewModel {
             snapshot.captionPosition = .bottom
             Self.refit(&snapshot, from: before, aspect: aspect)
         }
+        guard (edit.captionCollection, edit.captionPosition, edit.captionAnimation) != was else { return }
+        toast.show(String(localized: "Back to the whole \(current.theme.label) style: look, size and position"), action: undoAction)
     }
 
+    /// The margins of the video's safe zone guide (`TakeEdit.safeGuide`) on its shape.
     var captionSafeMargins: SafeZoneMargins {
-        Self.captionSafeMargins(for: session.take, aspect: edit.aspect)
+        CaptionSafeArea.margins(for: session.take, aspect: edit.aspect, pick: edit.safeGuide)
     }
 
     static func captionSafeMargins(for take: Take, aspect: AspectRatio) -> SafeZoneMargins {
@@ -387,7 +393,10 @@ extension CaptionsViewModel {
 
     /// New words for a line: the times the voice gave are kept where the words still match.
     func setCaptionText(_ id: UUID, _ text: String) {
+        let before = edit.captions
         updateCaption(id, key: "captionText.\(id)") { CaptionRevision.retimed($0, text: text) }
+        // Typed words with no voice under them: said once, when the line starts asking for a look.
+        if let note = Self.timingCheckNote(newTimingChecks(since: before)) { toast.show(note) }
     }
 
     /// Moves a line's start or end by `seconds` of the edit, never past its neighbors, the other
@@ -416,6 +425,8 @@ extension CaptionsViewModel {
             case .end:
                 revised.end = source(max(min(ceiling, span.end + seconds), span.start + CaptionCue.minimumDuration))
             }
+            // Already at its limit: nothing changes, so no undo step.
+            guard abs(revised.start - cue.start) > 0.000_1 || abs(revised.end - cue.end) > 0.000_1 else { return cue }
             revised.isRevised = true
             // Words now outside the line's time fold into it; the line keeps its look and its words.
             return CaptionRevision.fitted(revised)
@@ -442,8 +453,30 @@ extension CaptionsViewModel {
         }
     }
 
+    /// A line dragged along the timeline let go (`original`: where it played before, edited seconds). Its words carry the
+    /// voice's times with it, so once it plays a tenth or more away from them it asks for a timing check ("Check timing" on its
+    /// card, in the drag's own undo step), and the toast says where to fix it. A line whose times were only estimated never
+    /// followed the voice: it says nothing.
+    func noteMovedOffTheVoice(line lineID: UUID, from original: TimeSpan) {
+        let cueID = captionCueID(forLine: lineID)
+        guard let now = editedSpan(ofCaption: lineID), abs(now.start - original.start) >= 0.1,
+              let cue = edit.captions.first(where: { $0.id == cueID }), !cue.needsTimingReview,
+              cue.words.contains(where: { !$0.isEstimated }) else { return }
+        updateCaption(cueID) { cue in
+            var moved = cue
+            moved.needsTimingReview = true
+            return moved
+        }
+        sayUndoable(String(localized: "Line moved · Check timing in Captions"))
+    }
+
     /// Splits a line before its word at `index`. Both parts were cut by hand: a caption format leaves them as they are.
     func splitCaption(_ id: UUID, beforeWord index: Int) {
+        let before = edit.captions
+        defer {
+            // A line without word times splits by length: both halves are a guess.
+            if let note = Self.timingCheckNote(newTimingChecks(since: before)) { sayUndoable(note) }
+        }
         change { snapshot in
             guard var lines = snapshot.captions, let position = lines.firstIndex(where: { $0.id == id }),
                   var (first, second) = CaptionRevision.split(lines[position], beforeWord: index) else { return }

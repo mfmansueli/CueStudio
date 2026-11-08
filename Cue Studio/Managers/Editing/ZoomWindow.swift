@@ -13,6 +13,8 @@ nonisolated struct ZoomWindow: Hashable, Sendable {
     let duration: TimeInterval
     /// The clip's zoom strength, 0 to 1.
     var amount: Double = 0.5
+    /// Punch in on cuts' (`EditSegment.punchesInOnCut`), not one the creator picked: it grows toward the face (`ZoomAnchor`).
+    var punchesInOnCut = false
 
     /// Times the frame's size at `time` (edited seconds).
     func scale(at time: TimeInterval) -> Double {

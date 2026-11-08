@@ -150,7 +150,9 @@ struct SelfieControlSheet: View {
                         .background(Palette.overlayFill, in: Circle())
                         .accessibilityLabel(Text(mode.label))
                     if followsVoice {
-                        VoiceWaveform(level: viewModel.voiceLevel, isListening: viewModel.isPlaying && viewModel.isVoiceActive, height: 24, barWidth: 4)
+                        VoiceLevelReader(viewModel: viewModel) { level in
+                            VoiceWaveform(level: level, isListening: viewModel.isPlaying && viewModel.isVoiceActive, height: 24, barWidth: 4)
+                        }
                     }
                 }
             }

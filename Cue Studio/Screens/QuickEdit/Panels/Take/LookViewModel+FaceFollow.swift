@@ -51,18 +51,39 @@ extension LookViewModel {
         changeEdit { $0.cropOffset = min(1, max(-1, offset)) }
     }
 
-    /// The line under Follow face: why it can't, how far the analysis is, or that no face was found.
+    /// The line under Follow face: why it can't, how far the analysis is, or what it can't promise in this video (nobody found, more
+    /// than one face, a face found in part of it only: `FaceFollowLimit`). None of these changes the framing; Follow face stays as the
+    /// creator set it.
     var faceFollowNote: String? {
         guard canFollowFace else {
-            return edit.cropFit == .fit
-                ? String(localized: "Follow face works with Fill")
-                : String(localized: "Pick 4:5, 1:1 or 16:9 to follow your face")
+            return edit.cropFit == .fit ? String(localized: "Follow face works with Fill") : Self.roomNote(recordingAspect: recordingAspect)
         }
         guard edit.faceFollow != nil else { return nil }
         if let pending = MotionAnalysisNote.text(for: motionAnalysisStatus, purpose: .face) { return pending }
-        if let analysis = takeMotionAnalysis, !analysis.subjects.contains(where: { !$0.faces.isEmpty || !$0.bodies.isEmpty }) {
-            return String(localized: "No face found in this video")
-        }
-        return nil
+        return playedFaceFollowLimit?.note
+    }
+
+    /// What Follow face can't promise over every recording the edit plays, the take's and each imported one's (a horizontal video with
+    /// two people in a montage says so: plan §19): more than one face anywhere first, then a face lost in part of the video (or in a
+    /// whole recording, when another has one), then nobody at all.
+    var playedFaceFollowLimit: FaceFollowLimit? {
+        let analyses = playedRecordingURLs.compactMap { MotionAnalysisStore.complete(forRecording: $0) }
+        let limits = analyses.map(FaceFollowLimit.of)
+        if limits.contains(.severalFaces) { return .severalFaces }
+        if limits.contains(.partlyFound) { return .partlyFound }
+        guard limits.contains(.noFace) else { return nil }
+        return limits.allSatisfy { $0 == .noFace } ? .noFace : .partlyFound
+    }
+
+    /// The formats that give a Fill crop room to follow a face in a recording of `recordingAspect` (width over height): every one but
+    /// the recording's own shape, which is the one picked when there is no room (bug 11: a 16:9 import was told to pick 16:9).
+    static func formatsWithRoom(recordingAspect: Double) -> [AspectRatio] {
+        AspectRatio.allCases.filter { abs($0.widthOverHeight - recordingAspect) > 0.01 }
+    }
+
+    /// "Pick 4:5, 1:1, or 16:9 to follow your face" from a 9:16 recording; "Pick 9:16, 4:5, or 1:1 …" from a 16:9 one.
+    static func roomNote(recordingAspect: Double) -> String {
+        let formats = formatsWithRoom(recordingAspect: recordingAspect).map(\.label).formatted(.list(type: .or))
+        return String(localized: "Pick \(formats) to follow your face")
     }
 }

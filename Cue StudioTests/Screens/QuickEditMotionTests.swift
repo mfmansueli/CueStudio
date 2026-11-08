@@ -61,6 +61,33 @@ struct QuickEditMotionTests {
         viewModel.cancel()
     }
 
+    /// Stabilize turned on and its panel closed before the shake is measured: the preview says so (the clip plays as filmed
+    /// until then), and stops saying it once the panel that shows it is open again.
+    @Test func aStabilizeStillMeasuringIsSaidOverThePreview() async {
+        var take = TestData.take(scriptID: nil, number: 1)
+        take.duration = 20
+        let takes = TakeLibraryService(repository: FakeTakeRepository(takes: [take]))
+        takes.load()
+        let library = ScriptLibraryService(repository: FakeScriptRepository(scripts: []))
+        library.load()
+        let motion = MotionAnalysisService(analyzer: FakeMotionAnalyzer(step: .seconds(5), holdsAfter: 0))
+        let viewModel = QuickEditViewModel(
+            take: takes.takes[0], takes: takes, library: library, editing: FakeTakeEditor(), drafts: FakeDraftStore(),
+            toast: ToastService(), player: FakeEditPlayback(), mediaImporter: FakeMediaImporter(), recorder: FakeVoiceRecorder(),
+            styles: FakeTextStyleStore(), motion: motion
+        )
+        defer { MotionAnalysisStore.remove(forRecording: viewModel.videoURL) }
+        await viewModel.prepare()
+        #expect(viewModel.motionPendingLabel == nil)
+        viewModel.selectedSegmentID = viewModel.edit.timeline.segments[0].id
+        viewModel.panel = .stabilize
+        viewModel.look.setStabilization(.standard)
+        #expect(viewModel.motionPendingLabel == nil)
+        viewModel.panel = nil
+        #expect(viewModel.motionPendingLabel?.hasPrefix("Measuring the shake") == true)
+        viewModel.cancel()
+    }
+
     // MARK: - Keyframes
 
     @Test func aKeyframeStartsWhereTheTextIsAndMovesItOverTime() async throws {

@@ -14,6 +14,8 @@ struct LibraryAssetTile: View {
     let status: LibraryFileReader.Status
     /// Its place in the pick order (1, 2…), nil when not picked.
     let order: Int?
+    /// Room beside the name for the ••• the library puts over the tile (`ItemMoreMenu`).
+    var reservesMenu = false
 
     @State private var picture: UIImage?
     @ScaledMetric(relativeTo: .caption) private var badgeSize: CGFloat = 22
@@ -65,14 +67,17 @@ struct LibraryAssetTile: View {
                 RoundedRectangle(cornerRadius: Metrics.fieldRadius, style: .continuous)
                     .strokeBorder(order == nil ? .clear : Palette.acc, lineWidth: 3)
             }
-            Text(asset.name)
-                .font(.system(.footnote, weight: .semibold))
-                .foregroundStyle(Palette.ink)
-                .lineLimit(1)
-            Label(asset.kind.label, systemImage: asset.kind.systemImage)
-                .font(.caption)
-                .foregroundStyle(Palette.ink2)
-                .lineLimit(1)
+            VStack(alignment: .leading, spacing: 4) {
+                Text(asset.name)
+                    .font(.system(.footnote, weight: .semibold))
+                    .foregroundStyle(Palette.ink)
+                    .lineLimit(1)
+                Label(asset.kind.label, systemImage: asset.kind.systemImage)
+                    .font(.caption)
+                    .foregroundStyle(Palette.ink2)
+                    .lineLimit(1)
+            }
+            .padding(.trailing, reservesMenu ? Metrics.hitTarget - 4 : 0)
         }
         .task(id: asset.fileName) {
             guard status == .ready else { return }

@@ -25,6 +25,11 @@ struct QuickEditView: View {
     let onClose: (EditorOutcome) -> Void
     /// The tool to open on once the take is ready (a notification's "Try it"); it opens, nothing runs.
     private let opening: EditorTool?
+    /// The free exports' line on Done's question, for the edit as it is (the review knows what exporting it costs).
+    private let exportNote: (TakeEdit) -> FreeExportLabels.Label?
+    /// The review the editor opened from: Done's "Export options" page shows and changes its export options (D11), the ones its Save and
+    /// Share use, and Aspect ratio says the file's real size from it. Nil where nothing exports from here.
+    private let review: TakeReviewViewModel?
 
     /// The height the editor has with no keyboard (see `measuresStableHeight`).
     @State private var stableHeight: CGFloat = 0
@@ -41,12 +46,15 @@ struct QuickEditView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.forcesLowPowerMode) private var forcesLowPowerMode
 
-    init(take: Take, services: AppServices, opening: EditorTool? = nil, onClose: @escaping (EditorOutcome) -> Void) {
+    init(
+        take: Take, services: AppServices, opening: EditorTool? = nil, exportNote: @escaping (TakeEdit) -> FreeExportLabels.Label? = { _ in nil },
+        review: TakeReviewViewModel? = nil, onClose: @escaping (EditorOutcome) -> Void
+    ) {
         let languages = services.languages
-        _viewModel = State(initialValue: QuickEditViewModel(
+        let model = QuickEditViewModel(
             take: take, takes: services.takes, library: services.library,
             editing: services.editing, drafts: services.drafts, toast: services.toast,
-            styles: TextStyleStore(defaults: services.defaults), mediaLibrary: services.mediaLibrary, brandKits: services.brandKits,
+            styles: TextStyleStore(defaults: services.defaults), myWords: services.myWords, mediaLibrary: services.mediaLibrary, brandKits: services.brandKits,
             fonts: services.fonts, fontPacks: services.fontPacks,
             writingLanguages: { (languages.scriptLanguage, languages.interfaceLanguage) },
             editorPreferences: EditorPreferencesStore(defaults: services.defaults), prompterLook: services.preferences.prompter,
@@ -54,9 +62,14 @@ struct QuickEditView: View {
             speechLanguage: { languages.captionRequest(for: $0) },
             likelySpokenLanguages: { languages.likelySpokenLanguages(for: $0) },
             languageConflict: { languages.languageConflict(for: $0) }
-        ))
+        )
+        // Aspect ratio says the file's real size by the review's rule (its quality, Pro, the recording's frame).
+        model.look.reducedExportSize = { [weak review] in review?.reducedOutputSize(for: $0) }
+        _viewModel = State(initialValue: model)
         self.services = services
         self.opening = opening
+        self.exportNote = exportNote
+        self.review = review
         self.onClose = onClose
     }
 
@@ -73,8 +86,7 @@ struct QuickEditView: View {
                     EditorTopBar(
                         viewModel: viewModel,
                         onBack: {
-                            viewModel.finish(.back)
-                            onClose(.back)
+                            if let left = viewModel.finish(.back) { onClose(left) }
                         },
                         onDone: { viewModel.askIfReadyToPost() }
                     )
@@ -90,21 +102,31 @@ struct QuickEditView: View {
         }
         .onChange(of: services.motion.completed) { viewModel.motionAnalysisDidChange() }
         .onChange(of: services.fontPacks.generation) { viewModel.fontPacksChanged() }
+        // Paused on a picked item that a Motion hides in its way in or out, the preview shows it whole (`PreviewMotionHold`).
+        .onChange(of: viewModel.overlays.previewHold, initial: true) { viewModel.overlays.holdPickedWhole() }
         .sheet(item: $viewModel.sheet) { sheet in
             switch sheet {
             case .music: AddMusicSheet(viewModel: viewModel)
-            case .soundEffects: AddMusicSheet(viewModel: viewModel, effectsOnly: true)
+            case .soundEffects: AddMusicSheet(viewModel: viewModel, opensOn: .effects)
             case .textToSpeech: TextToSpeechSheet(viewModel: viewModel)
             case .media: AddMediaSheet(viewModel: viewModel)
-            case .transcript: TranscriptEditSheet(viewModel: viewModel)
             case .findInCaptions: CaptionFindSheet(viewModel: viewModel)
+            case .myWords: MyWordsSheet(captions: viewModel.captions)
+            case .autoEdit:
+                if let session = viewModel.autoEdit { AutoEditSheet(viewModel: viewModel, session: session) }
             case .clipOrder: ClipOrderSheet(viewModel: viewModel, thumbnails: services.thumbnails)
             case .done:
                 EditorDoneSheet(
                     duration: DurationText.clock(viewModel.edit.editedDuration),
+                    exportNote: exportNote(viewModel.edit),
+                    fontNote: viewModel.fontsNotReady.map(EditorDoneFontNote.text),
+                    exportOptions: review.map { $0.outputSummary(for: viewModel.edit) },
+                    options: {
+                        if let review { ExportOptionsForm(review: review, edit: viewModel.edit) }
+                    },
                     onMeasure: { doneSheetHeight = $0 + 34 },
                     onAnswer: { outcome in
-                        onClose(viewModel.finish(outcome))
+                        if let left = viewModel.finish(outcome) { onClose(left) }
                     }
                 )
                 .presentationDetents([.height(doneSheetHeight)])
@@ -120,7 +142,7 @@ struct QuickEditView: View {
             }
         }
         .background {
-            // ✦ Smart › Brand: which parts of a kit go on, and a kit made or changed.
+            // Templates › Brand: which parts of a kit go on, and a kit made or changed.
             Color.clear.sheet(item: Bindable(viewModel.brand).kitToApply) { kit in
                 BrandKitApplySheet(viewModel: viewModel, kit: kit)
                     .environment(\.brandColors, viewModel.edit.brandKit?.colors ?? [])
@@ -128,7 +150,12 @@ struct QuickEditView: View {
             Color.clear.sheet(item: Bindable(viewModel.brand).kitBeingEdited) { kit in
                 BrandKitEditorSheet(viewModel: viewModel, kit: kit)
             }
+            // Templates: the one tried on, with what it changes and keeps.
+            Color.clear.sheet(isPresented: Binding(get: { viewModel.templateTrial != nil }, set: { if !$0 { viewModel.dropVideoTemplate() } })) {
+                if let trial = viewModel.templateTrial { TemplateTrialSheet(viewModel: viewModel, trial: trial) }
+            }
         }
+        .modifier(CaptionLineChoiceDialog(captions: viewModel.captions))
         .confirmationDialog(
             "This video has its own sound",
             isPresented: Binding(
@@ -140,8 +167,8 @@ struct QuickEditView: View {
         ) { id in
             Button("Keep its sound") { viewModel.overlays.chooseSound(for: id, keeps: true) }
             Button("Mute it") { viewModel.overlays.chooseSound(for: id, keeps: false) }
-        } message: { _ in
-            Text("You can change it later in Media › Advanced.")
+        } message: { id in
+            Text(viewModel.overlays.soundChoiceHint(for: id))
         }
         .confirmationDialog(
             "A Blur area may not cover what it hides",
@@ -167,6 +194,17 @@ struct QuickEditView: View {
         } message: {
             Text("New captions from your voice replace the lines you corrected or wrote.")
         }
+        .confirmationDialog(
+            "Delete all \(viewModel.edit.captions.count) caption lines?",
+            isPresented: Bindable(viewModel.captions).confirmsDeletingAll,
+            titleVisibility: .visible
+        ) {
+            Button("Delete all", role: .destructive) { viewModel.captions.deleteAllCaptions() }
+                .accessibilityIdentifier("edit.captionsDeleteAllConfirm")
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Undo brings them back.")
+        }
         .sheet(isPresented: Bindable(viewModel.captions).showsTranslation) {
             CaptionTranslationSheet(viewModel: viewModel)
         }
@@ -180,11 +218,20 @@ struct QuickEditView: View {
             )
         }
         .onChange(of: scenePhase) { _, phase in
-            if phase == .active { viewModel.becameActive() } else { viewModel.pauseAndKeepDraft() }
+            switch phase {
+            case .active: viewModel.becameActive()
+            case .inactive: viewModel.becameInactive()
+            default: viewModel.pauseAndKeepDraft()
+            }
         }
-        .onDisappear { viewModel.pauseAndKeepDraft() }
+        .onAppear { viewModel.leaveScreen = { onClose($0) } }
+        .onDisappear {
+            viewModel.pauseAndKeepDraft()
+            PreviewMotionHold.shared.set(nil)
+        }
         .animation(reduceMotion ? nil : .easeOut(duration: 0.22), value: viewModel.panel)
         .animation(reduceMotion ? nil : .easeInOut(duration: 0.28), value: viewModel.stylePanelIsExpanded)
+        .animation(reduceMotion ? nil : .easeInOut(duration: 0.28), value: viewModel.clips.cleanUpIsExpanded)
         .animation(reduceMotion ? nil : .easeInOut(duration: 0.25), value: viewModel.isFullScreen)
         // A track coming or going, or every track out or away: the video gives or takes back its room smoothly.
         .animation(reduceMotion ? nil : .smooth(duration: 0.3), value: viewModel.timelineLanes)
@@ -213,6 +260,8 @@ struct QuickEditView: View {
                 if let panel = viewModel.panel, case .sheet(let medium, let large) = layout.panelPresentation {
                     EditorPanelView(viewModel: viewModel, panel: panel)
                         .environment(\.editorHeightClass, layout.heightClass)
+                        // ⌄ in its header: the sheet steps aside for the timeline (canvas 2 R10 §7.3).
+                        .environment(\.editorPanelTuck, EditorPanelTuck { viewModel.tuckPanel() })
                         // Expanding the panel is the sheet's taller height, and dragging the sheet expands it.
                         .presentationDetents([.height(medium), .height(large)], selection: sheetDetentBinding(medium: medium, large: large))
                         .presentationBackgroundInteraction(.enabled(upThrough: .height(large)))
@@ -246,10 +295,11 @@ struct QuickEditView: View {
         EditorLayout(
             usableHeight: height,
             stableHeight: stableHeight > 0 ? stableHeight : nil,
-            panel: viewModel.openPanelSize,
-            panelFocusesLane: viewModel.panel?.focusedLane != nil,
+            // Tucked away, the panel gives the timeline and the toolbar's place back (`PanelTuckedBar`).
+            panel: viewModel.panelIsTucked ? nil : viewModel.openPanelSize,
+            panelFocusesLane: !viewModel.panelIsTucked && viewModel.panel?.focusedLane != nil,
             largeText: dynamicTypeSize >= .xxLarge,
-            panelIsExpanded: viewModel.stylePanelIsExpanded && viewModel.panel?.isExpandable == true,
+            panelIsExpanded: viewModel.panelIsExpanded,
             typesInHeaderField: viewModel.panel == .textStyle && viewModel.selectedText?.graphic == nil
                 && TextStylePanel.hidesControlsWhileTyping(dynamicTypeSize),
             timelineLanes: viewModel.timelineLanes, collapsesTimeline: !viewModel.tracks.isExpanded,
@@ -276,10 +326,20 @@ struct QuickEditView: View {
                     }
                 }
                 .overlay(alignment: .bottom) {
-                    // At the preview's foot, clear of the toasts at its top: a reverse or an import with Cancel, and Low Power Mode.
+                    // At the preview's foot, clear of the toasts at its top: a reverse or an import with Cancel, media no longer on
+                    // this iPhone, and Low Power Mode.
                     VStack(spacing: 8) {
                         if let work = viewModel.work {
                             EditorWorkPill(viewModel: viewModel, work: work)
+                        }
+                        if let motion = viewModel.motionPendingLabel {
+                            MotionPendingPill(label: motion)
+                                .transition(.opacity)
+                        }
+                        if viewModel.showsMissingMediaNotice {
+                            MissingMediaNotice(viewModel: viewModel)
+                                .padding(.horizontal, 16)
+                                .transition(reduceMotion ? .opacity : .opacity.combined(with: .move(edge: .bottom)))
                         }
                         if viewModel.showsLowPowerNotice {
                             LowPowerNoticeBanner(viewModel: viewModel)
@@ -291,6 +351,7 @@ struct QuickEditView: View {
                     .padding(.bottom, viewModel.swipesFullScreen ? 40 : 10)
                 }
                 .animation(reduceMotion ? .easeOut(duration: 0.15) : .easeOut(duration: 0.25), value: viewModel.showsLowPowerNotice)
+                .animation(reduceMotion ? .easeOut(duration: 0.15) : .easeOut(duration: 0.25), value: viewModel.showsMissingMediaNotice)
                 .task {
                     viewModel.lowPowerModeChanged(isLowPower)
                     for await _ in NotificationCenter.default.notifications(named: .NSProcessInfoPowerStateDidChange) {
@@ -311,9 +372,15 @@ struct QuickEditView: View {
                     }
                 }
             if layout.toolbar > 0 {
-                EditorToolbar(viewModel: viewModel, heightClass: layout.heightClass)
-                    .frame(height: layout.toolbar)
-                    .transition(.opacity)
+                if viewModel.panelIsTucked, let panel = viewModel.panel {
+                    PanelTuckedBar(viewModel: viewModel, panel: panel)
+                        .frame(height: layout.toolbar)
+                        .transition(.opacity)
+                } else {
+                    EditorToolbar(viewModel: viewModel, heightClass: layout.heightClass)
+                        .frame(height: layout.toolbar)
+                        .transition(.opacity)
+                }
             }
             if layout.panel > 0, let panel = viewModel.panel {
                 EditorPanelView(viewModel: viewModel, panel: panel)
@@ -400,7 +467,7 @@ struct QuickEditView: View {
         FullScreenSwipeGesture(
             isFullScreen: isFullScreen,
             isEnabled: viewModel.swipesFullScreen && viewModel.isFullScreen == isFullScreen,
-            yields: { viewModel.overlays.draggedOverlay != nil },
+            yields: { viewModel.overlays.draggedOverlay != nil || viewModel.overlays.lockedUnderFinger != nil },
             moved: { follow in
                 var transaction = Transaction()
                 transaction.disablesAnimations = true
@@ -457,10 +524,11 @@ struct QuickEditView: View {
     private func sheetPanelBinding(_ layout: EditorLayout) -> Binding<Bool> {
         Binding(
             get: {
-                guard viewModel.panel != nil, case .sheet = layout.panelPresentation else { return false }
+                guard viewModel.panel != nil, !viewModel.panelIsTucked, case .sheet = layout.panelPresentation else { return false }
                 return true
             },
-            set: { if !$0 { viewModel.panel = nil } }
+            // Stepping aside dismisses the sheet too: that isn't closing the panel.
+            set: { if !$0, !viewModel.panelIsTucked { viewModel.panel = nil } }
         )
     }
 }

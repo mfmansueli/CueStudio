@@ -4,7 +4,6 @@
 //
 
 import SwiftUI
-import UIKit
 
 /// This device as the remote of a teleprompter on another one: play, pause, speed and moving
 /// through the script, with what the teleprompter reports (script, progress, speed). Opens from a
@@ -32,10 +31,10 @@ struct RemoteControllerView: View {
         .background(Palette.bg.ignoresSafeArea())
         .task {
             // A remote on a stand must not go to sleep mid-take.
-            UIApplication.shared.isIdleTimerDisabled = true
+            ScreenAwake.shared.hold("remote")
         }
         .onDisappear {
-            UIApplication.shared.isIdleTimerDisabled = false
+            ScreenAwake.shared.release("remote")
         }
     }
 

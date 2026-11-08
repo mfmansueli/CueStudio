@@ -48,8 +48,10 @@ extension OverlaysViewModel {
     private func pickMedia(_ id: UUID) {
         Haptics.selection()
         let keepsPanel = panel == .media
+        let previous = selection
         selection = .media(id)
         if !keepsPanel { panel = nil }
+        sayIfLocked(.media(id), previous: previous)
     }
 
     // MARK: - Dragging

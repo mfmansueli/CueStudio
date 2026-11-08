@@ -54,7 +54,7 @@ nonisolated struct TextOverlay: Codable, Hashable, Identifiable, Sendable {
     /// What the creator changed by hand since, kept when a preset is applied to every text with
     /// "Keep my changes".
     var customized: Set<TextLookField> = []
-    /// A finished look drawn on its words (Text style › Animated: Gold metal, Type wave, Pop 3D, Neon, Editorial reveal, Elegant sheen); nil for none.
+    /// A finished look drawn on its words (Text style › Styles › Animated: Gold metal, Type wave, Pop 3D, Neon, Editorial reveal, Elegant sheen); nil for none.
     /// Never on a caption or a graphic.
     var effect: TextEffect?
     /// How far it is turned around its center, in radians, clockwise on the screen (two fingers in the preview).

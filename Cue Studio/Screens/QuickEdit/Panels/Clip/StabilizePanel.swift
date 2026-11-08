@@ -6,7 +6,7 @@
 import SwiftUI
 
 /// Stabilize (this clip): Off, Gentle, Standard or Strong, how much the clip is zoomed in to hide the edges (or how far the
-/// analysis is), and "Use on every clip".
+/// analysis is), and "Use on all 3 clips" (the count says what changes before the tap; owner, canvas 2 R2).
 struct StabilizePanel: View {
     @Bindable var viewModel: QuickEditViewModel
 
@@ -31,7 +31,8 @@ struct StabilizePanel: View {
             }
             if clip?.stabilization != nil, viewModel.edit.timeline.segments.count > 1 {
                 PanelButton(
-                    label: String(localized: "Use on every clip"), systemImage: "square.stack.3d.up", identifier: "edit.stabilize.everyClip",
+                    label: String(localized: "Use on all \(viewModel.edit.timeline.segments.count) clips"), systemImage: "square.stack.3d.up",
+                    identifier: "edit.stabilize.everyClip",
                     action: viewModel.look.useStabilizationOnEveryClip
                 )
             }

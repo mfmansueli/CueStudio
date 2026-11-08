@@ -22,12 +22,17 @@ nonisolated struct RenderPlan: Equatable, Sendable {
     /// The transitions and each piece's zoom, measured on the edit as made and placed where the drawing plays them.
     let transitions: [TransitionWindow]
     let zooms: [ZoomWindow?]
+    /// The phrase zooms, measured on the edit as made and placed where the drawing plays them.
+    let phraseZooms: [PhraseZoomWindow]
     /// Each piece's Animation, measured as its zoom.
     let animations: [ClipAnimationWindow?]
     let options: EditedComposition.Options
 
-    init(_ made: TakeEdit, options: EditedComposition.Options) {
+    init(_ edit: TakeEdit, options: EditedComposition.Options) {
         let grows = options.reachesWholeRecording
+        // Punch in on cuts on the clips (`CutZoom`), so its zooms are drawn, measured and keyed like the creator's own.
+        var made = edit
+        if edit.cutZoom != nil { made.timeline = edit.punchedTimeline }
         var drawn = made
         if grows { drawn.timeline = made.timeline.reachable }
         self.drawn = drawn
@@ -36,6 +41,7 @@ nonisolated struct RenderPlan: Equatable, Sendable {
         window = grows ? TimeSpan(start: leadIn, end: leadIn + made.editedDuration) : nil
         transitions = EditedComposition.transitionWindows(of: made.timeline, reachesWholeRecording: grows)
         zooms = EditedComposition.zoomWindows(of: made.timeline, reachesWholeRecording: grows)
+        phraseZooms = PhraseZoomWindow.windows(of: made.phraseZooms, in: made.timeline, leadIn: leadIn)
         animations = EditedComposition.animationWindows(of: made.timeline, reachesWholeRecording: grows)
         self.options = options
     }
@@ -65,6 +71,7 @@ nonisolated struct RenderPlan: Equatable, Sendable {
         let curves: [SpeedCurve?]
         let transitions: [TransitionWindow]
         let zooms: [ZoomWindow?]
+        let phraseZooms: [PhraseZoomWindow]
         let animations: [ClipAnimationWindow?]
         /// Each clip's sound, zoom, steadiness and shape (its volume, mute, pitch, fades, zoom and strength, Stabilize, Rotate,
         /// Mirror and Crop).
@@ -104,6 +111,7 @@ nonisolated struct RenderPlan: Equatable, Sendable {
             self.curves = curves
             transitions = plan.transitions
             zooms = plan.zooms
+            phraseZooms = plan.phraseZooms
             animations = plan.animations
             pieceSettings = drawn.segments.map { segment in
                 let crop = segment.orientation.crop

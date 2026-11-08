@@ -35,6 +35,9 @@ nonisolated struct EditLook: Codable, Hashable, Sendable {
     /// Added with Follow face: `followsFaceKnown` is set in every step that has it (nil in steps saved before, which leave it).
     var faceFollow: FaceFollow?
     var followsFaceKnown: Bool?
+    /// Added with the safe zone guide: `safeGuideKnown` is set in every step that has it (nil in steps saved before, which leave it).
+    var safeGuide: SafeGuideChoice?
+    var safeGuideKnown: Bool?
     /// Added with Beats: nil in steps saved before, which leave it as it is.
     var snapsToBeats: Bool?
     var volume: Double
@@ -48,6 +51,23 @@ nonisolated struct EditLook: Codable, Hashable, Sendable {
     var evensOutVoices: Bool?
     var showsCaptions: Bool
     var pauseThreshold: TimeInterval
+    /// Added with "Gap left": nil in steps saved before, which leave it as it is.
+    var pauseGap: PauseGap?
+    /// Added with a kit's Editing: `newMusicKnown` nil in steps saved before, which leave it as it is.
+    var newMusic: MusicDefaults?
+    var newMusicKnown: Bool?
+    /// Added with Suggest emphasis: nil in steps saved before, which leave it as it is.
+    var suggestsEmphasis: Bool?
+    /// Added with phrase zooms: nil in steps saved before, which leave them as they are.
+    var phraseZooms: [PhraseZoom]?
+    /// Added with Auto edit: what its last run did (nil is a value), and whether this step knew it (steps saved before leave it).
+    var autoEdit: AutoEditRecord?
+    var autoEditKnown: Bool?
+    /// Added with Punch in on cuts and kits' Zoom: `cutZoomKnown` is set in every step that has them (nil in steps saved before,
+    /// which leave them).
+    var cutZoom: CutZoom?
+    var phraseZoomStrength: PhraseZoom.Strength?
+    var cutZoomKnown: Bool?
 
     init(_ edit: TakeEdit) {
         exposure = edit.exposure
@@ -69,6 +89,8 @@ nonisolated struct EditLook: Codable, Hashable, Sendable {
         cropFit = edit.cropFit
         faceFollow = edit.faceFollow
         followsFaceKnown = true
+        safeGuide = edit.safeGuide
+        safeGuideKnown = true
         snapsToBeats = edit.snapsToBeats
         volume = edit.volume
         audioVersion = edit.audioVersion
@@ -80,6 +102,16 @@ nonisolated struct EditLook: Codable, Hashable, Sendable {
         evensOutVoices = edit.evensOutVoices
         showsCaptions = edit.showsCaptions
         pauseThreshold = edit.pauseThreshold
+        pauseGap = edit.pauseGap
+        newMusic = edit.newMusic
+        newMusicKnown = true
+        suggestsEmphasis = edit.suggestsEmphasis
+        phraseZooms = edit.phraseZooms
+        autoEdit = edit.autoEdit
+        autoEditKnown = true
+        cutZoom = edit.cutZoom
+        phraseZoomStrength = edit.phraseZoomStrength
+        cutZoomKnown = true
     }
 
     /// Puts these settings on `edit`.
@@ -108,6 +140,7 @@ nonisolated struct EditLook: Codable, Hashable, Sendable {
         edit.cropOffset = cropOffset
         edit.cropFit = cropFit
         if followsFaceKnown == true { edit.faceFollow = faceFollow }
+        if safeGuideKnown == true { edit.safeGuide = safeGuide }
         if let snapsToBeats { edit.snapsToBeats = snapsToBeats }
         edit.volume = volume
         edit.audioVersion = audioVersion
@@ -119,5 +152,14 @@ nonisolated struct EditLook: Codable, Hashable, Sendable {
         if let evensOutVoices { edit.evensOutVoices = evensOutVoices }
         edit.showsCaptions = showsCaptions
         edit.pauseThreshold = pauseThreshold
+        if let pauseGap { edit.pauseGap = pauseGap }
+        if newMusicKnown == true { edit.newMusic = newMusic }
+        if let suggestsEmphasis { edit.suggestsEmphasis = suggestsEmphasis }
+        if let phraseZooms { edit.phraseZooms = phraseZooms }
+        if autoEditKnown == true { edit.autoEdit = autoEdit }
+        if cutZoomKnown == true {
+            edit.cutZoom = cutZoom
+            edit.phraseZoomStrength = phraseZoomStrength
+        }
     }
 }

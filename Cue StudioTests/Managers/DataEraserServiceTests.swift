@@ -46,6 +46,8 @@ struct DataEraserServiceTests {
         let brands = BrandStore(repository: InMemoryBrandRepository())
         _ = brands.save(BrandBrief(name: "Acme", product: "Soap"))
         defaults.defaults.set(Data("stars".utf8), forKey: DefaultsKey.skyMemory)
+        let myWords = MyWordsStore(defaults: defaults.defaults)
+        myWords.words = MyWordsList(["TikTok"])
         let eraser = DataEraserService(
             library: library, takes: takes, drafts: FakeDraftStore(), logbook: LogbookService(defaults: defaults.defaults), brands: brands,
             profile: profile, preferences: preferences, defaults: defaults.defaults, eraseLooseFiles: {}
@@ -57,6 +59,7 @@ struct DataEraserServiceTests {
         #expect(takes.takes.isEmpty)
         #expect(brands.brands.isEmpty)
         #expect(defaults.defaults.object(forKey: DefaultsKey.skyMemory) == nil, "the stars earlier versions kept")
+        #expect(myWords.words.isEmpty, "My words")
         #expect(profile.profile == CreatorProfile())
         #expect(profile.profile.excerpts.isEmpty && profile.profile.fingerprint == nil && profile.profile.approvedSamples.isEmpty)
         #expect(!profile.profile.style.oneIdea)

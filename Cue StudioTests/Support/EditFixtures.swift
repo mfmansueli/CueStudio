@@ -27,7 +27,21 @@ enum EditFixtures {
         edit.suggestions = [CleanUpSuggestion(kind: .pause, span: TimeSpan(start: 1, end: 2), confidence: 0.9)]
         edit.cleanUpAnalyzed = true
         edit.cleanUpAnalyzedSources = [source.id]
+        edit.pauseHearings = [RecordingPauseHearing(sourceID: source.id, hearing: .overBackgroundSound)]
         edit.pauseThreshold = 1.2
+        edit.pauseGap = .tight
+        edit.newMusic = MusicDefaults(volume: 0.25, duck: MusicDuck(depth: 18, pauses: .comesBack))
+        edit.suggestsEmphasis = true
+        edit.phraseZooms = [PhraseZoom(span: TimeSpan(start: 1, end: 2), strength: .strong)]
+        var autoEdit = AutoEditRecord(removedSuggestions: [UUID()], removedSeconds: 1.5, madeCaptions: true, zoomIDs: [UUID()])
+        autoEdit.ranSteps = [.speech, .captions, .zoom]
+        autoEdit.madePunchIn = true
+        autoEdit.punchedClips = 2
+        autoEdit.offSteps = [.zoom]
+        edit.autoEdit = autoEdit
+        edit.cutZoom = CutZoom(strength: .strong)
+        edit.phraseZoomStrength = .strong
+        edit.cleanUpHearing = CleanUpHearing(wordsLanguage: "en")
         edit.volume = 0.5
         edit.enhancesVoice = false
         edit.reducesNoise = true
@@ -59,6 +73,7 @@ enum EditFixtures {
         edit.cropOffset = 0.3
         edit.cropFit = .fit
         edit.faceFollow = FaceFollow()
+        edit.safeGuide = .platform(.shorts)
         edit.showsCaptions = true
         edit.captionCollection = CaptionSettings(theme: .pop)
         edit.captionStyle = .classic
@@ -92,6 +107,8 @@ enum EditFixtures {
         edit.textLook = TypePreset.cue.look(for: .title)
         edit.textPreset = .cue
         edit.cover = VideoCover(source: .frame(0))
+        edit.copiedLook = CopiedClipLook(of: edit.timeline.segments[0], in: edit)
+        edit.pasteLookChoice = PasteLookChoice(parts: [.filter], everyClip: true)
         return edit
     }
 }

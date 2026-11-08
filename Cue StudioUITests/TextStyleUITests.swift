@@ -30,10 +30,12 @@ final class TextStyleUITests: XCTestCase {
     }
 
     /// What scrolls under the open styling panel's fixed rows (a swipe on the field or the tabs scrolls
-    /// nothing): the panel's first scroll view (the preset cards and font chips scroll inside it).
+    /// nothing): the panel's tallest scroll view (the tabs' row, when it scrolls sideways, and the preset cards and font chips
+    /// are scroll views too).
     private func content(_ app: XCUIApplication) -> XCUIElement {
-        app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'edit.panel.' AND identifier ENDSWITH 'Style'"))
-            .firstMatch.scrollViews.firstMatch
+        let panel = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'edit.panel.' AND identifier ENDSWITH 'Style'"))
+            .firstMatch
+        return panel.scrollViews.allElementsBoundByIndex.max { $0.frame.height < $1.frame.height } ?? panel.scrollViews.firstMatch
     }
 
     /// The SE shows the styling panels as a sheet over a preview that doesn't move.
@@ -42,9 +44,8 @@ final class TextStyleUITests: XCTestCase {
     }
 
     /// Scrolls the panel's content up until `element` can be tapped where it shows: above the keyboard when it is up, above the
-    /// screen's bottom otherwise. Without the keyboard, a slow swipe on the content (a quick one, or one down the panel's margin,
-    /// didn't move it). With it, the scroll view runs under the keys (it insets its content instead), so the drag stays in the
-    /// part that shows.
+    /// screen's bottom otherwise. The scroll view runs under the keys (it insets its content instead) and past the screen's
+    /// bottom, so the drag stays in the part that shows.
     private func scrollPanel(_ app: XCUIApplication, to element: XCUIElement, file: StaticString = #filePath, line: UInt = #line) {
         let keyboard = app.keyboards.firstMatch
         let limit = keyboard.exists ? keyboard.frame.minY : app.windows.firstMatch.frame.maxY
@@ -52,11 +53,8 @@ final class TextStyleUITests: XCTestCase {
             let scroll = content(app)
             // Above what shows (scrolled past it): back down.
             let isAbove = element.exists && element.frame.maxY < scroll.frame.minY
-            guard keyboard.exists else {
-                if isAbove { scroll.swipeDown(velocity: .slow) } else { scroll.swipeUp(velocity: .slow) }
-                continue
-            }
-            // The keyboard's element starts under its suggestions bar (a drag there picks a word): stop above the bar.
+            // A drag inside the part that shows: above the keyboard's suggestions bar (a drag there picks a word), or above the
+            // home indicator (XCTest's swipe on the scroll view, whose frame runs past the screen, didn't move it).
             let top = scroll.frame.minY, bottom = min(scroll.frame.maxY, limit - 48)
             let origin = scroll.coordinate(withNormalizedOffset: .zero)
             let start = origin.withOffset(CGVector(dx: scroll.frame.width / 2, dy: bottom - top - 4))
@@ -97,22 +95,19 @@ final class TextStyleUITests: XCTestCase {
         XCTAssertTrue(waitFor { panel.frame.height > panelHeight + 40 }, "\(panel.frame.height) vs \(panelHeight)")
         XCTAssertEqual(expand.label, "Collapse panel")
         if !isSheet(app) {
-            XCTAssertLessThan(preview.frame.height, previewHeight - 40)
+            // The texts' track above the panel already took the video toward its smallest (canvas 2 R10 §7.3): expanded, the
+            // video is at its smallest and the track steps aside.
+            XCTAssertLessThan(preview.frame.height, previewHeight - 10)
+            let timeline = app.descendants(matching: .any)["edit.timeline"]
+            XCTAssertTrue(waitFor { !timeline.exists || timeline.frame.height < 30 }, "The track stayed over the expanded panel")
         }
         // Every tab in view and a full target; the panel's controls stop above the Home Indicator.
-        for tab in ["animated", "styles", "custom"] {
+        for tab in ["styles", "font", "color", "motion"] {
             let button = app.buttons["edit.panel.tab.\(tab)"]
             XCTAssertTrue(button.isHittable, tab)
             assertFullTarget(button, tab)
         }
-        // Custom's sections too.
-        EditorApp.showTextTab(app, "font")
-        for section in ["font", "color", "motion"] {
-            let button = app.buttons["edit.panel.tab.\(section)"]
-            XCTAssertTrue(button.isHittable, section)
-            assertFullTarget(button, section)
-        }
-        // The text's colors are in Custom › Color.
+        // The text's colors are in Color.
         EditorApp.showTextTab(app, "color")
         let swatch = app.buttons["edit.textColor.white"]
         scrollPanel(app, to: swatch)
@@ -160,26 +155,97 @@ final class TextStyleUITests: XCTestCase {
         XCTAssertEqual(size.value as? String, value)
     }
 
+    /// The scope is in the header, in the subtitle's place, beside the title (canvas 2 R2): "This title | All 2 texts". Motion is
+    /// the picked text's: the header says so, and back on a look's tab the scope is where it was left.
     func testTheScopeIsForTheLookAndMotionIsThisTextsAlone() {
         let app = EditorApp.open(demo: true)
         _ = openTextStyle(app)
-        let subtitle = app.staticTexts["edit.panel.subtitle"]
-        XCTAssertEqual(subtitle.label, "Only this title changes")
-        XCTAssertFalse(app.staticTexts["edit.style.scopeNote"].exists)
-        app.buttons["edit.style.scope.allTexts"].tap()
-        XCTAssertEqual(subtitle.label, "All 2 texts change together")
-        XCTAssertTrue(app.staticTexts["edit.style.scopeNote"].exists(within: 3))
+        let all = app.buttons["edit.style.scope.allTexts"]
+        XCTAssertEqual(all.label, "All 2 texts")
+        let panel = app.descendants(matching: .any)["edit.panel.textStyle"]
+        XCTAssertLessThan(all.frame.minY - panel.frame.minY, 110, "The scope isn't in the header")
+        // Its touch area reaches a few points past the drawn choice; the choice itself sits above the words.
+        XCTAssertLessThan(all.frame.midY, app.textFields["edit.textField"].frame.minY, "The scope isn't above the words")
+        all.tap()
+        XCTAssertTrue(all.isSelected)
+        EditorApp.capture(app, "text-scope-in-header")
         // Motion is the picked text's: no scope, no captions action, and the header says so.
         EditorApp.showTextTab(app, "motion")
-        XCTAssertTrue(waitFor { subtitle.label == "Motion and timing change only this text" }, subtitle.label)
-        XCTAssertFalse(app.buttons["edit.style.scope.allTexts"].exists)
+        let subtitle = app.staticTexts["edit.panel.subtitle"]
+        XCTAssertTrue(waitFor { subtitle.exists && subtitle.label == "Only this text moves" })
+        XCTAssertFalse(all.exists)
         XCTAssertFalse(app.buttons["edit.style.copyToCaptions"].exists)
         XCTAssertTrue(app.buttons["edit.keyframe.toggle"].exists)
         // Back on a look's tab, the scope is where it was left.
         EditorApp.showTextTab(app, "color")
-        XCTAssertTrue(app.buttons["edit.style.scope.allTexts"].exists(within: 3))
-        XCTAssertTrue(app.buttons["edit.style.scope.allTexts"].isSelected)
-        XCTAssertEqual(subtitle.label, "All 2 texts change together")
+        XCTAssertTrue(all.exists(within: 3))
+        XCTAssertTrue(all.isSelected)
+    }
+
+    /// Canvas 2 R10 §7.3: above Text style the ruler and the texts' track stay, so another text is picked there without ✓; on
+    /// the SE, ⌄ puts the sheet aside for the whole timeline and the bar in the toolbar's place brings it back as it was.
+    func testTheTextsTrackStaysAboveTextStyleAndPicksAnotherText() {
+        let app = EditorApp.open(demo: true)
+        let panel = openTextStyle(app)
+        let field = app.textFields["edit.textField"]
+        XCTAssertTrue(field.exists(within: 3))
+        let title = field.value as? String ?? ""
+        let timeline = app.descendants(matching: .any)["edit.timeline"]
+        if isSheet(app) {
+            let tuck = app.buttons["edit.panel.tuck"]
+            XCTAssertTrue(tuck.exists(within: 3))
+            tuck.tap()
+            let back = app.buttons["edit.panel.untuck"]
+            XCTAssertTrue(back.exists(within: 5))
+            XCTAssertTrue(timeline.exists && timeline.frame.height > 80, "The whole timeline isn't back")
+            EditorApp.capture(app, "text-style-tucked")
+            back.tap()
+            XCTAssertTrue(field.exists(within: 5))
+            XCTAssertEqual(field.value as? String, title)
+            return
+        }
+        XCTAssertTrue(timeline.exists(within: 3))
+        XCTAssertGreaterThanOrEqual(timeline.frame.height, 60, "The ruler and the texts' track aren't above the panel")
+        XCTAssertLessThanOrEqual(timeline.frame.maxY, panel.frame.minY + 1)
+        XCTAssertGreaterThanOrEqual(panel.frame.height, 329, "The panel lost its row of styles")
+        EditorApp.capture(app, "text-style-with-its-track")
+        // Toward the subtitle (10.1–12.4 s): the timeline scrolls under the open panel, then a tap on it there.
+        EditorApp.scrub(app, points: 300)
+        EditorApp.scrub(app, points: 120)
+        let time = (app.staticTexts["edit.timeLabel"].value as? String ?? "").components(separatedBy: " / ").first ?? ""
+        let parts = time.split(separator: ":").compactMap { Double($0) }
+        XCTAssertEqual(parts.count, 2, "Can't read the playhead: \(time)")
+        let now = (parts.first ?? 0) * 60 + (parts.last ?? 0)
+        let x = timeline.frame.width / 2 + (11.25 - now) * 44
+        XCTAssertTrue((60...(timeline.frame.width - 20)).contains(x), "The subtitle isn't on screen at \(now) s")
+        timeline.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(dx: x, dy: 42)).tap()
+        XCTAssertTrue(panel.exists(within: 3), "Picking another text closed the panel")
+        XCTAssertTrue(waitFor { (field.value as? String ?? title) != title }, "The panel didn't move to the other text")
+    }
+
+    /// Four tabs and nothing under them but the tab's own (canvas 2 R3 and F3): Animated is a filter of Styles, its settings
+    /// right under its cards, and a card's ••• sits clear of the sample.
+    func testFourTabsAndAnimatedIsAFilterOfStyles() {
+        let app = EditorApp.open(demo: true)
+        _ = openTextStyle(app)
+        for id in ["styles", "font", "color", "motion"] {
+            XCTAssertTrue(app.buttons["edit.panel.tab.\(id)"].exists, id)
+        }
+        XCTAssertFalse(app.buttons["edit.panel.tab.custom"].exists)
+        XCTAssertFalse(app.buttons["edit.panel.tab.animated"].exists)
+        EditorApp.showTextTab(app, "animated")
+        let neon = app.buttons["edit.style.neon"]
+        XCTAssertTrue(neon.exists(within: 5), "No animated style under the filter")
+        XCTAssertFalse(app.buttons["edit.style.orbit"].exists, "The Animated filter shows a still style")
+        neon.tap()
+        let more = app.buttons["edit.style.neon.more"]
+        XCTAssertTrue(more.exists)
+        XCTAssertGreaterThan(more.frame.midY, neon.frame.minY + 74 - 30, "••• isn't in the picture's bottom corner")
+        EditorApp.capture(app, "text-animated-filter")
+        // The font is a tab of its own: no tab inside a tab.
+        EditorApp.showTextTab(app, "font")
+        XCTAssertTrue(app.descendants(matching: .any)["edit.textSize"].exists(within: 3))
+        XCTAssertFalse(app.buttons["edit.textFilter.animated"].exists)
     }
 
     /// Typing shows the words and the tabs over the keyboard, so the video keeps the room the controls would take; a tab puts
@@ -196,7 +262,7 @@ final class TextStyleUITests: XCTestCase {
         keyboard.waitUntilStill()
         app.buttons["edit.panel.apply"].waitUntilStill()
         let top = keyboard.frame.minY
-        for id in ["edit.panel.apply", "edit.panel.tab.styles", "edit.panel.tab.custom"] {
+        for id in ["edit.panel.apply", "edit.panel.tab.styles", "edit.panel.tab.motion"] {
             XCTAssertLessThanOrEqual(app.buttons[id].frame.maxY, top + 1, id)
         }
         XCTAssertFalse(app.buttons["edit.style.copyToCaptions"].exists)

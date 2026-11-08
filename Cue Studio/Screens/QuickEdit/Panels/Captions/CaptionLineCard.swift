@@ -27,7 +27,12 @@ struct CaptionLineCard: View {
     /// Where the cursor is in the field: Line break goes there.
     @State private var cursor: TextSelection?
 
-    private var showsMore: Bool { moreOverride ?? (line.needsTimingReview || viewModel.captions.expandedLineID == cueID) }
+    /// Open by itself on a line whose timing needs a look or with a suggested word to review.
+    private var showsMore: Bool {
+        moreOverride ?? (line.needsTimingReview || viewModel.captions.expandedLineID == cueID || hasSuggestion)
+    }
+
+    private var hasSuggestion: Bool { !line.suggestedEmphasis.isDisjoint(with: line.shownEmphasis) }
 
     var body: some View {
         HStack(alignment: .top, spacing: 10) {
@@ -88,6 +93,17 @@ struct CaptionLineCard: View {
             Spacer(minLength: 4)
             if let style = line.lineStyle, style.size != .regular {
                 Text(style.size.label)
+            }
+            // A phrase zoom over its words (Select › Zoom).
+            if viewModel.captions.phraseZoom(onLine: cueID) != nil {
+                Image(systemName: "plus.magnifyingglass")
+                    .accessibilityLabel(Text("Zoom on the phrase"))
+            }
+            // A word Suggest emphasis marked: the list shows where to look, the line's More takes it away.
+            if hasSuggestion {
+                Label("Suggested", systemImage: "sparkles")
+                    .labelStyle(.titleAndIcon)
+                    .accessibilityLabel(Text("Suggested emphasis"))
             }
             if line.needsTimingReview {
                 HStack(spacing: 4) {

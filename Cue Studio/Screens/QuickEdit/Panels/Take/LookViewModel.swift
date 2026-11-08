@@ -10,8 +10,8 @@ import Foundation
 /// for the whole take or the picked clip, and the recordings' motion analysis that Follow face and Stabilize read. What it keeps
 /// is its panels' state; the look itself is in the edit, and every change is an undo step through the session.
 ///
-/// Each part of the work is in its own extension (`+Adjust`, `+Auto`, `+Skin`, `+ClipScope`, `+Background`, `+CopyLook`, `+FaceFollow`,
-/// `+Stabilize`, `+MotionAnalysis`).
+/// Each part of the work is in its own extension (`+Adjust`, `+Auto`, `+Skin`, `+ClipScope`, `+Background`, `+Cutout`, `+CopyLook`,
+/// `+Format`, `+SafeGuide`, `+FaceFollow`, `+Stabilize`, `+MotionAnalysis`).
 @MainActor
 @Observable
 final class LookViewModel: EditorPart {
@@ -38,29 +38,60 @@ final class LookViewModel: EditorPart {
     /// Whether this iPhone can find people in video; nil until checked.
     var canFindPeople: Bool?
     var isImportingBackground = false
+    /// Background's Check the cutout (`+Cutout`).
+    var cutoutCheck: CutoutCheckState = .idle
+    @ObservationIgnored var cutoutCheckTask: Task<Void, Never>?
+    /// Reads the recordings for Check the cutout; a test hands its own.
+    @ObservationIgnored var cutoutChecker: CutoutChecking = CutoutChecker()
     /// Adjust, Filters or Background was opened from a picked clip: it changes that clip only, and follows the picked clip.
     /// Opened from the main toolbar it changes the whole take.
     var lookScopeIsClip = false
-    /// "Copy look": what a clip's look was when copied; nil until one is.
-    var copiedLook: CopiedClipLook?
-    /// "Paste look": which parts go, and whether its sheet is open.
+    /// "Paste look": which parts its sheet has on, and whether it is open. The look copied and the last choice are kept with the
+    /// project (`TakeEdit.copiedLook`, `pasteLookChoice`).
     var pastesLookParts: Set<ClipLookPart> = Set(ClipLookPart.allCases)
-    var showsPasteLook = false
+    var showsPasteLook = false {
+        didSet { if !showsPasteLook { correctsLastPaste = false } }
+    }
+    /// The sheet was opened by the toast's Change: what it pastes takes the place of the paste just made (`lastPaste`).
+    var correctsLastPaste = false
+    /// The paste just made, which the toast's Change corrects while nothing else changed since; nil before one.
+    @ObservationIgnored var lastPaste: PasteMade?
     /// The recordings whose motion analysis was last asked for while the edit used it (`requestMotionAnalysisIfNeeded`).
     @ObservationIgnored var motionRequestedURLs: [URL] = []
     /// The take's upright frame in pixels, read when the recording opens (Follow face needs a format other than it).
     @ObservationIgnored var recordingUprightSize: CGSize?
+    /// The pixels exporting an edit makes when its format's crop leaves fewer than its quality says ("606×1080"), by the rule of the
+    /// review the editor opened from (`TakeReviewViewModel.reducedOutputSize(for:)`: the quality, Pro, the recording's frame); nil
+    /// otherwise, and always nil where nothing exports from the editor.
+    @ObservationIgnored var reducedExportSize: (TakeEdit) -> CGSize? = { _ in nil }
+
+    /// A paste of a copied look as made: how, on which clip (nil: every clip), and what undo keeps of the edit right after it.
+    struct PasteMade {
+        var choice: PasteLookChoice
+        var clipID: UUID?
+        var after: EditSnapshot
+    }
+
+    /// The safe zone guide over the preview (`+SafeGuide`): the creator's way of working, kept for every video, never a change of
+    /// this one (no undo step, nothing to save).
+    var showsSafeGuide: Bool {
+        didSet { if showsSafeGuide != oldValue { preferences.showsSafeGuide = showsSafeGuide } }
+    }
 
     let session: EditorSession
     /// Measures Auto.
     let editing: TakeEditing
     /// Analyzes the recordings' motion for Follow face and Stabilize; nil in tests that don't use it.
     let motion: MotionAnalysisService?
+    /// Quick edit's own switches, kept between edits (the safe zone guide's).
+    let preferences: EditorPreferencesStoring
 
-    init(session: EditorSession, editing: TakeEditing, motion: MotionAnalysisService?) {
+    init(session: EditorSession, editing: TakeEditing, motion: MotionAnalysisService?, preferences: EditorPreferencesStoring) {
         self.session = session
         self.editing = editing
         self.motion = motion
+        self.preferences = preferences
+        showsSafeGuide = preferences.showsSafeGuide
     }
 
     /// The edit changed: a comparison is no longer of what is shown, and a recording it plays now is analyzed when it needs to be.

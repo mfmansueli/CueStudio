@@ -53,7 +53,7 @@ struct FindInspirationSheet: View {
     /// "Start with it" took the place of the creator's words: the Undo toast comes once the sheet has gone, so all of its time is seen.
     @State private var offersUndo = false
     /// How far the card is dragged sideways: it follows the finger, leaning, and past `swipeThreshold` lets go for the next idea.
-    @State private var dragOffset: CGFloat = 0
+    @State private var drag = InspirationCardDrag()
     /// Which way the drag went first: only a sideways one moves the card (an upward one scrolls the sheet).
     @State private var dragAxis: Axis?
     /// The drag is past the point where letting go turns the card (a click says so, and another when it comes back).
@@ -204,9 +204,9 @@ struct FindInspirationSheet: View {
         ZStack(alignment: .top) {
             switch viewModel.content {
             case .idea(let idea):
-                InspirationCard(content: viewModel.card(for: idea), worldColor: OnboardingTopic.color(at: viewModel.worldIndex(of: idea)))
-                    .offset(x: dragOffset)
-                    .rotationEffect(.degrees(reduceMotion ? 0 : Double(dragOffset) / 24), anchor: .bottom)
+                InspirationDraggedCard(drag: drag) {
+                    InspirationCard(content: viewModel.card(for: idea), worldColor: OnboardingTopic.color(at: viewModel.worldIndex(of: idea)))
+                }
                     .id(idea.id)
                     .transition(cardTransition)
                     .simultaneousGesture(swipe)
@@ -262,7 +262,7 @@ struct FindInspirationSheet: View {
                 let distance = value.translation
                 if dragAxis == nil { dragAxis = abs(distance.width) > abs(distance.height) ? .horizontal : .vertical }
                 guard dragAxis == .horizontal, viewModel.idea != nil else { return }
-                dragOffset = distance.width
+                drag.offset = distance.width
                 let isPast = abs(distance.width) > Self.swipeThreshold
                 if isPast != isPastThreshold {
                     isPastThreshold = isPast
@@ -287,7 +287,7 @@ struct FindInspirationSheet: View {
 
     /// The dragged card back in its place, on a spring.
     private func settleCard() {
-        withAnimation(reduceMotion ? .easeOut(duration: 0.2) : .spring(response: 0.38, dampingFraction: 0.72)) { dragOffset = 0 }
+        withAnimation(reduceMotion ? .easeOut(duration: 0.2) : .spring(response: 0.38, dampingFraction: 0.72)) { drag.offset = 0 }
     }
 
     /// Nothing to show: the ideas asked for didn't come (`failed`, with "Try again"), or nothing can come (no Apple Intelligence and nothing

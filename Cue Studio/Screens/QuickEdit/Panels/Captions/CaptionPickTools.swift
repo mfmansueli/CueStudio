@@ -7,8 +7,10 @@ import SwiftUI
 
 /// Captions › Select, around the list of lines (as CapCut's batch edit keeps them at hand while the list scrolls; the panel
 /// grows to the styling panels' height meanwhile): above it, how many lines are picked, Select all and Done (`.header`, in
-/// place of the switch and chips); under it, what changes them together (`.actions`): Emphasis (the whole line in the
-/// highlight color), Size, a tenth of a second earlier or later, and Delete.
+/// place of the switch and chips); under it, what changes them together (`.actions`): Emphasize line (every word in the
+/// emphasis color and size), Size, Place (their own place, top, middle or bottom, or with every caption), Zoom (on the phrase,
+/// `PhraseZoom`; the kit's strength said as the creator's, and a line when the video's pixels or the head hold it back), a tenth of a second
+/// earlier or later, and Delete.
 struct CaptionPickTools: View {
     enum Part {
         case header, actions
@@ -69,13 +71,22 @@ struct CaptionPickTools: View {
                 if !viewModel.captions.canStyleCaptionLines {
                     PanelNote(text: String(localized: "Pick a look in Style to style lines on their own."), teaches: true)
                 }
-                // On one row when it fits; with large text, the style on one row and moving and deleting on the next.
+                // On one row when it fits; else the style chips on a row of their own that scrolls sideways (a name is never cut,
+                // and the lines above keep their room: one chip per row left them 20 pt on an iPhone 17), moving and deleting under it.
                 ViewThatFits(in: .horizontal) {
                     HStack(spacing: 6) { style; Spacer(minLength: 0); moveAndDelete }
                     VStack(alignment: .leading, spacing: 0) {
-                        HStack(spacing: 6) { style }
+                        ScrollView(.horizontal) {
+                            HStack(spacing: 6) { style }
+                        }
+                        .scrollIndicators(.hidden)
+                        .scrollClipDisabled()
                         HStack(spacing: 6) { Spacer(minLength: 0); moveAndDelete }
                     }
+                }
+                if let note = viewModel.phraseZoomLimitNote {
+                    PanelNote(text: note)
+                        .accessibilityIdentifier("edit.captionPicks.zoomLimit")
                 }
             }
         }
@@ -88,11 +99,12 @@ struct CaptionPickTools: View {
         if viewModel.captions.canStyleCaptionLines {
             let emphasized = viewModel.captions.pickedCaptionsAreEmphasized
             Button { viewModel.captions.setPickedCaptionsEmphasized(!emphasized) } label: {
-                chipLabel(String(localized: "Emphasis"), systemImage: "highlighter", isOn: emphasized)
+                // Says the action and its reach: Highlight is the word being said's (owner, canvas 2 §7.1).
+                chipLabel(String(localized: "Emphasize line"), systemImage: "highlighter", isOn: emphasized)
             }
             .buttonStyle(.plain)
             .accessibilityValue(emphasized ? Text("On") : Text("Off"))
-            .accessibilityHint(Text("The whole line in the highlight color"))
+            .accessibilityHint(Text("Every word of the line in the emphasis color and size"))
             .accessibilityAddTraits(.isToggle)
             .accessibilityIdentifier("edit.captionPicks.emphasis")
             Menu {
@@ -110,6 +122,53 @@ struct CaptionPickTools: View {
             .accessibilityLabel(Text("Size"))
             .accessibilityValue(Text(viewModel.captions.pickedCaptionSize?.label ?? ""))
             .accessibilityIdentifier("edit.captionPicks.size")
+            Menu {
+                Picker(String(localized: "Place"), selection: Binding(
+                    get: { viewModel.captions.pickedCaptionPlace },
+                    set: { if let place = $0 { viewModel.captions.setPickedCaptionsPlace(place) } }
+                )) {
+                    ForEach(CaptionPlace.allCases) { place in
+                        Text(place.label).tag(Optional(place))
+                    }
+                }
+            } label: {
+                chipLabel(placeChip, systemImage: "arrow.up.and.down", isOn: false)
+            }
+            .accessibilityLabel(Text("Place"))
+            .accessibilityValue(Text(viewModel.captions.pickedCaptionPlace?.label ?? ""))
+            .accessibilityIdentifier("edit.captionPicks.place")
+        }
+        Menu {
+            Picker(String(localized: "Zoom"), selection: Binding(
+                get: { viewModel.captions.pickedPhraseZoom },
+                set: { viewModel.captions.setPickedCaptionsZoom($0) }
+            )) {
+                Text("No zoom").tag(PhraseZoom.Strength?.none)
+                ForEach(PhraseZoom.Strength.allCases) { strength in
+                    // The strength the creator's kit keeps (`BrandKitZoom`), said as theirs.
+                    Text(strength == viewModel.edit.phraseZoomStrength
+                        ? String(localized: "\(strength.label) · your style", comment: "Captions › Select › Zoom: the strength the creator's kit keeps")
+                        : strength.label)
+                        .tag(Optional(strength))
+                }
+            }
+        } label: {
+            chipLabel(
+                viewModel.captions.pickedPhraseZoom?.label ?? String(localized: "Zoom"), systemImage: "plus.magnifyingglass",
+                isOn: viewModel.captions.pickedPhraseZoom != nil
+            )
+        }
+        .accessibilityLabel(Text("Zoom"))
+        .accessibilityValue(Text(viewModel.captions.pickedPhraseZoom?.label ?? String(localized: "No zoom")))
+        .accessibilityHint(Text("Zoom on the phrase"))
+        .accessibilityIdentifier("edit.captionPicks.zoom")
+    }
+
+    /// "Place" while the picked lines go with every caption or differ; else where they are.
+    private var placeChip: String {
+        switch viewModel.captions.pickedCaptionPlace {
+        case .own(let position): position.label
+        case .withAll, nil: String(localized: "Place")
         }
     }
 

@@ -643,7 +643,7 @@ final class TimelineContentView: UIView {
             box.addSublayer(badge)
         } else {
             // A locked item says so where its kind's symbol was.
-            if let icon = symbolLayer(item.isLocked ? "lock.fill" : style.symbol, size: look.symbolSize, color: style.ink) {
+            if let icon = symbolLayer(item.isLocked ? "lock.fill" : item.symbol ?? style.symbol, size: look.symbolSize, color: style.ink) {
                 icon.frame.origin = CGPoint(x: x, y: (item.frame.height - icon.frame.height) / 2)
                 box.addSublayer(icon)
                 x += icon.frame.width + look.gap

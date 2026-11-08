@@ -98,7 +98,7 @@ struct SelfieModeView: View {
                         layout: layout,
                         showsTag: viewModel.sheet == .display,
                         showsHandle: !viewModel.isPlaying && !viewModel.isRecording && !viewModel.isPractice,
-                        level: viewModel.followsSpeech ? viewModel.voiceLevel : nil,
+                        level: { viewModel.followsSpeech ? viewModel.voiceLevel : nil },
                         showsParticles: viewModel.isPlaying,
                         isCalm: viewModel.isRecording,
                         onMove: { viewModel.moveReadingLine(toY: $0) },
@@ -189,7 +189,7 @@ struct SelfieModeView: View {
                 PracticeTopBar().frame(height: 32).padding(.top, 56)
                 PracticeVoiceStatus(
                     voice: viewModel.practiceVoice, isReading: viewModel.practiceStage == .reading, isListening: viewModel.isVoiceActive,
-                    level: viewModel.voiceLevel
+                    level: { viewModel.voiceLevel }
                 )
                 .padding(.top, viewModel.readingLayout.windowRect.maxY + 6)
                 PracticeMessageCard(stage: viewModel.practiceStage, voice: viewModel.practiceVoice)

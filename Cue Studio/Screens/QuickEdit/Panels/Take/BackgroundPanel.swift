@@ -12,8 +12,11 @@ import UIKit
 ///
 /// - **Behind you**: Original, Blur, Color or Image, and right under them only the picked one's control (the blur's strength, the colors,
 ///   the photo).
-/// - **Cutout**, in its own card: how the background is told apart from the creator. Automatic (Vision finds the person on the iPhone) or
-///   a green or blue screen (a chroma key), with the screen's color and, folded under "Fine-tune the cutout", Tolerance, Edge and Spill.
+/// - **Where you are**, once something new is behind the creator: their size, and on the preview a drag moves them and a pinch resizes
+///   them (`PersonPlaceControls`, `PersonPlaceLayer`).
+/// - **Cutout**, in its own card: how the background is told apart from the creator. Automatic (Vision finds the person on the iPhone,
+///   the outline steadied from frame to frame, with Check the cutout to find where it loses them, `CutoutCheckRow`) or a green or blue
+///   screen (a chroma key), with the screen's color and, folded under "Fine-tune the cutout", Tolerance, Edge and Spill.
 ///
 /// Every value stays while another option or mode is picked, every change is an undo step and is saved as it's made; ✓ closes.
 struct BackgroundPanel: View {
@@ -24,6 +27,7 @@ struct BackgroundPanel: View {
         PanelFrame(viewModel: viewModel, panel: .background, onReset: reset, compare: viewModel.look.pictureCompare) {
             if let note = viewModel.look.backgroundScopeNote { scopeNote(note) }
             background(effect)
+            if viewModel.look.canPlacePerson { PersonPlaceControls(viewModel: viewModel) }
             cutout(effect)
             PanelNote(text: String(localized: "Changes show in the preview and are saved as you make them. ✓ closes the panel."), teaches: true)
                 .accessibilityIdentifier("edit.backgroundSaveNote")
@@ -103,7 +107,8 @@ struct BackgroundPanel: View {
         VStack(alignment: .leading, spacing: 12) {
             PanelRowLabel(
                 label: String(localized: "Cutout"),
-                detail: effect.style == .original ? String(localized: "Used once a background is picked") : nil
+                // Owner, canvas 2 R5: whether the cutout is acting on the video now, in sight.
+                detail: effect.style == .original ? String(localized: "Used once a background is picked") : String(localized: "In use")
             )
             .accessibilityAddTraits(.isHeader)
             PanelSegmented(
@@ -120,6 +125,7 @@ struct BackgroundPanel: View {
                     PanelNote(text: String(localized: "Can't find people here · Use a green or blue screen"), tint: Palette.warnText)
                         .accessibilityIdentifier("edit.backgroundUnavailable")
                 }
+                if viewModel.look.canCheckCutout { CutoutCheckRow(viewModel: viewModel) }
             case .colorKey:
                 PanelNote(text: String(localized: "For a video recorded in front of a green or blue screen: only the screen's color is replaced."), teaches: true)
                 screenColor(effect.key)

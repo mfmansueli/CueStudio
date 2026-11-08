@@ -42,10 +42,14 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         /// Pauses to review (the Pauses panel), on the video track.
         var pauses: [PauseInput] = []
         var selection: EditorSelection?
+        /// Items lit as picked with it: every text while Text style changes all of them ("All 3 texts", owner, canvas 2 R2).
+        var alsoSelected: Set<UUID> = []
         /// The cut picked to choose its transition (named by the clip that starts there).
         var selectedJoin: UUID?
         var panelIsOpen = false
         var focusedLane: TimelineLane?
+        /// A full panel (Text style, Caption style) is open: the ruler and its track alone show above it (canvas 2 R10 §7.3).
+        var panelIsFull = false
         /// The tracks whose tools are open on the toolbar (their strips light up).
         var activeLanes: Set<TimelineLane> = []
         /// The current track and whether every track is out; nil shows every track, with no ▾.
@@ -91,6 +95,8 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         var beats: [TimeInterval] = []
         /// Locked in place (`TakeEdit.lockedLayers`): no handles, a lock drawn on it.
         var isLocked = false
+        /// Drawn in place of its kind's symbol: something it carries (a caption line's phrase zoom).
+        var symbol: String?
         /// A photo or video: what its frames are drawn from.
         var strip: MediaStrip?
         /// A Blur area: where it's left unchecked (edited seconds), hatched on its bar.
@@ -179,6 +185,8 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         /// Beat ticks (music), from the item's left edge.
         var beatOffsets: [CGFloat] = []
         var isLocked = false
+        /// In place of its kind's symbol (`ItemInput.symbol`).
+        var symbol: String?
         /// A photo or video's frames.
         var strip: MediaStrip?
         /// A Blur area's unchecked stretches, from the item's left edge.
@@ -291,6 +299,8 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
     static let addGap: CGFloat = 14
     /// A cut's mark, and the least room each clip beside it needs for it to show.
     static let joinSize: CGFloat = 20
+    /// How wide a cut's mark is reached with no clip picked (no handles near it).
+    static let joinReach: CGFloat = 44
     static let joinRoom: CGFloat = 26
     /// The voice-over being recorded has no id of its own yet.
     static let recordingID = UUID(uuidString: "00000000-0000-0000-0000-000000000000") ?? UUID()
@@ -394,7 +404,9 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
                 let x = CGFloat(clip.start) * pps
                 let size = Self.joinSize
                 let frame = CGRect(x: x - size / 2, y: main.y + (main.height - size) / 2, width: size, height: size)
-                let reach = Self.handleReach
+                // With no clip picked there are no clip handles to share the touch with: the mark gets a full 44 pt, short of
+                // the middle of either clip (canvas 2 N1).
+                let reach = picked == nil ? max(Self.handleReach, min(Self.joinReach, before, CGFloat(clip.duration) * pps)) : Self.handleReach
                 joins.append(Join(
                     id: clip.id, frame: frame,
                     hitFrame: CGRect(x: x - reach / 2, y: main.y, width: reach, height: main.height),
@@ -423,7 +435,7 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
                 let x = CGFloat(item.span.start) * pps
                 let width = max(4, CGFloat(item.span.duration) * pps - 2)
                 let id = item.id
-                let isSelected = Self.isSelected(kind, item.owner ?? id, selection)
+                let isSelected = Self.isSelected(kind, item.owner ?? id, selection) || input.alsoSelected.contains(id)
                 items.append(Item(
                     kind: kind, id: id,
                     frame: CGRect(x: x, y: lane.y, width: width, height: lane.height),
@@ -433,6 +445,7 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
                     keyframeOffsets: item.keyframes.map { CGFloat($0 - item.span.start) * pps },
                     beatOffsets: item.beats.map { CGFloat($0 - item.span.start) * pps },
                     isLocked: item.isLocked,
+                    symbol: item.symbol,
                     strip: item.strip,
                     warningRanges: item.warnings.compactMap { warning in
                         let from = max(0, CGFloat(warning.start - item.span.start) * pps)
@@ -521,7 +534,7 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
     /// The tracks, top to bottom, and the one ▾ sits beside: with a panel about one track open, that track over the video (no
     /// ▾); collapsed, the video and the current track; else every track (`lanes`).
     private static func laneOrder(_ input: Input) -> (lanes: [TimelineLane], chooser: TimelineLane?) {
-        if input.panelIsOpen, let focus = input.focusedLane { return ([focus, .main], nil) }
+        if input.panelIsOpen, let focus = input.focusedLane { return (input.panelIsFull ? [focus] : [focus, .main], nil) }
         let all = lanes(
             hasBlurs: !input.blurs.isEmpty, hasMusic: !input.music.isEmpty, hasVoice: !input.voiceOvers.isEmpty || input.recording != nil
         )

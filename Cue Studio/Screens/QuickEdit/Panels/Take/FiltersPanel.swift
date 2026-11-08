@@ -7,7 +7,8 @@ import SwiftUI
 
 /// Filters (whole take, or the picked clip alone when opened from it): Original and the collection
 /// (Natural, Studio, Soft, Cinema, Warm Editorial, Retro, Mono Soft, Mono Contrast), each shown on a
-/// real frame of the video in scope, at the intensity it starts with; Intensity for the picked one.
+/// real frame of the video in scope, at the intensity it starts with, on cards kept low so the video keeps its room; Intensity
+/// for the picked one, over the cards.
 /// A filter from before the collection shows only while it is the one picked. Reset takes the
 /// filter off what the panel changes: the whole video, or the clip (whatever the whole video has).
 struct FiltersPanel: View {
@@ -19,9 +20,19 @@ struct FiltersPanel: View {
     @ScaledMetric(relativeTo: .caption) private var scaledCardWidth: CGFloat = 62
 
     private var cardWidth: CGFloat { min(max(62, scaledCardWidth), 96) }
+    /// The thumbnail's height (owner, canvas 2 F8: the panel stays compact): 64 pt, down from 88.
+    static let thumbnailHeight: CGFloat = 64
 
     var body: some View {
         PanelFrame(viewModel: viewModel, panel: .filters, onReset: reset, compare: viewModel.look.pictureCompare) {
+            // Over the cards (owner, canvas 2 F8): the slider of the filter on the video is the first thing in sight.
+            if viewModel.look.currentFilter != .original {
+                PanelSlider(
+                    label: String(localized: "Intensity"), value: viewModel.look.currentFilterAmount * 100, range: CueSliderSpec.filterIntensity.range,
+                    step: CueSliderSpec.filterIntensity.step ?? 1, defaultValue: CueSliderSpec.filterIntensity.defaultValue,
+                    format: .percent, identifier: "edit.filter.intensity"
+                ) { viewModel.look.setFilterAmount($0 / 100) }
+            }
             ScrollView(.horizontal) {
                 // Top-aligned: a name on two lines doesn't push its thumbnail down.
                 HStack(alignment: .top, spacing: 8) {
@@ -34,13 +45,6 @@ struct FiltersPanel: View {
             }
             .scrollIndicators(.hidden)
             .padding(.horizontal, -16)
-            if viewModel.look.currentFilter != .original {
-                PanelSlider(
-                    label: String(localized: "Intensity"), value: viewModel.look.currentFilterAmount * 100, range: CueSliderSpec.filterIntensity.range,
-                    step: CueSliderSpec.filterIntensity.step ?? 1, defaultValue: CueSliderSpec.filterIntensity.defaultValue,
-                    format: .percent, identifier: "edit.filter.intensity"
-                ) { viewModel.look.setFilterAmount($0 / 100) }
-            }
         }
         .task(id: previewKey) { await loadPreviews() }
     }
@@ -73,7 +77,7 @@ struct FiltersPanel: View {
                         Palette.surface2
                     }
                 }
-                .frame(width: cardWidth, height: 88)
+                .frame(width: cardWidth, height: Self.thumbnailHeight)
                 .clipShape(RoundedRectangle(cornerRadius: Metrics.editorInsetRadius, style: .continuous))
                 .overlay(RoundedRectangle(cornerRadius: Metrics.editorInsetRadius, style: .continuous).strokeBorder(isOn ? Palette.acc : .clear, lineWidth: 2))
                 // Two lines broken between words, never inside one (owner, 02/11/2026: no label is ever cut).

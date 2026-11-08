@@ -57,7 +57,8 @@ extension QuickEditViewModel {
             return
         default: break
         }
-        let limits = room(for: bar)
+        // A line stretches to the first limit it meets: its neighbor or its clip's cut (`CaptionStretchRoom`).
+        let limits = captionStretchRoom(for: bar)?.span ?? room(for: bar)
         let shortest = switch bar.kind {
         case .text: TextOverlay.minimumDuration
         case .caption: CaptionCue.minimumDuration
@@ -82,6 +83,17 @@ extension QuickEditViewModel {
         }
         guard span.duration >= shortest - 0.000_1, fits(bar, at: span) else { return }
         place(bar, at: span)
+    }
+
+    /// How far a caption line's ends go when stretched; nil for any other bar.
+    func captionStretchRoom(for bar: LayerBar) -> CaptionStretchRoom? {
+        guard bar.kind == .caption else { return nil }
+        let lines = captions.editedCaptionLines
+        guard let index = lines.firstIndex(where: { $0.id == bar.id }) else { return nil }
+        return CaptionStretchRoom(
+            span: bar.span, previousEnd: index > 0 ? lines[index - 1].end : nil,
+            nextStart: index + 1 < lines.count ? lines[index + 1].start : nil, timeline: edit.timeline
+        )
     }
 
     // MARK: - Private

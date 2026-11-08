@@ -25,8 +25,16 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     var cleanUpAnalyzed = false
     /// The montage's other recordings Clean Up has listened to (`ClipSource.id`).
     var cleanUpAnalyzedSources: [UUID] = []
+    /// The recordings whose pauses Clean Up couldn't hear clearly (a loud background, a soft voice), and how (D16): Pauses says so
+    /// again when the editor reopens. A recording heard clearly isn't listed.
+    var pauseHearings: [RecordingPauseHearing] = []
     /// Pauses: only silences at least this long are listed ("Pauses longer than").
     var pauseThreshold: TimeInterval = 0.7
+    /// Pauses: how much silence a removed pause leaves ("Gap left"); what was already removed keeps its own.
+    var pauseGap: PauseGap = .natural
+    /// What Clean up learned listening to the take besides its suggestions (whether its words were heard, and in what
+    /// language); nil before it listened, or for an edit saved before it was kept.
+    var cleanUpHearing: CleanUpHearing?
 
     // MARK: Audio
     /// 0 to 1.5 (150%): the take's own sound.
@@ -47,6 +55,8 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     var evensOutVoices = true
     /// The creator's music and sounds, under the video.
     var music: [MusicClip] = []
+    /// How music added starts (a kit's Editing, `MusicDefaults`); nil: the editor's.
+    var newMusic: MusicDefaults?
     /// Beats › Snap to beats: the playhead and the handles stick to the music's beats.
     var snapsToBeats = true
     /// Texts, photos or videos, music and voice-overs locked in place on the timeline (Edits' clip lock): no handles, so a
@@ -90,9 +100,24 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     var cropFit: CropFit = .fill
     /// Follow face: a Fill crop moves with the creator's face (`FaceFollowPath`); nil keeps it where `cropOffset` puts it.
     var faceFollow: FaceFollow?
+    /// The safe zone guide picked for this video in the editor (Aspect ratio › Safe zones, or the guide's label on the preview); the
+    /// captions keep to its clear area (`CaptionSafeArea`). Nil follows the script's platform, or the generic guide without one.
+    var safeGuide: SafeGuideChoice?
 
     // MARK: Captions
     var showsCaptions = false
+    /// Suggest emphasis (Captions, by a line's words; owner, 08/11/2026): one word at most in a line of three or more, where the
+    /// line has a clear one (`CaptionEmphasisSuggester`); the marks it put are `CaptionCue.suggestedEmphasis`. Off by default.
+    var suggestsEmphasis = false
+    /// Zooms on phrases, started from caption lines and then on their own (`PhraseZoom`).
+    var phraseZooms: [PhraseZoom] = []
+    /// What the last Auto edit did, so each of its steps can be turned off on its own (`AutoEditRecord`); nil before one ran.
+    var autoEdit: AutoEditRecord?
+    /// Zoom › Punch in on cuts (`CutZoom`): every other clip closer; nil plays the clips as they are. Only by the creator's choice
+    /// (or their kit's, `BrandKitZoom`).
+    var cutZoom: CutZoom?
+    /// The strength a kit's Zoom marks as the creator's in Captions › Select › Zoom (`BrandKitZoom`); nil marks none.
+    var phraseZoomStrength: PhraseZoom.Strength?
     /// New projects use Cue; decoding an absent key preserves the old renderer and appearance.
     var captionCollection: CaptionSettings? = CaptionSettings()
     /// How captions look in edits made before type presets; `captionLook` replaces it once set.
@@ -144,6 +169,12 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     /// The cover saved with exports; nil when none was chosen.
     var cover: VideoCover?
 
+    // MARK: Paste look
+    /// Kept with the project, never an undo step (copying changes nothing on the video, `EditDocument.remember`): the look Copy
+    /// look took last, and how Paste look last pasted it (`PasteLookChoice`); nil until each happens.
+    var copiedLook: CopiedClipLook?
+    var pasteLookChoice: PasteLookChoice?
+
     init(sourceDuration: TimeInterval, aspect: AspectRatio) {
         timeline = EditTimeline(sourceDuration: sourceDuration)
         self.aspect = aspect
@@ -173,7 +204,13 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     var shownCaptions: (main: [CaptionCue], second: [CaptionCue]) {
         let translation = captionDisplay.language.flatMap { language in captionTranslations.first { $0.language == language } }
         guard let translation else { return (editedCaptions, []) }
-        let translated = editedInstances(of: translation.lines.map(\.cue)).map(\.line)
+        // A translated line goes where its original goes, when the original has its own place (`CaptionLineStyle.y`).
+        let places = Dictionary(captions.compactMap { line in line.lineStyle?.y.map { (line.id, $0) } }) { first, _ in first }
+        let translated = editedInstances(of: translation.lines.map { line in
+            var cue = line.cue
+            if let y = line.cueIDs.lazy.compactMap({ places[$0] }).first { cue.lineStyle = CaptionLineStyle(y: y) }
+            return cue
+        }).map(\.line)
         switch captionDisplay {
         case .original: return (editedCaptions, [])
         case .translation: return (translated, [])
@@ -211,6 +248,11 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     /// How something placed over `edited` (edited seconds) is pinned: to its piece in an arranged
     /// edit, else to the take's own seconds.
     func pin(_ edited: TimeSpan) -> (anchor: ClipAnchor?, span: TimeSpan) {
+        Self.pin(edited, in: timeline)
+    }
+
+    /// `pin(_:)` on `timeline`.
+    static func pin(_ edited: TimeSpan, in timeline: EditTimeline) -> (anchor: ClipAnchor?, span: TimeSpan) {
         guard timeline.isArranged else { return (nil, timeline.sourceSpan(forEdited: edited)) }
         let pinned = timeline.anchoredSpan(forEdited: edited)
         return (pinned.anchor, pinned.span)
@@ -254,6 +296,11 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     /// clip at its start through the clips of the same recording that follow it), and, laid on into another recording's
     /// clip, how long it plays on over it (`tail`).
     func pinMedia(_ edited: TimeSpan) -> (anchor: ClipAnchor?, span: TimeSpan, tail: TimeInterval?) {
+        Self.pinMedia(edited, in: timeline)
+    }
+
+    /// `pinMedia(_:)` on `timeline`.
+    static func pinMedia(_ edited: TimeSpan, in timeline: EditTimeline) -> (anchor: ClipAnchor?, span: TimeSpan, tail: TimeInterval?) {
         guard timeline.isArranged else { return (nil, timeline.sourceSpan(forEdited: edited), nil) }
         let segments = timeline.segments
         let first = timeline.segmentIndex(atEdited: edited.start)
@@ -389,16 +436,20 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     // MARK: - Coding
 
     private enum CodingKeys: String, CodingKey {
-        case timeline, sources, suggestions, cleanUpAnalyzed, cleanUpAnalyzedSources, volume, enhancesVoice, reducesNoise,
+        case timeline, sources, suggestions, cleanUpAnalyzed, cleanUpAnalyzedSources, pauseHearings, volume, enhancesVoice, reducesNoise,
         audioVersion, voiceEnhancement, noiseReduction, voiceReach, evensOutVoices, music, backgrounds, exposure, contrast, warmth, filter
         case snapsToBeats, lockedLayers
-        case saturation, highlights, shadows, sharpness, filterAmount, cropFit, pauseThreshold
-        case vibrance, tint, autoCorrection, autoAmount, lookVersion, skin, faceFollow
-        case aspect, cropOffset, showsCaptions, captionStyle, captionLook, captionPreset, captionPosition, captions
+        case saturation, highlights, shadows, sharpness, filterAmount, cropFit, pauseThreshold, pauseGap, cleanUpHearing
+        case vibrance, tint, autoCorrection, autoAmount, lookVersion, skin, faceFollow, safeGuide
+        case aspect, cropOffset, showsCaptions, suggestsEmphasis, phraseZooms, cutZoom, phraseZoomStrength
+        case captionStyle, captionLook, captionPreset, captionPosition, captions
         case captionTranscript, sourceTranscripts, captionLanguage, captionAnimation, captionTranslations, captionDisplay
         case captionCollection
         case texts, media, voiceOvers, creatorStyle, textLook, textPreset, cover
         case splitScreen, brandKit, blurRegions, blurLook
+        case newMusic
+        case copiedLook, pasteLookChoice
+        case autoEdit
     }
 
     /// Edits saved before the timeline had pieces: trim handles, cut points, deleted sections and
@@ -418,6 +469,7 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
             suggestions = container.decodeLossy([CleanUpSuggestion].self, forKey: .suggestions)
             cleanUpAnalyzed = try container.decodeIfPresent(Bool.self, forKey: .cleanUpAnalyzed) ?? false
             cleanUpAnalyzedSources = (try? container.decodeIfPresent([UUID].self, forKey: .cleanUpAnalyzedSources)) ?? []
+            pauseHearings = container.decodeLossy([RecordingPauseHearing].self, forKey: .pauseHearings)
         } else {
             (timeline, suggestions) = try Self.legacyTimeline(from: decoder)
         }
@@ -456,9 +508,23 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         faceFollow = container.decodeLenient(FaceFollow.self, forKey: .faceFollow, report: report)
         // An "eyeContact" key that edits saved with Eye Contact (removed 22/10/2026) still hold is left unread.
         pauseThreshold = (try? container.decodeIfPresent(TimeInterval.self, forKey: .pauseThreshold)) ?? 0.7
+        // Added with a kit's Editing (08/11/2026): edits saved before start music the editor's way.
+        newMusic = try? container.decodeIfPresent(MusicDefaults.self, forKey: .newMusic)
+        // Added with "Gap left": edits saved before left the natural gap.
+        pauseGap = container.decodeChoice(PauseGap.self, forKey: .pauseGap, unknown: .natural, report: report) ?? .natural
+        cleanUpHearing = try? container.decodeIfPresent(CleanUpHearing.self, forKey: .cleanUpHearing)
         aspect = try container.decode(AspectRatio.self, forKey: .aspect)
+        // Added with the editor's safe zone guide (08/11/2026): edits saved before follow the script's platform, and one an older
+        // version can't name is let go (the guide is only drawn in the editor).
+        safeGuide = try? container.decodeIfPresent(SafeGuideChoice.self, forKey: .safeGuide)
         cropOffset = try container.decodeIfPresent(Double.self, forKey: .cropOffset) ?? 0
         showsCaptions = try container.decodeIfPresent(Bool.self, forKey: .showsCaptions) ?? false
+        suggestsEmphasis = (try? container.decodeIfPresent(Bool.self, forKey: .suggestsEmphasis)) ?? false
+        phraseZooms = (try? container.decodeIfPresent([PhraseZoom].self, forKey: .phraseZooms)) ?? []
+        autoEdit = try? container.decodeIfPresent(AutoEditRecord.self, forKey: .autoEdit)
+        // Added with Punch in on cuts and kits' Zoom (08/11/2026): edits saved before play their clips as they are.
+        cutZoom = try? container.decodeIfPresent(CutZoom.self, forKey: .cutZoom)
+        phraseZoomStrength = try? container.decodeIfPresent(PhraseZoom.Strength.self, forKey: .phraseZoomStrength)
         captionCollection = container.decodeLenient(CaptionSettings.self, forKey: .captionCollection, report: report)
         captionStyle = try container.decodeIfPresent(CaptionStyle.self, forKey: .captionStyle) ?? .bold
         captionLook = container.decodeLenient(TextLook.self, forKey: .captionLook, report: report)
@@ -484,6 +550,9 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         textLook = container.decodeLenient(TextLook.self, forKey: .textLook, report: report)
         textPreset = try? container.decodeIfPresent(TypePreset.self, forKey: .textPreset)
         cover = container.decodeLenient(VideoCover.self, forKey: .cover, report: report)
+        // Paste look's memory: edits saved before have none, and one that can't be read is let go in silence (it's not the video).
+        copiedLook = try? container.decodeIfPresent(CopiedClipLook.self, forKey: .copiedLook)
+        pasteLookChoice = try? container.decodeIfPresent(PasteLookChoice.self, forKey: .pasteLookChoice)
         // An edit saved before the calibrated dials reads them the first way, unless it never used them.
         lookVersion = ReadingVersion.look.read(try? container.decodeIfPresent(Int.self, forKey: .lookVersion), usedOldNumbers: usesAdjustDials)
     }

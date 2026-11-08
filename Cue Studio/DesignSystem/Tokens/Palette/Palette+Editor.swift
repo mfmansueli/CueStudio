@@ -19,6 +19,15 @@ extension Palette {
         static let overlayOutline = Color.white
         static let overlayOutlineHalo = Color.black.opacity(0.75)
 
+        /// The safe zone guide over the preview (`SafeGuideOverlay`): the edge of the part an app leaves clear, white over a dark
+        /// halo so it reads on any picture, light or dark (a line that informs, 3:1); the parts its buttons cover, shaded a little
+        /// (only a hint: the line carries it); and the guide's label, `ink` on its own dark plate, which reads at 4.5:1 over a white
+        /// frame, shaded or not (`PaletteContrastTests.theSafeGuideReadsOverAnyPicture`).
+        static let safeGuideLine = Color.white
+        static let safeGuideHalo = Color.black.opacity(0.75)
+        static let safeGuideShade = Color.black.opacity(0.3)
+        static let safeGuidePlate = Color.black.opacity(0.72)
+
         /// Cover Studio's crop guide: the part a profile grid hides, shaded, and the guide's label (white on it reads on any
         /// picture: the shade and the label's own dark pill).
         static let cropShade = Color.black.opacity(0.45)

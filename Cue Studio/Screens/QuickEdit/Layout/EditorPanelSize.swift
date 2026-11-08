@@ -21,9 +21,12 @@ nonisolated enum EditorPanelSize: Equatable, Sendable {
         switch self {
         case .mini: Self.clamp(0.27 * usable, 200, 250)
         case .medium: Self.clamp(0.38 * usable, 250, 340)
-        case .full: Self.clamp(0.5 * usable, 330, 420)
+        case .full: Self.clamp(0.5 * usable, Self.fullMinimum, 420)
         }
     }
+
+    /// The least a full panel gets: its header, tabs and a whole row of styles.
+    static let fullMinimum: CGFloat = 330
 
     static func clamp(_ value: CGFloat, _ lower: CGFloat, _ upper: CGFloat) -> CGFloat {
         min(max(value, lower), upper)

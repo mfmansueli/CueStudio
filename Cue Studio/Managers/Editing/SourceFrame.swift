@@ -17,6 +17,9 @@ nonisolated struct SourceFrame: Sendable {
     let crop: CGRect
     let scale: CGFloat
     var background: BackgroundRender?
+    /// The recording's cutout and the creator's place, even with an Original background, for a photo or video shown Behind you; nil
+    /// when the edit has none.
+    var cutout: BackgroundRender?
     /// Follow face: where the crop's center is over the recording's own seconds; nil keeps `crop` still.
     var follow: FaceFollowPath?
     /// The recording's upright frame as the clip reshapes it, in pixels (for the crop that follows).

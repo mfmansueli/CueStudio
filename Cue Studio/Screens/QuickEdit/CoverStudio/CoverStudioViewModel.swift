@@ -6,7 +6,7 @@
 import Foundation
 import UIKit
 
-/// Cover Studio: a cover made in five steps (picture, template, title, graphics, finish) on a canvas where everything is
+/// Cover Studio: a cover made in five steps (picture, template, title, graphics, effects) on a canvas where everything is
 /// moved with a finger. It works on its own copy of the cover with its own undo and redo; Done hands the cover to the editor as
 /// one undo step there, Cancel leaves the editor's cover as it was. The canvas shows the cover drawn by the same renderer as
 /// the saved image (`CoverCompositionRenderer`), drawn again after every change, the newest change winning, so a gesture
@@ -28,6 +28,8 @@ final class CoverStudioViewModel: Identifiable {
     var step: CoverStudioStep
     var selection: CoverStudioSelection?
     var cropGuide: CoverCropGuide = .none
+    /// The Title step's open part (Words, Type, Color, Box); kept while other steps are open.
+    var titleSection: CoverTitleSection = .words
     /// Before/after: the Picture step works on the after half.
     var editsSecondPicture = false
     /// The cover as drawn now.
@@ -47,7 +49,7 @@ final class CoverStudioViewModel: Identifiable {
     /// A message for a moment (a photo that couldn't be read, a style saved), as the editor's toasts say them (over the canvas,
     /// read by VoiceOver).
     let toast = ToastService()
-    /// The editor had a cover when the studio opened: Finish offers Remove cover.
+    /// The editor had a cover when the studio opened: Effects offers Remove cover.
     let hadCover: Bool
     /// Remove cover was asked: Done takes the cover away.
     private(set) var removesCover = false
@@ -69,6 +71,8 @@ final class CoverStudioViewModel: Identifiable {
     let handle: String
     /// Titles Cue suggests from the take's own words.
     let suggestions: [String]
+    /// The suggestions the Title step offers: never the title the cover already has.
+    var offeredSuggestions: [String] { CoverTitleSuggestions.offered(suggestions, title: cover.title) }
     /// Width over height of the cover (the take's format).
     let aspect: Double
     /// The cover styles the creator saved, with favorites and the one new covers start in (`+Library`).
@@ -78,6 +82,8 @@ final class CoverStudioViewModel: Identifiable {
     @ObservationIgnored private let styles: TextStyleStoring
     /// The script libraries the Title's picker offers (`scriptLibraries`).
     let fontPacks: FontPackStore?
+    /// The creator's imported families, for the Title's My fonts (Edit and Remove; nil in previews).
+    let customFonts: CustomFontStore?
     @ObservationIgnored private let writingLanguages: () -> (script: CueLanguage?, interface: CueLanguage?)
     /// The creator's script language and the app's, now.
     var writingLanguagesNow: (script: CueLanguage?, interface: CueLanguage?) { writingLanguages() }
@@ -109,9 +115,10 @@ final class CoverStudioViewModel: Identifiable {
     init(
         cover: VideoCover?, frame: CoverFrame, edit: TakeEdit, videoURL: URL, handle: String, suggestions: [String],
         pictures: CoverPicturing, importer: EditMediaImporting, styles: TextStyleStoring, fontPacks: FontPackStore? = nil,
-        writingLanguages: @escaping () -> (script: CueLanguage?, interface: CueLanguage?) = { (nil, nil) }
+        customFonts: CustomFontStore? = nil, writingLanguages: @escaping () -> (script: CueLanguage?, interface: CueLanguage?) = { (nil, nil) }
     ) {
         self.fontPacks = fontPacks
+        self.customFonts = customFonts
         self.writingLanguages = writingLanguages
         self.edit = edit
         self.videoURL = videoURL

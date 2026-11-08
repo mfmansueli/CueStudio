@@ -29,12 +29,16 @@ final class CoverViewModel: EditorPart {
     let styles: TextStyleStoring
     /// The script libraries the Title's picker offers, and the creator's languages that call for them.
     let fontPacks: FontPackStore?
+    /// The creator's imported families (the Title's My fonts).
+    let customFonts: CustomFontStore?
     let writingLanguages: () -> (script: CueLanguage?, interface: CueLanguage?)
 
     init(
         session: EditorSession, editing: TakeEditing, pictures: CoverPicturing, importer: EditMediaImporting, styles: TextStyleStoring,
-        fontPacks: FontPackStore? = nil, writingLanguages: @escaping () -> (script: CueLanguage?, interface: CueLanguage?) = { (nil, nil) }
+        fontPacks: FontPackStore? = nil, customFonts: CustomFontStore? = nil,
+        writingLanguages: @escaping () -> (script: CueLanguage?, interface: CueLanguage?) = { (nil, nil) }
     ) {
+        self.customFonts = customFonts
         self.session = session
         self.editing = editing
         self.pictures = pictures
@@ -61,7 +65,7 @@ final class CoverViewModel: EditorPart {
         coverStudio = CoverStudioViewModel(
             cover: edit.cover, frame: edit.coverFrame(atEdited: player.currentTime), edit: edit, videoURL: session.videoURL,
             handle: session.creatorHandle, suggestions: coverSuggestions, pictures: pictures, importer: importer, styles: styles,
-            fontPacks: fontPacks, writingLanguages: writingLanguages
+            fontPacks: fontPacks, customFonts: customFonts, writingLanguages: writingLanguages
         )
     }
 

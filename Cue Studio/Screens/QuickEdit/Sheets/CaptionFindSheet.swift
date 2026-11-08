@@ -8,7 +8,8 @@ import SwiftUI
 /// Find and replace, over the editor (half height, so the video stays in view): a word to find and what to put in its
 /// place, then every line that has it, in play order, with the word marked. **Replace** on a row changes that one match;
 /// **Replace all** changes every match in one undo step. Tapping a row takes the playhead to its line. Only the words
-/// change: the lines keep their times.
+/// change: the lines keep their times. Under the fields, **Add “…” to My words** saves the spelling it names to My words, for
+/// captions and recordings to come; it never changes these lines.
 struct CaptionFindSheet: View {
     @Bindable var viewModel: QuickEditViewModel
 
@@ -36,6 +37,7 @@ struct CaptionFindSheet: View {
                 String(localized: "Replace with"), text: $replacement, prompt: String(localized: "New word"),
                 systemImage: "arrow.left.arrow.right", field: .replace, identifier: "edit.captionFind.replacement"
             )
+            myWordsRow
             summary(matches)
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 0) {
@@ -105,6 +107,47 @@ struct CaptionFindSheet: View {
             RoundedRectangle(cornerRadius: Metrics.fieldRadius, style: .continuous)
                 .strokeBorder(focused == field ? Palette.acc : Color.clear, lineWidth: 1.5)
         )
+    }
+
+    // MARK: - My words
+
+    /// "Add “TikTok” to my words": the spelling it saves is on the button before it is tapped (what Replace with says, else what
+    /// Find says; `myWordsSpelling`). Its own action, apart from Replace: it changes no line of this video, and Replace never
+    /// saves a word.
+    @ViewBuilder
+    private var myWordsRow: some View {
+        if let spelling = viewModel.captions.myWordsSpelling(find: query, replacement: replacement) {
+            let saved = viewModel.captions.isInMyWords(spelling)
+            VStack(alignment: .leading, spacing: 4) {
+                Button {
+                    focused = nil
+                    viewModel.captions.addFindSpellingToMyWords(spelling)
+                } label: {
+                    HStack(spacing: 8) {
+                        Image(systemName: saved ? "checkmark" : "character.book.closed")
+                            .font(.editorGlyph(EditorGlyph.small, weight: .semibold))
+                            .accessibilityHidden(true)
+                        Text(saved ? String(localized: "“\(spelling)” is in My words") : String(localized: "Add “\(spelling)” to My words"))
+                            .font(.system(.footnote, weight: .semibold))
+                            .lineLimit(2)
+                            .multilineTextAlignment(.leading)
+                    }
+                    .foregroundStyle(Palette.ink)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+                    .frame(minHeight: 32)
+                    .background(Palette.fill, in: Capsule())
+                    .frame(minHeight: Metrics.hitTarget)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityIdentifier("edit.captionFind.addToMyWords")
+                Text("For new captions and recordings. This video stays as it is.")
+                    .font(.system(.caption))
+                    .foregroundStyle(Palette.ink2)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
     }
 
     // MARK: - Results

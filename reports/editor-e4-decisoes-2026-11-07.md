@@ -1,0 +1,60 @@
+# Etapa 4: decisões do dono (07/11/2026, noite)
+
+Resposta do dono à revisão da etapa 4 (https://claude.ai/artifact/JQF6FsWAPoxyi6xxqQ29mR). Texto do dono, sem edição. Vale mais que a §19 do
+plano onde as duas divergem.
+
+Eu aprovaria os três consertos imediatos e a volta de Meu estilo para a etapa 4. Nas escolhas de produto, eu aceitaria a maior parte da proposta, mas mudaria duas coisas. O Quick pass só deve ficar em Limpar fala se atuar na fala. E a legenda pode servir para selecionar o trecho do zoom, mas o zoom precisa continuar editável de forma independente.
+
+| Decisão | Minha escolha |
+|---|---|
+| A · Edição automática | Quick pass no Clean up se o escopo for limpar fala e repetições. Se também aplicar zoom, estilo de legenda ou áudio, eu daria à automação um ponto de entrada próprio, sujeito a aprovação na etapa 5. No Done, a pessoa já está decidindo como publicar. Em qualquer caso, ela precisa ver o que será aplicado e poder desfazer a operação. |
+| B · Áreas seguras | Usar a plataforma do roteiro como sugestão e permitir trocar na própria guia. Sem plataforma conhecida, abrir com uma guia genérica. Mostrar a plataforma ativa, dizer que é uma aproximação e manter a troca como escolha daquele vídeo. A guia visual fica só no editor. A posição das legendas deve corresponder à prévia no arquivo final. |
+| C · Minhas palavras | Aprovar no ••• de Legendas e como atalho em Buscar e substituir. Antes de adicionar uma palavra, deixar claro qual grafia será guardada. A lista ajuda o reconhecimento em vídeos futuros. Uma substituição no vídeo atual continua sendo uma ação separada. |
+| D · Posição da legenda e zoom por frase | Aprovar a seleção na faixa principal de Legendas, inclusive Select lines. A posição manual deve mover original e tradução juntos e prevalecer sobre o posicionamento automático na divisória. Para o zoom, as linhas indicam o intervalo inicial, sem dividir o clipe. Corrigir o texto ou desligar as legendas não deve apagar o zoom. |
+| E · Três defeitos | Corrigir agora. Recalcular as margens quando mudar a proporção, salvar a tentativa escolhida com Desfazer e usar o roteiro do take correspondente numa montagem. Testar fechar e reabrir o projeto e misturar takes com roteiros diferentes e um vídeo importado sem roteiro. |
+
+A maior lacuna do canvas está em Meu estilo. Ele volta para a etapa 4, mas já existem Kit, Template e Copy/Paste look, e o próprio canvas relata que um template pode sobrescrever a aparência do kit sem aviso. Antes de desenhar outro seletor, a Claude precisa mostrar o que cada caminho salva, o que substitui e o que preserva. Se a receita guardar preferências de limpeza, zoom e áudio, aplicá-la deve carregar essas preferências. Executar novos cortes ou outros ajustes que mudam o vídeo deve ser uma ação explícita.
+
+## Resposta para enviar à Claude
+
+Pode corrigir agora os três defeitos do item E. Registre a correção das margens por proporção, a persistência de Keep this one com Desfazer e o uso do roteiro de cada take na montagem. Confira esses casos na prévia, ao reabrir o projeto e, para as margens, no arquivo exportado.
+
+A. Quick pass no Clean up se atuar só sobre a fala. Se a etapa 5 incluir uma automação que também aplica zoom, legendas ou áudio, apresente um ponto de entrada próprio para aprovação. A pessoa deve ver o que será aplicado, revisar mudanças de tempo e desfazer a aplicação inteira.
+
+B. Use a plataforma do roteiro como sugestão. Permita trocar ou desligar a guia dentro do editor e use uma guia genérica quando não houver plataforma conhecida. Identifique a plataforma ativa e trate a guia como aproximação. Valide contraste e texto grande com vídeos claros e escuros.
+
+C. Aprove My words no ••• de Legendas e Add to my words em Buscar e substituir. Mostre a grafia que será salva. A lista serve ao reconhecimento de fala e fica separada do perfil usado pela IA de roteiros. Adicionar uma palavra à lista e substituir texto no vídeo são ações distintas.
+
+D. Use a faixa de Legendas da timeline principal para selecionar uma linha ou várias. Mostre antes do ajuste se a posição é local ou global. A posição manual da linha prevalece sobre a divisória automática, move original e tradução juntos e tem reset local que recupera a posição automática. O zoom usa o intervalo selecionado como ponto de partida e pode ser ajustado separadamente, sem dividir o clipe. Teste o que acontece ao corrigir, dividir ou apagar uma legenda e ao cortar o vídeo depois. A timeline principal continua fora dos painéis, com os controles locais já aprovados.
+
+Meu estilo volta para a etapa 4. Antes de implementar, mostre lado a lado o alcance de Meu estilo, Kit, Template e Copy/Paste look. Resolva a sobrescrita silenciosa de fontes e cores. Defina o que a receita guarda, o que exige aplicação explícita e o que acontece com ajustes locais existentes. Inclua um teste de reaplicar o estilo num vídeo novo e outro de aplicar sobre um vídeo já editado. Trate também a folha repetida do Paste look e a visibilidade das cores da legenda no plano revisado.
+
+Feche os pontos pendentes antes de implementar cada fluxo. Defina a regra para alongar legendas junto de outra linha e na borda de um clipe. Separe marcas de ênfase manual e automática para que desligar a automação preserve o trabalho manual. Em zoom por frase, defina limites de qualidade e duração e confira Follow face também em mídia importada. Em áudio, explique o nível da música e quanto ela baixa sob a voz. Meça loudness e true peak no arquivo antes de aprovar normalização, e ouça casos reais antes de ativar tratamento de respiração ou sibilância. Para Repetições, mantenha o fluxo em Words e registre os idiomas efetivamente testados com fala real.
+
+Depois do meu teste da etapa 3 no iPhone, feche os pontos de entrada e a altura dos painéis da etapa 4. No relatório, separe o que foi lido no código, o que foi reproduzido e o que foi validado no aparelho. O congelamento ainda fica pendente do meu fluxo de teste.
+
+## Meu estilo: decisões F, G, H (08/11/2026)
+
+Resposta do dono à comparação https://claude.ai/artifact/A1x24qHJkfZchG1PJeRMnW. Texto do dono, sem edição.
+
+Eu escolheria F sim, G(a) e H(a). O ganho é configurar seu estilo uma vez, começar o próximo vídeo com ele e preservar o que você já ajustou à mão. Eu faria duas ressalvas. O template precisa dizer o que vai trocar mesmo quando preserva as fontes e cores do kit, e o Paste look só deve repetir a última escolha quando ela fizer sentido para o novo item.
+
+Resposta para enviar à Claude
+
+F. Sim. Meu estilo vira o próprio Kit. Adicione Editing e Use on new videos ao Kit. Em Editing, guarde as preferências de limpeza, música, ducking e efeito de voz. Carregar a receita deixa esses valores prontos nas ferramentas. Remover pausas ou repetições continua dependendo de tocar em Remove. Se o efeito de voz for aplicado ao carregar o kit, deixe isso explícito na interface. A proposta anterior também mencionava preferências de zoom. Registre se elas entram nesta entrega ou ficam pendentes. Guardar uma preferência de zoom e criar zooms na timeline são ações distintas.
+
+G. Escolho (a). Se eu marcar Use on new videos, aplique o kit automaticamente ao criar um vídeo e mostre Your style is on · Undo. O Desfazer vale para o vídeo atual e preserva minha preferência para os próximos. Reabrir um projeto existente preserva o estado salvo. Se eu tiver vários kits, apenas um pode ser o padrão para vídeos novos.
+
+H. Escolho (a). Preserve por padrão os ajustes manuais de fonte, cor e tamanho em títulos e linhas de legenda. Preserve também posições ajustadas por trecho. Se houver ajustes que podem ser substituídos, mostre uma opção desmarcada com a contagem real, distinguindo títulos de legendas. Substitua apenas os ajustes que a opção indicar.
+
+Template. Aprovado. Antes de aplicar, mostre o que será trocado e que as fontes e cores do kit serão mantidas. Se o template depender de uma fonte ou cor específica para ficar como na demonstração, mostre na prévia como ele realmente vai ficar com o meu kit.
+
+Paste look. Aprovado. Mostre a folha na primeira vez e reutilize a última escolha para destinos compatíveis. Depois de colar, mostre Undo e Change. Change deve permitir corrigir a colagem que acabou de acontecer. Se a escolha anterior for incompatível com o novo destino, abra a folha de novo.
+
+## Alongar legenda e ênfase automática (08/11/2026)
+
+Respostas do dono às duas perguntas da Claude. Texto do dono, sem edição.
+
+**Alongar legenda.** Na etapa 4, siga com “Parar e avisar”. Deixe alongar a legenda até o primeiro limite que encontrar, seja o começo da próxima linha ou o corte do clipe. Ao chegar ao limite, mostre uma dica curta perto da alça e dê um toque háptico por gesto. Preserve a duração da legenda vizinha e o sincronismo das palavras. Se a duração mudar, registre um único passo de Desfazer ao soltar. Se a alça já estava no limite e nada mudou, deixe o histórico como está.
+
+**Ênfase automática.** Use a regra no aparelho como primeira versão, desligada por padrão e acionada em Legendas, junto à edição das palavras. Em linhas com três ou mais palavras, sugira até uma palavra, pulando linhas que já tenham ênfase manual. Use números, valores e nomes como sinais, sem dar prioridade automática a qualquer ocorrência. Se a regra não encontrar um candidato claro, deixe a linha sem marca.  Quero poder revisar e remover cada sugestão. Se eu remover uma, ela não deve voltar sozinha. Ao desligar a ênfase automática, remova só as marcas automáticas e preserve as manuais. Mantenha essa função separada do destaque que acompanha a palavra falada.  Antes de liberar, teste com legendas reais em português e inglês, incluindo frases com números incidentais e linhas que devem ficar sem marca. Registre quais idiomas foram validados.

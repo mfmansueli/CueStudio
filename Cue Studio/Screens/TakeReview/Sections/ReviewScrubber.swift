@@ -9,13 +9,16 @@ import SwiftUI
 /// yellow on the left and the length in grey on the right. Held, the knob grows and a bubble over it says the time; a tick is felt at each second
 /// crossed, and a firmer one at the start and the end (owner's refinement, 22/10/2026).
 struct ReviewScrubber: View {
-    let progress: Double
+    /// How much has played, read here: it changes ten times a second while the take plays, and read by the review it redrew all of it.
+    let readProgress: () -> Double
     let duration: TimeInterval
     let onSeek: (Double) -> Void
 
     @State private var isDragging = false
     /// The whole second the drag last crossed, for its tick.
     @State private var lastSecond: Int?
+
+    private var progress: Double { readProgress() }
 
     var body: some View {
         VStack(spacing: 7) {

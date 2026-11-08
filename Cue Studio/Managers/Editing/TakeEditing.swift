@@ -13,10 +13,12 @@ protocol TakeEditing: AnyObject {
     func sourceDuration(ofVideoAt url: URL) async throws -> TimeInterval
     /// Frames per second of the recording, read from the file; nil when it can't be read.
     func frameRate(ofVideoAt url: URL) async -> Double?
-    /// Clean Up's findings: pauses from the take's loudness, and filler words and possible retakes
-    /// from its transcript in `language` (pauses only when no speech model can listen). None for a
-    /// take without sound. Throws when the sound can't be read.
-    func cleanUpSuggestions(forVideoAt url: URL, language: SpeechLanguageRequest) async throws -> [CleanUpSuggestion]
+    /// Clean Up's findings: pauses from the take's loudness (the silence level following a loud background or a soft voice, and
+    /// saying how sure it could be: `CleanUpFindings.pauseHearing`), and filler words and possible retakes from its transcript in
+    /// `language` (pauses only when no speech model can listen), with the lines of `script` ("" for none) said more than once;
+    /// and whether the words were heard, and in what language (`CleanUpFindings.hearing`). None for a take without sound. Throws
+    /// when the sound can't be read.
+    func cleanUpFindings(forVideoAt url: URL, language: SpeechLanguageRequest, script: String) async throws -> CleanUpFindings
     /// Captions from what is said in the take, heard in `language`. The voice decides the words and
     /// when; `script` (empty for a take without one) only lends its spelling where it reliably
     /// matches. Nothing is ever spread over the take: without sound, speech or a model for the
@@ -31,6 +33,9 @@ protocol TakeEditing: AnyObject {
     ) async throws -> CaptionOutcome
     /// The edited take for a player, prepared for `purpose` the way the export prepares it (`EditRenderRequest`).
     func previewItem(forVideoAt url: URL, edit: TakeEdit, purpose: EditRenderPurpose) async throws -> AVPlayerItem
+    /// The loudest sample of `edit`'s sounds mixed together as an export mixes them, before its limiter (`Mixdown.peak`): over 1 the
+    /// preview distorts where the exported file doesn't. Nil when the edit plays one sound (nothing is mixed).
+    func mixPeak(forVideoAt url: URL, edit: TakeEdit) async throws -> Float?
     /// The volume at which the take's untreated sound is as loud as the Voice tool's result, for
     /// "Compare with original"; nil when the take has no speech to measure.
     func matchedOriginalVolume(forVideoAt url: URL, edit: TakeEdit) async -> Double?

@@ -19,14 +19,18 @@ struct ShareNetworkPicker: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 14) {
-                Text("Share to universe").cueFont(.headline, weight: .semibold).frame(maxWidth: .infinity)
-                    .overlay(alignment: .trailing) {
-                        Button { showsOptions = true } label: { Image(systemName: "slider.horizontal.3") }
-                            .buttonStyle(.cueIcon(.glass, diameter: 36))
-                            .offset(y: -2)
-                            .accessibilityLabel(Text("Export options"))
-                            .accessibilityIdentifier("shareFlow.options")
+                // The title, and Export options named with the quality the file is made in (D11): it opens without guessing at a bare icon.
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 10) {
+                        Text("Share to universe").cueFont(.headline, weight: .semibold)
+                        Spacer(minLength: 0)
+                        optionsButton
                     }
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Share to universe").cueFont(.headline, weight: .semibold)
+                        optionsButton
+                    }
+                }
                 header
                 // The first voyage's last step.
                 VoyageInPlaceTip(step: .share, place: .share, isAllowed: true) { isDone in
@@ -74,7 +78,20 @@ struct ShareNetworkPicker: View {
             .padding(EdgeInsets(top: 4, leading: Metrics.gutter, bottom: 20, trailing: Metrics.gutter))
         }
         .scrollIndicators(.hidden)
-        .sheet(isPresented: $showsOptions) { ShareExportOptions(review: review).presentationDetents([.medium]).presentationBackground(Palette.sheetNight) }
+        .sheet(isPresented: $showsOptions) {
+            ShareExportOptions(review: review, edit: review.take?.edit).presentationDetents([.medium]).presentationBackground(Palette.sheetNight)
+        }
+    }
+
+    /// "Options · 1080p" (or "· 4K", or "· 606×1080" when the format's crop makes the file smaller): the sliders, named, with what the file is.
+    private var optionsButton: some View {
+        Button { showsOptions = true } label: {
+            Label(String(localized: "Options · \(review.outputSizeLabel(for: review.take?.edit))"), systemImage: "slider.horizontal.3")
+                .lineLimit(1)
+        }
+        .buttonStyle(.cueGlass(.compact, expands: false))
+        .fixedSize()
+        .accessibilityIdentifier("shareFlow.options")
     }
 
     private var header: some View {

@@ -38,7 +38,13 @@ nonisolated struct CaptionCue: Codable, Hashable, Identifiable, Sendable {
     /// The words the creator marked for emphasis (Caption › Emphasis), by their place among the line's words
     /// (`CaptionText.words(in: text)`): drawn in the style's emphasis color and size for the whole line, measured at that size
     /// when lines are cut, and kept through corrections, splits, joins and formats. Unlike the word being said, they stay.
+    /// Suggested marks are among them (`suggestedEmphasis`).
     var emphasis: Set<Int> = []
+    /// The marks among `emphasis` that Suggest emphasis put (`CaptionEmphasisSuggester`), not the creator: turning it off takes
+    /// these away and leaves the creator's (owner, 08/11/2026). Kept through the same corrections, splits, joins and formats.
+    var suggestedEmphasis: Set<Int> = []
+    /// Suggested marks the creator took away: never suggested again on their own.
+    var declinedEmphasis: Set<Int> = []
 
     init(
         id: UUID = UUID(), text: String, start: TimeInterval, end: TimeInterval, words: [CaptionWord] = [],
@@ -110,7 +116,8 @@ nonisolated struct CaptionCue: Codable, Hashable, Identifiable, Sendable {
     // MARK: - Coding
 
     private enum CodingKeys: String, CodingKey {
-        case id, text, start, end, words, origin, isRevised, needsTimingReview, sourceID, lineStyle, keepsBlock, emphasis
+        case id, text, start, end, words, origin, isRevised, needsTimingReview, sourceID, lineStyle, keepsBlock, emphasis, suggestedEmphasis
+        case declinedEmphasis
     }
 
     /// Captions saved before they had an identity or words read as legacy lines.
@@ -128,9 +135,11 @@ nonisolated struct CaptionCue: Codable, Hashable, Identifiable, Sendable {
         lineStyle = try? container.decodeIfPresent(CaptionLineStyle.self, forKey: .lineStyle)
         keepsBlock = (try? container.decodeIfPresent(Bool.self, forKey: .keepsBlock)) ?? false
         emphasis = ((try? container.decodeIfPresent(Set<Int>.self, forKey: .emphasis)) ?? []).filter { $0 >= 0 }
+        suggestedEmphasis = ((try? container.decodeIfPresent(Set<Int>.self, forKey: .suggestedEmphasis)) ?? []).filter(emphasis.contains)
+        declinedEmphasis = ((try? container.decodeIfPresent(Set<Int>.self, forKey: .declinedEmphasis)) ?? []).filter { $0 >= 0 }
     }
 
-    /// `keepsBlock` and `emphasis` are written only when set: lines that never had them read and write as before.
+    /// `keepsBlock` and the marks are written only when set: lines that never had them read and write as before.
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(id, forKey: .id)
@@ -145,6 +154,18 @@ nonisolated struct CaptionCue: Codable, Hashable, Identifiable, Sendable {
         try container.encodeIfPresent(lineStyle, forKey: .lineStyle)
         if keepsBlock { try container.encode(keepsBlock, forKey: .keepsBlock) }
         if !emphasis.isEmpty { try container.encode(emphasis.sorted(), forKey: .emphasis) }
+        if !suggestedEmphasis.isEmpty { try container.encode(suggestedEmphasis.sorted(), forKey: .suggestedEmphasis) }
+        if !declinedEmphasis.isEmpty { try container.encode(declinedEmphasis.sorted(), forKey: .declinedEmphasis) }
+    }
+
+    /// The marks the creator put (the shown marks Suggest emphasis didn't).
+    var ownEmphasis: Set<Int> { shownEmphasis.subtracting(suggestedEmphasis) }
+
+    /// The marks as a line's words change: each of the three sets the same way (`CaptionRevision`, `CaptionBlocking`).
+    mutating func setMarks(_ remap: (Set<Int>) -> Set<Int>) {
+        emphasis = remap(emphasis)
+        suggestedEmphasis = remap(suggestedEmphasis).intersection(emphasis)
+        declinedEmphasis = remap(declinedEmphasis)
     }
 
     /// The marked words that are words of the line now (a shorter correction leaves none past its end).

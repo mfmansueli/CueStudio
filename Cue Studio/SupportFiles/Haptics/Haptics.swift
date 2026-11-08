@@ -32,7 +32,7 @@ enum Haptics {
         selection()
     }
 
-    /// An orb reached an end of its rail, or Cue picked the best take.
+    /// An orb reached an end of its rail, a caption's handle its limit, or Cue picked the best take.
     static func soft() {
         guard isEnabled else { return }
         softGenerator.impactOccurred()

@@ -47,10 +47,12 @@ struct SelfieControlParts {
     @ViewBuilder
     var speedBlock: some View {
         if session.prompter.scrollMode == .voice {
-            VoiceIndicator(
-                level: viewModel.voiceLevel, isListening: viewModel.isPlaying && viewModel.isVoiceActive,
-                status: viewModel.voiceFollowStatus, speedLabel: session.prompter.speedLabel
-            )
+            VoiceLevelReader(viewModel: viewModel) { level in
+                VoiceIndicator(
+                    level: level, isListening: viewModel.isPlaying && viewModel.isVoiceActive,
+                    status: viewModel.voiceFollowStatus, speedLabel: session.prompter.speedLabel
+                )
+            }
         } else {
             SpeedSlider(speed: session.prompter.speed, onChange: { viewModel.setSpeed($0) })
         }

@@ -8,9 +8,11 @@ import Foundation
 /// The panels' headers: the title, and the subtitle that says what the panel changes ("This
 /// clip", "Whole video", "Applies to all 8 lines", "Only this title changes").
 extension QuickEditViewModel {
-    /// ✓: applies (everything already shows live) and closes the panel.
+    /// ✓: applies (everything already shows live) and closes the panel; Captions opened by Caption style's "Choose words to
+    /// emphasize" goes back to Caption style as it was left.
     func closePanel() {
         player.pause()
+        if panel == .captions, captions.returnToCaptionStyle() { return }
         panel = nil
     }
 
@@ -22,12 +24,27 @@ extension QuickEditViewModel {
         if panel == .voiceOver && audio.offersNarrationScript { return .medium }
         // Music's Volume has its lowering under the voice too.
         if panel == .volume, selection?.musicID != nil { return .medium }
+        // A clip's Advanced (Fade in and Fade out) gets the room to show both whole, not scrolled inside the short panel.
+        if panel == .volume, showsAdvanced { return .medium }
         return panel.size
+    }
+
+    /// The open panel takes all the room but the smallest preview's: a styling panel expanded, or Clean up grown (its own
+    /// height, kept apart from the styling panels').
+    var panelIsExpanded: Bool {
+        guard let panel, panel.isExpandable else { return false }
+        return panel == .pauses ? clips.cleanUpIsExpanded : stylePanelIsExpanded
     }
 
     /// The narration's script is over the preview now: Voice-over open, a script, the switch on, the preview not full screen.
     var showsNarrationScriptOverlay: Bool {
         panel == .voiceOver && audio.showsNarrationScript && !isFullScreen && audio.offersNarrationScript
+    }
+
+    /// The safe zone guide is over the preview now: turned on, the video ready, the preview not full screen (it shows the video as
+    /// it will be), and neither the narration's script nor a clip's crop over it.
+    var showsSafeGuideOverlay: Bool {
+        look.showsSafeGuide && isReady && !isFullScreen && panel != .clipCrop && !showsNarrationScriptOverlay
     }
 
     /// Space plays and pauses, except while a panel with a text field is open.
@@ -36,6 +53,16 @@ extension QuickEditViewModel {
         switch panel {
         case .textStyle?, .captions?: return false
         default: return true
+        }
+    }
+
+    /// The cut-out creator can be moved on the preview: Background is open with something new behind them, or the panel of a photo
+    /// or video shown Behind you (`PersonPlaceLayer`).
+    var showsPersonPlace: Bool {
+        switch panel {
+        case .background?: look.canPlacePerson
+        case .media?: selectedMedia?.layout == .behind
+        default: false
         }
     }
 
@@ -50,32 +77,49 @@ extension QuickEditViewModel {
         case .speed, .zoom, .volume, .stabilize, .clipCrop, .clipAnimation: clipSubtitle(panel)
         case .voice: audio.voiceScopeLabel
         case .adjust, .skin, .filters, .background: look.lookSubtitle(for: panel)
-        case .pauses: String(localized: "Whole video · marked in yellow on the timeline")
-        case .crop: String(localized: "Whole video · format for where you post")
+        case .pauses: String(localized: "Whole video · marked in yellow")
+        case .crop: String(localized: "Whole video · where you post")
         case .captions, .autoCaptions, .captionStyle: captionSubtitle(panel)
         case .textStyle: textStyleSubtitle
-        case .voiceOver: String(localized: "Records from the playhead · the video plays muted")
+        case .voiceOver: String(localized: "From the playhead · video muted")
         case .beats: audio.beatsSubtitle
         case .voiceEffects: audio.voiceEffectsSubtitle
-        case .media: selectedMedia?.layout == .split ? splitSubtitle : String(localized: "On top of the video")
+        case .media: mediaSubtitle
         case .mask: maskSubtitle
-        case .motion: String(localized: "Ready-made motion, Track and keyframes")
+        case .motion: String(localized: "\(selectedMedia?.kind == .photo ? String(localized: "Photo") : String(localized: "Video")) · how it moves")
         case .blur: blurSubtitle
         case .transition: transitionSubtitle
-        case .smart: String(localized: "Quick fixes, made on your iPhone")
+        case .templates: templatesSubtitle
         }
     }
 
-    /// "Video · only what's inside shows", or "· what's outside shows" when inverted.
+    /// Where the picked photo or video shows.
+    private var mediaSubtitle: String {
+        switch selectedMedia?.layout {
+        case .split?: splitSubtitle
+        case .behind?: String(localized: "Behind you · you stay on top")
+        default: String(localized: "On top of the video")
+        }
+    }
+
+    /// What the open tab of the Templates panel changes.
+    private var templatesSubtitle: String {
+        switch templatesSection {
+        case .templates: String(localized: "Whole video · Undo puts it back")
+        case .brand: String(localized: "Your fonts, colors and logo")
+        }
+    }
+
+    /// "Video · inside shows", or "· outside shows" when inverted.
     private var maskSubtitle: String {
         let kind = selectedMedia?.kind == .photo ? String(localized: "Photo") : String(localized: "Video")
         guard let mask = selectedMedia?.mask else { return String(localized: "\(kind) · pick a shape") }
-        return mask.inverted ? String(localized: "\(kind) · what's outside shows") : String(localized: "\(kind) · only what's inside shows")
+        return mask.inverted ? String(localized: "\(kind) · outside shows") : String(localized: "\(kind) · inside shows")
     }
 
     /// "Face · 00:03.0–00:07.0" (where it first shows), or the first step's instruction.
     private var blurSubtitle: String {
-        if blur.picking != nil { return String(localized: "Tap a face in the video, or draw an area") }
+        if blur.picking != nil { return String(localized: "Tap a face, or draw an area") }
         guard let region = selectedBlur, let shown = edit.editedSpans(of: region, in: edit.timeline).first else {
             return String(localized: "Hides a face, a plate or a name")
         }
@@ -89,10 +133,10 @@ extension QuickEditViewModel {
             let from = DurationText.editor(clip?.sourceLength ?? 0)
             let to = DurationText.editor(clip?.duration ?? 0)
             return String(localized: "\(clipScope) · \(from) → \(to)")
-        case .zoom: return String(localized: "\(clipScope) · camera move while it plays")
-        case .stabilize: return String(localized: "\(clipScope) · steadies the camera’s shake")
-        case .clipCrop: return String(localized: "\(clipScope) · turn it and choose what fills the frame")
-        case .clipAnimation: return String(localized: "\(clipScope) · how it comes in and goes out")
+        case .zoom: return String(localized: "\(clipScope) · camera move")
+        case .stabilize: return String(localized: "\(clipScope) · steadies shake")
+        case .clipCrop: return String(localized: "\(clipScope) · turn and frame")
+        case .clipAnimation: return String(localized: "\(clipScope) · in and out")
         default:
             switch selection {
             case .music(let id):
@@ -101,7 +145,7 @@ extension QuickEditViewModel {
                 }
                 return "\(music.title) · \(DurationText.editor(span.start))–\(DurationText.editor(span.end))"
             case .voiceOver: return String(localized: "Voice-over")
-            case .media: return String(localized: "Video · its own sound")
+            case .media: return String(localized: "Video · its own volume")
             default: return clipScope
             }
         }
@@ -109,11 +153,11 @@ extension QuickEditViewModel {
 
     private func captionSubtitle(_ panel: EditorPanel) -> String {
         switch panel {
-        case .autoCaptions: return String(localized: "Cue drafts the lines. Fix any word.")
+        case .autoCaptions: return String(localized: "Cue drafts · fix any word")
         case .captionStyle: return String(localized: "Applies to all \(captions.editedCaptionLines.count) lines")
         default:
             guard edit.showsCaptions else { return String(localized: "Hidden in the video") }
-            return String(localized: "\(captions.editedCaptionLines.count) lines · tap one to jump there")
+            return String(localized: "\(captions.editedCaptionLines.count) lines · tap one to go")
         }
     }
 
@@ -122,7 +166,7 @@ extension QuickEditViewModel {
     private var textStyleSubtitle: String {
         // A graphic (arrow, circle, tag) has its own panel and is always changed alone.
         if selectedText?.graphic != nil { return String(localized: "Only this graphic changes") }
-        guard overlays.textStyleTabChangesLook else { return String(localized: "Motion and timing change only this text") }
+        guard overlays.textStyleTabChangesLook else { return String(localized: "Only this text moves") }
         switch overlays.textStyleScope {
         case .selected, .allCaptions:
             switch selectedText?.role ?? .title {
@@ -131,7 +175,7 @@ extension QuickEditViewModel {
             case .hook: return String(localized: "Only this hook changes")
             case .callout: return String(localized: "Only this callout changes")
             }
-        case .allTexts: return String(localized: "All \(edit.texts.count) texts change together")
+        case .allTexts: return String(localized: "All \(overlays.textsStyledAlike.count) texts change together")
         }
     }
 
@@ -142,8 +186,23 @@ extension QuickEditViewModel {
 
     /// What the split screen panel's tab changes: the layout of every split screen, or this support's framing, sound or part.
     private var splitSubtitle: String {
-        if overlays.splitTab == .layout { return String(localized: "Every split screen in the video") }
+        if overlays.splitTab == .layout { return String(localized: "Every split screen") }
         if overlays.splitTab == .framing, overlays.selectedArea == .main { return String(localized: "Main video · its recording") }
         return String(localized: "This support")
+    }
+}
+
+// MARK: - Tucked away (iPhone SE)
+
+extension QuickEditViewModel {
+    /// The SE's styling sheet steps aside so the timeline can be reached in one tap, without ✓ (owner, canvas 2 R10 §7.3).
+    func tuckPanel() {
+        guard panel != nil else { return }
+        panelIsTucked = true
+    }
+
+    /// The panel comes back as it was left.
+    func untuckPanel() {
+        panelIsTucked = false
     }
 }

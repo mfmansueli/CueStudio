@@ -19,9 +19,10 @@ final class EditorUITests: XCTestCase {
         XCTAssertTrue(app.buttons["edit.backButton"].exists)
         XCTAssertFalse(app.buttons["edit.exportButton"].exists)
         XCTAssertTrue(app.buttons["edit.playButton"].exists)
-        // The owner's order (2026-10-16): Edit, Captions, Text, ✦ Smart, Media, Audio, Format, Filters, Cover; Adjust and
+        // The owner's order (2026-10-16; Clean up where ✦ Smart was, 07/11): Edit, Captions, Text, Clean up, Media, Audio, Format,
+        // Filters, Cover; Adjust and
         // Background are Edit's clip tools, and the old Crop and Overlay are gone (Format and Media replace them).
-        for tool in ["edit", "captions", "text", "smart", "addMedia", "audio", "format", "filters", "cover"] {
+        for tool in ["edit", "captions", "text", "pauses", "addMedia", "audio", "format", "filters", "cover"] {
             XCTAssertTrue(app.buttons["edit.toolbar.\(tool)"].exists, tool)
         }
         for tool in ["adjust", "crop", "background", "media"] {
@@ -37,7 +38,7 @@ final class EditorUITests: XCTestCase {
         XCTAssertTrue(app.buttons["edit.toolbar.speed"].exists)
         XCTAssertTrue(app.buttons["edit.toolbar.zoom"].exists)
         EditorApp.tapTool(app, "back")
-        XCTAssertTrue(app.buttons["edit.toolbar.smart"].exists(within: 5))
+        XCTAssertTrue(app.buttons["edit.toolbar.pauses"].exists(within: 5))
     }
 
     func testAdjustPicksASettingAndMovesItsRuler() {
@@ -59,7 +60,7 @@ final class EditorUITests: XCTestCase {
         XCTAssertFalse(app.buttons["edit.adjust.resetOne"].exists)
     }
 
-    /// Skin is a panel of its own: opening it applies nothing; Natural sets every control at once; moving one makes it Custom; Refine
+    /// Skin is a panel of its own: opening it applies nothing; Natural sets every control at once; moving one makes it Custom; Texture
     /// waits for the smoothing; each control has its own Reset and the panel's Reset turns everything off. Adjust has no smoothing.
     func testSkinIsItsOwnPanelWithPresetsControlsAndReset() {
         let app = EditorApp.open()
@@ -70,7 +71,7 @@ final class EditorUITests: XCTestCase {
         XCTAssertEqual(smooth.value as? String, "0", "opening Skin applies nothing")
         let state = app.descendants(matching: .any)["edit.skin.state"]
         XCTAssertEqual(state.label, "Off")
-        // Refine waits for the smoothing, in the ruler's room.
+        // Texture waits for the smoothing, in the ruler's room.
         app.buttons["edit.skin.texture"].tap()
         XCTAssertTrue(app.descendants(matching: .any)["edit.skin.textureNote"].exists(within: 5))
         XCTAssertFalse(app.descendants(matching: .any)["edit.skin.ruler"].exists)
@@ -191,13 +192,17 @@ final class EditorUITests: XCTestCase {
         XCTAssertTrue(app.buttons["edit.filter.original"].isSelected, "Reset clip left a filter on the clip")
     }
 
-    /// Auto measures the real frames of the clip: it ends with a correction to dial down, or says the picture is
+    /// Measure measures the real frames of the clip (the Auto chip alone doesn't): it ends with a correction to dial down, or says the picture is
     /// already balanced; either way the picture is never left half-done.
     func testAutoMeasuresTheClipAndCompareShowsTheOriginal() {
         let app = EditorApp.open()
         EditorApp.tapTool(app, "adjust")
+        // The Auto chip only picks its ruler (canvas 2 R5): nothing is measured until Measure.
+        app.buttons["edit.adjust.autoDial"].tap()
+        XCTAssertFalse(app.descendants(matching: .any)["edit.adjust.autoAmount"].exists(within: 1.5), "The Auto chip measured on its own")
         let auto = app.buttons["edit.adjust.auto"]
         XCTAssertTrue(auto.exists(within: 5))
+        XCTAssertEqual(auto.label, "Measure")
         auto.tap()
         // Measuring takes a moment; it ends with the intensity ruler, or a note when there's nothing to do.
         let amount = app.descendants(matching: .any)["edit.adjust.autoAmount"]
@@ -310,8 +315,7 @@ final class EditorUITests: XCTestCase {
     func testFixCaptionTextOpensTheLineReadyToType() {
         // The demo's words were heard already: the Simulator can't recognize speech.
         let app = EditorApp.open(demo: true, arguments: ["-uiTestDemoTranscript"])
-        EditorApp.tapTool(app, "smart")
-        app.buttons["edit.smart.editByText"].tap()
+        EditorApp.tapTool(app, "editByText")
         let first = app.buttons["edit.transcript.word.2"]
         XCTAssertTrue(first.exists(within: 5), "No words in Edit by text")
         first.tap()
@@ -383,6 +387,66 @@ final class EditorUITests: XCTestCase {
         app.descendants(matching: .any)["edit.doneSheet"].firstMatch.swipeDown(velocity: .fast)
         XCTAssertTrue(app.buttons["edit.done.share"].isGone(within: 5))
         XCTAssertTrue(app.buttons["edit.toolbar.edit"].exists(within: 5))
+    }
+
+    /// D11 and F19: under Done's answers, a quiet line turns the same sheet to the Export options Share and Download use (no sheet over it),
+    /// with the quality the file is made in; "‹" goes back to the answers.
+    func testDoneReachesTheExportOptionsInsideItsSheet() {
+        let app = EditorApp.open()
+        app.buttons["edit.doneButton"].tap()
+        let line = app.buttons["edit.done.exportOptions"]
+        XCTAssertTrue(line.exists(within: 5))
+        XCTAssertTrue(line.label.contains("1080p"))
+        line.tap()
+        let sheet = app.descendants(matching: .any)["edit.doneSheet"].firstMatch
+        let back = app.buttons["edit.done.optionsBack"]
+        XCTAssertTrue(back.exists(within: 5))
+        // The options are Done's own page: inside its sheet, with no second sheet and its close button over it.
+        XCTAssertTrue(sheet.switches["share.captionsToggle"].exists(within: 5))
+        XCTAssertTrue(sheet.descendants(matching: .any)["share.qualityRecorded"].firstMatch.exists)
+        XCTAssertFalse(app.buttons["sheet.closeButton"].exists)
+        XCTAssertFalse(app.buttons["edit.done.share"].exists)
+        EditorApp.capture(app, "done-export-options")
+        back.tap()
+        XCTAssertTrue(app.buttons["edit.done.share"].exists(within: 5))
+        XCTAssertTrue(back.isGone(within: 5))
+        XCTAssertTrue(app.buttons["edit.done.exportOptions"].exists)
+    }
+
+    /// F17: at the largest text size each answer reads whole: its title and detail get the sheet's width (the pill goes under them), so
+    /// "Download video" never stands a letter per line, and each answer fits on the screen.
+    func testDoneReadsWholeAtTheLargestText() {
+        let app = EditorApp.open(arguments: ["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"])
+        app.buttons["edit.doneButton"].tap()
+        let sheet = app.descendants(matching: .any)["edit.doneSheet"].firstMatch
+        XCTAssertTrue(sheet.exists(within: 5))
+        let screen = app.windows.firstMatch.frame
+        for answer in ["share", "download", "ready", "notYet"] {
+            let row = app.buttons["edit.done.\(answer)"]
+            app.scroll(to: row, in: sheet)
+            XCTAssertTrue(row.exists, answer)
+            XCTAssertGreaterThan(row.frame.width, screen.width * 0.8, answer)
+            // A letter per line made "Download video" alone taller than the screen.
+            XCTAssertLessThan(row.frame.height, screen.height * 0.75, answer)
+        }
+        XCTAssertTrue(app.buttons["edit.done.download"].label.contains("Download video"))
+        EditorApp.capture(app, "done-largest-text")
+    }
+
+    /// With the last free export left, Done says so under its question (owner, 06/11/2026); with more left it says nothing.
+    func testDoneSaysWhenItIsTheLastFreeExport() {
+        let app = EditorApp.open(arguments: ["-uiTestExportsLeft", "1"])
+        app.buttons["edit.doneButton"].tap()
+        let note = app.descendants(matching: .any)["edit.done.exportNote"].firstMatch
+        XCTAssertTrue(note.exists(within: 5))
+        XCTAssertEqual(note.label, "LAST FREE EXPORT")
+        XCTAssertTrue(app.buttons["edit.done.download"].exists)
+        app.terminate()
+
+        let spare = EditorApp.open(arguments: ["-uiTestExportsLeft", "2"])
+        spare.buttons["edit.doneButton"].tap()
+        XCTAssertTrue(spare.buttons["edit.done.share"].exists(within: 5))
+        XCTAssertFalse(spare.descendants(matching: .any)["edit.done.exportNote"].firstMatch.exists)
     }
 
     /// "Not yet, I'll come back" leaves the edit open: the review offers to continue it.
@@ -458,18 +522,33 @@ final class EditorUITests: XCTestCase {
 
     // MARK: - Timeline
 
-    /// ✦ Smart keeps its tools and its templates apart: Templates is a tab of its own; a template applies to the whole video,
-    /// is marked as the one in use and comes off with one Undo.
-    func testSmartHasTemplatesInATabOfTheirOwn() {
+    /// Templates and the brand kits are two panels, each from its own button with no tab to the other (canvas 2 R3); a template
+    /// is tried on with a sheet (× leaves no trace), applies to the whole video, is marked as the one in use and comes off with
+    /// one Undo.
+    func testTemplatesOpenOnTheirTabApartFromBrandKits() {
         let app = EditorApp.open()
-        EditorApp.tapTool(app, "smart")
-        XCTAssertTrue(app.buttons["edit.smart.voice"].exists(within: 5))
+        EditorApp.tapTool(app, "brandKit")
+        XCTAssertTrue(app.buttons["edit.brand.newKit"].exists(within: 5))
         XCTAssertFalse(app.buttons["edit.template.boldHook"].exists)
-        app.buttons["edit.smart.section.templates"].tap()
+        XCTAssertFalse(app.buttons["edit.templates.section.templates"].exists, "The brand kits still have a Templates tab")
+        app.buttons["edit.panel.apply"].tap()
+        EditorApp.tapTool(app, "templates")
         let boldHook = app.buttons["edit.template.boldHook"]
         XCTAssertTrue(boldHook.exists(within: 5))
-        XCTAssertFalse(app.buttons["edit.smart.voice"].exists)
+        XCTAssertFalse(app.buttons["edit.brand.newKit"].exists)
+        // A tap tries it on, with a sheet saying what changes; × leaves the video as it was.
         boldHook.tap()
+        let apply = app.buttons["edit.template.apply"]
+        XCTAssertTrue(apply.exists(within: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["edit.template.change.captions"].exists)
+        app.buttons["sheet.cancel"].firstMatch.tap()
+        XCTAssertFalse(apply.exists(within: 3))
+        XCTAssertFalse(boldHook.isSelected)
+        XCTAssertFalse(app.buttons["edit.undoButton"].isEnabled, "Cancelling a template left an undo step")
+        // Apply keeps it: one Undo takes it off.
+        boldHook.tap()
+        XCTAssertTrue(apply.exists(within: 5))
+        apply.tap()
         XCTAssertTrue(EditorApp.toastSays(app, "Bold hook on the whole video"))
         XCTAssertTrue(boldHook.isSelected)
         app.buttons["edit.undoButton"].tap()
@@ -525,7 +604,7 @@ final class EditorUITests: XCTestCase {
         EditorApp.mainTrack(app, at: 0.75).tap()
         XCTAssertTrue(app.buttons["edit.toolbar.split"].exists(within: 5))
         timeline.coordinate(withNormalizedOffset: CGVector(dx: 0.75, dy: 0.97)).tap()
-        XCTAssertTrue(app.buttons["edit.toolbar.smart"].exists(within: 5))
+        XCTAssertTrue(app.buttons["edit.toolbar.pauses"].exists(within: 5))
     }
 
     func testTheClipsLeftHandleTrimsItsStart() {

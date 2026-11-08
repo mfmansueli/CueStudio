@@ -9,6 +9,9 @@ import SwiftUI
 struct SheetHeader: View {
     var title: String
     var subtitle: String?
+    /// "Cancel" at the trailing edge: the sheet's way to leave on purpose, its work thrown away (a swipe down keeps a draft where
+    /// the sheet keeps one).
+    var onCancel: (() -> Void)?
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
@@ -24,6 +27,15 @@ struct SheetHeader: View {
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+            if let onCancel {
+                Button("Cancel", action: onCancel)
+                    .font(.system(.body, weight: .semibold))
+                    .foregroundStyle(Palette.ink2)
+                    .frame(minWidth: Metrics.hitTarget, minHeight: Metrics.hitTarget)
+                    .contentShape(Rectangle())
+                    .buttonStyle(.plain)
+                    .accessibilityIdentifier("sheet.cancel")
+            }
         }
     }
 }

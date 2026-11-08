@@ -39,6 +39,44 @@ struct CoverStudioViewModelTests {
         await Wait.until { studio.thumbnails.count == CoverTemplate.allCases.count }
     }
 
+    @Test func theTitleNeverOffersItselfAsASuggestion() async {
+        let studio = makeStudio(suggestions: ["Three morning habits", "How I wake up at 5"])
+        // A new cover starts with the first suggestion as its title: only the other is offered.
+        #expect(studio.cover.title == "Three morning habits")
+        #expect(studio.offeredSuggestions == ["How I wake up at 5"])
+        studio.setTitle("  how I WAKE up at 5 ")
+        #expect(studio.offeredSuggestions == ["Three morning habits"])
+        studio.setTitle("")
+        #expect(studio.offeredSuggestions == ["Three morning habits", "How I wake up at 5"])
+    }
+
+    @Test func theFiveStepsEndInEffectsAndTitleOpensOnWords() {
+        #expect(CoverStudioStep.allCases.map(\.rawValue) == ["image", "template", "text", "elements", "effects"])
+        #expect(CoverStudioStep.allCases.map(\.label) == ["Picture", "Template", "Title", "Graphics", "Effects"])
+        #expect(CoverStudioStep.elements.next == .effects)
+        #expect(CoverStudioStep.effects.next == nil)
+        #expect(CoverTitleSection.allCases.map(\.label) == ["Words", "Type", "Color", "Box"])
+        let studio = makeStudio()
+        #expect(studio.titleSection == .words)
+        studio.titleSection = .box
+        studio.step = .elements
+        studio.step = .text
+        #expect(studio.titleSection == .box, "The open part stays while other steps are open")
+    }
+
+    @Test func pickingFramesChangesOnlyTheCoversPicture() async {
+        let studio = makeStudio()
+        await studio.start()
+        studio.beginGesture()
+        studio.useFrame(atEdited: 9)
+        studio.useFrame(atEdited: 12)
+        studio.endGesture()
+        #expect(studio.cover.source.frame?.time == 12)
+        #expect(studio.pictureEditedTime == 12)
+        studio.undo()
+        #expect(studio.cover.source.frame?.time == 4, "The strip's drag is one undo step")
+    }
+
     @Test func aGestureIsOneUndoStepAndRedoBringsItBack() async {
         let studio = makeStudio()
         await studio.start()

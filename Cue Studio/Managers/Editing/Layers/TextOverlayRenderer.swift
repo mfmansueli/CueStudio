@@ -125,6 +125,7 @@ nonisolated enum TextOverlayRenderer {
         var overlay = content.make(CGPoint(x: x.rounded(), y: y.rounded()))
         overlay.drawnScale = sharpness
         overlay.rotation = text.rotation
+        overlay.textID = text.id
         if !text.keyframes.isEmpty || text.animation != nil {
             overlay.motion = OverlayMotion(
                 text.keyframes, animation: text.animation, length: span.duration,

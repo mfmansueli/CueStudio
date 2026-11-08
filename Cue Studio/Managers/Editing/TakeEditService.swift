@@ -17,10 +17,16 @@ final class TakeEditService: TakeEditing {
     private let sounds: RecordingSoundCache
     /// Which language a take without a script is spoken in.
     private let spokenLanguages: SpokenLanguageIdentifier
+    /// The creator's names and terms: listened for as a take is heard, and their capitals written on whole words (`MyWordsSpelling`).
+    private let myWords: MyWordsStoring
 
-    init(sounds: RecordingSoundCache = .shared, spokenLanguages: SpokenLanguageIdentifier = SpokenLanguageIdentifier()) {
+    init(
+        sounds: RecordingSoundCache = .shared, spokenLanguages: SpokenLanguageIdentifier = SpokenLanguageIdentifier(),
+        myWords: MyWordsStoring = MyWordsStore()
+    ) {
         self.sounds = sounds
         self.spokenLanguages = spokenLanguages
+        self.myWords = myWords
     }
     /// What was heard in a take, for captions and Clean Up, so it is transcribed once.
     private var transcripts: [TranscriptKey: TakeTranscript] = [:]
@@ -68,19 +74,19 @@ final class TakeEditService: TakeEditing {
         return Double(rate)
     }
 
-    func cleanUpSuggestions(forVideoAt url: URL, language: SpeechLanguageRequest) async throws -> [CleanUpSuggestion] {
+    func cleanUpFindings(forVideoAt url: URL, language: SpeechLanguageRequest, script: String) async throws -> CleanUpFindings {
         let audio: URL
         do {
             audio = try await audioFile(for: url)
         } catch AudioTrackExtractor.ExtractError.noAudio {
             // Without sound there is nothing to find; that isn't a failure.
-            return []
+            return CleanUpFindings(suggestions: [])
         }
         let levels = try await Task.detached { try AudioLevelReader.levels(of: audio, interval: 0.05) }.value
-        let silences = SilenceDetector.silences(levels: levels, interval: 0.05)
+        let pauses = SilenceDetector.pauses(levels: levels, interval: 0.05)
         // Without a speech model Clean Up still offers the pauses.
         let heard = try? await transcript(of: audio, language: language)
-        return CleanUpAnalyzer.suggestions(silences: silences, transcript: heard)
+        return CleanUpAnalyzer.findings(pauses: pauses, transcript: heard, script: script)
     }
 
     func captions(
@@ -108,7 +114,8 @@ final class TakeEditService: TakeEditing {
         let words = heard.words.map { CaptionWord(text: $0.text, start: $0.start, end: $0.end, isEstimated: $0.isEstimated) }
         guard !words.isEmpty else { return .noSpeech }
         let language = CueLanguage.matching(languageCode: heard.languageCode)
-        let cues = await Task.detached { CaptionBuilder.captions(heard: words, script: script, language: language) }.value
+        let myWords = myWords.words.words
+        let cues = await Task.detached { CaptionBuilder.captions(heard: words, script: script, language: language, myWords: myWords) }.value
         try Task.checkCancellation()
         return .captions(
             cues,
@@ -126,6 +133,12 @@ final class TakeEditService: TakeEditing {
         // Sped-up or slowed-down pieces keep the voice's pitch.
         item.audioTimePitchAlgorithm = .spectral
         return item
+    }
+
+    func mixPeak(forVideoAt url: URL, edit: TakeEdit) async throws -> Float? {
+        let purpose = EditRenderPurpose.export(burnsInCaptions: false, shortSide: nil, frameRate: nil)
+        let composition = try await EditRenderRequest.prepare(source: url, edit: edit, purpose: purpose, sounds: sounds).build()
+        return try await Mixdown.peak(of: composition)
     }
 
     func coverImage(_ cover: VideoCover, forVideoAt url: URL, edit: TakeEdit) async -> Data? {
@@ -191,17 +204,20 @@ final class TakeEditService: TakeEditing {
         of audio: URL, language: SpeechLanguageRequest, script: String = "",
         progress: (@Sendable (CaptionProgress) -> Void)? = nil
     ) async throws -> TakeTranscript {
-        let key = TranscriptKey(audio: audio, language: language, script: script)
+        let myWords = myWords.words.words
+        let key = TranscriptKey(audio: audio, language: language, script: script, myWords: myWords)
         if let cached = transcripts[key] { return cached }
-        let heard = try await CaptionTranscriber.transcript(in: audio, language: language, script: script, progress: progress)
+        let heard = try await CaptionTranscriber.transcript(in: audio, language: language, script: script, myWords: myWords, progress: progress)
         transcripts[key] = heard
         return heard
     }
 
-    /// The language the take is heard in (the Voice Following language, or the script's).
+    /// The language the take is heard in (the Voice Following language, or the script's), and the words it listens for: a word
+    /// added to My words makes the take heard again.
     private struct TranscriptKey: Hashable {
         let audio: URL
         let language: SpeechLanguageRequest
         let script: String
+        let myWords: [String]
     }
 }

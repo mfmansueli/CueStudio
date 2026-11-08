@@ -79,7 +79,7 @@ final class SplitScreenUITests: XCTestCase {
         capture("media-sheet-split")
         app.buttons["edit.mediaMode.sequence"].tap()
         XCTAssertTrue(app.buttons["edit.mediaMode.sequence"].isSelected)
-        XCTAssertTrue(explanation.label.contains("Adds time"), explanation.label)
+        XCTAssertTrue(explanation.label.contains("of its own"), explanation.label)
         XCTAssertTrue(note.label.hasPrefix("Goes in at"), note.label)
         capture("media-sheet-sequence")
         app.buttons["edit.mediaMode.window"].tap()

@@ -6,12 +6,18 @@
 import SwiftUI
 
 /// "Paste look": which parts of the copied look go (Adjust, Skin, Filter, Background, Zoom) and where: the picked clip, or every clip.
+/// Opened by a paste's Change, it says that what it pastes takes the place of that paste.
 struct PasteLookSheet: View {
     @Bindable var viewModel: QuickEditViewModel
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            SheetHeader(title: String(localized: "Paste look"), subtitle: String(localized: "Pick what goes. The words, sound and timing stay."))
+            SheetHeader(
+                title: String(localized: "Paste look"),
+                subtitle: viewModel.look.correctsLastPaste
+                    ? String(localized: "Pick again. It replaces the paste you just made.")
+                    : String(localized: "Pick what goes. The words, sound and timing stay.")
+            )
             VStack(spacing: 2) {
                 ForEach(ClipLookPart.allCases) { part in
                     PanelToggleRow(
@@ -25,7 +31,7 @@ struct PasteLookSheet: View {
                 ) { viewModel.look.pasteLook(on: true) }
                 PanelButton(
                     label: String(localized: "This clip"), isPrimary: true,
-                    isEnabled: !viewModel.look.pastesLookParts.isEmpty && viewModel.selection?.clipID != nil, identifier: "edit.pasteLook.clip"
+                    isEnabled: !viewModel.look.pastesLookParts.isEmpty && viewModel.look.pasteLookClipID != nil, identifier: "edit.pasteLook.clip"
                 ) { viewModel.look.pasteLook(on: false) }
             }
             // A dimmed button always says why.
@@ -36,7 +42,7 @@ struct PasteLookSheet: View {
         .padding(.horizontal, 16)
         .padding(.top, 8)
         .cueSheetChrome()
-        .presentationDetents([.height(470)])
+        .bigTextSheetDetents(.height(470))
         .presentationDragIndicator(.visible)
     }
 }

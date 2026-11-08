@@ -47,7 +47,7 @@ nonisolated enum TypePreset: String, LenientChoice, CaseIterable, Identifiable, 
     /// The presets the editor offers, in order.
     static let editorPresets: [TypePreset] = [.orbit, .logbook, .signal, .launch, .nebula, .comet, .postcard]
 
-    /// The effects the editor offers, in order (Text style › Animated).
+    /// The effects the editor offers, in order (Text style › Styles › Animated).
     static let effectPresets: [TypePreset] = [.gold, .wave, .pop3D, .neon, .headline, .sheen]
 
     /// The effect it puts on a text; nil for type alone.

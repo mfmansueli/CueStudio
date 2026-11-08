@@ -17,6 +17,8 @@ import Foundation
 final class AudioViewModel: EditorPart {
     /// The music clip the next sound file replaces ("Replace"); nil adds a new clip.
     var musicReplacementID: UUID?
+    /// Text to speech closed by a swipe: its text, voice and speed, back the next time (`TextToSpeechDraft`).
+    var textToSpeechDraft: TextToSpeechDraft?
     var isImportingMusic = false
     /// "Compare with original": the preview plays the take's untreated sound at `originalVolume`, as loud as the treated one.
     var comparesOriginal = false

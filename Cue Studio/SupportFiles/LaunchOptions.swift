@@ -32,12 +32,16 @@ import Foundation
 /// - `-uiTestDemoEdit`: "3 morning habits" Take 3 opens in the editor as the v10 design's demo
 ///   (`SampleEdit.demo`: two clips, captions, texts, music with a beat, a B-roll window and a voice-over, their files made by
 ///   `SampleEditMedia`); with `-uiTestDemoTranscript` its words were heard too, for Edit by text. `-uiTestDemoSplit` opens it with
-///   a split screen instead of the window (`SampleEdit.demoSplit`).
+///   a split screen instead of the window (`SampleEdit.demoSplit`). `-uiTestHandStyled`: the demo's title has a color set by
+///   hand and its first caption line is emphasized, so a kit or a template has hand-made changes to keep (`ManualChangesOptions`).
+/// - `-uiTestImportedFont <Name>`: an imported family called `Name` (five letters, Anton renamed; `DebugFontSeed`), for My fonts.
 /// - `-uiTestSeedLibrary`: the media library starts with a logo and a photo (`DebugLibrarySeed`); the library, brand kits and
 ///   imported fonts live in a folder of the test's own, kept between launches with `-uiTestAssetRoot <name>`.
 /// - `-uiTestRealTake <file name or path>`: "3 morning habits" Take 3 plays a copy of one of the creator's own recordings (in
 ///   Takes, or a path on the Mac for the Simulator; with its motion analysis), in memory: the take itself is never changed
 ///   (UI tests of Blur area on a real face).
+/// - `-uiTestRealTakeUnscripted`: with `-uiTestRealTake`, that copy plays as a take with no script linked (captions guess the
+///   language spoken, as for a video recorded without one).
 /// - `-uiTestSampleVideo`: with the sample takes, writes small real videos behind the "3 morning
 ///   habits" takes, so Quick edit can play, scrub and trim them.
 /// - `-uiTestDemoCamera`: the recorder's camera records with no hardware (a small real video per take), for the Simulator.
@@ -73,7 +77,10 @@ import Foundation
 ///   test has none.
 /// - `-uiTestUniverse <sample|newYear|newAccount>`: what "Your universe" holds (the board's APP DATA panel; see `UniverseSeed`).
 /// - `-uiTestFakeShareSheet`: a stand-in with Complete and Cancel takes the place of the system share sheet.
+/// - `-uiTestFourKTakes`: with the sample takes, every one recorded in 4K (Export options' quality choice is only for 4K recordings).
 /// - `-uiTestLowPower`: the editor reads Low Power Mode as on (its notice shows; the Simulator can't turn the mode on).
+/// - `-uiTestPreviewFrame <white|black>`: the editor's preview shows a plain white or black frame under what's laid on the video (the
+///   Simulator can't play it), to measure the safe zone guide over a light and a dark video (`PreviewStandInFrame`).
 /// - `-uiTestDockMotionLog`: the Scripts dock counts its lights (the writer's, the network's, the send arrow's) in `dock.motionLog`.
 /// - `-uiTestShareQueue`: a "Share to universe" queue left for the sample take (the Continue posting card).
 /// - `-uiTestStoryAt <seconds>`: the milestone and first-star stories stand still at that second.
@@ -186,6 +193,8 @@ struct LaunchOptions {
     var fakesShareSheet = false
     /// UI tests: the editor reads Low Power Mode as on (`-uiTestLowPower`).
     var forcesLowPowerMode = false
+    /// UI tests: a white or black frame in place of the editor's video (`-uiTestPreviewFrame`).
+    var previewStandInFrame: PreviewStandInFrame?
     /// UI tests: the Scripts dock counts its lights (`-uiTestDockMotionLog`).
     var logsDockMotion = false
     /// UI tests: the welcome's opening is frozen at this second (`-uiTestWelcomeAt`).
@@ -338,6 +347,37 @@ struct LaunchOptions {
     }
     #endif
 
+    #if DEBUG
+    /// The sample takes a UI test starts with (`-uiTestSeedSamples`): all recorded in 4K with `-uiTestFourKTakes`, and "3 morning habits"
+    /// Take 3 as the design's edit with `-uiTestDemoEdit`.
+    private static func sampleTakes(seeded: Bool, arguments: [String]) -> [Take] {
+        var takes = seeded ? SampleTakes.all() : []
+        // Every sample take recorded in 4K (Export options' quality choice).
+        if arguments.contains("-uiTestFourKTakes") { for index in takes.indices { takes[index].resolution = .uhd4K } }
+        // The editor's demo: "3 morning habits" Take 3 becomes the design's 21.6 s edit.
+        if arguments.contains("-uiTestDemoEdit"), let index = takes.firstIndex(where: {
+            $0.scriptID == SampleScripts.morningHabits.id && $0.number == 3
+        }) {
+            takes[index].duration = SampleEdit.duration
+            takes[index].fileName = "sample-demo-edit.mov"
+            let heard = arguments.contains("-uiTestDemoTranscript")
+            takes[index].edit = arguments.contains("-uiTestDemoSplit")
+                ? SampleEdit.demoSplit(aspect: takes[index].aspect, heard: heard)
+                : SampleEdit.demo(aspect: takes[index].aspect, heard: heard)
+            if arguments.contains("-uiTestHandStyled"), var edit = takes[index].edit {
+                if let title = edit.texts.firstIndex(where: { $0.graphic == nil }) {
+                    edit.texts[title].color = .yellow
+                    edit.texts[title].customized.insert(.color)
+                }
+                if !edit.captions.isEmpty { edit.captions[0].lineStyle = CaptionLineStyle(isEmphasized: true, size: .bigger) }
+                takes[index].edit = edit
+            }
+            SampleEditMedia.writeMissing()
+        }
+        return takes
+    }
+    #endif
+
     static func fromProcess() -> LaunchOptions {
         var options = LaunchOptions()
         #if DEBUG
@@ -357,19 +397,7 @@ struct LaunchOptions {
             let rootName = arguments.firstIndex(of: "-uiTestAssetRoot").flatMap { arguments.indices.contains($0 + 1) ? arguments[$0 + 1] : nil }
             options.assetRoot = URL.temporaryDirectory.appending(path: "UITestAssets-\(rootName ?? UUID().uuidString)", directoryHint: .isDirectory)
             if arguments.contains("-uiTestDemoCamera") { options.recorderCamera = DemoCamera() }
-            var takes = seeded ? SampleTakes.all() : []
-            // The editor's demo: "3 morning habits" Take 3 becomes the design's 21.6 s edit.
-            if arguments.contains("-uiTestDemoEdit"), let index = takes.firstIndex(where: {
-                $0.scriptID == SampleScripts.morningHabits.id && $0.number == 3
-            }) {
-                takes[index].duration = SampleEdit.duration
-                takes[index].fileName = "sample-demo-edit.mov"
-                let heard = arguments.contains("-uiTestDemoTranscript")
-                takes[index].edit = arguments.contains("-uiTestDemoSplit")
-                    ? SampleEdit.demoSplit(aspect: takes[index].aspect, heard: heard)
-                    : SampleEdit.demo(aspect: takes[index].aspect, heard: heard)
-                SampleEditMedia.writeMissing()
-            }
+            var takes = Self.sampleTakes(seeded: seeded, arguments: arguments)
             let repository = InMemoryTakeRepository(takes: takes)
             options.takeRepository = repository
             options.draftStore = InMemoryQuickEditDraftStore()
@@ -430,6 +458,9 @@ struct LaunchOptions {
             }
             options.fakesShareSheet = arguments.contains("-uiTestFakeShareSheet")
             options.forcesLowPowerMode = arguments.contains("-uiTestLowPower")
+            if let flag = arguments.firstIndex(of: "-uiTestPreviewFrame"), arguments.indices.contains(flag + 1) {
+                options.previewStandInFrame = PreviewStandInFrame(rawValue: arguments[flag + 1])
+            }
             options.logsDockMotion = arguments.contains("-uiTestDockMotionLog")
             // A "Share to universe" queue the creator left: TikTok then Reels for the sample take (`-uiTestShareQueue`).
             let habits3 = takes.first { $0.scriptID == SampleScripts.morningHabits.id && $0.number == 3 }
@@ -524,6 +555,11 @@ struct LaunchOptions {
             takes[index].aspect = analysis.width > analysis.height ? .landscape : .portrait
         }
         takes[index].edit = nil
+        if arguments.contains("-uiTestRealTakeUnscripted") {
+            // No script of its own and none that matches it: `captionScript` is nil, as for a take recorded without one.
+            takes[index].scriptReference = nil
+            takes[index].scriptVersion = nil
+        }
         try? repository.saveTakes(takes)
     }
     #endif

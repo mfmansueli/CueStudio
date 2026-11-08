@@ -50,6 +50,9 @@ nonisolated struct MediaOverlay: Codable, Hashable, Identifiable, Sendable {
     var hasSound: Bool?
     /// A video's own sound, 0 to 1; nil plays it muted (as every video over the take did before).
     var audioVolume: Double?
+    /// The creator kept its sound when it came in ("keep its sound?"): Volume's Reset puts it back at full; nil (muted, or added
+    /// before the question existed) puts it back muted.
+    var keptSoundWhenAdded: Bool?
 
     /// `layer`, with media from before stacking at the bottom.
     var stackOrder: Int { layer ?? 0 }

@@ -4,6 +4,7 @@
 //
 
 import Foundation
+import Synchronization
 
 /// Reading-time estimates for scripts. Cue markers like `[pause]` are not spoken, so they don't count.
 nonisolated enum ReadTime {
@@ -18,6 +19,21 @@ nonisolated enum ReadTime {
     /// Words separated by spaces. Scripts in languages written without spaces (Japanese, Chinese,
     /// Thai) count dictionary words instead, which read at about the same pace.
     static func wordCount(in text: String) -> Int {
+        if let known = counted.withLock({ $0[text] }) { return known }
+        let count = countWords(in: text)
+        counted.withLock { counted in
+            if counted.count >= countedLimit { counted.removeAll() }
+            counted[text] = count
+        }
+        return count
+    }
+
+    /// Each text's count, kept: the Scripts list asks every row for its reading time each time it is drawn, and the Studio for the
+    /// script's, while the words stay the same (`countedLimit` texts, then it starts again).
+    private static let counted = Mutex<[String: Int]>([:])
+    static let countedLimit = 256
+
+    private static func countWords(in text: String) -> Int {
         let spoken = CueParser.stripCues(text)
         if WordSegmenter.containsUnspacedScript(spoken) {
             return WordSegmenter.wordCount(in: spoken)

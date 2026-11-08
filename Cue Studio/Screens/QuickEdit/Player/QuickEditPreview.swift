@@ -19,6 +19,7 @@ struct QuickEditPreview: View {
     var showsFullScreenArrow = false
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.previewStandInFrame) private var standInFrame
     @SceneCaptured private var isSceneCaptured
     @State private var dragStartOffset: Double?
 
@@ -32,6 +33,10 @@ struct QuickEditPreview: View {
             .frame(width: size.width, height: size.height)
             .background(Palette.Editor.previewWell)
             .overlay {
+                // UI tests: a white or black frame for the video the Simulator can't play.
+                if let standInFrame { Rectangle().fill(standInFrame.color).allowsHitTesting(false) }
+            }
+            .overlay {
                 if viewModel.panel == .crop {
                     ThirdsGrid()
                         .overlay(RoundedRectangle(cornerRadius: Metrics.tileRadius, style: .continuous).strokeBorder(Color.white.opacity(0.8), lineWidth: 2))
@@ -42,14 +47,34 @@ struct QuickEditPreview: View {
                 if isFullScreen { playBadge }
             }
             .overlay {
+                // Under the handles, so a text or a window at the edge stays reachable.
+                if !isFullScreen, viewModel.showsSafeGuideOverlay {
+                    SafeGuideOverlay(size: size, content: viewModel.look.safeGuideRect(in: size))
+                        .transition(.opacity)
+                }
+            }
+            .overlay {
                 // Under Voice-over's script (`NarrationScriptOverlay`) the handles would only draw over the words.
-                if !isFullScreen, viewModel.panel != .crop, viewModel.panel != .clipCrop, !viewModel.showsNarrationScriptOverlay {
+                if !isFullScreen, viewModel.panel != .crop, viewModel.panel != .clipCrop, !viewModel.showsNarrationScriptOverlay,
+                   !viewModel.showsPersonPlace {
                     OverlayEditingLayer(viewModel: viewModel, size: size)
+                }
+            }
+            .overlay {
+                if !isFullScreen, viewModel.showsPersonPlace {
+                    PersonPlaceLayer(viewModel: viewModel, size: size)
                 }
             }
             .overlay {
                 if !isFullScreen, viewModel.panel == .clipCrop {
                     ClipCropLayer(viewModel: viewModel, size: size)
+                }
+            }
+            .overlay(alignment: .topLeading) {
+                if !isFullScreen, viewModel.showsSafeGuideOverlay {
+                    SafeGuideBadge(look: viewModel.look, maxWidth: size.width - 16)
+                        .padding([.top, .leading], 8)
+                        .transition(.opacity)
                 }
             }
             .overlay { recordingBadge }

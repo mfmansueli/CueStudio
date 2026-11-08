@@ -66,8 +66,17 @@ extension CaptionsViewModel {
         }
         let placedY = placed.y
         if edit.captionCollection != nil {
+            let before = edit.captionCollection?.center?.y ?? edit.captionPosition.verticalFraction
             updateCaptionSettings { settings in
                 settings.center = OverlayPoint(x: settings.center?.x ?? 0.5, y: placedY)
+            }
+            // Lines in their own place stay there: said, with the way to bring them along.
+            let own = captionsInOwnPlace
+            if own > 0, abs(before - placedY) > 0.000_1 {
+                toast.show(
+                    String(localized: "\(own) lines keep their own place"),
+                    action: ToastAction(title: String(localized: "Move them too")) { [weak self] in self?.placeEveryCaptionWithAll() }
+                )
             }
         } else {
             let nearest = CaptionPosition.allCases.min { abs($0.verticalFraction - placedY) < abs($1.verticalFraction - placedY) } ?? .bottom

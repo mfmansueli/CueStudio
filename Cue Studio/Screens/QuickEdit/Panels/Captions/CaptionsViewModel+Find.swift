@@ -7,13 +7,16 @@ import Foundation
 
 /// Find and replace in the captions (`CaptionFindSheet`, as in CapCut's caption editor): a word is looked for in every line
 /// that plays, in play order; each match can be replaced on its own, or all of them at once. Every replace is one undo step
-/// and changes only the words: the lines keep their times (`CaptionFindReplace`).
+/// and changes only the words: the lines keep their times (`CaptionFindReplace`). Replacing never saves a word to My words; the
+/// sheet's Add to my words does, on its own (`+MyWords`).
 extension CaptionsViewModel {
     /// Opens Find and replace over the editor (the video stops, the lines stay where they are).
     func openCaptionFind() {
         guard isReady, !edit.captions.isEmpty else { return }
         player.pause()
         toolMenu = nil
+        // Its Add to my words says whether the word is already saved.
+        myWords = myWordsStore.words
         sheet = .findInCaptions
     }
 
@@ -35,13 +38,14 @@ extension CaptionsViewModel {
     /// "Replace" on one match: that match only, one undo step.
     func replaceCaptionMatch(_ match: CaptionFindReplace.Match, query: String, with replacement: String) {
         guard isReady else { return }
+        let before = edit.captions
         let changed = replaceInCaptions { cueID, text in
             guard cueID == match.cueID else { return nil }
             return CaptionFindReplace.replacing(query, with: replacement, in: text, occurrence: match.occurrence)
         }
         guard changed > 0 else { return }
         Haptics.selection()
-        toast.show(String(localized: "Replaced"))
+        toast.show(Self.timingCheckNote(newTimingChecks(since: before)).map { String(localized: "Replaced · \($0)") } ?? String(localized: "Replaced"))
     }
 
     /// "Replace all": every match in every line that plays, one undo step (Undo in the toast brings them all back).
@@ -51,12 +55,14 @@ extension CaptionsViewModel {
         let count = captionMatches(for: query).count
         guard count > 0 else { return 0 }
         let playing = Set(captionLinesInPlayOrder.map(\.id))
+        let before = edit.captions
         replaceInCaptions { cueID, text in
             playing.contains(cueID) ? CaptionFindReplace.replacing(query, with: replacement, in: text) : nil
         }
         Haptics.selection()
+        let replaced = String(localized: "Replaced \(count) times")
         toast.show(
-            String(localized: "Replaced \(count) times"),
+            Self.timingCheckNote(newTimingChecks(since: before)).map { String(localized: "\(replaced) · \($0)") } ?? replaced,
             action: undoAction
         )
         return count

@@ -3,24 +3,30 @@
 //  Cue Studio
 //
 
+import Foundation
 import Synchronization
 
 /// Runs exports so they survive the creator leaving Cue. iOS is asked for a continued task with the GPU (Cue's frames are
 /// drawn on it): when it takes it, the export goes on in another app with its progress in a Live Activity, and if iOS ends
 /// it early the work is cancelled and `BackgroundExportError.stoppedBySystem` says so. When iOS doesn't take it (no
 /// background GPU on this iPhone, busy, background activity off), the export runs as before, with the few seconds iOS gives
-/// an app that leaves: Cue has to stay open.
+/// an app that leaves: Cue has to stay open, so the iPhone doesn't lock by itself until the work ends, however it ends
+/// (`ScreenAwake`, shared with the prompter and the remote).
 @MainActor
 final class BackgroundExportRunner: BackgroundExportRunning {
     private let scheduler: ContinuedTaskScheduling?
     /// The few seconds iOS gives an app that leaves (`beginBackgroundTask`); returns what ends them.
     private let shortGrace: @MainActor () -> @MainActor () -> Void
+    /// Auto-lock, held off while an export that needs Cue open runs.
+    private let screenAwake: ScreenAwake
 
     init(
         scheduler: ContinuedTaskScheduling?,
+        screenAwake: ScreenAwake = .shared,
         shortGrace: @escaping @MainActor () -> @MainActor () -> Void = BackgroundExportRunner.applicationGrace
     ) {
         self.scheduler = scheduler
+        self.screenAwake = screenAwake
         self.shortGrace = shortGrace
     }
 
@@ -37,8 +43,14 @@ final class BackgroundExportRunner: BackgroundExportRunning {
             return try await run(work, in: task)
         }
         started(.staysInCue)
+        // A locked iPhone would stop it (`VideoExportError.interrupted`): the screen stays on until it ends, done, failed or cancelled.
+        let owner = "export-\(UUID().uuidString)"
+        screenAwake.hold(owner)
         let endGrace = shortGrace()
-        defer { endGrace() }
+        defer {
+            endGrace()
+            screenAwake.release(owner)
+        }
         return try await work { _ in }
     }
 

@@ -42,16 +42,16 @@ struct QuickEditToolbarTests {
     /// The main bar, in the picked clip's order (owner, 28/10/2026): the basics, the clip's essentials, its picture, the montage,
     /// the whole video.
     private static let mainIDs = [
-        "edit", "split", "captions", "text", "smart", "addMedia", "audio",
+        "edit", "split", "captions", "text", "pauses", "addMedia", "audio",
         "speed", "volume", "zoom",
         "adjustVideo", "skinVideo", "filters", "backgroundVideo", "clipCrop", "stabilize", "blurArea", "copyLook", "pasteLook",
         "clipAnimation", "duplicate", "freeze", "reverse", "replace", "reorder", "extractAudio",
-        "editByText", "pauses", "voice", "format", "templates", "brandKit", "cover",
+        "autoEdit", "editByText", "voice", "format", "templates", "brandKit", "cover",
     ]
 
     /// What every item's bar (but a clip's) offers after its own tools.
     private static let itemShortcutIDs = [
-        "clipTools", "captions", "text", "addMedia", "audio", "smart", "pauses", "editByText",
+        "clipTools", "captions", "text", "addMedia", "audio", "pauses", "editByText",
         "format", "adjustVideo", "skinVideo", "filters", "backgroundVideo", "blurArea", "templates", "brandKit", "cover",
     ]
 
@@ -71,36 +71,36 @@ struct QuickEditToolbarTests {
         #expect(viewModel.toolbarContext == .main)
         // A thin line starts each group after the basics.
         #expect(viewModel.toolbarItems.enumerated().filter(\.element.startsGroup).map(\.offset) == [7, 10, 19, 26])
-        // The main bar changes the whole video by itself: no badge, and nothing to delete.
-        #expect(viewModel.toolbarItems.allSatisfy { $0.scopeBadge == nil && !$0.isPinned })
+        // Only the four whose name a clip's bar also has carry the whole video's badge (owner, 07/11/2026); nothing to delete.
+        #expect(viewModel.toolbarItems.filter { $0.scopeBadge == .wholeVideo }.map(\.id) == ["adjustVideo", "skinVideo", "filters", "backgroundVideo"])
+        #expect(viewModel.toolbarItems.allSatisfy { !$0.isPinned })
     }
 
     @Test func formatIsOnTheMainBarAndOpensTheFormatPanel() async {
         let viewModel = await makeScenario().viewModel
         let format = viewModel.toolbarItems.first { $0.id == "format" }
-        #expect(format?.label == "Format")
+        #expect(format?.label == "Aspect ratio")
         #expect(format?.action == .open(.crop))
         viewModel.perform(.open(.crop))
         #expect(viewModel.panel == .crop)
-        #expect(EditorPanel.crop.title == "Format")
+        #expect(EditorPanel.crop.title == "Aspect ratio")
     }
 
-    @Test func smartIsFifthAndIsTheOnlyVioletOne() async {
+    /// The speech clean-up is the fifth, among the five on screen, where ✦ Smart was (owner, 07/11/2026).
+    @Test func cleanUpIsFifth() async {
         let viewModel = await makeScenario().viewModel
         let items = viewModel.toolbarItems
-        #expect(items[4].id == "smart")
+        #expect(items[4].id == "pauses")
+        #expect(items[4].label == "Clean up")
+        #expect(items[4].action == .open(.pauses))
         #expect(items.last?.id == "cover")
-        let smart = items.first { $0.id == "smart" }
-        #expect(smart?.style == .smart)
-        #expect(smart?.action == .openSmart(.tools))
         // One clip and no look copied: Reorder and Paste look say why when tapped.
         #expect(items.filter { $0.style == .dimmed }.map(\.id) == ["pasteLook", "reorder"])
-        #expect(items.filter { $0.id != "smart" }.allSatisfy { $0.style != .smart })
         #expect(items.first { $0.id == "cover" }?.action == .openCoverStudio)
-        #expect(items.first { $0.id == "templates" }?.action == .openSmart(.templates))
-        #expect(items.first { $0.id == "brandKit" }?.action == .openSmart(.brand))
+        #expect(items.first { $0.id == "templates" }?.action == .openTemplates(.templates))
+        #expect(items.first { $0.id == "brandKit" }?.action == .openTemplates(.brand))
         #expect(items.first { $0.id == "skinVideo" }?.action == .openLook(.skin, wholeVideo: true))
-        #expect(items.first { $0.id == "brandKit" }?.label == SmartPanelSection.brand.label)
+        #expect(items.first { $0.id == "brandKit" }?.label == TemplatesPanelSection.brand.label)
     }
 
     @Test func theClipBarHasItsOwnToolsThenTheOthers() async {
@@ -111,19 +111,21 @@ struct QuickEditToolbarTests {
         #expect(items.first { $0.id == "adjust" }?.action == .openLook(.adjust, wholeVideo: false))
         #expect(items.first { $0.id == "skin" }?.action == .openLook(.skin, wholeVideo: false))
         // Five groups: its essentials, its picture, the montage, what goes on top, the whole video.
-        #expect(items.filter(\.startsGroup).map(\.id) == ["adjust", "transition", "text", "editByText"])
+        #expect(items.filter(\.startsGroup).map(\.id) == ["adjust", "transition", "text", "pauses"])
         // Everything that reaches past the clip is in the last group, and says so.
-        #expect(items.filter { $0.scopeBadge != nil }.map(\.id) == ["editByText", "pauses", "voice", "captions", "format", "templates", "brandKit"])
+        #expect(items.filter { $0.scopeBadge != nil }.map(\.id) == [
+            "pauses", "autoEdit", "editByText", "voice", "captions", "format", "templates", "brandKit",
+        ])
         #expect(items.last?.id == "delete")
     }
 
-    /// Audio: the voice, music, sound effects and voice-over; then, past a thin line, the sound of the clip under the playhead.
+    /// Audio: music, sound effects and voice-over; then, past a thin line, Studio Voice and the sound of the clip under the playhead.
     @Test func theAudioMenuNamesStudioVoice() async {
         let viewModel = await makeScenario().viewModel
         viewModel.perform(.openMenu(.audio))
-        #expect(ids(viewModel) == ["voice", "music", "soundEffects", "voiceOver", "textToSpeech", "volume", "voiceEffects", "extractAudio"])
-        #expect(viewModel.toolbarItems.first?.label == "Studio Voice")
-        #expect(viewModel.toolbarItems.first { $0.id == "volume" }?.startsGroup == true)
+        #expect(ids(viewModel) == ["music", "soundEffects", "voiceOver", "textToSpeech", "voice", "volume", "voiceEffects", "extractAudio"])
+        #expect(viewModel.toolbarItems.first { $0.id == "voice" }?.label == "Studio Voice")
+        #expect(viewModel.toolbarItems.first { $0.id == "voice" }?.startsGroup == true)
         viewModel.perform(.openSoundEffects)
         #expect(viewModel.sheet == .soundEffects)
     }
@@ -169,14 +171,14 @@ struct QuickEditToolbarTests {
             "split", "speed", "volume", "mute", "zoom",
             "adjust", "skin", "filters", "background", "clipCrop", "mirror", "stabilize", "blurArea", "copyLook", "pasteLook",
             "transition", "clipAnimation", "duplicate", "freeze", "reverse", "replace", "reorder", "extractAudio", "voiceEffects", "resetClip",
-            "text", "addMedia", "audio", "smart",
-            "editByText", "pauses", "voice", "captions", "format", "templates", "brandKit", "cover", "delete",
+            "text", "addMedia", "audio",
+            "pauses", "autoEdit", "editByText", "voice", "captions", "format", "templates", "brandKit", "cover", "delete",
         ])
         #expect(viewModel.toolbarItems.last?.style == .destructive)
     }
 
-    /// Edit (the scissors) is where a creator goes to cut a mistake: right after Split, the other ways to cut, the same tools ✦ Smart
-    /// opens, over the whole video.
+    /// Edit (the scissors) is where a creator goes to cut a mistake: right after Split, the other ways to cut, over
+    /// the whole video.
     @Test func theClipToolsOfferTheOtherWaysToCutRightAfterSplit() async {
         let viewModel = await makeScenario().viewModel
         viewModel.perform(.selectClipAtPlayhead)
@@ -187,7 +189,7 @@ struct QuickEditToolbarTests {
         // The clip stays picked: ✓ brings its tools back.
         #expect(viewModel.selection?.clipID != nil)
         viewModel.perform(.editByText)
-        #expect(viewModel.sheet == .transcript)
+        #expect(viewModel.panel == .pauses && viewModel.panelTab == .transcript)
     }
 
     /// The back button says which item the tools change: the clip's number in a montage, a photo or a video, a text's kind.
@@ -227,7 +229,13 @@ struct QuickEditToolbarTests {
         viewModel.selection = .caption(line.id)
         #expect(viewModel.toolbarContext == .caption)
         // Edit opens the Captions panel on the line already: no second way to the same list.
-        #expect(ids(viewModel) == ["editCaption", "split", "join", "emphasis", "style"] + Self.itemShortcutIDs.filter { $0 != "captions" } + ["delete"])
+        // Place and Zoom for this line (E4 D: the stretch is chosen on the timeline). Delete all is there too: tapping the
+        // captions' track lands on a line (owner, 07/11/2026).
+        #expect(ids(viewModel) == ["editCaption", "style", "split", "join", "emphasis", "placeCaption", "zoomCaption", "deleteAllCaptions"]
+            + Self.itemShortcutIDs.filter { $0 != "captions" } + ["delete"])
+        viewModel.perform(.deleteAllCaptions)
+        #expect(viewModel.captions.confirmsDeletingAll, "Delete all asks first")
+        #expect(viewModel.edit.captions.count == 1)
         let music = MusicClip(fileName: "m.m4a", title: "Morning loop", fileDuration: 60, start: 0, length: 10)
         viewModel.changeEdit { $0.music = [music] }
         viewModel.selection = .music(music.id)
@@ -284,13 +292,13 @@ struct QuickEditToolbarTests {
         viewModel.perform(.openMenu(.text))
         #expect(viewModel.toolbarContext == .menu(.text))
         #expect(ids(viewModel) == ["title", "subtitle", "hook", "callout", "graphic.arrow", "graphic.circle", "graphic.tag", "brandKit"])
-        #expect(viewModel.toolbarItems.last?.action == .openSmart(.brand))
+        #expect(viewModel.toolbarItems.last?.action == .openTemplates(.brand))
         viewModel.perform(.addText(.hook))
         viewModel.leaveToolbarContext()
         viewModel.perform(.openMenu(.text))
         #expect(ids(viewModel).suffix(2) == ["styleAll", "brandKit"])
         viewModel.perform(.openMenu(.audio))
-        #expect(ids(viewModel) == ["voice", "music", "soundEffects", "voiceOver", "textToSpeech", "volume", "voiceEffects", "extractAudio"])
+        #expect(ids(viewModel) == ["music", "soundEffects", "voiceOver", "textToSpeech", "voice", "volume", "voiceEffects", "extractAudio"])
         viewModel.leaveToolbarContext()
         #expect(viewModel.toolbarContext == .main)
         #expect(viewModel.toolMenu == nil)
@@ -316,6 +324,23 @@ struct QuickEditToolbarTests {
         #expect(viewModel.overlays.textStyleScope == .allTexts)
         #expect(viewModel.panel == .textStyle)
         #expect(viewModel.panelSubtitle(.textStyle) == "All 2 texts change together")
+    }
+
+    /// With no text under the playhead, Style all goes to the first one's start, so what is styled shows.
+    @Test func styleAllBringsThePlayheadToATextWhenNoneShows() async throws {
+        let viewModel = await makeScenario().viewModel
+        viewModel.perform(.addText(.title))
+        viewModel.leaveToolbarContext()
+        let text = try #require(viewModel.edit.texts.first)
+        let span = try #require(viewModel.overlays.editedSpan(ofText: text.id))
+        viewModel.player.seek(to: min(viewModel.edit.editedDuration, span.end + 1))
+        viewModel.perform(.styleAllTexts)
+        #expect(abs(viewModel.player.currentTime - span.start) < 0.001)
+        // On a text already: the playhead stays.
+        viewModel.closePanel()
+        viewModel.player.seek(to: span.start + 0.5)
+        viewModel.perform(.styleAllTexts)
+        #expect(abs(viewModel.player.currentTime - (span.start + 0.5)) < 0.001)
     }
 
     @Test func captionsOpenAutoCaptionsUntilThereAreLines() async {
@@ -352,46 +377,21 @@ struct QuickEditToolbarTests {
         #expect(viewModel.audio.musicReplacementID == nil)
     }
 
-    @Test func theCaptionsMenuMakesOrManagesTheLines() async {
+    /// Blur area's faces step has ◐ once there are areas: the whole video without them, while it is open (owner, 07/11/2026).
+    @Test func theBlurFacesStepComparesTheWholeSetWhileOpen() async {
         let viewModel = await makeScenario().viewModel
-        viewModel.perform(.openMenu(.captions))
-        #expect(viewModel.toolbarContext == .menu(.captions))
-        #expect(ids(viewModel) == ["autoCaptions", "writeCaptions", "editByText"])
-        viewModel.changeEdit { $0.captions = [CaptionCue(text: "Oi", start: 1, end: 2, origin: .manual)] }
-        #expect(ids(viewModel) == ["showCaptions", "addLine", "allLines", "style", "translate", "findReplace", "editByText", "deleteAll"])
-        #expect(viewModel.toolbarItems.last?.action == .deleteAllCaptions)
-        #expect(viewModel.toolbarItems.last?.isPinned == true)
-        // Show is the panel's switch: lit while the lines show, off and dark once hidden, in one undo step.
-        viewModel.changeEdit { $0.showsCaptions = true }
-        #expect(viewModel.toolbarItems.first?.isOn == true)
-        viewModel.perform(.toggleCaptionsShown)
-        #expect(!viewModel.edit.showsCaptions)
-        #expect(viewModel.toolbarItems.first?.isOn == false)
-        #expect(viewModel.toolbarItems.first?.systemImage == "eye.slash")
-        viewModel.undo()
-        #expect(viewModel.edit.showsCaptions)
-        // Translate: the Captions panel with the translation sheet over it.
-        viewModel.perform(.openCaptionTranslation)
-        #expect(viewModel.panel == .captions)
-        #expect(viewModel.captions.showsTranslation)
-    }
-
-    /// Blur area: Compare shows the video without its areas while the bar is open, and stops with it.
-    @Test func theBlurAreaBarsCompareLastsWhileItIsOpen() async {
-        let viewModel = await makeScenario().viewModel
+        #expect(!viewModel.blur.blurCompare.isEnabled)
         let area = BlurRegion(target: .recording(nil), span: TimeSpan(start: 0, end: 2), box: NormalizedBox(x: 0.4, y: 0.4, width: 0.2, height: 0.2))
         viewModel.changeEdit { $0.blurRegions = [area] }
-        viewModel.perform(.openMenu(.blur))
-        #expect(ids(viewModel) == ["blurFace", "blurDraw", "blurCompare"])
-        #expect(viewModel.toolbarItems.last?.isOn == false)
-        viewModel.perform(.compareBlur)
-        #expect(viewModel.blur.comparesOriginal)
-        #expect(viewModel.toolbarItems.last?.isOn == true)
-        viewModel.perform(.compareBlur)
-        #expect(!viewModel.blur.comparesOriginal)
-        viewModel.perform(.compareBlur)
-        viewModel.leaveToolbarContext()
-        #expect(!viewModel.blur.comparesOriginal)
+        #expect(viewModel.blur.blurCompare.isEnabled)
+        viewModel.perform(.addBlurArea)
+        #expect(viewModel.panel == .blur)
+        viewModel.blur.comparesOriginal = true
+        let comparing = viewModel.blur.comparesOriginal
+        #expect(comparing)
+        viewModel.closePanel()
+        let afterClosing = viewModel.blur.comparesOriginal
+        #expect(!afterClosing, "◐ ends with the panel")
     }
 
     @Test func deleteIsPinnedAndTheOtherToolsScroll() async {
@@ -602,7 +602,7 @@ struct QuickEditToolbarTests {
     private func everyBar(_ scenario: Scenario) -> [(String, [EditorToolbarItem])] {
         let viewModel = scenario.viewModel
         var bars: [(String, [EditorToolbarItem])] = [("main", viewModel.toolbarItems)]
-        for menu in [EditorToolMenu.text, .captions, .audio] {
+        for menu in [EditorToolMenu.text, .audio, .media] {
             viewModel.perform(.openMenu(menu))
             bars.append(("menu \(menu)", viewModel.toolbarItems))
         }
@@ -721,18 +721,17 @@ struct QuickEditToolbarTests {
         #expect(scenario.toast.message == "Applies to the whole video, not only to Hook.")
     }
 
-    @Test func templatesAndBrandKitOpenSmartOnTheirTab() async throws {
+    @Test func templatesAndBrandKitOpenThePanelOnTheirTab() async throws {
         let viewModel = await makeScenario().viewModel
-        viewModel.perform(.openSmart(.templates))
-        #expect(viewModel.panel == .smart)
-        #expect(viewModel.smartSection == .templates)
+        viewModel.perform(.openTemplates(.templates))
+        #expect(viewModel.panel == .templates)
+        #expect(viewModel.templatesSection == .templates)
         // Already open: the tab changes.
-        viewModel.perform(.openSmart(.brand))
-        #expect(viewModel.smartSection == .brand)
+        viewModel.perform(.openTemplates(.brand))
+        #expect(viewModel.templatesSection == .brand)
         viewModel.closePanel()
-        #expect(viewModel.smartSection == .tools, "✦ Smart opens on Tools next time")
-        viewModel.perform(.open(.smart))
-        #expect(viewModel.smartSection == .tools)
+        viewModel.perform(.openTemplates(.templates))
+        #expect(viewModel.templatesSection == .templates)
     }
 
     @Test func skinOpensItsOwnPanelAtTheButtonsReachApplyingNothing() async {

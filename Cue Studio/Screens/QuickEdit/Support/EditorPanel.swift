@@ -24,15 +24,15 @@ enum EditorPanel: String, CaseIterable, Identifiable {
     case blur
     // The cut between two clips
     case transition
-    // ✦ Smart: the one-tap tools
-    case smart
+    // Templates and the creator's brand kits
+    case templates
 
     var id: String { rawValue }
 
     var size: EditorPanelSize {
         switch self {
         case .zoom, .volume, .filters, .voiceOver, .autoCaptions: .mini
-        case .speed, .voice, .pauses, .captions, .adjust, .skin, .background, .media, .smart, .transition, .crop, .stabilize, .beats: .medium
+        case .speed, .voice, .pauses, .captions, .adjust, .skin, .background, .media, .templates, .transition, .crop, .stabilize, .beats: .medium
         case .voiceEffects: .medium
         case .clipCrop, .clipAnimation: .medium
         case .mask, .blur, .motion: .medium
@@ -40,8 +40,9 @@ enum EditorPanel: String, CaseIterable, Identifiable {
         }
     }
 
-    /// The styling panels can be expanded, giving their controls the room the video gives up.
-    var isExpandable: Bool { size == .full }
+    /// The styling panels can be expanded, giving their controls the room the video gives up, and so can Clean up (its Text
+    /// tab reads the whole take), in place, at its own height otherwise.
+    var isExpandable: Bool { size == .full || self == .pauses }
 
     /// The panels with many rows to scroll (the styling ones, and Background with its green screen's settings): their content stops further
     /// above the Home Indicator and fades under it while it scrolls.
@@ -67,6 +68,9 @@ enum EditorPanel: String, CaseIterable, Identifiable {
         default: false
         }
     }
+
+    /// The panels whose controls are the picked item's: their tab and Advanced are remembered per item (`PanelMemory`).
+    var remembersPerItem: Bool { followsSelection }
 
     /// The clip panels: opened with nothing picked (from the main toolbar), they pick the clip under the playhead for as long as
     /// they're open, so moving the playhead never moves the change to another clip.
@@ -111,11 +115,11 @@ enum EditorPanel: String, CaseIterable, Identifiable {
         case .clipAnimation: String(localized: "Animation")
         case .volume: String(localized: "Volume")
         case .voice: String(localized: "Studio Voice")
-        case .pauses: String(localized: "Pauses")
+        case .pauses: String(localized: "Clean up")
         case .adjust: String(localized: "Adjust")
         case .skin: EditorLookTool.skin.label
         case .filters: String(localized: "Filters")
-        case .crop: String(localized: "Format")
+        case .crop: String(localized: "Aspect ratio")
         case .background: String(localized: "Background")
         case .captions: String(localized: "Captions")
         case .autoCaptions: String(localized: "Auto captions")
@@ -129,7 +133,7 @@ enum EditorPanel: String, CaseIterable, Identifiable {
         case .motion: String(localized: "Motion")
         case .blur: String(localized: "Blur area")
         case .transition: String(localized: "Transition")
-        case .smart: String(localized: "✦ Smart")
+        case .templates: String(localized: "Templates")
         }
     }
 }

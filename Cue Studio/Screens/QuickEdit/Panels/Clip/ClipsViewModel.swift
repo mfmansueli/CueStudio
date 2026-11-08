@@ -7,12 +7,13 @@ import Foundation
 
 /// The video track (`EditorPart`): its clips cut, split, copied and deleted, sped up or along a curve, zoomed and turned down,
 /// joined by transitions, reordered and added from other takes and videos (a montage), reversed and replaced; and what takes
-/// time out of it: Pauses with Clean Up's suggestions, and Edit by text. What it keeps is its panels' state; the cuts are in
+/// time out of it: Clean up (pauses, words and Edit by text, one panel). What it keeps is its panels' state; the cuts are in
 /// the edit, and every change is an undo step through the session. The timeline that draws every part's tracks, and its
 /// gestures, are the editor's (`QuickEditViewModel+Timeline`, `+Layers`).
 ///
 /// Each part of the work is in its own extension (`+Cutting`, `+Settings`, `+SpeedCurve`, `+Transitions`, `+Montage`,
-/// `+Reverse`, `+ReplaceClip`, `+Pauses`, `+CleanUp`, `+TranscriptEdit`).
+/// `+Reverse`, `+ReplaceClip`, and Clean up's: `+CleanUpPanel`, `+Pauses`, `+CleanUp`, `+CleanUpStart`, `+PutBack`,
+/// `+Retakes`, `+TranscriptEdit`).
 @MainActor
 @Observable
 final class ClipsViewModel: EditorPart {
@@ -31,10 +32,18 @@ final class ClipsViewModel: EditorPart {
     var cleanUpMarks: [UUID: Bool] = [:]
     /// The pause or word being listened to in Pauses.
     var listeningID: UUID?
+    /// The Clean up card last reached, from its mark on the timeline or by a tap on it: lit and scrolled into view (canvas 2 M3).
+    var highlightedCleanUpID: UUID?
+    /// The tab Clean up opens on next (`openCleanUp(on:)`): Pauses, unless Edit by text asked for Text.
+    @ObservationIgnored var cleanUpOpensOn: EditorPanelTab = .pauses
+    /// Clean up is taller (the video at its smallest), for Text's reading room or by the creator's expand button. It opens tall
+    /// on Text and at its usual height on the other tabs; switching tabs never makes it shorter.
+    var cleanUpIsExpanded = false
     /// Edit by text: the picked words (indices in `transcriptWords`).
     var transcriptSelection: ClosedRange<Int>?
-    /// Speed shows its Curve tab (`+SpeedCurve`).
-    var showsSpeedCurves = false
+    /// Speed's view per clip, once the creator picked one (`+SpeedCurve`): true shows Curve, false Normal. A clip with no
+    /// entry opens on the view that matches it (Curve when it has a curve).
+    var speedShowsCurve: [UUID: Bool] = [:]
     /// A point of the speed curve is being dragged (`+SpeedCurve`).
     @ObservationIgnored var shapesCurve = false
     /// A clip's handle is held on the timeline (the editor says so): curved clips' sound steps meanwhile, like a curve's point.
@@ -81,11 +90,16 @@ final class ClipsViewModel: EditorPart {
         if previous.timeline != edit.timeline { transcriptSelection = nil }
     }
 
-    /// The panel changed to `next`: Pauses opens with nothing marked by hand and starts listening (leaving it doesn't stop
-    /// that).
+    /// The panel changed to `next`: Clean up opens on the tab it was asked for, with nothing marked by hand (what was marked
+    /// and not removed when it closed is forgotten: only Remove removes), and starts listening (leaving it doesn't stop that).
     func panelChanged(to next: EditorPanel?) {
         guard next == .pauses else { return }
         cleanUpMarks = [:]
+        transcriptSelection = nil
+        highlightedCleanUpID = nil
+        panelTab = cleanUpOpensOn
+        cleanUpIsExpanded = cleanUpOpensOn == .transcript
+        cleanUpOpensOn = .pauses
         listenForCleanUp()
     }
 

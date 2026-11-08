@@ -5,8 +5,8 @@
 
 import Foundation
 
-/// Beats, for the music the creator brings from Files (Cue has no music library of its own): the beats are found on the iPhone
-/// when the file comes in (`BeatDetector`, kept next to the file), show as ticks on the music track, and the playhead and the
+/// Beats, for music (Cue's own tracks or a file the creator brings from Files): the beats are found on the iPhone
+/// when the music comes in (`BeatDetector`, kept next to the file), show as ticks on the music track, and the playhead and the
 /// handles stick to them (Snap to beats). Move cuts to the beats puts each cut on the nearest beat; Cut on the beats cuts the
 /// video on every beat (or every second or fourth). Each is one undo step.
 extension AudioViewModel {
@@ -48,7 +48,7 @@ extension AudioViewModel {
         }
     }
 
-    /// The picked music clip, when it's music from Files.
+    /// The picked music clip, when it's music (Cue's or from Files), not a sound effect or the video's own sound.
     private var pickedMusic: MusicClip? {
         guard let id = selectedMusicID else { return nil }
         return edit.music.first { $0.id == id && !$0.followsTheVideo }
@@ -58,9 +58,21 @@ extension AudioViewModel {
     var beatsSubtitle: String {
         guard let clip = pickedMusic else { return String(localized: "Music from Files") }
         if findingBeats.contains(clip.fileName) { return String(localized: "Finding the beats…") }
-        guard let found = beats(ofFile: clip.fileName) else { return String(localized: "Music from Files") }
+        guard let found = beats(ofFile: clip.fileName) else { return Self.source(of: clip) }
         guard !found.beats.isEmpty else { return String(localized: "No steady beat in this music") }
         return String(localized: "\(Int(found.tempo.rounded())) BPM · \(musicBeats(of: clip).count) beats in the video")
+    }
+
+    /// Where the music came from, as the subtitle says it before its beats are known.
+    private static func source(of clip: MusicClip) -> String {
+        clip.libraryTrack == nil ? String(localized: "Music from Files") : String(localized: "Cue’s music")
+    }
+
+    /// The note under Beats: where the beats were found, Cue's music or the creator's own file.
+    var beatsSourceNote: String {
+        pickedMusic?.libraryTrack != nil
+            ? String(localized: "Found on your iPhone in this music from Cue.")
+            : String(localized: "Found on your iPhone in the music you added from Files.")
     }
 
     /// Whether the picked music has beats to work with.
@@ -74,7 +86,7 @@ extension AudioViewModel {
         guard let moved = BeatCuts.movingCuts(of: edit.timeline, onto: editedBeats) else {
             toast.show(edit.timeline.segments.count > 1
                 ? String(localized: "No cut is near a beat")
-                : String(localized: "Split the video first, or use Cut on the beats"), kind: .problem)
+                : String(localized: "No cuts to move yet · Split the video first, or cut on the beats above"), kind: .problem)
             return
         }
         commit(moved.timeline)

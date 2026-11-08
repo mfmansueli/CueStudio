@@ -14,6 +14,9 @@ struct PanelAdvancedButton: View {
     var identifier = "edit.panel.advanced"
     let onToggle: () -> Void
 
+    /// What the panel scrolls to as Advanced opens (`EditorPanelContainer.revealsAdvanced`).
+    static let scrollID = "panel.advanced"
+
     /// "· 2 changed": how many settings inside differ from how they start.
     static func changed(_ count: Int) -> String {
         String(localized: "· \(count) changed")
@@ -44,5 +47,6 @@ struct PanelAdvancedButton: View {
         .accessibilityAddTraits(isOpen ? .isSelected : [])
         .accessibilityValue(isOpen ? Text("Expanded") : Text("Collapsed"))
         .accessibilityIdentifier(identifier)
+        .id(Self.scrollID)
     }
 }

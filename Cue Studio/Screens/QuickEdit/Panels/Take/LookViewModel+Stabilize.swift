@@ -5,7 +5,7 @@
 
 import Foundation
 
-/// Stabilize (this clip): Off, Gentle, Standard or Strong, and "Use on every clip". The clip's recording is analyzed for its
+/// Stabilize (this clip): Off, Gentle, Standard or Strong, and "Use on all 3 clips". The clip's recording is analyzed for its
 /// shake (`MotionAnalysisService`); until it is, the panel says how far that is and the clip plays as filmed. Each change is an
 /// undo step.
 extension LookViewModel {
@@ -15,7 +15,7 @@ extension LookViewModel {
         if level != nil { requestMotionAnalysis() }
     }
 
-    /// "Use on every clip": the picked clip's level on all of them, as one step.
+    /// "Use on all 3 clips": the picked clip's level on all of them, as one step the toast offers to undo.
     func useStabilizationOnEveryClip() {
         guard let level = targetClip?.stabilization else { return }
         var timeline = edit.timeline
@@ -28,7 +28,7 @@ extension LookViewModel {
             _ = timeline.replaceSegment(segment)
         }
         commit(timeline)
-        toast.show(String(localized: "Stabilize on every clip"))
+        sayUndoable(String(localized: "Stabilize on all \(timeline.segments.count) clips"))
     }
 
     /// How much the picked clip is zoomed in to hide the edges ("Zoomed in 6%"), once its recording is analyzed.

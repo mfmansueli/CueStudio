@@ -8,8 +8,10 @@ import UIKit
 
 /// A style as it draws on the video: the sample drawn by the export's own renderer over a frame of the take, its name under
 /// it. Picked, it is ringed in yellow and marked with a check (never only a color); a favorite has a star, the style new work
-/// starts in says "Default". The picked one may play its sample (`motion`), still with Reduce Motion. VoiceOver reads the
-/// name, what the style looks like and its marks; the style's actions are its menu (`menu`), also VoiceOver actions.
+/// starts in says "Default" under its name. The picked one may play its sample (`motion`), still with Reduce Motion. VoiceOver
+/// reads the name, what the style looks like and its marks; the style's actions are its menu (`menu`): ••• in the picture's
+/// bottom corner, clear of the sample, which is drawn above it (owner, canvas 2 F3: it sat on the sample's words), the long press
+/// and VoiceOver actions. ••• never picks the style (owner, 07/11/2026).
 struct PanelPresetCard<Menu: View>: View {
     let name: String
     let sample: UIImage?
@@ -38,6 +40,13 @@ struct PanelPresetCard<Menu: View>: View {
                 WholeWordsLabel(text: name, minimumScale: 0.8)
                     .font(.system(.caption, weight: isSelected ? .bold : .semibold))
                     .foregroundStyle(isSelected ? Palette.ink : Palette.ink2)
+                if isDefault {
+                    Text("Default", comment: "A style card's mark: new work starts in this style")
+                        .font(.system(.caption2, weight: .bold))
+                        .foregroundStyle(Palette.accText)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
             .frame(width: 96)
             .contentShape(Rectangle())
@@ -50,6 +59,13 @@ struct PanelPresetCard<Menu: View>: View {
         .accessibilityHint(summary.map { Text($0) } ?? Text(verbatim: ""))
         .accessibilityAddTraits(isSelected ? .isSelected : [])
         .accessibilityIdentifier(identifier)
+        // Beside the card's button, never in it: the picture's bottom corner (its 24 pt mark 3 pt in, its 40 pt reach around
+        // it), under the sample and clear of the ★ and the check.
+        .overlay(alignment: .topTrailing) {
+            ItemMoreMenu(identifier: "\(identifier).more") { menu }
+                .padding(.top, Self.pictureHeight - 3 - 12 - 20)
+                .padding(.trailing, -5)
+        }
     }
 
     private var thumbnail: some View {
@@ -68,7 +84,7 @@ struct PanelPresetCard<Menu: View>: View {
                 still(sample)
             }
         }
-        .frame(width: 96, height: 74)
+        .frame(width: 96, height: Self.pictureHeight)
         .clipShape(RoundedRectangle(cornerRadius: Metrics.fieldRadius, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: Metrics.fieldRadius, style: .continuous)
@@ -95,26 +111,18 @@ struct PanelPresetCard<Menu: View>: View {
                     .padding(4)
             }
         }
-        .overlay(alignment: .bottom) {
-            if isDefault {
-                Text("Default", comment: "A style card's mark: new work starts in this style")
-                    .font(.system(.caption2, weight: .bold))
-                    .foregroundStyle(Palette.chipOn)
-                    .lineLimit(1)
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 2)
-                    .background(Palette.Editor.presetCardBadge, in: Capsule())
-                    .padding(.bottom, 4)
-            }
-        }
     }
 
+    private static var pictureHeight: CGFloat { 74 }
+
+    /// The sample, in the picture above the bottom row where ••• sits, so the mark never covers its words.
     private func still(_ image: UIImage) -> some View {
         Image(uiImage: image)
             .resizable()
             .scaledToFit()
             .padding(.horizontal, 8)
-            .padding(.vertical, 14)
+            .padding(.top, 8)
+            .padding(.bottom, 28)
     }
 
     /// The sample at `now`, in its loop: the drawing of the moment, the first coming in its way.

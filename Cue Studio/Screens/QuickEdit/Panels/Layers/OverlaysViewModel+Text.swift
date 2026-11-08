@@ -17,14 +17,18 @@ extension OverlaysViewModel {
         player.pause()
         let span = placement(at: player.currentTime, length: role.defaultDuration)
         let pinned = edit.pin(span)
-        var text = edit.newText(role, span: pinned.span)
-        if let start = defaultTextStart {
-            text = TextOverlay(role: role, look: start.look, preset: start.preset, span: pinned.span)
-        }
+        var text = startingText(role, span: pinned.span)
         text.clipAnchor = pinned.anchor
         change { $0.texts.append(text) }
         selectedTextID = text.id
         editingTextID = text.id
+    }
+
+    /// A new text of `role` as it starts on this video: the default style the creator picked, else the video's (`TakeEdit.newText`).
+    /// Text's Reset puts a text's look back to this.
+    func startingText(_ role: TextOverlayRole, span: TimeSpan) -> TextOverlay {
+        if let start = defaultTextStart { return TextOverlay(role: role, look: start.look, preset: start.preset, span: span) }
+        return edit.newText(role, span: span)
     }
 
     /// Text menu › Title, Subtitle, Hook or Callout: adds it at the playhead, picks it and opens

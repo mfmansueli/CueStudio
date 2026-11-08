@@ -17,8 +17,8 @@ enum EditorAction: Hashable {
     /// Adjust, Skin, Filters or Background at the reach the button says: the whole video (the main bar, and the badged shortcut
     /// on an item's bar) or the picked clip's own (its bar).
     case openLook(EditorLookTool, wholeVideo: Bool)
-    /// ✦ Smart on one of its tabs: Tools (✦ Smart), Templates, Brand kit.
-    case openSmart(SmartPanelSection)
+    /// The Templates panel on one of its tabs: Templates or Brand kit.
+    case openTemplates(TemplatesPanelSection)
     case addMedia
     /// A photo or video on top of the video or as a clip, the way chosen in the sheet (on the way it was last added).
     case addMediaChoice
@@ -69,19 +69,14 @@ enum EditorAction: Hashable {
     /// Locks the picked text, photo or video, music or voice-over in place on the timeline, or unlocks it.
     case toggleLock
     case deleteText
-    // Captions menu
-    /// A new line at the playhead, in the Captions panel.
-    case addCaptionLine
-    case writeCaptionsByHand
+    // Captions panel
     /// Edit by text: cut words out of the video.
     case editByText
     case deleteAllCaptions
     /// Find and replace in every line.
     case findInCaptions
-    /// The Captions bar's Show: every line shown or hidden (the Captions panel's switch).
-    case toggleCaptionsShown
-    /// The Captions bar's Translate: the Captions panel with the translation sheet over it.
-    case openCaptionTranslation
+    /// Auto edit's sheet (`QuickEditViewModel+AutoEdit`).
+    case openAutoEdit
     // Caption
     case editCaption
     case splitCaption
@@ -119,13 +114,13 @@ enum EditorAction: Hashable {
     case openMediaMotion
     /// The picked caption line's words, to emphasize some (Captions, the line's More open).
     case emphasizeCaption
+    /// Where the picked caption line goes: with every caption or in its own place (asks, naming the line).
+    case placeCaption
+    /// The picked caption line's phrase zoom (asks, naming the line).
+    case zoomCaption
     // Blur area
     /// A face, a plate or a name hidden: the faces in the frame to tap, or an area to draw.
     case addBlurArea
-    /// An area drawn in the middle of the frame, to drag onto a plate, a name or anything else (the Blur area bar).
-    case drawBlurArea
-    /// The Blur area bar's Compare: the preview without any Blur area, or with them again.
-    case compareBlur
     /// The picked area follows its subject.
     case followBlur
     /// The picked area's stretch plays, to check it.

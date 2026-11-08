@@ -37,6 +37,8 @@ nonisolated struct MediaFrame: @unchecked Sendable {
     var areaFraming = AreaFraming()
     /// The photo or video over the take this draws (`MediaOverlay.id`).
     var mediaID: UUID?
+    /// Drawn for the editor's preview, where the picked photo or video shows whole while paused (`PreviewMotionHold`).
+    var readsPreviewHold = false
     /// Its pieces with the second of its file each starts at, for the Blur areas on it.
     var filePieces: [MediaPiece] = []
     /// The Blur areas on it (`BlurRegion.target`).
@@ -45,6 +47,9 @@ nonisolated struct MediaFrame: @unchecked Sendable {
     var mask: MediaMask?
     /// How opaque it is (`MediaOverlay.opacity`), times what its keyframes say.
     var opacity = 1.0
+
+    /// Shown Behind you (`MediaLayout.behind`): it fills the frame behind the cut-out creator.
+    var isBehind = false
 
     var isSupport: Bool { areas != nil }
 

@@ -6,43 +6,42 @@
 import SwiftUI
 import UniformTypeIdentifiers
 
-/// "Add music or a sound", in two parts picked by the system's segmented control. **Music**: Cue's library (tracks composed by
-/// Cue on recorded instruments, free to use: search, filters, hear, ⓘ for what it covers and its licence, + to add at the
-/// playhead) and, under it, a sound file from Files, copied into the app and laid under the voice (the note says why songs from
-/// Apple Music can't be picked).
-/// **Sound effects**: Cue's effects by what they're for. From the Audio bar's Sound effects, the effects alone; from a music
-/// clip's Replace, the music alone.
+/// "Add music or a sound", a tall sheet (choosing in a library: nothing to watch on the video meanwhile) in two parts picked by
+/// the system's segmented control, always in sight; the bar's Music and Sound effects each open their own part (owner, canvas 2
+/// F13, 07/11/2026). **Music**: the creator's own from Files first, right under the search (copied into the app and laid under
+/// the voice), then Cue's library (tracks composed by Cue on recorded instruments, free to use: search, filters, hear, ⓘ for what
+/// it covers and its licence, + to add at the playhead), and the note on why songs from Apple Music can't be picked.
+/// **Sound effects**: Cue's effects by what they're for. From a music clip's Replace, the music alone.
 struct AddMusicSheet: View {
     let viewModel: QuickEditViewModel
-    var effectsOnly = false
 
     @Environment(\.dismiss) private var dismiss
     @State private var picksFile = false
-    @State private var part: Part = .music
+    @State private var part: Part
     @State private var library: MusicLibraryViewModel
     @FocusState private var isSearching: Bool
 
     enum Part: Hashable { case music, effects }
 
-    init(viewModel: QuickEditViewModel, effectsOnly: Bool = false) {
+    /// `opensOn`: the part the bar's button asked for.
+    init(viewModel: QuickEditViewModel, opensOn: Part = .music) {
         self.viewModel = viewModel
-        self.effectsOnly = effectsOnly
+        _part = State(initialValue: opensOn)
         _library = State(initialValue: viewModel.audio.makeMusicLibrary())
     }
 
     private var isReplacing: Bool { viewModel.audio.musicReplacementID != nil }
-    private var shown: Part { effectsOnly ? .effects : isReplacing ? .music : part }
+    private var shown: Part { isReplacing ? .music : part }
 
     private var title: String {
-        if effectsOnly { return String(localized: "Sound effects") }
-        return isReplacing ? String(localized: "Replace music") : String(localized: "Add music or a sound")
+        isReplacing ? String(localized: "Replace music") : String(localized: "Add music or a sound")
     }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             SheetHeader(title: title)
                 .padding(.horizontal, 16)
-            if !effectsOnly && !isReplacing {
+            if !isReplacing {
                 Picker(String(localized: "Add"), selection: $part) {
                     Text("Music").tag(Part.music)
                     Text("Sound effects").tag(Part.effects)
@@ -76,7 +75,7 @@ struct AddMusicSheet: View {
         .onChange(of: part) { library.stop(); viewModel.audio.soundPreviews.stop() }
         .onDisappear { library.stop() }
         .cueSheetChrome()
-        .presentationDetents([.height(600 + Metrics.sheetBarHeight), .large])
+        .presentationDetents([.large])
         .presentationDragIndicator(.visible)
     }
 
@@ -86,6 +85,8 @@ struct AddMusicSheet: View {
         VStack(alignment: .leading, spacing: 12) {
             SearchField(text: $library.query, prompt: "Search music", isFocused: $isSearching)
                 .accessibilityIdentifier("edit.library.search")
+            // The creator's own music, before Cue's 20 tracks (it was under them).
+            filesButton
             PanelChips(
                 options: MusicLibraryFilter.allCases.map { PanelOption($0, $0.label, key: $0.id) },
                 selection: library.filter, identifier: "edit.library.filter"
@@ -108,8 +109,6 @@ struct AddMusicSheet: View {
                     }
                 }
             }
-            filesButton
-                .padding(.top, 4)
             Text("From Files. Use only music you own or have the rights to. Songs from Apple Music can’t be added.")
                 .font(.footnote)
                 .foregroundStyle(Palette.ink2)

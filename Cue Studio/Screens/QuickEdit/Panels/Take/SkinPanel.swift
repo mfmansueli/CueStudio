@@ -105,17 +105,18 @@ struct SkinPanel: View {
     private func chip(_ control: LookViewModel.SkinControl) -> some View {
         let isPicked = current == control
         let value = look.skinValue(control)
-        // Refine shows no number: its Texture always has one, and it matters only with the smoothing on.
-        let shown = control != .texture && value != 0 ? PanelValueFormat.plain.text(value) : nil
+        // Texture shows its number only while it acts (the smoothing on); the others once they are off zero.
+        let shown = control == .texture ? (look.canRefineTexture ? PanelValueFormat.plain.text(value) : nil)
+            : value != 0 ? PanelValueFormat.plain.text(value) : nil
         return Button {
             current = control
         } label: {
-            PanelDialChip(title: control.chipLabel, valueText: shown, isPicked: isPicked)
+            PanelDialChip(title: control.label, valueText: shown, isPicked: isPicked)
         }
         .buttonStyle(.plain)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text(control.chipLabel))
-        .accessibilityValue(Text(verbatim: control == .texture ? "\(control.label) \(PanelValueFormat.plain.text(value))" : PanelValueFormat.plain.text(value)))
+        .accessibilityLabel(Text(control.label))
+        .accessibilityValue(Text(verbatim: PanelValueFormat.plain.text(value)))
         .accessibilityHint(Text(control.hint))
         .accessibilityAddTraits(isPicked ? [.isButton, .isSelected] : .isButton)
         .accessibilityIdentifier("edit.skin.\(control.rawValue)")

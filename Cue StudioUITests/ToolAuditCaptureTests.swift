@@ -21,6 +21,8 @@ final class ToolAuditCaptureTests: XCTestCase {
             throw XCTSkip("Set TEST_RUNNER_CUE_SCREENSHOT_DIR to capture the tools")
         }
         continueAfterFailure = true
+        // A tour photographs every panel from its top to its end: the clip tools alone take longer than the default 5 minutes.
+        executionTimeAllowance = 900
     }
 
     /// Opens the editor on the demo take; each part starts here.
@@ -105,15 +107,15 @@ final class ToolAuditCaptureTests: XCTestCase {
         if tap("edit.crop.4:5") || tap("edit.crop.fourByFive") { try capture("format-4x5") }
         if tap("edit.crop.followFace") { try tour("format-follow-face") }
         apply()
-        EditorApp.tapTool(app, "smart")
-        try tour("smart-tools")
-        if tap("edit.smart.section.templates") { try tour("smart-templates") }
+        EditorApp.tapTool(app, "templates")
+        try tour("templates")
         apply()
-        EditorApp.tapTool(app, "smart")
-        if tap("edit.smart.editByText") {
-            try tour("sheet-edit-by-text")
-            closeSheet()
-        }
+        EditorApp.tapTool(app, "brandKit")
+        try tour("brand-kits")
+        apply()
+        EditorApp.tapTool(app, "editByText")
+        try tour("clean-up-text")
+        apply()
         EditorApp.tapTool(app, "captions")
         try tour("captions")
         for (button, name) in [("edit.captionsLanguage", "language"), ("edit.captionsTranslateButton", "translate"), ("edit.captionMore", "line-more")]
@@ -121,7 +123,7 @@ final class ToolAuditCaptureTests: XCTestCase {
             try tour("captions-\(name)")
             tap(button, within: 1)
         }
-        if tap("edit.captionsFind") {
+        if tap("edit.captionsMore"), tap("edit.captionsFind") {
             try tour("sheet-find-replace")
             closeSheet()
         }
@@ -181,6 +183,7 @@ final class ToolAuditCaptureTests: XCTestCase {
                 }
             }
         }
+        if app.buttons["sheet.closeButton"].exists { closeSheet() }
         tap("edit.toolbar.back", within: 2)
         EditorApp.tapTool(app, "addMedia")
         try tour("menu-media")
@@ -237,7 +240,7 @@ final class ToolAuditCaptureTests: XCTestCase {
         }
         // Find and replace, and the translation sheet, from the Captions panel.
         EditorApp.tapTool(app, "captions")
-        if tap("edit.captionsFind") {
+        if tap("edit.captionsMore"), tap("edit.captionsFind") {
             try tour("sheet-find")
             closeSheet()
         }
@@ -266,9 +269,8 @@ final class ToolAuditCaptureTests: XCTestCase {
         }
         // Auto captions before there are any: delete them all first.
         EditorApp.tapTool(app, "captions")
-        if tap("edit.captionsDeleteAll") {
-            let confirm = app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Delete'")).allElementsBoundByIndex.last
-            if let confirm, confirm.exists { confirm.tap() }
+        if tap("edit.captionsMore"), tap("edit.captionsDeleteAll") {
+            tap("edit.captionsDeleteAllConfirm")
             apply()
             EditorApp.tapTool(app, "captions")
             try tour("auto-captions")
@@ -318,13 +320,10 @@ final class ToolAuditCaptureTests: XCTestCase {
             tap("edit.captionsTranslateButton", within: 1)
         }
         scrollBack()
-        // Auto captions: with every line deleted (the button ends the list), Captions offers to make them.
-        var deleted = false
-        for _ in 0..<8 where !deleted {
-            deleted = tap("edit.captionsDeleteAll", within: 1)
-            if !deleted { drag(from: 0.9, to: 0.62) }
-        }
+        // Auto captions: with every line deleted (Captions › •••), Captions offers to make them.
+        let deleted = tap("edit.captionsMore") && tap("edit.captionsDeleteAll")
         if deleted {
+            tap("edit.captionsDeleteAllConfirm")
             apply()
             EditorApp.tapTool(app, "captions")
             try tour("auto-captions")
@@ -344,21 +343,21 @@ final class ToolAuditCaptureTests: XCTestCase {
             EditorApp.tapTool(app, "text")
             if tap("edit.toolbar.title") {
                 dismissKeyboard()
-                for tab in ["custom", "color"] where tap("edit.panel.tab.\(tab)") { try capture("\(size)-text-\(tab == "custom" ? "font" : tab)") }
+                for tab in ["font", "color"] where tap("edit.panel.tab.\(tab)") { try capture("\(size)-text-\(tab)") }
                 apply()
             }
             tap("edit.toolbar.back", within: 2)
             EditorApp.tapTool(app, "captions")
-            if tap("edit.captionsStyleButton"), tap("edit.panel.tab.font") {
-                try captureScrolling("\(size)-caption-font")
-                apply()
+            if tap("edit.captionsStyleButton"), tap("edit.panel.tab.adjust") {
+                try captureScrolling("\(size)-caption-custom")
             }
+            closeOpenPanel()
             tap("edit.toolbar.back", within: 2)
             EditorApp.tapTool(app, "adjustVideo")
             try capture("\(size)-adjust")
             apply()
-            EditorApp.tapTool(app, "smart")
-            try capture("\(size)-smart")
+            EditorApp.tapTool(app, "pauses")
+            try capture("\(size)-clean-up")
             apply()
             EditorApp.tapTool(app, "cover")
             if app.buttons["cover.done"].exists(within: 8), tap("cover.step.text") {
@@ -377,7 +376,7 @@ final class ToolAuditCaptureTests: XCTestCase {
             try capture("\(language)-text-menu")
             if tap("edit.toolbar.title") {
                 dismissKeyboard()
-                if tap("edit.panel.tab.custom"), tap("edit.panel.tab.motion") { try captureScrolling("\(language)-text-motion") }
+                if tap("edit.panel.tab.motion") { try captureScrolling("\(language)-text-motion") }
                 apply()
                 if tap("edit.toolbar.delete", within: 2) { try capture("\(language)-toast") }
             }
@@ -422,6 +421,7 @@ final class ToolAuditCaptureTests: XCTestCase {
             try captureWithHierarchy("\(name)-bar-clip")
             scrollToolbar(toEnd: true, rightToLeft: rightToLeft)
             try captureWithHierarchy("\(name)-bar-clip-end")
+            scrollToolbar(toEnd: false, rightToLeft: rightToLeft)
             EditorApp.tapTool(app, "format")
             try captureWithHierarchy("\(name)-bar-clip-format-notice")
             app.terminate()
@@ -456,6 +456,233 @@ final class ToolAuditCaptureTests: XCTestCase {
         }
     }
 
+    /// The tools the first tours left out (07/11, for the inside-the-tools review): Skin, Blur area, the audio menu's sheets and
+    /// panels, the brand kit, and the clip's Crop and Animation.
+    func test16LookAudioAndClipTools() throws {
+        start()
+        EditorApp.tapTool(app, "skinVideo")
+        try tourTabs("skin")
+        apply()
+        EditorApp.tapTool(app, "blurArea")
+        try tour("blur-area")
+        closeOpenPanel()
+        for (id, name, isSheet) in [
+            ("soundEffects", "sheet-sound-effects", true), ("textToSpeech", "sheet-text-to-speech", true),
+            ("voiceEffects", "voice-effects", false), ("volume", "volume-audio", false),
+        ] {
+            tap("edit.toolbar.back", within: 1)
+            EditorApp.tapTool(app, "audio")
+            guard app.buttons["edit.toolbar.\(id)"].exists(within: 3) else { continue }
+            EditorApp.tapTool(app, id)
+            try tour(name)
+            if isSheet { closeSheet() } else { closeOpenPanel() }
+        }
+        tap("edit.toolbar.back", within: 1)
+        EditorApp.tapTool(app, "brandKit")
+        try tour("brand-kit")
+        closeOpenPanel()
+        if app.buttons["sheet.closeButton"].exists { closeSheet() }
+        tap("edit.toolbar.back", within: 1)
+        for id in ["clipCrop", "clipAnimation"] {
+            tap("edit.toolbar.back", within: 1)
+            EditorApp.tapTool(app, "edit")
+            guard app.buttons["edit.toolbar.\(id)"].exists(within: 3) else { continue }
+            EditorApp.tapTool(app, id)
+            try tourTabs(id)
+            closeOpenPanel()
+        }
+    }
+
+    /// The Media menu and its sheet, the B-roll's own panels (Edit, Motion, Mask), the music's Beats and the Done sheet, each from
+    /// a fresh editor so one part that can't be reached doesn't hide the next.
+    func test17MediaBeatsAndDone() throws {
+        start()
+        EditorApp.tapTool(app, "addMedia")
+        try capture("menu-media")
+        if tool("mediaSplit") {
+            try tour("sheet-media")
+            closeSheet()
+        }
+        app.terminate()
+        start()
+        // The B-roll plays from 4.2 s: the playhead goes there, and its window on the preview picks it.
+        EditorApp.scrub(app, points: 250)
+        if tap("edit.mediaHandle") || (tapTrack(0, secondsAfterPlayhead: 0) && app.buttons["edit.toolbar.editMedia"].exists(within: 3)) {
+            try capture("media-picked")
+            for (id, name) in [("editMedia", "media-panel"), ("mediaMotion", "media-motion"), ("mask", "mask")] where tool(id) {
+                try tourTabs(name)
+                closeOpenPanel()
+            }
+        }
+        app.terminate()
+        start()
+        if tapTrack(3, secondsAfterPlayhead: 1.5), tool("beats") {
+            sleep(3)
+            try tour("beats")
+            closeOpenPanel()
+        }
+        app.terminate()
+        start()
+        if tap("edit.doneButton") {
+            try tour("sheet-done")
+            app.swipeDown()
+        }
+    }
+
+    /// The first page of the most used panels and sheets at the largest text before the accessibility sizes and at the third
+    /// accessibility size: what large text does inside a tool (the bars are `test14`).
+    func test18LargeTextInsideTools() throws {
+        for (size, category) in [("xxxl", "UICTContentSizeCategoryXXXL"), ("ax3", "UICTContentSizeCategoryAccessibilityXL")] {
+            start(arguments: ["-UIPreferredContentSizeCategoryName", category])
+            EditorApp.tapTool(app, "edit")
+            if tool("speed") { try capture("\(size)-in-speed"); apply() }
+            tap("edit.toolbar.back", within: 1)
+            EditorApp.tapTool(app, "adjustVideo")
+            try capture("\(size)-in-adjust")
+            apply()
+            EditorApp.tapTool(app, "captions")
+            try capture("\(size)-in-captions")
+            if tap("edit.captionsStyleButton") { try capture("\(size)-in-caption-style") }
+            closeOpenPanel()
+            EditorApp.tapTool(app, "pauses")
+            try capture("\(size)-in-clean-up")
+            closeOpenPanel()
+            EditorApp.tapTool(app, "text")
+            if tap("edit.toolbar.title") {
+                dismissKeyboard()
+                try capture("\(size)-in-text-style")
+                apply()
+            }
+            tap("edit.toolbar.back", within: 1)
+            EditorApp.tapTool(app, "audio")
+            if tool("music") {
+                try capture("\(size)-in-music")
+                closeSheet()
+            }
+            tap("edit.toolbar.back", within: 1)
+            if tap("edit.doneButton") {
+                try capture("\(size)-in-done")
+                app.swipeDown()
+            }
+            app.terminate()
+        }
+    }
+
+    /// The rest of the paths to a new screen inside the tools (07/11): Clean up's Words, Captions' Select lines, a new brand kit,
+    /// and Done's export options (`test19b` takes the rest).
+    func test19RemainingPaths() throws {
+        start()
+        EditorApp.tapTool(app, "pauses")
+        if tap("edit.panel.tab.words") { try tour("clean-up-words") }
+        closeOpenPanel()
+        EditorApp.tapTool(app, "captions")
+        if tap("edit.captionLine.0"), tap("edit.captionMore") { try capture("captions-line-more") }
+        if tap("edit.captionsTranslateButton"), tap("edit.captionsEditTranslation") {
+            if tap("translation.language") { try capture("sheet-translation-languages") }
+            app.terminate()
+            start()
+            EditorApp.tapTool(app, "captions")
+        }
+        if tap("edit.captionsMore"), tap("edit.captionsSelect") { try tour("captions-select") }
+        closeOpenPanel()
+        // The text fields and second sources of the sheets: Music's search, Text to speech's text, Add media's library.
+        EditorApp.tapTool(app, "audio")
+        if tool("music"), tap("edit.library.search") {
+            try capture("sheet-music-search")
+        }
+        app.terminate()
+        start()
+        EditorApp.tapTool(app, "audio")
+        if tool("textToSpeech"), tap("tts.text") {
+            try capture("sheet-text-to-speech-keyboard")
+        }
+        app.terminate()
+        start()
+        EditorApp.tapTool(app, "addMedia")
+        if tool("mediaSplit") {
+            let library = app.segmentedControls["edit.mediaSource"].buttons.element(boundBy: 1)
+            if library.exists(within: 3) {
+                library.tap()
+                try tour("sheet-media-library")
+            }
+        }
+        app.terminate()
+        start()
+        EditorApp.tapTool(app, "brandKit")
+        if tap("New kit from this video") {
+            try tour("sheet-kit-editor")
+            closeSheet()
+        }
+        closeOpenPanel()
+        if tap("edit.doneButton"), tap("edit.done.exportOptions") {
+            try tour("sheet-export-options")
+            app.swipeDown()
+            sleep(1)
+        }
+    }
+
+    /// The rest of `test19`: a music track's Volume and licence, Paste look, a cut's Transition, a drawn Blur area, a picked filter
+    /// and a split screen's tabs (two tests, so each stays under the plan's 10 minutes).
+    func test19bRemainingPathsLookAndSound() throws {
+        start()
+        if tapTrack(3, secondsAfterPlayhead: 1.5), tool("volume") {
+            try tour("volume-music")
+            closeOpenPanel()
+        }
+        tap("edit.toolbar.back", within: 1)
+        EditorApp.tapTool(app, "audio")
+        if tool("music") {
+            let info = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'edit.library.info.'")).firstMatch
+            if info.exists(within: 3), onScreen(info) {
+                info.tap()
+                try capture("sheet-music-licence")
+            }
+            closeSheet()
+        }
+        // A fresh editor: the music sheets leave the bar where the next steps can't find Edit.
+        app.terminate()
+        start()
+        EditorApp.tapTool(app, "edit")
+        tap("edit.toolbar.split", within: 2)
+        for _ in 0..<2 where !app.buttons["edit.toolbar.copyLook"].exists(within: 2) { EditorApp.mainTrack(app, at: 0.3).tap() }
+        if tool("copyLook"), tool("pasteLook") {
+            try tour("sheet-paste-look")
+            closeSheet()
+        }
+        // The cut after the picked clip: its Transition panel, before and after a style is picked (Transition is on the clip's bar).
+        app.terminate()
+        start()
+        EditorApp.tapTool(app, "edit")
+        tap("edit.toolbar.split", within: 2)
+        if tool("transition") {
+            try tour("transition-panel")
+            let tiles = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'edit.transition.'"))
+            if tiles.count > 2, onScreen(tiles.element(boundBy: 1)) {
+                tiles.element(boundBy: 1).tap()
+                try tour("transition-panel-picked")
+            }
+            closeOpenPanel()
+        }
+        app.terminate()
+        start()
+        EditorApp.tapTool(app, "blurArea")
+        if tap("edit.blur.area") {
+            sleep(2)
+            try tour("blur-drawn")
+        }
+        app.terminate()
+        start()
+        // A picked filter: its Intensity shows only after a pick.
+        EditorApp.tapTool(app, "filters")
+        if tap("edit.filter.studio") { try tour("filters-studio") }
+        app.terminate()
+        start(arguments: ["-uiTestDemoSplit"])
+        if tapTrack(0, secondsAfterPlayhead: 3), tool("layout") {
+            try tourTabs("split")
+            closeOpenPanel()
+        }
+    }
+
     func test10DemoTracks() throws {
         start()
         EditorApp.tapTool(app, "edit")
@@ -478,10 +705,10 @@ final class ToolAuditCaptureTests: XCTestCase {
             try capture("demo-voiceover-picked")
             tap("edit.toolbar.back", within: 2)
         }
-        if tapTrack(2, secondsAfterPlayhead: 1), app.buttons["edit.toolbar.editCaption"].exists(within: 3) {
-            try capture("demo-caption-picked")
-            if scrollToolbarToEnd() { try capture("demo-caption-picked-end") }
-            tap("edit.toolbar.back", within: 2)
+        // The captions lane opens the Captions panel (D4), with the line under the playhead in it.
+        if tapTrack(2, secondsAfterPlayhead: 1), app.buttons["edit.panel.apply"].exists(within: 3) {
+            try capture("demo-captions-lane")
+            closeOpenPanel()
         }
         // The B-roll plays from 4.2 s: the playhead goes there, and its window on the preview picks it.
         EditorApp.scrub(app, points: 250)
@@ -538,7 +765,7 @@ final class ToolAuditCaptureTests: XCTestCase {
 
     private func captureScrolling(_ name: String) throws {
         var previous: Data?
-        for page in 1...8 {
+        for page in 1...16 {
             sleep(1)
             let png = app.screenshot().pngRepresentation
             if png == previous { break }
@@ -549,7 +776,7 @@ final class ToolAuditCaptureTests: XCTestCase {
     }
 
     private func scrollBack() {
-        for _ in 0..<4 { drag(from: 0.62, to: 0.95) }
+        for _ in 0..<10 { drag(from: 0.62, to: 0.95) }
     }
 
     /// A slow vertical drag in the bottom part of the screen, where panels and sheets keep their content.
@@ -571,7 +798,8 @@ final class ToolAuditCaptureTests: XCTestCase {
     /// Taps the control with this identifier if it shows up; false when it doesn't.
     @discardableResult
     private func tap(_ identifier: String, within seconds: TimeInterval = 3) -> Bool {
-        let button = app.buttons[identifier]
+        // The first match: iOS nests a dialog's button in one of its own with the same identifier.
+        let button = app.buttons[identifier].firstMatch
         if button.exists(within: seconds), onScreen(button) {
             button.tap()
             return true
@@ -593,7 +821,13 @@ final class ToolAuditCaptureTests: XCTestCase {
     private func tool(_ id: String) -> Bool {
         let button = app.buttons["edit.toolbar.\(id)"]
         guard button.exists(within: 3) else { return false }
-        for _ in 0..<4 where !onScreen(button) { app.descendants(matching: .any)["edit.toolbar"].swipeLeft() }
+        // Short slow drags between the pinned ends: a swipe flings the bar past the tool.
+        let toolbar = app.descendants(matching: .any)["edit.toolbar"]
+        for _ in 0..<12 where !onScreen(button) {
+            let end = toolbar.coordinate(withNormalizedOffset: CGVector(dx: 0.2, dy: 0.3))
+            toolbar.coordinate(withNormalizedOffset: CGVector(dx: 0.7, dy: 0.3))
+                .press(forDuration: 0.05, thenDragTo: end, withVelocity: .slow, thenHoldForDuration: 0.3)
+        }
         guard onScreen(button) else { return false }
         button.tap()
         return true
@@ -601,6 +835,16 @@ final class ToolAuditCaptureTests: XCTestCase {
 
     private func apply() {
         tap("edit.panel.apply", within: 2)
+    }
+
+    /// ✓ until no panel is open (a panel opened from another, like Caption style from Captions, closes back to the first).
+    private func closeOpenPanel() {
+        var closes = 0
+        while app.buttons["edit.panel.apply"].exists, closes < 3 {
+            app.buttons["edit.panel.apply"].tap()
+            closes += 1
+            sleep(1)
+        }
     }
 
     private func closeSheet() {

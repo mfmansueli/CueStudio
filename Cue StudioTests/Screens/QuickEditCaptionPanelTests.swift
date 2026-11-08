@@ -191,4 +191,19 @@ struct QuickEditCaptionPanelTests {
         #expect(viewModel.edit.captionDisplay == .original)
         #expect(viewModel.captions.captionTranslationLabel == "Translate")
     }
+
+    /// On Auto the chip says the language the lines were heard in, so lines heard in the wrong one say so where it changes.
+    @Test func onAutoTheLanguageChipSaysTheLanguageHeard() async {
+        let viewModel = await makeScenario(lines: [(1, 2, "Eu sei uma coisa sobre")]).viewModel
+        #expect(viewModel.captions.captionLanguageLabel == "Auto")
+        viewModel.updateFindings { $0.captionTranscript = CaptionTranscript(words: [], languageCode: "pt-BR") }
+        #expect(viewModel.captions.captionLanguageLabel == "Auto · Português")
+        viewModel.changeEdit { $0.captionLanguage = .english }
+        #expect(viewModel.captions.captionLanguageLabel == CueLanguage.english.nativeName)
+        viewModel.changeEdit {
+            $0.captionLanguage = nil
+            $0.captions = []
+        }
+        #expect(viewModel.captions.captionLanguageLabel == "Auto")
+    }
 }

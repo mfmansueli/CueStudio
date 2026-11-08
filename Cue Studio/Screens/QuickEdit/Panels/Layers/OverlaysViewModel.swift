@@ -5,6 +5,7 @@
 
 import CoreGraphics
 import Foundation
+import os
 
 /// What lies on the video (`EditorPart`): texts and graphics with their type styles and "My style", photos and videos over the
 /// take, their motion and keyframes, Track, and picking, dragging and placing them on the preview. What it keeps is its
@@ -28,8 +29,8 @@ final class OverlaysViewModel: EditorPart {
     var recordingSizes: [UUID?: CGSize] = [:]
     /// What Text style's look changes: this text or every text. The words, timing and motion are always the picked text's.
     var textStyleScope: TextStyleScope = .selected
-    /// The section Text style › Custom last showed (Font, Color or Motion): where Custom opens again.
-    var lastTextCustomSection: EditorPanelTab = .font
+    /// What Text style › Styles shows, as it was left in this video.
+    var textStyleFilter: TextStyleFilter = .all
     /// The Text style panel's field takes the keyboard (a text was just added, or Edit was tapped).
     var focusesTextField = false
     /// The text being written in its sheet.
@@ -37,10 +38,14 @@ final class OverlaysViewModel: EditorPart {
     /// The text or photo or video a finger is moving on the preview: the video leaves it out meanwhile
     /// (`hidingDraggedOverlay(in:)`).
     var draggedOverlay: EditorSelection?
+    /// A locked text a finger is on: it stays put, and the drag is still the text's, never the preview's swipe to full screen.
+    var lockedUnderFinger: UUID?
     /// The text looks the creator saved, with favorites and the one new texts start in (`+TextLibrary`).
     var textStyles: StyleLibrary<TextLook>
     /// Track: how far following the picked item's object is, 0 to 1; nil when it isn't (`+Track`).
     var trackingProgress: Double?
+    /// Track's Stop, read by the run off the main actor (`stopTracking`).
+    let trackStop = OSAllocatedUnfairLock(initialState: false)
     /// A video just added that has its own sound: Media asks whether to keep it.
     var soundChoiceMediaID: UUID?
     /// What a drag on the preview moves while Mask is open (`+Mask`).

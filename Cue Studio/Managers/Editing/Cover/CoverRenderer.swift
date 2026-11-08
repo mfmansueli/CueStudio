@@ -134,6 +134,7 @@ nonisolated enum CoverRenderer {
             ),
             skin: SkinSmoother(context: context)
         ) { image, _ in
+            // One frame: Vision's mask as it comes, with nothing before it to steady it on.
             PersonMasker.mask(for: image)
         }
         if let (index, segment) = shown, let zoom = segment.zoom {

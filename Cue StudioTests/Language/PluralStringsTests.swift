@@ -23,7 +23,7 @@ struct PluralStringsTests {
             String(localized: "\(n) lines deleted", writtenIn: language),
             String(localized: "\(n) lines to check", writtenIn: language),
             String(localized: "\(n) lines", writtenIn: language),
-            String(localized: "\(n) lines · tap one to jump there", writtenIn: language),
+            String(localized: "\(n) lines · tap one to go", writtenIn: language),
             String(localized: "\(n) lines changed in the original since they were translated.", writtenIn: language),
             String(localized: "\(n) lines follow the voice approximately.", writtenIn: language),
             String(localized: "\(n) keyframes", writtenIn: language),

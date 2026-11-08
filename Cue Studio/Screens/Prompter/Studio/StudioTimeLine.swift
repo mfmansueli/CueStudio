@@ -5,8 +5,8 @@
 
 import SwiftUI
 
-/// "0:42 LEFT" and "1:12 · IDEAL 1:00 to 1:30": how long the rest of the script takes at the set speed, for training the text. It reads the
-/// scroll progress on its own, so only this line redraws while the text moves.
+/// "0:42 LEFT" and "1:12 · IDEAL 1:00 to 1:30": how long the rest of the script takes at the set speed, for training the text. Only "LEFT"
+/// reads the scroll progress (`StudioTimeLeft`), so while the text moves the script's words aren't counted again each frame.
 struct StudioTimeLine: View {
     let viewModel: PrompterViewModel
 
@@ -14,11 +14,8 @@ struct StudioTimeLine: View {
 
     var body: some View {
         let total = ReadTime.seconds(for: viewModel.script?.text ?? "", speed: session.prompter.speed)
-        let left = total * (1 - viewModel.engine.progress)
         HStack(spacing: 8) {
-            Text("\(DurationText.clock(left)) LEFT")
-                .foregroundStyle(Palette.accText)
-                .accessibilityIdentifier("studio.timeLeft")
+            StudioTimeLeft(viewModel: viewModel, total: total)
             Spacer(minLength: 6)
             Text(totalText(total))
                 .foregroundStyle(Palette.ink2)

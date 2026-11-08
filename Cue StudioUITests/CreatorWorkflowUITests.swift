@@ -25,9 +25,8 @@ final class CreatorWorkflowUITests: XCTestCase {
         let flow = CreatorWorkflow("talking-head", app: app)
         let fullLength = EditorApp.length(app)
 
-        flow.step("✦ Smart › Remove pauses")
-        flow.tool("smart")
-        flow.tap(app.buttons["edit.smart.pauses"], "the Remove pauses tile")
+        flow.step("Clean up › Pauses")
+        flow.tool("pauses")
         let firstPause = flow.element("edit.pause.0")
         let none = flow.element("edit.pauses.empty")
         XCTAssertTrue(flow.waits(for: firstPause, timeout: 10, "the pauses") || none.exists, "The Pauses panel found nothing to show")
@@ -96,7 +95,7 @@ final class CreatorWorkflowUITests: XCTestCase {
         XCTAssertTrue(flow.waits(for: mode, "Add photo or video"), "Media › Full screen didn't open Add photo or video")
         XCTAssertTrue(app.buttons["edit.mediaMode.fullScreen"].isSelected, "The sheet doesn't open on Full screen")
         let explanation = flow.element("edit.mediaModeExplanation")
-        XCTAssertTrue(explanation.label.contains("B-roll"), explanation.label)
+        XCTAssertTrue(explanation.label.contains("voice goes on"), explanation.label)
         flow.tap(app.buttons["sheet.closeButton"].firstMatch, "Add photo or video's ×")
         XCTAssertTrue(mode.isGone(within: 5), "Add photo or video didn't go away")
         XCTAssertTrue(app.buttons["edit.toolbar.mediaSplit"].exists, "Not back on the Media bar")
@@ -127,9 +126,8 @@ final class CreatorWorkflowUITests: XCTestCase {
         let flow = CreatorWorkflow("edit-by-text", app: app)
         let fullLength = EditorApp.length(app)
 
-        flow.step("✦ Smart › Edit by text")
-        flow.tool("smart")
-        flow.tap(app.buttons["edit.smart.editByText"], "the Edit by text tile")
+        flow.step("Edit by text")
+        flow.tool("editByText")
         XCTAssertTrue(flow.waits(for: flow.element("edit.transcript"), "Edit by text"), "Edit by text didn't open")
         let first = app.buttons["edit.transcript.word.2"]
         if !first.exists(within: 3) {
@@ -194,7 +192,7 @@ final class CreatorWorkflowUITests: XCTestCase {
 
     // MARK: - 3. Montage
 
-    /// Split later in the take, copy the clip, see the clips in order, hold a frame, and a Zoom on every cut.
+    /// Split later in the take, copy the clip, see the clips in order, hold a frame, a Zoom on every cut, and Punch in on cuts.
     func testMontageSplitDuplicateReorderFreezeAndATransitionOnEveryCut() {
         let app = EditorApp.open(demo: true)
         let flow = CreatorWorkflow("montage", app: app)
@@ -241,8 +239,21 @@ final class CreatorWorkflowUITests: XCTestCase {
         let everyCut = app.buttons["edit.transition.everyCut"]
         flow.reveal(everyCut, "Use on every cut")
         flow.tap(everyCut, "Use on every cut")
-        XCTAssertTrue(flow.toastSays("Zoom on every cut"), "No toast after Use on every cut")
+        XCTAssertTrue(flow.toastSays("Zoom on all"), "No toast after Use on every cut")
         flow.tap(app.buttons["edit.panel.apply"], "✓ on the transition")
+        flow.backToMainTools()
+
+        flow.step("A clip › Zoom › Punch in on cuts")
+        // One switch for the whole video, at the foot of the clip's Zoom (R1.3: it took a Punch in and a Paste look per clip).
+        flow.tap(EditorApp.mainTrack(app, at: 0.15))
+        flow.tool("zoom")
+        // A row with the toggle trait: not a button nor a switch to XCUITest, found by its identifier.
+        let cuts = flow.element("edit.zoom.cuts")
+        flow.reveal(cuts, "Punch in on cuts")
+        flow.tap(cuts, "Punch in on cuts")
+        XCTAssertTrue(flow.toastSays("Punch in on"), "No toast after Punch in on cuts")
+        XCTAssertTrue(flow.element("edit.zoom.cutsStrength.medium").exists, "No strength once Punch in on cuts is on")
+        flow.tap(app.buttons["edit.panel.apply"], "✓ on Zoom")
         flow.backToMainTools()
         flow.report()
     }
@@ -250,15 +261,15 @@ final class CreatorWorkflowUITests: XCTestCase {
     // MARK: - 4. Quick style
 
     /// A template, another, both undone; then a clip's look copied and pasted on every clip.
-    func testQuickStyleTemplatesUndoThenCopyAndPasteALook() {
+    func testQuickStyleTemplatesUndoThenCopyAndPasteALook() throws {
         let app = EditorApp.open(demo: true)
         let flow = CreatorWorkflow("quick-style", app: app)
 
-        flow.step("✦ Smart › Templates › Bold hook")
-        flow.tool("smart")
-        flow.tap(app.buttons["edit.smart.section.templates"], "the Templates tab")
+        flow.step("Templates › Bold hook")
+        flow.tool("templates")
         let boldHook = app.buttons["edit.template.boldHook"]
         flow.tap(boldHook, "Bold hook")
+        flow.tap(app.buttons["edit.template.apply"], "Apply")
         XCTAssertTrue(flow.toastSays("Bold hook on the whole video"))
         XCTAssertTrue(boldHook.isSelected)
 
@@ -266,6 +277,7 @@ final class CreatorWorkflowUITests: XCTestCase {
         let story = app.buttons["edit.template.story"]
         flow.reveal(story, "Story")
         flow.tap(story, "Story")
+        flow.tap(app.buttons["edit.template.apply"], "Apply")
         XCTAssertTrue(flow.toastSays("Story on the whole video"))
         XCTAssertTrue(story.isSelected)
         XCTAssertFalse(boldHook.isSelected)
@@ -299,6 +311,18 @@ final class CreatorWorkflowUITests: XCTestCase {
         XCTAssertTrue(flow.waits(for: everyClip, "Paste look"), "Paste look didn't ask where")
         flow.tap(everyClip, "Every clip")
         XCTAssertTrue(flow.toastSays("Look pasted on every clip"), "No toast after pasting on every clip")
+
+        flow.step("Change, on the toast, opens the sheet again to correct the paste")
+        // The toast is drawn by more than one host (the editor's and the app's under it): the one that can be touched.
+        XCTAssertTrue(app.buttons["toast.secondaryAction"].firstMatch.exists(within: 2), "The paste's toast has no Change")
+        XCTAssertTrue(app.buttons["toast.action"].firstMatch.exists, "The paste's toast has no Undo")
+        let change = try XCTUnwrap(
+            app.buttons.matching(identifier: "toast.secondaryAction").allElementsBoundByIndex.first { $0.isHittable }, "No Change to touch"
+        )
+        flow.tap(change, "Change")
+        XCTAssertTrue(flow.waits(for: everyClip, "Paste look"), "Change didn't open Paste look")
+        flow.tap(everyClip, "Every clip")
+        XCTAssertTrue(flow.toastSays("Look pasted on every clip"), "No toast after correcting the paste")
         XCTAssertTrue(everyClip.isGone(within: 5))
         flow.backToMainTools()
         flow.report()
@@ -338,7 +362,7 @@ final class CreatorWorkflowUITests: XCTestCase {
 
         flow.step("Format")
         flow.tool("format")
-        XCTAssertTrue(flow.waits(for: app.staticTexts["Format"], "the Format panel"), "Format didn't open the Format panel")
+        XCTAssertTrue(flow.waits(for: app.staticTexts["Aspect ratio"], "the Aspect ratio panel"), "Aspect ratio didn't open its panel")
         let vertical = app.buttons["edit.crop.9:16"]
         let square = app.buttons["edit.crop.1:1"]
         XCTAssertTrue(vertical.isSelected, "The take doesn't start at 9:16")

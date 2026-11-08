@@ -7,7 +7,8 @@ import Foundation
 
 /// Reset in a panel's header, the same in every panel: it shows once something there differs from how the clip (or the take)
 /// started, and puts all of the panel's settings back in one undo step. Adjust, Skin, Filters, Background and Caption style bring
-/// their own (they reset a clip's override, or the theme).
+/// their own (they reset a clip's override, or the theme); a text's, a graphic's, Motion's and a photo or video's are in
+/// `QuickEditViewModel+LayerReset`.
 extension QuickEditViewModel {
     /// What Reset does in `panel` now; nil while there is nothing to put back.
     func panelReset(_ panel: EditorPanel) -> (() -> Void)? {
@@ -20,8 +21,18 @@ extension QuickEditViewModel {
         case .clipAnimation: clipAnimationReset
         case .transition: transitionReset
         case .voice: voiceReset
+        case .textStyle: textReset
+        case .motion: motionReset
+        case .media: mediaReset
+        case .crop: formatReset
         default: nil
         }
+    }
+
+    /// Aspect ratio back to the video as recorded: its ratio, Fill, centered, Follow face off.
+    private var formatReset: (() -> Void)? {
+        guard look.formatIsChanged else { return nil }
+        return { [weak self] in self?.look.resetFormat() }
     }
 
     private var speedReset: (() -> Void)? {
@@ -34,7 +45,7 @@ extension QuickEditViewModel {
             plain.keepsPitch = true
             _ = timeline.replaceSegment(plain)
             _ = timeline.setSpeed(1, forSegmentAt: index)
-            clips.showsSpeedCurves = false
+            clips.speedShowsCurve[clip.id] = nil
             commit(timeline)
         }
     }
@@ -49,7 +60,8 @@ extension QuickEditViewModel {
         }
     }
 
-    /// Clips and voice-overs back to as recorded; music keeps its level (it is set when it is added, under the voice).
+    /// Clips and voice-overs back to as recorded; a video laid over the take back to how it came in (muted, or at full when the
+    /// creator kept its sound), and only its sound; music keeps its level (it is set when it is added, under the voice).
     private var volumeReset: (() -> Void)? {
         switch selection {
         case .music:
@@ -57,6 +69,11 @@ extension QuickEditViewModel {
         case .voiceOver:
             guard clips.targetVolume != 1 else { return nil }
             return { [weak self] in self?.clips.setTargetVolume(1) }
+        case .media(let id):
+            guard let media = edit.media.first(where: { $0.id == id }), media.hasSound == true else { return nil }
+            let added: Double? = media.keptSoundWhenAdded == true ? 1 : nil
+            guard media.audioVolume != added else { return nil }
+            return { [weak self] in self?.overlays.updateMedia(id) { $0.audioVolume = added } }
         default:
             guard let clip = targetClip, clip.volume != 1 || clip.isMuted || clip.soundFadeIn > 0 || clip.soundFadeOut > 0 else { return nil }
             return { [weak self] in

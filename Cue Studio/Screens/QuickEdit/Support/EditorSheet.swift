@@ -17,12 +17,14 @@ enum EditorSheet: String, Identifiable {
     case media
     /// Done's question: "Is it ready to post?".
     case done
-    /// Edit by text: cut words out of the video.
-    case transcript
     /// Reorder: the clips in play order, to drag.
     case clipOrder
     /// Find and replace in the caption lines.
     case findInCaptions
+    /// Captions › My words: the creator's names and terms, for speech recognition.
+    case myWords
+    /// Auto edit: the steps to pick, then what each did (`QuickEditViewModel+AutoEdit`).
+    case autoEdit
 
     var id: String { rawValue }
 }

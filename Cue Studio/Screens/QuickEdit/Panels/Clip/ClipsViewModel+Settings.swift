@@ -19,8 +19,11 @@ extension ClipsViewModel {
     func setClipSpeed(_ speed: Double) {
         guard let clip = targetClip, let index = edit.timeline.index(ofSegment: clip.id) else { return }
         var timeline = edit.timeline
-        guard timeline.setSpeed((speed * 20).rounded() / 20, forSegmentAt: index) else { return }
+        let rounded = (speed * 20).rounded() / 20
+        guard timeline.setSpeed(rounded, forSegmentAt: index) else { return }
         commit(timeline, key: "clip.speed.\(clip.id)")
+        // A speed all along replaces the curve: say so, with Undo to bring the curve back.
+        if clip.speedCurve != nil { sayUndoable(String(localized: "Curve replaced by \(SpeedScale.label(forMultiple: rounded))")) }
     }
 
     /// "Keep voice pitch".

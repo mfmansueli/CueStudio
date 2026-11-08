@@ -16,7 +16,12 @@ root="$(cd "$(dirname "$0")/../.." && pwd)"
 mkdir -p "$folder"
 log="$root/build/logs/test-device-ui.log"
 
-"$root/scripts/test.sh" device-ui "$test_id" >/dev/null
+# Built once: a later run skips the build while no app or UI test file is newer than the last one (a batch of films, fluidity.sh).
+stamp="$root/build/.screen-frames-built-$CUE_DEVICE"
+if [ ! -f "$stamp" ] || [ -n "$(find "$root/Cue Studio" "$root/Cue StudioUITests" -newer "$stamp" -type f -print -quit)" ]; then
+    "$root/scripts/test.sh" device-ui "$test_id" >/dev/null
+    touch "$stamp"
+fi
 rm -rf "$folder/screen.trace"
 : >"$log"
 TEST_RUNNER_CUE_MOTION=1 "$root/scripts/test.sh" device-ui "$test_id" --no-build >"$folder/test.log" 2>&1 &
@@ -36,4 +41,8 @@ for table in displayed-surfaces-interval time-profile; do
         --xpath "/trace-toc/run[@number=\"1\"]/data/table[@schema=\"$table\"]" >"$folder/$table.xml"
 done
 python3 "$root/tools/motion/screen_frames.py" "$folder"
+# The trace of the whole iPhone is hundreds of MB: only the tables stay (CUE_KEEP_TRACE=1 keeps it, to open in Instruments).
+[ -n "${CUE_KEEP_TRACE:-}" ] || rm -rf "$folder/screen.trace"
+# xctrace leaves its raw kernel trace (3–6 GB a film) in the temporary folder and never deletes it: 94 GB after one night's films.
+find "${TMPDIR:-/tmp}" -maxdepth 1 -name 'instruments*.ktrace' -newer "$folder/test.log" -delete 2>/dev/null || true
 exit $status

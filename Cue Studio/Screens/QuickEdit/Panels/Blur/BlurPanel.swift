@@ -16,7 +16,8 @@ struct BlurPanel: View {
     var body: some View {
         let blur = viewModel.blur
         if let picking = blur.picking {
-            PanelFrame(viewModel: viewModel, panel: .blur) {
+            // ◐ compares the whole video without its areas, so it is here too once there are some (owner, 07/11/2026).
+            PanelFrame(viewModel: viewModel, panel: .blur, compare: viewModel.edit.blurRegions.isEmpty ? nil : blur.blurCompare) {
                 choosing(picking)
             }
         } else if let region = viewModel.selectedBlur {
@@ -103,11 +104,13 @@ struct BlurPanel: View {
         if let first = viewModel.edit.editedSpans(of: region, in: viewModel.edit.timeline).first, !viewModel.edit.isOnPhoto(region) {
             PanelStepper(
                 label: String(localized: "Starts"), value: DurationText.editor(first.start), identifier: "edit.blur.starts",
+                onEditingChanged: { $0 ? viewModel.beginPanelChange() : viewModel.endPanelChange() },
                 onDecrease: { blur.resizeBar(region.id, instance: first, edge: .start, to: first.start - 0.1) },
                 onIncrease: { blur.resizeBar(region.id, instance: first, edge: .start, to: first.start + 0.1) }
             )
             PanelStepper(
                 label: String(localized: "Ends"), value: DurationText.editor(first.end), identifier: "edit.blur.ends",
+                onEditingChanged: { $0 ? viewModel.beginPanelChange() : viewModel.endPanelChange() },
                 onDecrease: { blur.resizeBar(region.id, instance: first, edge: .end, to: first.end - 0.1) },
                 onIncrease: { blur.resizeBar(region.id, instance: first, edge: .end, to: first.end + 0.1) }
             )

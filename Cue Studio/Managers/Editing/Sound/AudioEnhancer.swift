@@ -40,7 +40,9 @@ nonisolated enum AudioEnhancer {
                     dynamics(enhancement: processing.enhancement, noise: .off),
                     limiter(),
                 ])
-                return try AudioCeiling.keepingUnder(rendered)
+                return try keptUnder(rendered)
+            } catch is CancellationError {
+                throw CancellationError()
             } catch {
                 // Falls through to the equalizer and expander alone.
             }
@@ -50,7 +52,7 @@ nonisolated enum AudioEnhancer {
             dynamics(enhancement: processing.enhancement, noise: processing.noise),
             limiter(),
         ])
-        return try AudioCeiling.keepingUnder(rendered)
+        return try keptUnder(rendered)
     }
 
     /// Version 1's treatment.
@@ -63,10 +65,19 @@ nonisolated enum AudioEnhancer {
     }
 
     /// A whole mix through the peak limiter, then kept under the ceiling: the last step of an
-    /// export that mixes more than the take's sound.
-    static func limit(_ source: URL) throws -> URL {
-        let limited = try render(source, through: [limiter()])
-        return try AudioCeiling.keepingUnder(limited)
+    /// export that mixes more than the take's sound. The file's name starts with `prefix`.
+    static func limit(_ source: URL, prefix: String = "Cue-mix-") throws -> URL {
+        try keptUnder(render(source, through: [limiter()], prefix: prefix), prefix: prefix)
+    }
+
+    /// `rendered` under the ceiling (`AudioCeiling.keepingUnder`); when that stops (a cancel, a failure), `rendered` goes too.
+    private static func keptUnder(_ rendered: URL, prefix: String = "Cue-level-") throws -> URL {
+        do {
+            return try AudioCeiling.keepingUnder(rendered, prefix: prefix)
+        } catch {
+            try? FileManager.default.removeItem(at: rendered)
+            throw error
+        }
     }
 
     /// Gain in decibels for a volume factor: 1 is 0 dB, 1.5 about +3.5 dB, 0 silent.
@@ -77,8 +88,9 @@ nonisolated enum AudioEnhancer {
 
     // MARK: - Rendering
 
-    /// `source` played through `units` in order, as fast as the device can.
-    private static func render(_ source: URL, through units: [AVAudioNode]) throws -> URL {
+    /// `source` played through `units` in order, as fast as the device can. A cancel (of the task it runs in) stops it between two
+    /// buffers, and a stopped or failed render leaves no file behind.
+    private static func render(_ source: URL, through units: [AVAudioNode], prefix: String = "Cue-mix-") throws -> URL {
         let input = try AVAudioFile(forReading: source)
         let format = input.processingFormat
         let engine = AVAudioEngine()
@@ -96,23 +108,31 @@ nonisolated enum AudioEnhancer {
         player.scheduleFile(input, at: nil)
         try player.playAudio()
 
-        let outputURL = URL.temporaryDirectory.appending(path: "Cue-mix-\(UUID().uuidString.prefix(8)).caf")
+        let outputURL = URL.temporaryDirectory.appending(path: "\(prefix)\(UUID().uuidString.prefix(8)).caf")
+        defer {
+            player.stop()
+            engine.stop()
+        }
         let output = try AVAudioFile(forWriting: outputURL, settings: format.settings, commonFormat: format.commonFormat, interleaved: format.isInterleaved)
-        guard let buffer = AVAudioPCMBuffer(pcmFormat: engine.manualRenderingFormat, frameCapacity: engine.manualRenderingMaximumFrameCount) else {
-            throw RenderError.noBuffer
-        }
-        while engine.manualRenderingSampleTime < input.length {
-            let remaining = AVAudioFrameCount(input.length - engine.manualRenderingSampleTime)
-            let status = try engine.renderOffline(min(buffer.frameCapacity, remaining), to: buffer)
-            switch status {
-            case .success: try output.write(from: buffer)
-            case .insufficientDataFromInputNode, .cannotDoInCurrentContext: continue
-            case .error: throw RenderError.renderFailed
-            @unknown default: continue
+        do {
+            guard let buffer = AVAudioPCMBuffer(pcmFormat: engine.manualRenderingFormat, frameCapacity: engine.manualRenderingMaximumFrameCount) else {
+                throw RenderError.noBuffer
             }
+            while engine.manualRenderingSampleTime < input.length {
+                try Task.checkCancellation()
+                let remaining = AVAudioFrameCount(input.length - engine.manualRenderingSampleTime)
+                let status = try engine.renderOffline(min(buffer.frameCapacity, remaining), to: buffer)
+                switch status {
+                case .success: try output.write(from: buffer)
+                case .insufficientDataFromInputNode, .cannotDoInCurrentContext: continue
+                case .error: throw RenderError.renderFailed
+                @unknown default: continue
+                }
+            }
+        } catch {
+            try? FileManager.default.removeItem(at: outputURL)
+            throw error
         }
-        player.stop()
-        engine.stop()
         return outputURL
     }
 

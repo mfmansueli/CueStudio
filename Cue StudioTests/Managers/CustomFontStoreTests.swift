@@ -126,6 +126,28 @@ struct CustomFontStoreTests {
         #expect(TextOverlayFont.custom(family).isMissing)
     }
 
+    /// Canvas 2 F12: My fonts lists the offered families; removed there, a family leaves it (Undo brings it back), stays the one
+    /// a text in it shows (and can't be removed twice), and the video keeps drawing in it.
+    @Test func myFontsRemovesWithUndoAndAVideoInTheRemovedFamilyKeepsIt() async throws {
+        let (store, _) = makeStore()
+        defer { store.eraseAll() }
+        let family = TestFonts.uniqueFamily()
+        _ = await store.importFonts(from: [try TestFonts.renamedAnton(to: family)])
+        let font = TextOverlayFont.custom(family)
+        #expect(TextOverlayFont.myFonts(offered: store.offered.map(\.name)) == [font])
+        let toast = ToastService()
+        FontRemoval.remove(family, from: store, toast: toast)
+        #expect(store.offered.isEmpty)
+        #expect(toast.message == "\(family) removed · videos that use it keep it")
+        #expect(TextOverlayFont.myFonts(offered: store.offered.map(\.name)).isEmpty)
+        // A text in it still shows it picked; nothing offers it to remove again.
+        #expect(TextOverlayFont.myFonts(offered: store.offered.map(\.name), including: font) == [font])
+        #expect(!TextOverlayFont.myFonts(offered: [], including: .montserrat).contains(.montserrat))
+        #expect(TextFont.font(font, weight: .regular, size: 40, text: "Hello").fontName == "\(family)-Regular")
+        toast.action?.perform()
+        #expect(store.offered.map(\.name) == [family])
+    }
+
     @Test func importingARemovedFamilyAgainBringsItBackAndASweepLeavesIt() async throws {
         let (store, _) = makeStore()
         defer { store.eraseAll() }

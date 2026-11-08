@@ -23,7 +23,8 @@ struct SoundEffectsSection: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            PanelRowLabel(label: String(localized: "Sound effects"), detail: String(localized: "Free to use in your videos · no credit needed"))
+            // The part's name is the segmented control's: under it, who made them and how they may be used.
+            PanelRowLabel(label: String(localized: "Made by Cue"), detail: String(localized: "Free to use in your videos · no credit needed"))
             PanelChips(
                 options: [PanelOption<SoundEffectCategory?>(nil, String(localized: "All"), key: "all")]
                     + SoundEffectCategory.allCases.map { PanelOption<SoundEffectCategory?>($0, $0.label, systemImage: $0.systemImage, key: $0.rawValue) },

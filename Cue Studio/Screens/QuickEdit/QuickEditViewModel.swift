@@ -3,7 +3,6 @@
 //  Cue Studio
 //
 
-import Accessibility
 import CoreGraphics
 import Foundation
 
@@ -45,13 +44,11 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     /// The clip a clip panel picked when it opened with nothing picked (`EditorPanel.pinsClip`): the panel lets go of it when it
     /// closes, unless the creator picked something else meanwhile.
     @ObservationIgnored private var panelPick: EditorSelection?
-    /// A track's own toolbar (Text, Captions, Audio, Media, Blur area), opened from the main one or by tapping the track, with
-    /// nothing selected. Its track becomes the timeline's current one.
+    /// A track's own toolbar (Text, Audio, Media), opened from the main one or by tapping the track, with nothing selected. Its
+    /// track becomes the timeline's current one.
     var toolMenu: EditorToolMenu? {
         didSet {
             if let toolMenu, toolMenu != oldValue { bringTrack(toolMenu.lanes) }
-            // The Blur area bar's Compare lasts while the bar is open (its panel has its own ◐).
-            if oldValue == .blur, toolMenu != .blur, panel != .blur, blur.comparesOriginal { blur.comparesOriginal = false }
         }
     }
     /// The timeline's current track and whether every track is out (`TimelineTrackChoice`); the current one is kept for the take.
@@ -67,8 +64,15 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     var panelTab: EditorPanelTab = .presets
     /// The open panel's "Advanced" section is expanded.
     var showsAdvanced = false
-    /// ✦ Smart's tab: Tools when it opens, unless Templates or Brand kit on a toolbar asked for theirs (`openSmart(on:)`).
-    var smartSection: SmartPanelSection = .tools
+    /// A styling sheet stepped aside on the iPhone SE so the timeline can be reached (`tuckPanel`, canvas 2 R10 §7.3): the panel
+    /// stays open (its item, tab, style and the playhead with it) and the toolbar's place says how to bring it back.
+    var panelIsTucked = false
+    /// Each panel's tab and Advanced as they were left, per item where the panel is an item's (`PanelMemory`, canvas 2 R7).
+    var panelMemory = PanelMemory()
+    /// The item the open panel's tab and Advanced belong to.
+    var panelStateItem: UUID?
+    /// The Templates panel's tab: the one its button on a bar asked for (`openTemplates(on:)`).
+    var templatesSection: TemplatesPanelSection = .templates
     /// Which whole-video tools already said, on which kind of item's bar, that they change the whole video (once each while the
     /// editor is open, `tap(_:)`).
     @ObservationIgnored var scopeNoticesSaid: [EditorToolbarContext: Set<String>] = [:]
@@ -92,6 +96,8 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     }
     /// Where the dragged handle last stuck, so the haptic plays once per snap.
     @ObservationIgnored var lastHandleSnap: TimeInterval?
+    /// A caption line's handle reached its limit in this gesture: the haptic taps once (`CaptionStretchRoom`).
+    @ObservationIgnored var stretchLimitNoticed = false
     /// The styling panels (Text style, Caption style) are expanded: the video gets as small as it
     /// ever gets so the controls have room. Kept while the editor is open.
     var stylePanelIsExpanded = false
@@ -101,12 +107,27 @@ final class QuickEditViewModel: EditorHost, EditorPart {
 
     /// The Low Power Mode notice over the preview (`QuickEditViewModel+LowPower`).
     var showsLowPowerNotice = false
+    /// The edit's sounds together go over full scale (`measureMix`): Volume says the preview may distort where the video won't.
+    var mixTooLoud = false
     /// Done was tapped while a Blur area may not cover what it hides somewhere: asked first (`+Blur`).
     var showsBlurCheck = false
     /// The creator went on despite it: not asked again until the edit changes.
     @ObservationIgnored var blurCheckAccepted = false
     /// The draft kept as Cue went to the background couldn't be written (a full iPhone): tried again on the way back.
     @ObservationIgnored private var draftNotKept = false
+    /// A narration was being recorded as Cue left the screen: it stopped there (what was recorded is a clip), said on the way back.
+    @ObservationIgnored private var narrationStoppedAway = false
+    /// Files the edit names that are no longer on this iPhone, looked for at opening and when the edit's files change.
+    private(set) var missingMedia: Set<String> = []
+    /// Taking `missingMedia` out leaves a video (else only replacing the clip helps).
+    private(set) var canRemoveMissingMedia = false
+    private var missingMediaNoticeHidden = false
+    /// Whether the edit on screen is on disk, for the top bar (`EditorDraftKeeper`).
+    let draftKeeper: EditorDraftKeeper
+    /// Leaving was asked while the edit couldn't be kept anywhere: the editor stayed and said so; asked again, it leaves.
+    @ObservationIgnored private var warnedNotKept = false
+    /// How the screen goes away when the creator leaves from a toast ("Leave anyway"), set by the screen.
+    @ObservationIgnored var leaveScreen: (EditorOutcome) -> Void = { _ in }
     /// The creator's handle, for the "@handle" graphic and the cover's series (set by the screen).
     var creatorHandle: String {
         get { session.creatorHandle }
@@ -144,6 +165,10 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     /// Blur area: faces, plates and names hidden, followed and checked (`BlurViewModel`).
     let blur: BlurViewModel
     /// Where a failure the creator saw is written down (`noteFailure`): Console and Crashlytics; tests read it.
+    /// A template on the video while its sheet is open (`QuickEditViewModel+Templates`).
+    var templateTrial: TemplateTrial?
+    /// Auto edit while its sheet is open (`+AutoEdit`).
+    var autoEdit: AutoEditSession?
     @ObservationIgnored var reportFailure: (EditorFailureReport) -> Void = { $0.send() }
     /// Everything the editor started and waits for (`EditorJobs`): Auto, captions, Track, the cover, a short preview, the
     /// sound compared, the draft, beats, Clean Up and tools' work. Closing cancels it all.
@@ -153,7 +178,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         take: Take, takes: TakeLibraryService, library: ScriptLibraryService, editing: TakeEditing,
         drafts: QuickEditDraftStoring, toast: ToastService, player: EditPlayback? = nil,
         mediaImporter: EditMediaImporting? = nil, recorder: VoiceOverRecording? = nil, styles: TextStyleStoring? = nil,
-        mediaLibrary: MediaLibraryStore? = nil, brandKits: BrandKitStore? = nil, fonts: CustomFontStore? = nil,
+        myWords: MyWordsStoring? = nil, mediaLibrary: MediaLibraryStore? = nil, brandKits: BrandKitStore? = nil, fonts: CustomFontStore? = nil,
         fontPacks: FontPackStore? = nil, writingLanguages: @escaping () -> (script: CueLanguage?, interface: CueLanguage?) = { (nil, nil) },
         editorPreferences: EditorPreferencesStoring? = nil, prompterLook: PrompterSettings = PrompterSettings(),
         coverPictures: CoverPicturing? = nil, soundPreviews: SoundPreviewing? = nil,
@@ -172,6 +197,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         self.library = library
         self.editing = editing
         self.drafts = drafts
+        draftKeeper = EditorDraftKeeper(store: drafts, takeID: take.id)
         self.toast = toast
         document = EditDocument(Self.startingEdit(for: take))
         let player = player ?? QuickEditPlayer(videoURL: takes.videoURL(for: take), editing: editing)
@@ -182,18 +208,24 @@ final class QuickEditViewModel: EditorHost, EditorPart {
             document: document, player: player, jobs: jobs, toast: toast, take: take, videoURL: takes.videoURL(for: take),
             importer: mediaImporter
         )
+        let takeID = take.id
+        session.keepRememberedLook = { [weak preferences] look in preferences?.setRememberedLook(look, forTake: takeID) }
         captions = CaptionsViewModel(
-            session: session, editing: editing, takes: takes, library: library, styles: styles, translations: translations,
+            session: session, editing: editing, takes: takes, library: library, styles: styles, myWords: myWords ?? MyWordsStore(),
+            translations: translations,
             speechLanguage: speechLanguage, likelySpokenLanguages: likelySpokenLanguages, languageConflict: languageConflict
         )
         // Without the app's stores (tests, previews): ones of their own in a temporary folder, never the creator's.
         let scratch = URL.temporaryDirectory.appending(path: "EditorAssets-\(UUID().uuidString)", directoryHint: .isDirectory)
         let fontPacks = fontPacks ?? FontPackStore(source: OfflineFontPackSource(), directory: scratch.appending(path: "FontPacks"))
+        let fonts = fonts ?? CustomFontStore(
+            repository: LocalCustomFontRepository(directory: scratch.appending(path: "Fonts")), directory: scratch.appending(path: "Fonts")
+        )
         cover = CoverViewModel(
             session: session, editing: editing, pictures: coverPictures ?? CoverPictureService(), importer: mediaImporter,
-            styles: styles, fontPacks: fontPacks, writingLanguages: writingLanguages
+            styles: styles, fontPacks: fontPacks, customFonts: fonts, writingLanguages: writingLanguages
         )
-        look = LookViewModel(session: session, editing: editing, motion: motion)
+        look = LookViewModel(session: session, editing: editing, motion: motion, preferences: preferences)
         clips = ClipsViewModel(session: session, editing: editing, takes: takes, library: library, speechLanguage: speechLanguage)
         overlays = OverlaysViewModel(
             session: session, styles: styles, library: library, tracker: tracker, faces: faceFinder
@@ -211,10 +243,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
             kits: brandKits ?? BrandKitStore(
                 repository: LocalBrandKitRepository(directory: scratch.appending(path: "Kits")), directory: scratch.appending(path: "Kits")
             ),
-            fonts: fonts ?? CustomFontStore(
-                repository: LocalCustomFontRepository(directory: scratch.appending(path: "Fonts")), directory: scratch.appending(path: "Fonts")
-            ),
-            fontPacks: fontPacks, styles: styles, writingLanguages: writingLanguages
+            fonts: fonts, fontPacks: fontPacks, styles: styles, writingLanguages: writingLanguages
         )
         session.host = self
         self.player.playingStopped = { [weak self] in self?.audio.playingStopped() }
@@ -239,14 +268,38 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         guard !isClosed else { return }
         // The file's own length wins over the take's saved one; a draft left behind comes back with its undo steps.
         var playhead: TimeInterval = 0
-        let draft = drafts.draft(for: take.id)
-        if document.open(sourceDuration: duration, draft: draft), let draft {
-            playhead = draft.playhead
-            toast.show(String(localized: "Draft restored"))
+        let reading = drafts.reading(for: take.id)
+        let restored = document.open(sourceDuration: duration, draft: reading.draft)
+        if restored, let draft = reading.draft { playhead = draft.playhead }
+        // What Copy and Paste look remember comes back with the project, without being a change to it.
+        if let remembered = editorPreferences.rememberedLook(forTake: take.id) {
+            document.remember { remembered.apply(to: &$0) }
         }
+        switch reading {
+        case .unreadable:
+            // The take's own edit opens; the draft's file is kept aside before a new draft can be written over it.
+            toast.show(String(localized: "Couldn't open your draft · A copy is kept on this iPhone"), kind: .problem)
+        case .draft(_, partial: true) where restored:
+            toast.show(String(localized: "Draft restored · Some parts couldn't be read"), kind: .problem)
+        case .draft where restored:
+            toast.show(String(localized: "Draft restored"))
+        case .draft, .none:
+            break
+        }
+        let partial = if case .draft(_, partial: true) = reading { restored } else { false }
+        draftKeeper.opened(onDraft: restored && !partial)
         sayMissingMedia()
         clips.opened()
         source = .ready
+        // A video edited for the first time opens in the creator's style, once: undone, it stays as filmed next time too.
+        if take.edit == nil, !restored, case .none = reading, !editorPreferences.newVideoKitOffered(forTake: take.id), brand.wearNewVideoKit() {
+            editorPreferences.markNewVideoKitOffered(forTake: take.id)
+        }
+        // What was read in part is written again as it now is (the file as it was is kept), so the chip says Saved truly.
+        if partial {
+            draftKeeper.changed(hasChanges: hasUnsavedChanges)
+            scheduleDraftSave()
+        }
         player.show(edit)
         player.seek(to: playhead)
         cover.drawCover()
@@ -260,22 +313,22 @@ final class QuickEditViewModel: EditorHost, EditorPart {
 
     /// Files the edit names that are gone from the iPhone, said as it opens (never a silent black stretch), with Remove as one undo step
     /// when that fixes it; else Replace on the clip does (the review won't export it as it is).
+    /// Looks again for the files the edit names that are no longer on this iPhone (`MissingMediaNotice`, over the preview).
     private func sayMissingMedia() {
-        let missing = edit.missingMedia()
-        guard !missing.isEmpty else { return }
-        guard edit.canDropMedia(missing) else {
-            toast.show(String(localized: "A clip in this edit is no longer on this iPhone. Replace it to export."), kind: .problem)
-            return
-        }
-        toast.show(
-            String(localized: "Some photos, videos or sounds in this edit are no longer on this iPhone."), kind: .problem,
-            action: ToastAction(title: String(localized: "Remove")) { [weak self] in self?.removeMissingMedia(missing) }
-        )
+        missingMedia = edit.missingMedia()
+        canRemoveMissingMedia = !missingMedia.isEmpty && edit.canDropMedia(missingMedia)
     }
 
     func removeMissingMedia(_ missing: Set<String>) {
         document.changeEdit { $0 = $0.withoutMedia(missing) }
     }
+
+    /// ✕ on the notice: hidden for this visit (the review still asks before exporting past what is missing).
+    func hideMissingMediaNotice() {
+        missingMediaNoticeHidden = true
+    }
+
+    var showsMissingMediaNotice: Bool { !missingMedia.isEmpty && !missingMediaNoticeHidden && !isFullScreen }
 
     /// The edit changed: what was picked and is gone is let go, and the preview, the draft and the cover follow.
     private func editChanged(from previous: TakeEdit) {
@@ -290,6 +343,8 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         if let id = reviewedVoiceOverID, !edit.voiceOvers.contains(where: { $0.id == id }) { reviewedVoiceOverID = nil }
         if let id = selectedMusicID, !edit.music.contains(where: { $0.id == id }) { selectedMusicID = nil }
         if let id = selectedBlurID, !edit.blurRegions.contains(where: { $0.id == id }) { selectedBlurID = nil }
+        // A file put back by Undo, or taken out: whether something is missing is looked for again.
+        if edit.mediaFileNames != previous.mediaFileNames { sayMissingMedia() }
         overlays.editChanged()
         blur.editChanged()
         blur.growWithClips(from: previous)
@@ -303,6 +358,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         player.show(playedEdit)
         cover.editChanged()
         brand.requestFontPacks()
+        draftKeeper.changed(hasChanges: hasUnsavedChanges)
         scheduleDraftSave()
     }
 
@@ -347,6 +403,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         } else if let panel = shownPanel, look.followsSelection(panel), !(next.map { look.accepts($0, in: panel) } ?? false) {
             leavePanel(for: nil, endingChange: false)
         }
+        panelPickChanged()
     }
 
     /// The one way the panel changes: what the panel left behind ends, in this order, once.
@@ -354,12 +411,10 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         let previous = shownPanel
         guard next != previous else { return }
         shownPanel = next
+        panelIsTucked = false
         if let lane = next?.focusedLane { bringTrack([lane]) }
         pinClip(for: next)
-        showsAdvanced = false
-        panelTab = .presets
-        // ✦ Smart opens on Tools next time unless a toolbar asks for another tab.
-        if previous == .smart { smartSection = .tools }
+        swapPanelState(from: previous, to: next)
         audio.panelChanged(from: previous)
         // Auto, Compare, the recordings' analysis for Format and Stabilize, a clip's scope.
         look.panelChanged(to: next)
@@ -419,6 +474,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     static func startingEdit(for take: Take) -> TakeEdit {
         var edit = take.edit ?? TakeEdit(sourceDuration: take.duration, aspect: take.aspect)
         if take.edit == nil { edit.captionCollection?.safeMargins = CaptionsViewModel.captionSafeMargins(for: take, aspect: take.aspect) }
+        CaptionSafeArea.repairMargins(of: &edit, for: take)
         edit.captions = edit.captions.map(CaptionRevision.withoutContinuation)
         return edit
     }
@@ -477,19 +533,31 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     }
 
     /// A recording's motion analysis is ready: the preview is drawn again when what it plays reads one.
+    /// "Measuring the shake · 40%" over the preview while Stabilize or Follow face waits for its analysis and the panel that says so
+    /// (Stabilize, Format) is closed: until then the clip plays as filmed, which would otherwise look like the tool did nothing.
+    var motionPendingLabel: String? {
+        guard source == .ready, !isFullScreen, panel != .stabilize, panel != .crop, EditedComposition.usesMotion(edit) else { return nil }
+        let shake = edit.timeline.segments.contains { $0.stabilization != nil }
+        return MotionAnalysisNote.text(for: look.motionAnalysisStatus, purpose: shake ? .shake : .face)
+    }
+
     func motionAnalysisDidChange() {
         // A Blur area's handles read Stabilize's and Follow face's paths from the analyses.
         blur.placements.removeAll()
-        guard source == .ready, EditedComposition.usesMotion(playedEdit) else { return }
+        guard source == .ready, EditedComposition.readsMotion(playedEdit) else { return }
         player.redraw()
     }
 
     /// Cue is in front again: a preview that failed meanwhile (iOS resets its media services in the background) is built
     /// again on its own.
     func becameActive() {
+        if narrationStoppedAway {
+            narrationStoppedAway = false
+            toast.show(String(localized: "Voice-over stopped when you left Cue · What you recorded is kept"), kind: .problem)
+        }
         if draftNotKept {
             draftNotKept = !saveDraft()
-            if draftNotKept { toast.show(Self.notSaved, kind: .problem) }
+            if draftNotKept { toast.show(notSavedMessage, kind: .problem) }
         }
         guard source == .ready, player.state == .failed else { return }
         player.retry()
@@ -520,31 +588,16 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         }
     }
 
-    // MARK: - Undo
-
-    func undo() {
-        guard canUndo, document.undo() else { return }
-        // Edit by text picks words by their place in the list, which an undone cut changes.
-        clips.transcriptSelection = nil
-        // VoiceOver hears it happen, as a sighted creator sees the edit change.
-        AccessibilityNotification.Announcement(String(localized: "Undone")).post()
-    }
-
-    func redo() {
-        guard canRedo, document.redo() else { return }
-        clips.transcriptSelection = nil
-        AccessibilityNotification.Announcement(String(localized: "Redone")).post()
-    }
-
     /// Old takes use a matching version only; a newer script is never an alignment reference.
     var captionScript: Script? { take.captionScript(current: library.script(id: take.scriptID)) }
 
     // MARK: - Leaving
 
     /// Saves the edit on the take (its new length, marked Edited) when anything changed.
-    /// - Returns: false when the edit couldn't be saved on the take (it stays a draft).
+    /// - Returns: true when the edit is on the take, false when it couldn't be and stays a draft, nil when it couldn't be kept anywhere
+    ///   and the editor stays open (said once, with Leave anyway).
     @discardableResult
-    func done() -> Bool {
+    func done() -> Bool? {
         endAllChanges()
         audio.stopRecordingIfNeeded()
         // Reversed videos nothing plays any more (a clip reversed and put back) were kept for undo; they go now.
@@ -556,11 +609,11 @@ final class QuickEditViewModel: EditorHost, EditorPart {
                 try takes.applyEdit(saved, to: take.id)
             } catch {
                 noteFailure(error, "save")
-                // Not on disk: the edit stays a draft (and its files with it) that Edit opens again, or, when even that
-                // can't be written, the creator hears it wasn't saved.
-                let kept = saveDraft(forced: true)
+                // Not on disk: the edit stays a draft (and its files with it) that Edit opens again; when even that can't be written,
+                // the editor stays open and says so.
+                guard saveDraft(forced: true) || leavesUnkept(.notYet) else { return nil }
                 close(keepingDraft: true)
-                toast.show(kept ? String(localized: "Couldn't save the edits · Kept as a draft") : Self.notSaved, kind: .problem)
+                toast.show(draftKeeper.isFailing ? notSavedMessage : String(localized: "Couldn't save the edits · Kept as a draft"), kind: .problem)
                 return false
             }
             toast.show(String(localized: "Edits saved to this take"))
@@ -570,17 +623,40 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         return true
     }
 
-    /// The edit couldn't be written anywhere: a full iPhone is the likely reason.
-    private static var notSaved: String { String(localized: "Couldn't save the edits · Free up space on this iPhone") }
+    /// Why the edit couldn't be written, said so the creator can act: a full iPhone, or try again (anything else isn't blamed on space).
+    private var notSavedMessage: String {
+        if case .failed(.other) = draftKeeper.state { return String(localized: "Couldn't save the edits · Try again") }
+        return String(localized: "Couldn't save the edits · Free up space on this iPhone")
+    }
+
+    /// The edit couldn't be kept anywhere and the creator asked to leave. The first time the editor stays and says so, with Leave
+    /// anyway; asked again (or Leave anyway), it goes, keeping whatever draft was last written.
+    /// - Returns: true when it leaves now.
+    private func leavesUnkept(_ outcome: EditorOutcome) -> Bool {
+        if warnedNotKept { return true }
+        warnedNotKept = true
+        toast.show(
+            notSavedMessage, kind: .problem,
+            action: ToastAction(title: String(localized: "Leave anyway")) { [weak self] in self?.leaveAnyway(outcome) }
+        )
+        return false
+    }
+
+    private func leaveAnyway(_ outcome: EditorOutcome) {
+        guard !isClosed else { return }
+        close(keepingDraft: true)
+        leaveScreen(outcome)
+    }
 
     /// Done: pauses and asks "Is it ready to post?" (`EditorDoneSheet`); the answer is `finish(_:)`.
     func askIfReadyToPost() {
         guard isReady else { return }
         endAllChanges()
         player.pause()
-        // A Blur area still being tracked hasn't covered anything yet.
-        if blur.isFollowing {
-            toast.show(String(localized: "A Blur area is still being tracked · Wait a moment"), kind: .problem)
+        // Work that changes the edit when it ends (a Blur area still being tracked hasn't covered anything yet): the video
+        // would go out without it.
+        if let work = pendingWork {
+            toast.show(work.waitMessage, kind: .problem)
             return
         }
         // A Blur area that may not cover what it hides: one frame is enough to show someone.
@@ -593,55 +669,110 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         sheet = .done
     }
 
+    /// Work started here that changes the edit when it ends, the first that runs (`EditorPendingWork`).
+    var pendingWork: EditorPendingWork? {
+        if captions.captionState.isWorking { return .captions }
+        if captions.translationState.isWorking { return .translation }
+        if overlays.isTracking { return .tracking }
+        if blur.isFollowing { return .blurArea }
+        if jobs.isRunning(where: Self.makesAClip) { return .clip }
+        if jobs.isRunning(.auto) { return .auto }
+        return nil
+    }
+
+    private nonisolated static func makesAClip(_ kind: EditorJobs.Kind) -> Bool {
+        switch kind {
+        case .reverse, .importing, .tool: true
+        default: false
+        }
+    }
+
     /// Leaves the editor the way the creator answered: the edit is saved on the take (share, download,
     /// ready later), kept as a draft the video stays in edit with (not yet), or kept as a draft
     /// without asking (back).
-    /// - Returns: what the review carries on with: an edit that couldn't be saved on the take is a draft, never shared or saved as it was.
+    /// - Returns: what the review carries on with (an edit that couldn't be saved on the take is a draft, never shared or saved as it
+    ///   was), or nil when the editor stays open because the edit couldn't be kept anywhere.
     @discardableResult
-    func finish(_ outcome: EditorOutcome) -> EditorOutcome {
+    func finish(_ outcome: EditorOutcome) -> EditorOutcome? {
         sheet = nil
         switch outcome {
-        case .share, .download, .ready: return done() ? outcome : .notYet
-        case .notYet: keepForLater()
-        case .back: cancel()
+        case .share, .download, .ready:
+            guard let saved = done() else { return nil }
+            return saved ? outcome : .notYet
+        case .notYet: return keepForLater() ? outcome : nil
+        case .back: return cancel() ? outcome : nil
         }
-        return outcome
     }
 
     /// "Not yet, I'll come back": the draft stays even if nothing changed, so the video is in edit.
-    private func keepForLater() {
+    /// - Returns: false when the editor stays open (the draft couldn't be written).
+    private func keepForLater() -> Bool {
         endAllChanges()
         // A narration being recorded is kept with the draft.
         audio.stopRecordingIfNeeded()
         let kept = saveDraft(forced: true)
+        guard kept || leavesUnkept(.notYet) else { return false }
         close(keepingDraft: true)
-        if !kept { toast.show(Self.notSaved, kind: .problem) }
+        if !kept { toast.show(notSavedMessage, kind: .problem) }
+        return true
     }
 
-    /// Leaves without saving on the take. Changes stay in a draft that Edit picks up again; the take
-    /// is as it was.
-    func cancel() {
+    /// Leaves without saving on the take. Changes stay in a draft that Edit picks up again; the take is as it was. A draft
+    /// left from before stays too while the video is still opening or couldn't be opened: nothing here replaced it.
+    /// - Returns: false when the editor stays open (the changes couldn't be written).
+    @discardableResult
+    func cancel() -> Bool {
         endAllChanges()
         // A narration being recorded is kept with the draft, like every other change.
         audio.stopRecordingIfNeeded()
-        guard source == .ready, hasUnsavedChanges else {
+        guard source == .ready else {
+            removeUnusedImports(keeping: document.original.mediaFileNames)
+            close(keepingDraft: true)
+            return true
+        }
+        guard hasUnsavedChanges else {
             removeUnusedImports(keeping: document.original.mediaFileNames)
             close(keepingDraft: false)
-            return
+            return true
         }
         let kept = saveDraft()
+        guard kept || leavesUnkept(.back) else { return false }
+        // Read before closing stops it: what didn't finish is said, the rest is in the draft.
+        let stopped = pendingWork
         close(keepingDraft: true)
-        toast.show(kept ? String(localized: "Draft saved") : Self.notSaved, kind: kept ? .done : .problem)
+        if !kept {
+            toast.show(notSavedMessage, kind: .problem)
+        } else if let stopped {
+            toast.show(stopped.stoppedMessage, kind: .problem)
+        } else {
+            toast.show(String(localized: "Draft saved"))
+        }
+        return true
     }
 
-    /// Leaving the app or the screen without Done or Cancel: the draft keeps everything.
+    /// Control Center, a notification pulled down, the app switcher on its way: Cue is still on screen and the microphone still
+    /// its own, so a narration being recorded goes on (and the video under it); anything else pauses. The draft is written now,
+    /// in case iOS ends Cue next (a call taking the microphone is said by the recorder).
+    func becameInactive() {
+        if audio.recorder.isRecording {
+            guard !saveDraft() else { return }
+            draftNotKept = true
+            toast.show(notSavedMessage, kind: .problem)
+            return
+        }
+        pauseAndKeepDraft()
+    }
+
+    /// Leaving the app or the screen without Done or Cancel: the draft keeps everything. A narration being recorded stops there
+    /// and becomes its clip, said when Cue is back.
     func pauseAndKeepDraft() {
+        if audio.recorder.isRecording, !isClosed { narrationStoppedAway = true }
         audio.stopRecordingIfNeeded()
         player.pause()
         // Not written: said now (an edit iOS may end in the background shouldn't go unnoticed) and tried again on the way back.
         guard !saveDraft() else { return }
         draftNotKept = true
-        toast.show(Self.notSaved, kind: .problem)
+        toast.show(notSavedMessage, kind: .problem)
     }
 
     /// Files copied in during this visit that nothing kept names: the take's saved edit (and the
@@ -677,24 +808,46 @@ final class QuickEditViewModel: EditorHost, EditorPart {
 
     // MARK: - Draft
 
-    private func scheduleDraftSave() {
+    private func scheduleDraftSave(after delay: Duration = .milliseconds(600)) {
         jobs.start(.draft) { [weak self] _ in
-            try? await Task.sleep(for: .milliseconds(600))
+            try? await Task.sleep(for: delay)
             guard !Task.isCancelled else { return }
             self?.autosaveDraft()
         }
     }
 
-    /// 600 ms after a change: the draft written off the main thread (`QuickEditDraftStoring.saveSoon`), or dropped when
-    /// nothing is changed any more.
+    /// The draft as the editor has it now.
+    private var currentDraft: QuickEditDraft {
+        QuickEditDraft(takeID: take.id, edit: edit, playhead: player.currentTime, history: document.draftHistory, savedAt: .now)
+    }
+
+    /// 600 ms after a change: the draft written off the main thread (`EditorDraftKeeper.saveSoon`), or dropped when nothing is
+    /// changed any more. A write that fails is said once and tried again every few seconds until one works.
     private func autosaveDraft() {
         guard source == .ready, !isClosed else { return }
         if hasUnsavedChanges {
-            drafts.saveSoon(QuickEditDraft(takeID: take.id, edit: edit, playhead: player.currentTime, history: document.draftHistory, savedAt: .now))
+            draftKeeper.saveSoon(currentDraft) { [weak self] failure, first in self?.autosaveFailed(failure, first: first) }
         } else {
-            drafts.discard(takeID: take.id)
+            draftKeeper.discard()
         }
     }
+
+    private func autosaveFailed(_ failure: QuickEditDraftSaveFailure, first: Bool) {
+        guard !isClosed else { return }
+        if first {
+            noteFailure(failure, "draft")
+            toast.show(
+                failure == .noSpace
+                    ? String(localized: "Couldn't save the edits · Free up space on this iPhone")
+                    : String(localized: "Couldn't save the edits · Cue keeps trying"),
+                kind: .problem
+            )
+        }
+        scheduleDraftSave(after: Self.draftRetryDelay)
+    }
+
+    /// How long a failed autosave waits before it tries again.
+    static let draftRetryDelay: Duration = .seconds(5)
 
     /// Keeps the edit, the playhead and the undo steps now (on leaving, or the app going away), or drops the draft when
     /// nothing changed. False when the draft couldn't be written (the store logs why).
@@ -702,14 +855,13 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     func saveDraft(forced: Bool = false) -> Bool {
         guard source == .ready, !isClosed else { return true }
         if hasUnsavedChanges || forced {
-            do {
-                try drafts.save(QuickEditDraft(takeID: take.id, edit: edit, playhead: player.currentTime, history: document.draftHistory, savedAt: .now))
-            } catch {
+            if let error = draftKeeper.saveNow(currentDraft) {
                 noteFailure(error, "draft")
                 return false
             }
+            warnedNotKept = false
         } else {
-            drafts.discard(takeID: take.id)
+            draftKeeper.discard()
         }
         return true
     }

@@ -17,7 +17,9 @@ enum TranscriptEditing {
     static let tail: TimeInterval = 0.15
 
     /// The words of `edit`'s recordings in the order they play. The take's own edit (one recording, in its order) lists the
-    /// words cut between its handles too, crossed out, so they can come back; a montage lists what plays, clip by clip.
+    /// words cut between its handles too, crossed out, so they can come back; a montage lists what plays, clip by clip, each
+    /// clip followed by what was cut right after it in its recording (crossed out, under that clip: a copied clip lists them
+    /// twice, one for each place they can come back).
     static func words(in edit: TakeEdit) -> [TranscriptWord] {
         let timeline = edit.timeline
         func transcript(_ source: UUID?) -> [CaptionWord] {
@@ -41,14 +43,26 @@ enum TranscriptEditing {
         }
         var result: [TranscriptWord] = []
         for (position, segment) in timeline.segments.enumerated() {
+            // What was cut right after the clip, up to where the next clip of its recording starts (wherever it plays now):
+            // listed crossed out under it, where Put back brings it.
+            let resumes = timeline.segments
+                .filter { $0.id != segment.id && $0.sourceID == segment.sourceID && $0.sourceStart >= segment.sourceEnd - 0.001 }
+                .map(\.sourceStart).min()
             for (index, word) in transcript(segment.sourceID).enumerated() {
                 let middle = (word.start + word.end) / 2
-                guard segment.sourceStart <= middle, middle < segment.sourceEnd else { continue }
-                result.append(TranscriptWord(
-                    id: "\(segment.id.uuidString)-\(index)", text: word.text, sourceID: segment.sourceID,
-                    span: TimeSpan(start: word.start, end: word.end), index: index, segmentID: segment.id,
-                    editedStart: timeline.editedStart(ofSegmentAt: position) + segment.editedOffset(forSource: max(0, word.start - segment.sourceStart))
-                ))
+                let span = TimeSpan(start: word.start, end: word.end)
+                if segment.sourceStart <= middle, middle < segment.sourceEnd {
+                    result.append(TranscriptWord(
+                        id: "\(segment.id.uuidString)-\(index)", text: word.text, sourceID: segment.sourceID, span: span, index: index,
+                        segmentID: segment.id,
+                        editedStart: timeline.editedStart(ofSegmentAt: position) + segment.editedOffset(forSource: max(0, word.start - segment.sourceStart))
+                    ))
+                } else if let resumes, middle >= segment.sourceEnd, middle < resumes {
+                    result.append(TranscriptWord(
+                        id: "\(segment.id.uuidString)-\(index)", text: word.text, sourceID: segment.sourceID, span: span, index: index,
+                        segmentID: segment.id, editedStart: nil
+                    ))
+                }
             }
         }
         return result

@@ -21,4 +21,6 @@ nonisolated struct ExportedVideo: Equatable, Sendable {
     let exportsLeft: Int?
     /// Where the creator is likely to post it: the take's platform.
     let platform: Platform?
+    /// Some words came out in the system's face, and why (their font hadn't downloaded, an imported one is gone): the cover says so.
+    var fontFallback: ExportFontFallback?
 }

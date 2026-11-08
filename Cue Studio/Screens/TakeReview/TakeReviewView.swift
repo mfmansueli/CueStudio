@@ -70,6 +70,8 @@ struct TakeReviewView: View {
     /// Save or Share, asked for while files the edit names are gone: it waits for "Open editor" or "Remove and export".
     @State private var exportPastMissingMedia: ReviewExport?
     @State private var awaitsSavedCheck = false
+    /// The review's "Export options" line (D11).
+    @State private var showsExportOptions = false
     /// "Take 2 of 3" under the bar, after a swipe.
     @State private var showsPlace = false
 
@@ -223,15 +225,23 @@ struct TakeReviewView: View {
             if ended { exitDuringExport = nil }
         }
         .task(id: PlayerKey(takeID: viewModel.takeID, edit: viewModel.take?.edit)) { await runPlayer() }
-        .onChange(of: viewModel.take?.edit?.showsCaptions ?? false) { _, shown in
-            viewModel.burnsInCaptions = shown
+        // The recording's frame, for the quiet lines and the editor's Done to say the file's real size (606×1080) when a crop makes it smaller.
+        .task { await viewModel.loadRecordingFrame() }
+        .sheet(isPresented: $showsExportOptions) {
+            ShareExportOptions(review: viewModel, edit: viewModel.take?.edit)
+                .presentationDetents([.medium])
+                .presentationBackground(Palette.sheetNight)
         }
         .fullScreenCover(item: $editingTake, onDismiss: handleEditorOutcome) { take in
-            QuickEditView(take: take, services: services, opening: editingTool) { outcome in
-                pendingOutcome = outcome
-                editingTool = nil
-                editingTake = nil
-            }
+            QuickEditView(
+                take: take, services: services, opening: editingTool, exportNote: { viewModel.doneExportNote(for: $0) },
+                review: viewModel,
+                onClose: { outcome in
+                    pendingOutcome = outcome
+                    editingTool = nil
+                    editingTake = nil
+                }
+            )
         }
         .fullScreenCover(item: $proposal) { proposal in
             PickBestTakeView(
@@ -442,7 +452,7 @@ struct TakeReviewView: View {
                 .frame(minHeight: 80)
                 .overlay { playButton }
             VStack(alignment: .leading, spacing: 0) {
-                ReviewScrubber(progress: playback.progress, duration: take.duration) { playback.seek(to: $0, of: take.duration) }
+                ReviewScrubber(readProgress: { playback.progress }, duration: take.duration, onSeek: { playback.seek(to: $0, of: take.duration) })
                 Rectangle().fill(Color.white.opacity(0.1)).frame(height: 0.5).padding(.top, 14)
                 ReviewInfoPanel(
                     take: take, stage: viewModel.stage, lengthFit: viewModel.lengthFit, scriptVersion: viewModel.scriptVersionLabel,
@@ -486,6 +496,13 @@ struct TakeReviewView: View {
                     onGoPro: { viewModel.paywall = viewModel.exportsExhausted ? .export : .profile }
                 )
                 .padding(.top, 4)
+                // Save goes straight to Photos: what it is made with is one quiet tap away, the same options as Share's (D11).
+                ExportOptionsLine(summary: viewModel.outputSummary(for: take.edit), identifier: "review.exportOptions") {
+                    playback.pause()
+                    showsExportOptions = true
+                }
+                .frame(maxWidth: .infinity)
+                .disabled(viewModel.runningAction != nil)
             }
             .padding(.horizontal, Metrics.gutter)
             .padding(.bottom, 6)

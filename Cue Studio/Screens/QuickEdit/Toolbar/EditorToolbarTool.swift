@@ -10,11 +10,11 @@ import Foundation
 /// one. Whether it can work right now (dimmed) and its badge are the bar's to say (`QuickEditViewModel.item(_:)`).
 enum EditorToolbarTool: CaseIterable, Hashable {
     // The basics
-    case edit, split, captions, text, smart, media, audio
+    case edit, split, captions, text, media, audio
     // Editing the clip under the playhead
     case speed, volume, zoom, stabilize, freeze, reverse, duplicate, replace, reorder, crop, animation
     // Speech and sound
-    case pauses, editByText, studioVoice, extractAudio
+    case pauses, editByText, studioVoice, extractAudio, autoEdit
     // Picture and beauty (the whole video's look)
     case format, adjust, skin, filters, background, blurArea, copyLook, pasteLook
     // Finishing
@@ -28,7 +28,6 @@ enum EditorToolbarTool: CaseIterable, Hashable {
         case .split: "split"
         case .captions: "captions"
         case .text: "text"
-        case .smart: "smart"
         case .media: "addMedia"
         case .audio: "audio"
         case .speed: "speed"
@@ -46,6 +45,7 @@ enum EditorToolbarTool: CaseIterable, Hashable {
         case .editByText: "editByText"
         case .studioVoice: "voice"
         case .extractAudio: "extractAudio"
+        case .autoEdit: "autoEdit"
         case .format: "format"
         case .adjust: EditorLookTool.adjust.toolbarID(wholeVideo: true)
         case .skin: EditorLookTool.skin.toolbarID(wholeVideo: true)
@@ -67,7 +67,6 @@ enum EditorToolbarTool: CaseIterable, Hashable {
         case .split: String(localized: "Split")
         case .captions: String(localized: "Captions")
         case .text: String(localized: "Text")
-        case .smart: String(localized: "✦ Smart")
         case .media: String(localized: "Media")
         case .audio: String(localized: "Audio")
         case .speed: String(localized: "Speed")
@@ -81,11 +80,12 @@ enum EditorToolbarTool: CaseIterable, Hashable {
         case .reorder: String(localized: "Reorder")
         case .crop: String(localized: "Crop")
         case .animation: String(localized: "Animation")
-        case .pauses: String(localized: "Remove pauses")
+        case .pauses: String(localized: "Clean up", comment: "Editor tool: the speech clean-up (pauses, ums and repeats, edit by text); Portuguese \"Limpar fala\"")
         case .editByText: String(localized: "Edit by text")
         case .studioVoice: String(localized: "Studio Voice")
         case .extractAudio: String(localized: "Extract audio")
-        case .format: String(localized: "Format")
+        case .autoEdit: String(localized: "Auto edit")
+        case .format: String(localized: "Aspect ratio")
         case .adjust: EditorLookTool.adjust.label
         case .skin: EditorLookTool.skin.label
         case .filters: EditorLookTool.filters.label
@@ -93,8 +93,8 @@ enum EditorToolbarTool: CaseIterable, Hashable {
         case .blurArea: String(localized: "Blur area")
         case .copyLook: String(localized: "Copy look")
         case .pasteLook: String(localized: "Paste look")
-        case .templates: SmartPanelSection.templates.label
-        case .brandKit: SmartPanelSection.brand.label
+        case .templates: TemplatesPanelSection.templates.label
+        case .brandKit: TemplatesPanelSection.brand.label
         case .cover: String(localized: "Cover")
         case .clip: String(localized: "Clip")
         }
@@ -106,12 +106,11 @@ enum EditorToolbarTool: CaseIterable, Hashable {
         case .split: "arrow.left.and.line.vertical.and.arrow.right"
         case .captions: "captions.bubble"
         case .text: "textformat"
-        case .smart: "sparkles"
         case .media: "photo.badge.plus"
         case .audio: "music.note"
         case .speed: "gauge.with.dots.needle.67percent"
         case .volume: "speaker.wave.2"
-        case .zoom: "arrow.up.left.and.arrow.down.right"
+        case .zoom: "plus.magnifyingglass"
         case .stabilize: "camera.metering.center.weighted"
         case .freeze: "pause.rectangle"
         case .reverse: "backward.end.alt"
@@ -120,10 +119,11 @@ enum EditorToolbarTool: CaseIterable, Hashable {
         case .reorder: "arrow.up.arrow.down"
         case .crop: "crop.rotate"
         case .animation: "rectangle.portrait.and.arrow.forward"
-        case .pauses: "waveform"
+        case .pauses: "rectangle.compress.vertical"
         case .editByText: "text.badge.minus"
         case .studioVoice: "waveform.and.mic"
         case .extractAudio: "waveform.badge.plus"
+        case .autoEdit: "wand.and.stars"
         case .format: "aspectratio"
         case .adjust: EditorLookTool.adjust.systemImage
         case .skin: EditorLookTool.skin.systemImage
@@ -145,7 +145,6 @@ enum EditorToolbarTool: CaseIterable, Hashable {
         case .split: .splitClip
         case .captions: .openCaptions
         case .text: .openMenu(.text)
-        case .smart: .openSmart(.tools)
         case .media: .openMenu(.media)
         case .audio: .openMenu(.audio)
         case .speed: .open(.speed)
@@ -163,6 +162,7 @@ enum EditorToolbarTool: CaseIterable, Hashable {
         case .editByText: .editByText
         case .studioVoice: .open(.voice)
         case .extractAudio: .extractAudio
+        case .autoEdit: .openAutoEdit
         case .format: .open(.crop)
         case .adjust: .openLook(.adjust, wholeVideo: true)
         case .skin: .openLook(.skin, wholeVideo: true)
@@ -171,16 +171,24 @@ enum EditorToolbarTool: CaseIterable, Hashable {
         case .blurArea: .addBlurArea
         case .copyLook: .copyLook
         case .pasteLook: .pasteLook
-        case .templates: .openSmart(.templates)
-        case .brandKit: .openSmart(.brand)
+        case .templates: .openTemplates(.templates)
+        case .brandKit: .openTemplates(.brand)
         case .cover: .openCoverStudio
+        }
+    }
+
+    /// A clip's bar has a tool with the same name for that clip alone, so the main bar says this one is the whole video's.
+    var hasClipVersion: Bool {
+        switch self {
+        case .adjust, .skin, .filters, .background: true
+        default: false
         }
     }
 
     /// What it changes reaches past a picked item: on an item's bar it carries the whole video's badge.
     var reachesWholeVideo: Bool {
         switch self {
-        case .captions, .pauses, .editByText, .studioVoice, .format, .adjust, .skin, .filters, .background, .templates, .brandKit: true
+        case .captions, .pauses, .autoEdit, .editByText, .studioVoice, .format, .adjust, .skin, .filters, .background, .templates, .brandKit: true
         default: false
         }
     }

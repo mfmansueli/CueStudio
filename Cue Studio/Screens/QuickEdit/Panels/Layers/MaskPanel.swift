@@ -87,6 +87,7 @@ struct MaskPanel: View {
         let overlays = viewModel.overlays
         PanelStepper(
             label: String(localized: "Turn"), value: "\(Int(placement.rotation.rounded()))°", identifier: "edit.maskRotation",
+            onEditingChanged: { $0 ? viewModel.beginPanelChange() : viewModel.endPanelChange() },
             onDecrease: { overlays.setMaskRotation(placement.rotation.rounded() - 1) },
             onIncrease: { overlays.setMaskRotation(placement.rotation.rounded() + 1) }
         )
@@ -95,6 +96,7 @@ struct MaskPanel: View {
             PanelStepper(
                 label: mask.shape == .band ? String(localized: "Thickness") : String(localized: "Size"),
                 value: PanelValueFormat.percent.text(size * 100), identifier: "edit.maskSize",
+                onEditingChanged: { $0 ? viewModel.beginPanelChange() : viewModel.endPanelChange() },
                 onDecrease: { overlays.scaleMask(by: 0.95) }, onIncrease: { overlays.scaleMask(by: 1 / 0.95) }
             )
         }

@@ -44,6 +44,8 @@ final class EditorSession {
     let importer: EditMediaImporting
     /// The creator's handle, for the "@handle" graphic and the cover's series (set by the screen).
     var creatorHandle = ""
+    /// Keeps what Copy and Paste look remember for the take, outside the edit (set by the screen).
+    @ObservationIgnored var keepRememberedLook: (RememberedLook) -> Void = { _ in }
 
     init(
         document: EditDocument, player: EditPlayback, jobs: EditorJobs, toast: ToastService, take: Take, videoURL: URL,

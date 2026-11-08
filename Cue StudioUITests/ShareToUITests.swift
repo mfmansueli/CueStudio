@@ -41,14 +41,71 @@ final class ShareToUITests: XCTestCase {
         XCTAssertFalse(app.buttons["shareFlow.start"].isEnabled)
     }
 
-    func testFourKIsFree() {
-        let app = openShare()
+    /// 4K export is Cue Pro (owner, 06/11/2026): without it, 4K asks with the system's alert; Keep 1080p stays, Go Pro opens the regular Pro.
+    func testFourKIsProAndAsksWithoutIt() {
+        let app = openShare(fourK: true)
         app.buttons["shareFlow.options"].tap()
         let quality = app.segmentedControls["share.quality"]
         XCTAssertTrue(quality.exists(within: 5))
+        quality.buttons["4K · Pro"].tap()
+        let alert = app.alerts["4K export is Cue Pro"]
+        XCTAssertTrue(alert.exists(within: 5))
+        XCTAssertTrue(alert.staticTexts["Without Pro, this video exports in 1080p. Your recording and edit stay as they are."].exists)
+        alert.buttons["Keep 1080p"].tap()
+        XCTAssertTrue(quality.buttons["1080p"].isSelected)
+        XCTAssertFalse(quality.buttons["4K · Pro"].isSelected)
+        quality.buttons["4K · Pro"].tap()
+        XCTAssertTrue(alert.exists(within: 5))
+        alert.buttons["Go Pro"].tap()
+        XCTAssertTrue(app.buttons["paywall.closeButton"].exists(within: 8))
+        // The regular Pro (its opening plays first), with "up to 4K" on its exports card.
+        XCTAssertTrue(app.descendants(matching: .any)["paywall.highlight.exports"].firstMatch.exists(within: 8))
+    }
+
+    /// With Pro a 4K recording starts in 4K, and 1080p is one tap.
+    func testFourKIsPickedOnPro() {
+        let app = openShare(pro: true, fourK: true)
+        app.buttons["shareFlow.options"].tap()
+        let quality = app.segmentedControls["share.quality"]
+        XCTAssertTrue(quality.exists(within: 5))
+        XCTAssertTrue(quality.buttons["4K"].isSelected)
+        quality.buttons["1080p"].tap()
+        XCTAssertTrue(quality.buttons["1080p"].isSelected)
         quality.buttons["4K"].tap()
         XCTAssertTrue(quality.buttons["4K"].isSelected)
+        XCTAssertFalse(app.alerts.firstMatch.exists)
         XCTAssertFalse(app.buttons["paywall.closeButton"].exists)
+    }
+
+    /// A 1080p recording has no quality to pick: Export options show "1080p", with nothing about Pro.
+    func testARecordingIn1080pShowsItsQualityWithNoChoice() {
+        let app = openShare()
+        app.buttons["shareFlow.options"].tap()
+        let recorded = app.descendants(matching: .any)["share.qualityRecorded"]
+        XCTAssertTrue(recorded.exists(within: 5))
+        XCTAssertTrue(recorded.label.contains("1080p"))
+        XCTAssertFalse(app.segmentedControls["share.quality"].exists)
+    }
+
+    /// D11: the options say the quality the file is made in, and Save reaches the same options from the review, without Share.
+    func testOptionsNameTheQualityAndSaveReachesThemFromTheReview() {
+        let app = openShare()
+        XCTAssertTrue(app.buttons["shareFlow.options"].label.contains("Options · 1080p"))
+        app.buttons["sheet.closeButton"].tap()
+        XCTAssertTrue(app.buttons["ready.closeButton"].exists(within: 5))
+        app.buttons["ready.closeButton"].tap()
+        let line = app.buttons["review.exportOptions"]
+        XCTAssertTrue(line.exists(within: 5))
+        XCTAssertTrue(line.label.contains("1080p"))
+        line.tap()
+        let captions = app.switches["share.captionsToggle"]
+        XCTAssertTrue(captions.exists(within: 5))
+        XCTAssertTrue(element(app, "share.qualityRecorded").exists)
+        // Captions the editor doesn't show: for this export only, and said.
+        if (captions.value as? String) == "0" {
+            captions.switches.firstMatch.tap()
+            XCTAssertTrue(element(app, "share.outputDifference").exists(within: 5))
+        }
     }
 
     func testClosingTheNetworksLeavesReadyWithItsThreeWaysOut() {
@@ -175,8 +232,11 @@ final class ShareToUITests: XCTestCase {
     /// A take's review, "Share to universe" tapped: Ready to travel with the networks over it. A test that ends the share sheet asks for
     /// `animations`: the networks' sheet only comes back after the share sheet has animated away (`ShareFlow.settle`); without
     /// animations SwiftUI never presents it again.
-    private func openShare(animations: Bool = false) -> XCUIApplication {
-        let app = CueApp.launch(seeded: true, sampleVideo: true, animations: animations, extraArguments: ["-uiTestFakeShareSheet"])
+    private func openShare(animations: Bool = false, pro: Bool = false, fourK: Bool = false) -> XCUIApplication {
+        let app = CueApp.launch(
+            seeded: true, pro: pro, sampleVideo: true, animations: animations,
+            extraArguments: ["-uiTestFakeShareSheet"] + (fourK ? ["-uiTestFourKTakes"] : [])
+        )
         let tab = app.cueTabBar.buttons["Takes"]
         XCTAssertTrue(tab.exists(within: 15))
         tab.tap()

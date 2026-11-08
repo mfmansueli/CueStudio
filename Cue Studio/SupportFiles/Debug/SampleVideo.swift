@@ -12,13 +12,20 @@ import UIKit
 /// edit. Each second has its own color, which makes cuts visible on the timeline. Silent and tiny
 /// (144 × 256 at 8 fps), written once at launch with `-uiTestSampleVideo`. Never shipped.
 ///
-/// The frames are written uncompressed (about 70 MB a minute): the iOS 27 Simulator's H.264
-/// encoder stalls for good on about one write in four, which froze the launch until the test
+/// On the Simulator the frames are written uncompressed (about 70 MB a minute): the iOS 27 Simulator's
+/// H.264 encoder stalls for good on about one write in four, which froze the launch until the test
 /// runner gave up, and it can't encode JPEG. Without an encoder the three sample videos take a
-/// couple of seconds, and AVFoundation plays, thumbnails and exports them like any other.
+/// couple of seconds, and AVFoundation plays, thumbnails and exports them like any other. An iPhone
+/// encodes them in HEVC: uncompressed, the samples took about 260 MB of its space, enough to leave
+/// a nearly full one unable to install the test runner.
 enum SampleVideo {
     nonisolated private static let size = CGSize(width: 144, height: 256)
     nonisolated private static let framesPerSecond: Int32 = 8
+    #if targetEnvironment(simulator)
+    nonisolated private static let compresses = false
+    #else
+    nonisolated private static let compresses = true
+    #endif
 
     /// Writes a video for each take whose file isn't there yet, as long as the take. One already there is kept only if it plays
     /// as long as the take: the temporary folder outlives launches, and a file a struggling Simulator once left broken was opened
@@ -68,7 +75,7 @@ enum SampleVideo {
         let finished = DispatchSemaphore(value: 0)
         Task.detached {
             do {
-                try await writeFrames(to: partial, seconds: seconds, size: size, framesPerSecond: framesPerSecond, compressed: false)
+                try await writeFrames(to: partial, seconds: seconds, size: size, framesPerSecond: framesPerSecond, compressed: compresses)
                 try FileManager.default.moveItem(at: partial, to: url)
             } catch {
                 print("SampleVideo: couldn't write \(url.lastPathComponent): \(error)")

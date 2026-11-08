@@ -171,7 +171,7 @@ struct ExportAccountingTests {
     /// Each way a render can stop says what happened, and none of them costs an export.
     @Test(arguments: [
         (VideoExportError.tooWarm, "Your iPhone is too warm to finish this video. Let it cool down, then export again."),
-        (VideoExportError.interrupted, "iOS stopped the export before it finished."),
+        (VideoExportError.interrupted, "iOS stopped the export before it finished. Your edit is safe."),
         (VideoExportError.noVideoTrack, "Nothing was counted, and your take is safe."),
         (VideoExportError.exportUnavailable, "Nothing was counted, and your take is safe."),
     ])

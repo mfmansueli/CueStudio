@@ -18,6 +18,8 @@ struct PanelSlider: View {
     /// Filled from the middle (Exposure, Contrast…).
     var bipolar = false
     let format: PanelValueFormat
+    /// The name and value above the track (`.full`), or all three on one 44 pt row (`.row`) where height is short.
+    var style: CueSlider.Style = .full
     let identifier: String
     let onChange: (Double) -> Void
     var onEditingChanged: (Bool) -> Void = { _ in }
@@ -32,7 +34,7 @@ struct PanelSlider: View {
             range: range,
             step: step,
             defaultValue: defaultValue ?? (bipolar ? 0 : nil),
-            style: .full,
+            style: style,
             origin: bipolar ? .center : .leading,
             label: label,
             valueText: format.text(value),

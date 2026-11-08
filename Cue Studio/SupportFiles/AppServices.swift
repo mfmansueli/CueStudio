@@ -26,6 +26,8 @@ struct AppServices {
     /// What the recorder films with: the camera, or a stand-in under UI tests.
     let recorderCamera: any CameraControlling
     let audio: AudioInputManager
+    /// My words: the creator's names and terms, which every recognizer listens for (captions, Voice Following, dictation).
+    let myWords: MyWordsStoring
     let speech: SpeechRecognitionManager
     /// What the prompter's Voice Following listens through: `speech`, or a scripted one in UI tests.
     let prompterSpeech: SpeechTranscribing
@@ -122,6 +124,8 @@ struct AppServices {
     let fakesShareSheet: Bool
     /// UI tests: the editor reads Low Power Mode as on.
     let forcesLowPowerMode: Bool
+    /// UI tests: a white or black frame in place of the editor's video.
+    let previewStandInFrame: PreviewStandInFrame?
     let logsDockMotion: Bool
 
     init(options: LaunchOptions) {
@@ -161,8 +165,8 @@ struct AppServices {
         showsFirstStar = options.showsFirstStar
         storyFrozenTime = options.storyFrozenTime
         milestoneToShow = options.milestoneToShow
-        fakesShareSheet = options.fakesShareSheet
-        forcesLowPowerMode = options.forcesLowPowerMode
+        // What UI tests stand in for: the share sheet, Low Power Mode, the editor's video.
+        (fakesShareSheet, forcesLowPowerMode, previewStandInFrame) = (options.fakesShareSheet, options.forcesLowPowerMode, options.previewStandInFrame)
         logsDockMotion = options.logsDockMotion
         profile = CreatorProfileService(defaults: options.defaults)
         session = SessionService(defaults: options.defaults, checker: options.credentialChecker)
@@ -179,9 +183,10 @@ struct AppServices {
         camera = realCamera
         recorderCamera = options.recorderCamera ?? realCamera
         audio = AudioInputManager()
-        speech = SpeechRecognitionManager()
+        myWords = MyWordsStore(defaults: options.defaults)
+        speech = SpeechRecognitionManager(myWords: myWords)
         prompterSpeech = options.prompterSpeech ?? speech
-        dictation = options.dictation ?? DictationService(audio: AudioInputManager(), speech: SpeechRecognitionManager(use: .dictation))
+        dictation = options.dictation ?? DictationService(audio: AudioInputManager(), speech: SpeechRecognitionManager(use: .dictation, myWords: myWords))
         ideaDraft = IdeaDraftService(defaults: options.defaults)
         let ideaTransition = IdeaTransitionService()
         // UI tests don't wait three seconds for every idea (`-uiTestStarTransition` brings the real timings back).
@@ -224,7 +229,7 @@ struct AppServices {
         backgroundExports = BackgroundExportRunner(scheduler: options.usesContinuedTasks ? SystemContinuedTaskScheduler() : nil)
         photos = PhotoLibraryManager()
         thumbnails = VideoThumbnailService()
-        editing = TakeEditService()
+        editing = TakeEditService(myWords: myWords)
         motion = MotionAnalysisService()
         drafts = options.draftStore
         let apps = ExternalAppService()
@@ -295,6 +300,10 @@ struct AppServices {
         if ProcessInfo.processInfo.arguments.contains("-uiTestSeedLibrary") {
             Task { [mediaLibrary] in await DebugLibrarySeed.seed(into: mediaLibrary) }
         }
+        let arguments = ProcessInfo.processInfo.arguments
+        if let index = arguments.firstIndex(of: "-uiTestImportedFont"), arguments.indices.contains(index + 1) {
+            Task { [fonts] in await DebugFontSeed.seed(arguments[index + 1], into: fonts) }
+        }
         #endif
         // A creator who already has scripts, takes or a profile skips the first flight.
         onboarding.resolve(
@@ -322,7 +331,7 @@ struct AppServices {
 
     /// Gives back the space past sessions' sound files take (`EditStorageCleaner`), a few seconds after launch so it never
     /// competes with it, off the main actor. The edits' media go only when nothing Cue keeps names them and they haven't
-    /// changed for a week (`EditStorageCleaner.orphanedMedia`).
+    /// changed for a week (`EditStorageCleaner.orphanedMedia`). In Debug, what UI tests left goes too (`UITestLeftovers`).
     func cleanUpStorage() {
         let launchedAt = Date()
         let libraryFolder = mediaLibrary.directory
@@ -330,6 +339,9 @@ struct AppServices {
         Task.detached(priority: .background) {
             try? await Task.sleep(for: .seconds(8))
             await EditStorageCleaner.clean(launchedAt: launchedAt)
+            #if DEBUG
+            await UITestLeftovers.removeAll()
+            #endif
             // What the creator removed from the library or the kits, past its session's Undo (`LibraryFileSweep`).
             LibraryFileSweep.sweep(libraryFolder, listName: "library.json", launchedAt: launchedAt)
             LibraryFileSweep.sweep(kitFolder, listName: "kits.json", launchedAt: launchedAt)
@@ -550,6 +562,7 @@ extension View {
             .environment(\.storyFrozenAt, services.storyFrozenTime)
             .environment(\.fakesShareSheet, services.fakesShareSheet)
             .environment(\.forcesLowPowerMode, services.forcesLowPowerMode)
+            .environment(\.previewStandInFrame, services.previewStandInFrame)
             .environment(\.logsDockMotion, services.logsDockMotion)
     }
 }

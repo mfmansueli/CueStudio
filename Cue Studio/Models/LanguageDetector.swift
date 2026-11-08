@@ -5,6 +5,7 @@
 
 import Foundation
 import NaturalLanguage
+import Synchronization
 
 /// The language a text is written in, read from the text itself (Natural Language, on the device).
 /// Scripts set to Auto-detect use it. It detects written text only: there is no reliable way to
@@ -34,6 +35,23 @@ nonisolated enum LanguageDetector {
     /// language has two ("zh-Hant" for Traditional characters, "zh-Hans" for Simplified): reduced to
     /// "zh" a Traditional script would be heard, written and translated as Simplified.
     static func dominantLanguage(in text: String, preferring preferred: [String] = []) -> Locale.Language? {
+        let key = preferred.joined(separator: ",") + "\u{1F}" + text
+        if let known = dominantKept.withLock({ $0[key] }) { return known }
+        let language = readDominantLanguage(in: text, preferring: preferred)
+        dominantKept.withLock { kept in
+            if kept.count >= keptLimit { kept.removeAll() }
+            kept[key] = language
+        }
+        return language
+    }
+
+    /// What each text read as, kept: a text on the editor's preview asks for its direction every time it is drawn, and a script's row
+    /// for its pace every time the list is, while the words stay the same (`keptLimit` texts, then it starts again).
+    private static let dominantKept = Mutex<[String: Locale.Language?]>([:])
+    private static let quickKept = Mutex<[String: CueLanguage?]>([:])
+    static let keptLimit = 256
+
+    private static func readDominantLanguage(in text: String, preferring preferred: [String]) -> Locale.Language? {
         let spoken = CueParser.stripCues(text)
         guard spoken.contains(where: { $0.isLetter }) else { return nil }
         let lean = lean(for: preferred)
@@ -53,12 +71,22 @@ nonisolated enum LanguageDetector {
     /// The language of a text read at once from its first 600 characters, for what only needs the language roughly and asks often: how long a
     /// script runs at its language's pace (`ReadTime.pace(for:)`), in every row of the list. Nil for a text too short to tell by (three words).
     static func quickLanguage(in text: String) -> CueLanguage? {
-        let spoken = String(CueParser.stripCues(String(text.prefix(700))).prefix(600))
-        guard WordSegmenter.roughWordCount(of: spoken) >= 3 else { return nil }
-        let recognizer = NLLanguageRecognizer()
-        recognizer.processString(spoken)
-        guard let language = recognizer.dominantLanguage, language != .undetermined else { return nil }
-        return CueLanguage.matching(language: Locale.Language(identifier: language.rawValue))
+        let start = String(text.prefix(700))
+        if let known = quickKept.withLock({ $0[start] }) { return known }
+        let spoken = String(CueParser.stripCues(start).prefix(600))
+        var found: CueLanguage?
+        if WordSegmenter.roughWordCount(of: spoken) >= 3 {
+            let recognizer = NLLanguageRecognizer()
+            recognizer.processString(spoken)
+            if let language = recognizer.dominantLanguage, language != .undetermined {
+                found = CueLanguage.matching(language: Locale.Language(identifier: language.rawValue))
+            }
+        }
+        quickKept.withLock { kept in
+            if kept.count >= keptLimit { kept.removeAll() }
+            kept[start] = found
+        }
+        return found
     }
 
     /// Whether `words`, a short stretch of a text written in `code`, are clearly in another

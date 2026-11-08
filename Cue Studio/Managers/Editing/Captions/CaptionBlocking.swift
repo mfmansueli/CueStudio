@@ -68,13 +68,21 @@ nonisolated enum CaptionBlocking {
         let line: Int
         /// The creator marked it for emphasis (`CaptionCue.emphasis`): it is measured bigger, and its block keeps the mark.
         var isEmphasized = false
+        /// That mark is a suggestion (`CaptionCue.suggestedEmphasis`); a suggestion taken away stays away (`declinedEmphasis`).
+        var isSuggested = false
+        var isDeclined = false
     }
 
     private static func regrouped(_ run: [CaptionCue], format: CaptionFormat, settings: CaptionSettings, frame: CGSize) -> [CaptionCue] {
         guard !run.isEmpty else { return [] }
         let styled = CaptionCollectionRenderer.styled(settings, for: run[0].lineStyle)
         let tokens = run.enumerated().flatMap { index, line in
-            words(of: line).enumerated().map { place, word in Token(word: word, line: index, isEmphasized: line.emphasis.contains(place)) }
+            words(of: line).enumerated().map { place, word in
+                Token(
+                    word: word, line: index, isEmphasized: line.emphasis.contains(place), isSuggested: line.suggestedEmphasis.contains(place),
+                    isDeclined: line.declinedEmphasis.contains(place)
+                )
+            }
         }
         let groups: [Range<Int>]
         if format == .oneWord, run.allSatisfy(\.hasWordTiming) {
@@ -154,6 +162,8 @@ nonisolated enum CaptionBlocking {
         cue.sourceID = lines[0].sourceID
         cue.lineStyle = lines[0].lineStyle
         cue.emphasis = Set(tokens.enumerated().filter { $0.element.isEmphasized }.map(\.offset))
+        cue.suggestedEmphasis = Set(tokens.enumerated().filter { $0.element.isEmphasized && $0.element.isSuggested }.map(\.offset))
+        cue.declinedEmphasis = Set(tokens.enumerated().filter { $0.element.isDeclined }.map(\.offset))
         if let opened = lines.first(where: { Self.words(of: $0).first == first && !used.contains($0.id) }) {
             cue.id = opened.id
             used.insert(opened.id)

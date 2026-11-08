@@ -57,7 +57,7 @@ final class ExploratoryTourTests: XCTestCase {
         sleep(3)
         guard tap("review.editButton") else { return }
         sleep(4)
-        for item in ["edit", "captions", "text", "smart", "addMedia", "audio", "format", "filters"] {
+        for item in ["edit", "captions", "text", "pauses", "addMedia", "audio", "format", "filters"] {
             let button = app.descendants(matching: .any)["edit.toolbar.\(item)"].firstMatch
             if !button.exists || !button.isHittable {
                 app.descendants(matching: .any)["edit.toolbar"].firstMatch.swipeLeft()
@@ -67,9 +67,7 @@ final class ExploratoryTourTests: XCTestCase {
             button.tap()
             sleep(2)
             shot("panel-\(item)")
-            // Smart opens a row of tools: the first one opens its own panel.
-            if item == "smart", tap("edit.smart.autoAdjust") { sleep(2); shot("panel-smart-adjust") }
-            if item == "adjust" || item == "smart" {
+            if item == "adjust" {
                 if tap("edit.adjust.tint") { shot("panel-adjust-tint") }
             }
             if !tap("edit.panel.apply") { _ = tap("edit.toolbar.back") }

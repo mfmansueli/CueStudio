@@ -23,10 +23,12 @@ nonisolated enum CaptionBuilder {
     static let maximumUnspacedCharacters = 16
     /// A silence this long starts a new line.
     static let pauseBreak: TimeInterval = 0.6
-    /// Lines from `heard`, with the script's spelling where it reliably matches.
+    /// Lines from `heard`, with the script's spelling where it reliably matches, then My words' capitals on whole words
+    /// (`MyWordsSpelling`).
     /// - Parameter language: what was heard, so the script is cut into words the same way.
-    static func captions(heard: [CaptionWord], script: String, language: CueLanguage? = nil) -> [CaptionCue] {
-        group(attachingMarks(aligned(heard: withoutContinuations(heard), script: script, language: language)))
+    static func captions(heard: [CaptionWord], script: String, language: CueLanguage? = nil, myWords: [String] = []) -> [CaptionCue] {
+        let spelled = MyWordsSpelling.apply(to: aligned(heard: withoutContinuations(heard), script: script, language: language), myWords: myWords)
+        return group(attachingMarks(spelled))
     }
 
     /// `heard` with the punctuation the recognizer hears as a word of its own in Japanese and Chinese ("します" "。") joined to

@@ -144,7 +144,8 @@ case "$mode" in
         else
             destination="platform=iOS,name=$CUE_DEVICE"
         fi
-        extra+=(-only-testing:"Cue StudioTests/${ids[0]}")
+        # A new iPhone in the team (the app's profile has it) still needs the test runner's wildcard profile made again.
+        extra+=(-only-testing:"Cue StudioTests/${ids[0]}" -allowProvisioningUpdates)
         ;;
     device-ui)
         # A UI test class (or one test) on a real iPhone, e.g. RealTakeWorkflowUITests (opt-in through its own TEST_RUNNER_ flag).
@@ -159,7 +160,7 @@ case "$mode" in
         else
             destination="platform=iOS,name=$CUE_DEVICE"
         fi
-        extra+=(-only-testing:"Cue StudioUITests/${ids[0]}")
+        extra+=(-only-testing:"Cue StudioUITests/${ids[0]}" -allowProvisioningUpdates)
         ;;
     *) usage ;;
 esac

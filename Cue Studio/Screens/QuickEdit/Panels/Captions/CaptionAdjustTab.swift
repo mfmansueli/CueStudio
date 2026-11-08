@@ -5,11 +5,12 @@
 
 import SwiftUI
 
-/// Caption style › Adjust: the same controls over any style (one of Cue's, a saved one, a text's look copied onto the
-/// captions). Font (family, its weights, case), color, background (with its color and how solid), outline, shadow, and the
-/// words marked for emphasis (once a word is marked); letter spacing under Advanced. A control shows only where it does
-/// something. "Back to <style>'s look" undoes every change at once (Animation's too: the style comes back as its card shows
-/// it), and a note warns when the look would be hard to read on bright scenes.
+/// Caption style › Custom (`.adjust`): the same controls over any style (one of Cue's, a saved one, a text's look copied onto
+/// the captions). Font (family, its weights, case), the colors (the text's, and the highlight's while the word being said is
+/// lit), background (with its color and how solid), outline, shadow, the marked words' color and size (once a word is marked)
+/// and "Choose words to emphasize"; letter spacing under Advanced. A control shows only where it does something. Each color's
+/// "Style's color" puts that one color back; "Back to <style>'s look" undoes every change at once (Animation's too: the style
+/// comes back as its card shows it), and a note warns when the look would be hard to read on bright scenes.
 struct CaptionAdjustTab: View {
     @Bindable var viewModel: QuickEditViewModel
     @State private var showsAdvanced = false
@@ -17,7 +18,8 @@ struct CaptionAdjustTab: View {
     @ScaledMetric(relativeTo: .body) private var swatchDiameter: CGFloat = 34
 
     private var captions: CaptionsViewModel { viewModel.captions }
-    private static var styleColor: String { String(localized: "Style's") }
+    /// Beside a color picked over the style's: that one color back to the style's (owner, canvas 2 F2: each reset says its reach).
+    private static var styleColor: String { String(localized: "Style's color") }
 
     var body: some View {
         if let settings = captions.captionAdjustSettings {
@@ -27,8 +29,9 @@ struct CaptionAdjustTab: View {
                 PanelNote(text: String(localized: "Hard to read on bright scenes. Add a background, a thick outline or a halo."), tint: Palette.warnText)
                     .accessibilityIdentifier("edit.captionContrastWarning")
             }
-            font(settings, spec: spec)
+            // Colors first: the change a creator makes most, in sight without scrolling the medium panel (recipe R1.6, 08/11/2026).
             colors(spec, changes: changes)
+            font(settings, spec: spec)
             background(spec, changes: changes)
             edges(spec, changes: changes)
             emphasis(spec, changes: changes)
@@ -58,9 +61,14 @@ struct CaptionAdjustTab: View {
 
     @ViewBuilder
     private func font(_ settings: CaptionSettings, spec: CaptionStyleSpec) -> some View {
+        let brand = viewModel.brand
+        MyFontsGroup(
+            fonts: brand.myFonts(including: settings.face), removable: brand.removableFonts, selection: settings.face,
+            identifier: "edit.captionFace", onSelect: { captions.setCaptionFace($0) }, onRemove: brand.removeFont
+        )
         PanelChips(
             options: [PanelOption(nil, String(localized: "Style's font"), key: "preset")]
-                + TextOverlayFont.pickerFonts(including: settings.face).map { PanelOption(Optional($0), $0.label, key: $0.rawValue) },
+                + TextOverlayFont.editorFonts.map { PanelOption(Optional($0), $0.label, key: $0.rawValue) },
             selection: settings.face,
             font: { face, size in face.map { CueStudioFont.chip($0, size: size) } ?? .system(size: size, weight: .semibold) },
             identifier: "edit.captionFace", onSelect: captions.setCaptionFace
@@ -84,8 +92,8 @@ struct CaptionAdjustTab: View {
         ) { letterCase in captions.adjustCaptions { $0.letterCase = letterCase } }
     }
 
-    /// The text's color, and the highlight's beside it while the word being said is lit (all the captions' colors in one place;
-    /// Animation shows the highlight's too).
+    /// The text's color, and the highlight's beside it while the word being said is lit: all the captions' colors in one place
+    /// (owner, canvas 2 F2; Animation picks how the word being said stands out).
     @ViewBuilder
     private func colors(_ spec: CaptionStyleSpec, changes: CaptionAdjustments) -> some View {
         PanelSwatches(
@@ -150,7 +158,8 @@ struct CaptionAdjustTab: View {
         ) { picked in captions.adjustCaptions { $0.shadow = picked } }
     }
 
-    /// The marked words' color and size, once a word is marked; until then, where to mark them.
+    /// The marked words' color and size, once a word is marked; and "Choose words to emphasize", which opens the line under the
+    /// playhead in Captions with its words at hand, then comes back here (owner, canvas 2 F1).
     @ViewBuilder
     private func emphasis(_ spec: CaptionStyleSpec, changes: CaptionAdjustments) -> some View {
         if viewModel.edit.captions.contains(where: { !$0.emphasis.isEmpty }) {
@@ -163,8 +172,13 @@ struct CaptionAdjustTab: View {
                 label: String(localized: "Emphasis size"), options: CaptionEmphasisSize.allCases.map { PanelOption($0, $0.label) },
                 selection: CaptionEmphasisSize.nearest(to: spec.emphasisScale), height: 38, identifier: "edit.captionEmphasisSize"
             ) { size in captions.adjustCaptions { $0.emphasisSize = size } }
-        } else {
-            PanelNote(text: String(localized: "To emphasize a word, open its line in Captions › More › Emphasis."), teaches: true)
+        }
+        if captions.canChooseWordsToEmphasize {
+            PanelButton(
+                label: String(localized: "Choose words to emphasize"), systemImage: "highlighter",
+                identifier: "edit.captionAdjust.chooseEmphasis"
+            ) { captions.chooseWordsToEmphasize(from: .adjust, offset: captions.captionCustomOffset) }
+            .accessibilityHint(Text("Opens the line under the playhead in Captions"))
         }
     }
 }

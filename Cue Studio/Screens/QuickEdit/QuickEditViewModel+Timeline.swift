@@ -28,7 +28,8 @@ extension QuickEditViewModel {
     /// Everything the timeline draws, for `heightClass`, each track `openLaneHeight` tall while every track is out. Reads the
     /// playhead only while a voice-over records (its track grows with it).
     func timelineInput(heightClass: EditorHeightClass, openLaneHeight: CGFloat? = nil) -> TimelineGeometry.Input {
-        let timeline = edit.timeline
+        // The clips as drawn: Punch in on cuts says where it lands in their badges.
+        let timeline = edit.punchedTimeline
         var input = TimelineGeometry.Input(duration: edit.editedDuration)
         var start: TimeInterval = 0
         input.clips = timeline.segments.map { segment in
@@ -65,7 +66,11 @@ extension QuickEditViewModel {
             )
         }
         input.captions = captions.captionMap.instances.map { line, cueID in
-            TimelineGeometry.ItemInput(id: cueID, span: line.span, label: line.text)
+            // A line with a phrase zoom shows the magnifier where its kind's symbol was: the timeline says where the zoom lands.
+            TimelineGeometry.ItemInput(
+                id: cueID, span: line.span, label: line.text,
+                symbol: captions.phraseZoom(onLine: cueID) == nil ? nil : "plus.magnifyingglass"
+            )
         }
         input.showsCaptions = edit.showsCaptions
         input.music = edit.music.compactMap { clip in
@@ -88,9 +93,13 @@ extension QuickEditViewModel {
         }
         if panel == .pauses { input.pauses = timelinePauses }
         input.selection = selection
+        input.alsoSelected = overlays.textsStyledTogether
         input.selectedJoin = selectedJoinID
-        input.panelIsOpen = panel != nil
-        input.focusedLane = panel?.focusedLane
+        // A styling sheet tucked away on the SE gives the whole timeline back (canvas 2 R10 §7.3).
+        input.panelIsOpen = panel != nil && !panelIsTucked
+        input.focusedLane = panelIsTucked ? nil : panel?.focusedLane
+        // Text style and Caption style keep the ruler and their own track above them, without the video track (R10 §7.3).
+        input.panelIsFull = !panelIsTucked && openPanelSize == .full
         input.activeLanes = toolMenu?.lanes ?? []
         input.tracks = tracks
         input.heightClass = heightClass
@@ -126,7 +135,7 @@ extension QuickEditViewModel {
     /// The pauses on the video track while Pauses is open, marked to go or kept.
     var timelinePauses: [TimelineGeometry.PauseInput] {
         clips.pauseCandidates.compactMap { pause in
-            guard let span = edit.timeline.editedSpan(of: pause) else { return nil }
+            guard let span = clips.editedCut(of: pause) else { return nil }
             return TimelineGeometry.PauseInput(id: pause.id, span: span, isMarked: clips.isMarked(pause))
         }
     }
@@ -152,7 +161,7 @@ extension QuickEditViewModel {
     func tapTimeline(_ hit: TimelineGeometry.Hit?) {
         guard isReady, !audio.isRecordingVoiceOver else { return }
         if panel == .pauses {
-            if case .pause(let id) = hit { togglePauseMark(id) }
+            if case .pause(let id) = hit { tapPauseMark(id) }
             return
         }
         if hit == .trackChooser {
@@ -176,7 +185,7 @@ extension QuickEditViewModel {
         case .addClip:
             overlays.mediaInsertMode = .sequence
             sheet = .media
-        case .pause(let id): togglePauseMark(id)
+        case .pause(let id): tapPauseMark(id)
         case .gap(let id):
             // The track names the photo or video itself: a support's own tools, not its split screen's main video.
             overlays.selectedArea = .support
@@ -190,19 +199,30 @@ extension QuickEditViewModel {
         }
     }
 
-    /// A track's strip: its tools replace the toolbar's (every track has its own, `EditorToolMenu`), and a second tap puts the
-    /// toolbar back. While every track is out, a tap chooses the track and puts the others away, and the track comes with its
-    /// tools open, lit in its colour (owner, 28/10/2026); under a panel it only chooses. An item picked on another track is
-    /// let go.
+    /// A track's strip: its tools replace the toolbar's (`EditorToolMenu`), and a second tap puts the toolbar back; the captions
+    /// and Blur area tracks open the panel their main-bar button opens, and a second tap closes it (owner, 07/11/2026). While
+    /// every track is out, a tap chooses the track and puts the others away, and the track comes with its tools open, lit in
+    /// its colour (owner, 28/10/2026); under a panel it only chooses. An item picked on another track is let go.
     private func tapLane(_ lane: TimelineLane) {
         if tracks.isExpanded {
             if let item = selection, item.lane != .main, item.lane != lane { selection = nil }
             Haptics.selection()
             tracks.choose(lane)
-            guard panel == nil, let menu = EditorToolMenu(lane: lane) else { return }
+            guard panel == nil else { return }
+            if openPanel(ofLane: lane) { return }
+            guard let menu = EditorToolMenu(lane: lane) else { return }
             player.pause()
             selection = nil
             toolMenu = menu
+            return
+        }
+        if lane == .captions || lane == .blur {
+            if [.captions, .autoCaptions, .blur].contains(panel) {
+                closePanel()
+            } else {
+                _ = openPanel(ofLane: lane)
+            }
+            Haptics.selection()
             return
         }
         guard let menu = EditorToolMenu(lane: lane) else { return }
@@ -211,6 +231,21 @@ extension QuickEditViewModel {
         panel = nil
         toolMenu = toolMenu == menu ? nil : menu
         Haptics.selection()
+    }
+
+    /// The captions or Blur area track's panel, as its main-bar button opens it; false for the other tracks.
+    private func openPanel(ofLane lane: TimelineLane) -> Bool {
+        let tool: EditorToolbarTool
+        switch lane {
+        case .captions: tool = .captions
+        case .blur: tool = .blurArea
+        default: return false
+        }
+        player.pause()
+        selection = nil
+        toolMenu = nil
+        perform(tool.action)
+        return true
     }
 
     /// The first of `lanes` the edit has (else the first of them) becomes the timeline's current track, and the others go away.
@@ -270,7 +305,7 @@ extension QuickEditViewModel {
         pickJoin(edit.timeline.segments[nearest.index].id)
     }
 
-    /// Picks an item; a panel that can't work on it closes, one that can stays.
+    /// Picks an item (a locked one says so, with Unlock); a panel that can't work on it closes, one that can stays.
     private func pick(_ item: EditorSelection) {
         Haptics.selection()
         if let panel {
@@ -283,12 +318,15 @@ extension QuickEditViewModel {
             }
             if !keeps { self.panel = nil }
         }
+        let previous = selection
         selection = item
+        sayIfLocked(item, previous: previous)
     }
 
     /// Marks a pause to go, or to stay.
-    func togglePauseMark(_ id: UUID) {
-        clips.toggleMark(id)
+    /// A Clean up mark on the timeline: its card first, then a second tap switches it (`ClipsViewModel.revealCleanUpMark`).
+    func tapPauseMark(_ id: UUID) {
+        clips.revealCleanUpMark(id)
     }
 
     // MARK: - Scrubbing
@@ -312,6 +350,7 @@ extension QuickEditViewModel {
         guard isReady, handleDrag == nil else { return }
         takePlayhead()
         player.pause()
+        stretchLimitNoticed = false
         // The undo step begins only once the drag holds something: a stale target never leaves a change open.
         defer { if handleDrag != nil { beginChange() } }
         let playhead = player.currentTime
@@ -384,20 +423,33 @@ extension QuickEditViewModel {
             return ("", 0)
         case .item(_, _, let side):
             guard let bar = drag.bar else { return ("", 0) }
-            resizeBar(bar, edge: side == .start ? .start : .end, to: edge)
+            let layerEdge: LayerEdge = side == .start ? .start : .end
+            resizeBar(bar, edge: layerEdge, to: edge)
             guard let now = layerBarForDrag(bar) else { return ("", 0) }
             let edgeNow = side == .start ? now.span.start : now.span.end
             player.scrub(to: min(edgeNow, max(0, edit.editedDuration - 0.03)))
+            // A line held by its neighbor or its clip's cut says which, by the handle; one tap of the haptic per gesture.
+            if let room = captionStretchRoom(for: bar), room.holds(layerEdge, at: edge), let hint = room.hint(for: layerEdge) {
+                if !stretchLimitNoticed {
+                    stretchLimitNoticed = true
+                    Haptics.soft()
+                    AccessibilityNotification.Announcement(hint).post()
+                }
+                return (hint, 0)
+            }
             return (DurationText.editor(edgeNow) + " · " + DurationText.tenths(now.span.duration), 0)
         }
     }
 
-    /// The finger lifted: one undo step, and the playhead goes back where it was.
+    /// The finger lifted: one undo step, and the playhead goes back where it was. A caption line moved off its voice says so.
     func endTimelineHandle() {
         guard let drag = handleDrag else { return }
         handleDrag = nil
         lastHandleSnap = nil
+        stretchLimitNoticed = false
         clips.updateCurveSoundStepping()
+        // A caption line moved off its voice asks for a timing check, in the same step.
+        if case .move(.caption, let line) = drag.target, let bar = drag.bar { captions.noteMovedOffTheVoice(line: line, from: bar.span) }
         endChange()
         player.endScrub()
         player.seek(to: min(drag.playhead, edit.editedDuration))

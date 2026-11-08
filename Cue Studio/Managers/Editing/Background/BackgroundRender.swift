@@ -29,4 +29,11 @@ nonisolated struct BackgroundRender: @unchecked Sendable {
         let cube = effect.cutout == .colorKey ? ChromaKeyCube.data(for: effect.key) : nil
         return BackgroundRender(effect: effect, image: image, cube: cube, cacheKey: cacheKey)
     }
+
+    /// Only the cutout and the creator's place, whatever the background is (an Original one too), for a photo or video shown Behind
+    /// you, which brings the picture behind.
+    static func cutout(_ effect: BackgroundEffect, cacheKey: String) -> BackgroundRender {
+        let cube = effect.cutout == .colorKey ? ChromaKeyCube.data(for: effect.key) : nil
+        return BackgroundRender(effect: effect, image: nil, cube: cube, cacheKey: cacheKey + "-behind")
+    }
 }

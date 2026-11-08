@@ -7,13 +7,15 @@ import SwiftUI
 
 /// Putting a kit on the video, said before it happens: each part the kit has (with its style's name), with what it would change
 /// here ("On 4 texts · words, timing and place stay"), all on at first; one that can't (no cover yet, the logo's file gone) says why.
-/// "Apply to this video" is one undo step.
+/// What the creator styled by hand stays, with a switch to replace it too (`ManualChangesOptions`). "Apply to this video" is one
+/// undo step.
 struct BrandKitApplySheet: View {
     let viewModel: QuickEditViewModel
     let kit: BrandKit
 
     @Environment(\.dismiss) private var dismiss
     @State private var chosen: Set<BrandKitPart> = []
+    @State private var replacing = ReplacedManualChanges()
 
     private var brand: BrandViewModel { viewModel.brand }
 
@@ -24,13 +26,15 @@ struct BrandKitApplySheet: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 8) {
                     ForEach(changes) { change in row(change) }
+                    ManualChangesOptions(changes: brand.manualChanges(replacedBy: chosen), replacing: $replacing)
+                        .padding(.top, 6)
                 }
             }
             .scrollBounceBehavior(.basedOnSize)
             PanelButton(
                 label: String(localized: "Apply to this video"), isPrimary: true, isEnabled: !chosen.isEmpty, identifier: "edit.brand.apply"
             ) {
-                brand.apply(kit, parts: chosen)
+                brand.apply(kit, parts: chosen, replacing: replacing)
                 dismiss()
             }
             Text("One step: Undo puts it all back")
@@ -42,7 +46,8 @@ struct BrandKitApplySheet: View {
         .padding(.bottom, 12)
         .modifier(EditorToastHost())
         .cueSheetChrome()
-        .presentationDetents([.medium, .large])
+        // Tall from the start: at half height an SE showed a part and a half of the list (capture 08/11/2026).
+        .bigTextSheetDetents(.fraction(0.75))
         .presentationDragIndicator(.visible)
         .onAppear { chosen = Set(changes.filter(\.isAvailable).map(\.part)) }
         .onDisappear { brand.kitToApply = nil }

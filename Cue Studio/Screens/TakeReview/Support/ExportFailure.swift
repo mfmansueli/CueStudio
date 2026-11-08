@@ -23,7 +23,7 @@ struct ExportFailure: Equatable {
         case ExportPreflightError.notEnoughSpace(let megabytes):
             String(localized: "Not enough space on this iPhone. Free about \(megabytes) MB and try again.")
         case BackgroundExportError.stoppedBySystem, VideoExportError.interrupted:
-            String(localized: "iOS stopped the export before it finished.")
+            String(localized: "iOS stopped the export before it finished. Your edit is safe.")
         case VideoExportError.tooWarm:
             // Follow face or Stabilize needed an analysis the iPhone was too hot to finish; it goes on from there next time.
             VideoExportError.tooWarm.localizedDescription

@@ -8,7 +8,8 @@ import Foundation
 /// The take's edit while Quick edit is open, with its undo steps: the one place the edit changes. What the creator decides
 /// is an undo step (`changeEdit`, `change`, `commit`; a gesture, a panel's control or a sheet is one step, `beginChange` /
 /// `endChange`), Undo
-/// and Redo move between steps (`undo`, `redo`), and what listening found is laid on without one (`updateFindings`). The
+/// and Redo move between steps (`undo`, `redo`), and what listening found is laid on without one (`updateFindings`), as is what
+/// Paste look remembers (`remember`). The
 /// editor hears every change (`onChange`) and does the rest: the preview, the draft, the cover, letting go of what's gone.
 @MainActor
 @Observable
@@ -32,7 +33,8 @@ final class EditDocument {
         self.edit = edit
     }
 
-    var hasUnsavedChanges: Bool { edit != original }
+    /// What Copy and Paste look remember (`RememberedLook`) isn't a change: copying alone saves nothing and asks for no draft.
+    var hasUnsavedChanges: Bool { edit.forgettingRememberedLook != original.forgettingRememberedLook }
     var canUndo: Bool { history.canUndo }
     var canRedo: Bool { history.canRedo }
 
@@ -47,7 +49,7 @@ final class EditDocument {
     @discardableResult
     func open(sourceDuration duration: TimeInterval, draft: QuickEditDraft?) -> Bool {
         original.timeline = original.timeline.fitted(toSourceDuration: duration)
-        guard let draft, draft.edit != original else {
+        guard let draft, draft.edit.forgettingRememberedLook != original.forgettingRememberedLook else {
             edit = original
             return false
         }
@@ -78,17 +80,10 @@ final class EditDocument {
     /// A change undo can take back. Inside a gesture or a sheet (`beginChange`), the step was already taken when it began.
     /// Changes with the same `key` in a quick row (a slider, typing) are one step (`EditHistory.coalescingInterval`).
     func commit(_ next: EditSnapshot, key: String? = nil) {
-        var next = next
-        // Sound effects and extracted sounds follow the moment they were put on when the cuts change (and nothing moved them in
-        // this step). Inside a gesture, from where the gesture began, so dragging a handle out and back leaves them where they were.
         let current = snapshot
-        let origin = changeBase ?? current
-        if next.timeline != current.timeline, next.music == current.music, let music = origin.music, music.contains(where: \.followsTheVideo) {
-            let followed = MusicClip.following(music, from: origin.timeline, to: next.timeline)
-            next.music = current.music?.map { clip in
-                clip.followsTheVideo ? (followed.first { $0.id == clip.id } ?? clip) : clip
-            }
-        }
+        // The layers go where their rule says when the cuts change (`CutFollowing`). Inside a gesture, from where the gesture
+        // began, so dragging a handle out and back leaves them where they were.
+        let next = next.timeline == current.timeline ? next : next.followingCuts(from: changeBase ?? current, current: current)
         guard next != current else { return }
         if changeBase == nil { history.record(current, key: key, at: .now) }
         var changed = edit
@@ -126,9 +121,25 @@ final class EditDocument {
         edit = changed
     }
 
+    /// Keeps what the editor remembers in the project for the creator, which isn't a change of the video: the look Copy look took and
+    /// how Paste look last pasted it (`TakeEdit.copiedLook`, `pasteLookChoice`). Never an undo step, and Undo leaves it; never an
+    /// unsaved change either (`hasUnsavedChanges`, owner 08/11/2026): it goes with a draft or the take when they're written for a
+    /// real change, and is kept for the take on its own (`RememberedLook`, `EditorPreferencesStoring`).
+    func remember(_ update: (inout TakeEdit) -> Void) {
+        var changed = edit
+        update(&changed)
+        assert(EditSnapshot(changed) == snapshot, "A decision of the creator changes with changeEdit, as an undo step")
+        assert(Self.findings(of: changed) == Self.findings(of: edit), "What listening found changes with updateFindings")
+        guard changed != edit else { return }
+        edit = changed
+    }
+
     /// What listening found: the part of the edit no undo step keeps.
     private static func findings(of edit: TakeEdit) -> [AnyHashable] {
-        [edit.cleanUpAnalyzed, edit.cleanUpAnalyzedSources, edit.captionTranscript, edit.sourceTranscripts]
+        [
+            edit.cleanUpAnalyzed, edit.cleanUpAnalyzedSources, edit.cleanUpHearing, edit.pauseHearings, edit.captionTranscript,
+            edit.sourceTranscripts,
+        ]
     }
 
     /// A gesture, a panel's control or a sheet starts changing something, maybe many times: all of it is one undo step,
@@ -154,6 +165,21 @@ final class EditDocument {
         changeOwners.remove(owner)
         guard changeOwners.isEmpty else { return }
         endAllChanges()
+    }
+
+    /// The change still going is called off (a sheet trying something on, Cancel): the edit goes back to where it began, with no
+    /// undo step.
+    func cancelChanges() {
+        changeOwners = []
+        guard let base = changeBase else { return }
+        changeBase = nil
+        restore(base)
+    }
+
+    /// The change still going starts again from where it began, still one step (a sheet trying something else on).
+    func restartChange() {
+        guard let base = changeBase else { return }
+        restore(base)
     }
 
     /// Whatever is still changing is over (Undo, Done, another panel opening): one undo step back to where it began.
@@ -184,15 +210,18 @@ final class EditDocument {
         return true
     }
 
-    /// Goes back (or forward) to a step. Suggestions found since keep their place and take the step's decision, or wait for
-    /// review when the step didn't know them yet.
+    /// Goes back (or forward) to a step. Suggestions found since keep their place and take the step's decision (what a
+    /// removal took out, `removedSpan`, and the try kept of a line, `Attempt.kept`), or wait for review when the step didn't
+    /// know them yet.
     private func restore(_ step: EditSnapshot) {
-        let decisions = Dictionary(step.suggestions.map { ($0.id, $0.status) }, uniquingKeysWith: { first, _ in first })
+        let decisions = Dictionary(step.suggestions.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
         var changed = edit
         changed.apply(step)
         changed.suggestions = edit.suggestions.map { suggestion in
             var restored = suggestion
-            restored.status = decisions[suggestion.id] ?? .pending
+            restored.status = decisions[suggestion.id]?.status ?? .pending
+            restored.removedSpan = decisions[suggestion.id]?.removedSpan
+            restored.attempt?.kept = decisions[suggestion.id]?.attempt?.kept
             return restored
         }
         edit = changed

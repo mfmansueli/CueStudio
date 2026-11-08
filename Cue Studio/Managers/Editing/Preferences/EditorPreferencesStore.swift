@@ -19,6 +19,11 @@ final class EditorPreferencesStore: EditorPreferencesStoring {
         set { defaults.set(newValue, forKey: DefaultsKey.narrationScriptShown) }
     }
 
+    var showsSafeGuide: Bool {
+        get { defaults.bool(forKey: DefaultsKey.safeGuideShown) }
+        set { defaults.set(newValue, forKey: DefaultsKey.safeGuideShown) }
+    }
+
     var narrationScriptSpeed: Double? {
         get { (defaults.object(forKey: DefaultsKey.narrationScriptSpeed) as? Double).map(PrompterSettings.clampedSpeed) }
         set {
@@ -48,6 +53,38 @@ final class EditorPreferencesStore: EditorPreferencesStoring {
         var entries = timelineLanes.filter { !$0.hasPrefix(prefix) }
         entries.append(prefix + lane.rawValue)
         defaults.set(Array(entries.suffix(Self.keptTimelineLanes)), forKey: DefaultsKey.timelineLanes)
+    }
+
+    func newVideoKitOffered(forTake id: UUID) -> Bool {
+        (defaults.stringArray(forKey: DefaultsKey.newVideoKitTakes) ?? []).contains(id.uuidString)
+    }
+
+    func markNewVideoKitOffered(forTake id: UUID) {
+        var takes = (defaults.stringArray(forKey: DefaultsKey.newVideoKitTakes) ?? []).filter { $0 != id.uuidString }
+        takes.append(id.uuidString)
+        defaults.set(Array(takes.suffix(Self.keptTimelineLanes)), forKey: DefaultsKey.newVideoKitTakes)
+    }
+
+    func rememberedLook(forTake id: UUID) -> RememberedLook? {
+        rememberedLooks.last { $0.take == id }?.look
+    }
+
+    func setRememberedLook(_ look: RememberedLook, forTake id: UUID) {
+        var entries = rememberedLooks.filter { $0.take != id }
+        if !look.isEmpty { entries.append(RememberedLookEntry(take: id, look: look)) }
+        guard let data = try? JSONEncoder().encode(Array(entries.suffix(Self.keptTimelineLanes))) else { return }
+        defaults.set(data, forKey: DefaultsKey.rememberedLooks)
+    }
+
+    /// One take's remembered look; the take edited last at the end.
+    private struct RememberedLookEntry: Codable {
+        let take: UUID
+        let look: RememberedLook
+    }
+
+    /// A list that can't be read (a newer Cue's) reads as empty: a copied look is a convenience, never worth an error.
+    private var rememberedLooks: [RememberedLookEntry] {
+        defaults.data(forKey: DefaultsKey.rememberedLooks).flatMap { try? JSONDecoder().decode([RememberedLookEntry].self, from: $0) } ?? []
     }
 
     /// "take id=track", the take edited last at the end.

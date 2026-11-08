@@ -90,7 +90,7 @@ final class DataEraserService {
 
     func eraseEverything() {
         for take in takes.takes {
-            drafts.discard(takeID: take.id)
+            drafts.forget(takeID: take.id)
             ledger?.forget(takeID: take.id)
             takes.delete(take.id)
         }
@@ -122,7 +122,7 @@ final class DataEraserService {
             DefaultsKey.skyMemory, DefaultsKey.skyMemoryAdded, DefaultsKey.myCoverStyle, DefaultsKey.myCoverStudioStyle,
             // Every saved style, and the single caption style saved before them.
             DefaultsKey.myCaptionStyle, DefaultsKey.captionStyleLibrary, DefaultsKey.textStyleLibrary, DefaultsKey.coverStyleLibrary,
-            DefaultsKey.captionCatalogFilter, DefaultsKey.dockDraft,
+            DefaultsKey.captionCatalogFilter, DefaultsKey.dockDraft, DefaultsKey.myWords,
             // The takes' and the edits' folders went whole: nothing is left to sweep.
             DefaultsKey.takeDeletionsPending, DefaultsKey.takeOrphanSightings, DefaultsKey.editMediaDeletionsPending,
         ] {

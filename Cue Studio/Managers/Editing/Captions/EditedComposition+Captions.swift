@@ -14,11 +14,12 @@ nonisolated extension EditedComposition {
             var main = settings
             // The same goes for the style's own way of showing words: a translation is shown whole.
             if case .translation = edit.captionDisplay { main = main.shownWhole }
-            // "On the seam": the lines said while a support shows sit on the split screen's seam; the others where they are.
+            // "On the seam": the lines said while a support shows sit on the split screen's seam; the others where they are. A
+            // line in its own place stays there.
             let seams = seamSpans(of: edit)
-            let onSeam = shown.main.filter { line in seams.contains { $0.span.contains(line.start) } }
+            let onSeam = shown.main.filter { line in line.lineStyle?.y == nil && seams.contains { $0.span.contains(line.start) } }
             var overlays = CaptionCollectionRenderer.overlays(
-                onSeam.isEmpty ? shown.main : shown.main.filter { line in !seams.contains { $0.span.contains(line.start) } },
+                onSeam.isEmpty ? shown.main : shown.main.filter { line in !onSeam.contains { $0.id == line.id && $0.start == line.start } },
                 settings: main, position: edit.captionPosition, frame: frame, animation: animation
             )
             for seam in Set(seams.map(\.y)) {
@@ -31,8 +32,15 @@ nonisolated extension EditedComposition {
             var secondary = settings.shownWhole
             secondary.sizeScale *= 0.8
             let y = settings.center?.y ?? edit.captionPosition.verticalFraction
-            secondary.center = OverlayPoint(x: settings.center?.x ?? 0.5, y: y + (y < 0.5 ? 0.12 : -0.12))
-            overlays += CaptionCollectionRenderer.overlays(shown.second, settings: secondary, position: edit.captionPosition, frame: frame)
+            secondary.center = OverlayPoint(x: settings.center?.x ?? 0.5, y: secondLineY(under: y))
+            // A translation under a line in its own place goes with it.
+            let second = shown.second.map { line in
+                guard let own = line.lineStyle?.y else { return line }
+                var line = line
+                line.lineStyle = CaptionLineStyle(y: secondLineY(under: own))
+                return line
+            }
+            overlays += CaptionCollectionRenderer.overlays(second, settings: secondary, position: edit.captionPosition, frame: frame)
             return overlays
         }
         if let look = edit.captionLook {
@@ -48,6 +56,9 @@ nonisolated extension EditedComposition {
         return OverlayRenderer.captions(shown.main, style: edit.captionStyle, position: edit.captionPosition, frame: frame)
             + TextOverlayRenderer.secondCaptions(shown.second, look: TypePreset.cue.look(for: .caption), position: edit.captionPosition, frame: frame)
     }
+
+    /// Where the translation of a line at `y` sits: under it, or over it in the lower half.
+    static func secondLineY(under y: Double) -> Double { y + (y < 0.5 ? 0.12 : -0.12) }
 
     /// Where the captions sit on the seam (`SplitScreen.captionsOnSeam`): each support's pieces with its layout's seam, as a
     /// fraction of the frame from the top. None side by side (the seam runs down the frame) or with the option off.

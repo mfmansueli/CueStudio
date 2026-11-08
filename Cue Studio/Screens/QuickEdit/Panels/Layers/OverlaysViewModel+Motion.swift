@@ -15,6 +15,12 @@ extension OverlaysViewModel {
     enum MotionItem: Equatable {
         case text(UUID)
         case media(UUID)
+
+        var id: UUID {
+            switch self {
+            case .text(let id), .media(let id): id
+            }
+        }
     }
 
     /// The picked text, else the picked photo or video.
@@ -76,7 +82,8 @@ extension OverlaysViewModel {
     }
 
     /// Picks a ready-made motion for the picked item (nil: none), keeping its duration and strength when it had one. One undo
-    /// step; the keyframes stay as they are. The playhead goes to the item's start, to see it. On a text that wears an effect,
+    /// step; the keyframes stay as they are. The playhead stays on the item (the preview shows it whole there while paused,
+    /// `previewHold`); Preview plays the way in. On a text that wears an effect,
     /// one way in at a time: a Motion (or None) leaves the effect still, its finish kept, and its Animated tab says Still;
     /// "Effect's own" (`playEffectsOwnMotion`) gives it back.
     func setMotionPreset(_ preset: MotionPreset?) {
@@ -91,25 +98,48 @@ extension OverlaysViewModel {
         } else {
             setAnimation(next, of: item)
         }
-        if next != nil, let span = editedSpan(of: item) {
-            player.pause()
-            player.seek(to: span.start)
-        }
+        if next != nil { showMotionsItem(item) }
         Haptics.selection()
     }
 
+    /// What the preview holds whole while paused (`PreviewMotionHold`): the picked text, graphic, photo or video whose Motion
+    /// or moving effect hides or shrinks it in its way in or out (owner, canvas 2 F15, 07/11/2026). The playhead stays where the
+    /// creator left it; Play and Preview show the motion, and the export never reads this.
+    var previewHold: PreviewMotionHold.Hold? {
+        guard !player.isPlaying, let item = motionItem, let span = editedSpan(of: item) else { return nil }
+        let whole: ClosedRange<TimeInterval>?
+        switch item {
+        case .text(let id):
+            guard let text = edit.texts.first(where: { $0.id == id }) else { return nil }
+            whole = PreviewMotionHold.wholePart(animation: text.animation, effect: text.playsEffectMotion ? text.effect : nil, length: span.duration)
+        case .media(let id):
+            whole = PreviewMotionHold.wholePart(animation: edit.media.first { $0.id == id }?.animation, effect: nil, length: span.duration)
+        }
+        return whole.map { PreviewMotionHold.Hold(id: item.id, whole: $0) }
+    }
+
+    /// Hands the preview what to hold (`previewHold`), drawing the paused frame again when that changed.
+    func holdPickedWhole() {
+        if PreviewMotionHold.shared.set(previewHold) { player.redrawPausedFrame() }
+    }
+
+    /// After a Motion is picked: paused, and on the item when the playhead was off it (at its start, where the preview shows
+    /// it whole); on it already, the playhead stays.
+    private func showMotionsItem(_ item: MotionItem) {
+        guard let span = editedSpan(of: item) else { return }
+        player.pause()
+        if !(span.start...span.end).contains(player.currentTime) { player.seek(to: span.start) }
+    }
+
     /// Motion's "Effect's own": the picked text's effect plays its own way in and out again, as its card shows, with no Motion
-    /// over it. One undo step; the playhead goes to the text's start, to see it.
+    /// over it. One undo step; the playhead stays on the text, shown whole there while paused (`previewHold`).
     func playEffectsOwnMotion() {
         guard let text = selectedText, text.effect != nil else { return }
         customizeText(text.id, .effect) { text in
             text.animation = nil
             text.effect?.motion = .animated
         }
-        if let span = editedSpan(ofText: text.id) {
-            player.pause()
-            player.seek(to: span.start)
-        }
+        showMotionsItem(.text(text.id))
         Haptics.selection()
     }
 
@@ -168,7 +198,7 @@ extension OverlaysViewModel {
         player.pause()
         if let existing = keyframeAtPlayhead(of: item) {
             updateKeyframes(of: item) { $0.removeAll { $0.id == existing.id } }
-            toast.show(String(localized: "Keyframe removed"))
+            sayUndoable(String(localized: "Keyframe removed"))
             return
         }
         let keyframe = keyframeHere(of: item, at: local)
@@ -198,26 +228,31 @@ extension OverlaysViewModel {
         setAtPlayhead(of: .text(id)) { $0.center = center }
     }
 
-    /// A photo or video dragged on the preview: likewise.
-    func moveMedia(_ id: UUID, to center: OverlayPoint) {
+    /// The undo key of one gesture on a photo or video on the preview: a finger that moves it and two that pinch it, letting
+    /// go together, are one undo step. `gesture` is new for each gesture, so two gestures in a row are two steps however quick.
+    static func placeKey(_ id: UUID, gesture: UUID) -> String { "media.place.\(id).\(gesture)" }
+
+    /// A photo or video dragged on the preview: likewise. With a `key`, a pinch that ends with it is the same undo step
+    /// (`placeKey`).
+    func moveMedia(_ id: UUID, to center: OverlayPoint, key: String? = nil) {
         guard edit.media.first(where: { $0.id == id })?.keyframes?.isEmpty == false else {
-            updateMedia(id) { $0.center = center }
+            updateMedia(id, key: key) { $0.center = center }
             return
         }
-        setAtPlayhead(of: .media(id)) { $0.center = center }
+        setAtPlayhead(of: .media(id), key: key) { $0.center = center }
     }
 
     /// A photo or video pinched on the preview by `factor`: its keyframe's scale when it moves,
     /// else its width.
-    func resizeMedia(_ id: UUID, by factor: Double) {
+    func resizeMedia(_ id: UUID, by factor: Double, key: String? = nil) {
         guard let media = edit.media.first(where: { $0.id == id }) else { return }
         guard media.keyframes?.isEmpty == false else {
             let width = min(max(media.width * factor, MediaOverlay.widthRange.lowerBound), MediaOverlay.widthRange.upperBound)
-            updateMedia(id) { $0.width = width }
+            updateMedia(id, key: key) { $0.width = width }
             return
         }
         let current = motionState(of: .media(id)).scale
-        setAtPlayhead(of: .media(id)) {
+        setAtPlayhead(of: .media(id), key: key) {
             $0.scale = min(max(current * factor, OverlayKeyframe.scaleRange.lowerBound), OverlayKeyframe.scaleRange.upperBound)
         }
     }
@@ -246,11 +281,11 @@ extension OverlaysViewModel {
 
     /// Changes the keyframe at the playhead of the picked item, adding it first when there's none.
     /// Changes the item's keyframe at the playhead, adding it first (where the item is now) when there's none.
-    func setAtPlayhead(of item: MotionItem, _ update: (inout OverlayKeyframe) -> Void) {
+    func setAtPlayhead(of item: MotionItem, key: String? = nil, _ update: (inout OverlayKeyframe) -> Void) {
         guard let local = localTime(of: item) else { return }
         var keyframe = keyframeAtPlayhead(of: item) ?? keyframeHere(of: item, at: local)
         update(&keyframe)
-        updateKeyframes(of: item) { keyframes in
+        updateKeyframes(of: item, key: key) { keyframes in
             if let index = keyframes.firstIndex(where: { $0.id == keyframe.id }) {
                 keyframes[index] = keyframe
             } else {
@@ -259,15 +294,15 @@ extension OverlaysViewModel {
         }
     }
 
-    func updateKeyframes(of item: MotionItem, _ update: (inout [OverlayKeyframe]) -> Void) {
+    func updateKeyframes(of item: MotionItem, key: String? = nil, _ update: (inout [OverlayKeyframe]) -> Void) {
         switch item {
         case .text(let id):
-            updateText(id) { text in
+            updateText(id, key: key) { text in
                 update(&text.keyframes)
                 text.keyframes.sort { $0.time < $1.time }
             }
         case .media(let id):
-            updateMedia(id) { media in
+            updateMedia(id, key: key) { media in
                 var keyframes = media.keyframes ?? []
                 update(&keyframes)
                 media.keyframes = keyframes.isEmpty ? nil : keyframes.sorted { $0.time < $1.time }

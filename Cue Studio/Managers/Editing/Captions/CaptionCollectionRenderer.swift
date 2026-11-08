@@ -137,7 +137,9 @@ nonisolated enum CaptionCollectionRenderer {
         case .trailing where leftmost <= rightmost: x = rightmost
         default: break
         }
-        let y = min(max(CGFloat(requested.clamped.y) * frame.height, safe.minY + size.height / 2), safe.maxY - size.height / 2)
+        // A line in its own place (`CaptionLineStyle.y`) goes there, the same side to side.
+        let height = cue.lineStyle?.y ?? requested.clamped.y
+        let y = min(max(CGFloat(height) * frame.height, safe.minY + size.height / 2), safe.maxY - size.height / 2)
         let origin = CGPoint(x: (x - size.width / 2).rounded(), y: (frame.height - y - size.height / 2).rounded())
         return Placement(text: text, size: size, origin: origin, widthFraction: widthFraction)
     }
@@ -330,7 +332,7 @@ nonisolated enum CaptionCollectionRenderer {
     }
 
     static func contentRect(_ settings: CaptionSettings, frame: CGSize) -> CGRect {
-        let margins = frame.width > frame.height ? SafeZoneMargins(top: 5, bottom: 7, left: 6, right: 6) : settings.safeMargins
+        let margins = frame.width > frame.height ? SafeZoneMargins.frameEdges : settings.safeMargins
         let unit = margins.unitContentRect
         return CGRect(x: unit.minX * frame.width, y: unit.minY * frame.height, width: unit.width * frame.width, height: unit.height * frame.height)
     }

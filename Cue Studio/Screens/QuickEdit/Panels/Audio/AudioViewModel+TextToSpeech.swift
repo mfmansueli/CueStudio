@@ -13,10 +13,23 @@ extension AudioViewModel {
     /// the take's language.
     func makeTextToSpeech() -> TextToSpeechViewModel {
         let replacing = spokenReplacementID.flatMap { id in edit.voiceOvers.first { $0.id == id && $0.spoken != nil } }
-        return TextToSpeechViewModel(
+        let speech = TextToSpeechViewModel(
             speaker: narrationSpeaker, previews: soundPreviews, replacing: replacing, script: narrationScriptText,
             suggestedLanguage: captionScript?.language?.rawValue ?? Locale.current.identifier(.bcp47)
         )
+        // A draft comes back only where it was written: the same voice-over's Edit text, or a new narration.
+        if let draft = textToSpeechDraft, draft.replacingID == replacing?.id {
+            speech.restore(draft)
+            speech.isRestoredDraft = true
+        }
+        return speech
+    }
+
+    /// The sheet closed without Add or Cancel: `draft` is kept when it differs from how the sheet opens fresh.
+    func keepTextToSpeechDraft(_ draft: TextToSpeechDraft, opened start: TextToSpeechDraft, wasDraft: Bool) {
+        if wasDraft || draft != start {
+            textToSpeechDraft = draft.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? nil : draft
+        }
     }
 
     /// The made narration: in place of the one being replaced, or a new voice-over at the playhead; picked and played.

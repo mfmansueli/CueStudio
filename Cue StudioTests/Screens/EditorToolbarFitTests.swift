@@ -85,7 +85,7 @@ struct EditorToolbarBadgeTests {
         let width = EditorToolbarBadge.width(of: words)
         var report: [String] = []
         for heightClass in [EditorHeightClass.regular, .compact, .veryCompact] {
-            let narrowest = heightClass.toolbarItemMinimumWidth + (heightClass.toolbarShowsLabels ? 4 : 0)
+            let narrowest = heightClass.toolbarItemMinimumWidth + 4
             #expect(
                 EditorToolbarFit.badgeFits(labelWidth: width, toolWidth: narrowest),
                 "\(language.interfaceLocalization): “\(words)” is wider than a \(narrowest) pt tool"

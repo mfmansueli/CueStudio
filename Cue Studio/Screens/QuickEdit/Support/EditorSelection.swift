@@ -54,4 +54,13 @@ nonisolated enum EditorSelection: Hashable, Sendable {
     var mediaID: UUID? { if case .media(let id) = self { id } else { nil } }
     var blurID: UUID? { if case .blur(let id) = self { id } else { nil } }
     var joinID: UUID? { if case .join(let id) = self { id } else { nil } }
+    /// Whatever is picked, by its id (`PanelMemory` keeps an item's panel state by it).
+    var itemID: UUID {
+        switch self {
+        case .clip(let id), .text(let id), .caption(let id), .music(let id), .voiceOver(let id), .media(let id), .blur(let id), .join(let id): id
+        }
+    }
+    /// What Lock works on (`TakeEdit.lockedLayers`): a text, a photo or video, music or a voice-over; nil for a clip, a caption,
+    /// a Blur area or a cut.
+    var lockableID: UUID? { textID ?? mediaID ?? musicID ?? voiceOverID }
 }

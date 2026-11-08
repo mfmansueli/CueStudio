@@ -3,6 +3,7 @@
 //  Cue StudioTests
 //
 
+import CoreGraphics
 import Foundation
 import Testing
 @testable import Cue_Studio
@@ -227,6 +228,115 @@ struct TakeReviewViewModelTests {
         #expect(!hidden.viewModel.burnsInCaptions)
     }
 
+    @Test func exportStartsWithTheCaptionLanguageTheEditorShows() {
+        var take = TestData.take(scriptID: nil)
+        var edit = TakeEdit(sourceDuration: take.duration, aspect: .portrait)
+        edit.showsCaptions = true
+        edit.captionDisplay = .translation(.english)
+        take.edit = edit
+        let translated = makeScenario(tier: .subscriber, take: take)
+        defer { translated.defaults.tearDown() }
+        #expect(translated.viewModel.exportCaptionDisplay == .translation(.english))
+        take.edit = TakeEdit(sourceDuration: take.duration, aspect: .portrait)
+        let plain = makeScenario(tier: .subscriber, take: take)
+        defer { plain.defaults.tearDown() }
+        #expect(plain.viewModel.exportCaptionDisplay == .original)
+    }
+
+    /// D11: one state for the video's exports, starting from the editor; a different pick is for the export only, says so, and never changes
+    /// the saved edit; once the editor changes its captions, the export follows the editor again.
+    @Test func exportOptionsStartFromTheEditorAndNeverChangeTheEdit() async throws {
+        var take = TestData.take(scriptID: nil)
+        var edit = TakeEdit(sourceDuration: take.duration, aspect: .portrait)
+        edit.showsCaptions = true
+        let cue = CaptionCue(text: "Meu.", start: 0, end: 1)
+        edit.captions = [cue]
+        let line = TranslatedCaptionLine(cueIDs: [cue.id], sourceText: cue.text, text: "Mine.", start: cue.start, end: cue.end)
+        edit.captionTranslations = [CaptionTranslation(language: .english, lines: [line])]
+        edit.captionDisplay = .translation(.english)
+        take.edit = edit
+        let scenario = makeScenario(tier: .subscriber, take: take)
+        defer { scenario.defaults.tearDown() }
+        let viewModel = scenario.viewModel
+        #expect(viewModel.outputDifference(for: edit) == nil)
+        #expect(viewModel.outputSummary(for: edit) == "1080p · captions on")
+        #expect(viewModel.effectiveQualityLabel == "1080p")
+        // Both languages for this export only: Save uses it, the edit stays in English.
+        viewModel.setOutput(ExportOutputChoice(burnsInCaptions: true, captionDisplay: .bilingual(.english)), for: edit)
+        #expect(viewModel.exportCaptionDisplay == .bilingual(.english))
+        #expect(viewModel.outputDifference(for: edit) == .otherLanguage)
+        await viewModel.save()
+        #expect(scenario.exporter.exports.last?.edit?.captionDisplay == .bilingual(.english))
+        #expect(viewModel.take?.edit?.captionDisplay == .translation(.english))
+        // No captions in the file: said, and the edit keeps them.
+        viewModel.burnsInCaptions = false
+        #expect(viewModel.outputDifference(for: viewModel.take?.edit) == .removesCaptions)
+        #expect(viewModel.outputSummary(for: viewModel.take?.edit) == "1080p · no captions")
+        #expect(viewModel.take?.edit?.showsCaptions == true)
+        // The editor hides its captions in a new version: the export starts from it again (no captions, no difference).
+        var hidden = try #require(viewModel.take?.edit)
+        hidden.showsCaptions = false
+        try viewModel.takes.applyEdit(hidden, to: take.id)
+        #expect(!viewModel.burnsInCaptions)
+        #expect(viewModel.outputDifference(for: hidden) == nil)
+        // Picking the editor's own again forgets the pick.
+        viewModel.burnsInCaptions = true
+        viewModel.burnsInCaptions = false
+        #expect(viewModel.pickedOutput == nil)
+    }
+
+    /// Done's options are about the edit it is about to save: a pick there holds once that edit is saved.
+    @Test func donesPickHoldsForTheEditItSaves() throws {
+        let take = TestData.take(scriptID: nil)
+        let scenario = makeScenario(tier: .subscriber, take: take)
+        defer { scenario.defaults.tearDown() }
+        var unsaved = TakeEdit(sourceDuration: take.duration, aspect: .portrait)
+        unsaved.showsCaptions = true
+        scenario.viewModel.setOutput(ExportOutputChoice(burnsInCaptions: false, captionDisplay: .original), for: unsaved)
+        // Before Done saves it, the review's own (no edit) is untouched.
+        #expect(!scenario.viewModel.burnsInCaptions)
+        #expect(scenario.viewModel.outputDifference(for: nil) == nil)
+        try scenario.viewModel.takes.applyEdit(unsaved, to: take.id)
+        #expect(!scenario.viewModel.burnsInCaptions)
+        #expect(scenario.viewModel.outputDifference(for: unsaved) == .removesCaptions)
+    }
+
+    /// Bug 10: a landscape 1080p recording at 9:16 exports 606×1080 (never enlarged), and the quiet lines say so instead of "1080p"; in its
+    /// own shape it says 1080p.
+    @Test func theSummarySaysTheRealSizeWhenTheCropMakesItSmaller() {
+        var take = TestData.take(scriptID: nil)
+        take.origin = .imported
+        take.aspect = .landscape
+        var edit = TakeEdit(sourceDuration: take.duration, aspect: .portrait)
+        edit.showsCaptions = true
+        take.edit = edit
+        let scenario = makeScenario(tier: .subscriber, take: take)
+        defer { scenario.defaults.tearDown() }
+        let viewModel = scenario.viewModel
+        // An imported video's shape is only known from its file.
+        #expect(viewModel.outputSummary(for: edit) == "1080p · captions on")
+        viewModel.recordingUprightSize = CGSize(width: 1920, height: 1080)
+        #expect(viewModel.outputSummary(for: edit) == "606×1080 · captions on")
+        #expect(viewModel.outputSizeNote(for: edit) == "This format exports at 606×1080 · never enlarged")
+        var vertical = edit
+        vertical.aspect = .vertical
+        #expect(viewModel.outputSizeLabel(for: vertical) == "864×1080")
+        var own = edit
+        own.aspect = .landscape
+        #expect(viewModel.outputSummary(for: own) == "1080p · captions on")
+        #expect(viewModel.outputSizeNote(for: own) == nil)
+    }
+
+    /// A Cue recording is the whole portrait sensor: 16:9 from it is 1080×606, said before its file is read; 4:5 keeps 1080 across.
+    @Test func aCueRecordingAtSixteenByNineSaysItsSize() {
+        var take = TestData.take(scriptID: nil)
+        take.edit = TakeEdit(sourceDuration: take.duration, aspect: .landscape)
+        let scenario = makeScenario(take: take)
+        defer { scenario.defaults.tearDown() }
+        #expect(scenario.viewModel.outputSizeLabel(for: take.edit) == "1080×606")
+        #expect(scenario.viewModel.outputSizeLabel(for: TakeEdit(sourceDuration: take.duration, aspect: .vertical)) == "1080p")
+    }
+
     @Test func burnInCaptionsKeepsTheEditsCaptions() async {
         var take = TestData.take(scriptID: nil)
         var edit = TakeEdit(sourceDuration: take.duration, aspect: .portrait)
@@ -240,11 +350,14 @@ struct TakeReviewViewModelTests {
         #expect(scenario.editor.captionScript == nil)
     }
 
-    @Test func fourKIsFreeToo() {
+    /// 4K export is Cue Pro (owner, 06/11/2026): without it the picker asks ("4K export is Cue Pro") and keeps 1080p, and no paywall opens by
+    /// itself.
+    @Test func fourKIsProOnly() {
         let free = makeScenario()
         defer { free.defaults.tearDown() }
         free.viewModel.setQuality(.uhd4K)
-        #expect(free.viewModel.quality == .uhd4K)
+        #expect(free.viewModel.quality == .hd1080)
+        #expect(free.viewModel.offersFourKPro)
         #expect(free.viewModel.paywall == nil)
     }
 
@@ -259,14 +372,16 @@ struct TakeReviewViewModelTests {
         take.resolution = .uhd4K
         let scenario = makeScenario(tier: .subscriber, take: take)
         defer { scenario.defaults.tearDown() }
-        await scenario.viewModel.save()
-        #expect(scenario.exporter.exports.last?.shortSide == 1080)
-        #expect(savedFormat(scenario.viewModel) == "1080P · 9:16")
-
-        scenario.viewModel.setQuality(.uhd4K)
+        // With Pro a 4K recording starts in 4K; 1080p scales it down.
+        #expect(scenario.viewModel.exportQuality == .uhd4K)
         await scenario.viewModel.save()
         #expect(scenario.exporter.exports.last?.shortSide == nil)
         #expect(savedFormat(scenario.viewModel) == "4K · 9:16")
+
+        scenario.viewModel.setQuality(.hd1080)
+        await scenario.viewModel.save()
+        #expect(scenario.exporter.exports.last?.shortSide == 1080)
+        #expect(savedFormat(scenario.viewModel) == "1080P · 9:16")
     }
 
     @Test func fourKOfA1080pTakeStays1080p() async {

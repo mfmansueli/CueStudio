@@ -11,47 +11,70 @@ import Foundation
 /// still missing before it starts, so it never comes out different from what the creator asked for; the preview uses the ones
 /// ready and is drawn again when another one is (`MotionAnalysisService`).
 nonisolated extension EditedComposition {
-    /// Whether anything in the edit reads a recording's motion analysis.
+    /// Whether the edit needs a recording's motion analysis to be drawn as asked (Follow face, Stabilize): an export makes the ones
+    /// missing first.
     static func usesMotion(_ edit: TakeEdit) -> Bool {
         (edit.faceFollow != nil && edit.cropFit == .fill) || edit.timeline.segments.contains { $0.stabilization != nil }
+    }
+
+    /// Whether anything in the edit reads a recording's motion analysis: what `usesMotion` says, and the zooms Cue makes (Punch in
+    /// on cuts, phrase zooms), which grow toward the face once the analysis is ready (`ZoomAnchor`) and from the middle until then.
+    /// The editor asks for the analysis as soon as one is made; an export doesn't wait for it, so it zooms as the preview showed.
+    static func readsMotion(_ edit: TakeEdit) -> Bool {
+        usesMotion(edit) || edit.cutZoom != nil || !edit.phraseZooms.isEmpty
     }
 
     /// The analyses of the recordings the edit plays, when it uses them; with `analyzesMissing`, the ones not made yet (or of
     /// another version) are made now, off the main thread. A recording that can't be analyzed is drawn without. Making one
     /// stops when the build is dropped (`CancellationError`) or the iPhone gets hot (`BuildError.tooWarm`: what's done is kept
     /// and goes on next time), rather than heating it further or exporting something other than what the creator asked for.
+    /// `progress` hears how far the ones being made are, all of them together (0 to 1), and nothing when none is made.
     static func motionAnalyses(
         take: URL, edit: TakeEdit, analyzesMissing: Bool, analyzer: MotionAnalyzing = MotionAnalyzer(),
-        thermalState: @escaping @Sendable () -> ProcessInfo.ThermalState = { ProcessInfo.processInfo.thermalState }
+        thermalState: @escaping @Sendable () -> ProcessInfo.ThermalState = { ProcessInfo.processInfo.thermalState },
+        progress: (@Sendable (Double) -> Void)? = nil
     ) async throws -> [UUID?: MotionAnalysis] {
-        guard usesMotion(edit) else { return [:] }
+        guard readsMotion(edit) else { return [:] }
+        let analyzesMissing = analyzesMissing && usesMotion(edit)
         var recordings: [UUID?: URL] = [:]
         if edit.timeline.segments.contains(where: { $0.sourceID == nil }) { recordings[nil] = take }
         for clip in edit.playedSources { recordings[clip.id] = EditMediaFiles.url(for: clip.fileName) }
         var analyses: [UUID?: MotionAnalysis] = [:]
+        var missing: [(id: UUID?, url: URL)] = []
         for (id, url) in recordings {
             if let ready = MotionAnalysisStore.complete(forRecording: url) {
                 analyses[id] = ready
             } else if analyzesMissing {
-                let previous = MotionAnalysisStore.load(forRecording: url)
-                let made: MotionAnalysis
-                do {
-                    made = try await analyzer.analyze(
-                        videoAt: url, continuing: previous,
-                        shouldStop: { Task.isCancelled || MotionAnalysisPause.reason(isActive: true, thermal: thermalState()) == .heat },
-                        checkpoint: { MotionAnalysisStore.save($0, forRecording: url) }
-                    )
-                } catch {
-                    try Task.checkCancellation()
-                    continue
-                }
-                MotionAnalysisStore.save(made, forRecording: url)
-                guard made.isComplete else {
-                    try Task.checkCancellation()
-                    throw BuildError.tooWarm
-                }
-                analyses[id] = made
+                missing.append((id, url))
             }
+        }
+        for (index, recording) in missing.enumerated() {
+            let url = recording.url
+            let previous = MotionAnalysisStore.load(forRecording: url)
+            // Each recording's share of the whole, from where its analysis stopped last time.
+            let share = 1 / Double(missing.count), before = Double(index) * share
+            progress?(before + share * (previous?.progress ?? 0))
+            let made: MotionAnalysis
+            do {
+                made = try await analyzer.analyze(
+                    videoAt: url, continuing: previous,
+                    shouldStop: { Task.isCancelled || MotionAnalysisPause.reason(isActive: true, thermal: thermalState()) == .heat },
+                    checkpoint: { partial in
+                        MotionAnalysisStore.save(partial, forRecording: url)
+                        progress?(before + share * partial.progress)
+                    }
+                )
+            } catch {
+                try Task.checkCancellation()
+                continue
+            }
+            MotionAnalysisStore.save(made, forRecording: url)
+            guard made.isComplete else {
+                try Task.checkCancellation()
+                throw BuildError.tooWarm
+            }
+            progress?(before + share)
+            analyses[recording.id] = made
         }
         return analyses
     }

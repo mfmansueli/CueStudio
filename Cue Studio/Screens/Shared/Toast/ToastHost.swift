@@ -18,10 +18,18 @@ struct ToastHost: ViewModifier {
         content
             .overlay(alignment: .top) {
                 if let message = toast.message, inSheet || toast.sheetHosts == 0 {
-                    ToastView(message: message, kind: toast.kind, action: toast.action) {
-                        toast.action?.perform()
-                        toast.dismiss()
-                    }
+                    ToastView(
+                        message: message, kind: toast.kind, action: toast.action,
+                        onAction: {
+                            toast.action?.perform()
+                            toast.dismiss()
+                        },
+                        secondaryAction: toast.secondaryAction,
+                        onSecondaryAction: {
+                            toast.secondaryAction?.perform()
+                            toast.dismiss()
+                        }
+                    )
                     .padding(.horizontal, Metrics.gutter)
                     .padding(.top, 8)
                     // Work under way that ends keeps its pill (`ToastService.pill`): only a new toast comes in anew.

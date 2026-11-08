@@ -11,9 +11,12 @@ enum EditorApp {
     /// `demo`: Take 3 is the v10 design's 21.6 s edit (`SampleEdit.demo`): two clips (cut at 12.4 s), eight caption lines, a title
     /// and a subtitle, four pauses already found, music with a beat under the whole video, a B-roll window (4.2–8 s) and a
     /// voice-over (0.5–4.5 s).
-    static func open(sampleVideo: Bool = true, demo: Bool = false, animations: Bool = false, arguments: [String] = []) -> XCUIApplication {
+    static func open(
+        sampleVideo: Bool = true, demo: Bool = false, animations: Bool = false, appLanguage: String? = nil, arguments: [String] = []
+    ) -> XCUIApplication {
         let app = CueApp.launch(
-            seeded: true, sampleVideo: sampleVideo, animations: animations, extraArguments: (demo ? ["-uiTestDemoEdit"] : []) + arguments
+            seeded: true, sampleVideo: sampleVideo, appLanguage: appLanguage, animations: animations,
+            extraArguments: (demo ? ["-uiTestDemoEdit"] : []) + arguments
         )
         // Takes is the second tab; its label is "Takes" only in some languages (`-uiTestAppLanguage`).
         XCTAssertTrue(app.cueTabBar.exists(within: 15))
@@ -42,17 +45,16 @@ enum EditorApp {
         XCTAssertTrue(app.descendants(matching: .any)["edit.opening"].isGone(within: 5), "Opening your edit stayed", file: file, line: line)
     }
 
-    /// Shows a tab of Text style (`animated`, `styles`, `custom`) or one of Custom's sections (`font`, `color`, `motion`), Custom
-    /// first when it isn't open.
+    /// Shows a tab of Text style (`styles`, `font`, `color`, `motion`), or `animated`: Styles filtered to the six that play their
+    /// way in (a filter of Styles since canvas 2 R3).
     static func showTextTab(_ app: XCUIApplication, _ id: String, file: StaticString = #filePath, line: UInt = #line) {
-        let button = app.buttons["edit.panel.tab.\(id)"]
-        if ["font", "color", "motion"].contains(id), !button.exists {
-            let custom = app.buttons["edit.panel.tab.custom"]
-            XCTAssertTrue(custom.exists(within: 5), "Custom", file: file, line: line)
-            custom.tap()
-        }
-        XCTAssertTrue(button.exists(within: 5), id, file: file, line: line)
-        button.tap()
+        let tab = app.buttons["edit.panel.tab.\(id == "animated" ? "styles" : id)"]
+        XCTAssertTrue(tab.exists(within: 5), id, file: file, line: line)
+        tab.tap()
+        guard id == "animated" else { return }
+        let filter = app.buttons["edit.textFilter.animated"]
+        XCTAssertTrue(filter.exists(within: 5), "The Animated filter", file: file, line: line)
+        filter.tap()
     }
 
     /// Taps a toolbar tool, scrolling the toolbar to it first when it's off screen.
@@ -155,12 +157,20 @@ enum EditorApp {
         option.tap()
     }
 
-    /// ✦ Smart › Remove pauses: opens the Pauses panel the way a creator reaches it now.
+    /// Clean up (the fifth tool): opens the speech clean-up the way a creator reaches it now.
     static func openPauses(_ app: XCUIApplication) {
-        tapTool(app, "smart")
-        let tile = app.buttons["edit.smart.pauses"]
-        XCTAssertTrue(tile.exists(within: 5))
-        tile.tap()
+        tapTool(app, "pauses")
+    }
+
+    /// Captions › ••• › the tool `id` (Find and replace, Select lines, Edit by text, Add a line, Delete all).
+    @discardableResult
+    static func captionsMenu(_ app: XCUIApplication, _ id: String) -> XCUIElement {
+        let more = app.buttons["edit.captionsMore"]
+        XCTAssertTrue(more.exists(within: 5), "No ••• in Captions")
+        more.tap()
+        let button = app.buttons[id].firstMatch
+        XCTAssertTrue(button.exists(within: 5), "No \(id) in Captions ›  •••")
+        return button
     }
 
     /// Captions › the line at `index`: the playhead goes to its start. Closes the panel after.
@@ -188,6 +198,15 @@ enum EditorApp {
     /// A picture of the editor and its hierarchy, for `tools/contrast/audit.py`, when `TEST_RUNNER_CUE_FIDELITY_DIR=<folder>`
     /// asks for them.
     static func capture(_ app: XCUIApplication, _ name: String) {
+        #if !targetEnvironment(simulator)
+        // On an iPhone (device-ui) the folder is out of reach: the picture goes into the result bundle.
+        XCTContext.runActivity(named: name) { activity in
+            let attachment = XCTAttachment(screenshot: app.screenshot())
+            attachment.name = name
+            attachment.lifetime = .keepAlways
+            activity.add(attachment)
+        }
+        #endif
         guard let path = ProcessInfo.processInfo.environment["CUE_FIDELITY_DIR"] else { return }
         let folder = URL(fileURLWithPath: path, isDirectory: true)
         try? FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)

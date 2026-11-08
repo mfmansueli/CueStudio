@@ -5,7 +5,7 @@
 
 import Foundation
 
-/// Edit by text (`ClipsViewModel+TranscriptEdit`) meeting the captions: "Fix caption text" opens the line with the picked
+/// Edit by text (Clean up › Text, `ClipsViewModel+TranscriptEdit`) meeting the captions: "Fix caption text" opens the line with the picked
 /// words in Captions, and listening for the words is the captions listening, with lines that stay hidden if they were.
 extension QuickEditViewModel {
     /// "Fix caption text": the caption line with the first picked word, open for writing; nothing is cut.
@@ -14,7 +14,6 @@ extension QuickEditViewModel {
         let line = edit.captions.first { cue in
             cue.sourceID == word.sourceID && cue.start <= word.span.end && word.span.start < cue.end
         }
-        sheet = nil
         clips.transcriptSelection = nil
         guard let line else {
             toast.show(String(localized: "No caption line for these words"), kind: .problem)

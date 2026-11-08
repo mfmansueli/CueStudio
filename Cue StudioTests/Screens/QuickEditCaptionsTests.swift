@@ -408,17 +408,18 @@ struct QuickEditCaptionsTests {
         #expect(viewModel.edit.captions == before)
     }
 
-    @Test func clearingNeedsLinesAndTheCaptionsMenuOffersIt() async {
+    @Test func clearingNeedsLinesAndAsksFirst() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         viewModel.captions.deleteAllCaptions()
         #expect(scenario.toast.message == nil)
         viewModel.captions.makeCaptions()
         await finish(viewModel)
-        viewModel.perform(.openMenu(.captions))
-        let last = viewModel.toolbarItems.last
-        #expect(last?.id == "deleteAll" && last?.style == .destructive && last?.isPinned == true)
+        // Captions › ••• › Delete all asks first.
         viewModel.perform(.deleteAllCaptions)
+        #expect(!viewModel.edit.captions.isEmpty)
+        #expect(viewModel.captions.confirmsDeletingAll)
+        viewModel.captions.deleteAllCaptions()
         #expect(viewModel.edit.captions.isEmpty)
     }
 

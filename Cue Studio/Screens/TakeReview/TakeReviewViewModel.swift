@@ -71,20 +71,52 @@ final class TakeReviewViewModel {
     /// The last export failed: the review keeps a card with why and **Try again** (`ExportFailure`) until it is closed or an export starts.
     private(set) var exportFailure: ExportFailure?
     /// Operations whose cover was saved to Photos with the video ("Video and cover saved" on Ready to travel).
-    private(set) var coversSaved: Set<UUID> = []
+    /// Written by the cover's saving (`TakeReviewViewModel+Cover`).
+    var coversSaved: Set<UUID> = []
     /// **Try again** on a cover that couldn't be saved (tests wait on it).
-    @ObservationIgnored private(set) var coverRetry: Task<Void, Never>?
+    @ObservationIgnored var coverRetry: Task<Void, Never>?
     /// Where "#ad" goes for a sponsored video (the system pasteboard; a test swaps it).
     @ObservationIgnored var copiesCaption: (String) -> Void = { UIPasteboard.general.string = $0 }
-    var burnsInCaptions = false
+    /// What Export options picked (D11), with the editor's captions it was picked against: while the edit shows the same captions in the same
+    /// language, the pick holds for every way out (Save, Share, Done's answers); once the editor changes them, the export starts from the editor
+    /// again. Nil until the creator picks. Written by `setOutput(_:for:)` (`TakeReviewViewModel+ExportOptions`).
+    var pickedOutput: (editor: ExportOutputChoice, choice: ExportOutputChoice)?
+    /// Whether this export burns its captions in: the editor's (`output(for:)`).
+    var burnsInCaptions: Bool {
+        get { output(for: take?.edit).burnsInCaptions }
+        set {
+            var choice = output(for: take?.edit)
+            choice.burnsInCaptions = newValue
+            setOutput(choice, for: take?.edit)
+        }
+    }
     /// Which captions this export burns in: the original, a translation or both (one export per
-    /// language).
-    var exportCaptionDisplay: CaptionDisplay = .original
+    /// language). Starts from what the editor shows, so a translation picked there goes out without a second pick.
+    var exportCaptionDisplay: CaptionDisplay {
+        get { output(for: take?.edit).captionDisplay }
+        set {
+            var choice = output(for: take?.edit)
+            choice.captionDisplay = newValue
+            setOutput(choice, for: take?.edit)
+        }
+    }
     /// Why the video being exported has no captions although they were asked for.
     @ObservationIgnored private var captionNotice: String?
-    private(set) var quality: ExportQuality = .hd1080
-    /// How far the running export is, 0 to 1 (nil when none runs).
-    private(set) var exportProgress: Double?
+    /// Some of the exported video's words came out in the system's face: the message after sending it says so.
+    @ObservationIgnored private var fontNotice: String?
+    /// What the creator picked in Export options (nil until they pick). 4K is Cue Pro (owner, 06/11/2026); the export reads `exportQuality`.
+    private var pickedQuality: ExportQuality?
+    /// The quality in Export options: the one picked, else the recording's own with Pro (a 4K recording exports in 4K) and 1080p without.
+    var quality: ExportQuality {
+        pickedQuality ?? (isPro && take?.resolution == .uhd4K ? .uhd4K : .hd1080)
+    }
+    /// "4K export is Cue Pro" is up: 4K was picked without Pro (Go Pro, or Keep 1080p).
+    var offersFourKPro = false
+    /// The recording's upright frame in pixels, read from its file once the review opens (`loadRecordingFrame()`): what the export crops,
+    /// so Done and Export options can say "606×1080" when that is the file. Nil until read.
+    var recordingUprightSize: CGSize?
+    /// Where the running export is: its stage, and how far when the stage can measure itself (nil when none runs).
+    private(set) var exportProgress: ExportProgress?
     /// Whether the running export goes on if the creator leaves Cue (nil when none runs).
     private(set) var exportMode: BackgroundExportMode?
     /// The last export of this take stopped with Cue (closed from the app switcher, or ended by iOS) before it finished.
@@ -94,20 +126,20 @@ final class TakeReviewViewModel {
     /// Share sheets already acted on: a completion heard twice counts and tells once.
     private var handledActivities: Set<UUID> = []
 
-    private let takes: TakeLibraryService
+    let takes: TakeLibraryService
     private let quota: UsageQuotaService
     private let tier: () -> MembershipTier
     private let exporter: VideoExporting
-    private let photos: PhotoSaving
+    let photos: PhotoSaving
     private let sharing: VideoSharing
     private let ledger: ExportLedgerService
-    private let editing: TakeEditing
+    let editing: TakeEditing
     private let library: ScriptLibraryService
     private let rules: PlatformRulesService
     private let profile: CreatorProfileService
     private let preferences: PreferencesService
     private let drafts: QuickEditDraftStoring
-    private let toast: ToastService
+    let toast: ToastService
     private let background: BackgroundExportRunning
     /// Bytes free on the iPhone (`StorageSpace.available`); a test gives its own.
     private let freeSpace: () -> Int64?
@@ -158,7 +190,6 @@ final class TakeReviewViewModel {
         self.toast = toast
         self.background = background ?? BackgroundExportRunner(scheduler: nil)
         self.freeSpace = freeSpace
-        burnsInCaptions = takes.take(id: takeID)?.edit?.showsCaptions ?? false
         exportStopped = preferences.stoppedExports.contains(takeID)
     }
 
@@ -274,26 +305,48 @@ final class TakeReviewViewModel {
 
     var exportsExhausted: Bool { exportsLeft == 0 }
 
+    var isPro: Bool { tier().isPro }
+
+    /// The quality the video is made in: 4K only with Pro, on every way out (Save, Share, Try again, a queue's network, a file made again), so
+    /// a plan that ended after 4K was picked exports in 1080p. The take and its edit keep the recording's resolution: only the file is smaller.
+    var exportQuality: ExportQuality { quality == .uhd4K && !isPro ? .hd1080 : quality }
+
+    /// A 4K recording without Pro: Export options say it exports in 1080p.
+    var exportsFourKRecordingInHD: Bool { take?.resolution == .uhd4K && !isPro }
+
+    /// Only a 4K recording has a quality to choose: a 1080p or 720p one is never made larger, so Export options show its own resolution
+    /// and nothing about Pro (a "4K · Pro" there would offer something the file can't have).
+    var choosesQuality: Bool { take?.resolution == .uhd4K }
+
+    /// "1080p": what a recording that has no choice exports in.
+    var recordedResolutionLabel: String { take?.resolution.label ?? ExportQuality.hd1080.label }
+
     /// 4K keeps the recording's resolution (a 1080p take isn't upscaled); 1080p scales 4K down.
     /// About 2.2 MB a second at 1080p and 6.5 at 4K (the export's HEVC), for the space check.
     private func estimatedMegabytes(of take: Take) -> Double {
-        let perSecond = quality == .uhd4K && take.resolution == .uhd4K ? 6.5 : 2.2
+        let perSecond = exportQuality == .uhd4K && take.resolution == .uhd4K ? 6.5 : 2.2
         return max(1, ((take.edit?.editedDuration ?? take.duration) * perSecond).rounded())
     }
 
-    private func outputShortSide(for take: Take) -> CGFloat? {
-        take.resolution == .uhd4K && quality == .hd1080 ? quality.shortSide : nil
+    /// The short side the export scales down to (a 4K recording in 1080p); nil keeps the crop's own.
+    func outputShortSide(for take: Take) -> CGFloat? {
+        take.resolution == .uhd4K && exportQuality == .hd1080 ? ExportQuality.hd1080.shortSide : nil
     }
 
-    private func outputResolutionLabel(for take: Take) -> String {
-        quality == .uhd4K ? take.resolution.label : quality.label
+    func outputResolutionLabel(for take: Take) -> String {
+        exportQuality == .uhd4K || take.resolution != .uhd4K ? take.resolution.label : exportQuality.label
     }
 
+    /// The Quality picker. 4K without Pro isn't picked: "4K export is Cue Pro" asks first. Only the 4K file is Pro; the editor's creative tools
+    /// never are.
     func setQuality(_ quality: ExportQuality) {
-        self.quality = quality
+        if quality == .uhd4K && !isPro { offersFourKPro = true } else { pickedQuality = quality }
     }
 
-    // MARK: - Actions
+    /// Pro bought from "4K export is Cue Pro": the video exports in 4K.
+    func fourKProPurchased() {
+        if isPro { pickedQuality = .uhd4K }
+    }
 
     // MARK: - Best take
 
@@ -462,16 +515,15 @@ final class TakeReviewViewModel {
 
     private func export(_ action: ExportAction, continuing operationID: UUID? = nil) async {
         guard let take, runningAction == nil else { return }
-        // Used up, and nothing of this take already out: "Your video is ready" before any work. Making the file is free; delivering it is not.
-        guard action == .render || quota.canExport(tier: tier()) || ledger.hasCountedOperation(forTake: take.id) else {
-            pendingAction = action
-            exportDeclined = false
-            showsExportReady = true
+        // Used up, and this very video (its edit and settings, not just the take) not out yet: "Your video is ready" before any work, so no
+        // "Exporting your video" and no captions made for a video that waits for Pro. Making the file is free; delivering it is not.
+        guard action == .render || quota.canExport(tier: tier()) || costsNothing(take, edit: take.edit, burnsInCaptions: burnsInCaptions) else {
+            askForPro(action)
             return
         }
         runningAction = action
         phase = .preparing
-        exportProgress = 0
+        exportProgress = .preparing
         exportFailure = nil
         dismissStoppedExport()
         // Marked while it runs: still marked when Cue opens again means it stopped with Cue.
@@ -480,13 +532,19 @@ final class TakeReviewViewModel {
         let job = Task { @MainActor in
             try await background.run(
                 title: String(localized: "Exporting your video"), subtitle: take.label, started: { self.exportMode = $0 }, work: { report in
-                guard let operation = try await self.prepareOperation(for: take, action: action, continuing: operationID, progress: { fraction in
-                    self.exportProgress = fraction
-                    report(fraction)
+                guard let operation = try await self.prepareOperation(for: take, action: action, continuing: operationID, progress: { update in
+                    // A stage never goes back: a late report of an earlier one (the motion analysis hops to the main actor) is dropped.
+                    if let shown = self.exportProgress, update.stage < shown.stage { return }
+                    self.exportProgress = update
+                    // iOS's Live Activity hears the frames being written: the stage every export has, and measures.
+                    if update.stage == .rendering, let fraction = update.fraction { report(fraction) }
                 }) else {
                     return false
                 }
                 self.preparedOperation = operation.id
+                // Words in the system's face (`ExportedFileRecord`): the message after sending says so, as the cover does.
+                let fallback = ExportedFileRecord.read(at: self.ledger.fileURL(of: operation))?.fontFallback
+                self.fontNotice = fallback.map { _ in String(localized: "Some words use the system font") }
                 // "Cancel export" before this line: nothing leaves Cue, nothing is counted. Checked and marked with no wait between them, on
                 // the main actor, so a cancel can't land halfway (`cancelExport` refuses once delivering).
                 try Task.checkCancellation()
@@ -528,23 +586,62 @@ final class TakeReviewViewModel {
         return true
     }
 
+    /// "Your video is ready" asks before the export goes on (the free exports are used up).
+    private func askForPro(_ action: ExportAction) {
+        pendingAction = action
+        exportDeclined = false
+        showsExportReady = true
+    }
+
+    /// The counted export of the "Share to universe" queue this take is in: an edit made inside it is the same export and costs nothing more.
+    private func inheritedCount(for take: Take) -> UUID? {
+        queueOperation().flatMap { ledger.operation(id: $0) }.flatMap { $0.takeID == take.id && $0.isCounted ? $0.id : nil }
+    }
+
+    /// Exporting `edit` now costs no free export, read before any work: this very video (the take, the edit, the settings) already left Cue, or
+    /// it is an edit inside a queue that already counted. Not "the take": another edit of an exported take is another video (owner, 06/11/2026:
+    /// correcting a video costs an export). An edit whose captions are still to be made can't have left (they would be in the take).
+    private func costsNothing(_ take: Take, edit: TakeEdit?, burnsInCaptions: Bool) -> Bool {
+        if inheritedCount(for: take) != nil { return true }
+        let (prepared, needsCaptions) = baseEditForExport(take, edit: edit, burnsInCaptions: burnsInCaptions)
+        guard !needsCaptions else { return false }
+        let options = exportOptions(for: take, edit: prepared, burnsInCaptions: burnsInCaptions)
+        return ledger.isCounted(fingerprint: ExportFingerprint.make(takeID: take.id, source: takes.videoURL(for: take), options: options))
+    }
+
+    private func exportOptions(for take: Take, edit: TakeEdit?, burnsInCaptions: Bool) -> ExportOptions {
+        ExportOptions(aspect: take.outputAspect, edit: edit, burnsInCaptions: burnsInCaptions, shortSide: outputShortSide(for: take))
+    }
+
+    /// The line on the editor's "Is it ready to post?" (owner, 06/11/2026: the last free export told when it is useful, with no new flow):
+    /// "LAST FREE EXPORT" with one left, "0 OF 3 LEFT · EXPORT WITH PRO" with none. Nothing on Pro, with more left, or when sharing `edit`
+    /// costs nothing (the same video already out).
+    func doneExportNote(for edit: TakeEdit) -> FreeExportLabels.Label? {
+        guard let left = exportsLeft, left <= 1, let take else { return nil }
+        guard !costsNothing(take, edit: edit, burnsInCaptions: edit.showsCaptions) else { return nil }
+        return FreeExportLabels.meter(left: left, limit: freeExportLimit)
+    }
+
     /// The file for this export: the one already made for the same edit and settings, else a new render. Nil when the
     /// free exports are used up (the paywall is open). A video already counted never needs the quota again, its file there or made again.
     private func prepareOperation(
-        for take: Take, action: ExportAction, continuing operationID: UUID?, progress: @escaping @MainActor (Double) -> Void
+        for take: Take, action: ExportAction, continuing operationID: UUID?, progress: @escaping @MainActor (ExportProgress) -> Void
     ) async throws -> ExportOperation? {
-        let options = ExportOptions(
-            aspect: take.outputAspect, edit: await editForExport(take),
-            burnsInCaptions: burnsInCaptions, shortSide: outputShortSide(for: take)
-        )
+        let options = exportOptions(for: take, edit: await editForExport(take), burnsInCaptions: burnsInCaptions)
         let source = takes.videoURL(for: take)
         let fingerprint = ExportFingerprint.make(takeID: take.id, source: source, options: options)
-        let reusable = ledger.reusableOperation(fingerprint: fingerprint)
+        // The same video is reused only when it would be drawn the same now (the fonts, the media, this Cue): a file whose record says
+        // otherwise, or has none, is made again (for the free exports it is still the same video).
+        let stamp = ExportRenderStamp.current(edit: options.edit)
+        let reusable = ledger.reusableOperation(fingerprint: fingerprint).flatMap { operation in
+            ExportedFileRecord.read(at: ledger.fileURL(of: operation))?.renderStamp == stamp ? operation : nil
+        }
         let continued = operationID.flatMap { ledger.operation(id: $0) }.flatMap { $0.fingerprint == fingerprint ? $0 : nil }
-        if action != .render, !ledger.isCounted(fingerprint: fingerprint), !quota.canExport(tier: tier()) {
-            pendingAction = action
-            exportDeclined = false
-            showsExportReady = true
+        // An edit made inside a queue that already counted its export is the same export: it costs nothing more.
+        let inherited = inheritedCount(for: take)
+        // Asked before the work too (`export`); asked again here for captions made just now, which make another video.
+        if action != .render, !ledger.isCounted(fingerprint: fingerprint), inherited == nil, !quota.canExport(tier: tier()) {
+            askForPro(action)
             return nil
         }
         if let reusable { return reusable }
@@ -552,14 +649,16 @@ final class TakeReviewViewModel {
         if let missing = StorageSpace.shortfall(forExportOf: estimatedMegabytes(of: take), available: freeSpace()) {
             throw ExportPreflightError.notEnoughSpace(megabytes: missing)
         }
-        let url = try await exporter.export(videoAt: source, options: options, progress: progress)
+        let result = try await exporter.export(videoAt: source, options: options, progress: progress)
+        let url = result.url
+        ExportedFileRecord(renderStamp: ExportRenderStamp.drawn(edit: options.edit, result: result), fontFallback: result.fontFallback).write(to: url)
         if let continued {
-            // The same export, its file made again after the system cleared the first: not a second export.
+            // The same export, its file made again (the system cleared the first, or it was drawn differently): not a second export. An
+            // old file still there goes, unless the share sheet shows it.
+            if ledger.fileExists(for: continued), activity?.operationID != continued.id { ledger.releaseFile(of: continued.id) }
             ledger.replaceFile(of: continued.id, with: url)
             return ledger.operation(id: continued.id)
         }
-        // An edit made inside a queue that already counted its export is the same export: it costs nothing more.
-        let inherited = queueOperation().flatMap { ledger.operation(id: $0) }.flatMap { $0.takeID == take.id && $0.isCounted ? $0.id : nil }
         return ledger.begin(takeID: take.id, fingerprint: fingerprint, file: url, inheritingCountFrom: inherited)
     }
 
@@ -631,7 +730,7 @@ final class TakeReviewViewModel {
             showsShareSheet = false
             // What the video holds is read before the message says it (the message forgets why captions are missing).
             celebration = .readyToTravel(exported(take, operation: operation))
-            announce(savedForPostingMessage(for: destination, tier: tier()))
+            announce(ExportMessages.savedForPosting(on: destination.platform.label, left: exportsLeft, limit: freeExportLimit))
             return
         }
         let video = SharedVideo(
@@ -655,7 +754,7 @@ final class TakeReviewViewModel {
             recordDelivery(evidence, operation: operation, take: take)
             showsShareSheet = false
             celebration = .sentOff(exported(take, operation: operation), [destination])
-            announce(sharedMessage(with: label))
+            announce(ExportMessages.shared(with: label, left: exportsLeft, limit: freeExportLimit))
         case .pending:
             showsShareSheet = false
         case .opened:
@@ -663,13 +762,13 @@ final class TakeReviewViewModel {
             if route.needsPhotosCopy {
                 // Saved, and the app is open for the creator to pick it.
                 celebration = .readyToTravel(exported(take, operation: operation))
-                announce(readyMessage(for: destination, tier: tier()))
+                announce(ExportMessages.ready(on: destination.platform.label, left: exportsLeft, limit: freeExportLimit))
             } else {
                 // Instagram: the video left Cue (on the pasteboard, with the composer open), which counts. Whether it read it, or
                 // the creator posts it, Instagram doesn't say.
                 recordDelivery(.pasteboardHandoff, operation: operation, take: take)
                 phase = .delivering(destination)
-                toast.show(openedMessage(with: label))
+                toast.show(ExportMessages.opened(label, left: exportsLeft, limit: freeExportLimit))
             }
         case .cancelled:
             phase = .cancelled
@@ -703,9 +802,9 @@ final class TakeReviewViewModel {
             showsShareSheet = false
             if let destination = share.destination, destination.matches(activityType: type) {
                 celebration = .sentOff(exported(take, operation: operation), [destination])
-                announce(sharedMessage(with: destination.platform.label))
+                announce(ExportMessages.shared(with: destination.platform.label, left: exportsLeft, limit: freeExportLimit))
             } else {
-                announce(sharedMessage(with: nil))
+                announce(ExportMessages.shared(with: nil, left: exportsLeft, limit: freeExportLimit))
             }
         case .cancelled:
             phase = .cancelled
@@ -726,11 +825,13 @@ final class TakeReviewViewModel {
 
     private func exported(_ take: Take, operation: ExportOperation) -> ExportedVideo {
         let currentTier = tier()
+        let url = ledger.fileURL(of: operation)
+        let fontFallback = ExportedFileRecord.read(at: url)?.fontFallback
         return ExportedVideo(
-            operationID: operation.id, take: take, url: ledger.fileURL(of: operation),
-            formatLabel: "\(outputResolutionLabel(for: take).uppercased()) · \(take.outputAspect.label)",
+            operationID: operation.id, take: take, url: url,
+            formatLabel: "\(outputSizeLabel(for: take.edit).uppercased()) · \(take.outputAspect.label)",
             hasCaptions: burnsInCaptions && captionNotice == nil, missingCaptions: burnsInCaptions ? captionNotice : nil,
-            exportsLeft: quota.exportsLeft(for: currentTier), platform: take.platform
+            exportsLeft: quota.exportsLeft(for: currentTier), platform: take.platform, fontFallback: fontFallback
         )
     }
 
@@ -739,131 +840,55 @@ final class TakeReviewViewModel {
         await export(.share(destination), continuing: video.operationID)
     }
 
-    /// The take's caption translations, for the export's caption language.
-    var captionTranslations: [CaptionTranslation] {
-        take?.edit?.captionTranslations ?? []
-    }
-
     /// Captions to burn in come from the edit; a take never captioned gets them now from its voice
     /// (cached as source data). When none can be made, the video exports without them and `captionNotice` says
     /// why: nothing is ever spread over the take in their place.
     private func editForExport(_ take: Take) async -> TakeEdit? {
         captionNotice = nil
-        guard burnsInCaptions else { return take.edit }
-        var edit = take.edit ?? TakeEdit(sourceDuration: take.duration, aspect: take.aspect)
-        if take.edit == nil {
+        let (base, needsCaptions) = baseEditForExport(take, edit: take.edit, burnsInCaptions: burnsInCaptions)
+        guard needsCaptions, var edit = base else { return base }
+        let script = take.captionScript(current: library.script(id: take.scriptID))
+        let language = edit.captionLanguage.map(SpeechLanguageRequest.language) ?? speechLanguageFor(script)
+        // On Auto, a take without a script is heard in the language it's spoken in.
+        let candidates = edit.captionLanguage == nil ? likelySpokenLanguagesFor(script) : []
+        let outcome = try? await editing.captions(
+            forVideoAt: takes.videoURL(for: take), script: script?.text ?? "", language: language, spokenAmong: candidates,
+            progress: { _ in }
+        )
+        switch outcome {
+        case .captions(let lines, let transcript)?:
+            edit.captions = lines
+            edit.captionTranscript = transcript
+            takes.cacheCaptions(lines, transcript: transcript, for: take.id)
+        case .unavailable(let reason)?: captionNotice = reason.captionMessage
+        case .noSpeech?, .noAudio?: captionNotice = String(localized: "No speech to caption, so the video has none.")
+        case nil: captionNotice = String(localized: "Couldn’t listen to this take, so the video has no captions.")
+        }
+        return edit
+    }
+
+    /// The edit as this export burns it, before any captions are made; `needsCaptions` when they are asked for and the take has none yet (then
+    /// they come from its voice, `editForExport`).
+    private func baseEditForExport(_ take: Take, edit source: TakeEdit?, burnsInCaptions: Bool) -> (edit: TakeEdit?, needsCaptions: Bool) {
+        guard burnsInCaptions else { return (source, false) }
+        var edit = source ?? TakeEdit(sourceDuration: take.duration, aspect: take.aspect)
+        if source == nil {
             edit.captionCollection?.safeMargins = CaptionSafeArea.margins(for: take, aspect: edit.aspect)
             // Captions on a never-edited take don't opt it into the editor's default voice effect.
             edit.voiceEnhancement = .off
             edit.enhancesVoice = false
         }
+        CaptionSafeArea.repairMargins(of: &edit, for: take)
         edit.showsCaptions = true
         edit.captionDisplay = edit.captionTranslations.contains { $0.language == exportCaptionDisplay.language } ? exportCaptionDisplay : .original
-        if edit.captions.isEmpty {
-            let script = take.captionScript(current: library.script(id: take.scriptID))
-            let language = edit.captionLanguage.map(SpeechLanguageRequest.language) ?? speechLanguageFor(script)
-            // On Auto, a take without a script is heard in the language it's spoken in.
-            let candidates = edit.captionLanguage == nil ? likelySpokenLanguagesFor(script) : []
-            let outcome = try? await editing.captions(
-                forVideoAt: takes.videoURL(for: take), script: script?.text ?? "", language: language, spokenAmong: candidates,
-                progress: { _ in }
-            )
-            switch outcome {
-            case .captions(let lines, let transcript)?:
-                edit.captions = lines
-                edit.captionTranscript = transcript
-                takes.cacheCaptions(lines, transcript: transcript, for: take.id)
-            case .unavailable(let reason)?: captionNotice = reason.captionMessage
-            case .noSpeech?, .noAudio?: captionNotice = String(localized: "No speech to caption, so the video has none.")
-            case nil: captionNotice = String(localized: "Couldn’t listen to this take, so the video has no captions.")
-            }
-        }
-        return edit
+        return (edit, edit.captions.isEmpty)
     }
 
     /// A finished export's message, with why captions are missing when they were asked for. Read after the celebration took what the
     /// video holds (`exported`): before, "Ready to travel" said CAPTIONS ON for a video without them.
     private func announce(_ message: String) {
-        toast.show(captionNotice.map { message + " · " + $0 } ?? message)
+        toast.show(([message] + [captionNotice, fontNotice].compactMap { $0 }).joined(separator: " · "))
         captionNotice = nil
-    }
-
-    private func readyMessage(for destination: ShareDestination, tier: MembershipTier) -> String {
-        let ready = String(localized: "Ready to post on \(destination.platform.label)")
-        guard let left = quota.exportsLeft(for: tier) else { return ready }
-        return ready + " · " + String(localized: "\(left) of \(freeExportLimit) free exports left")
-    }
-
-    /// "Opened Reels with your video · Cue can't see if you post it", with the free exports left.
-    private func openedMessage(with label: String) -> String {
-        let opened = String(localized: "Opened \(label) with your video · Cue can’t see if you post it")
-        guard let left = quota.exportsLeft(for: tier()) else { return opened }
-        return opened + " · " + String(localized: "\(left) of \(freeExportLimit) free exports left")
-    }
-
-    /// "Saved to Photos · Open LinkedIn to post it", with the free exports left.
-    private func savedForPostingMessage(for destination: ShareDestination, tier: MembershipTier) -> String {
-        let saved = String(localized: "Saved to Photos · Open \(destination.platform.label) to post it")
-        guard let left = quota.exportsLeft(for: tier) else { return saved }
-        return saved + " · " + String(localized: "\(left) of \(freeExportLimit) free exports left")
-    }
-
-    /// "Shared with TikTok" (or "Shared" when the creator picked another app), with the free exports left.
-    private func sharedMessage(with label: String?) -> String {
-        let shared = label.map { String(localized: "Shared with \($0)") } ?? String(localized: "Shared")
-        guard let left = quota.exportsLeft(for: tier()) else { return shared }
-        return shared + " · " + String(localized: "\(left) of \(freeExportLimit) free exports left")
-    }
-
-    /// The chosen cover, saved to Photos after its video: true when one was. One that couldn't be saved says so, the video being there, with
-    /// **Try again**, which saves the cover alone (`retryCover`).
-    @discardableResult
-    private func saveCover(after operation: ExportOperation) async -> Bool {
-        do {
-            let saved = try await saveCoverIfChosen()
-            if saved { coversSaved.insert(operation.id) }
-            return saved
-        } catch {
-            if !(error is PhotoLibraryError), let failure = EditorFailureReport.make(error, operation: "cover", edit: take?.edit) {
-                reportFailure(failure)
-            }
-            offerCoverAgain(for: operation.id)
-            return false
-        }
-    }
-
-    private func offerCoverAgain(for operationID: UUID) {
-        toast.showResult(
-            String(localized: "Video saved. Couldn't save the cover image."), kind: .problem,
-            action: ToastAction(title: String(localized: "Try again")) { [weak self] in self?.retryCover(for: operationID) }
-        )
-    }
-
-    /// The cover alone, drawn and saved again: no new video, nothing counted.
-    func retryCover(for operationID: UUID) {
-        coverRetry?.cancel()
-        coverRetry = Task {
-            do {
-                guard try await saveCoverIfChosen() else { return }
-                coversSaved.insert(operationID)
-                toast.show(String(localized: "Cover saved to Photos"))
-            } catch {
-                offerCoverAgain(for: operationID)
-            }
-        }
-    }
-
-    /// Draws the take's cover and saves it to Photos. False when no cover was chosen.
-    private func saveCoverIfChosen() async throws -> Bool {
-        guard let take, let edit = take.edit, let cover = edit.cover else { return false }
-        guard let data = await editing.coverImage(cover, forVideoAt: takes.videoURL(for: take), edit: edit) else {
-            throw CoverError.unreadable
-        }
-        let url = URL.temporaryDirectory.appending(path: "Cue-cover-\(UUID().uuidString.prefix(8)).jpg")
-        try data.write(to: url, options: .atomic)
-        // Photos keeps its own copy.
-        defer { try? FileManager.default.removeItem(at: url) }
-        try await photos.saveImage(at: url)
-        return true
+        fontNotice = nil
     }
 }

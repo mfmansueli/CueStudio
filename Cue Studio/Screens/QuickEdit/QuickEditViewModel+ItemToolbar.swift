@@ -7,22 +7,22 @@ import Foundation
 
 /// A picked item's toolbar: its own tools first, as they always were (the four on screen are the ones a creator uses most on it),
 /// then, after a thin line, the editor's other tools, so any of them is reached without going back to the main bar (owner's
-/// decision, 26/10/2026): Captions, Text, Media, Audio and ✦ Smart first. A tool that changes the whole video carries the
+/// decision, 26/10/2026): Captions, Text, Media, Audio and Clean up first. A tool that changes the whole video carries the
 /// "All" badge, and none that would read as the item's own is added (no Split, Speed, Volume or Zoom of the video next to
 /// a text), nor one the item's tools already reach. Delete stays pinned at the end (`EditorToolbarItem.isPinned`).
 extension QuickEditViewModel {
     /// What a clip's bar adds after its own tools (owner, 28/10/2026): what goes on top of it, then everything that changes the
     /// whole video, together, so no "All" sits among the clip's own.
     static let clipShortcutGroups: [[EditorToolbarTool]] = [
-        [.text, .media, .audio, .smart],
-        [.editByText, .pauses, .studioVoice, .captions, .format, .templates, .brandKit, .cover],
+        [.text, .media, .audio],
+        [.pauses, .autoEdit, .editByText, .studioVoice, .captions, .format, .templates, .brandKit, .cover],
     ]
 
     /// What every other item's bar adds: the clip under the playhead's tools first.
     static let itemShortcutGroups: [[EditorToolbarTool]] = [
         [.clip],
-        [.captions, .text, .media, .audio, .smart],
-        [.pauses, .editByText],
+        [.captions, .text, .media, .audio, .pauses],
+        [.editByText],
         [.format, .adjust, .skin, .filters, .background, .blurArea],
         [.templates, .brandKit, .cover],
     ]
@@ -46,6 +46,7 @@ extension QuickEditViewModel {
         case .caption:
             let own = [
                 EditorToolbarItem(id: "editCaption", label: String(localized: "Edit"), systemImage: "pencil", action: .editCaption),
+                EditorToolbarItem(id: "style", label: String(localized: "Style"), systemImage: "textformat.alt", action: .open(.captionStyle)),
                 EditorToolbarItem(
                     id: "split", label: String(localized: "Split"), systemImage: "arrow.left.and.line.vertical.and.arrow.right", action: .splitCaption
                 ),
@@ -53,7 +54,10 @@ extension QuickEditViewModel {
                     id: "join", label: String(localized: "Join next"), systemImage: "arrow.right.and.line.vertical.and.arrow.left", action: .joinCaption
                 ),
                 EditorToolbarItem(id: "emphasis", label: String(localized: "Emphasis"), systemImage: "highlighter", action: .emphasizeCaption),
-                EditorToolbarItem(id: "style", label: String(localized: "Style"), systemImage: "textformat.alt", action: .open(.captionStyle)),
+                EditorToolbarItem(id: "placeCaption", label: String(localized: "Place"), systemImage: "arrow.up.and.down", action: .placeCaption),
+                EditorToolbarItem(id: "zoomCaption", label: String(localized: "Zoom"), systemImage: "plus.magnifyingglass", action: .zoomCaption),
+                // Every line at once, where a creator lands tapping the captions' track (owner, 07/11/2026); asks first, naming how many.
+                EditorToolbarItem(id: "deleteAllCaptions", label: String(localized: "Delete all"), systemImage: "xmark.bin", action: .deleteAllCaptions),
             ]
             // Edit already opens the Captions panel on this line: Captions would open the same list.
             return withShortcuts(own, Self.itemShortcutGroups, leaving: [.captions], delete: deleteItem(delete, .deleteCaption))
@@ -71,7 +75,7 @@ extension QuickEditViewModel {
             // A spoken voice-over changes its text and says it again; a recorded one records again.
             let isSpoken = edit.voiceOvers.first { $0.id == id }?.spoken != nil
             let again = isSpoken
-                ? EditorToolbarItem(id: "editSpoken", label: String(localized: "Edit text"), systemImage: "text.bubble", action: .editSpokenText)
+                ? EditorToolbarItem(id: "editSpoken", label: String(localized: "Edit text"), systemImage: "character.cursor.ibeam", action: .editSpokenText)
                 : EditorToolbarItem(id: "reRecord", label: String(localized: "Re-record"), systemImage: "mic.badge.plus", action: .reRecordVoiceOver)
             let own = [
                 EditorToolbarItem(id: "volume", label: String(localized: "Volume"), systemImage: "speaker.wave.2", action: .open(.volume)),
@@ -106,7 +110,7 @@ extension QuickEditViewModel {
 
     private var voiceEffectsItem: EditorToolbarItem {
         EditorToolbarItem(
-            id: "voiceEffects", label: String(localized: "Voice effects"), systemImage: "waveform.badge.magnifyingglass", action: .open(.voiceEffects)
+            id: "voiceEffects", label: String(localized: "Voice effects"), systemImage: "waveform.and.person.filled", action: .open(.voiceEffects)
         )
     }
 
@@ -155,7 +159,8 @@ extension QuickEditViewModel {
                 style: clips.canResetClip ? .normal : .dimmed, action: .resetClip
             ),
         ]
-        return Self.grouped([essentials, picture, montage])
+        let applied = targetClip.map { ClipAppliedTools.ids(of: $0, in: edit.timeline.segments) } ?? []
+        return Self.grouped([essentials, picture, montage]).map { $0.applied(applied.contains($0.id)) }
     }
 
     /// Adjust, Skin, Filters or Background of the picked clip.
@@ -170,7 +175,7 @@ extension QuickEditViewModel {
     private var mainAreaItems: [EditorToolbarItem] {
         [
             EditorToolbarItem(id: "framing", label: EditorPanelTab.framing.label, systemImage: "crop", action: .openSplitTab(.framing)),
-            EditorToolbarItem(id: "swap", label: String(localized: "Swap places"), systemImage: "arrow.up.arrow.down", action: .swapSplit),
+            EditorToolbarItem(id: "swap", label: String(localized: "Swap places"), systemImage: "rectangle.2.swap", action: .swapSplit),
             EditorToolbarItem(id: "layout", label: EditorPanelTab.layout.label, systemImage: "rectangle.split.1x2", action: .openSplitTab(.layout)),
             item(.clip),
             item(.blurArea),
@@ -183,7 +188,7 @@ extension QuickEditViewModel {
         var items = [
             EditorToolbarItem(id: "layout", label: EditorPanelTab.layout.label, systemImage: "rectangle.split.1x2", action: .openSplitTab(.layout)),
             EditorToolbarItem(id: "sound", label: EditorPanelTab.sound.label, systemImage: "speaker.wave.2", action: .openSplitTab(.sound)),
-            EditorToolbarItem(id: "swap", label: String(localized: "Swap places"), systemImage: "arrow.up.arrow.down", action: .swapSplit),
+            EditorToolbarItem(id: "swap", label: String(localized: "Swap places"), systemImage: "rectangle.2.swap", action: .swapSplit),
             EditorToolbarItem(id: "replaceMedia", label: String(localized: "Replace"), systemImage: "arrow.left.arrow.right", action: .replaceMedia),
             EditorToolbarItem(id: "part", label: EditorPanelTab.part.label, systemImage: "film", action: .openSplitTab(.part)),
             EditorToolbarItem(
@@ -220,6 +225,12 @@ extension QuickEditViewModel {
             EditorToolbarItem(id: "keyframe", label: String(localized: "Keyframe"), systemImage: "diamond", action: .toggleKeyframe),
             EditorToolbarItem(id: "duplicate", label: String(localized: "Duplicate"), systemImage: "plus.square.on.square", action: .duplicateMedia),
         ]
+        // With a look copied, a photo shows Paste look dimmed: tapped, it says where a look goes (owner, 08/11/2026).
+        if media.kind == .photo, look.canPasteLook {
+            var paste = item(.pasteLook)
+            paste.style = .dimmed
+            items.append(paste)
+        }
         return items + sharedMediaItems
     }
 

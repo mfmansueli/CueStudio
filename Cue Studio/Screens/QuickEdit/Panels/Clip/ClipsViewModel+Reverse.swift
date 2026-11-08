@@ -26,7 +26,7 @@ extension ClipsViewModel {
             let span = written.reversal.map { TimeSpan(start: $0.span.end - clip.sourceEnd, end: $0.span.end - clip.sourceStart) }
                 ?? TimeSpan(start: 0, end: clip.sourceLength)
             replace(clip, at: index, with: written.id, duration: written.duration, span: span, adding: nil)
-            toast.show(String(localized: "Reversed"), action: undoAction)
+            sayReversed(at: index)
             return
         }
         guard clip.sourceLength <= Self.longestReverse + 0.001 else {
@@ -68,16 +68,22 @@ extension ClipsViewModel {
         var source = ClipSource(fileName: name, duration: clip.sourceLength, title: String(localized: "\(title(ofClip: clip)) · Reversed"))
         source.reversal = ClipReversal(sourceID: clip.sourceID, span: clip.span)
         replace(clip, at: index, with: source.id, duration: source.duration, span: TimeSpan(start: 0, end: clip.sourceLength), adding: source)
-        toast.show(
-            String(localized: "Reversed"),
-            action: undoAction
-        )
+        sayReversed(at: index)
+    }
+
+    /// "Clip 2 reversed" in a montage ("Reversed" while the video is one clip), with Undo: the toast says which clip, as the
+    /// timeline shows it picked (Reverse from the main bar picks the clip under the playhead).
+    private func sayReversed(at index: Int) {
+        sayUndoable(edit.timeline.segments.count > 1 ? String(localized: "Clip \(index + 1) reversed") : String(localized: "Reversed"))
     }
 
     /// The clip plays its original again.
     private func putBack(_ clip: EditSegment, at index: Int, from reversal: ClipReversal) {
         playForward(clip, at: index, from: reversal)
-        toast.show(String(localized: "Plays forward again"))
+        toast.show(
+            edit.timeline.segments.count > 1 ? String(localized: "Clip \(index + 1) plays forward again") : String(localized: "Plays forward again"),
+            action: undoAction
+        )
     }
 
     /// The reversed clip at `index` plays its original stretch forward again, as one step.
@@ -105,21 +111,16 @@ extension ClipsViewModel {
         var next = edit
         if !next.timeline.isArranged { next.anchorOverlays() }
         let before = next.timeline
-        let texts = next.texts.indices.compactMap { position -> (Int, TimeSpan)? in
-            guard next.texts[position].clipAnchor?.segmentID == clip.id,
-                  let span = TakeEdit.editedSpan(next.texts[position].span, anchor: next.texts[position].clipAnchor, in: before) else { return nil }
-            return (position, span)
+        // What starts on it as it plays (after a split, the right part's layers still name the left part).
+        let on = next.layersStarting(onSegment: clip.id)
+        let texts = on.texts.compactMap { position -> (Int, TimeSpan)? in
+            TakeEdit.editedSpan(next.texts[position].span, anchor: next.texts[position].clipAnchor, in: before).map { (position, $0) }
         }
-        let media = next.media.indices.compactMap { position -> (Int, TimeSpan)? in
-            guard next.media[position].clipAnchor?.segmentID == clip.id,
-                  let span = TakeEdit.editedSpan(next.media[position].span, anchor: next.media[position].clipAnchor, in: before) else { return nil }
-            return (position, span)
+        let media = on.media.compactMap { position -> (Int, TimeSpan)? in
+            next.media[position].editedSpan(in: before).map { (position, $0) }
         }
-        let voices = next.voiceOvers.indices.compactMap { position -> (Int, TimeInterval)? in
-            let voice = next.voiceOvers[position]
-            guard let anchor = voice.clipAnchor, anchor.segmentID == clip.id,
-                  let span = before.editedSpan(forSource: TimeSpan(start: voice.anchor, end: voice.anchor + 0.05), anchoredTo: anchor) else { return nil }
-            return (position, span.start)
+        let voices = on.voiceOvers.compactMap { position -> (Int, TimeInterval)? in
+            next.voiceOvers[position].editedSpan(in: before).map { (position, $0.start) }
         }
         guard next.timeline.replaceSource(ofSegmentAt: index, with: source, duration: duration, span: span) else { return }
         if let adding { next.sources.append(adding) }

@@ -12,10 +12,8 @@ struct EditorToolbarItem: Identifiable, Hashable {
         case normal
         /// Can't do its job right now; still tappable, and a toast says why.
         case dimmed
-        /// Deletes something.
+        /// Deletes the picked item: pinned at the end of the bar.
         case destructive
-        /// Smart (the AI's): violet.
-        case smart
     }
 
     /// The badge on a tool that reaches past the picked item, so a tool shown with a clip never looks like the clip's own.
@@ -39,14 +37,23 @@ struct EditorToolbarItem: Identifiable, Hashable {
     var startsGroup = false
     /// A switch (a track bar's Show, Compare): lit while on, and VoiceOver hears it as a switch, on or off. Nil: a button.
     var isOn: Bool?
+    /// It changed the picked clip (`ClipAppliedTools`, canvas 2 M2): a dot on its icon, "Changed on this clip" to VoiceOver.
+    var isApplied = false
 
-    /// Delete stays at the end of the bar while the other tools scroll.
+    /// Delete (of the picked item) stays at the end of the bar while the other tools scroll.
     var isPinned: Bool { style == .destructive }
 
     /// The same tool starting a group (a thin line before it).
     func startingGroup() -> EditorToolbarItem {
         var item = self
         item.startsGroup = true
+        return item
+    }
+
+    /// The same tool, marked as having changed the picked clip.
+    func applied(_ isApplied: Bool) -> EditorToolbarItem {
+        var item = self
+        item.isApplied = isApplied
         return item
     }
 

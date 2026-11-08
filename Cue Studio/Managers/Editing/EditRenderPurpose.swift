@@ -24,7 +24,7 @@ nonisolated enum EditRenderPurpose: Hashable, Sendable {
         case .editorPreview(let rendersCurveSound):
             EditedComposition.Options(
                 burnsInCaptions: true, shortSide: 1080, reachesWholeRecording: true, analyzesMissingMotion: false,
-                rendersCurveSound: rendersCurveSound
+                rendersCurveSound: rendersCurveSound, showsPickedWhole: true
             )
         case .reviewPreview:
             EditedComposition.Options(burnsInCaptions: true, shortSide: 1080, analyzesMissingMotion: false)

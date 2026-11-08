@@ -539,6 +539,26 @@ struct QuickCreatorViewModelTests {
         #expect(viewModel.edit.voiceOvers.isEmpty)
     }
 
+    /// Control Center pulled down while narrating: the recording goes on. Cue really leaving the screen stops it there, keeps what
+    /// was recorded as its clip, and says so on the way back.
+    @Test func aVoiceOverGoesOnThroughControlCenterAndStopsKeptWhenCueLeaves() async throws {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        await viewModel.audio.startVoiceOver()
+        viewModel.becameInactive()
+        #expect(viewModel.audio.isRecordingVoiceOver)
+        #expect(scenario.player.isPlaying)
+        viewModel.becameActive()
+        #expect(viewModel.audio.isRecordingVoiceOver)
+
+        viewModel.becameInactive()
+        viewModel.pauseAndKeepDraft()
+        #expect(!viewModel.audio.isRecordingVoiceOver)
+        #expect(viewModel.edit.voiceOvers.count == 1)
+        viewModel.becameActive()
+        #expect(scenario.toast.message == "Voice-over stopped when you left Cue · What you recorded is kept")
+    }
+
     @Test func reRecordRecordsAgainFromTheSameMoment() async throws {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel

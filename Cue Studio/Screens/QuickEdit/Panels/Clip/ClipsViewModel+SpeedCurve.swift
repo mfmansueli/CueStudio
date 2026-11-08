@@ -7,7 +7,8 @@ import Foundation
 
 /// Speed › Curve: the picked clip speeds up and slows down as it plays (Hero, Bullet, Ramp up, Ramp down, Montage, Flash in,
 /// Flash out, or a curve of the creator's own, shaped by dragging its points). Picking a curve plays the clip to show it; a
-/// drag of a point is one undo step. Picking a speed in Normal takes the curve away. While a point or a handle is dragged, the
+/// drag of a point is one undo step. Normal and Curve only switch the view (each clip keeps its own); picking a speed in
+/// Normal is what replaces the curve, one undo step. While a point or a handle is dragged, the
 /// preview stretches curved clips' sound in steps (instant) and renders it along the curve when the finger lifts.
 extension ClipsViewModel {
     /// Slowest and fastest a point can be dragged to.
@@ -16,13 +17,17 @@ extension ClipsViewModel {
     /// The picked clip's curve, if it has one.
     var targetCurve: SpeedCurve? { targetClip?.speedCurve }
 
-    /// Speed shows the curves (its Curve tab), or the speeds all along (Normal).
-    var showsCurveTab: Bool { showsSpeedCurves || targetCurve != nil }
+    /// Speed shows the curves (its Curve tab), or the speeds all along (Normal): the view picked for this clip, else the one
+    /// that matches it.
+    var showsCurveTab: Bool {
+        guard let clip = targetClip else { return false }
+        return speedShowsCurve[clip.id] ?? (clip.speedCurve != nil)
+    }
 
+    /// Normal | Curve: only the view changes; the clip keeps its curve until a speed is picked.
     func showSpeedCurves(_ shows: Bool) {
-        showsSpeedCurves = shows
-        // Back to Normal: the clip plays at one speed again.
-        if !shows, targetCurve != nil { updateClip { $0.speedCurve = nil } }
+        guard let clip = targetClip else { return }
+        speedShowsCurve[clip.id] = shows
     }
 
     /// A ready-made curve (nil: none, the clip at its speed); the clip plays to show it.

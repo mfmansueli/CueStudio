@@ -21,10 +21,19 @@ struct AddMediaSheet: View {
     @State private var items: [PhotosPickerItem] = []
     @State private var picks: [MediaPick] = []
     @State private var step: Step = .choose
-    @State private var detent: PresentationDetent = AddMediaSheet.middle
+    /// Opens tall (owner, canvas 2 F14 and R4: picking in a library, nothing to watch on the video meanwhile).
+    @State private var detent: PresentationDetent = .large
     @State private var source: Source = .photos
     /// The picks went in: nothing to throw away when the sheet goes.
     @State private var isDone = false
+    /// Cancel, or Back from the review, with picks that would be lost: asked first (owner, canvas 2 R11), saying how many.
+    @State private var asksToDiscard: Discard?
+
+    /// What asked to throw the picks away.
+    private enum Discard: Identifiable {
+        case sheet, review
+        var id: Self { self }
+    }
 
     private enum Step: Equatable {
         case choose
@@ -56,11 +65,11 @@ struct AddMediaSheet: View {
                     )
                 }
             case .review:
-                SheetHeader(title: String(localized: "\(picks.count) to add"), subtitle: mode.label)
+                SheetHeader(title: String(localized: "\(picks.count) to add"), subtitle: mode.label) { cancel() }
                 let run = overlays.run(of: picks, as: mode)
                 MediaRunStep(
                     picks: $picks, run: run, note: overlays.runNote(run, count: picks.count), action: mode.action,
-                    onPart: { step = .part($0) }, onBack: { discardPicks() }, onConfirm: { add() }
+                    onPart: { step = .part($0) }, onBack: { backFromReview() }, onConfirm: { add() }
                 )
             }
         }
@@ -77,6 +86,20 @@ struct AddMediaSheet: View {
         .cueSheetChrome()
         .presentationDetents([Self.middle, .large], selection: $detent)
         .presentationDragIndicator(.visible)
+        // With picks at stake a swipe down doesn't throw them away: Cancel asks first. With none, it closes at once.
+        .interactiveDismissDisabled(atStake > 0)
+        // An alert, not a confirmation dialog: on the iPhone the dialog hides its cancel button (a tap outside cancels), and
+        // "Keep picking" has to be in sight beside "Discard 3".
+        .alert(
+            String(localized: "Discard what you picked?"),
+            isPresented: Binding(get: { asksToDiscard != nil }, set: { if !$0 { asksToDiscard = nil } }),
+            presenting: asksToDiscard
+        ) { reason in
+            Button(String(localized: "Discard \(atStake)"), role: .destructive) { discard(reason) }
+            Button(String(localized: "Keep picking"), role: .cancel) {}
+        } message: { _ in
+            Text("Picked: \(atStake) · nothing is added")
+        }
         .onAppear {
             source = startingSource(for: mode)
         }
@@ -96,13 +119,13 @@ struct AddMediaSheet: View {
     /// and the note two lines, whatever mode is picked; the gallery below takes the rest and scrolls in it.
     private var choose: some View {
         VStack(alignment: .leading, spacing: 12) {
-            SheetHeader(title: String(localized: "Add photo or video"))
+            SheetHeader(title: String(localized: "Add photo or video")) { cancel() }
             MediaModeCards(selection: Binding(get: { mode }, set: { pick(mode: $0) }))
             VStack(alignment: .leading, spacing: 4) {
                 ZStack(alignment: .topLeading) {
                     // The longest explanation holds the room, so changing modes moves nothing under it.
                     ForEach(MediaInsertMode.allCases) { other in
-                        Text(other.explanation).font(.footnote).hidden().accessibilityHidden(true)
+                        Text(other.explanation).font(.footnote).lineLimit(2).hidden().accessibilityHidden(true)
                     }
                     Text(mode.explanation)
                         .font(.footnote)
@@ -257,6 +280,28 @@ struct AddMediaSheet: View {
         mode.isOverlay && overlays.insertionRoomIsShort(for: mode)
     }
 
+    /// What would be lost now: the picks under review, or what is picked in the gallery.
+    private var atStake: Int {
+        step == .choose ? pickedCount : picks.count
+    }
+
+    /// Cancel: closes at once with nothing picked, else asks.
+    private func cancel() {
+        if atStake > 0 { asksToDiscard = .sheet } else { dismiss() }
+    }
+
+    /// Back from the review: several picks are asked about first; one goes back to the gallery as before.
+    private func backFromReview() {
+        if picks.count > 1 { asksToDiscard = .review } else { discardPicks() }
+    }
+
+    private func discard(_ reason: Discard) {
+        switch reason {
+        case .sheet: dismiss()
+        case .review: discardPicks()
+        }
+    }
+
     /// How many are picked, in Photos or in the library.
     private var pickedCount: Int {
         switch source {
@@ -343,7 +388,7 @@ struct AddMediaSheet: View {
         EditMediaFiles.remove(Set(picks.map(\.imported.fileName)))
         picks = []
         step = .choose
-        detent = Self.middle
+        detent = .large
     }
 
     private func add() {

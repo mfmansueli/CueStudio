@@ -52,7 +52,10 @@ extension AudioViewModel {
         edit.music.filter(\.takesMusicRoom).sorted { $0.start < $1.start }
     }
 
-    /// How many other music clips lower differently from `music`: "Use on all music" shows when there's at least one.
+    /// How many music clips "Use on all 3 music clips" changes.
+    var musicClipCount: Int { musicClips.count }
+
+    /// How many other music clips lower differently from `music`: "Use on all 3 music clips" shows when there's at least one.
     func musicLoweringDifferently(from music: MusicClip) -> Int {
         musicClips.filter { $0.id != music.id && !Self.lowersAlike($0, music) }.count
     }
@@ -80,6 +83,19 @@ extension AudioViewModel {
     }
 
     // MARK: - Who it goes down under
+
+    /// Where the music plays, in the Volume slider's own unit (owner, E4: "explicar o nível da música e quanto ela baixa sob a
+    /// voz, numa linguagem só"): the percent of its file's level while someone talks and in the pauses ("While you talk: 10% ·
+    /// in pauses: 40%"; 40% lowered by 12 dB is 10%). Nil when it doesn't go down.
+    static func musicLevels(volume: Double, duck: MusicDuck?) -> String? {
+        guard let duck else { return nil }
+        let full = Int((volume * 100).rounded())
+        let under = volume > 0 ? max(1, Int((volume * duck.level * 100).rounded())) : 0
+        switch duck.pauses {
+        case .staysLow: return String(localized: "While you talk and in pauses: \(under)%")
+        case .comesBack: return String(localized: "While you talk: \(under)% · in pauses: \(full)%")
+        }
+    }
 
     /// "Under your voice and Voice-over 1": what speaks while the music plays (the clips whose sound is heard, the voice-overs
     /// over its span); "Nobody speaks while it plays" when nothing does.

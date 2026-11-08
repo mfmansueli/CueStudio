@@ -38,13 +38,13 @@ struct EditorLayoutTests {
     @Test func theSmallestScreensGetShorterBarsAndIconOnlyToolbars() {
         let se = EditorLayout(usableHeight: Screen.iPhoneSE.rawValue)
         #expect(se.playerBar == 40)
-        #expect(!se.heightClass.toolbarShowsLabels)
+        #expect(se.heightClass.toolbarLabelSize == 11, "the SE shows every tool's name too")
         #expect(se.heightClass.mainTrackHeight == 44)
         #expect(se.heightClass.laneHeight == 36)
         let mini = EditorLayout(usableHeight: Screen.iPhoneMini.rawValue)
         #expect(mini.heightClass.mainTrackHeight == 48)
         #expect(mini.heightClass.laneHeight == 40)
-        #expect(mini.heightClass.toolbarLabelSize == 10)
+        #expect(mini.heightClass.toolbarLabelSize == 11, "never smaller")
         let pro = EditorLayout(usableHeight: Screen.iPhone16Pro.rawValue)
         #expect(pro.heightClass.mainTrackHeight == 56)
         #expect(pro.heightClass.laneHeight == 44)
@@ -125,11 +125,16 @@ struct EditorLayoutTests {
         }
     }
 
-    @Test func onlyStylingPanelsExpand() {
+    /// Which panels expand is the panel's (`EditorPanel.isExpandable`: the styling panels and Clean up, whose Text tab needs the
+    /// room); the layout gives an expanded one, whatever its size, all but the smallest preview, and no panel is no expansion.
+    @Test @MainActor func onlyExpandablePanelsExpand() {
         let usable = Screen.iPhone16Pro.rawValue
-        for size in [EditorPanelSize.mini, .medium] {
-            #expect(EditorLayout(usableHeight: usable, panel: size, panelIsExpanded: true) == EditorLayout(usableHeight: usable, panel: size))
-        }
+        let expandable = EditorPanel.allCases.filter(\.isExpandable)
+        #expect(expandable.contains(.pauses) && expandable.contains(.textStyle) && expandable.contains(.captionStyle))
+        #expect(expandable.allSatisfy { $0.size == .full || $0 == .pauses })
+        let medium = EditorLayout(usableHeight: usable, panel: .medium, panelIsExpanded: true)
+        #expect(abs(medium.preview - EditorLayout.previewMinimum(for: usable)) < 0.01)
+        #expect(medium.panel > EditorLayout(usableHeight: usable, panel: .medium).panel)
         #expect(EditorLayout(usableHeight: usable, panelIsExpanded: true) == EditorLayout(usableHeight: usable))
     }
 
@@ -140,6 +145,22 @@ struct EditorLayoutTests {
             let layout = EditorLayout(usableHeight: screen.rawValue, panel: .full)
             #expect(layout.panel >= 330, "\(screen)")
             #expect(layout.preview >= 0.4 * screen.rawValue, "\(screen)")
+        }
+    }
+
+    /// Canvas 2 R10 §7.3: Text style and Caption style keep the ruler and their own track above them, the video at least its
+    /// smallest and the panel at least a whole row of styles; expanded or typing, the timeline may go.
+    @Test func aFullPanelKeepsTheRulerAndItsTrackAboveIt() {
+        for screen in Screen.allCases where screen != .iPhoneSE {
+            let usable = screen.rawValue
+            let layout = EditorLayout(usableHeight: usable, panel: .full, panelFocusesLane: true)
+            let heightClass = EditorHeightClass(usableHeight: usable)
+            #expect(layout.timeline >= heightClass.rulerHeight + heightClass.panelLaneHeight, "\(screen)")
+            #expect(layout.showsTimeline, "\(screen)")
+            #expect(layout.panel >= EditorPanelSize.fullMinimum, "\(screen)")
+            #expect(layout.preview >= EditorLayout.previewMinimum(for: usable) - 0.01, "\(screen)")
+            #expect(abs(layout.preview + layout.playerBar + layout.timeline + layout.panel - usable) < 0.5, "\(screen)")
+            #expect(EditorLayout(usableHeight: usable, panel: .full, panelFocusesLane: true, panelIsExpanded: true).timeline == 0)
         }
     }
 

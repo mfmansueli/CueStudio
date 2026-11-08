@@ -8,28 +8,43 @@ import SwiftUI
 /// Volume, 0 to 200%, of the picked clip (with "Mute this clip"), music or voice-over; a video's own sound over the take, 0 to
 /// 100% (muted until it's turned up). A clip and music keep their fades under Advanced. Music has "Lower under voice" with who
 /// it goes down under, how far ("Lower by") and what it does in pauses, the same on every music clip at once, and ◐ to hear it
-/// without lowering.
+/// without lowering. When the sounds together go over full scale, a line says the preview may distort and the video won't.
 struct VolumePanel: View {
     @Bindable var viewModel: QuickEditViewModel
 
     var body: some View {
-        if let media = viewModel.selectedMedia {
-            mediaVolume(media)
-        } else {
-            clipVolume
+        Group {
+            if let media = viewModel.selectedMedia {
+                mediaVolume(media)
+            } else {
+                clipVolume
+            }
+        }
+        // The sounds together measured while Volume is open, again once a change rests (`QuickEditViewModel.measureMix`).
+        .task(id: viewModel.edit) { await viewModel.measureMix() }
+    }
+
+    /// The edit's sounds go over full scale together: the preview (no limiter) may distort, the exported video doesn't.
+    @ViewBuilder
+    private var loudMixNote: some View {
+        if viewModel.mixTooLoud {
+            PanelNote(text: String(localized: "Too loud together · the preview may distort, the video won’t"), tint: Palette.warnText)
+                .accessibilityIdentifier("edit.volume.loudMix")
         }
     }
 
-    /// A video laid over the take: its own sound, the same level Media › Edit had.
+    /// A video laid over the take: the volume of its own sound, named as its bar button and the panel's title are (owner,
+    /// canvas 2 R6 and bug 9).
     private func mediaVolume(_ media: MediaOverlay) -> some View {
         PanelFrame(viewModel: viewModel, panel: .volume) {
             PanelSlider(
-                label: String(localized: "Sound"), value: (media.audioVolume ?? 0) * 100, range: 0...100, format: .percent,
+                label: String(localized: "Volume"), value: (media.audioVolume ?? 0) * 100, range: 0...100, format: .percent,
                 identifier: "edit.mediaSound",
                 onChange: { viewModel.overlays.setMediaSoundVolume(media.id, $0 / 100) },
                 onEditingChanged: { editing in editing ? viewModel.beginPanelChange() : viewModel.endPanelChange() }
             )
             PanelNote(text: String(localized: "0% keeps it muted under your voice. Turn it up to hear it."))
+            loudMixNote
         }
     }
 
@@ -56,6 +71,7 @@ struct VolumePanel: View {
                         identifier: "edit.volume.mute"
                     ) { viewModel.clips.setClipMuted(!(viewModel.targetClip?.isMuted ?? false)) }
                 }
+                loudMixNote
             }
             switch viewModel.selection {
             case .music(let id):
@@ -103,6 +119,9 @@ struct VolumePanel: View {
         ) { viewModel.audio.setMusicDucks(music.id, !music.ducksUnderVoice) }
         if music.ducksUnderVoice {
             let duck = viewModel.audio.duck(of: music)
+            if let levels = AudioViewModel.musicLevels(volume: music.volume, duck: duck) {
+                PanelNote(text: levels).accessibilityIdentifier("edit.musicLevels")
+            }
             PanelSlider(
                 label: String(localized: "Lower by"), value: duck.depth, range: MusicDuck.depthRange, step: 1,
                 defaultValue: MusicDuck.standard.depth, format: .decibels, identifier: "edit.musicDuckDepth",
@@ -117,7 +136,8 @@ struct VolumePanel: View {
         }
         if viewModel.audio.musicLoweringDifferently(from: music) > 0 {
             PanelButton(
-                label: String(localized: "Use on all music"), systemImage: "square.on.square", isCompact: true, identifier: "edit.musicDuckAll"
+                label: String(localized: "Use on all \(viewModel.audio.musicClipCount) music clips"), systemImage: "square.on.square", isCompact: true,
+                identifier: "edit.musicDuckAll"
             ) { viewModel.audio.useLoweringOnAllMusic(from: music.id) }
         }
     }

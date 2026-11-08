@@ -126,7 +126,7 @@ final class PlaybackRunsUITests: XCTestCase {
             field.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: current.count))
         }
         field.typeText("I love you")
-        app.buttons["edit.panel.tab.animated"].tap()
+        EditorApp.showTextTab(app, "animated")
         XCTAssertTrue(app.keyboards.firstMatch.isGone(within: 3))
     }
 

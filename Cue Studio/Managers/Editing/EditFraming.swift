@@ -30,8 +30,12 @@ nonisolated struct EditFraming {
     private let cacheKey: String
     private var backgrounds: [UUID?: BackgroundRender?] = [:]
     private var clipBackgrounds: [UUID: BackgroundRender?] = [:]
+    private var cutouts: [String: BackgroundRender] = [:]
+    /// Whether a photo or video shows Behind you somewhere: the recordings' cutouts are then made even with an Original background.
+    private let hasBehind: Bool
     private var follows: [Shown: FaceFollowPath?] = [:]
     private var steadyPaths: [String: StabilizationPath?] = [:]
+    private var faces: [UUID?: FaceZoomFocus?] = [:]
 
     init(edit: TakeEdit, take: URL, takeShape: Shape, shapes: [UUID: Shape], analyses: [UUID?: MotionAnalysis], cacheKey: String) {
         self.edit = edit
@@ -41,6 +45,7 @@ nonisolated struct EditFraming {
         self.shapes = all
         self.analyses = analyses
         self.cacheKey = cacheKey
+        hasBehind = edit.media.contains { $0.layout == .behind }
         crop = Self.cropRect(uprightSize: takeShape.uprightSize, edit: edit)
     }
 
@@ -75,6 +80,10 @@ nonisolated struct EditFraming {
         )
         result.uprightSize = size
         result.orientation = orientation
+        if hasBehind {
+            // Kept with an Original background too: its cutout and the creator's place are what Behind you uses.
+            result.cutout = cutout(of: id, effect: edit.backgrounds.first { $0.sourceID == id }?.effect ?? BackgroundEffect())
+        }
         let shown = Shown(id: id, orientation: orientation)
         if follows[shown] == nil {
             let analysis = analyses[id].map { orientation.isIdentity ? $0 : $0.oriented(by: orientation) }
@@ -88,7 +97,12 @@ nonisolated struct EditFraming {
     /// background and Stabilize.
     mutating func frame(of segment: EditSegment) -> SourceFrame {
         var result = frame(forRecording: segment.sourceID, orientation: segment.orientation)
-        if let own = clipBackground(of: segment) { result.background = own }
+        if let own = clipBackground(of: segment) {
+            result.background = own
+            if hasBehind, let effect = segment.look?.background {
+                result.cutout = cutout(of: segment.id, effect: effect, clip: true)
+            }
+        }
         if let level = segment.stabilization, let analysis = analyses[segment.sourceID] {
             let key = (segment.sourceID?.uuidString ?? "take") + level.rawValue
             if steadyPaths[key] == nil {
@@ -99,11 +113,40 @@ nonisolated struct EditFraming {
         return result
     }
 
+    /// How the zooms Cue makes grow on `segment` (`ZoomAnchor`): toward its recording's one face, within what keeps the head in
+    /// the frame and what its pixels allow; as the handles over the preview have it (`FramePlacement.anchored`).
+    mutating func zoomAnchor(of segment: EditSegment) -> ZoomAnchor? {
+        guard let played = shapes[segment.sourceID] else { return nil }
+        let frame = frame(of: segment)
+        let size = frame.uprightSize
+        let topLeft = CGRect(x: frame.crop.minX, y: size.height - frame.crop.maxY, width: frame.crop.width, height: frame.crop.height)
+        var placement = FramePlacement(
+            uprightSize: played.uprightSize, crop: topLeft, orientation: segment.orientation, fits: edit.cropFit == .fit
+        )
+        placement.steady = frame.steady
+        if faces[segment.sourceID] == nil {
+            faces[segment.sourceID] = .some(analyses[segment.sourceID].flatMap(FaceZoomFocus.of))
+        }
+        return ZoomAnchor.make(
+            placement: placement, face: faces[segment.sourceID] ?? nil, followsFace: edit.faceFollow != nil && edit.cropFit == .fill,
+            at: (segment.sourceStart + segment.sourceEnd) / 2
+        )
+    }
+
     /// The recording's background, prepared once.
     private mutating func background(of id: UUID?) -> BackgroundRender? {
         if let prepared = backgrounds[id] { return prepared }
         let prepared = edit.background(for: id).flatMap { BackgroundRender.prepare($0, cacheKey: cacheKey + (id?.uuidString ?? "take")) }
         backgrounds[id] = .some(prepared)
+        return prepared
+    }
+
+    /// The cutout of a recording (or of a clip that sets its own background), for Behind you, prepared once.
+    private mutating func cutout(of id: UUID?, effect: BackgroundEffect, clip: Bool = false) -> BackgroundRender {
+        let key = (clip ? "clip-" : "") + (id?.uuidString ?? "take")
+        if let prepared = cutouts[key] { return prepared }
+        let prepared = BackgroundRender.cutout(effect, cacheKey: cacheKey + key)
+        cutouts[key] = prepared
         return prepared
     }
 

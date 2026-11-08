@@ -18,7 +18,11 @@ import SwiftUI
 struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
     let title: String
     let subtitle: String
+    /// A choice in the subtitle's place (Text style's "This title | All 3 texts": what the look changes, always in sight and a
+    /// tap away; owner, canvas 2 R2). Too wide beside the buttons, the header puts them on a row of their own.
+    var subtitleChoice: AnyView?
     @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(\.editorPanelTuck) private var tuck
     /// VoiceOver lands on the title when the panel opens, so the controls it brought are read from the top.
     @AccessibilityFocusState private var titleIsFocused: Bool
     var onReset: (() -> Void)?
@@ -26,6 +30,8 @@ struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
     var compare: PanelCompare?
     /// "Preview" before expand and ✓: plays what the panel changes on the video (`PanelPlay`).
     var play: PanelPlay?
+    /// One more of the panel's own, right before ✓ (Captions' •••: its less used tools, out of the scroll).
+    var accessory: AnyView?
     var expansion: Binding<Bool>?
     /// The content stops further above the Home Indicator and fades under it while it scrolls (always with `expansion`).
     var clearsHomeIndicator = false
@@ -35,12 +41,21 @@ struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
     /// Where the content was scrolled to, kept for when it shows again (Caption style › Styles: back from another tab, the cards
     /// are where they were); nil starts at the top.
     var keptOffset: Binding<CGFloat>?
+    /// A view of the content to bring to the top when it shows with nothing kept (Caption style › Styles: the section of the style
+    /// the captions wear, so it opens with it in sight and marked); nil starts at the top.
+    var revealID: AnyHashable?
+    /// True while the panel's Advanced is open: as it opens, the content scrolls to put Advanced at the top with its controls under
+    /// it, so they show whole without a search (owner, canvas 2: Volume › Advanced reached whole; the panel grows at the same time).
+    var revealsAdvanced = false
     let onApply: () -> Void
     @ViewBuilder var fixed: Fixed
     @ViewBuilder var content: Content
     @ViewBuilder var footer: Footer
 
     @State private var position = ScrollPosition(edge: .top)
+    /// The content whose kept offset has been put back: until then the scroll view's first offsets (its top, as it is laid out)
+    /// aren't kept, or they would overwrite the offset it is about to go back to.
+    @State private var restoredKey: AnyHashable?
 
     private var isRoomy: Bool { expansion != nil || clearsHomeIndicator }
 
@@ -51,6 +66,7 @@ struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
         VStack(spacing: 0) {
             header
             fixed
+            ScrollViewReader { proxy in
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
                     content
@@ -60,23 +76,38 @@ struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
                 .padding(.bottom, 12)
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
+            .task(id: revealsAdvanced) {
+                guard revealsAdvanced else { return }
+                // After the panel has grown and the new controls are laid out: Advanced at the top, its controls under it.
+                try? await Task.sleep(for: .milliseconds(350))
+                withAnimation(.smooth) { proxy.scrollTo(PanelAdvancedButton.scrollID, anchor: .top) }
+            }
             .scrollPosition($position)
             .onScrollGeometryChange(
                 for: CGFloat.self, of: { $0.contentOffset.y + $0.contentInsets.top },
-                action: { _, offset in keptOffset?.wrappedValue = max(0, offset) }
+                action: { _, offset in
+                    guard restoredKey == contentKey else { return }
+                    keptOffset?.wrappedValue = max(0, offset)
+                }
             )
             .task(id: contentKey) {
                 // After the content is laid out: the offset it was left at, else its top.
-                if let kept = keptOffset?.wrappedValue, kept > 0 {
+                let kept = keptOffset?.wrappedValue ?? 0
+                await Task.yield()
+                if kept > 0 {
                     position.scrollTo(y: kept)
+                } else if let revealID {
+                    proxy.scrollTo(revealID, anchor: .top)
                 } else {
                     position.scrollTo(edge: .top)
                 }
+                restoredKey = contentKey
             }
             .id(contentKey)
             .scrollIndicators(.hidden)
             .scrollBounceBehavior(.basedOnSize)
             .scrollEdgeEffectStyle(isRoomy ? .soft : nil, for: .bottom)
+            }
             footer
                 .padding(.horizontal, 16)
                 .padding(.bottom, Footer.self == EmptyView.self ? 0 : 10)
@@ -154,18 +185,26 @@ struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibilityAddTraits(.isHeader)
                 .accessibilityFocused($titleIsFocused)
-            Text(subtitle)
-                .font(.system(.footnote))
-                .foregroundStyle(Palette.ink2)
-                .lineLimit(typeSize.isAccessibilitySize ? 4 : 3)
-                .minimumScaleFactor(0.85)
-                .fixedSize(horizontal: false, vertical: true)
-                .frame(minWidth: 0, idealWidth: 0, maxWidth: .infinity, alignment: .leading)
-                .accessibilityIdentifier("edit.panel.subtitle")
+            if let subtitleChoice {
+                subtitleChoice
+            } else {
+                subtitleText
+            }
         }
     }
 
-    /// Reset, ◐, ▶, expand and ✓, in that order: ✓ never moves when Reset appears.
+    private var subtitleText: some View {
+        Text(subtitle)
+            .font(.system(.footnote))
+            .foregroundStyle(Palette.ink2)
+            .lineLimit(typeSize.isAccessibilitySize ? 4 : 3)
+            .minimumScaleFactor(0.85)
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(minWidth: 0, idealWidth: 0, maxWidth: .infinity, alignment: .leading)
+            .accessibilityIdentifier("edit.panel.subtitle")
+    }
+
+    /// Reset, ◐, ▶, expand, the panel's own and ✓, in that order: ✓ never moves when Reset appears.
     @ViewBuilder private var headerButtons: some View {
         if let onReset {
             Button("Reset", action: onReset)
@@ -179,7 +218,9 @@ struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
         }
         if let compare { PanelCompareButton(compare: compare) }
         if let play { playButton(play) }
+        if let tuck { tuckButton(tuck.perform) }
         if let expansion { expandButton(expansion) }
+        if let accessory { accessory }
         Button {
             Haptics.apply()
             onApply()
@@ -195,6 +236,25 @@ struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
         .buttonStyle(.plain)
         .accessibilityLabel(Text("Apply"))
         .accessibilityIdentifier("edit.panel.apply")
+    }
+
+    /// ⌄ on the SE's styling sheet: the panel steps aside for the timeline (`editorPanelTuck`), and comes back as it was.
+    private func tuckButton(_ tuck: @escaping @MainActor () -> Void) -> some View {
+        Button {
+            Haptics.selection()
+            tuck()
+        } label: {
+            Image(systemName: "chevron.down")
+                .font(.editorGlyph(EditorGlyph.button, weight: .semibold))
+                .foregroundStyle(Palette.ink)
+                .frame(width: Metrics.applyButtonSize, height: Metrics.applyButtonSize)
+                .background(Palette.fill, in: Circle())
+                .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(Text("Show timeline"))
+        .accessibilityIdentifier("edit.panel.tuck")
     }
 
     /// ▶ as round as expand, with a small "PREVIEW" tag above its corner (as the toolbar's "ALL"), so it never reads as the

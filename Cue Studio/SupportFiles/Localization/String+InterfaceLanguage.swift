@@ -13,13 +13,14 @@ extension String {
     /// so every `String(localized: "…")` in the app resolves here. Foundation's picks the language
     /// once per launch and doesn't go through `Bundle` overrides; a `LocalizedStringResource` with a
     /// locale is looked up in that locale's `.lproj` (and falls back to English, the development
-    /// language, for anything untranslated). Xcode still extracts these strings into the catalog.
+    /// language, for anything untranslated). Xcode still extracts these strings into the catalog. Each string is looked up once per
+    /// language (`LocalizedStringCache`).
     nonisolated init(localized keyAndValue: String.LocalizationValue, comment: StaticString? = nil) {
         var resource = LocalizedStringResource(keyAndValue, comment: comment)
         if let locale = InterfaceLocale.current {
             resource.locale = locale
         }
-        self.init(localized: resource)
+        self = LocalizedStringCache.string(for: resource)
     }
 
     /// A resource in the interface language. For a word that means two things in English
@@ -30,7 +31,7 @@ extension String {
         if let locale = InterfaceLocale.current {
             resource.locale = locale
         }
-        self.init(localized: resource)
+        self = LocalizedStringCache.string(for: resource)
     }
 
     /// A string written in `language` rather than the interface's: text Cue puts into a script
@@ -43,6 +44,6 @@ extension String {
         } else if let locale = InterfaceLocale.current {
             resource.locale = locale
         }
-        self.init(localized: resource)
+        self = LocalizedStringCache.string(for: resource)
     }
 }

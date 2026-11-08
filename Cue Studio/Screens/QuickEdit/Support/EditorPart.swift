@@ -16,7 +16,7 @@ protocol EditorPart: AnyObject {
 
 extension EditorPart {
     /// The recipe being edited. It changes only through the document: as an undo step (`changeEdit`, `change`, `commit`), by
-    /// Undo and Redo, or with what listening found (`updateFindings`).
+    /// Undo and Redo, with what listening found (`updateFindings`), or with what Paste look remembers (`remember`).
     var edit: TakeEdit { session.document.edit }
     /// What undo keeps of the edit.
     var snapshot: EditSnapshot { session.document.snapshot }
@@ -153,6 +153,14 @@ extension EditorPart {
     /// What listening found, laid on without an undo step.
     func updateFindings(_ update: (inout TakeEdit) -> Void) {
         session.document.updateFindings(update)
+    }
+
+    /// What Paste look remembers in the project, kept without an undo step.
+    func remember(_ update: (inout TakeEdit) -> Void) {
+        let before = RememberedLook(of: session.document.edit)
+        session.document.remember(update)
+        let after = RememberedLook(of: session.document.edit)
+        if after != before { session.keepRememberedLook(after) }
     }
 
     /// A gesture on the timeline or the preview, or a sheet, starts changing something: all of it is one undo step.

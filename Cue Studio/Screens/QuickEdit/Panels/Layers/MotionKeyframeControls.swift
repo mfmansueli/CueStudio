@@ -5,9 +5,9 @@
 
 import SwiftUI
 
-/// Motion for the picked text (Text style › Motion) or photo or video (Media › Advanced): ◀ Add
-/// (or Remove) keyframe ▶ with how many there are, when it starts and ends, and how keyframes
-/// work.
+/// Motion for the picked text (Text style › Motion), graphic or photo or video, in the order a creator reaches for it (owner,
+/// canvas 2 F15, 07/11/2026): the ready-made ways in with their duration (Pop first), Track, then ◀ Add (or Remove) keyframe ▶
+/// with how many there are and how keyframes work; when it starts and ends is under Advanced. The bar's shortcuts still open it.
 struct MotionKeyframeControls: View {
     let viewModel: QuickEditViewModel
     /// The language's direction, for the words between the arrows (which stay left to right).
@@ -49,19 +49,26 @@ struct MotionKeyframeControls: View {
                 .foregroundStyle(Palette.ink2)
                 .accessibilityIdentifier("edit.keyframe.count")
         }
-        if let item = viewModel.overlays.motionItem, let span = viewModel.overlays.editedSpan(of: item) {
-            PanelStepper(
-                label: String(localized: "Starts"), value: DurationText.editor(span.start), identifier: "edit.text.starts",
-                onDecrease: { viewModel.nudgeLayerEdge(.start, by: -0.1) }, onIncrease: { viewModel.nudgeLayerEdge(.start, by: 0.1) }
-            )
-            PanelStepper(
-                label: String(localized: "Ends"), value: DurationText.editor(span.end), identifier: "edit.text.ends",
-                onDecrease: { viewModel.nudgeLayerEdge(.end, by: -0.1) }, onIncrease: { viewModel.nudgeLayerEdge(.end, by: 0.1) }
-            )
-        }
         PanelNote(text: viewModel.selectedMediaID == nil
             ? String(localized: "Add a keyframe, move the playhead, then drag the text in the video. Cue moves it between keyframes.")
             : String(localized: "Add a keyframe, move the playhead, then drag the photo or video. Cue moves it between keyframes."), teaches: true)
+        if let item = viewModel.overlays.motionItem, let span = viewModel.overlays.editedSpan(of: item) {
+            PanelAdvancedButton(isOpen: viewModel.showsAdvanced) { viewModel.showsAdvanced.toggle() }
+            if viewModel.showsAdvanced {
+                VStack(alignment: .leading, spacing: 12) {
+                    PanelStepper(
+                        label: String(localized: "Starts"), value: DurationText.editor(span.start), identifier: "edit.text.starts",
+                        onEditingChanged: { $0 ? viewModel.beginPanelChange() : viewModel.endPanelChange() },
+                        onDecrease: { viewModel.nudgeLayerEdge(.start, by: -0.1) }, onIncrease: { viewModel.nudgeLayerEdge(.start, by: 0.1) }
+                    )
+                    PanelStepper(
+                        label: String(localized: "Ends"), value: DurationText.editor(span.end), identifier: "edit.text.ends",
+                        onEditingChanged: { $0 ? viewModel.beginPanelChange() : viewModel.endPanelChange() },
+                        onDecrease: { viewModel.nudgeLayerEdge(.end, by: -0.1) }, onIncrease: { viewModel.nudgeLayerEdge(.end, by: 0.1) }
+                    )
+                }
+            }
+        }
     }
 
     /// Track: follows what's under the item at the playhead; while it runs, how far it is and Cancel.
@@ -78,11 +85,13 @@ struct MotionKeyframeControls: View {
                         .accessibilityIdentifier("edit.track.progress")
                     ProgressView(value: viewModel.overlays.trackingProgress ?? 0).tint(Palette.acc)
                 }
-                Button(String(localized: "Cancel"), action: viewModel.overlays.cancelTracking)
+                // "Stop", not "Cancel": what was tracked stays (owner, canvas 2 R6), as in Blur area.
+                Button(String(localized: "Stop"), action: viewModel.overlays.stopTracking)
                     .font(.system(.subheadline, weight: .semibold))
                     .foregroundStyle(Palette.ink)
                     .frame(minWidth: Metrics.hitTarget, minHeight: Metrics.hitTarget)
-                    .accessibilityIdentifier("edit.track.cancel")
+                    .accessibilityHint(Text("Keeps what was tracked"))
+                    .accessibilityIdentifier("edit.track.stop")
             }
         } else {
             PanelButton(

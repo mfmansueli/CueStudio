@@ -5,10 +5,12 @@
 
 import SwiftUI
 
-/// "Save style", first among the creator's styles in Caption style, Text style and Cover: names the look on screen and keeps it
-/// for the next videos.
+/// "Save style" among the creator's styles (the last card of Caption style's gallery; first in Text style and Cover): names the
+/// look on screen and keeps it for the next videos.
 struct PanelSaveStyleCard: View {
     var identifier = "edit.style.saveMine"
+    /// The dashed card's size: the gallery's own cards' (Cover's are as tall as the cover's shape).
+    var size = CGSize(width: 84, height: 74)
     let action: () -> Void
 
     var body: some View {
@@ -24,7 +26,7 @@ struct PanelSaveStyleCard: View {
                 }
                 .foregroundStyle(Palette.accText)
                 .padding(.horizontal, 6)
-                .frame(width: 84, height: 74)
+                .frame(width: size.width, height: size.height)
                 .overlay(
                     RoundedRectangle(cornerRadius: Metrics.fieldRadius, style: .continuous)
                         .strokeBorder(Palette.Editor.laneGhostBorder, style: StrokeStyle(lineWidth: 1.5, dash: [4, 3]))

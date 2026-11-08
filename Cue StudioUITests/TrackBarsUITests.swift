@@ -20,7 +20,9 @@ final class TrackBarsUITests: XCTestCase {
         timeline.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(dx: 20, dy: EditorApp.trackMiddle(index, of: 5, in: timeline))).tap()
     }
 
-    func testTheCaptionsBarsShowHidesEveryLineAndShowsThemAgain() {
+    /// The captions track opens the Captions panel, the one the main bar's Captions opens (owner, 07/11/2026): its switch hides
+    /// every line and shows them again.
+    func testTheCaptionsTrackOpensThePanelWhoseSwitchHidesEveryLine() {
         let app = EditorApp.open(demo: true)
         EditorApp.goToCaption(app, 2)
         // Captions is the current track now, and the current track's icon is ▴: Texts is chosen first, then Captions by its icon.
@@ -28,9 +30,8 @@ final class TrackBarsUITests: XCTestCase {
         XCTAssertTrue(app.buttons["edit.toolbar.title"].exists(within: 5), "Texts didn't open its bar")
         openTrack(2, in: app)
         // A switch, as VoiceOver hears it: not a button.
-        let show = app.switches["edit.toolbar.showCaptions"]
-        let tools = { app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'edit.toolbar.'")).allElementsBoundByIndex.map(\.identifier) }
-        XCTAssertTrue(show.exists(within: 5), "The captions track didn't open its bar: \(tools())")
+        let show = app.switches["edit.captionsToggle"]
+        XCTAssertTrue(show.exists(within: 5), "The captions track didn't open the Captions panel")
         XCTAssertTrue(isOn(show))
         let caption = app.descendants(matching: .any)["edit.captionHandle"].firstMatch
         XCTAssertTrue(caption.exists(within: 5), "No caption on the preview")
@@ -40,7 +41,7 @@ final class TrackBarsUITests: XCTestCase {
         show.tap()
         XCTAssertTrue(isOn(show), "Show didn't turn on")
         XCTAssertTrue(caption.exists(within: 5), "Show on didn't bring the lines back")
-        XCTAssertTrue(app.buttons["edit.toolbar.translate"].exists)
+        XCTAssertTrue(app.buttons["edit.captionsTranslateButton"].exists)
     }
 
     /// A switch's value as XCUITest reads it: "On" (its VoiceOver value) or "1".

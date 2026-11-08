@@ -51,6 +51,8 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         /// Renders curved clips' sound along their curves (`CurveSoundRenderer`); off, it's stretched in steps like the picture,
         /// which is instant: the preview while a finger shapes a curve or drags a handle.
         var rendersCurveSound = true
+        /// The editor's preview shows the picked text, photo or video whole while paused (`PreviewMotionHold`); never an export.
+        var showsPickedWhole = false
     }
 
     /// A volume ramp on the edited timeline.
@@ -138,6 +140,7 @@ nonisolated struct EditedComposition: @unchecked Sendable {
 
         let windows = plan.transitions
         let zooms = plan.zooms
+        let phraseZooms = plan.phraseZooms
         let animations = plan.animations
         var dissolves = windows.filter { $0.transition.showsBothSides }
         var blendTrack = dissolves.isEmpty ? nil : composition.addMutableTrack(withMediaType: .video, preferredTrackID: kCMPersistentTrackID_Invalid)
@@ -159,10 +162,13 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         let crop = framing.crop
         let renderSize = outputSize(for: crop.size, shortSide: options.shortSide)
         var overlays = TextOverlayRenderer.overlays(shownTexts(of: edit, window: plan.window), frame: crop.size)
+        if options.showsPickedWhole { for index in overlays.indices { overlays[index].readsPreviewHold = true } }
         if options.burnsInCaptions, edit.showsCaptions {
             overlays += captionOverlays(for: edit, frame: crop.size)
         }
-        let (mediaTracks, mediaFrames, mediaSounds) = await placeMedia(of: edit, frame: crop.size, in: composition, duration: cursor)
+        let (mediaTracks, placedMedia, mediaSounds) = await placeMedia(of: edit, frame: crop.size, in: composition, duration: cursor)
+        var mediaFrames = placedMedia
+        if options.showsPickedWhole { for index in mediaFrames.indices { mediaFrames[index].readsPreviewHold = true } }
         let videoMedia = mediaFrames.filter(\.isVideo).flatMap(\.shownSpans)
         let voices = try await placeVoiceOvers(of: edit, in: composition)
         let window = plan.window ?? TimeSpan(start: 0, end: cursor.seconds)
@@ -194,7 +200,7 @@ nonisolated struct EditedComposition: @unchecked Sendable {
             let mediaTrackIDs = stretch.showsMedia
                 ? mediaTracks.map(\.trackID).filter { id in showing.contains { $0.trackID == id } }
                 : []
-            return CompositionInstruction(
+            let instruction = CompositionInstruction(
                 timeRange: stretch.range,
                 trackID: video.trackID,
                 blendTrackID: stretch.dissolve == nil ? nil : blendTrack?.trackID,
@@ -217,6 +223,10 @@ nonisolated struct EditedComposition: @unchecked Sendable {
                 fades: fadeWindows,
                 timeOrigin: leadIn
             )
+            instruction.phraseZooms = phraseZooms.filter { $0.span.overlaps(stretchSpan) || $0.span.contains(stretchSpan.start) }
+            // Only Cue's zooms (Punch in on cuts, phrase zooms) grow around an anchor; the creator's zoom grows from the middle.
+            if zoom?.punchesInOnCut == true || !instruction.phraseZooms.isEmpty { instruction.zoomAnchor = framing.zoomAnchor(of: playedSegment) }
+            return instruction
         }
         let configuration = AVVideoComposition.Configuration(
             customVideoCompositorClass: CueVideoCompositor.self,
@@ -394,7 +404,10 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         return made.segments.indices.map { index in
             let segment = made.segments[index]
             return segment.zoom.map {
-                ZoomWindow(zoom: $0, start: leadIn + made.editedStart(ofSegmentAt: index), duration: segment.duration, amount: segment.zoomAmount)
+                ZoomWindow(
+                    zoom: $0, start: leadIn + made.editedStart(ofSegmentAt: index), duration: segment.duration, amount: segment.zoomAmount,
+                    punchesInOnCut: segment.punchesInOnCut
+                )
             }
         }
     }
@@ -412,13 +425,9 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         }
     }
 
-    /// The crop at the requested quality, with even dimensions. Never upscaled.
+    /// The crop at the requested quality, with even dimensions. Never upscaled (`ExportFrameSize`, the rule the app's labels read too).
     static func outputSize(for crop: CGSize, shortSide: CGFloat?) -> CGSize {
-        guard let shortSide, crop.width > 0, crop.height > 0 else {
-            return CGSize(width: CropMath.even(crop.width), height: CropMath.even(crop.height))
-        }
-        let scale = min(1, shortSide / min(crop.width, crop.height))
-        return CGSize(width: CropMath.even(crop.width * scale), height: CropMath.even(crop.height * scale))
+        ExportFrameSize.size(ofCrop: crop, shortSide: shortSide)
     }
 
     // MARK: - Transitions
@@ -558,6 +567,9 @@ nonisolated struct EditedComposition: @unchecked Sendable {
             frame.areaFraming = (areas == nil ? entry.media.pictureFraming : entry.media.areaFraming) ?? AreaFraming()
             if let areas {
                 frame.areas = areas
+            } else if entry.media.layout == .behind {
+                // The whole frame, behind the creator: no window, mask, motion or fade of its own.
+                frame.isBehind = true
             } else {
                 frame.mask = entry.media.mask
                 frame.opacity = min(max(entry.media.opacity ?? 1, 0.1), 1)
