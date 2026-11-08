@@ -122,7 +122,7 @@ final class DataEraserService {
             DefaultsKey.skyMemory, DefaultsKey.skyMemoryAdded, DefaultsKey.myCoverStyle, DefaultsKey.myCoverStudioStyle,
             // Every saved style, and the single caption style saved before them.
             DefaultsKey.myCaptionStyle, DefaultsKey.captionStyleLibrary, DefaultsKey.textStyleLibrary, DefaultsKey.coverStyleLibrary,
-            DefaultsKey.captionCatalogFilter, DefaultsKey.dockDraft,
+            DefaultsKey.captionCatalogFilter, DefaultsKey.dockDraft, DefaultsKey.myWords,
             // The takes' and the edits' folders went whole: nothing is left to sweep.
             DefaultsKey.takeDeletionsPending, DefaultsKey.takeOrphanSightings, DefaultsKey.editMediaDeletionsPending,
         ] {

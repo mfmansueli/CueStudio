@@ -44,6 +44,47 @@ final class CaptionToolsUITests: XCTestCase {
         )
     }
 
+    /// My words: the list opens empty from Captions › •••, a word typed is added; in Find and replace, Add to My words names the
+    /// spelling it saves (Replace with's), saves it without changing a line, and the word is then in the list.
+    func testMyWordsKeepsAWordWithoutChangingTheCaptions() {
+        let app = EditorApp.open(demo: true)
+        EditorApp.tapTool(app, "captions")
+        EditorApp.captionsMenu(app, "edit.captionsMyWords").tap()
+        XCTAssertTrue(app.descendants(matching: .any)["edit.myWords.empty"].exists(within: 5), "My words doesn't start empty")
+        EditorApp.capture(app, "captions-my-words-empty")
+        let field = app.textFields["edit.myWords.field"]
+        field.tap()
+        field.typeText("CapCut")
+        app.buttons["edit.myWords.add"].tap()
+        XCTAssertTrue(app.buttons["edit.myWords.word.CapCut"].exists(within: 5), "The word typed isn't in the list")
+        EditorApp.capture(app, "captions-my-words")
+        app.buttons["sheet.closeButton"].firstMatch.tap()
+
+        EditorApp.captionsMenu(app, "edit.captionsFind").tap()
+        let query = app.textFields["edit.captionFind.query"]
+        XCTAssertTrue(query.exists(within: 5))
+        query.typeText("caudo")
+        let replacement = app.textFields["edit.captionFind.replacement"]
+        replacement.tap()
+        replacement.typeText("caldo")
+        let add = app.buttons["edit.captionFind.addToMyWords"]
+        XCTAssertTrue(add.exists(within: 5))
+        XCTAssertEqual(add.label, "Add “caldo” to My words")
+        EditorApp.capture(app, "captions-find-my-words")
+        add.tap()
+        XCTAssertTrue(
+            app.buttons.matching(NSPredicate(format: "label == %@", "“caldo” is in My words")).firstMatch.exists(within: 5),
+            "The button doesn't say the word is saved"
+        )
+        // Saving the word replaced nothing: the misheard word is still in its line.
+        XCTAssertEqual(app.staticTexts["edit.captionFind.summary"].label, "1 match")
+        app.buttons["sheet.closeButton"].firstMatch.tap()
+
+        EditorApp.captionsMenu(app, "edit.captionsMyWords").tap()
+        XCTAssertTrue(app.buttons["edit.myWords.word.caldo"].exists(within: 5), "Add to My words didn't save the word")
+        XCTAssertTrue(app.buttons["edit.myWords.word.CapCut"].exists)
+    }
+
     /// Select lines: all lines picked but the first, Emphasis on them, then deleted together; the first line stays. The actions
     /// stay pinned under the list.
     func testSelectedLinesAreStyledAndDeletedTogether() {

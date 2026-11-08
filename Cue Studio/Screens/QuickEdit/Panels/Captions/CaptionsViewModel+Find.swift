@@ -7,13 +7,16 @@ import Foundation
 
 /// Find and replace in the captions (`CaptionFindSheet`, as in CapCut's caption editor): a word is looked for in every line
 /// that plays, in play order; each match can be replaced on its own, or all of them at once. Every replace is one undo step
-/// and changes only the words: the lines keep their times (`CaptionFindReplace`).
+/// and changes only the words: the lines keep their times (`CaptionFindReplace`). Replacing never saves a word to My words; the
+/// sheet's Add to my words does, on its own (`+MyWords`).
 extension CaptionsViewModel {
     /// Opens Find and replace over the editor (the video stops, the lines stay where they are).
     func openCaptionFind() {
         guard isReady, !edit.captions.isEmpty else { return }
         player.pause()
         toolMenu = nil
+        // Its Add to my words says whether the word is already saved.
+        myWords = myWordsStore.words
         sheet = .findInCaptions
     }
 
