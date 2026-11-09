@@ -152,7 +152,6 @@ struct LaunchOptions {
     var ultraBudgetDefaults: UserDefaults = .standard
     /// Nil is the model on this iPhone (`AppleWritingStyleReader`).
     var styleReader: (any WritingStyleReading)?
-    var credentialChecker: AppleIDCredentialChecking = AppleIDCredentialChecker()
     var remoteTransport: RemoteTransport = NearbyRemoteTransport()
     /// The Apple Watch companion's channel: WatchConnectivity, or nothing in UI tests (`InMemoryWatchTransport`).
     var watchTransport: WatchTransport = WatchConnectivityTransport()

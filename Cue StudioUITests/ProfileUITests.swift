@@ -71,15 +71,25 @@ final class ProfileUITests: XCTestCase {
         XCTAssertTrue(card.label.contains("I used to hit snooze four times."))
     }
 
-    /// Sign in with Apple lives in Edit Profile, optional like everything about an account.
-    func testSignInWithAppleIsOfferedWhenSignedOut() {
+    /// No account in Edit Profile (owner, 09/11/2026: Sign in with Apple only filled the name and was removed): the name is typed, kept with
+    /// Done and still there, editable, the next time.
+    func testEditProfileHasNoAccountAndTheNameIsTheCreatorsToEdit() {
         let app = openProfile()
         app.descendants(matching: .any)["profile.creatorCard"].firstMatch.tap()
-        XCTAssertTrue(app.textFields["editProfile.nameField"].exists(within: 5))
-        let signIn = app.buttons["profile.signInButton"]
-        app.scroll(to: signIn)
-        XCTAssertTrue(signIn.exists)
+        let name = app.textFields["editProfile.nameField"]
+        XCTAssertTrue(name.exists(within: 5))
+        name.tap()
+        name.typeText("Maya Costa")
+        app.scroll(to: app.descendants(matching: .any)["profile.monetizationGoalsToggle"].firstMatch)
+        XCTAssertFalse(app.buttons["profile.signInButton"].exists, "Sign in with Apple is still offered")
         XCTAssertFalse(app.buttons["profile.signOutButton"].exists)
+        app.buttons["editProfile.doneButton"].tap()
+        XCTAssertTrue(app.staticTexts["Profile updated"].exists(within: 5))
+        app.descendants(matching: .any)["profile.creatorCard"].firstMatch.tap()
+        let again = app.textFields["editProfile.nameField"]
+        XCTAssertTrue(again.exists(within: 5))
+        XCTAssertTrue((again.value as? String)?.contains("Maya Costa") == true, "The name typed wasn't kept")
+        XCTAssertTrue(again.isEnabled)
     }
 
     /// The creative preferences are in Edit Profile (kept with Done), not in Settings or on the voice page, and they survive tab changes.
