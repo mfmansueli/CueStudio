@@ -42,7 +42,8 @@ extension XCTestCase {
         let tiktok = app.descendants(matching: .any)["shareFlow.network.tiktok"].firstMatch
         XCTAssertTrue(tiktok.exists(within: 120), "Ready to travel and its networks", file: file, line: line)
         tiktok.waitUntilStill()
-        tiktok.tap()
+        // The take's own network comes picked (a freestyle take is for the creator's usual one): tapped only when it isn't.
+        if !tiktok.isSelected { tiktok.tap() }
         app.buttons["shareFlow.start"].tap()
         XCTAssertTrue(waitAllowingPhotos(for: app.buttons["shareFlow.send"]), file: file, line: line)
         app.buttons["shareFlow.send"].tap()

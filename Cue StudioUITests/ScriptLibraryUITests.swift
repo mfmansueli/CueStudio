@@ -364,7 +364,10 @@ final class ScriptLibraryUITests: XCTestCase {
         let linkedIn = app.buttons["destination.linkedin"]
         linkedIn.waitUntilStill()
         linkedIn.tap()
-        XCTAssertTrue(app.staticTexts["Create for LinkedIn"].exists(within: 10), "Picking LinkedIn didn't set the page for it")
+        // The lamp's Reels video was posted: the script moves and that video stays a Reels one (09/11/2026), said with Undo.
+        let moved = app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH 'Moved to LinkedIn'")).firstMatch
+        XCTAssertTrue(moved.exists(within: 10), "Picking LinkedIn didn't set the page for it")
+        XCTAssertTrue(moved.label.contains("Reels video stays"), moved.label)
         XCTAssertEqual(app.buttons["page.platformChip"].value as? String, "LinkedIn")
         // The details show the format the destination sets.
         XCTAssertTrue(linkedIn.isGone(within: 5), "The platforms stayed")
