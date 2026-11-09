@@ -210,11 +210,15 @@ struct PrompterView: View {
         viewModel.sheetCeiling.map { ScriptPanelClearance.sheetHeight(panelBottom: $0, safeAreaBottom: safeAreaBottom) }
     }
 
-    /// Back from a take: to the Takes tab when the review was opened from there, otherwise to the
-    /// camera for another take.
+    /// Back from a take: to the Takes tab when the review was opened from there or the take has left Cue (saved or shared: the video is
+    /// done, and Takes is where it now lives), otherwise to the camera for another take.
     private func leaveReview() {
         arrivedFromNeighbor = false
+        let isDone = viewModel.takes.take(id: viewModel.reviewingTake?.id)?.isExported == true
         if viewModel.openedOnReview {
+            presentation.closePrompter()
+        } else if isDone {
+            presentation.selectedTab = .takes
             presentation.closePrompter()
         } else {
             Task { await viewModel.retake() }

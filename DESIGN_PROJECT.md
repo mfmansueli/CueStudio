@@ -1264,7 +1264,7 @@ sentir livre para escrever como quiser). **Sem dicas embaixo do texto** (gancho 
 - **Desfazer e refazer** na barra das cues (`ScriptEditorUndo`), à esquerda, desativados quando não há o que desfazer.
 - **"AI can get facts wrong"** (`FactCheckBanner`): centrado na vertical, texto `ink`.
 
-**Revisão da take (6.3):** barra de navegação do sistema (`ReviewToolbar`, `NavigationStack` próprio, fundo escondido sobre o vídeo): voltar, "TAKE 2 OF 3 ✦ ⌄"
+**Revisão da take (6.3):** barra de navegação do sistema (`ReviewToolbar`, `NavigationStack` próprio, fundo escondido sobre o vídeo): voltar (‹ leva à câmera para outra take; a Takes quando a revisão foi aberta de lá ou a take já saiu do Cue, salva ou compartilhada, `PrompterView.leaveReview`), "TAKE 2 OF 3 ✦ ⌄"
 como título com menu (takes vizinhas, Suggest best) numa cápsula de vidro, estrela (`star` / `star.fill`) e lixeira numa cápsula à direita.
 Refinamento do dono (22/10/2026, canvas "Revisão da take, refinada"): **Play** fica no meio do espaço livre do vídeo, acima dos controles (nunca sobre a
 linha do tempo, como no 15 Pro), encolhe e some ao tocar (`Haptics.light`); tocar no vídeo tocando pausa e pisca o sinal de pausa (`ReviewPauseFlash`,
