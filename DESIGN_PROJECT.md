@@ -980,21 +980,30 @@ voltam com uma linha quando validados no aparelho (`SHARING.md`).
 
 ## 16. Telas ligadas
 
-- **8.3 Milestone** (`MilestoneView`, `MilestoneScript`, 4,5 s): seis fagulhas caem num ponto (0–1,35 s), o ícone de 140 pt surge (×0,6 → 1,06 → 1 a partir
-  de 1,17 s, `.success`), cruz de luz (1,55–2,45 s) e anéis dourado e pálido por cima do ícone, raios girando em 40 s. "MILESTONE · 25 VIDEOS SHARED" (o primeiro:
-  "MILESTONE · YOUR FIRST VIDEO"), "A new icon is yours.", "ON YOUR HOME SCREEN" (vidro de 76 pt, quatro ícones), "Use Deep Space" / "Keep my current icon" (sem Pro: "Get … with Pro"). Os marcos
-  (1, 10, 25, 50) contam os vídeos compartilhados **desde sempre**, não por ano (decisão do dono, 30/10/2026); um marco celebrado quando a conta era por ano
-  (chave `ano·1000 + marco`) continua celebrado. Um marco toca uma vez por revisão. Com um ícone a destravar, o `.success` da história é o do ícone, e o
-  send-off que vem antes pousa com toques leves; sem marco, o pouso do send-off é o `.success`. Os espaços do quadro seguem a altura da tela (×0,79 num SE a ×1,13 num Pro Max, o ícone também): no SE tudo fica acima
-  dos botões, no Pro Max se espalha; o texto cresce até o 1º tamanho de acessibilidade.
-- **1.7 First star** (`FirstStarView`, `FirstStarScript`, `FirstStarScene`, `Keyframes`, 8 s; a cena de 390 pt é desenhada com a largura da tela,
-  ×0,96 a ×1,13, e as palavras sobem acima dos botões quando a tela é baixa ou o texto é grande): o take "✓ SAVED" dobra em luz (1,55 s), um cometa o leva até a
-  estrela (1,6–2,9 s), a estrela acende (2,95 s, `.success`) com 10 fagulhas, dois anéis e cruz de luz, a linha de YOU se desenha (3,3–4,1 s), "FIRST
-  VIDEO · FIRST STAR" (12 pt) e **"Your first video. Your first star."** palavra por palavra (desfoque 8 → 0, título em 300 pt, uma frase por linha),
-  "Saved in Takes. Add captions, edit it or share it to light up your 2026 universe." (17 pt) e **Explore Cue** / **Edit my video**; brilho cruza
-  "Explore Cue" uma vez. O acabamento por cima do quadro está em §36. Vem ao abrir a revisão da primeira gravação; uma revisão aberta para editar,
-  escolher ou compartilhar faz isso primeiro, e a estrela vem quando o editor fecha (nunca depois de um compartilhamento: o send-off contou; §27). Toca uma vez até 7,5 s e fica (órbitas girando). Noite `BgWash.firstStar`.
-  `-uiTestStoryAt <s>`.
+- **A primeira comemoração** (D4, decisão do dono, 09/11/2026; `FirstCelebration`, `SendOffMoment`): a primeira jornada tem **no máximo uma tela
+  cheia**. A revisão da primeira gravação abre sem nada por cima: as telas 1.7 (First star) e 8.3 (Milestone) do quadro não são usadas; a estrela e o
+  marco vivem no send-off e em Takes.
+  - **Postagem confirmada na hora** ("Posted on {rede}?" → **Yes, it's live**): o **send-off** (8.2) é a comemoração. Na primeira postagem com a estrela
+    ainda não contada, o rótulo de cima diz **"FIRST VIDEO · FIRST STAR"** no lugar de "SHARED TO {REDE}" (a rede segue no "+1" do mapa e no link do
+    universo). O marco que a postagem abriu aparece **dentro do send-off**, na linha do ícone (`SendOffIconRow`), nunca numa tela depois dele.
+  - **Saiu da revisão sem postar**: nenhuma tela; a estrela fica guardada para aquele take (`OnboardingService.keepFirstStar`) e acende **em Takes**, no
+    cartão (ou linha) do vídeo, quando Takes é a tela da frente (`TakeFirstStarPill`, §18). Conta como contada nessa hora.
+  - **Postagem confirmada depois** (outra sessão, pelo "Continue posting" ou "Post to {rede} later"): o mesmo send-off, com a linha do ícone quando há marco
+    devido; a primeira estrela só aparece nele se Takes ainda não a acendeu.
+  - A estrela é a do primeiro **vídeo** gravado no Cue e só dele (os takes de um roteiro são um vídeo; um importado do Fotos ou um vídeo de uma biblioteca com
+    outros não a acendem, mas o marco vale), com **Celebrations** ligado (desligado: nem send-off, nem estrela em Takes, e o marco fica devido); em Takes,
+    também depois do primeiro voo.
+- **Marcos** (1, 10, 25, 50; `MilestoneService`): contam as **postagens confirmadas** desde sempre (só "Yes, it's live"; salvar no Fotos conclui a exportação e
+  gasta uma exportação grátis, mas não é uma postagem; um vídeo conta uma vez, mesmo em várias redes), não por ano (decisão do dono, 30/10/2026). O send-off
+  mostra o marco **devido**: o último alcançado que ainda não foi contado (`dueMilestone`); alcançado numa postagem sem send-off (Celebrations desligado, o Cue
+  fechado nele), vem no próximo. Qualquer saída do send-off (**Done**, o link do universo, **Share again**, **Go Pro**) o conta como contado, junto com os
+  anteriores (`markCelebrated`), e avisa o porteiro de que houve uma celebração (§27). Um marco contado quando a conta era por ano (chave `ano·1000 + marco`)
+  continua contado.
+- **A linha do ícone** (`SendOffIconRow`, não está no quadro): no lugar do cartão do vídeo, sob o mapa, depois que as estrelas pousam (sobe 10 pt e aparece
+  em 0,45 s, com um toque `.soft`; com Reduzir Movimento já está lá): cartão `surface` de raio 20 com borda `glassBorder`, o ícone de 44 pt (`AppIconArt`),
+  **"{Ícone} icon unlocked"** (15 semibold `ink`), "Your first video shared" / "{n} videos shared" (13 `ink2`) e **Use it** (`cueSecondary` compacto). Usar
+  troca o ícone e a linha diz **✓ In use** (`successText`), com o send-off na tela; deixar a linha como está mantém o ícone atual. Aurora (1) é grátis; os
+  de 10, 25 e 50 vêm com o Pro: sem ele o botão é **Go Pro**, que fecha o send-off e abre o Pro. O pouso do send-off é sempre o `.success`.
 - **6.2 Takes** vindo de um planeta ou tema: chip "{ANO} · SHARED ✕" (§18).
 
 ## 17. Confirmações (11.1 "reset confirm")
@@ -1012,7 +1021,7 @@ brilho, recorte). `MotionScreen` é o relógio único da tela (`TimelineView`; t
 `skippable`); `MotionTime` leva o segundo da coreografia e o do ambiente. Efeitos em `DesignSystem/Effects` (`GlowDot`, `StarTrail`, `LightFX`); galáxias de
 1.3 e 1.4 por `GalaxyPainter` a partir de `galaxies.json` (`tools/bake_galaxies.py`, cache `HeroDiscCache`). **Conferir:** `tools/fidelity` (HTML parado num
 segundo × app com o relógio congelado) e `HandoffCaptureTests`. Cada quadro tem o próprio `.night` (`BgWash+Presets`: welcome, universe, voyage, message,
-permissions, firstStar, yourUniverse, sendOff, milestone, pro, share; `skyBackground(wash:base:)`); cores de onboarding, prática e send-off em
+permissions, firstStar (a noite da prática), yourUniverse, sendOff, pro, share; `skyBackground(wash:base:)`); cores de onboarding, prática e send-off em
 `Palette+Flight.swift` (nenhum hex solto em `Screens/Onboarding` nem `Screens/Prompter/Practice`).
 
 **Onboarding (1.1–1.7)**
@@ -1047,8 +1056,10 @@ permissions, firstStar, yourUniverse, sendOff, milestone, pro, share; `skyBackgr
 **8.2 Send-off** (quadro de 390 × 844 escalado; `SendOffLayout`, `SendOffScript`, `SendOffMap`, `SendOffView`): órbitas de 316 e 220 pt achatadas a 32% e
 giradas −9°, YOU de 56 pt, planetas de 20/18/17/16/14/12 pt por ordem de vídeos, cartão de 54 × 96 pt vira luz (0,65 s), uma estrela por rede (0,52 s +
 0,35 s·i, voo de 1,05 s, nove pontos de rastro a 38 ms) num arco quadrático (`SendOffLayout.arc`, não está no quadro), pulso ×1,35 → ×1,12, anel ×5,
-"+1", contagem sobe na chegada, estrela nova 0,3 s depois do primeiro pulso. "SHARED TO 3 NETWORKS", "On its way." e o link para a nova estrela; texto e
-botões parados desde o início; redes que não receberam ficam a 38%.
+"+1", contagem sobe na chegada, estrela nova 0,3 s depois do primeiro pulso. "SHARED TO 3 NETWORKS" ("FIRST VIDEO · FIRST STAR" na primeira postagem,
+§16), "On its way." e o link para a nova estrela; texto e botões parados desde o início; redes que não receberam ficam a 38%. Com um marco devido, a linha
+do ícone sobe no lugar do cartão depois do pouso (`SendOffLayout.iconRowTop`/`iconRowBottom`: de 392 a 568 pt do quadro, presa embaixo, crescendo para
+cima com o texto; §16). O link do universo e **Done** terminam do mesmo jeito (`TakeReviewView.endSendOff`).
 
 **6.2 Takes:** título com **Import video** à esquerda (ícone em `Palette.ink`, como os outros botões de barra, dono 30/10/2026) e List | Grid à
 direita; sob o título, nenhuma contagem (dono, 30/10/2026); **trilha de status** (`TakePipelineCard`: quatro nós de 28 pt, TO PICK cinza, IN EDIT ciano, READY verde com
@@ -1056,11 +1067,15 @@ anel que pulsa a cada 2 s, ✦ SHARED lilás; tocar filtra, de novo limpa); **Up
 Share/Edit/Pick que abre a take naquele passo); **fichas** (`TakesFilterChips`: "2026 · SHARED ✕" primeiro quando vem do universo, sempre à vista e fora do recolhimento, depois All e uma por
 rede que tem vídeos, nenhuma com 0, na mesma linha que se recolhe na escolhida de Scripts, `FilterFan`, §2; a escolhida branca com texto preto; o ✕
 tira o amarelo e, se o planeta tinha escolhido a rede, o chip volta para All). **List | Grid** é `Picker` `.segmented` (`TakesLayoutToggle`). Card da grade (`TakeVideoCard`, 177:270): anel de 1 pt na
-cor do estágio, pílula do estágio, título e "● TIKTOK · 1:02" no pé. Lista (`TakeVideoRow`, título 16 medium, §53): §24. Lista vazia por filtro: "No videos for Shorts here" + **Show every video**.
+cor do estágio, pílula do estágio, título e "● TIKTOK · 1:02" no pé. **A primeira estrela** (§16, `TakeFirstStarPill`): no primeiro vídeo, quando a revisão
+dele foi deixada sem postagem, a pílula **"✦ FIRST STAR"** (mono 10 heavy, `accText`) aparece sobre o título do cartão (no fundo `Palette.Takes.posterPill`)
+ou à frente das fichas da linha (no `surface2`): abre de 60% com uma mola depois de 0,25 s e um anel de luz sai da estrela (0,9 s); com Reduzir Movimento só
+aparece. Um toque `.soft`, o VoiceOver ouve "Your first video. Your first star." e o rótulo do cartão ganha "First star". Acende uma vez, quando o vídeo
+está na lista da frente (um filtro que o esconde faz esperar), e fica no cartão até o Cue fechar; um take apagado deixa a estrela esperando a próxima revisão. Lista (`TakeVideoRow`, título 16 medium, §53): §24. Lista vazia por filtro: "No videos for Shorts here" + **Show every video**.
 Segurar um vídeo abre o menu de contexto (a prévia recebe `.environment(services)` e o pôster lê os serviços como opcionais: o sistema redesenha o cartão
 fora do ambiente do app). **Não feito (decisão do dono):** Select (sem seleção em massa), bolinha de tema no card; títulos de dia (Today, Yesterday) ficam.
 
-**Diferenças em aberto para o dono:** a fonte é SF (o quadro usa Geist, mais larga): títulos que quebram no quadro têm largura ajustada (1.7) ou escala
+**Diferenças em aberto para o dono:** a fonte é SF (o quadro usa Geist, mais larga): títulos que quebram no quadro têm escala
 mínima (9.2).
 
 ## 19. Folhas e telas revistas pelo dono (6/10/2026)
@@ -1585,8 +1600,9 @@ Sistema completo em `NOTIFICATIONS.md`. Na interface:
   - **sessão** = abrir o app, ou voltar depois de 30 min fora;
   - o **convite** para notificações não vem na sessão da primeira gravação: vem numa sessão seguinte, ao sair da câmera ou da revisão, se há um vídeo por
     compartilhar; nunca depois de uma celebração na mesma sessão (nem uma introdução). Um lembrete pedido à mão pode trazer a pergunta do iOS a qualquer hora;
-  - **celebração só no fim de uma tarefa**: a primeira estrela não cobre uma revisão aberta para editar, escolher ou compartilhar; vem quando o editor
-    fecha (e não vem se o vídeo já foi compartilhado: o send-off contou).
+  - **celebração só no fim de uma tarefa** e **uma tela cheia por jornada** (D4, §16): nada cobre a revisão; a comemoração é o send-off de uma postagem
+    confirmada (com o marco dentro dele) ou, sem postagem, a primeira estrela acesa em Takes. As duas contam como celebração para o porteiro
+    (`GuidanceGate.celebrated`).
 - Contraste: `PaletteContrastTests.theNotificationSheetsReadOnTheirNight`.
 
 ## 28. Notas dos testes de UI
@@ -1881,9 +1897,9 @@ Mais expressão nas cenas de descoberta e celebração, discrição no roteiro, 
   slide recua e o próximo avança (`DepthTransition`).
 - **Luz que soma** (só no 1.3; `GalaxyPainter`): halos, braços, estrelas, bojo e cruz de luz das galáxias usam `.plusLighter` (`ANIMACOES.md` §5). Planetas,
   órbitas e núcleo continuam sólidos.
-- **Celebrações** (`StoryCover`, `CueMotion.storyIn/storyOut`): a primeira estrela e o marco entram em fade sobre a revisão do take (0,35 s, curva da luz) e saem
-  em 0,25 s; de "Ready to travel" para o send-off a capa troca sem descer e subir. Depois da história, primeira estrela, send-off e marco desenham a 30 fps e
-  param com o app inativo.
+- **Celebrações** (§16): de "Ready to travel" para o send-off a capa troca sem descer e subir; a linha do ícone sobe no lugar do cartão depois do pouso
+  (0,45 s); a primeira estrela em Takes abre a pílula com uma mola e solta um anel de luz. Depois do pouso, o send-off desenha a 30 fps e para com o app
+  inativo.
 - **Toasts** (`AnyTransition.toast`, app e editor): entram descendo 8 pt em 0,25 s e saem em fade de 0,2 s (`motion/README.md`); o ícone faz o gesto do
   seu tipo (§1, Avisos), e o fim de um trabalho troca ícone e texto na mesma pílula.
 - **Ícones que trocam** (`symbolSwap`, `CueMotion.symbolSwap`): play/pause do gravador e do editor, o olho dos cues, a conexão do
@@ -1901,8 +1917,8 @@ completa e o roteiro estão em `ONBOARDING_COPY_MEMORY.md`), e a prática passou
   usually talk about?"; 1.3 "Where will you share your videos?", **Choose a platform** / **Continue with {rede}**, "CHOOSE ONE PLATFORM" e "SAFE ZONES ON/OFF" conforme a
   rede (antes dizia ON sempre); 1.4 "Your first script. Ready to read." e **Try the teleprompter**; 1.5 "Let the text follow your voice." e três recusas
   (microfone e câmera, só microfone, só câmera); 1.6 o cartão diz o que fazer e o que move o texto ("Tap play and wait for the count. Then read out
-  loud: the text follows your voice.", "Nothing is recorded."), **Record my first video** e **Explore Cue first**; 1.7 "Your first
-  video. Your first star.", **Explore Cue** e **Edit my video**. Os rótulos dos capítulos: YOUR TOPICS, YOUR FIRST VIDEO, YOUR FIRST SCRIPT, CAMERA &
+  loud: the text follows your voice.", "Nothing is recorded."), **Record my first video** e **Explore Cue first**; "Your first
+  video. Your first star." é o que o VoiceOver ouve quando a estrela acende em Takes (§16). Os rótulos dos capítulos: YOUR TOPICS, YOUR FIRST VIDEO, YOUR FIRST SCRIPT, CAMERA &
   VOICE. Nenhum travessão em texto novo.
 - **Roteiro fixo** (decisão do dono: sempre o mesmo, nada de IA no onboarding): `OnboardingScript.practice(followsVoice:)`, título "From idea to video",
   gancho, corpo e CTA do dono. A 1.4 o mostra chegando no console com o ritmo do quadro (`MessageTimeline`); o tamanho das palavras é o maior que cabe
@@ -1944,12 +1960,12 @@ completa e o roteiro estão em `ONBOARDING_COPY_MEMORY.md`), e a prática passou
 
 ## 36. Refinamentos tela a tela (15 de outubro de 2026; pedido do dono)
 
-O dono revisou no iPhone, tela a tela, o primeiro voo, a primeira estrela, o Pro e Your universe. Onde diverge do quadro, vale este.
+O dono revisou no iPhone, tela a tela, o primeiro voo, o Pro e Your universe. Onde diverge do quadro, vale este.
 
 - **O rastro das estrelas** (`StarRibbon`, `DesignSystem/Effects`): toda estrela que voa deixa o mesmo rastro: o caminho dos últimos 0,32 s como uma fita
   contínua que afina, apaga e esfria do branco ao dourado, sobre uma cópia larga e desfocada; a cabeça é um núcleo branco com halo e uma cruz que gira.
   Usam: 1.1 (`WelcomeStarPainter`), a estrela que entra na 1.2 (`StarTrail`), a luz que leva o tema à órbita (`TopicBirthPainter`, nas cores do tema), o
-  cometa da 1.7, a estrela que vira o planeta do Pro e as luzes que nascem os planetas em Your universe.
+  a estrela que vira o planeta do Pro e as luzes que nascem os planetas em Your universe.
 - **1.1:** os pontos do C piscam ao serem tocados (clarão de 0,9 s) e depois respiram e cintilam, cada um no seu ritmo (`WelcomeScript.shine`/`glint`; o
   relógio segue depois da história, parado com Reduzir Movimento); o sexto ponto respira em amarelo. Ao ser tocada, cada palavra (TELEPROMPTER, AUTO
   CAPTIONS, ✦ AI SCRIPTS) vira uma cápsula **amarela sólida** com letras pretas (`accInk` sobre `acc`) e fica assim. Título "A teleprompter made for your
@@ -1967,11 +1983,6 @@ O dono revisou no iPhone, tela a tela, o primeiro voo, a primeira estrela, o Pro
   44 pt, texto de 15 pt) tem uma onda de 9 barras (`PracticeVoiceWave`) que segue o nível do microfone enquanto ouve a voz e, esperando, uma ondulação
   lenta; a borda acende em amarelo com a voz. O cartão fica 58 pt abaixo da caixa. **Record my first video** sobe depois do play; **Explore Cue first**
   está sempre lá. A etiqueta "✦ PRACTICE · NOT RECORDING" é sólida (`surface3`, borda lilás), não vidro.
-- **1.7 (acabamento por cima do quadro):** uma luz percorre a borda do take antes dele dobrar; onde ele vira luz, um reflexo horizontal de lente e uma onda;
-  o cometa com o rastro e 5 toques táteis que apertam até a chegada; o universo escurece por um instante antes da estrela acender, um clarão branco e
-  dourado, uma onda de luz pelas órbitas de dentro para fora e o YOU pulsando; uma conta de luz desenha a linha do YOU (lilás ao dourado); a cena se
-  aproxima 4% durante a história; a cruz da estrela gira devagar com raios diagonais e a estrela cintila a cada 3,4 s; um brilho dourado cruza o título; uma
-  estrela cadente a cada 9 s depois que tudo para.
 - **Pro:** ver §12 (abertura e arte). A lista de benefícios ficou como estava no texto: o dono decide depois quais recursos são só do Pro (hoje só as
   exportações ilimitadas e os ícones de marco a partir de 10 são).
 - **Your universe:** constrói-se ao abrir (`UniverseOpening`, 2,9 s; não nos anos selados, com Reduzir Movimento, nas imagens do "Share my universe" nem nos
@@ -1982,7 +1993,7 @@ O dono revisou no iPhone, tela a tela, o primeiro voo, a primeira estrela, o Pro
   do ano anterior (dele ficam rotas e planetas, bem fracos).
 - **Testes:** `WelcomeScriptTests` (cápsula fica amarela, brilho dos pontos), `VoyageFitTests`, `ProOpeningScriptTests` (voo, nascimento, nada antes da
   estrela chegar), `UniverseOpeningTests`, `PaletteContrastTests.thePracticeNoticeReadsOnItsSolidCapsule`, `OnboardingUITests` (sem Skip nem "I already use
-  Cue"; Record só depois do play); captura `HandoffCaptureTests.test1_7_FirstStarFinish` com os segundos do acabamento.
+  Cue"; Record só depois do play).
 
 ## 37. Quick edit: montagens confiáveis, capa e exportação (16 de outubro de 2026; pedido do dono)
 
@@ -3400,7 +3411,7 @@ Profile, Pro, celebrações) tinha tamanho fixo copiado do quadro, e várias tel
   crescer: o texto do teleprompter (o controle dele), o que é desenhado no vídeo, miniaturas, mapas, cartões de compartilhar e ícones dentro de
   botões redondos de tamanho fixo. A regra `loose_font_size` do SwiftLint acusa um tamanho solto.
 - **Proporção da tela** (`ScreenProportion`): de 390 a 402 pt de largura o tamanho é o do quadro; menor até ×0,96 no SE e no mini (375 pt), maior até
-  ×1,08 no Pro Max (440 pt; o Air, 420 pt, fica no meio). As cenas desenhadas num quadro (1.1, 1.7, 8.3) também crescem ou encolhem com a tela.
+  ×1,08 no Pro Max (440 pt; o Air, 420 pt, fica no meio). As cenas desenhadas num quadro (1.1, 8.2) também crescem ou encolhem com a tela.
   **O Quick edit não segue a largura** (dono, 30/10/2026): as ferramentas têm o mesmo tamanho em todo iPhone, e um controle do app dentro dele (o
   slider, um chip, as folhas dele) usa o tamanho do editor (`typeFollowsScreenWidth`); o Dynamic Type continua valendo.
 - **Papéis, não tamanhos iguais** (dono, 30/10/2026): o que tem a mesma função segue a mesma regra. Títulos de folha 22 bold (`SheetHeader`; as
@@ -3409,14 +3420,14 @@ Profile, Pro, celebrações) tinha tamanho fixo copiado do quadro, e várias tel
   compacta) e os cartões da grade de Takes 14 bold sobre a miniatura. Nome e valor de um slider em 15 semibold, o valor branco com dígitos fixos
   (o amarelo fica na trilha, nos chips mexidos e no ✓). Texto secundário, dicas e rótulos mono em `ink2` (não há um segundo cinza).
 - **Até onde cresce:** o app inteiro até o 3º tamanho de acessibilidade (`RootView`; além dele uma linha guarda uma ou duas palavras). Cenas com as
-  palavras dentro (primeiro voo, 1.7, 8.2, Your year, Ready to travel) até o 1º; a 1.1, o capítulo dos tópicos, o cartão do roteiro de prática, a
-  8.3, a fileira de ícones do app, o dock de Scripts e o cartão de etapas de Takes até o maior tamanho padrão (xxxLarge; o dock fica por cima da
+  palavras dentro (primeiro voo, 8.2, Your year, Ready to travel) até o 1º; a 1.1, o capítulo dos tópicos, o cartão do roteiro de prática, a
+  fileira de ícones do app, o dock de Scripts e o cartão de etapas de Takes até o maior tamanho padrão (xxxLarge; o dock fica por cima da
   lista); os chips de plataforma até o 1º. O Quick edit e o gravador seguem como estavam (§44).
 - **Nos tamanhos de acessibilidade** o que ficava lado a lado empilha (`ReflowStack`): a foto e o nome no Profile (a seta › no canto), o universo e o
   texto em "Your universe", o nome e o valor nas linhas de Settings, "Ready to record" e as informações na página do roteiro, a ação embaixo do
   "Up next" de Takes, a força da voz. Os formatos e os vídeos de Takes ficam um por linha; o título de um roteiro na lista vai a 4 linhas e a
   linha mono a 2. Chips com texto têm altura mínima (com 2–4 pt em cima e embaixo), não fixa: no tamanho padrão ficam iguais.
-- **iPhone SE (375 × 667):** 1.1 e 8.3 cabem inteiras acima dos botões; o capítulo 3 (1.4) rola acima do botão só quando nem as palavras em 13 pt
+- **iPhone SE (375 × 667):** a 1.1 cabe inteira acima dos botões; o capítulo 3 (1.4) rola acima do botão só quando nem as palavras em 13 pt
   cabem; em todo outro iPhone ele cabe sem rolar (`MessageWordFit`, §35).
 - **Conferido** com `LayoutAuditCaptureTests` (cada tela num lançamento próprio, opt-in: `TEST_RUNNER_CUE_AUDIT_DIR`, `TEST_RUNNER_CUE_AUDIT_NAME`,
   `TEST_RUNNER_CUE_AUDIT_SIZE`, `CUE_SIMULATOR`) no SE com texto padrão, no SE com o maior tamanho de acessibilidade e no Pro Max.

@@ -109,7 +109,7 @@
       "status": "current",
       "pageTitle": "Cue — Onboarding 6, first star",
       "appFiles": [
-        "Cue Studio/Screens/TakeReview/Celebration/FirstStar/FirstStarView.swift"
+        "Cue Studio/Screens/Takes/Rows/TakeFirstStarPill.swift"
       ],
       "appFilesStatus": "suggested, confirm in code",
       "drawnFrom": "622ce9617acb",
@@ -515,7 +515,7 @@
       "status": "current",
       "pageTitle": "Cue — Milestone unlocked",
       "appFiles": [
-        "Cue Studio/Screens/TakeReview/Celebration/MilestoneView.swift"
+        "Cue Studio/Screens/TakeReview/Celebration/SendOffIconRow.swift"
       ],
       "appFilesStatus": "suggested, confirm in code",
       "drawnFrom": "622ce9617acb",
