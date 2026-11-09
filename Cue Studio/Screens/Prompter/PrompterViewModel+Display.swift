@@ -16,9 +16,16 @@ extension PrompterViewModel {
 
     var lineHeight: Double { fontSize * session.prompter.lineSpacing }
 
-    /// Newest take of this script (or of freestyle recordings).
+    /// Newest take of the video being recorded (this script, this network; `recordingVideo`), or of the freestyle recordings.
     var lastTake: Take? {
-        takes.takes.first { $0.scriptID == scriptID }
+        guard let video = recordingVideo else { return takes.takes.first(where: \.isFreestyle) }
+        return takes.takes.first { $0.videoKey == video }
+    }
+
+    /// How many takes the video being recorded has (the freestyle recordings, in Freestyle): the last take's badge.
+    var lastTakeCount: Int {
+        guard let video = recordingVideo else { return takes.takes.count(where: \.isFreestyle) }
+        return takes.takes(in: video).count
     }
 
     var monetizationChip: String? {

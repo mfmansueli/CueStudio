@@ -19,11 +19,9 @@ struct ScriptRequestFactory {
     /// that was read from the idea, and settle a text that could be either of two languages.
     var preferredLanguages: [String] = []
 
-    /// The platform an idea is for when the creator didn't choose one: their default, or TikTok.
-    var defaultPlatform: Platform {
-        let platform = profile.profile.defaultPlatform
-        return Platform.primary.contains(platform) ? platform : .tiktok
-    }
+    /// The platform an idea is for when the creator didn't choose one in the dock's Create for: their default (Profile), whichever it is,
+    /// the same one a blank script gets.
+    var defaultPlatform: Platform { profile.profile.defaultPlatform }
 
     /// - Parameter languageText: the creator's own words when `idea` wraps them in Cue's (an answered comment): the language is read
     ///   from them, not from the English around them.

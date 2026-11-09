@@ -80,16 +80,21 @@ final class TakeLibraryService {
         return takes.first { $0.id == id }
     }
 
-    /// Newest first.
+    /// Every take of a script, whatever network it was recorded for (its page, its versions), newest first.
     func takes(for scriptID: UUID) -> [Take] {
         takes.filter { $0.scriptID == scriptID }
     }
 
-    /// The take and the others of its video (same script), by number, for the review strip. A
+    /// The takes of one video (`TakeVideoKey`), newest first.
+    func takes(in video: TakeVideoKey) -> [Take] {
+        video.takes(in: takes)
+    }
+
+    /// The take and the others of its video (same script, same network), by number, for the review strip. A
     /// freestyle take stands alone.
     func siblings(of take: Take) -> [Take] {
-        guard let scriptID = take.scriptID else { return [take] }
-        return takes.filter { $0.scriptID == scriptID }.sorted { $0.number < $1.number }
+        let video = takes(in: take.videoKey)
+        return (video.isEmpty ? [take] : video).sorted { $0.number < $1.number }
     }
 
     func count(for scriptID: UUID) -> Int {
@@ -100,7 +105,8 @@ final class TakeLibraryService {
         repository.videoURL(named: take.fileName)
     }
 
-    /// Take numbers keep counting per script (freestyle recordings share one counter).
+    /// Take numbers keep counting per script, across its networks, so "Take 4" names one take of the script (freestyle recordings share
+    /// one counter).
     func nextNumber(for scriptID: UUID?) -> Int {
         (takes.filter { $0.scriptID == scriptID }.map(\.number).max() ?? 0) + 1
     }
@@ -112,11 +118,14 @@ final class TakeLibraryService {
     /// while recording becomes the take's recipe (the recording keeps the camera's own image). When the library can't be
     /// written (the iPhone full), the take isn't added and its video goes back where the camera left it, where
     /// `TakeRecovery` finds it at the next launch: never a video in the library that no take points to.
+    /// - Parameter platform: the network the recording was made for (the recorder's, which the creator may have changed for this session);
+    ///   nil takes the script's (a freestyle take then has none). It decides which video the take joins (`TakeVideoKey`).
     @discardableResult
     func addTake(
         fileAt url: URL, duration: TimeInterval, script: Script?, camera: CameraSettings, background: BackgroundEffect? = nil,
-        delivered: (resolution: VideoResolution?, frameRate: FrameRate?) = (nil, nil)
+        delivered: (resolution: VideoResolution?, frameRate: FrameRate?) = (nil, nil), platform: Platform? = nil
     ) throws -> Take {
+        let platform = platform ?? script?.platform
         let fileName = try repository.storeVideo(from: url)
         var take = Take(
             scriptID: script?.id,
@@ -129,7 +138,7 @@ final class TakeLibraryService {
             resolution: delivered.resolution ?? camera.resolution,
             frameRate: delivered.frameRate ?? camera.frameRate,
             aspect: camera.aspect,
-            platform: script?.platform
+            platform: platform
         )
         take.scriptReference = script
         if let background, background.isActive {
@@ -144,8 +153,10 @@ final class TakeLibraryService {
             takes.removeAll { $0.id == take.id }
             do {
                 try repository.returnVideo(named: fileName, to: url)
-                // It comes back under its script (`TakeRecovery`), not as a freestyle recording.
-                if let script { TakeRecoveryNote(scriptID: script.id, scriptVersion: script.version).write(for: url) }
+                // It comes back under its script and its network (`TakeRecovery`), not as a freestyle recording.
+                if script != nil || platform != nil {
+                    TakeRecoveryNote(scriptID: script?.id, scriptVersion: script?.version, platform: platform).write(for: url)
+                }
             } catch {
                 logger.error("Could not put the unsaved take's video back: \(error.localizedDescription)")
             }
@@ -179,11 +190,12 @@ final class TakeLibraryService {
         return take
     }
 
-    /// One best take per script: marking a take unmarks the others. A freestyle take is a video of
-    /// its own, so it never unmarks other freestyle takes.
+    /// One best take per video (`TakeVideoKey`): marking a take unmarks the others of its video, never those the script has for another
+    /// network. A freestyle take is a video of its own, so it never unmarks other freestyle takes.
     func setBest(_ id: UUID, isBest: Bool) {
         guard let target = take(id: id) else { return }
-        let video = takes.indices.filter { takes[$0].id == id || (target.scriptID != nil && takes[$0].scriptID == target.scriptID) }
+        let key = target.videoKey
+        let video = takes.indices.filter { takes[$0].videoKey == key }
         // The star settles every take the video has now, whatever the clock says about their dates (`TakeStage.takeAfterStar`).
         let markedAt = max(.now, video.map { takes[$0].recordedAt }.max() ?? .now)
         for index in video {
@@ -318,6 +330,43 @@ final class TakeLibraryService {
         repository.deleteEverything()
         takes = []
         canSave = true
+    }
+
+    // MARK: - Networks
+
+    /// The script moved to another network and these takes followed it (`ScriptRecategorization`): their video is filed there now. Returns
+    /// them as they were, for Undo (`restoreNetworks`).
+    @discardableResult
+    func move(_ ids: Set<UUID>, to platform: Platform) -> [Take] {
+        let before = takes.filter { ids.contains($0.id) }
+        guard !before.isEmpty else { return [] }
+        for index in takes.indices where ids.contains(takes[index].id) { takes[index].platform = platform }
+        persist()
+        return before
+    }
+
+    /// Undo of a move: each take's network and star exactly as they were (what else changed since stays).
+    func restoreNetworks(_ before: [Take]) {
+        let byID = Dictionary(before.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
+        var changed = false
+        for index in takes.indices {
+            guard let old = byID[takes[index].id] else { continue }
+            takes[index].platform = old.platform
+            takes[index].isBest = old.isBest
+            takes[index].bestMarkedAt = old.bestMarkedAt
+            changed = true
+        }
+        if changed { persist() }
+    }
+
+    /// The one-time move to every take knowing its network (`TakePlatformMigration`). Returns how many changed.
+    @discardableResult
+    func adoptScriptNetworks(_ scriptPlatform: (UUID) -> Platform?) -> Int {
+        let migrated = TakePlatformMigration.migrated(takes, scriptPlatform: scriptPlatform)
+        guard migrated.changed > 0 else { return 0 }
+        takes = migrated.takes
+        persist()
+        return migrated.changed
     }
 
     /// Keeps take titles in step when a script is renamed.

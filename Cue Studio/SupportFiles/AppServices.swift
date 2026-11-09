@@ -281,6 +281,7 @@ struct AppServices {
     func load() {
         library.load()
         takes.load()
+        migrateTakeNetworks()
         brands.load()
         // Before anything draws words: the imported fonts are registered for Cue.
         fonts.load()
@@ -310,6 +311,7 @@ struct AppServices {
     func reloadWhatCouldntBeRead() {
         library.reloadIfUnread()
         takes.reloadIfUnread()
+        migrateTakeNetworks()
         brands.reloadIfUnread()
         quota.reloadIfUnread()
         fonts.reloadIfUnread()
@@ -318,6 +320,19 @@ struct AppServices {
         // And writes what a failed save (a full iPhone) left only in memory, now that space may be free.
         library.saveAgainIfFailed()
         takes.saveAgainIfFailed()
+    }
+
+    /// Once, with both libraries read: every take of a script gets the script's network (`TakePlatformMigration`). Marked done only once it
+    /// was written, so a full iPhone tries again at the next launch.
+    private func migrateTakeNetworks() {
+        guard defaults.integer(forKey: DefaultsKey.takeNetworkMigration) < TakePlatformMigration.version, library.isRead, takes.isRead else { return }
+        let scripts = Dictionary(library.scripts.map { ($0.id, $0.platform) }, uniquingKeysWith: { first, _ in first })
+        takes.adoptScriptNetworks { scripts[$0] }
+        // The first flight used to leave its network picked on the empty dock, so AI scripts kept going there after the default changed: an
+        // empty dock follows the default again.
+        if ideaDraft.isEmpty { ideaDraft.platform = nil }
+        guard !takes.saveFailed else { return }
+        defaults.set(TakePlatformMigration.version, forKey: DefaultsKey.takeNetworkMigration)
     }
 
     /// Scripts or takes changed but couldn't be written: kept in memory, lost if Cue is closed before a save works.

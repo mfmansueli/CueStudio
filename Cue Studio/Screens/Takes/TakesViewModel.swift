@@ -7,22 +7,19 @@ import Foundation
 import PhotosUI
 import SwiftUI
 
-/// The Takes library: videos (takes grouped by script, each at the stage its takes put it in)
-/// filtered by platform and by the stage picked in the pipeline, by day.
+/// The Takes library: videos (takes grouped by script and the network they were recorded for, `TakeVideoKey`, each at the stage its takes
+/// put it in) filtered by that network and by the stage picked in the pipeline, by day.
 @MainActor
 @Observable
 final class TakesViewModel {
     var filter = TakeLibraryFilter()
-    /// Video whose takes are about to be deleted, for the confirmation.
-    var videoToDelete: TakeVideo?
     /// Bumped when the tab shows again: an edit left open in the editor changes a stage without
     /// touching the takes.
     private(set) var editRevision = 0
-    /// "{YEAR} · SHARED ✕": Takes opened from "Your universe" (a planet's "See in Takes ›", a theme): only the videos shared in that year, of that
-    /// platform or theme.
+    /// "{YEAR} · SHARED ✕": Takes opened from "Your universe" (a planet's "See in Takes ›", a theme): only the videos shared in that year, on that
+    /// network or of that theme; or "MORNING ROUTINE ✕", a script's takes. The pipeline and UP NEXT count inside it too.
     private(set) var scope: TakesRequest?
     @ObservationIgnored private var scopeTakeIDs: Set<UUID> = []
-    @ObservationIgnored private var scopeSetPlatform = false
 
     private let takes: TakeLibraryService
     private let library: ScriptLibraryService
@@ -95,16 +92,12 @@ final class TakesViewModel {
     /// Every video, newest first, with its stage.
     var allVideos: [TakeVideo] {
         _ = editRevision
-        return TakeLibraryFilter.videos(
-            from: takes.takes,
-            scriptPlatform: { [library] in library.script(id: $0)?.platform },
-            hasDraft: { [drafts] in drafts.hasDraft(for: $0) }
-        )
+        return TakeLibraryFilter.videos(from: takes.takes, hasDraft: { [drafts] in drafts.hasDraft(for: $0) })
     }
 
-    /// The header: how many at each stage, and the next step, for the platform picked.
+    /// The header: how many at each stage, and the next step, for the platform picked, inside the scope when there is one.
     var pipeline: TakePipeline {
-        TakePipeline(videos: filter.onPlatform(allVideos))
+        TakePipeline(videos: filter.onPlatform(scopedVideos))
     }
 
     var sections: [TakeLibraryFilter.Section] {
@@ -119,8 +112,8 @@ final class TakesViewModel {
 
     var isEmpty: Bool { takes.takes.isEmpty }
 
-    /// The platform chips: All, then each platform a video was made for, none for a network with no videos (the owner, 30/10/2026); the
-    /// chosen one keeps its chip while it is chosen.
+    /// The platform chips: All, then each network a video was recorded for (`Take.platform`, never where it was posted), none for a network
+    /// with no videos (the owner, 30/10/2026); the chosen one keeps its chip while it is chosen.
     var platformOptions: [Platform?] {
         let used = Set(allVideos.compactMap(\.platform))
         return [nil] + Platform.allCases.filter { used.contains($0) || filter.platform == $0 }
@@ -161,25 +154,24 @@ final class TakesViewModel {
         editRevision += 1
     }
 
-    /// A request from "Your universe" or a script's "×3 ›": the chip goes first, the platform it names is picked, and the stage filter is cleared.
+    /// A request from "Your universe" or a script's "×3 ›": the chip goes first and the network and stage filters are cleared. A planet's
+    /// request names where the videos were posted, which is the scope's own (a Reels video posted on TikTok is on the TikTok planet): it never
+    /// picks a network chip, which files videos by the network they were recorded for and would hide it.
     func apply(_ request: TakesRequest, sharedVideos: [UniverseVideo]) {
         scope = request
         if let script = request.script {
-            scopeTakeIDs = Set(takes.takes.filter { $0.scriptID == script.id }.map(\.id))
+            scopeTakeIDs = Set(takes.takes(for: script.id).map(\.id))
         } else {
             scopeTakeIDs = request.matching(sharedVideos)
         }
-        scopeSetPlatform = request.platform != nil
-        if let platform = request.platform { filter.platform = platform }
+        filter.platform = nil
         filter.stage = nil
     }
 
-    /// ✕ on the chip: every video again (and every platform, when the scope had picked one).
+    /// ✕ on the chip: every video again.
     func clearScope() {
         scope = nil
         scopeTakeIDs = []
-        if scopeSetPlatform { filter.platform = nil }
-        scopeSetPlatform = false
     }
 
     /// Whether a stage, a platform or a year is narrowing the list: when it comes up empty, that is why.
@@ -204,7 +196,7 @@ final class TakesViewModel {
     }
 
     func retake(_ video: TakeVideo) {
-        presentation.openPrompter(scriptID: video.best?.scriptID, mode: .selfie)
+        presentation.openPrompter(scriptID: video.best?.scriptID, mode: .selfie, platform: video.platform)
     }
 
     func markBest(_ video: TakeVideo) {
@@ -213,12 +205,22 @@ final class TakesViewModel {
         toast.show(String(localized: "\(best.label) marked as best"))
     }
 
-    func deleteConfirmed() {
-        guard let video = videoToDelete else { return }
-        videoToDelete = nil
-        for take in video.takes { takes.delete(take.id) }
-        toast.show(video.takes.count == 1
-            ? String(localized: "Take deleted")
-            : String(localized: "\(video.takes.count) takes deleted"))
+    /// Delete on a video: its takes go at once, with no question, and the toast's Undo brings them all back (the review's way: each video
+    /// waits until the Undo is out of reach, `TakeLibraryService.awaitPurge`).
+    func delete(_ video: TakeVideo) {
+        let removed = video.takes.compactMap { takes.remove($0.id) }
+        guard !removed.isEmpty else { return }
+        let library = takes
+        for take in removed { library.awaitPurge(take) }
+        let message = removed.count == 1
+            ? String(localized: "Video deleted")
+            : String(localized: "Video deleted · \(removed.count) takes")
+        toast.show(message, action: ToastAction(title: String(localized: "Undo")) {
+            // Back in the opposite order they left, so each lands where it was.
+            for take in removed.reversed() { library.restore(take) }
+        })
+        toast.onLeave(of: toast.pill) {
+            for take in removed { library.purgeAwaiting(take.take.id) }
+        }
     }
 }

@@ -85,6 +85,8 @@ nonisolated enum DefaultsKey {
     static let takeOrphanSightings = "takeOrphanSightings"
     /// Copies a failed import left in the edits' media that couldn't be removed then (`EditMediaFiles.discardPartial`).
     static let editMediaDeletionsPending = "editMediaDeletionsPending"
+    /// The last `TakePlatformMigration.version` that ran (`Int`; absent = never): every take of a script knows its network from then on.
+    static let takeNetworkMigration = "takeNetworkMigration"
     /// How the Takes tab lays videos out (`TakeLayout` raw value); absent = the grid.
     static let takesLayout = "takesLayout"
     /// The quality last picked in Export options (`ExportQuality` raw value; absent = the recording's own).

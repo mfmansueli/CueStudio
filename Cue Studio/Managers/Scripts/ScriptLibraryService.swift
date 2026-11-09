@@ -20,6 +20,8 @@ final class ScriptLibraryService {
     private(set) var saveFailed = false
     /// False when the library on disk couldn't be read: writing would replace it with what's in memory.
     @ObservationIgnored private var canSave = true
+    /// The library on disk was read (a locked iPhone at launch can keep it from being read until later).
+    var isRead: Bool { canSave }
 
     private let repository: ScriptRepository
     private let now: () -> Date

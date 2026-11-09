@@ -38,10 +38,10 @@ nonisolated struct VoyageProgress: Equatable, Sendable {
         self.done = done
     }
 
-    /// A script recorded once, a freestyle take or a video imported from Photos: that take is the one, nothing to pick.
+    /// A video recorded once (a script's takes for one network, `TakeVideoKey`), a freestyle take or a video imported from Photos: that take
+    /// is the one, nothing to pick.
     static func hasSingleTake(_ takes: [Take]) -> Bool {
-        let byScript = Dictionary(grouping: takes) { $0.scriptID }
-        return byScript.contains { scriptID, takes in takes.count == 1 || (scriptID == nil && !takes.isEmpty) }
+        Dictionary(grouping: takes, by: \.videoKey).values.contains { $0.count == 1 }
     }
 
     /// Captions turned on, or a pause or word cut by Clean Up. Captions only cached by an export (shown off) don't count.

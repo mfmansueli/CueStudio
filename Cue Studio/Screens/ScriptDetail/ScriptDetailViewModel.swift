@@ -87,6 +87,8 @@ final class ScriptDetailViewModel {
     let transition: IdeaTransitionService?
     /// Where Cue's draft is kept until the script is recorded, to learn from what the creator changes.
     let draftLearning: DraftLearningService?
+    /// The takes whose post the creator confirmed (`MilestoneService`): a video posted for one network stays there when the script moves.
+    let sharedTakeIDs: () -> Set<UUID>
 
     init(
         scriptID: UUID,
@@ -103,8 +105,10 @@ final class ScriptDetailViewModel {
         toast: ToastService,
         voiceQuestions: VoiceQuestionScheduler? = nil,
         transition: IdeaTransitionService? = nil,
-        draftLearning: DraftLearningService? = nil
+        draftLearning: DraftLearningService? = nil,
+        sharedTakeIDs: @escaping () -> Set<UUID> = { [] }
     ) {
+        self.sharedTakeIDs = sharedTakeIDs
         self.voiceQuestions = voiceQuestions
         self.draftLearning = draftLearning
         self.transition = transition
@@ -279,10 +283,27 @@ final class ScriptDetailViewModel {
 
     // MARK: - Destination
 
+    /// The script moves to `platform` (its network chip, Details › Create for), and the video it had for the old network follows it unless it
+    /// was posted or the new network already has one (`ScriptRecategorization`); versions for other networks stay. When a video was there, the
+    /// toast says what became of it, with Undo (the script and its takes as they were, ★ included); without one, it says the new network.
     func setPlatform(_ platform: Platform) {
-        library.update(scriptID) { $0.platform = platform }
         sheet = nil
-        toast.show(String(localized: "Create for \(platform.destinationName)"))
+        guard let previous = script?.platform else { return }
+        let shared = sharedTakeIDs()
+        let change = ScriptRecategorization(
+            takes: scriptTakes, from: previous, to: platform, wasPosted: { $0.isExported || shared.contains($0.id) }
+        )
+        library.update(scriptID) { $0.platform = platform }
+        let before = takes.move(change.moving, to: platform)
+        guard let message = change.message else {
+            toast.show(String(localized: "Create for \(platform.destinationName)"))
+            return
+        }
+        let (library, takes, scriptID) = (library, takes, scriptID)
+        toast.show(message, action: ToastAction(title: String(localized: "Undo")) {
+            library.update(scriptID) { $0.platform = previous }
+            takes.restoreNetworks(before)
+        })
     }
 
     // MARK: - Hooks

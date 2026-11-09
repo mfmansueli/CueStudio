@@ -40,8 +40,9 @@ nonisolated enum FirstCelebration {
             && facts.recordedVideos == 1 && facts.confirmedPosts == 0
     }
 
-    /// Videos among `takes` recorded with Cue: a script's takes are one video, a freestyle take one of its own (as in Takes).
+    /// Videos among `takes` recorded with Cue: a script's takes for one network are one video, a freestyle take one of its own (as in
+    /// Takes, `TakeVideoKey`).
     static func recordedVideos(in takes: [Take]) -> Int {
-        Set(takes.filter { !$0.isImported }.map { $0.scriptID?.uuidString ?? $0.id.uuidString }).count
+        TakeVideoKey.count(in: takes.filter { !$0.isImported })
     }
 }

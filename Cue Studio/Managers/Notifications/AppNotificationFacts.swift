@@ -84,10 +84,11 @@ final class AppNotificationFacts: NotificationFactsSource {
     // MARK: - Takes
 
     private func takeFacts(_ takes: [Take]) -> [NotificationFacts.TakeFact] {
-        let byVideo = Dictionary(grouping: takes) { $0.scriptID ?? $0.id }
+        // A take's stage is its video's (`TakeVideoKey`): its script's takes for the same network, as Takes shows it.
+        let byVideo = Dictionary(grouping: takes, by: \.videoKey)
         let drafts = sources.drafts
         return takes.map { take in
-            let video = byVideo[take.scriptID ?? take.id] ?? [take]
+            let video = byVideo[take.videoKey] ?? [take]
             let stage = TakeStage(takes: video, hasDraft: { drafts.hasDraft(for: $0) })
             // An edit still open is what the creator sees; the file is read only when there is one.
             let draft = drafts.hasDraft(for: take.id) ? drafts.draft(for: take.id) : nil

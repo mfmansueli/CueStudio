@@ -1083,15 +1083,23 @@ giradas −9°, YOU de 56 pt, planetas de 20/18/17/16/14/12 pt por ordem de víd
 do ícone sobe no lugar do cartão depois do pouso (`SendOffLayout.iconRowTop`/`iconRowBottom`: de 392 a 568 pt do quadro, presa embaixo, crescendo para
 cima com o texto; §16). O link do universo e **Done** terminam do mesmo jeito (`TakeReviewView.endSendOff`).
 
-**6.2 Takes:** título com **Import video** à esquerda (ícone em `Palette.ink`, como os outros botões de barra, dono 30/10/2026) e List | Grid à
+**6.2 Takes:** **um vídeo é o conjunto das takes de um roteiro gravadas para a mesma rede** (`TakeVideoKey`: roteiro + `Take.platform`, a rede para a
+qual aquela gravação foi feita; dono, 09/11/2026); uma take sem roteiro (freestyle, importada) é um vídeo sozinho. Um roteiro gravado para Reels e de
+novo para Shorts são dois cartões com o mesmo título e pés diferentes ("● REELS · 0:58", "● SHORTS · 0:41"), sem selo de versão. ★, estágio, "TAKE i
+OF n", Pick best, UP NEXT, os fatos das notificações, a primeira estrela, a primeira viagem e a última take do gravador contam por vídeo. A rede onde o
+vídeo foi postado (`ShareRecord.platforms`) nunca muda filtro nem agrupamento. Título com **Import video** à esquerda (ícone em `Palette.ink`, como os outros botões de barra, dono 30/10/2026) e List | Grid à
 direita; sob o título, nenhuma contagem (dono, 30/10/2026); **trilha de status** (`TakePipelineCard`: quatro nós de 28 pt, TO PICK cinza, IN EDIT ciano, READY verde com
 anel que pulsa a cada 2 s, ✦ SHARED lilás; tocar filtra, de novo limpa); **Up next** (`TakeUpNextCard`: pôster 40 × 56, "UP NEXT · POST IT", botão amarelo
-Share/Edit/Pick que abre a take naquele passo; some enquanto a dica da primeira viagem está na tela, que diz o mesmo passo); **fichas** (`TakesFilterChips`: "2026 · SHARED ✕" primeiro quando vem do universo, ou o título do roteiro ("MORNING ROUTINE ✕", todas as takes dele, compartilhadas ou não) quando vem do "×3 ›" de Scripts (`TakesRequest.script`), sempre à vista e fora do recolhimento, depois All e uma por
-rede que tem vídeos, nenhuma com 0, na mesma linha que se recolhe na escolhida de Scripts, `FilterFan`, §2; a escolhida branca com texto preto; o ✕
-tira o amarelo e, se o planeta tinha escolhido a rede, o chip volta para All). **List | Grid** é `Picker` `.segmented` (`TakesLayoutToggle`). Card da grade (`TakeVideoCard`, 177:270): anel de 1 pt na
+Share/Edit/Pick que abre a take naquele passo; some enquanto a dica da primeira viagem está na tela, que diz o mesmo passo); a trilha e o UP NEXT contam
+só o que o chip amarelo deixa na lista, quando há um; **fichas** (`TakesFilterChips`: "2026 · SHARED ✕" primeiro quando vem do universo, ou o título do roteiro ("MORNING ROUTINE ✕", todas as takes dele, de todas as redes, compartilhadas ou não) quando vem do "×3 ›" de Scripts (`TakesRequest.script`), sempre à vista e fora do recolhimento, depois All e uma por
+rede para a qual há vídeos gravados (a rede da take, não a atual do roteiro nem onde foi postado), nenhuma com 0, na mesma linha que se recolhe na escolhida de Scripts, `FilterFan`, §2; a escolhida branca com texto preto). O "See in Takes ›" de um planeta
+mostra os vídeos postados naquela rede pelo chip amarelo e deixa a ficha de rede em All: um vídeo de Reels postado no TikTok aparece no planeta TikTok
+e em Takes; o ✕ tira o amarelo. **List | Grid** é `Picker` `.segmented` (`TakesLayoutToggle`). Card da grade (`TakeVideoCard`, 177:270): anel de 1 pt na
 cor do estágio, pílula do estágio, título e "● TIKTOK · 1:02" no pé. Uma take gravada depois da ★ (o vídeo foi gravado de novo) volta o vídeo
 para TO PICK e é a que abre (`TakeStage.takeAfterStar`, `Take.bestMarkedAt`); dar a ★ de novo, até à antiga, resolve. Segurar um vídeo importado não
-oferece Retake. **A primeira estrela** (§16, `TakeFirstStarPill`): no primeiro vídeo, quando a revisão
+oferece Retake; o Retake de um vídeo abre o gravador na rede do vídeo (`PrompterLaunch.platform`). **Delete** (menu de contexto, deslize da lista)
+apaga na hora, sem pergunta: o toast "Video deleted · 3 takes" ("Video deleted" com uma take) tem **Undo**, que traz todas de volta; os arquivos só
+somem quando o Undo sai de alcance (o mesmo caminho da lixeira da revisão, `TakeLibraryService.awaitPurge`). **A primeira estrela** (§16, `TakeFirstStarPill`): no primeiro vídeo, quando a revisão
 dele foi deixada sem postagem, a pílula **"✦ FIRST STAR"** (mono 10 heavy, `accText`) aparece sobre o título do cartão (no fundo `Palette.Takes.posterPill`)
 ou à frente das fichas da linha (no `surface2`): abre de 60% com uma mola depois de 0,25 s e um anel de luz sai da estrela (0,9 s); com Reduzir Movimento só
 aparece. Um toque `.soft`, o VoiceOver ouve "Your first video. Your first star." e o rótulo do cartão ganha "First star". Acende uma vez, quando o vídeo
@@ -1204,6 +1212,14 @@ roteiro (v2, v3…) liga as takes ao texto lido: mudar as palavras depois de um 
 são essa mesma versão (também na mesma visita, com o gravador por cima). O texto é **corrido**, sem rótulos de estrutura nem régua de tempo (decisão do dono, 20/10/2026: o criador tem de se
 sentir livre para escrever como quiser). **Sem dicas embaixo do texto** (gancho longo, frase longa, "No CTA yet"): quem quiser mudanças usa o Improve
 (decisão do dono, 20/10/2026).
+- **Mudar a rede do roteiro** (o chip "● TikTok" da página e Details › Create for; dono, 09/11/2026): sem pergunta. O vídeo que o roteiro tinha
+  para a rede antiga vai junto (as takes passam a ser da rede nova), a não ser que já tenha sido postado ou exportado (um `ShareRecord` ou
+  `Take.isExported`) ou que a rede nova já tenha um vídeo desse roteiro: aí fica na antiga. Takes gravadas para outras redes nunca mudam
+  (`ScriptRecategorization`). Com um vídeo na rede antiga, o toast diz o que houve, com **Undo** (roteiro e takes como estavam, ★ incluída): "Moved to
+  Shorts", "Moved to Shorts · Reels video stays (already posted)" ou "Moved to Shorts · Reels video stays (Shorts already has one)"; sem vídeo lá,
+  continua "Create for YouTube Shorts". Quem já tinha takes antes disso: uma vez, cada take de um roteiro ganhou a rede atual do roteiro
+  (`TakePlatformMigration`, `DefaultsKey.takeNetworkMigration`), sem nada mudar na tela. Roteiros escritos pela IA vão para a rede padrão do
+  criador (Profile), como os em branco, a não ser que ele tenha escolhido outra no Create for do dock.
 - **Rascunho ou pronto (decisão do dono, 20/10/2026):** a faixa sob o título (`ScriptStateStrip`, sem caixa) tem o par **Draft** e **Ready to record**
   lado a lado, um dos dois sempre aceso (`DraftChoice` + `ReadyToggle`; RECORDED num roteiro gravado e, em amarelo ao lado, "Changed since take N"
   quando as palavras mudaram depois do take) e Stop no fim enquanto a IA escreve; sem linha de detalhes (dono, 31/10/2026: o par diz se é rascunho, as
@@ -1302,6 +1318,10 @@ sentir livre para escrever como quiser). **Sem dicas embaixo do texto** (gancho 
 
 **Revisão da take (6.3):** barra de navegação do sistema (`ReviewToolbar`, `NavigationStack` próprio, fundo escondido sobre o vídeo): voltar (‹ leva à câmera para outra take; a Takes quando a revisão foi aberta de lá ou a take já saiu do Cue, salva ou compartilhada, `PrompterView.leaveReview`), "TAKE 2 OF 3 ✦ ⌄"
 como título com menu (takes vizinhas, Suggest best) numa cápsula de vidro, estrela (`star` / `star.fill`) e lixeira numa cápsula à direita.
+"TAKE 2 OF 3", o deslize entre takes, a ★ (uma por vídeo) e o estágio contam as takes do vídeo (o roteiro na mesma rede, `TakeVideoKey`): as takes
+do mesmo roteiro para outra rede são outro vídeo. **Pick your best take** (`PickBestTakeView`) diz sob o título o estágio real do vídeo ("TO PICK · 3
+TAKES", "SHARED · 3 TAKES" quando já foi compartilhado), nunca TO PICK fixo. Abrir a revisão de uma take leva a rede dela ao gravador (Retake grava
+para a mesma rede).
 Refinamento do dono (22/10/2026, canvas "Revisão da take, refinada"): **Play** fica no meio do espaço livre do vídeo, acima dos controles (nunca sobre a
 linha do tempo, como no 15 Pro), encolhe e some ao tocar (`Haptics.light`); tocar no vídeo tocando pausa e pisca o sinal de pausa (`ReviewPauseFlash`,
 `Haptics.soft`). **Linha do tempo** (`ReviewScrubber`): segurando, a bolinha cresce para 24 pt e um balão branco diz o tempo; um tique a cada segundo

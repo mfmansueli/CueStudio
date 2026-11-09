@@ -5,7 +5,7 @@
 
 import Foundation
 
-/// Builds the Takes library: takes grouped into videos (each with its stage), filtered by platform
+/// Builds the Takes library: takes grouped into videos (`TakeVideoKey`, each with its stage), filtered by the network they were recorded for
 /// and by the stage picked in the pipeline, in Today / Yesterday / Earlier sections. Pure, so it is
 /// tested without files or the clock.
 nonisolated struct TakeLibraryFilter: Hashable, Sendable {
@@ -21,18 +21,13 @@ nonisolated struct TakeLibraryFilter: Hashable, Sendable {
     /// Nil shows every stage; tapping a stage in the pipeline filters to it, and again clears it.
     var stage: TakeStage?
 
-    /// One video per script, and one per freestyle recording. `scriptPlatform` gives the script's
-    /// current platform (it can change after recording); takes fall back to their own. `hasDraft`
-    /// says whether an edit is open on a take (it decides "In edit").
-    static func videos(
-        from takes: [Take],
-        scriptPlatform: (UUID) -> Platform? = { _ in nil },
-        hasDraft: (UUID) -> Bool = { _ in false }
-    ) -> [TakeVideo] {
-        var order: [String] = []
-        var grouped: [String: [Take]] = [:]
+    /// One video per script and network (`TakeVideoKey`), and one per freestyle recording, filed under the network its takes were recorded
+    /// for. `hasDraft` says whether an edit is open on a take (it decides "In edit").
+    static func videos(from takes: [Take], hasDraft: (UUID) -> Bool = { _ in false }) -> [TakeVideo] {
+        var order: [TakeVideoKey] = []
+        var grouped: [TakeVideoKey: [Take]] = [:]
         for take in takes.sorted(by: { $0.recordedAt > $1.recordedAt }) {
-            let key = take.scriptID?.uuidString ?? take.id.uuidString
+            let key = take.videoKey
             if grouped[key] == nil { order.append(key) }
             grouped[key, default: []].append(take)
         }
@@ -40,8 +35,7 @@ nonisolated struct TakeLibraryFilter: Hashable, Sendable {
             guard let group = grouped[key]?.sorted(by: { $0.number > $1.number }), let first = group.first else { return nil }
             let title = first.isImported ? String(localized: "Imported video")
                 : first.isFreestyle ? String(localized: "Freestyle recording") : first.scriptTitle
-            let platform = first.scriptID.flatMap(scriptPlatform) ?? first.platform
-            return TakeVideo(takes: group, title: title, platform: platform, stage: TakeStage(takes: group, hasDraft: hasDraft))
+            return TakeVideo(takes: group, title: title, platform: first.platform, stage: TakeStage(takes: group, hasDraft: hasDraft))
         }
     }
 
