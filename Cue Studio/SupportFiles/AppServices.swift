@@ -116,10 +116,6 @@ struct AppServices {
     let platformPickFrozenAge: Double?
     /// UI tests: the send-off stands still at this second.
     let sendOffFrozenTime: Double?
-    /// UI tests: the review opens on the first-star / milestone story.
-    let showsFirstStar: Bool
-    let storyFrozenTime: Double?
-    let milestoneToShow: Int?
     /// UI tests: a stand-in for the system share sheet.
     let fakesShareSheet: Bool
     /// UI tests: the editor reads Low Power Mode as on.
@@ -162,9 +158,6 @@ struct AppServices {
         topicBirthFrozenAge = options.topicBirthFrozenAge
         platformPickFrozenAge = options.platformPickFrozenAge
         sendOffFrozenTime = options.sendOffFrozenTime
-        showsFirstStar = options.showsFirstStar
-        storyFrozenTime = options.storyFrozenTime
-        milestoneToShow = options.milestoneToShow
         // What UI tests stand in for: the share sheet, Low Power Mode, the editor's video.
         (fakesShareSheet, forcesLowPowerMode, previewStandInFrame) = (options.fakesShareSheet, options.forcesLowPowerMode, options.previewStandInFrame)
         logsDockMotion = options.logsDockMotion
@@ -559,7 +552,6 @@ extension View {
             .environment(\.proOpeningFrozenAt, services.proFrozenTime)
             .environment(\.onboardingChapterFrozenAt, services.chapterFrozenTime)
             .environment(\.sendOffFrozenAt, services.sendOffFrozenTime)
-            .environment(\.storyFrozenAt, services.storyFrozenTime)
             .environment(\.fakesShareSheet, services.fakesShareSheet)
             .environment(\.forcesLowPowerMode, services.forcesLowPowerMode)
             .environment(\.previewStandInFrame, services.previewStandInFrame)

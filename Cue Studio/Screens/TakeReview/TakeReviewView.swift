@@ -52,11 +52,8 @@ struct TakeReviewView: View {
     @Environment(StoreManager.self) private var store
     @Environment(PresentationService.self) private var presentation
     @Environment(\.requestReview) private var requestReview
-    /// The milestone a share just reached, told once the send-off is done.
-    @State private var reachedMilestone: Int?
-    @State private var tellsMilestone = false
-    /// The first take ever: its star, told once.
-    @State private var tellsFirstStar = false
+    /// What the send-off on screen tells besides the networks: the first star, the milestone icon (D4, `FirstCelebration`).
+    @State private var sendOff = SendOffMoment()
     /// Pauses by a tap on the video: the pause sign blinks at each (`ReviewPauseFlash`).
     @State private var pauseFlashes = 0
     /// Times the take was made the best here: the star's sparks.
@@ -267,40 +264,10 @@ struct TakeReviewView: View {
                 // What is said while it is up ("Shared with TikTok", a failure) shows in front of it, not under it.
                 .toastHost(inSheet: true)
         }
-        .onChange(of: viewModel.celebration) { _, new in
-            guard case .sentOff? = new else { return }
-            // The networks the creator confirmed were counted as they were confirmed (`ShareFlow`); the milestone they reached is told after,
-            // once: sharing the same take again in this review doesn't bring the same story back.
-            reachedMilestone = flow.takeReachedMilestone()
-            if !personalization.celebrations { viewModel.celebration = nil }
-        }
-        .storyCover(isPresented: $tellsFirstStar) {
-            if let take = viewModel.take {
-                FirstStarView(
-                    take: take,
-                    onStudio: { finishFirstStar() },
-                    onEdit: { finishFirstStar(thenEdit: take) }
-                )
-            }
-        }
-        .storyCover(isPresented: $tellsMilestone) {
-            if let reached = reachedMilestone, let icon = AppIconChoice(milestone: reached) {
-                MilestoneView(
-                    milestone: reached, icon: icon, isAvailable: !icon.needsPro || store.tier.isPro,
-                    onUse: { useMilestoneIcon(icon, reached: reached) },
-                    onKeep: { finishMilestone(reached) }
-                )
-            }
-        }
         .onAppear {
-            // A review opened to do something (edit, pick, share) does it first: a celebration never covers an opening action, and comes
-            // at the end of that task instead (`GuidanceGate`).
-            let opensTask = launchAction != nil
             presentation.reviewOnScreen = viewModel.takeID
             connectFlow()
             applyLaunchAction()
-            if !opensTask { considerFirstStar() }
-            showStoriesForTests()
             announcePlace()
         }
         .onChange(of: viewModel.savesToPhotos) { _, _ in
@@ -320,6 +287,7 @@ struct TakeReviewView: View {
         }
         .onDisappear {
             playback.pause()
+            keepFirstStarForTakes()
             viewModel.leave()
             if presentation.reviewOnScreen == viewModel.takeID { presentation.reviewOnScreen = nil }
         }
@@ -578,13 +546,8 @@ struct TakeReviewView: View {
     /// counts as an export), ready later makes Share glow, and not yet or back change nothing here.
     private func handleEditorOutcome() {
         editorVisits += 1
-        guard let outcome = pendingOutcome else {
-            considerFirstStar()
-            return
-        }
+        guard let outcome = pendingOutcome else { return }
         pendingOutcome = nil
-        // The edit is the task that was opened: its end is the first star's moment (not when the next task, sharing, starts).
-        if outcome != .share { considerFirstStar() }
         switch outcome {
         case .share:
             shareToUniverse()
@@ -626,12 +589,14 @@ struct TakeReviewView: View {
                 .modifier(ExportPresentations(viewModel: viewModel, isActive: flow.step == nil))
         case .sentOff(let video, let networks):
             SendOffView(
-                video: video, networks: networks, snapshot: sentOffSnapshot(),
-                onShareAgain: { shareAfterClosing(video) },
-                onUniverse: { viewModel.celebration = nil; services.presentation.selectedTab = .profile; onBack() },
-                onDone: { doneWithSendOff() },
-                // One `.success` a story: with a milestone's icon to come, the icon's pop is the peak.
-                endsStory: !personalization.celebrations || (reachedMilestone ?? flow.reachedMilestone) == nil
+                video: video, networks: networks, snapshot: sentOffSnapshot(), moment: sendOff,
+                iconInUse: sendOff.icon.map { $0 == appIcon.current } ?? false,
+                iconAvailable: sendOff.icon.map { !$0.needsPro || store.tier.isPro } ?? true,
+                onShareAgain: { endSendOff(then: .shareAgain(video)) },
+                // The same ending as Done: the milestone it told counts as told, and the gate knows a celebration played.
+                onUniverse: { endSendOff(then: .universe) },
+                onDone: { endSendOff(then: .stay) },
+                onUseIcon: { useSendOffIcon() }
             )
         }
     }
@@ -658,6 +623,18 @@ struct TakeReviewView: View {
     /// What the flow tells the review: the send-off when the networks are done, the editor when the creator wants to edit first.
     private func connectFlow() {
         flow.onFinished = { video, networks in
+            // Celebrations off: no send-off, and the milestone stays due for the next one that plays.
+            guard personalization.celebrations else {
+                viewModel.celebration = nil
+                return
+            }
+            let isFirstVideo = viewModel.take.map { !$0.isImported } == true
+                && FirstCelebration.recordedVideos(in: services.takes.takes) == 1
+            sendOff = FirstCelebration.sendOff(
+                firstStarShown: services.onboarding.firstStarShown, isFirstVideo: isFirstVideo,
+                confirmedPosts: milestones.shares, dueMilestone: milestones.dueMilestone
+            )
+            if sendOff.isFirstStar { services.onboarding.markFirstStarShown() }
             // From "Ready to travel" to the send-off without the cover sliding down and up again: both are the same night.
             var instant = Transaction()
             instant.disablesAnimations = true
@@ -678,7 +655,6 @@ struct TakeReviewView: View {
         return UniverseSnapshot(videos: videos, year: UniverseYears.current(), topics: universeTopics)
     }
 
-    /// UI tests (`-uiTestFirstStar`, `-uiTestMilestone`): the stories open on their own, to be looked at.
     /// After a swipe, "Take 2 of 3" shows for a moment.
     private func announcePlace() {
         guard arrivedFromNeighbor, viewModel.siblings.count > 1 else { return }
@@ -702,21 +678,11 @@ struct TakeReviewView: View {
         }
     }
 
-    private func showStoriesForTests() {
-        #if DEBUG
-        if services.showsFirstStar { tellsFirstStar = true }
-        if let milestone = services.milestoneToShow, AppIconChoice(milestone: milestone) != nil {
-            reachedMilestone = milestone
-            tellsMilestone = true
-        }
-        #endif
-    }
-
     // MARK: - The first voyage
 
-    /// The voyage's fourth step: keep the best take. Not over the stories, the editor or a celebration.
+    /// The voyage's fourth step: keep the best take. Not over the editor or a celebration.
     private var showsPickTip: Bool {
-        viewModel.take != nil && !tellsFirstStar && editingTake == nil && viewModel.celebration == nil
+        viewModel.take != nil && editingTake == nil && viewModel.celebration == nil
     }
 
     /// The take on screen, when it has siblings to compare with ("Compare" opens "Pick the best take").
@@ -739,27 +705,17 @@ struct TakeReviewView: View {
         )
     }
 
-    /// The first take Cue ever recorded (a video imported from Photos never is one) lights the first star (once, and only when the creator
-    /// has done the first flight), at the end of a task: as the review of the recording opens, or when the edit it was opened for closes.
-    /// Once a video is shared, the send-off told it.
-    private func considerFirstStar() {
+    /// The review is left without a confirmed post: the first video's star waits for Takes, where it lights on its card (D4: no full screen;
+    /// the send-off tells it when the post is confirmed right away).
+    private func keepFirstStarForTakes() {
+        guard let take = viewModel.take else { return }
         let onboarding = services.onboarding
-        guard onboarding.isCompleted, !onboarding.firstStarShown, personalization.celebrations,
-              services.takes.takes.filter({ !$0.isImported }).count == 1, viewModel.take?.isImported == false,
-              editingTake == nil, viewModel.celebration == nil else { return }
-        onboarding.markFirstStarShown()
-        guard services.milestones.shares == 0 else { return }
-        tellsFirstStar = true
-    }
-
-    private func finishFirstStar(thenEdit take: Take? = nil) {
-        tellsFirstStar = false
-        services.guidance.celebrated()
-        guard let take else { return }
-        Task {
-            try? await Task.sleep(for: .milliseconds(600))
-            editingTake = take
-        }
+        let facts = FirstCelebration.LeavingFacts(
+            flightDone: onboarding.isCompleted, firstStarShown: onboarding.firstStarShown, celebrations: personalization.celebrations,
+            takeIsImported: take.isImported, recordedVideos: FirstCelebration.recordedVideos(in: services.takes.takes),
+            confirmedPosts: milestones.shares
+        )
+        if FirstCelebration.takesKeepsFirstStar(facts) { onboarding.keepFirstStar(for: take.id) }
     }
 
     /// The creator's topics, as the worlds around them.
@@ -768,43 +724,37 @@ struct TakeReviewView: View {
         return Array((profile.niches.map(OnboardingTopic.niche) + profile.customTopics.map(OnboardingTopic.custom)).prefix(OnboardingTopic.limit))
     }
 
-    /// "Done" on the send-off: the milestone it reached, if any, comes next.
-    private func doneWithSendOff() {
+    /// Every way out of the send-off (Done, the universe's link, Share again, Go Pro) ends it the same way: the milestone it showed counts as
+    /// told, and the gate knows a celebration played (`GuidanceGate`); then the way out goes on. What comes up after it (the share sheet, Pro)
+    /// waits for the cover to leave: a view can't present while another cover leaves.
+    private func endSendOff(then exit: SendOffExit) {
+        if let milestone = sendOff.milestone { milestones.markCelebrated(milestone) }
         viewModel.celebration = nil
         services.guidance.celebrated()
-        guard reachedMilestone != nil, personalization.celebrations else { return }
-        Task {
-            try? await Task.sleep(for: .milliseconds(600))
-            tellsMilestone = true
+        switch exit {
+        case .stay:
+            break
+        case .universe:
+            services.presentation.selectedTab = .profile
+            onBack()
+        case .shareAgain(let video):
+            Task {
+                try? await Task.sleep(for: .milliseconds(600))
+                viewModel.share(video)
+            }
+        case .pro:
+            Task {
+                try? await Task.sleep(for: .milliseconds(600))
+                viewModel.paywall = .profile
+            }
         }
     }
 
-    private func finishMilestone(_ reached: Int) {
-        services.guidance.celebrated()
-        milestones.markCelebrated(reached)
-        reachedMilestone = nil
-        tellsMilestone = false
-    }
-
-    private func useMilestoneIcon(_ icon: AppIconChoice, reached: Int) {
-        guard !icon.needsPro || store.tier.isPro else {
-            finishMilestone(reached)
-            viewModel.paywall = .profile
-            return
-        }
-        Task {
-            await appIcon.choose(icon)
-            finishMilestone(reached)
-        }
-    }
-
-    /// The system share sheet, once the celebration cover is gone (a view can't present while another cover leaves).
-    private func shareAfterClosing(_ video: ExportedVideo) {
-        viewModel.celebration = nil
-        Task {
-            try? await Task.sleep(for: .milliseconds(600))
-            viewModel.share(video)
-        }
+    /// "Use it" on the send-off's icon row: the icon changes and the row says "In use"; an icon that comes with Pro ends the send-off for Pro.
+    private func useSendOffIcon() {
+        guard let icon = sendOff.icon else { return }
+        guard !icon.needsPro || store.tier.isPro else { return endSendOff(then: .pro) }
+        Task { await appIcon.choose(icon) }
     }
 
     /// Opens "Pick your best take" with Cue's suggestion.
@@ -821,6 +771,14 @@ struct TakeReviewView: View {
     private enum ReviewExport {
         case save
         case share
+    }
+
+    /// Where a way out of the send-off goes (`endSendOff`).
+    private enum SendOffExit {
+        case stay
+        case universe
+        case shareAgain(ExportedVideo)
+        case pro
     }
 
     /// Where a way out of the review goes (`leave`).

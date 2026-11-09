@@ -33,11 +33,15 @@ final class TakesViewModel {
     private let importer: TakeVideoImporting
     /// A video from Photos is being copied in to edit.
     private(set) var isImporting = false
+    /// The video whose card carries the first star, once Takes lit it (D4): it stays there until Cue closes.
+    private(set) var firstStarVideoID: String?
+    private let onboarding: OnboardingService?
+    private let guidance: GuidanceGate?
 
     init(
         takes: TakeLibraryService, library: ScriptLibraryService, drafts: QuickEditDraftStoring,
         presentation: PresentationService, toast: ToastService, importer: TakeVideoImporting? = nil,
-        now: @escaping () -> Date = Date.init
+        onboarding: OnboardingService? = nil, guidance: GuidanceGate? = nil, now: @escaping () -> Date = Date.init
     ) {
         self.takes = takes
         self.library = library
@@ -45,6 +49,8 @@ final class TakesViewModel {
         self.presentation = presentation
         self.toast = toast
         self.importer = importer ?? TakeVideoImporter()
+        self.onboarding = onboarding
+        self.guidance = guidance
         self.now = now
     }
 
@@ -128,6 +134,25 @@ final class TakesViewModel {
         case .yesterday: return String(localized: "Yesterday · \(time)")
         case .earlier: return take.recordedAt.formatted(.dateTime.month(.abbreviated).day().locale(.interface)) + " · " + time
         }
+    }
+
+    // MARK: - The first star
+
+    /// The first star waiting for Takes (its review was left without a confirmed post) lights on that video's card, when the card is in the
+    /// list on screen: it counts as told then, and as a celebration for the gate (`GuidanceGate`). Returns whether it lit now. A take deleted
+    /// since lets the star wait, untold, for the next review left.
+    @discardableResult
+    func lightFirstStar() -> Bool {
+        guard firstStarVideoID == nil, let onboarding, let takeID = onboarding.firstStarWaitingTake else { return false }
+        guard takes.takes.contains(where: { $0.id == takeID }) else {
+            onboarding.dropWaitingFirstStar()
+            return false
+        }
+        guard let video = sections.flatMap(\.videos).first(where: { video in video.takes.contains { $0.id == takeID } }) else { return false }
+        firstStarVideoID = video.id
+        onboarding.markFirstStarShown()
+        guidance?.celebrated()
+        return true
     }
 
     // MARK: - Actions

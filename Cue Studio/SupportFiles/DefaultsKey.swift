@@ -102,6 +102,8 @@ nonisolated enum DefaultsKey {
     /// The chapter a first flight was left on after 1.4 kept its script (`OnboardingService`): it resumes there.
     static let onboardingStep = "onboardingStep"
     static let firstStarShown = "firstStarShown"
+    /// The take whose first star waits for Takes (`OnboardingService.keepFirstStar`, D4).
+    static let firstStarWaitingTake = "firstStarWaitingTake"
     /// The first voyage's own marks (`VoyageMarks`, JSON): its stage, the practice, a skipped Polish, tips closed, segments lit.
     static let firstVoyage = "firstVoyage"
     /// The words Cue drafted for each script, until it is recorded (`DraftLearningService`).

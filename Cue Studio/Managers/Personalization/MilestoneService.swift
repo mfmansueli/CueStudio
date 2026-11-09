@@ -5,9 +5,9 @@
 
 import Foundation
 
-/// How many videos the creator has shared, kept on this iPhone, and the milestones that count opens (1, 10, 25 and
-/// 50 shared in the creator's life, each with its app icon; owner, 30/10/2026). A video counts once, however many times it is shared. The
-/// year is the universe's retrospective (`shares(in:)`), never a milestone's road.
+/// How many videos the creator has shared (a post they confirmed with "Yes, it's live"; a copy saved to Photos is not one), kept on this
+/// iPhone, and the milestones that count opens (1, 10, 25 and 50 shared in the creator's life, each with its app icon; owner, 30/10/2026). A
+/// video counts once, however many times it is shared. The year is the universe's retrospective (`shares(in:)`), never a milestone's road.
 @MainActor
 @Observable
 final class MilestoneService {
@@ -89,10 +89,16 @@ final class MilestoneService {
         defaults.set(stored, forKey: DefaultsKey.seenPlanetCounts)
     }
 
+    /// `milestone` was told (in a send-off): it and every one before it, so an older milestone never pops up after a newer one.
     func markCelebrated(_ milestone: Int) {
+        celebrated.formUnion(Self.steps.filter { $0 <= milestone })
         celebrated.insert(milestone)
         defaults.set(Array(celebrated), forKey: DefaultsKey.celebratedMilestones)
     }
+
+    /// The milestone a send-off tells now: the last one the confirmed posts reached and nobody told yet (D4, owner 09/11/2026). Reached
+    /// with a post whose send-off didn't play (Celebrations off, Cue closed on it), it is told with the next one.
+    var dueMilestone: Int? { Self.steps.last { $0 <= shares && !celebrated.contains($0) } }
 
     /// The next milestone in the creator's life, nil after the last. Its icon is never one already unlocked.
     var nextMilestone: Int? { Self.steps.first { $0 > shares } }

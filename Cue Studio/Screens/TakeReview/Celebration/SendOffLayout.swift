@@ -26,6 +26,11 @@ nonisolated enum SendOffLayout {
     /// The star that lights beside YOU.
     static let newStar = CGPoint(x: 236, y: 262)
 
+    /// The milestone icon's row (D4, not on the board): in the card's place once the card has become the stars, its bottom 14 pt over the words;
+    /// a bigger text grows it upwards, never past the planets' names.
+    static let iconRowTop: CGFloat = 392
+    static let iconRowBottom: CGFloat = 568
+
     /// The text block starts here, and the buttons stand 34 pt over the bottom.
     static let textsTop: CGFloat = 582
     static let buttonsBottom: CGFloat = 34

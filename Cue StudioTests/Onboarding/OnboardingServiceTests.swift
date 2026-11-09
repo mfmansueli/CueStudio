@@ -108,6 +108,29 @@ struct OnboardingServiceTests {
         #expect(OnboardingService(defaults: defaults.defaults).firstStarShown)
     }
 
+    /// D4: a review left without a confirmed post keeps the first star for Takes, across a relaunch; telling it (in Takes or in the send-off of a
+    /// later post) lets it go, and a star already told is never kept again.
+    @Test func theFirstStarWaitsForTakesUntilItIsTold() {
+        let (service, defaults) = make()
+        defer { defaults.tearDown() }
+        let take = UUID()
+        service.keepFirstStar(for: take)
+        #expect(OnboardingService(defaults: defaults.defaults).firstStarWaitingTake == take)
+        service.markFirstStarShown()
+        #expect(service.firstStarWaitingTake == nil)
+        #expect(OnboardingService(defaults: defaults.defaults).firstStarWaitingTake == nil)
+        service.keepFirstStar(for: UUID())
+        #expect(service.firstStarWaitingTake == nil, "told once")
+    }
+
+    @Test func aDeletedTakesStarWaitsUntold() {
+        let (service, defaults) = make()
+        defer { defaults.tearDown() }
+        service.keepFirstStar(for: UUID())
+        service.dropWaitingFirstStar()
+        #expect(service.firstStarWaitingTake == nil && !service.firstStarShown)
+    }
+
     @Test func aFlightLeftAfterItsScriptResumesWhereItWasAndIsNotSkippedForIt() {
         let (service, defaults) = make()
         defer { defaults.tearDown() }

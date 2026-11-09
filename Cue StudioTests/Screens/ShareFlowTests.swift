@@ -258,6 +258,30 @@ struct ShareFlowTests {
         #expect(scenario.flow.step == .step(.reels), "the next network comes up")
     }
 
+    /// D4: the first confirmed network leaves Aurora due for the send-off, which tells it; more networks of the same video add nothing.
+    @Test func aConfirmedPostLeavesItsMilestoneDueForTheSendOff() async throws {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        try await startedWithThree(scenario)
+        #expect(scenario.milestones.dueMilestone == nil)
+        scenario.flow.confirmLive(.tiktok)
+        #expect(scenario.milestones.dueMilestone == 1)
+        scenario.flow.confirmLive(.reels)
+        scenario.flow.confirmLive(.linkedin)
+        #expect(scenario.finished.networks == [.tiktok, .reels, .linkedin])
+        #expect(scenario.milestones.dueMilestone == 1 && scenario.milestones.shares == 1)
+    }
+
+    /// Saving to Photos finishes the export and spends a free one (owner, 09/11/2026), but it is not a post: no star, no milestone.
+    @Test func savingToPhotosSpendsAnExportButIsNotAPost() async throws {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        await scenario.review.save()
+        #expect(scenario.photos.savedURLs.count == 1)
+        #expect(scenario.quota.exportsUsed == 1)
+        #expect(scenario.milestones.shares == 0 && scenario.milestones.dueMilestone == nil)
+    }
+
     @Test func eachConfirmedNetworkAddsItsPlanetButTheVideoCountsOnce() async throws {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }

@@ -6,9 +6,11 @@
 import SwiftUI
 
 /// A video in the Takes grid (6.2): its best take as a poster with the stage on top ("● READY", and "×3" when it has several takes), a ring in the
-/// stage's colour, the title at the bottom and under it the platform and length ("● TIKTOK · 1:02").
+/// stage's colour, the title at the bottom and under it the platform and length ("● TIKTOK · 1:02"). The first video carries its first star over
+/// the title when Takes lights it (`TakeFirstStarPill`, D4).
 struct TakeVideoCard: View {
     let video: TakeVideo
+    var showsFirstStar = false
 
     var body: some View {
         let shape = RoundedRectangle(cornerRadius: 18, style: .continuous)
@@ -66,6 +68,7 @@ struct TakeVideoCard: View {
 
     private var bottom: some View {
         VStack(alignment: .leading, spacing: 8) {
+            if showsFirstStar { TakeFirstStarPill(onPoster: true) }
             Text(video.title)
                 .cueFont(14, weight: .bold)
                 .foregroundStyle(.white)
@@ -93,6 +96,7 @@ struct TakeVideoCard: View {
     private var accessibilityText: String {
         var parts = [video.title, video.stage.sentence, hudText]
         if let label = video.takesLabel { parts.append(label) }
+        if showsFirstStar { parts.append(String(localized: "First star")) }
         return parts.joined(separator: ", ")
     }
 }

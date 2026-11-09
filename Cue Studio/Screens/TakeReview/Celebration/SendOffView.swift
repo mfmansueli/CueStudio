@@ -8,18 +8,24 @@ import SwiftUI
 /// "On its way." (8.2), played once: the video's card folds into light, and one star per network (350 ms apart) carries it to that network's planet in
 /// the universe; each planet lights and grows by one ("+1"), and a new small star lights beside YOU. The text and the buttons are there from the first
 /// frame, as on the board. The scene is the board's 390 × 844 frame, scaled to the screen (`SendOffLayout`, `SendOffScript`). Under Reduce Motion it
-/// simply arrives.
+/// simply arrives. It is the only celebration of a post (D4, owner 09/11/2026): the creator's first one says "FIRST VIDEO · FIRST STAR", and the
+/// milestone icon the post opened rises in the card's place once the stars have landed (`SendOffIconRow`).
 struct SendOffView: View {
     let video: ExportedVideo
     let networks: [ShareDestination]
     /// The year's universe with these shares in it.
     let snapshot: UniverseSnapshot
+    /// The first star and the milestone icon this post tells (`FirstCelebration`).
+    var moment = SendOffMoment()
+    /// The milestone's icon is the one on the Home Screen now.
+    var iconInUse = false
+    /// The milestone's icon can be used (Aurora, or Pro).
+    var iconAvailable = true
     let onShareAgain: () -> Void
     let onUniverse: () -> Void
     let onDone: () -> Void
-    /// The send-off is the whole story (no milestone's icon comes after it): its landing is the peak and gets the story's one `.success`.
-    /// With a milestone next, the landing is a `.light` tap and the icon's pop has the `.success` (one per story).
-    var endsStory = true
+    /// "Use it" (or "Go Pro") on the icon's row.
+    var onUseIcon: () -> Void = {}
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.sendOffFrozenAt) private var frozenAt
@@ -60,6 +66,7 @@ struct SendOffView: View {
         ZStack(alignment: .topLeading) {
             SendOffMap(networks: networks, counts: counts, time: time)
             card(time: time)
+            iconRow(time: time)
             texts.offset(y: SendOffLayout.textsTop)
             VStack(spacing: 0) {
                 Spacer()
@@ -88,11 +95,36 @@ struct SendOffView: View {
             .accessibilityHidden(true)
     }
 
+    // MARK: - The milestone's icon
+
+    /// In the card's place, under the map, once the stars have landed: it rises 10 pt and fades in. Its bottom stays above the words, and a
+    /// bigger text grows it upwards into the empty space the card left.
+    @ViewBuilder
+    private func iconRow(time: Double) -> some View {
+        if let icon = moment.icon, let milestone = moment.milestone {
+            let reveal = Self.iconReveal(at: time, networks: networks.count)
+            SendOffIconRow(icon: icon, milestone: milestone, isInUse: iconInUse, isAvailable: iconAvailable, onUse: onUseIcon)
+                .opacity(reveal)
+                .offset(y: (1 - reveal) * 10)
+                .allowsHitTesting(reveal >= 1)
+                .accessibilityHidden(reveal == 0)
+                .padding(.horizontal, 16)
+                .frame(width: SendOffLayout.board.width, height: SendOffLayout.iconRowBottom - SendOffLayout.iconRowTop, alignment: .bottom)
+                .offset(y: SendOffLayout.iconRowTop)
+        }
+    }
+
+    /// 0 until the last star has landed, then up to 1 in 0.45 s (eased out).
+    static func iconReveal(at time: Double, networks: Int) -> Double {
+        let progress = min(1, max(0, (time - SendOffScript.end(networks: networks)) / 0.45))
+        return 1 - pow(1 - progress, 3)
+    }
+
     // MARK: - Words
 
     private var texts: some View {
         VStack(spacing: 8) {
-            Text(headline)
+            Text(moment.isFirstStar ? String(localized: "FIRST VIDEO · FIRST STAR") : headline)
                 .monoFont(size: 11, weight: .semibold)
                 .interfaceTracking(1.32)
                 .foregroundStyle(Palette.acc)
@@ -157,8 +189,8 @@ struct SendOffView: View {
 
     // MARK: - Haptics
 
-    /// A `.light` tap on each arrival (the first one only when three or more land within 0.7 s), and the story's one `.success` on the last
-    /// landing when nothing comes after it (`endsStory`).
+    /// A `.light` tap on each arrival (the first one only when three or more land within 0.7 s), the story's one `.success` on the last
+    /// landing, and a `.soft` one as the milestone's icon rises.
     private func play() async {
         guard !reduceMotion, frozenAt == nil else { return }
         start = .now
@@ -167,7 +199,11 @@ struct SendOffView: View {
             let wait = moment - Date.now.timeIntervalSince(start)
             if wait > 0 { try? await Task.sleep(for: .seconds(wait)) }
             if Task.isCancelled { return }
-            if endsStory, index == arrivals.count - 1 { Haptics.success() } else { Haptics.light() }
+            if index == arrivals.count - 1 { Haptics.success() } else { Haptics.light() }
         }
+        guard self.moment.icon != nil else { return }
+        let wait = SendOffScript.end(networks: networks.count) - Date.now.timeIntervalSince(start)
+        if wait > 0 { try? await Task.sleep(for: .seconds(wait)) }
+        if !Task.isCancelled { Haptics.soft() }
     }
 }
