@@ -64,6 +64,24 @@ struct PrompterRecordingSafetyTests {
         #expect(scenario.camera.stopCount >= 1)
     }
 
+    /// A take Cue loses mid-way (closed by the system, out of memory) comes back under its script and the network it was recorded for:
+    /// the note is written as the recording starts, and goes once the library has the take.
+    @Test func theRecordingCarriesItsScriptAndNetworkFromItsFirstFrame() async throws {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        let file = URL.temporaryDirectory.appending(path: "take-\(UUID().uuidString).mov")
+        scenario.camera.clipURL = file
+        defer { TakeRecoveryNote.remove(for: file) }
+        await scenario.viewModel.appear()
+        await scenario.viewModel.recordButtonTapped()
+        let note = try #require(TakeRecoveryNote.read(for: file))
+        #expect(note.scriptID == scenario.viewModel.script?.id)
+        #expect(note.platform == scenario.viewModel.platform)
+        await scenario.viewModel.disappear()
+        #expect(scenario.takes.takes.count == 1)
+        #expect(TakeRecoveryNote.read(for: file) == nil, "the take is in the library: nothing left to recover")
+    }
+
     @Test func leavingWhileTheTakeIsStartingStillFilesIt() async {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }

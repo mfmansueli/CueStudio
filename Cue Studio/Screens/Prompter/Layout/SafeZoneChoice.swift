@@ -22,12 +22,16 @@ nonisolated enum SafeZoneChoice: Hashable, Sendable {
     }
 
     /// What the camera shows: Custom while the creator picked it, else the recording's network when its zone was measured on the
-    /// frame, else the first network measured on it (Reels for 9:16, LinkedIn for 4:5), else Custom (1:1). Nil for horizontal video.
+    /// frame (YouTube's vertical video is a Short: Shorts' zone), else Custom where only it fits (1:1), else none: never another
+    /// network's zone (a Reels video at 4:5 shows no LinkedIn zone). Without a network, the first measured on the frame. Nil for 16:9.
     static func resolve(pick: SafeZoneChoice?, network: Platform?, aspect: AspectRatio, rules: PlatformRules) -> SafeZoneChoice? {
         let options = options(for: aspect, rules: rules)
         if let pick, options.contains(pick) { return pick }
-        if let network, options.contains(.platform(network)) { return .platform(network) }
-        return options.first
+        guard let network else { return options.first }
+        if options.contains(.platform(network)) { return .platform(network) }
+        // A vertical video for YouTube is a Short: the zone of the same app. Another app's zone would name a network the video isn't for.
+        if network == .youtube, options.contains(.platform(.shorts)) { return .platform(.shorts) }
+        return options.first == .custom ? .custom : nil
     }
 
     /// The creator's saved pick: Custom, or nil to follow the recording's network. A network saved by an older Settings page (TikTok,

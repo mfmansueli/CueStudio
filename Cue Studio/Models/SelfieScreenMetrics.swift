@@ -15,6 +15,9 @@ nonisolated struct SelfieScreenMetrics: Equatable, Sendable {
     var topBarBottom: CGFloat = 106
     /// Top of the toolbar at the bottom.
     var toolbarTop: CGFloat = 628
+    /// Top of a card over the toolbar before the take (the recommendation), while it shows: the text window ends above it, so the card
+    /// never covers the words on a short screen.
+    var cardTop: CGFloat?
     /// Where the preview layer draws the camera image, once the camera runs.
     var videoRect: CGRect?
 

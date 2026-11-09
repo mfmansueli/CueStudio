@@ -162,6 +162,8 @@ final class TakeLibraryService {
             }
             throw error
         }
+        // The note the recorder wrote when the take started has done its job.
+        TakeRecoveryNote.remove(for: url)
         onTakeAdded?(take)
         return take
     }

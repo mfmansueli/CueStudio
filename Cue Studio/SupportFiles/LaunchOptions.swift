@@ -72,6 +72,7 @@ import Foundation
 ///   a minute and a half: together, how a long script is written, followed and settled on the page.
 /// - `-uiTestFastAnimations`: with the above, no animations (UIKit's sheets and pushes, SwiftUI's transactions), so a UI test
 ///   never waits for one to end; `CueApp.launch` passes it unless a test asks for real animations.
+/// - `-uiTestFreeSpace <MB>`: the iPhone says it has this much room left (the recorder's "About 9 min left in 4K" below 2 GB).
 /// - `-uiTestExportsLeft <0...3>`: the free exports that are left (3 without it): 1 is the last one, 0 asks "Your video is ready" on export.
 /// - `-uiTestOccasions <region>@<yyyy-mm-dd>`: the ideas' occasions are the ones of that region near that day (`IdeaCalendar`); without it, a UI
 ///   test has none.

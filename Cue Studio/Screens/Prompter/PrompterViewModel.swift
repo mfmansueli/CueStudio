@@ -668,7 +668,10 @@ final class PrompterViewModel {
         // The phone does not buzz while the take records: it could be heard in its audio (`AudioRoute.allowHapticsDuringRecording`).
         AudioRoute.allowHapticsDuringRecording(false)
         do {
-            try await camera.startRecording()
+            // Written before a frame is: a take Cue loses mid-way (closed, out of memory) comes back under this script and network.
+            if let file = try await camera.startRecording() {
+                TakeRecoveryNote(scriptID: script?.id, scriptVersion: script?.version, platform: platform).write(for: file)
+            }
         } catch {
             AudioRoute.allowHapticsDuringRecording(true)
             toast.show(error.localizedDescription, kind: .problem)

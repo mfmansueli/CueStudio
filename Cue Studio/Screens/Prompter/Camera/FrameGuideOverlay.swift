@@ -31,7 +31,7 @@ struct FrameGuideOverlay: View {
                 edges.move(to: CGPoint(x: x, y: frame.minY))
                 edges.addLine(to: CGPoint(x: x, y: frame.maxY))
             }
-            context.stroke(edges, with: .color(Palette.Camera.frameEdge), lineWidth: 0.5)
+            context.stroke(edges, with: .color(Palette.Camera.frameEdge), lineWidth: 1)
         }
         .ignoresSafeArea()
         .allowsHitTesting(false)

@@ -22,8 +22,10 @@ final class PlaybackCamera: CameraControlling {
     func apply(_ settings: CameraSettings) async {}
     func stop() async {}
 
-    func startRecording() async throws {
+    @discardableResult
+    func startRecording() async throws -> URL? {
         isRecording = true
+        return nil
     }
 
     func stopRecording() async -> RecordedClip? {

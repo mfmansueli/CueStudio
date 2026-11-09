@@ -2261,6 +2261,125 @@
         }
       }
     },
+    "%@ · Only the frame is recorded" : {
+      "comment" : "Recorder: small caption (shown uppercase) on the darkened bands around a 16:9, 1:1 or 4:5 frame. %@ is the frame, e.g. 16:9. Keep it short.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · يُسجَّل الإطار فقط"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · Kun rammen optages"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · Nur der Rahmen wird aufgenommen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · Solo se graba el marco"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · Seul le cadre est filmé"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · सिर्फ़ फ़्रेम रिकॉर्ड होता है"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · Hanya bingkai yang direkam"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · Si registra solo la cornice"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · 枠の中だけ録画されます"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · 프레임 안만 녹화돼요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · Bare rammen tas opp"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · Alleen het kader wordt opgenomen"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · Só o quadro é gravado"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · Bara ramen spelas in"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · บันทึกเฉพาะในกรอบ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · Yalnızca çerçeve kaydedilir"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · Chỉ quay phần trong khung"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · 仅录制框内画面"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · 只錄製框內畫面"
+          }
+        }
+      }
+    },
     "%@ · only this clip" : {
       "comment" : "Look panel subtitle (Adjust, Skin, Filters) from a clip: the clip (Clip 1 of 2, This clip), and the rest of the video stays as it is (short)",
       "localizations" : {
@@ -11531,7 +11650,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Et klipp i denne redigeringen er ikke lenger på denne iPadn. Erstatt det for å eksportere."
+                  "value" : "Et klipp i denne redigeringen er ikke lenger på denne iPaden. Erstatt det for å eksportere."
                 }
               },
               "other" : {
@@ -11585,7 +11704,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Ett klipp i den här redigeringen finns inte längre på den här iPadn. Ersätt det för att exportera."
+                  "value" : "Ett klipp i den här redigeringen finns inte längre på den här iPaden. Ersätt det för att exportera."
                 }
               },
               "other" : {
@@ -11621,7 +11740,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Bu düzenlemedeki bir klip artık bu iPad’da değil. Dışa aktarmak için değiştirin."
+                  "value" : "Bu düzenlemedeki bir klip artık bu iPad’de değil. Dışa aktarmak için değiştirin."
                 }
               },
               "other" : {
@@ -11896,7 +12015,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Et klipp i denne redigeringen er ikke lenger på denne iPadn. Erstatt det i redigeringen for å eksportere."
+                  "value" : "Et klipp i denne redigeringen er ikke lenger på denne iPaden. Erstatt det i redigeringen for å eksportere."
                 }
               },
               "other" : {
@@ -11950,7 +12069,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Ett klipp i den här redigeringen finns inte längre på den här iPadn. Ersätt det i redigeraren för att exportera."
+                  "value" : "Ett klipp i den här redigeringen finns inte längre på den här iPaden. Ersätt det i redigeraren för att exportera."
                 }
               },
               "other" : {
@@ -11986,7 +12105,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Bu düzenlemedeki bir klip artık bu iPad’da değil. Dışa aktarmak için düzenleyicide değiştirin."
+                  "value" : "Bu düzenlemedeki bir klip artık bu iPad’de değil. Dışa aktarmak için düzenleyicide değiştirin."
                 }
               },
               "other" : {
@@ -12618,7 +12737,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "En skrifttype du importerte, er ikke på denne iPadn · importer den på nytt eller velg en annen"
+                  "value" : "En skrifttype du importerte, er ikke på denne iPaden · importer den på nytt eller velg en annen"
                 }
               },
               "other" : {
@@ -12672,7 +12791,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Ett teckensnitt du importerade finns inte på den här iPadn · importera det igen eller välj ett annat"
+                  "value" : "Ett teckensnitt du importerade finns inte på den här iPaden · importera det igen eller välj ett annat"
                 }
               },
               "other" : {
@@ -12708,7 +12827,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "İçe aktardığın bir yazı tipi bu iPad’da yok · yeniden içe aktar ya da başka birini seç"
+                  "value" : "İçe aktardığın bir yazı tipi bu iPad’de yok · yeniden içe aktar ya da başka birini seç"
                 }
               },
               "other" : {
@@ -13102,7 +13221,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "En skrifttype du importerte, er ikke på denne iPadn."
+                  "value" : "En skrifttype du importerte, er ikke på denne iPaden."
                 }
               },
               "other" : {
@@ -13156,7 +13275,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Ett teckensnitt du importerade finns inte på den här iPadn."
+                  "value" : "Ett teckensnitt du importerade finns inte på den här iPaden."
                 }
               },
               "other" : {
@@ -13192,7 +13311,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "İçe aktardığın bir yazı tipi bu iPad’da yok."
+                  "value" : "İçe aktardığın bir yazı tipi bu iPad’de yok."
                 }
               },
               "other" : {
@@ -20589,7 +20708,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Apple Intelligence는 이 iPad이나 Private Cloud Compute에서 이것들처럼 써요. 아이디어도 포함돼요. Ultra AI에는 절대 전달되지 않아요."
+                  "value" : "Apple Intelligence는 이 iPad나 Private Cloud Compute에서 이것들처럼 써요. 아이디어도 포함돼요. Ultra AI에는 절대 전달되지 않아요."
                 }
               },
               "other" : {
@@ -20607,7 +20726,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Apple Intelligence skriver som dem, også ideer, på denne iPadn eller i Private Cloud Compute. Ultra AI får dem aldri."
+                  "value" : "Apple Intelligence skriver som dem, også ideer, på denne iPaden eller i Private Cloud Compute. Ultra AI får dem aldri."
                 }
               },
               "other" : {
@@ -20661,7 +20780,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Apple Intelligence skriver som dem, idéer inräknade, på den här iPadn eller i Private Cloud Compute. Ultra AI får dem aldrig."
+                  "value" : "Apple Intelligence skriver som dem, idéer inräknade, på den här iPaden eller i Private Cloud Compute. Ultra AI får dem aldrig."
                 }
               },
               "other" : {
@@ -20697,7 +20816,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Apple Intelligence, fikirler dahil, bu iPad’da veya Private Cloud Compute’ta bunlar gibi yazar. Ultra AI bunları asla almaz."
+                  "value" : "Apple Intelligence, fikirler dahil, bu iPad’de veya Private Cloud Compute’ta bunlar gibi yazar. Ultra AI bunları asla almaz."
                 }
               },
               "other" : {
@@ -20972,7 +21091,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Apple Intelligence kan bruke denne iPadn eller Private Cloud Compute. Forespørselen din og My Cue Voice, eksempler inkludert, kan sendes til Apple."
+                  "value" : "Apple Intelligence kan bruke denne iPaden eller Private Cloud Compute. Forespørselen din og My Cue Voice, eksempler inkludert, kan sendes til Apple."
                 }
               },
               "other" : {
@@ -21062,7 +21181,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Apple Intelligence bu iPad’u veya Private Cloud Compute’u kullanabilir. İsteğiniz ve örnekler dahil My Cue Voice, Apple’a gönderilebilir."
+                  "value" : "Apple Intelligence bu iPad’i veya Private Cloud Compute’u kullanabilir. İsteğiniz ve örnekler dahil My Cue Voice, Apple’a gönderilebilir."
                 }
               },
               "other" : {
@@ -38115,7 +38234,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Kunne ikke åpne utkastet · En kopi er lagret på denne iPadn"
+                  "value" : "Kunne ikke åpne utkastet · En kopi er lagret på denne iPaden"
                 }
               },
               "other" : {
@@ -38169,7 +38288,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Kunde inte öppna utkastet · En kopia sparas på den här iPadn"
+                  "value" : "Kunde inte öppna utkastet · En kopia sparas på den här iPaden"
                 }
               },
               "other" : {
@@ -38205,7 +38324,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Taslağın açılamadı · Bir kopyası bu iPad’da saklanıyor"
+                  "value" : "Taslağın açılamadı · Bir kopyası bu iPad’de saklanıyor"
                 }
               },
               "other" : {
@@ -41223,7 +41342,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Cue kunne ikke høre ordene i dette opptaket på denne iPadn. Pauser virker fortsatt."
+                  "value" : "Cue kunne ikke høre ordene i dette opptaket på denne iPaden. Pauser virker fortsatt."
                 }
               },
               "other" : {
@@ -41277,7 +41396,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Cue kunde inte höra orden i den här tagningen på den här iPadn. Pauser fungerar ändå."
+                  "value" : "Cue kunde inte höra orden i den här tagningen på den här iPaden. Pauser fungerar ändå."
                 }
               },
               "other" : {
@@ -41313,7 +41432,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Cue bu iPad’da bu çekimdeki kelimeleri duyamadı. Duraklamalar yine de çalışır."
+                  "value" : "Cue bu iPad’de bu çekimdeki kelimeleri duyamadı. Duraklamalar yine de çalışır."
                 }
               },
               "other" : {
@@ -61021,7 +61140,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "이 Cue 음악에서 iPad이 찾아요."
+                  "value" : "이 Cue 음악에서 iPad가 찾아요."
                 }
               },
               "other" : {
@@ -61039,7 +61158,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Funnet på iPadn i denne musikken fra Cue."
+                  "value" : "Funnet på iPaden i denne musikken fra Cue."
                 }
               },
               "other" : {
@@ -61129,7 +61248,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Vuruşlar, Cue’nun bu müziğinde iPad’unda bulunur."
+                  "value" : "Vuruşlar, Cue’nun bu müziğinde iPad’inde bulunur."
                 }
               },
               "other" : {
@@ -62594,7 +62713,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Fra iPadn din"
+                  "value" : "Fra iPaden din"
                 }
               },
               "other" : {
@@ -62684,7 +62803,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "iPad’undan"
+                  "value" : "iPad’inden"
                 }
               },
               "other" : {
@@ -96647,7 +96766,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Bare på denne iPadn. Brukes aldri til utkast."
+                  "value" : "Bare på denne iPaden. Brukes aldri til utkast."
                 }
               },
               "other" : {
@@ -96701,7 +96820,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Bara på den här iPadn. Används aldrig för utkast."
+                  "value" : "Bara på den här iPaden. Används aldrig för utkast."
                 }
               },
               "other" : {
@@ -96737,7 +96856,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Yalnızca bu iPad'da. Taslaklarda asla kullanılmaz."
+                  "value" : "Yalnızca bu iPad'de. Taslaklarda asla kullanılmaz."
                 }
               },
               "other" : {
@@ -123773,7 +123892,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Noen bilder, videoer eller lyder i denne redigeringen er ikke lenger på denne iPadn."
+                  "value" : "Noen bilder, videoer eller lyder i denne redigeringen er ikke lenger på denne iPaden."
                 }
               },
               "other" : {
@@ -123827,7 +123946,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Några bilder, videor eller ljud i den här redigeringen finns inte längre på den här iPadn."
+                  "value" : "Några bilder, videor eller ljud i den här redigeringen finns inte längre på den här iPaden."
                 }
               },
               "other" : {
@@ -123863,7 +123982,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Bu düzenlemedeki bazı fotoğraflar, videolar veya sesler artık bu iPad’da değil."
+                  "value" : "Bu düzenlemedeki bazı fotoğraflar, videolar veya sesler artık bu iPad’de değil."
                 }
               },
               "other" : {
@@ -124138,7 +124257,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Noen bilder, videoer eller lyder i denne redigeringen er ikke lenger på denne iPadn. Rett dem i redigeringen, eller fjern dem og eksporter."
+                  "value" : "Noen bilder, videoer eller lyder i denne redigeringen er ikke lenger på denne iPaden. Rett dem i redigeringen, eller fjern dem og eksporter."
                 }
               },
               "other" : {
@@ -124192,7 +124311,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Några bilder, videor eller ljud i den här redigeringen finns inte längre på den här iPadn. Åtgärda dem i redigeraren, eller ta bort dem och exportera."
+                  "value" : "Några bilder, videor eller ljud i den här redigeringen finns inte längre på den här iPaden. Åtgärda dem i redigeraren, eller ta bort dem och exportera."
                 }
               },
               "other" : {
@@ -124228,7 +124347,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Bu düzenlemedeki bazı fotoğraflar, videolar veya sesler artık bu iPad’da değil. Düzenleyicide düzeltin ya da kaldırıp dışa aktarın."
+                  "value" : "Bu düzenlemedeki bazı fotoğraflar, videolar veya sesler artık bu iPad’de değil. Düzenleyicide düzeltin ya da kaldırıp dışa aktarın."
                 }
               },
               "other" : {
@@ -136821,7 +136940,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Denne iPadn har allerede brukt en venns kode."
+                  "value" : "Denne iPaden har allerede brukt en venns kode."
                 }
               },
               "other" : {
@@ -136875,7 +136994,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Den här iPadn har redan använt en väns kod."
+                  "value" : "Den här iPaden har redan använt en väns kod."
                 }
               },
               "other" : {
@@ -136911,7 +137030,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Bu iPad’da bir arkadaş kodu zaten kullanıldı."
+                  "value" : "Bu iPad’de bir arkadaş kodu zaten kullanıldı."
                 }
               },
               "other" : {
@@ -141561,7 +141680,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Slå av Ultra AI i Personvern og KI-data, så sendes ingenting mer til Anthropic. Manus det allerede har skrevet, blir på denne iPadn. Apple Intelligence endres ikke."
+                  "value" : "Slå av Ultra AI i Personvern og KI-data, så sendes ingenting mer til Anthropic. Manus det allerede har skrevet, blir på denne iPaden. Apple Intelligence endres ikke."
                 }
               },
               "other" : {
@@ -141615,7 +141734,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Stäng av Ultra AI i Integritet och AI-data så skickas inget mer till Anthropic. Manus som det redan har skrivit stannar på den här iPadn. Apple Intelligence ändras inte."
+                  "value" : "Stäng av Ultra AI i Integritet och AI-data så skickas inget mer till Anthropic. Manus som det redan har skrivit stannar på den här iPaden. Apple Intelligence ändras inte."
                 }
               },
               "other" : {
@@ -141651,7 +141770,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Gizlilik ve yapay zekâ verileri’nden Ultra AI’ı kapatırsan Anthropic’e başka hiçbir şey gitmez. Yazdığı metinler bu iPad’da kalır. Apple Intelligence değişmez."
+                  "value" : "Gizlilik ve yapay zekâ verileri’nden Ultra AI’ı kapatırsan Anthropic’e başka hiçbir şey gitmez. Yazdığı metinler bu iPad’de kalır. Apple Intelligence değişmez."
                 }
               },
               "other" : {
@@ -144492,7 +144611,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Ultra AI er ikke satt opp på denne iPadn"
+                  "value" : "Ultra AI er ikke satt opp på denne iPaden"
                 }
               },
               "other" : {
@@ -144546,7 +144665,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Ultra AI är inte konfigurerat på den här iPadn"
+                  "value" : "Ultra AI är inte konfigurerat på den här iPaden"
                 }
               },
               "other" : {
@@ -144582,7 +144701,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Ultra AI bu iPad’da kurulu değil"
+                  "value" : "Ultra AI bu iPad’de kurulu değil"
                 }
               },
               "other" : {
@@ -147490,7 +147609,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Bruk «%@» fra iPadn din"
+                  "value" : "Bruk «%@» fra iPaden din"
                 }
               },
               "other" : {
@@ -147580,7 +147699,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "iPad’daki “%@” seçimini kullan"
+                  "value" : "iPad’deki “%@” seçimini kullan"
                 }
               },
               "other" : {
@@ -160042,7 +160161,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "대본, 테이크, My Cue Voice는 이 iPad과 백업에 저장돼요. Cue 서버는 무작위 ID로 횟수만 보관해요. 사용 데이터와 충돌 보고서는 ‘Cue 개선에 참여’를 켰을 때만 Google로 보내져요."
+                  "value" : "대본, 테이크, My Cue Voice는 이 iPad와 백업에 저장돼요. Cue 서버는 무작위 ID로 횟수만 보관해요. 사용 데이터와 충돌 보고서는 ‘Cue 개선에 참여’를 켰을 때만 Google로 보내져요."
                 }
               },
               "other" : {
@@ -160060,7 +160179,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Manusene, opptakene og My Cue Voice lagres på denne iPadn og i sikkerhetskopiene av den. Cues server lagrer bare antall, under en tilfeldig ID. Bruksdata og krasjrapporter går bare til Google når Hjelp til å forbedre Cue er på."
+                  "value" : "Manusene, opptakene og My Cue Voice lagres på denne iPaden og i sikkerhetskopiene av den. Cues server lagrer bare antall, under en tilfeldig ID. Bruksdata og krasjrapporter går bare til Google når Hjelp til å forbedre Cue er på."
                 }
               },
               "other" : {
@@ -160114,7 +160233,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Dina manus, tagningar och My Cue Voice sparas på den här iPadn och i dess säkerhetskopior. Cues server sparar bara antal, under ett slumpmässigt ID. Användningsdata och kraschrapporter går till Google bara när Hjälp till att förbättra Cue är på."
+                  "value" : "Dina manus, tagningar och My Cue Voice sparas på den här iPaden och i dess säkerhetskopior. Cues server sparar bara antal, under ett slumpmässigt ID. Användningsdata och kraschrapporter går till Google bara när Hjälp till att förbättra Cue är på."
                 }
               },
               "other" : {
@@ -160150,7 +160269,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Senaryoların, çekimlerin ve My Cue Voice bu iPad’da ve yedeklerinde saklanır. Cue’nun sunucusu rastgele bir kimlikle yalnızca sayıları tutar. Kullanım verileri ve çökme raporları yalnızca Cue’yu geliştirmeye yardım et açıkken Google’a gider."
+                  "value" : "Senaryoların, çekimlerin ve My Cue Voice bu iPad’de ve yedeklerinde saklanır. Cue’nun sunucusu rastgele bir kimlikle yalnızca sayıları tutar. Kullanım verileri ve çökme raporları yalnızca Cue’yu geliştirmeye yardım et açıkken Google’a gider."
                 }
               },
               "other" : {
@@ -167140,7 +167259,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%@ · ikke på denne iPadn, vises i SF Pro"
+                  "value" : "%@ · ikke på denne iPaden, vises i SF Pro"
                 }
               },
               "other" : {
@@ -167194,7 +167313,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%@ · finns inte på den här iPadn, visas i SF Pro"
+                  "value" : "%@ · finns inte på den här iPaden, visas i SF Pro"
                 }
               },
               "other" : {
@@ -167230,7 +167349,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%@ · bu iPad’da yok, SF Pro ile gösterilir"
+                  "value" : "%@ · bu iPad’de yok, SF Pro ile gösterilir"
                 }
               },
               "other" : {
@@ -171561,7 +171680,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%@ finnes allerede på denne iPadn"
+                  "value" : "%@ finnes allerede på denne iPaden"
                 }
               },
               "other" : {
@@ -171615,7 +171734,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%@ finns redan på den här iPadn"
+                  "value" : "%@ finns redan på den här iPaden"
                 }
               },
               "other" : {
@@ -171651,7 +171770,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%@ bu iPad’da zaten var"
+                  "value" : "%@ bu iPad’de zaten var"
                 }
               },
               "other" : {
@@ -172402,7 +172521,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%@ er ikke på denne iPadn · vises i SF Pro til du importerer den på nytt"
+                  "value" : "%@ er ikke på denne iPaden · vises i SF Pro til du importerer den på nytt"
                 }
               },
               "other" : {
@@ -172456,7 +172575,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%@ finns inte på den här iPadn · visas i SF Pro tills du importerar det igen"
+                  "value" : "%@ finns inte på den här iPaden · visas i SF Pro tills du importerar det igen"
                 }
               },
               "other" : {
@@ -172492,7 +172611,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%@ bu iPad’da yok · yeniden içe aktarana kadar SF Pro ile gösterilir"
+                  "value" : "%@ bu iPad’de yok · yeniden içe aktarana kadar SF Pro ile gösterilir"
                 }
               },
               "other" : {
@@ -172766,7 +172885,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%@ finnes ikke på denne iPadn · Velg en annen app"
+                  "value" : "%@ finnes ikke på denne iPaden · Velg en annen app"
                 }
               },
               "other" : {
@@ -172820,7 +172939,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%@ finns inte på den här iPadn · Välj en annan app"
+                  "value" : "%@ finns inte på den här iPaden · Välj en annan app"
                 }
               },
               "other" : {
@@ -172856,7 +172975,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%@ bu iPad’da yok · Başka bir uygulama seç"
+                  "value" : "%@ bu iPad’de yok · Başka bir uygulama seç"
                 }
               },
               "other" : {
@@ -189922,9 +190041,39 @@
     "%lld videos ✓" : {
       "localizations" : {
         "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld فيديو ✓"
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld فيديوهات ✓"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld فيديو ✓"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "فيديو واحد ✓"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld فيديو ✓"
+                }
+              },
+              "two" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "فيديوان ✓"
+                }
+              }
+            }
           }
         },
         "da" : {
@@ -190272,9 +190421,39 @@
     "%lld videos shared" : {
       "localizations" : {
         "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld فيديو تمت مشاركتها"
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "تمت مشاركة %lld فيديوهات"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "تمت مشاركة %lld فيديو"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "تمت مشاركة فيديو واحد"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "تمت مشاركة %lld فيديو"
+                }
+              },
+              "two" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "تمت مشاركة فيديوين"
+                }
+              }
+            }
           }
         },
         "da" : {
@@ -190368,9 +190547,21 @@
           }
         },
         "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld वीडियो शेयर किए गए"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld वीडियो शेयर किया गया"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld वीडियो शेयर किए गए"
+                }
+              }
+            }
           }
         },
         "id" : {
@@ -190870,9 +191061,39 @@
     "%lld VIDEOS TO UNLOCK" : {
       "localizations" : {
         "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld فيديو للفتح"
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld فيديوهات للفتح"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld فيديو للفتح"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "فيديو واحد للفتح"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld فيديو للفتح"
+                }
+              },
+              "two" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "فيديوان للفتح"
+                }
+              }
+            }
           }
         },
         "da" : {
@@ -191198,9 +191419,21 @@
           }
         },
         "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "लगातार %lld हफ़्ते"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "लगातार %lld हफ़्ता"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "लगातार %lld हफ़्ते"
+                }
+              }
+            }
           }
         },
         "id" : {
@@ -200533,7 +200766,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "En tilkoblet mikrofon, eller iPadns egen"
+                  "value" : "En tilkoblet mikrofon, eller iPadens egen"
                 }
               },
               "other" : {
@@ -200623,7 +200856,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Bağlı bir mikrofon veya iPad’un kendisi"
+                  "value" : "Bağlı bir mikrofon veya iPad’in kendisi"
                 }
               },
               "other" : {
@@ -220609,7 +220842,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Apple Intelligence · på denne iPadn"
+                  "value" : "Apple Intelligence · på denne iPaden"
                 }
               },
               "other" : {
@@ -220663,7 +220896,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Apple Intelligence · på den här iPadn"
+                  "value" : "Apple Intelligence · på den här iPaden"
                 }
               },
               "other" : {
@@ -220699,7 +220932,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Apple Intelligence · bu iPad’da"
+                  "value" : "Apple Intelligence · bu iPad’de"
                 }
               },
               "other" : {
@@ -221930,7 +222163,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Apple Intelligence er ikke tilgjengelig på denne iPadn akkurat nå"
+                  "value" : "Apple Intelligence er ikke tilgjengelig på denne iPaden akkurat nå"
                 }
               },
               "other" : {
@@ -221984,7 +222217,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Apple Intelligence är inte tillgänglig på den här iPadn just nu"
+                  "value" : "Apple Intelligence är inte tillgänglig på den här iPaden just nu"
                 }
               },
               "other" : {
@@ -222020,7 +222253,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Apple Intelligence şu anda bu iPad’da kullanılamıyor"
+                  "value" : "Apple Intelligence şu anda bu iPad’de kullanılamıyor"
                 }
               },
               "other" : {
@@ -239923,7 +240156,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Ta med manus, innleggstekster eller notater du har skrevet. Cue lærer av dem hvordan du skriver, på denne iPadn."
+                  "value" : "Ta med manus, innleggstekster eller notater du har skrevet. Cue lærer av dem hvordan du skriver, på denne iPaden."
                 }
               },
               "other" : {
@@ -239977,7 +240210,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Ta med manus, bildtexter eller anteckningar du har skrivit. Cue lär sig av dem hur du skriver, på den här iPadn."
+                  "value" : "Ta med manus, bildtexter eller anteckningar du har skrivit. Cue lär sig av dem hur du skriver, på den här iPaden."
                 }
               },
               "other" : {
@@ -240013,7 +240246,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Yazdığın senaryoları, açıklamaları veya notları getir. Cue nasıl yazdığını bu iPad’da bunlardan öğrenir."
+                  "value" : "Yazdığın senaryoları, açıklamaları veya notları getir. Cue nasıl yazdığını bu iPad’de bunlardan öğrenir."
                 }
               },
               "other" : {
@@ -247995,7 +248228,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Undertekster kan ikke lytte på %@ på denne iPadn. Velg språket som snakkes, eller skriv linjene selv."
+                  "value" : "Undertekster kan ikke lytte på %@ på denne iPaden. Velg språket som snakkes, eller skriv linjene selv."
                 }
               },
               "other" : {
@@ -248049,7 +248282,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Undertexter kan inte lyssna på %@ på den här iPadn. Välj det språk som talas eller skriv raderna själv."
+                  "value" : "Undertexter kan inte lyssna på %@ på den här iPaden. Välj det språk som talas eller skriv raderna själv."
                 }
               },
               "other" : {
@@ -248085,7 +248318,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Altyazılar bu iPad’da %@ dinleyemiyor. Konuşulan dili seç ya da satırları kendin yaz."
+                  "value" : "Altyazılar bu iPad’de %@ dinleyemiyor. Konuşulan dili seç ya da satırları kendin yaz."
                 }
               },
               "other" : {
@@ -255672,7 +255905,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Sjekker om denne iPadn kan oversette…"
+                  "value" : "Sjekker om denne iPaden kan oversette…"
                 }
               },
               "other" : {
@@ -255726,7 +255959,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Kontrollerar att den här iPadn kan översätta…"
+                  "value" : "Kontrollerar att den här iPaden kan översätta…"
                 }
               },
               "other" : {
@@ -255762,7 +255995,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Bu iPad’un çevirip çeviremeyeceği kontrol ediliyor…"
+                  "value" : "Bu iPad’in çevirip çeviremeyeceği kontrol ediliyor…"
                 }
               },
               "other" : {
@@ -273497,7 +273730,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Kunne ikke lagre redigeringene · Frigjør plass på denne iPadn"
+                  "value" : "Kunne ikke lagre redigeringene · Frigjør plass på denne iPaden"
                 }
               },
               "other" : {
@@ -273551,7 +273784,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Kunde inte spara redigeringarna · Frigör utrymme på den här iPadn"
+                  "value" : "Kunde inte spara redigeringarna · Frigör utrymme på den här iPaden"
                 }
               },
               "other" : {
@@ -273587,7 +273820,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Düzenlemeler kaydedilemedi · Bu iPad’da yer aç"
+                  "value" : "Düzenlemeler kaydedilemedi · Bu iPad’de yer aç"
                 }
               },
               "other" : {
@@ -273981,7 +274214,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Kunne ikke lagre arbeidet ditt · Frigjør plass på denne iPadn"
+                  "value" : "Kunne ikke lagre arbeidet ditt · Frigjør plass på denne iPaden"
                 }
               },
               "other" : {
@@ -274035,7 +274268,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Kunde inte spara ditt arbete · Frigör utrymme på den här iPadn"
+                  "value" : "Kunde inte spara ditt arbete · Frigör utrymme på den här iPaden"
                 }
               },
               "other" : {
@@ -274071,7 +274304,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Çalışmanız kaydedilemedi · Bu iPad’da yer aç"
+                  "value" : "Çalışmanız kaydedilemedi · Bu iPad’de yer aç"
                 }
               },
               "other" : {
@@ -279210,7 +279443,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Cue finner deg i hvert bilde, på denne iPadn, og endrer alt rundt deg."
+                  "value" : "Cue finner deg i hvert bilde, på denne iPaden, og endrer alt rundt deg."
                 }
               },
               "other" : {
@@ -279264,7 +279497,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Cue hittar dig i varje bildruta, på den här iPadn, och ändrar allt runt dig."
+                  "value" : "Cue hittar dig i varje bildruta, på den här iPaden, och ändrar allt runt dig."
                 }
               },
               "other" : {
@@ -279300,7 +279533,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Cue seni bu iPad’da her karede bulur ve etrafındaki her şeyi değiştirir."
+                  "value" : "Cue seni bu iPad’de her karede bulur ve etrafındaki her şeyi değiştirir."
                 }
               },
               "other" : {
@@ -279575,7 +279808,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Cue lytter til videoen på iPadn din og skriver ned hvert ord. Så klipper du i teksten."
+                  "value" : "Cue lytter til videoen på iPaden din og skriver ned hvert ord. Så klipper du i teksten."
                 }
               },
               "other" : {
@@ -279665,7 +279898,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Cue her kelimeyi yazmak için videoyu iPad’unda dinler. Sonra metinden kesersin."
+                  "value" : "Cue her kelimeyi yazmak için videoyu iPad’inde dinler. Sonra metinden kesersin."
                 }
               },
               "other" : {
@@ -280769,7 +281002,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Cue velger emnet på denne iPadn"
+                  "value" : "Cue velger emnet på denne iPaden"
                 }
               },
               "other" : {
@@ -280823,7 +281056,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Cue väljer ämnet på den här iPadn"
+                  "value" : "Cue väljer ämnet på den här iPaden"
                 }
               },
               "other" : {
@@ -280859,7 +281092,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Cue konuyu bu iPad’da seçer"
+                  "value" : "Cue konuyu bu iPad’de seçer"
                 }
               },
               "other" : {
@@ -281369,7 +281602,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Cue leser kommentaren på denne iPadn"
+                  "value" : "Cue leser kommentaren på denne iPaden"
                 }
               },
               "other" : {
@@ -281423,7 +281656,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Cue läser kommentaren på den här iPadn"
+                  "value" : "Cue läser kommentaren på den här iPaden"
                 }
               },
               "other" : {
@@ -281459,7 +281692,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Cue yorumu bu iPad’da okur"
+                  "value" : "Cue yorumu bu iPad’de okur"
                 }
               },
               "other" : {
@@ -289274,7 +289507,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Sletter manusene, opptakene, redigeringene og My Cue Voice fra denne iPadn. Kan ikke angres."
+                  "value" : "Sletter manusene, opptakene, redigeringene og My Cue Voice fra denne iPaden. Kan ikke angres."
                 }
               },
               "other" : {
@@ -289328,7 +289561,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Raderar dina manus, tagningar, redigeringar och My Cue Voice från den här iPadn. Det går inte att ångra."
+                  "value" : "Raderar dina manus, tagningar, redigeringar och My Cue Voice från den här iPaden. Det går inte att ångra."
                 }
               },
               "other" : {
@@ -289364,7 +289597,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Bu iPad’daki senaryolarını, çekimlerini, düzenlemelerini ve My Cue Voice’u siler. Geri alınamaz."
+                  "value" : "Bu iPad’deki senaryolarını, çekimlerini, düzenlemelerini ve My Cue Voice’u siler. Geri alınamaz."
                 }
               },
               "other" : {
@@ -290944,7 +291177,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Diktering kan ikke lytte på %@ på denne iPadn. Du kan skrive ideen din i stedet."
+                  "value" : "Diktering kan ikke lytte på %@ på denne iPaden. Du kan skrive ideen din i stedet."
                 }
               },
               "other" : {
@@ -290998,7 +291231,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Diktering kan inte lyssna på %@ på den här iPadn. Du kan skriva din idé i stället."
+                  "value" : "Diktering kan inte lyssna på %@ på den här iPaden. Du kan skriva din idé i stället."
                 }
               },
               "other" : {
@@ -291034,7 +291267,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Bu iPad’da sesle yazma %@ dilini dinleyemiyor. Bunun yerine fikrini yazabilirsin."
+                  "value" : "Bu iPad’de sesle yazma %@ dilini dinleyemiyor. Bunun yerine fikrini yazabilirsin."
                 }
               },
               "other" : {
@@ -294981,7 +295214,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Gjort på iPadn din. Flytt tittelen bak deg for å se det."
+                  "value" : "Gjort på iPaden din. Flytt tittelen bak deg for å se det."
                 }
               },
               "other" : {
@@ -295071,7 +295304,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "iPad’unda yapıldı. Görmek için başlığı arkana taşı."
+                  "value" : "iPad’inde yapıldı. Görmek için başlığı arkana taşı."
                 }
               },
               "other" : {
@@ -333324,7 +333557,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "파일 앱에서 추가한 음악에서 iPad이 찾아요."
+                  "value" : "파일 앱에서 추가한 음악에서 iPad가 찾아요."
                 }
               },
               "other" : {
@@ -333342,7 +333575,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Funnet på iPadn i musikken du la til fra Filer."
+                  "value" : "Funnet på iPaden i musikken du la til fra Filer."
                 }
               },
               "other" : {
@@ -333432,7 +333665,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Vuruşlar, Dosyalar’dan eklediğin müzikte iPad’unda bulunur."
+                  "value" : "Vuruşlar, Dosyalar’dan eklediğin müzikte iPad’inde bulunur."
                 }
               },
               "other" : {
@@ -363082,7 +363315,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Importer bare skrifttyper du har lov til å bruke i videoer. De blir på denne iPadn, bare for Cue."
+                  "value" : "Importer bare skrifttyper du har lov til å bruke i videoer. De blir på denne iPaden, bare for Cue."
                 }
               },
               "other" : {
@@ -363136,7 +363369,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Importera bara teckensnitt som du får använda i videor. De stannar på den här iPadn, bara för Cue."
+                  "value" : "Importera bara teckensnitt som du får använda i videor. De stannar på den här iPaden, bara för Cue."
                 }
               },
               "other" : {
@@ -363172,7 +363405,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Yalnızca videolarda kullanmana izin verilen yazı tiplerini içe aktar. Bu iPad’da kalırlar, yalnızca Cue için."
+                  "value" : "Yalnızca videolarda kullanmana izin verilen yazı tiplerini içe aktar. Bu iPad’de kalırlar, yalnızca Cue için."
                 }
               },
               "other" : {
@@ -368561,7 +368794,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "iPadns språk"
+                  "value" : "iPadens språk"
                 }
               },
               "other" : {
@@ -368615,7 +368848,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "iPadns språk"
+                  "value" : "iPadens språk"
                 }
               },
               "other" : {
@@ -384203,7 +384436,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Lytter på denne iPadn. Noen språk laster ned en modell første gang."
+                  "value" : "Lytter på denne iPaden. Noen språk laster ned en modell første gang."
                 }
               },
               "other" : {
@@ -384257,7 +384490,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Lyssnar på den här iPadn. Vissa språk laddar ned en modell första gången."
+                  "value" : "Lyssnar på den här iPaden. Vissa språk laddar ned en modell första gången."
                 }
               },
               "other" : {
@@ -384293,7 +384526,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Bu iPad’da dinler. Bazı diller ilk seferde bir model indirir."
+                  "value" : "Bu iPad’de dinler. Bazı diller ilk seferde bir model indirir."
                 }
               },
               "other" : {
@@ -419960,7 +420193,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Ingen stemme for dette språket på denne iPadn."
+                  "value" : "Ingen stemme for dette språket på denne iPaden."
                 }
               },
               "other" : {
@@ -420014,7 +420247,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Ingen röst för det här språket på den här iPadn."
+                  "value" : "Ingen röst för det här språket på den här iPaden."
                 }
               },
               "other" : {
@@ -420050,7 +420283,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Bu iPad’da bu dil için ses yok."
+                  "value" : "Bu iPad’de bu dil için ses yok."
                 }
               },
               "other" : {
@@ -421507,7 +421740,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Ikke tilgjengelig på denne iPadn"
+                  "value" : "Ikke tilgjengelig på denne iPaden"
                 }
               },
               "other" : {
@@ -421561,7 +421794,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Inte tillgängligt på den här iPadn"
+                  "value" : "Inte tillgängligt på den här iPaden"
                 }
               },
               "other" : {
@@ -421597,7 +421830,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Bu iPad’da kullanılamaz"
+                  "value" : "Bu iPad’de kullanılamaz"
                 }
               },
               "other" : {
@@ -422463,7 +422696,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Ikke nok plass på denne iPadn · Frigjør litt og prøv igjen"
+                  "value" : "Ikke nok plass på denne iPaden · Frigjør litt og prøv igjen"
                 }
               },
               "other" : {
@@ -422517,7 +422750,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Inte tillräckligt med utrymme på den här iPadn · Frigör lite och försök igen"
+                  "value" : "Inte tillräckligt med utrymme på den här iPaden · Frigör lite och försök igen"
                 }
               },
               "other" : {
@@ -422553,7 +422786,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Bu iPad’da yeterli alan yok · Biraz boşaltıp tekrar dene"
+                  "value" : "Bu iPad’de yeterli alan yok · Biraz boşaltıp tekrar dene"
                 }
               },
               "other" : {
@@ -422828,7 +423061,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Ikke nok plass på denne iPadn. Frigjør omtrent %lld MB og prøv igjen."
+                  "value" : "Ikke nok plass på denne iPaden. Frigjør omtrent %lld MB og prøv igjen."
                 }
               },
               "other" : {
@@ -422882,7 +423115,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Inte tillräckligt med utrymme på den här iPadn. Frigör ungefär %lld MB och försök igen."
+                  "value" : "Inte tillräckligt med utrymme på den här iPaden. Frigör ungefär %lld MB och försök igen."
                 }
               },
               "other" : {
@@ -422918,7 +423151,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Bu iPad’da yeterli alan yok. Yaklaşık %lld MB boşalt ve tekrar dene."
+                  "value" : "Bu iPad’de yeterli alan yok. Yaklaşık %lld MB boşalt ve tekrar dene."
                 }
               },
               "other" : {
@@ -429905,7 +430138,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "På denne iPadn"
+                  "value" : "På denne iPaden"
                 }
               },
               "other" : {
@@ -429959,7 +430192,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "På den här iPadn"
+                  "value" : "På den här iPaden"
                 }
               },
               "other" : {
@@ -429995,7 +430228,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Bu iPad’da"
+                  "value" : "Bu iPad’de"
                 }
               },
               "other" : {
@@ -457427,9 +457660,39 @@
     "Posting to %lld networks" : {
       "localizations" : {
         "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "النشر على %lld شبكات"
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "النشر على %lld شبكات"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "النشر على %lld شبكة"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "النشر على شبكة واحدة"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "النشر على %lld شبكة"
+                }
+              },
+              "two" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "النشر على شبكتين"
+                }
+              }
+            }
           }
         },
         "da" : {
@@ -470984,7 +471247,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Klar på denne iPadn"
+                  "value" : "Klar på denne iPaden"
                 }
               },
               "other" : {
@@ -471038,7 +471301,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Klart på den här iPadn"
+                  "value" : "Klart på den här iPaden"
                 }
               },
               "other" : {
@@ -471074,7 +471337,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Bu iPad’da hazır"
+                  "value" : "Bu iPad’de hazır"
                 }
               },
               "other" : {
@@ -480734,7 +480997,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Fjerner manus, opptak, redigeringer og My Cue Voice fra denne iPadn. Videoer lagret i Bilder blir værende."
+                  "value" : "Fjerner manus, opptak, redigeringer og My Cue Voice fra denne iPaden. Videoer lagret i Bilder blir værende."
                 }
               },
               "other" : {
@@ -480788,7 +481051,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Tar bort dina manus, tagningar, redigeringar och My Cue Voice från den här iPadn. Videor sparade i Bilder finns kvar."
+                  "value" : "Tar bort dina manus, tagningar, redigeringar och My Cue Voice från den här iPaden. Videor sparade i Bilder finns kvar."
                 }
               },
               "other" : {
@@ -480824,7 +481087,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Senaryolarını, çekimlerini, düzenlemelerini ve My Cue Voice’u bu iPad’dan kaldırır. Fotoğraflar’a kaydedilen videolar orada kalır."
+                  "value" : "Senaryolarını, çekimlerini, düzenlemelerini ve My Cue Voice’u bu iPad’den kaldırır. Fotoğraflar’a kaydedilen videolar orada kalır."
                 }
               },
               "other" : {
@@ -499353,7 +499616,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Manus og opptak blir på denne iPadn"
+                  "value" : "Manus og opptak blir på denne iPaden"
                 }
               },
               "other" : {
@@ -499407,7 +499670,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Manus och tagningar stannar på den här iPadn"
+                  "value" : "Manus och tagningar stannar på den här iPaden"
                 }
               },
               "other" : {
@@ -499443,7 +499706,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Senaryolar ve çekimler bu iPad’da kalır"
+                  "value" : "Senaryolar ve çekimler bu iPad’de kalır"
                 }
               },
               "other" : {
@@ -500073,7 +500336,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Manus, omskrivinger, hooks og temaideer skrives alle på denne iPadn. Ingen annen KI-tjeneste er involvert."
+                  "value" : "Manus, omskrivinger, hooks og temaideer skrives alle på denne iPaden. Ingen annen KI-tjeneste er involvert."
                 }
               },
               "other" : {
@@ -500127,7 +500390,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Manus, omskrivningar, hooks och temaidéer skrivs alla på den här iPadn. Ingen annan AI-tjänst är inblandad."
+                  "value" : "Manus, omskrivningar, hooks och temaidéer skrivs alla på den här iPaden. Ingen annan AI-tjänst är inblandad."
                 }
               },
               "other" : {
@@ -500163,7 +500426,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Senaryolar, yeniden yazmalar, kancalar ve konu fikirleri bu iPad’da yazılır. Başka hiçbir yapay zekâ hizmeti kullanılmaz."
+                  "value" : "Senaryolar, yeniden yazmalar, kancalar ve konu fikirleri bu iPad’de yazılır. Başka hiçbir yapay zekâ hizmeti kullanılmaz."
                 }
               },
               "other" : {
@@ -507583,9 +507846,39 @@
     "Share %lld more videos" : {
       "localizations" : {
         "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "شارك %lld فيديو إضافيًا"
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "شارك %lld فيديوهات إضافية"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "شارك %lld فيديو إضافيًا"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "شارك فيديو واحدًا إضافيًا"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "شارك %lld فيديو إضافيًا"
+                }
+              },
+              "two" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "شارك فيديوين إضافيين"
+                }
+              }
+            }
           }
         },
         "da" : {
@@ -509844,9 +510137,39 @@
     "Share to %lld networks" : {
       "localizations" : {
         "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "شارك على %lld شبكات"
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "شارك على %lld شبكات"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "شارك على %lld شبكة"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "شارك على شبكة واحدة"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "شارك على %lld شبكة"
+                }
+              },
+              "two" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "شارك على شبكتين"
+                }
+              }
+            }
           }
         },
         "da" : {
@@ -511000,9 +511323,39 @@
     "SHARED TO %lld NETWORKS" : {
       "localizations" : {
         "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تمت المشاركة على %lld شبكات"
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "تمت المشاركة على %lld شبكات"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "تمت المشاركة على %lld شبكة"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "تمت المشاركة على شبكة واحدة"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "تمت المشاركة على %lld شبكة"
+                }
+              },
+              "two" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "تمت المشاركة على شبكتين"
+                }
+              }
+            }
           }
         },
         "da" : {
@@ -531037,7 +531390,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Leses opp av en stemme på denne iPadn, frakoblet"
+                  "value" : "Leses opp av en stemme på denne iPaden, frakoblet"
                 }
               },
               "other" : {
@@ -531091,7 +531444,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Läses upp av en röst på den här iPadn, offline"
+                  "value" : "Läses upp av en röst på den här iPaden, offline"
                 }
               },
               "other" : {
@@ -531127,7 +531480,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Bu iPad’daki bir sesle, çevrimdışı okunur"
+                  "value" : "Bu iPad’deki bir sesle, çevrimdışı okunur"
                 }
               },
               "other" : {
@@ -561497,7 +561850,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "iPadn er varm, så eksporten tager længere tid. Lad den køle af, hvis du kan."
+                  "value" : "iPad'en er varm, så eksporten tager længere tid. Lad den køle af, hvis du kan."
                 }
               },
               "other" : {
@@ -561659,7 +562012,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "iPad이 뜨거워서 내보내기가 더 오래 걸려요. 가능하면 식혀 주세요."
+                  "value" : "iPad가 뜨거워서 내보내기가 더 오래 걸려요. 가능하면 식혀 주세요."
                 }
               },
               "other" : {
@@ -561677,7 +562030,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "iPadn er varm, så eksporten tar lengre tid. La den kjøle seg ned hvis du kan."
+                  "value" : "iPaden er varm, så eksporten tar lengre tid. La den kjøle seg ned hvis du kan."
                 }
               },
               "other" : {
@@ -561731,7 +562084,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "iPadn är varm, så exporten tar längre tid. Låt den svalna om du kan."
+                  "value" : "iPaden är varm, så exporten tar längre tid. Låt den svalna om du kan."
                 }
               },
               "other" : {
@@ -562873,7 +563226,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Mikrofonen lar teleprompteren følge ordene dine, på denne iPadn. Kameraet viser deg mens du leser."
+                  "value" : "Mikrofonen lar teleprompteren følge ordene dine, på denne iPaden. Kameraet viser deg mens du leser."
                 }
               },
               "other" : {
@@ -562927,7 +563280,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Mikrofonen låter telepromptern följa dina ord, på den här iPadn. Kameran visar dig medan du läser."
+                  "value" : "Mikrofonen låter telepromptern följa dina ord, på den här iPaden. Kameran visar dig medan du läser."
                 }
               },
               "other" : {
@@ -562963,7 +563316,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Mikrofon, teleprompter’ın sözlerini bu iPad’da takip etmesini sağlar. Kamera okurken seni gösterir."
+                  "value" : "Mikrofon, teleprompter’ın sözlerini bu iPad’de takip etmesini sağlar. Kamera okurken seni gösterir."
                 }
               },
               "other" : {
@@ -570462,7 +570815,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "이 iPad은 영상에서 사람을 찾을 수 없어 여기서는 배경을 바꿀 수 없어요."
+                  "value" : "이 iPad는 영상에서 사람을 찾을 수 없어 여기서는 배경을 바꿀 수 없어요."
                 }
               },
               "other" : {
@@ -570480,7 +570833,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Denne iPadn kan ikke finne personer i video, så bakgrunnen kan ikke endres her."
+                  "value" : "Denne iPaden kan ikke finne personer i video, så bakgrunnen kan ikke endres her."
                 }
               },
               "other" : {
@@ -570534,7 +570887,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Den här iPadn kan inte hitta personer i video, så bakgrunden kan inte ändras här."
+                  "value" : "Den här iPaden kan inte hitta personer i video, så bakgrunden kan inte ändras här."
                 }
               },
               "other" : {
@@ -570844,7 +571197,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Denne iPadn kan ikke oversette %1$@ til %2$@. Du kan skrive oversettelsen selv."
+                  "value" : "Denne iPaden kan ikke oversette %1$@ til %2$@. Du kan skrive oversettelsen selv."
                 }
               },
               "other" : {
@@ -570898,7 +571251,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Den här iPadn kan inte översätta %1$@ till %2$@. Du kan skriva översättningen själv."
+                  "value" : "Den här iPaden kan inte översätta %1$@ till %2$@. Du kan skriva översättningen själv."
                 }
               },
               "other" : {
@@ -571208,7 +571561,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Denne iPadn kan ikke gjøre tale om til tekst her. Du kan skrive ideen din i stedet."
+                  "value" : "Denne iPaden kan ikke gjøre tale om til tekst her. Du kan skrive ideen din i stedet."
                 }
               },
               "other" : {
@@ -571262,7 +571615,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Den här iPadn kan inte göra om tal till text här. Du kan skriva din idé i stället."
+                  "value" : "Den här iPaden kan inte göra om tal till text här. Du kan skriva din idé i stället."
                 }
               },
               "other" : {
@@ -579396,7 +579749,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "For langt for Apple Intelligence på denne iPadn. Prøv et kortere manus, eller én del om gangen."
+                  "value" : "For langt for Apple Intelligence på denne iPaden. Prøv et kortere manus, eller én del om gangen."
                 }
               },
               "other" : {
@@ -579450,7 +579803,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "För långt för Apple Intelligence på den här iPadn. Prova ett kortare manus, eller en del i taget."
+                  "value" : "För långt för Apple Intelligence på den här iPaden. Prova ett kortare manus, eller en del i taget."
                 }
               },
               "other" : {
@@ -579486,7 +579839,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Bu iPad’daki Apple Intelligence için çok uzun. Daha kısa bir senaryo dene ya da her seferinde bir bölüm."
+                  "value" : "Bu iPad’deki Apple Intelligence için çok uzun. Daha kısa bir senaryo dene ya da her seferinde bir bölüm."
                 }
               },
               "other" : {
@@ -583670,7 +584023,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Oversatt på iPadn din · Ingenting sendes"
+                  "value" : "Oversatt på iPaden din · Ingenting sendes"
                 }
               },
               "other" : {
@@ -583760,7 +584113,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "iPad’unda çevrilir · Hiçbir şey gönderilmez"
+                  "value" : "iPad’inde çevrilir · Hiçbir şey gönderilmez"
                 }
               },
               "other" : {
@@ -584034,7 +584387,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Oversatt på iPadn din med Apple Oversett. Ingenting sendes noe sted."
+                  "value" : "Oversatt på iPaden din med Apple Oversett. Ingenting sendes noe sted."
                 }
               },
               "other" : {
@@ -584124,7 +584477,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Apple’ın Çeviri’siyle iPad’unda çevrilir. Hiçbir şey hiçbir yere gönderilmez."
+                  "value" : "Apple’ın Çeviri’siyle iPad’inde çevrilir. Hiçbir şey hiçbir yere gönderilmez."
                 }
               },
               "other" : {
@@ -584516,7 +584869,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Oversetter på iPadn din…"
+                  "value" : "Oversetter på iPaden din…"
                 }
               },
               "other" : {
@@ -584606,7 +584959,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "iPad’unda çevriliyor…"
+                  "value" : "iPad’inde çevriliyor…"
                 }
               },
               "other" : {
@@ -593476,9 +593829,39 @@
     "Unlocks at %lld videos shared" : {
       "localizations" : {
         "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "يُفتح عند مشاركة %lld فيديو"
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "يُفتح عند مشاركة %lld فيديوهات"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "يُفتح عند مشاركة %lld فيديو"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "يُفتح عند مشاركة فيديو واحد"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "يُفتح عند مشاركة %lld فيديو"
+                }
+              },
+              "two" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "يُفتح عند مشاركة فيديوين"
+                }
+              }
+            }
           }
         },
         "da" : {
@@ -597226,7 +597609,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "이 iPad을 리모컨으로 사용"
+                  "value" : "이 iPad를 리모컨으로 사용"
                 }
               },
               "other" : {
@@ -597244,7 +597627,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Bruk denne iPadn som fjernkontroll"
+                  "value" : "Bruk denne iPaden som fjernkontroll"
                 }
               },
               "other" : {
@@ -597298,7 +597681,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Använd den här iPadn som fjärrkontroll"
+                  "value" : "Använd den här iPaden som fjärrkontroll"
                 }
               },
               "other" : {
@@ -597334,7 +597717,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Bu iPad’u kumanda olarak kullan"
+                  "value" : "Bu iPad’i kumanda olarak kullan"
                 }
               },
               "other" : {
@@ -599098,7 +599481,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Bruker Apple Intelligence på denne iPadn."
+                  "value" : "Bruker Apple Intelligence på denne iPaden."
                 }
               },
               "other" : {
@@ -599152,7 +599535,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Använder Apple Intelligence på den här iPadn."
+                  "value" : "Använder Apple Intelligence på den här iPaden."
                 }
               },
               "other" : {
@@ -599188,7 +599571,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Bu iPad’da Apple Intelligence ile çalışır."
+                  "value" : "Bu iPad’de Apple Intelligence ile çalışır."
                 }
               },
               "other" : {
@@ -599282,7 +599665,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Bruger den tilsluttede mikrofon eller iPadns"
+                  "value" : "Bruger den tilsluttede mikrofon eller iPad'ens"
                 }
               },
               "other" : {
@@ -599462,7 +599845,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Bruker den tilkoblede mikrofonen, eller iPadns"
+                  "value" : "Bruker den tilkoblede mikrofonen, eller iPadens"
                 }
               },
               "other" : {
@@ -599516,7 +599899,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Använder den anslutna mikrofonen, eller iPadns"
+                  "value" : "Använder den anslutna mikrofonen, eller iPadens"
                 }
               },
               "other" : {
@@ -599552,7 +599935,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Bağlı mikrofonu veya iPad’unkini kullanır"
+                  "value" : "Bağlı mikrofonu veya iPad’inkini kullanır"
                 }
               },
               "other" : {
@@ -605697,7 +606080,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Venter på, at iPadn køler af · %lld %%"
+                  "value" : "Venter på, at iPad'en køler af · %lld %%"
                 }
               },
               "other" : {
@@ -605859,7 +606242,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "iPad이 식기를 기다리는 중 · %lld%%"
+                  "value" : "iPad가 식기를 기다리는 중 · %lld%%"
                 }
               },
               "other" : {
@@ -605877,7 +606260,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Venter på at iPadn skal kjøles ned · %lld %%"
+                  "value" : "Venter på at iPaden skal kjøles ned · %lld %%"
                 }
               },
               "other" : {
@@ -605931,7 +606314,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Väntar på att iPadn ska svalna · %lld %%"
+                  "value" : "Väntar på att iPaden ska svalna · %lld %%"
                 }
               },
               "other" : {
@@ -605967,7 +606350,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "iPad’un soğuması bekleniyor · %%%lld"
+                  "value" : "iPad’in soğuması bekleniyor · %%%lld"
                 }
               },
               "other" : {
@@ -628641,7 +629024,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "iPad이 너무 뜨거워서 이 영상을 완성할 수 없어요. 식힌 다음 다시 내보내세요."
+                  "value" : "iPad가 너무 뜨거워서 이 영상을 완성할 수 없어요. 식힌 다음 다시 내보내세요."
                 }
               },
               "other" : {
@@ -628659,7 +629042,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "iPadn er for varm til å gjøre ferdig videoen. La den kjøle seg ned, og eksporter på nytt."
+                  "value" : "iPaden er for varm til å gjøre ferdig videoen. La den kjøle seg ned, og eksporter på nytt."
                 }
               },
               "other" : {
@@ -628749,7 +629132,7 @@
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "iPad’un bu videoyu bitirmek için fazla ısındı. Soğumasını bekle, sonra yeniden dışa aktar."
+                  "value" : "iPad’in bu videoyu bitirmek için fazla ısındı. Soğumasını bekle, sonra yeniden dışa aktar."
                 }
               },
               "other" : {

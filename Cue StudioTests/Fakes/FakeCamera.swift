@@ -56,11 +56,13 @@ final class FakeCamera: CameraControlling {
         stopCount += 1
     }
 
-    func startRecording() async throws {
+    @discardableResult
+    func startRecording() async throws -> URL? {
         if failsToRecord { throw CaptureEngineError.notRunning }
         await whileStarting?()
         recordingsStarted += 1
         isRecording = true
+        return clipURL
     }
 
     func stopRecording() async -> RecordedClip? {

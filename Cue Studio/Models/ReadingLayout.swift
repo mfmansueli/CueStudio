@@ -28,6 +28,8 @@ nonisolated struct ReadingLayout: Equatable, Sendable {
     /// While a take records the box shrinks: 10 pt in on each side and 16% shorter.
     static let recordingInset: CGFloat = 10
     static let recordingHeightFactor: CGFloat = 0.84
+    /// Room between the text window and a card above the toolbar (`SelfieScreenMetrics.cardTop`).
+    static let cardGap: CGFloat = 8
 
     let lensY: CGFloat
     let lineY: CGFloat
@@ -50,7 +52,7 @@ nonisolated struct ReadingLayout: Equatable, Sendable {
         lensY = metrics.lensY
         screenWidth = metrics.screen.width
         let topLimit = Self.clamp(metrics.topBarBottom + Self.topBarGap, to: 0...max(0, metrics.screen.height))
-        let bottomLimit = max(topLimit, min(metrics.toolbarTop, metrics.screen.height))
+        let bottomLimit = max(topLimit, min(metrics.toolbarTop, metrics.cardTop ?? metrics.toolbarTop, metrics.screen.height))
         let availableHeight = bottomLimit - topLimit
         // Short layouts keep the window visible instead of inventing space below the screen.
         let minimumLead = min(Self.minimumLead, availableHeight * Self.leadFraction)

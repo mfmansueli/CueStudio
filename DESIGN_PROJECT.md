@@ -1466,9 +1466,10 @@ que para sozinho (ligação, Siri) tenta de novo três vezes em seguida e, depoi
 enquanto o modo Voice está ligado; voltar ao Cue tenta na hora. Sair do gravador no meio (ou enquanto a câmera ainda começa) guarda a
 take sem a revisão, e uma que o sistema encerrou enquanto o criador parava entra uma vez só; o que ficou em `tmp/take-*.mov` (Cue parou no meio, ou a
 biblioteca não a recebeu) volta na abertura seguinte, e o que não toca é apagado (`TakeRecovery`). Se a lista de takes não
-pode ser gravada (iPhone cheio), a take não entra e o vídeo volta para `tmp/take-*.mov` com o nome da câmera ("The take couldn't be saved") e uma nota do
-roteiro e da versão ao lado (`TakeRecoveryNote`), onde a recuperação o acha e o devolve sob aquele roteiro; sem nota (Cue parou no meio) ou com o roteiro
-apagado, volta como "Freestyle recording": nunca um vídeo na biblioteca sem take que aponte para ele. Um Retake aberto da revisão (Takes › Retake) sem
+pode ser gravada (iPhone cheio), a take não entra e o vídeo volta para `tmp/take-*.mov` com o nome da câmera ("The take couldn't be saved"). Ao lado
+de cada gravação fica, desde o primeiro quadro, uma nota do roteiro, da versão e da rede da sessão (`TakeRecoveryNote`, escrita quando a câmera começa
+e apagada quando a take entra na biblioteca): a recuperação a acha e devolve a take sob aquele roteiro e aquela rede, também quando Cue parou no meio;
+sem nota ou com o roteiro apagado, volta como "Freestyle recording" (com a rede, se a nota tinha): nunca um vídeo na biblioteca sem take que aponte para ele. Um Retake aberto da revisão (Takes › Retake) sem
 microfone lê em Steady, como uma sessão nova.
 
 **A rede da gravação** (dono, 09/11/2026): o chip da rede, com roteiro e no Freestyle, abre o **mesmo Create for do cartão da IA do dock**
@@ -1481,7 +1482,7 @@ ele está à vista, para não cobrir a janela do texto): "✦ Recommended for Ti
 (`SetupChangeList`: "Frame 4:5 → 9:16", "Quality 4K → 1080p", "Safe zone Custom → TikTok"), com a etiqueta **This take** (ponto azul) no que o criador
 escolheu para esta take. **Keep as is** não muda nada; **Use Recommended** aplica exatamente as linhas listadas, a zona segura incluída (só nesta
 sessão; a Custom salva continua) e diz "Using TikTok setup". Some quando nada mudaria (a recomendação se resolve sozinha como Keep as is) e, no
-Freestyle, só aparece quando o criador troca a rede. Gravar sem responder é Keep as is. A folha **This take** (`RecordingSetupSheet`, aberta pela
+Freestyle, só aparece quando o criador troca a rede. A janela de texto e a legenda da zona segura terminam acima de tudo o que fica sobre os controles enquanto aparece (o cartão, a linha de espaço, os avisos; `SelfieScreenMetrics.cardTop`): numa tela baixa (SE) nada cobre as palavras, e a janela volta à altura toda quando eles saem. A zona segura nunca diz outra rede que não a do vídeo (`SafeZoneChoice.resolve`): YouTube em 9:16 é um Short (a zona do Shorts), 1:1 fica Custom, e uma rede sem zona medida nesse quadro (TikTok em 4:5) não mostra nenhuma. Num quadro que deixa parte da câmera de fora (16:9, 1:1, 4:5), a parte escurecida diz "16:9 · ONLY THE FRAME IS RECORDED" (`FrameMaskCaption`, branco `Palette.Camera.frameCaption` sobre a máscara, medido sobre a imagem mais clara) na primeira faixa livre sob o quadro e a janela, acima dos controles, ou acima de ambos; sem espaço, não aparece. A borda do quadro tem 1 pt. Gravar sem responder é Keep as is. A folha **This take** (`RecordingSetupSheet`, aberta pela
 pílula "1080P · 9:16 ›"; saiu do •••) mostra a mesma recomendação com as mesmas linhas e os mesmos dois nomes (Keep as is, Use Recommended).
 **Aa** (`AaSettingsSheet`): no topo um `Picker` `.segmented` do sistema com as abas e o ✕ de vidro; Selfie **Reading | Text | Window | Camera**
 (Reading: Voice Following, velocidade, AI coach; Text: tamanho, fonte, espaçamento, alinhamento, cor; Window: caixa do texto, linha de leitura, rigs e
@@ -1793,7 +1794,7 @@ nada de história, resultado, número ou tendência inventados).
   atrás dela, mais suave, e na frente; também na nota "Starter ideas" e na introdução da ferramenta): à direita do My Cue Voice na linha 1, **em qualquer
   estado de Scripts**, 8 pt depois do último chip, cápsula amarela de 44 × 30 pt (`accSoft`, contorno `accLine` de 1 pt, 44 × 44 de toque), "Find
   inspiration" para o VoiceOver; dobra com a linha. Sem largura, os chips encurtam (§2) e só por último rolam com a lâmpada fixa. Sem dica de primeiro uso.
-- **A folha** (`Screens/Scripts/Inspiration/`; abre pela lâmpada, por + › Let Cue draft it e pela notificação de ideia): título, "Ideas to start from.",
+- **A folha** (`Screens/Scripts/Inspiration/`; abre pela lâmpada do card e pela notificação de ideia; + › Let Cue draft it fecha a folha e põe o teclado no campo do card): título, "Ideas to start from.",
   temas no **leque** de Scripts e Takes (`FilterFan`, §2: dobrado no escolhido com um ponto por tema escondido, na cor do mundo dele; abre e dobra com o
   mesmo líquido e as mesmas vibrações; chips de 34 pt em 14 semibold; o escolhido em violeta `inspirationChipOn` com letra branca, porque as ideias são
   da IA), e **Topics** (só o ícone de ajustes num chip cinza de 44 × 34, "Topics" para o VoiceOver; sem temas, "+ Add topics" escrito) sempre à vista no fim da linha, fora do leque (o leque guarda o espaço dele, `trailingInset`, e os
@@ -4465,3 +4466,19 @@ abrindo o último grupo da barra principal e nos atalhos depois de Clean up; nã
   ficando, vídeo com legendas, Before/After, reabrir), `AutoEditZoomPickerTests`, `QuickEditToolbarTests`; `EditorTaskUITests.testAutoEdit…`
   (na edição de demonstração: legendas ficam, quatro pausas saem, Before/After, Turn off, Undo). No aparelho: **não validado** (o Simulator não
   ouve a fala; a demonstração já traz as pausas achadas).
+
+## 64. Portas, contagens e aparelhos (9 de novembro de 2026; varredura aprovada pelo dono)
+
+- **"Start a video" segue a porta** (`NewScriptSheet(fromRecording:)`, `AppSheet.newScript(fromRecording:)`): aberta por Start recording › New script,
+  chama-se "New script" e não repete "Record without a script" (a folha de antes já o oferece); pelas outras portas é "Start a video" com ele.
+  "Let Cue draft it" é uma linha: fecha a folha, vai a Scripts e põe o teclado no campo do card (`IdeaDraftService.wantsFocus`); as ideias do Cue ficam
+  na lâmpada do card.
+- **Takes em colunas pela largura** (`TakesView`): cartões de ~160 pt (`GridItem(.adaptive(minimum: 160))`), 2 no iPhone, 4 no iPad em pé, 6 deitado;
+  uma coluna nos tamanhos de acessibilidade.
+- **A rede padrão pela busca dos Ajustes** (`SettingsEntry.defaultPlatform`, só na busca): "platform", "network" e o nome de cada rede acham "New scripts
+  are made for", que abre Profile › Edit profile. Nenhuma linha nova na raiz.
+- **Contagens no singular**: as que chegam a 1 primeiro (vídeos compartilhados, marcos, redes do compartilhar, takes, semanas seguidas) têm a forma de
+  um no String Catalog, nos idiomas em que ela muda; o árabe tem as formas de um, dois, poucos e muitos, o hindi a de um.
+- **iPad e Mac**: os textos que dizem "iPhone" têm a variação de aparelho do String Catalog ("this iPad"), com as terminações de cada idioma (turco
+  "iPad’de", coreano "iPad가", sueco e norueguês "iPaden"); o Mac mostra a do iPad. No Mac somem a seção de ícones do app (Personalize, a busca) e a
+  linha dos ícones no paywall (`ProcessInfo.isiOSAppOnMac`).

@@ -12,7 +12,9 @@ extension Palette {
         static let frameMask = Color.black.opacity(0.6)
 
         /// Hairlines at the edges of the recorded frame.
-        static let frameEdge = Color.white.opacity(0.22)
+        static let frameEdge = Color.white.opacity(0.45)
+        /// "16:9 · ONLY THE FRAME IS RECORDED" on the darkened part (`FrameMaskCaption`): white, over `frameMask` on the brightest feed.
+        static let frameCaption = Color.white
         static let gridLine = Color.white.opacity(0.28)
 
         /// Safe zone: dashed outline of the clear area and its caption.

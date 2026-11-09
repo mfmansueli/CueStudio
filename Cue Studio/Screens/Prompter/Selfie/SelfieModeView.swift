@@ -74,10 +74,21 @@ struct SelfieModeView: View {
             }
             if !viewModel.isPractice {
                 FrameGuideOverlay(frame: geometry.frameRect)
+                if session.camera.aspect != .portrait, let y = FrameMaskCaption.centerY(
+                    frame: geometry.frameRect, window: viewModel.hasScript ? viewModel.readingLayout.windowRect : nil,
+                    top: viewModel.screenMetrics.topBarBottom,
+                    bottom: min(viewModel.screenMetrics.toolbarTop, viewModel.screenMetrics.cardTop ?? .infinity)
+                ) {
+                    FrameMaskCaption(aspect: session.camera.aspect, center: CGPoint(x: geometry.frameRect.midX, y: y))
+                        .transition(.opacity)
+                }
             }
             if !viewModel.isPractice, viewModel.showsSafeZone, let zone = viewModel.safeZone,
                let content = viewModel.safeZoneContentRect {
-                let readable = CGRect(x: 0, y: 0, width: screen.width, height: min(screen.height, viewModel.screenMetrics.toolbarTop))
+                let readable = CGRect(
+                    x: 0, y: 0, width: screen.width,
+                    height: min(screen.height, viewModel.screenMetrics.toolbarTop, viewModel.screenMetrics.cardTop ?? .infinity)
+                )
                 SafeZoneOverlay(frame: geometry.frameRect, content: content, label: zone.overlayLabel, visible: readable)
                     .animation(.smooth(duration: 0.45), value: readable.height)
                     .transition(.opacity)
@@ -211,6 +222,25 @@ struct SelfieModeView: View {
     private var recorderControls: some View {
         VStack(spacing: 0) {
             Spacer(minLength: 0)
+            cardsOverTheControls
+            SelfieControlPanel(viewModel: viewModel)
+                .padding(.horizontal, 10)
+                .onGeometryChange(for: CGFloat.self) { $0.frame(in: .global).minY } action: { top in
+                    viewModel.measured { $0.toolbarTop = top }
+                }
+        }
+        .animation(.spring(duration: 0.3), value: viewModel.showsStopWarning)
+        .animation(.spring(duration: 0.3), value: viewModel.showsRecommendation)
+        // The controls start under the navigation bar: that is where the text window may begin.
+        .onGeometryChange(for: CGFloat.self) { $0.frame(in: .global).minY } action: { top in
+            viewModel.measured { $0.topBarBottom = top }
+        }
+    }
+
+    /// The recommendation, the storage line and the notices over the controls. Their top, while any shows, is where the text window and
+    /// the safe zone's caption end (`SelfieScreenMetrics.cardTop`): nothing over the controls covers the words or the caption.
+    private var cardsOverTheControls: some View {
+        VStack(spacing: 0) {
             if viewModel.showsRecommendation, let recommendation = viewModel.session.recommendation {
                 SetupRecommendationCard(
                     recommendation: recommendation,
@@ -246,17 +276,9 @@ struct SelfieModeView: View {
                 .padding(.bottom, 12)
                 .transition(.scale(scale: 0.9, anchor: .bottom).combined(with: .opacity))
             }
-            SelfieControlPanel(viewModel: viewModel)
-                .padding(.horizontal, 10)
-                .onGeometryChange(for: CGFloat.self) { $0.frame(in: .global).minY } action: { top in
-                    viewModel.measured { $0.toolbarTop = top }
-                }
         }
-        .animation(.spring(duration: 0.3), value: viewModel.showsStopWarning)
-        .animation(.spring(duration: 0.3), value: viewModel.showsRecommendation)
-        // The controls start under the navigation bar: that is where the text window may begin.
-        .onGeometryChange(for: CGFloat.self) { $0.frame(in: .global).minY } action: { top in
-            viewModel.measured { $0.topBarBottom = top }
+        .onGeometryChange(for: CGRect.self) { $0.frame(in: .global) } action: { rect in
+            viewModel.measured { $0.cardTop = rect.height > 0 ? rect.minY - ReadingLayout.cardGap : nil }
         }
     }
 }

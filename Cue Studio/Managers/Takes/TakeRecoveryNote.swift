@@ -5,9 +5,9 @@
 
 import Foundation
 
-/// What a take's recording was read from and the network it was made for, written next to it when the library couldn't take it in
-/// (`TakeLibraryService.addTake`): `TakeRecovery` files it under its script and network again at the next launch, not as a freestyle
-/// recording of no network.
+/// What a take's recording was read from and the network it was made for, written next to it when the recording starts
+/// (`PrompterViewModel`) and again when the library couldn't take it in (`TakeLibraryService.addTake`, which removes it once the take is
+/// in): `TakeRecovery` files a leftover under its script and network at the next launch, not as a freestyle recording of no network.
 nonisolated struct TakeRecoveryNote: Codable, Equatable, Sendable {
     /// Nil for a freestyle recording (it still keeps its network).
     var scriptID: UUID?

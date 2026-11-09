@@ -33,9 +33,11 @@ struct SafeZoneChoiceTests {
         #expect(resolve(.portrait) == .platform(.reels))
     }
 
-    @Test func aPlatformWithoutAZoneForTheFrameFallsBack() {
-        #expect(resolve(.portrait, script: .youtube) == .platform(.reels))
-        #expect(resolve(.vertical, script: .tiktok) == .platform(.linkedin))
+    /// The zone never names another network than the video's (09/11/2026: a YouTube script showed "INSTAGRAM REELS SAFE AREA"): YouTube's
+    /// vertical video is a Short, a TikTok at 4:5 has none, 1:1 keeps Custom.
+    @Test func aPlatformWithoutAZoneForTheFrameNeverShowsAnothersZone() {
+        #expect(resolve(.portrait, script: .youtube) == .platform(.shorts))
+        #expect(resolve(.vertical, script: .tiktok) == nil)
         #expect(resolve(.square, script: .reels) == .custom)
     }
 

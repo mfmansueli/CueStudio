@@ -23,9 +23,11 @@ final class DemoCamera: CameraControlling {
 
     func stop() async {}
 
-    func startRecording() async throws {
+    @discardableResult
+    func startRecording() async throws -> URL? {
         isRecording = true
         startedAt = .now
+        return nil
     }
 
     func stopRecording() async -> RecordedClip? {

@@ -13,9 +13,22 @@ nonisolated enum StorageSpace {
 
     /// Bytes free for things the creator asked for (what Settings › General › iPhone Storage counts); nil when unknown.
     static func available() -> Int64? {
+        #if DEBUG
+        if let pretended = pretendedFreeBytes { return pretended }
+        #endif
         let values = try? URL.temporaryDirectory.resourceValues(forKeys: [.volumeAvailableCapacityForImportantUsageKey])
         return values?.volumeAvailableCapacityForImportantUsage
     }
+
+    #if DEBUG
+    /// UI tests: the room `-uiTestFreeSpace <MB>` says the iPhone has (`LaunchOptions`).
+    private static let pretendedFreeBytes: Int64? = {
+        let arguments = ProcessInfo.processInfo.arguments
+        guard let index = arguments.firstIndex(of: "-uiTestFreeSpace"), arguments.indices.contains(index + 1),
+              let megabytes = Int64(arguments[index + 1]) else { return nil }
+        return megabytes * 1_000_000
+    }()
+    #endif
 
     /// An export of about `megabytes` is written once and copied into Photos: twice its size, and the margin.
     static func needed(forExportOf megabytes: Double) -> Int64 {

@@ -36,6 +36,16 @@ extension PaletteContrastTests {
         }
     }
 
+    /// "16:9 · ONLY THE FRAME IS RECORDED" on the darkened part of the brightest feed (`frameMask` over white).
+    @Test func theFrameCaptionReadsOnTheMaskOverABrightFeed() {
+        let white = ColorContrast.RGB(red: 1, green: 1, blue: 1)
+        for traits in Self.recorderTraits {
+            let mask = Self.recorderResolved(Palette.Camera.frameMask, traits, over: white)
+            let measured = ColorContrast.ratio(Self.recorderResolved(Palette.Camera.frameCaption, traits, over: mask), mask)
+            #expect(measured >= ColorContrast.textMinimum, "the caption over the mask on white: \(measured)")
+        }
+    }
+
     private static let recorderTraits = [UIAccessibilityContrast.normal, .high].map { contrast in
         UITraitCollection(userInterfaceStyle: .dark).modifyingTraits { $0.accessibilityContrast = contrast }
     }

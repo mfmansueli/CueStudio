@@ -18,7 +18,10 @@ protocol CameraControlling: AnyObject {
     /// Applies lens, format and connection changes to a running session.
     func apply(_ settings: CameraSettings) async
     func stop() async
-    func startRecording() async throws
+    /// The file the take is being written to (nil for cameras that write none until it stops), so a recording Cue loses mid-take can
+    /// come back under its script and network (`TakeRecoveryNote`).
+    @discardableResult
+    func startRecording() async throws -> URL?
     /// Nil when the recording failed.
     func stopRecording() async -> RecordedClip?
     /// Sends the microphone audio to `handler` (on an audio queue), for Voice follow's speech
