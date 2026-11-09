@@ -3,7 +3,9 @@
 <title>Cue — Prompter studio</title>
 <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@500&amp;display=swap" rel="stylesheet">
 <style>
-/* 5.3 Prompter Studio · v31.
+/* 5.3 Prompter Studio · v31, playing (03/11/2026): Play → 3 · 2 · 1 → the text glides under the reading line as the voice goes (Voice mode: it waits when you stop), the time left counts down,
+   the yellow track fills and the right scrubber's head follows; the button becomes Pause; "Tap play, then start reading" becomes "Following your voice". Tap Pause to hold.
+   Earlier note: 
    Code read (879bee2e468a): StudioModeView, Studio/StudioTimeLine, Studio/StudioAdjustBar (Size · Line · Margins · Mirror · Remote · More, 8 apart, equal widths),
    Studio/StudioControlPanel (transport = ScrollModePicker · back · play · forward), Controls/ControlSheet, Controls/SheetHandle, ModeSwitcher.
    Calibrated against IMG_7437 / IMG_7438 (points = px ÷ 3): progress track y 124 (3 pt), time line y 139, reading line y 275 with glow under it,
@@ -19,6 +21,7 @@ body{margin:0;background:#000}*{box-sizing:border-box}
 .sheet{position:absolute;left:11px;right:11px;bottom:27px;border-radius:44px;background:rgba(40,40,46,.94);box-shadow:inset 0 0 0 .5px rgba(255,255,255,.14),0 -1px 0 rgba(255,255,255,.04);z-index:6;transition:top .32s cubic-bezier(.2,.8,.2,1)}
 .x{display:none}.open .x{display:flex}.open .xc{display:none}
 svg{display:block}
+.cdn{position:absolute;inset:0;z-index:9;display:none;align-items:center;justify-content:center;font-size:150px;font-weight:600;color:#fff;text-shadow:0 10px 25px rgba(0,0,0,.55)}
 </style></head><body>
 <div class="phone open" id="ph" style="background:#000">
 <!-- Navigation bar: close · ModeSwitcher Selfie | Studio · platform chip (bolinha = rede social) -->
@@ -29,20 +32,38 @@ svg{display:block}
     <span style="height:41px;padding:0 18px;border-radius:21px;display:flex;align-items:center;font-size:16px;font-weight:500;background:rgba(0,0,0,.6)">Studio</span></div>
   <div class="glass" style="height:44px;padding:0 13px 0 10px;border-radius:22px;display:flex;align-items:center;gap:8px;font-size:15px;font-weight:500;background:rgba(40,40,46,.55)"><span style="width:7px;height:7px;border-radius:4px;background:var(--info)"></span>TikTok</div>
 </div>
+<div id="cd" class="cdn" aria-label="Recording in 3"><span id="cdn" style="display:block"></span></div>
 <!-- StudioTimeLine: progress track + time left (yellow) · elapsed + ideal range -->
-<div style="position:absolute;left:20px;right:17px;top:123px;height:3px;border-radius:2px;background:rgba(110,116,150,.3)"><div style="width:0;height:3px;background:var(--acc)"></div></div>
-<div class="mono" style="position:absolute;left:20px;right:17px;top:131px;display:flex;justify-content:space-between;font-size:12px;letter-spacing:.4px"><span style="color:var(--acc);font-weight:600">1:23 LEFT</span><span style="color:var(--ink2)">1:23 · IDEAL 1:00–1:30</span></div>
+<div style="position:absolute;left:20px;right:17px;top:123px;height:3px;border-radius:2px;background:rgba(110,116,150,.3)"><div id="pgr" style="width:0;height:3px;background:var(--acc)"></div></div>
+<div class="mono" style="position:absolute;left:20px;right:17px;top:131px;display:flex;justify-content:space-between;font-size:12px;letter-spacing:.4px"><span id="left" style="color:var(--acc);font-weight:600">1:23 LEFT</span><span style="color:var(--ink2)">1:23 · IDEAL 1:00–1:30</span></div>
 <!-- Scrubber -->
 <div style="position:absolute;left:378px;top:169px;width:1.5px;height:378px;background:rgba(110,116,150,.45)"></div>
-<div aria-label="Position" style="position:absolute;left:374px;top:165px;width:9px;height:9px;border-radius:5px;background:var(--acc);box-shadow:0 0 6px rgba(255,214,10,.6)"></div>
+<div id="head" aria-label="Position" style="position:absolute;left:374px;top:165px;width:9px;height:9px;border-radius:5px;background:var(--acc);box-shadow:0 0 6px rgba(255,214,10,.6)"></div>
 <!-- Text: the current line sits on the reading line -->
 <div style="position:absolute;left:0;right:0;top:241px;height:330px;overflow:hidden;-webkit-mask-image:linear-gradient(180deg,#000 0,#000 72%,transparent 100%);mask-image:linear-gradient(180deg,#000 0,#000 72%,transparent 100%)">
+<div id="lines">
   <div class="lx" style="font-size:34px;line-height:68px">A small error in</div>
   <div class="lx" style="font-size:34px;line-height:68px">planning can turn a</div>
   <div class="lx" style="font-size:34px;line-height:68px">weekend Into this</div>
   <div class="lx" style="font-size:34px;line-height:68px">week-long mess. I’ve</div>
-  <div class="lx" style="font-size:34px;line-height:68px">seen how tight money.</div>
-</div>
+  <div class="lx" style="font-size:34px;line-height:68px">seen how tight money</div>
+  <div class="lx" style="font-size:34px;line-height:68px">hides quiet guesses.</div>
+  <div class="lx" style="font-size:34px;line-height:68px">When I first tried to</div>
+  <div class="lx" style="font-size:34px;line-height:68px">make my cash last,</div>
+  <div class="lx" style="font-size:34px;line-height:68px">I stuck to boring</div>
+  <div class="lx" style="font-size:34px;line-height:68px">spreadsheets and rules</div>
+  <div class="lx" style="font-size:34px;line-height:68px">that never survived</div>
+  <div class="lx" style="font-size:34px;line-height:68px">a real Friday night.</div>
+  <div class="lx" style="font-size:34px;line-height:68px">So I changed the plan:</div>
+  <div class="lx" style="font-size:34px;line-height:68px">fewer rules, one number</div>
+  <div class="lx" style="font-size:34px;line-height:68px">I check every morning,</div>
+  <div class="lx" style="font-size:34px;line-height:68px">and a small amount I</div>
+  <div class="lx" style="font-size:34px;line-height:68px">am allowed to waste.</div>
+  <div class="lx" style="font-size:34px;line-height:68px">That is the whole</div>
+  <div class="lx" style="font-size:34px;line-height:68px">system. It sounds</div>
+  <div class="lx" style="font-size:34px;line-height:68px">too simple, and that</div>
+  <div class="lx" style="font-size:34px;line-height:68px">is why it lasts.</div>
+</div></div>
 <!-- Reading line + glow below -->
 <div style="position:absolute;left:20px;right:0;top:275px;height:22px;background:linear-gradient(180deg,rgba(255,214,10,.16),rgba(255,214,10,0));pointer-events:none"></div>
 <div style="position:absolute;left:20px;right:0;top:274px;height:2px;background:var(--acc);box-shadow:0 0 6px rgba(255,214,10,.5)"></div>
@@ -61,18 +82,36 @@ svg{display:block}
       <span style="flex:1;min-width:0;height:54px;border-radius:15px;background:linear-gradient(180deg,rgba(255,255,255,.11),rgba(255,255,255,.05));box-shadow:inset 0 0 0 .5px rgba(255,255,255,.18),inset 0 1px 0 rgba(255,255,255,.12);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px"><span style="font-size:19px;font-weight:600;line-height:20px;height:20px">Aa</span><span style="font-size:11px;font-weight:600;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px">More</span></span>
     </div>
     <div style="display:flex;align-items:center;gap:10px;padding:0 21px;font-size:12.5px;color:var(--ink2);white-space:nowrap;overflow:hidden"><span style="display:flex;gap:3px"><i style="width:4px;height:4px;border-radius:2px;background:var(--acc)"></i><i style="width:4px;height:4px;border-radius:2px;background:var(--acc)"></i><i style="width:4px;height:4px;border-radius:2px;background:var(--acc)"></i><i style="width:4px;height:4px;border-radius:2px;background:var(--acc)"></i><i style="width:4px;height:4px;border-radius:2px;background:var(--acc)"></i></span>Scrolls when you talk, waits when you stop.</div>
-    <div style="text-align:center;font-size:14px;color:var(--ink2)">Tap play, then start reading</div>
+    <div id="hintp" style="text-align:center;font-size:14px;color:var(--ink2)">Tap play, then start reading</div>
   </div>
   <div style="display:flex;align-items:center;gap:6px;padding:10px 11px 0">
     <div style="height:44px;padding:3px;border-radius:22px;background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 .5px rgba(255,255,255,.14);display:flex;align-items:center;flex-shrink:0">
       <span style="height:38px;padding:0 10px 0 8px;border-radius:19px;background:#636366;display:flex;align-items:center;gap:7px;font-size:15px;font-weight:600"><svg width="17" height="15" viewBox="0 0 24 20" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round"><circle cx="8" cy="6" r="3.4"/><path d="M1.8 18.5c.6-3.4 3.2-5.3 6.2-5.3s5.6 1.9 6.2 5.3"/><path d="M16.5 3.5a5 5 0 0 1 0 6M19.5 1.5a8.5 8.5 0 0 1 0 10"/></svg>Voice</span>
       <span style="height:38px;padding:0 8px 0 6px;display:flex;align-items:center;gap:6px;font-size:15px;font-weight:600;color:var(--ink2)"><svg width="17" height="14" viewBox="0 0 24 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 5h14M8 10h14M8 15h14M2 19h20"/><path d="M1.5 1.5l3 2-3 2z" fill="currentColor" stroke="none"/></svg>Steady</span></div>
     <span class="cb" aria-label="Back" style="margin-left:auto"><svg width="20" height="16" viewBox="0 0 20 16" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2L3 8l6 6M17 2l-6 6 6 6"/></svg></span>
-    <span class="cb" aria-label="Play"><svg width="17" height="18" viewBox="0 0 17 18" fill="#fff"><path d="M2 1.5v15l13-7.5z"/></svg></span>
+    <span id="play" class="cb" role="button" aria-label="Play" style="cursor:pointer"><svg id="pi" width="17" height="18" viewBox="0 0 17 18" fill="#fff"><path d="M2 1.5v15l13-7.5z"/></svg></span>
     <span class="cb" aria-label="Forward"><svg width="20" height="16" viewBox="0 0 20 16" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 2l6 6-6 6M3 2l6 6-6 6"/></svg></span>
   </div>
 </div>
 </div>
 <style>#sh{top:708px}.open #sh{top:565px}</style>
+<script>
+(function(){
+  var play=document.getElementById('play'),pi=document.getElementById('pi'),lines=document.getElementById('lines'),cd=document.getElementById('cd'),cdn=document.getElementById('cdn'),hint=document.getElementById('hintp'),left=document.getElementById('left'),pgr=document.getElementById('pgr'),head=document.getElementById('head'),
+      state='idle',tmr=[],raf,pos=0,last=0,TOT=1.9*20;
+  function later(fn,ms){tmr.push(setTimeout(fn,ms));}
+  function numeral(n){cdn.textContent=n;cdn.style.transition='none';cdn.style.transform='scale(1.7)';cdn.style.opacity=0;void cdn.offsetWidth;cdn.style.transition='transform .25s ease-out,opacity .25s ease-out';cdn.style.transform='none';cdn.style.opacity=1;}
+  function icon(playing){pi.innerHTML=playing?'<rect x="2.5" y="1.5" width="4" height="15" rx="1.2"/><rect x="10.5" y="1.5" width="4" height="15" rx="1.2"/>':'<path d="M2 1.5v15l13-7.5z"/>';play.setAttribute('aria-label',playing?'Pause':'Play');}
+  function start(){if(state==='count')return;state='count';cd.style.display='flex';numeral(3);later(function(){numeral(2)},1000);later(function(){numeral(1)},2000);later(run,3000);}
+  function run(){state='play';cd.style.display='none';icon(1);hint.textContent='Following your voice';last=performance.now();
+    (function tick(){if(state!=='play')return;var n=performance.now();pos+=(n-last)/1000/1.9;last=n;if(pos>TOT/1.9-4)pos=TOT/1.9-4;
+      var ln=Math.floor(pos),fr=pos-ln,e=fr<.35?0:Math.min(1,(fr-.35)/.5),sm=e*e*(3-2*e),k=ln+sm;lines.style.transform='translateY('+(-k*68)+'px)';
+      var secs=Math.max(0,83-Math.round(pos*1.9*83/TOT*1.0));var m=Math.floor(secs/60);left.textContent=m+':'+('0'+secs%60).slice(-2)+' LEFT';var f=Math.min(1,pos/(TOT/1.9));pgr.style.width=(f*100)+'%';head.style.top=(165+f*372)+'px';
+      raf=requestAnimationFrame(tick);})();}
+  function pause(){state='pause';cancelAnimationFrame(raf);icon(0);hint.textContent='Paused';}
+  play.addEventListener('click',function(){if(state==='play')pause();else if(state==='idle'||state==='pause'){if(state==='pause')run();else start();}});
+  cd.addEventListener('click',function(){tmr.forEach(clearTimeout);tmr=[];cd.style.display='none';state='idle';});
+})();
+</script>
 <script>(function(){function f(){document.body.style.zoom=Math.min(1,(innerHeight-8)/860)}f();addEventListener('resize',f)})();</script>
 </body></html>
