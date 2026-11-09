@@ -3,6 +3,7 @@
 //  Cue Studio
 //
 
+import StoreKit
 import SwiftUI
 
 /// The rows of the Settings root: the pages (Recording, Prompter, Remote…), Pro, and About.
@@ -19,6 +20,7 @@ struct SettingsRootRow: View {
     @Environment(NotificationService.self) private var notifications
 
     @State private var paywall: PaywallContext?
+    @State private var showsManageSubscription = false
     @AppStorage(DefaultsKey.personalizeSeen) private var personalizeSeen = false
     @State private var showsPrivacy = false
 
@@ -49,18 +51,19 @@ struct SettingsRootRow: View {
         case .privacy:
             link(.privacy, .privacy)
         case .cuePro:
-            Button { paywall = .profile } label: {
+            // A subscriber manages the plan (Apple's sheet, like the Profile's Manage ›); everyone else sees the plans.
+            Button {
+                if store.tier.isPro { showsManageSubscription = true } else { paywall = .profile }
+            } label: {
                 SettingsIconLabel(icon: .pro, title: entry.title, value: proValue)
             }
             .buttonStyle(.plain)
+            .manageSubscriptionsSheet(isPresented: $showsManageSubscription)
         case .restorePurchases:
             Button {
                 Task {
-                    let restored = await store.restore()
-                    toast.show(
-                        restored ? String(localized: "Purchases restored") : String(localized: "No purchases to restore"),
-                        kind: restored ? .done : .problem
-                    )
+                    let outcome = await store.restore()
+                    toast.show(outcome.message, kind: outcome.isRestored ? .done : .problem)
                 }
             } label: {
                 SettingsIconLabel(icon: .restore, title: entry.title, titleColor: Palette.accText)

@@ -19,6 +19,9 @@ final class StoreManager {
     /// Renewal (or expiry) date of the active subscription.
     private(set) var renewalDate: Date?
     private(set) var isLoadingProducts = false
+    /// The prices couldn't be loaded (offline): the paywall offers to try again. Never an alert by itself, so a launch without internet
+    /// doesn't leave one waiting for the next paywall.
+    private(set) var productsFailed = false
     private(set) var purchasingPlan: ProPlan?
     var errorMessage: String?
 
@@ -63,6 +66,7 @@ final class StoreManager {
     func loadProducts() async {
         guard products.isEmpty, !isLoadingProducts else { return }
         isLoadingProducts = true
+        productsFailed = false
         defer { isLoadingProducts = false }
         do {
             let loaded = try await Product.products(for: ProPlan.allCases.map(\.productID))
@@ -71,8 +75,9 @@ final class StoreManager {
                 if let plan = ProPlan(productID: product.id) { byPlan[plan] = product }
             }
             products = byPlan
+            productsFailed = byPlan.isEmpty
         } catch {
-            errorMessage = String(localized: "Couldn't reach the App Store. Check your connection and try again.")
+            productsFailed = true
         }
     }
 
@@ -104,6 +109,7 @@ final class StoreManager {
 
     /// Returns true when the purchase unlocked Pro.
     func purchase(_ plan: ProPlan) async -> Bool {
+        errorMessage = nil
         guard let product = products[plan] else {
             errorMessage = String(localized: "Can't reach the App Store")
             return false
@@ -143,15 +149,20 @@ final class StoreManager {
         return String(localized: "Purchase didn't go through")
     }
 
-    /// Syncs with the App Store. Returns true when Pro is active afterwards.
-    func restore() async -> Bool {
+    /// Syncs with the App Store and says what came of it, as one message: Pro back, nothing to restore, or why it couldn't ask.
+    func restore() async -> RestoreOutcome {
+        var failure: String?
         do {
             try await AppStore.sync()
         } catch {
-            errorMessage = Self.message(for: error)
+            // Cancelling the Apple Account sign-in is no failure: what StoreKit already has is still read below.
+            if (error as? StoreKitError).map({ if case .userCancelled = $0 { true } else { false } }) != true {
+                failure = Self.message(for: error)
+            }
         }
         await refreshEntitlements()
-        return tier.isPro
+        if tier.isPro { return .restored }
+        return failure.map(RestoreOutcome.failed) ?? .nothing
     }
 
     func refreshEntitlements() async {

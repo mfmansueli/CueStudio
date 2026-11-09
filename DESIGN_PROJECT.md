@@ -879,8 +879,13 @@ acima). Tudo cabe sem rolar do SE ao Pro Max (a rolagem só existe para o Dynami
   grátis e não aparecem; nada grátis é trancado para encher a lista. O Remote continua grátis.
 - **Rodapé**: planos lado a lado (1,2 : 1, 72 pt; `ProPlanRow`, `ProPlanCard`), "SAVE n%" ao lado de "Yearly" dentro do cartão; o anel amarelo desliza
   entre eles com mola (`matchedGeometryEffect`); botão amarelo "Subscribe for $39.99/year" (ou /month) com brilho; "Renews yearly at $39.99. Cancel anytime
-  in Settings."; Restore · Terms · Privacy.
-- **Assinando**: os nós correm para o núcleo, um clarão e uma onda dourada no plano da galáxia (0,9 s, `HapticPatterns.proWelcome`), e o Pro sai com o
+  in Settings."; Restore · Terms · Privacy. Sem internet os preços não vêm: no lugar da letra miúda, "Couldn't reach the App Store. Check your
+  connection and try again." sublinhado pede de novo (`StoreManager.productsFailed`; uma abertura offline nunca deixa um alerta esperando). Restore
+  diz uma coisa só, num toast (`RestoreOutcome`): "Purchases restored", "No purchases to restore" quando a App Store respondeu, ou o motivo
+  ("Can't reach the App Store") quando não deu para perguntar; o mesmo em Settings. Settings › Cue Pro abre o gerenciamento da assinatura da Apple
+  para quem já assina, como o Manage › do Profile.
+- **Assinando** (também quando o Pro chega com o paywall aberto, um Ask to Buy aprovado ou uma compra feita fora: em todo contexto, para o vídeo
+  que espera seguir): os nós correm para o núcleo, um clarão e uma onda dourada no plano da galáxia (0,9 s, `HapticPatterns.proWelcome`), e o Pro sai com o
   toast "Welcome to Cue Pro" ("· video exported" no calmo da exportação, "· 30 Ultra AI scripts this month" no da Ultra AI).
 - **Pro calmo** (`.export` e `.ultra`): sem abertura; galáxia de 105 pt. Da exportação: "YOUR VIDEO IS READY", "Keep sharing your universe.", "Subscribe
   and export it now.", o vídeo esperando como uma estrela pulsando na frente do anel, botão "Subscribe · export now". Da Ultra AI (§57): eyebrow violeta
