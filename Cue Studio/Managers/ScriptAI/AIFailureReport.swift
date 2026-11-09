@@ -153,23 +153,22 @@ nonisolated struct AIFailureReport: Equatable, Sendable {
 
     // MARK: - Writing it down
 
-    /// The one line in Console.
+    /// The one line of the report: what failed, the reason and the conditions, never the framework's own description (`detail`), which can
+    /// quote the request (a refusal or a guardrail's context). That description goes to Console only, marked private (`log()`).
     var line: String {
         let model = route.map { "\($0)" } ?? "none"
         let outcome = isFinal ? "told the creator" : "trying again"
-        var line = """
+        return """
             \(operation) failed on \(model) after \(String(format: "%.2f", seconds))s: \(reason) (\(outcome)) · \
             language=\(language ?? "auto") model=\(conditions.model) thermal=\(conditions.thermal) lowPower=\(conditions.lowPower) \
             freeMemory=\(conditions.freeMemoryMB)MB app=\(conditions.appState) device=\(conditions.device) iOS \(conditions.system)
             """
-        if !detail.isEmpty { line += " · \(detail)" }
-        return line
     }
 
     /// The same, as the keys of a crash report.
     var keys: [String: String] {
         [
-            "operation": operation, "route": route.map { "\($0)" } ?? "none", "reason": reason, "detail": detail,
+            "operation": operation, "route": route.map { "\($0)" } ?? "none", "reason": reason,
             "language": language ?? "auto", "seconds": String(format: "%.2f", seconds), "final": "\(isFinal)",
             "modelAvailability": conditions.model, "thermal": conditions.thermal, "lowPower": "\(conditions.lowPower)",
             "freeMemoryMB": "\(conditions.freeMemoryMB)", "appState": conditions.appState, "device": conditions.device,
@@ -182,9 +181,9 @@ nonisolated struct AIFailureReport: Equatable, Sendable {
     /// Into Console: an error when the creator was told, a notice when it was tried again.
     func log() {
         if isFinal {
-            Self.logger.error("\(line, privacy: .public)")
+            Self.logger.error("\(line, privacy: .public) · \(detail, privacy: .private)")
         } else {
-            Self.logger.notice("\(line, privacy: .public)")
+            Self.logger.notice("\(line, privacy: .public) · \(detail, privacy: .private)")
         }
     }
 }

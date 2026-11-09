@@ -194,7 +194,7 @@ struct AppServices {
         self.ideaTransition = ideaTransition
         // The free scripts and Pro's monthly ones: this iPhone's count, replaced by Cue's server's while it enforces one (`UltraAllowanceService`).
         let ultra = UltraScriptService(
-            isAvailable: options.ultraAvailable, checksDistribution: options.checksUltraDistribution,
+            isAvailable: options.ultraAvailable,
             consent: UltraConsentService(defaults: options.defaults), budget: UltraCallBudget(defaults: options.ultraBudgetDefaults),
             allowance: UltraAllowanceService(defaults: options.defaults) { [store] in
                 UltraAllowance.Membership(tier: store.tier)

@@ -142,10 +142,9 @@ struct LaunchOptions {
     /// UI tests and previews swap in rules read from the bundle only (no cache, no download).
     var platformRules: PlatformRulesService = PlatformRulesService()
     var writer: ScriptWriting = ScriptAIService()
-    /// Ultra AI is offered from launch (Debug with Firebase running or the lab set up, or a UI test's stub).
+    /// Ultra AI is offered from launch: a Release build with Firebase running (TestFlight and the App Store alike; Cue's server keeps each
+    /// creator's credits, DESIGN_PROJECT §57), Debug with Firebase running or the lab set up, or a UI test's stub.
     var ultraAvailable = false
-    /// A Release build offers Ultra AI once `UltraDistribution` says it isn't the App Store's (TestFlight), until the server keeps credits.
-    var checksUltraDistribution = false
     /// Ultra AI's client, made only when a permitted script is first written (`UltraScriptService`).
     var makeUltraClient: @MainActor () -> (any UltraModelClient)? = { nil }
     /// Where the lab counts its calls: the app's standard defaults, which a UI test's throwaway suite can't reset (only the stub counts there).
@@ -524,9 +523,9 @@ struct LaunchOptions {
             }
         }
         #else
-        // TestFlight: Ultra AI through Cue's server, offered once the build is known not to be the App Store's (`UltraDistribution`).
+        // TestFlight and the App Store: Ultra AI through Cue's server, which keeps each creator's credits and Cue's daily spending cap.
         options.makeUltraClient = { CueServerUltraClient.make() }
-        options.checksUltraDistribution = UltraAppCheck.isReady
+        options.ultraAvailable = UltraAppCheck.isReady
         #endif
         return options
     }

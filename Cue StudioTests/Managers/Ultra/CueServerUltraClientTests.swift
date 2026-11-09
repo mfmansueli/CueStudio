@@ -163,12 +163,4 @@ struct CueServerUltraClientTests {
         #expect(ClaudeStreamReader.failure(status: 503) == .provider)
         #expect(ClaudeStreamReader.mapped(URLError(.notConnectedToInternet)) as? UltraClientError == UltraClientError(failure: .unreachable))
     }
-
-    // MARK: - Where a Release build offers it
-
-    @Test func onlyTheAppStoreHidesUltraUntilTheServerKeepsCredits() {
-        #expect(UltraDistribution.allows(.sandbox))
-        #expect(UltraDistribution.allows(.xcode))
-        #expect(!UltraDistribution.allows(.production))
-    }
 }

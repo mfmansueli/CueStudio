@@ -3792,11 +3792,11 @@ app nunca manda (etapa desconhecida, textos acima de 40 mil caracteres, formato 
 política no modelo que a Anthropic recomenda (`fallbacks: "default"`) e para o Claude quando o criador cancela. O log do servidor guarda etapa, modelo,
 tokens, tempo e como terminou, nunca o texto. O App Check só pede token quando a Ultra AI chama (`UltraAppCheck`, `CueAppCheckProviderFactory`,
 `FirebaseAppCheckTokenAutoRefreshEnabled` desligado). Configurar ou trocar a chave: `server/setup.sh` (chave, publicação, App Attest e token de
-depuração); testes do servidor: `npm test` em `server/functions`. Ainda **não** há créditos por conta no servidor: os grátis e os do Pro são contados no
-iPhone (`UltraAllowanceService`), e o limite de gasto é o saldo da conta da Anthropic.
+depuração); testes do servidor: `npm test` em `server/functions`. Os créditos de cada criador e o teto de gastos do Cue ficam no servidor (ver
+"Créditos no servidor").
 
-**Onde existe:** no **TestFlight** (Release, quando o StoreKit diz que não é a App Store: `UltraDistribution`, ambiente `sandbox` ou `xcode`; na App
-Store continua escondida até o dono ligar o controle do servidor e atualizar os textos de privacidade, ver "Créditos no servidor"), em Debug com o Firebase ligado ou o laboratório configurado (`UltraLabClient.isOffered`) e num
+**Onde existe:** na **App Store** e no **TestFlight** (Release com o Firebase ligado: `LaunchOptions`, `UltraAppCheck.isReady`; decisão do dono,
+09/11/2026: a Ultra AI entra no lançamento como o motivo para assinar o Pro), em Debug com o Firebase ligado ou o laboratório configurado (`UltraLabClient.isOffered`) e num
 teste de UI (`-uiTestUltra`). O Apple Intelligence continua o padrão e nunca é trocado por ela em silêncio (nem ela por ele): cada roteiro da Ultra AI
 é uma escolha explícita.
 
@@ -4013,12 +4013,14 @@ Nada de nome, conta ou contato. O servidor (`server/functions/src/ultraMetering.
   in a few minutes"), 409 fora de ordem e 426 sem id (falhas comuns). `{"action": "allowance"}` responde quanto resta; o app pergunta antes do primeiro
   roteiro de cada abertura e depois de cada um, só com a permissão dada.
 
-**Para ligar na App Store (falta, depende do dono):** publicar `ultra` e as regras com este código (em `observe`); ver o `ultra_would_refuse` e os
-gastos alguns dias no TestFlight; passar a `enforce` quando o build que manda os ids for o do TestFlight; textos de privacidade (a política do site e
-a etiqueta da App Store dizem que o id aleatório e a transação do Pro vão ao servidor do Cue; a folha *What Ultra AI sends* ganha essa linha);
-decidir o teto diário de verdade; e só então trocar `UltraDistribution.allows` para incluir a produção. Limites conhecidos: o período de carência de
-cobrança da Apple ainda conta como sem Pro no servidor (a transação venceu; ler o estado da assinatura pede a App Store Server API com uma chave do
-dono), e um reembolso só é visto quando a transação que o app manda já o traz (sem as App Store Server Notifications).
+**No lançamento** (dono, 09/11/2026): o servidor em `enforce` (todo build desde 05/11/2026 manda os ids), o teto de **USD 20 por dia** (a estimativa
+do dono é de uns 200 criadores por mês: ~USD 0,06 por roteiro, uns 330 roteiros por dia; o mês inteiro, se todos usassem os 3 grátis e 1 em 10
+assinasse e escrevesse os 30, fica perto de USD 75), um limite mensal no Claude Console como segunda rede, e os contadores apagados sozinhos ~13
+meses depois do último uso (`server/functions/src/retention.ts`, a TTL de `server/firestore.indexes.json`). O que falta publicar depende do dono:
+`firebase deploy --only functions:ultra,firestore:indexes` e a política de privacidade (o link em `AppLinks.privacyPolicy`). Limites conhecidos:
+o período de carência de cobrança da Apple conta como sem Pro no servidor (deixar o Billing Grace Period desligado no App Store Connect evita o
+caso), e um reembolso só é visto quando a transação que o app manda já o traz (o StoreKit tira o Pro do iPhone num reembolso, e o app deixa de
+mandar a prova).
 
 Para ver sem gastar chamadas: `-uiTestUltra -uiTestUltraAllowed -uiTestUltraPaced` (cerca de 24 s) ou `-uiTestUltraPacedLong` (polimento que pensa 22 s sem palavras, com cometa; a captura confere que a galáxia muda em todos os quadros).
 

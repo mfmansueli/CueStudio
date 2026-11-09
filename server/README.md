@@ -28,13 +28,21 @@ from apple.com/certificateauthority) with Apple's `@apple/app-store-server-libra
 
 In `functions/.env`:
 
-- `ULTRA_METERING`: `off`, `observe` (the default: counts and logs `ultra_would_refuse`, refuses nobody) or `enforce` (402 with no scripts left,
-  429 past the hourly ceiling, 409 a stage out of order, 426 a build that sends no ids; each with `X-Ultra-Refusal`).
+- `ULTRA_METERING`: `off`, `observe` (counts and logs `ultra_would_refuse`, refuses nobody) or `enforce` (402 with no scripts left,
+  429 past the hourly ceiling, 409 a stage out of order, 426 a build that sends no ids; each with `X-Ultra-Refusal`). The launch runs in
+  `enforce` (owner, 09/11/2026: Ultra AI ships on the App Store); every build since 05/11/2026 sends the ids.
 - `ULTRA_DAILY_BUDGET_USD`: Cue's most per UTC day on Claude (default `20`; `0` is none). Past it every call gets 503 `paused` until the next day,
-  in `observe` and `enforce`.
+  in `observe` and `enforce`. Sized for the launch (owner's estimate, 09/11/2026: about 200 creators a month): a script costs about USD 0.06
+  (Thai, the dearest, 0.09), so 20 a day is about 330 scripts; the whole month, if every creator used the 3 free scripts and 1 in 10 took Pro and
+  wrote all 30, is about USD 75. Keep a monthly limit on the Claude Console as the second net.
 
 `{"action": "allowance"}` (same App Check and ids) answers `{metering, paused, membership, freeLeft, monthLeft, left, freeTotal, monthTotal}`.
-Before `enforce`: let `observe` run on TestFlight with the build that sends the ids, and read `ultra_would_refuse` and `ultraSpend`.
+
+**How long the counts stay:** each write of `ultraInstalls` or `ultraSubscribers` sets `expireAt` about 13 months ahead (`retention.ts`), and
+the TTL policy in `firestore.indexes.json` makes Firestore delete the document after that date, so an install or a subscription that stopped
+using Ultra AI leaves no record. Publish it with `firebase deploy --only firestore:indexes --project cuestudio-app` (once; Firestore takes up to a
+day to start deleting). `ultraSpend` keeps only Cue's totals per day, no ids. The invites' records (`referralInstalls`, `referralCodes`) stay
+while the invites run: a creator can ask for theirs to be deleted by quoting their invite code (the privacy policy says how).
 
 ## Changing the model or the effort
 

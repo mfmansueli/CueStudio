@@ -1,11 +1,13 @@
-import { FieldValue, type Firestore } from "firebase-admin/firestore";
+import { FieldValue, Timestamp, type Firestore } from "firebase-admin/firestore";
 import type { InstallRecord } from "./referralRules";
+import { retentionEnd } from "./retention";
 import type { UltraInstall, UltraStore, UltraSubscriber } from "./ultraMetering";
 
 /**
  * Ultra AI's counts in Firestore: `ultraInstalls/{installId}`, `ultraSubscribers/{originalTransactionId}` (read with the invites'
  * `referralInstalls/{installId}`), and Cue's spend per day in `ultraSpend/{YYYY-MM-DD}`. Only the functions touch them (the rules refuse every
- * client); each step on a creator's scripts is one transaction, so two calls at once never spend the same credit.
+ * client); each step on a creator's scripts is one transaction, so two calls at once never spend the same credit. Every write of an install or a
+ * subscription sets `expireAt` (`retention.ts`), so Firestore deletes the counts of one that stopped using Ultra AI.
  */
 export function firestoreUltraStore(db: Firestore): UltraStore {
   const installs = db.collection("ultraInstalls");
@@ -19,14 +21,19 @@ export function firestoreUltraStore(db: Firestore): UltraStore {
           subscriber: async (id) => (await transaction.get(subscribers.doc(id))).data() as UltraSubscriber | undefined,
           referral: async (id) => (await transaction.get(referrals.doc(id))).data() as InstallRecord | undefined,
           setInstall: (id, record) => {
-            transaction.set(installs.doc(id), record);
+            transaction.set(installs.doc(id), { ...record, expireAt: expiry() });
           },
           setSubscriber: (id, record) => {
-            transaction.set(subscribers.doc(id), record);
+            transaction.set(subscribers.doc(id), { ...record, expireAt: expiry() });
           },
         }),
       ),
   };
+}
+
+/** The date Firestore's TTL policy deletes a document written now. */
+function expiry(): Timestamp {
+  return Timestamp.fromMillis(retentionEnd(Date.now()));
 }
 
 /** Cue's spend on Claude, by day: read before a call, added to after it. */
