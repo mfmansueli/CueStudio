@@ -123,7 +123,8 @@ final class OnboardingViewModel {
         return created
     }
 
-    /// What the creator picked goes where the rest of the app reads it: topics, the default platform and the card's platform.
+    /// What the creator picked goes where the rest of the app reads it: topics and the default platform. The dock's Create for is left
+    /// unpicked, so the card follows the default (now and when it changes in Profile) until the creator picks a network there.
     func applyChoices() {
         let niches = onboarding.topics.compactMap { topic -> Niche? in
             if case .niche(let niche) = topic { niche } else { nil }
@@ -132,7 +133,7 @@ final class OnboardingViewModel {
             if case .custom(let name) = topic { name } else { nil }
         }
         profile.applyFirstFlight(niches: niches, customTopics: customs, platform: onboarding.platform)
-        ideaDraft.platform = onboarding.platform
+        ideaDraft.platform = nil
     }
 
     /// Wraps the flight up: the choices are kept and the app opens on Scripts.

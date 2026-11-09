@@ -159,4 +159,31 @@ struct MilestoneServiceTests {
         let service = MilestoneService(defaults: defaults.defaults)
         #expect(service.celebrated == [1, 10])
     }
+
+    /// D4: the send-off tells the milestone due, the last one reached that nobody told; a post whose send-off didn't play leaves it due.
+    @Test func theMilestoneDueIsTheLastReachedAndUntold() {
+        let (service, defaults) = make()
+        defer { defaults.tearDown() }
+        #expect(service.dueMilestone == nil, "nothing posted")
+        service.recordShare(of: UUID())
+        #expect(service.dueMilestone == 1)
+        service.recordShare(of: UUID())
+        #expect(service.dueMilestone == 1, "not told yet (Celebrations off, or Cue closed on the send-off): told with the next post")
+        service.markCelebrated(1)
+        #expect(service.dueMilestone == nil)
+        (0..<8).forEach { _ in service.recordShare(of: UUID()) }
+        #expect(service.shares == 10 && service.dueMilestone == 10)
+    }
+
+    /// Telling a milestone tells the ones before it: an older one never pops up after a newer one.
+    @Test func tellingAMilestoneTellsTheOnesBeforeIt() {
+        let (service, defaults) = make()
+        defer { defaults.tearDown() }
+        (0..<26).forEach { _ in service.recordShare(of: UUID()) }
+        #expect(service.dueMilestone == 25)
+        service.markCelebrated(25)
+        #expect(service.celebrated == [1, 10, 25])
+        #expect(service.dueMilestone == nil)
+        #expect(MilestoneService(defaults: defaults.defaults).dueMilestone == nil, "and it survives a relaunch")
+    }
 }

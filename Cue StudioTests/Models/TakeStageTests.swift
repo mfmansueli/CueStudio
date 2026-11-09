@@ -35,6 +35,22 @@ struct TakeStageTests {
         #expect(stage([take(1), take(2, best: true)]) == .ready)
     }
 
+    /// A take recorded after the star was given (the video filmed again) puts it back to pick, and opens first; a star given afterwards, even
+    /// to the old take, settles it (14.1-4).
+    @Test func aTakeRecordedAfterTheStarIsToPickAgain() {
+        let starredAt = Date(timeIntervalSince1970: 1_000)
+        var old = take(1, best: true, exported: true)
+        old.recordedAt = starredAt.addingTimeInterval(-60)
+        old.bestMarkedAt = starredAt
+        var again = take(2)
+        again.recordedAt = starredAt.addingTimeInterval(3_600)
+        #expect(stage([again, old]) == .pick)
+        #expect(TakeVideo(takes: [again, old], title: "Script", platform: nil).best?.id == again.id)
+        old.bestMarkedAt = again.recordedAt.addingTimeInterval(60)
+        #expect(stage([again, old]) == .shared)
+        #expect(TakeVideo(takes: [again, old], title: "Script", platform: nil).best?.id == old.id)
+    }
+
     @Test func pickBeatsAnOpenEdit() {
         let takes = [take(1), take(2)]
         #expect(stage(takes, drafts: [takes[0].id]) == .pick)

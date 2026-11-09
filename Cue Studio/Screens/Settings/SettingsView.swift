@@ -40,7 +40,7 @@ struct SettingsView: View {
         .cueActionSheet(
             isPresented: $confirmsReset,
             message: "Camera, microphone, quality, format and teleprompter go back to Cue's defaults. Your scripts, takes and edits stay.",
-            actionTitle: "Reset Creator Setup", actionIdentifier: "creatorSetup.confirmResetButton"
+            actionTitle: "Reset my setup", actionIdentifier: "creatorSetup.confirmResetButton"
         ) {
             preferences.resetCreatorSetup()
             toast.show(String(localized: "Back to Cue's defaults"))
@@ -56,15 +56,17 @@ struct SettingsView: View {
         section(String(localized: "Create"), [.recording, .prompter, .remote], bindings, footer: String(localized: "Set it up once. Every recording starts from here."))
         section(String(localized: "Your Cue"), [.myCueVoice, .personalize], bindings)
         section(String(localized: "General"), [.languageRegion, .notifications, .privacy], bindings)
-        section(String(localized: "Pro"), [.cuePro, .restorePurchases], bindings)
+        section(String(localized: "Pro"), [.cuePro, .restorePurchases, .redeemCode], bindings)
         section(String(localized: "About"), [.privacyPolicy, .termsOfUse, .acknowledgements, .version], bindings)
-        // The app's own row, kept exactly as it was until the product owner decides (v30 does not design it).
+        // One button, with one line under it saying what goes back and what stays (owner, 09/11/2026).
         Section {
-            Button("Reset Creator Setup") { confirmsReset = true }
+            Button("Reset my setup") { confirmsReset = true }
                 .buttonStyle(.cueDestructiveTinted())
                 .accessibilityIdentifier("creatorSetup.resetButton")
                 .listRowBackground(Color.clear)
                 .listRowInsets(EdgeInsets())
+        } footer: {
+            Text("Camera, microphone, quality, format and teleprompter go back to Cue's defaults. Your scripts, takes and edits stay.")
         }
     }
 

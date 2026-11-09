@@ -6,8 +6,8 @@
 import SwiftUI
 
 /// The "•••" at the end of the capture row: Countdown (a small yellow badge on the button says
-/// how long, when it is on), Remote Control and "This take". The countdown and the take's setup
-/// can't change while it records or counts down; the remote can.
+/// how long, when it is on) and Remote Control. "This take" opens from the camera pill ("1080P · 9:16 ›"),
+/// where the question "why 1080p?" starts. The countdown can't change while it records or counts down; the remote can.
 struct RecorderMoreMenu: View {
     let viewModel: PrompterViewModel
 
@@ -28,11 +28,6 @@ struct RecorderMoreMenu: View {
                 Label("Remote Control", systemImage: "iphone.radiowaves.left.and.right")
             }
             .accessibilityIdentifier("prompter.moreRemote")
-            Button { viewModel.openRecordingSetup() } label: {
-                Label("This take", systemImage: "slider.horizontal.3")
-            }
-            .disabled(!viewModel.canChangeSetup)
-            .accessibilityIdentifier("prompter.moreThisTake")
         } label: {
             Text("•••")
                 .cueFont(15, weight: .bold)

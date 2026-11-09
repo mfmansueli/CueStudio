@@ -11,6 +11,11 @@ import Foundation
 /// The captions start from the editor (a translation included); a choice that differs from it applies to the export only and says so; the
 /// saved edit never changes.
 extension TakeReviewViewModel {
+    /// What the file of `take` is made with: its frame, the edit, the captions and the short side picked.
+    func exportOptions(for take: Take, edit: TakeEdit?, burnsInCaptions: Bool) -> ExportOptions {
+        ExportOptions(aspect: take.outputAspect, edit: edit, burnsInCaptions: burnsInCaptions, shortSide: outputShortSide(for: take))
+    }
+
     /// What exporting `edit` burns in: what Export options picked while the editor showed these same captions, else the editor's.
     func output(for edit: TakeEdit?) -> ExportOutputChoice {
         let editor = ExportOutputChoice.editorDefault(of: edit)

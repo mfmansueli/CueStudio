@@ -42,4 +42,13 @@ struct BestTakeReasonTests {
         let proposal = BestTakeProposal(takes: all, best: all[1], reasons: [], platformLabel: "TikTok", ideal: 15...60)
         #expect(proposal.id == all[1].id)
     }
+
+    /// Pick your best take says where the video really is: a shared video still compares its takes, and never reads TO PICK.
+    @Test func theSubtitleFollowsTheVideosStage() {
+        let all = takes([30, 31])
+        let picking = BestTakeProposal(takes: all, best: all[1], reasons: [], platformLabel: "TikTok", ideal: 15...60)
+        #expect(picking.subtitle == "TO PICK · 2 TAKES")
+        let shared = BestTakeProposal(takes: all, best: all[1], reasons: [], platformLabel: "TikTok", ideal: 15...60, stage: .shared)
+        #expect(shared.subtitle == "SHARED · 2 TAKES")
+    }
 }

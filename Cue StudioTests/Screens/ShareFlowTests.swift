@@ -118,12 +118,26 @@ struct ShareFlowTests {
 
     // MARK: - One export for every network
 
+    /// The first video ever shared isn't copied into Photos unless asked; once one was shared, the switch starts on.
+    @Test func photosStartsOffOnlyForTheFirstVideoShared() {
+        let first = makeScenario()
+        defer { first.defaults.tearDown() }
+        #expect(!first.flow.alsoSavesToPhotos)
+        first.milestones.recordShare(of: UUID(), platform: .tiktok, topic: nil)
+        let later = ShareFlow(
+            review: first.review, queues: first.queues, milestones: first.milestones,
+            library: ScriptLibraryService(repository: FakeScriptRepository(scripts: [])), defaults: first.defaults.defaults, toast: ToastService()
+        )
+        #expect(later.alsoSavesToPhotos)
+    }
+
     @Test func startingExportsOnceSavesToPhotosAndCountsOne() async throws {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }
         scenario.flow.openPicker(with: try #require(await rendered(scenario)))
         scenario.flow.toggle(.reels)
         scenario.flow.toggle(.linkedin)
+        scenario.flow.alsoSavesToPhotos = true
         await scenario.flow.start()
         #expect(scenario.exporter.exports.count == 1, "one file for the three networks")
         #expect(scenario.photos.savedURLs.count == 1)
@@ -178,6 +192,7 @@ struct ShareFlowTests {
         let scenario = makeScenario(usedExports: UsagePolicy.freeExports) { tier.value }
         defer { scenario.defaults.tearDown() }
         scenario.flow.openPicker(with: try #require(await rendered(scenario)))
+        scenario.flow.alsoSavesToPhotos = true
         await scenario.flow.start()
         #expect(scenario.review.showsExportReady && scenario.queues.queue(forTake: scenario.take.id) == nil)
         tier.value = .subscriber
@@ -205,6 +220,7 @@ struct ShareFlowTests {
         scenario.flow.openPicker(with: try #require(await rendered(scenario)))
         scenario.flow.toggle(.reels)
         scenario.flow.toggle(.linkedin)
+        scenario.flow.alsoSavesToPhotos = true
         await scenario.flow.start()
         scenario.flow.finishExplainer()
     }
@@ -256,6 +272,30 @@ struct ShareFlowTests {
         #expect(scenario.milestones.shares == 1)
         #expect(scenario.milestones.records.first?.platforms == [.tiktok])
         #expect(scenario.flow.step == .step(.reels), "the next network comes up")
+    }
+
+    /// D4: the first confirmed network leaves Aurora due for the send-off, which tells it; more networks of the same video add nothing.
+    @Test func aConfirmedPostLeavesItsMilestoneDueForTheSendOff() async throws {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        try await startedWithThree(scenario)
+        #expect(scenario.milestones.dueMilestone == nil)
+        scenario.flow.confirmLive(.tiktok)
+        #expect(scenario.milestones.dueMilestone == 1)
+        scenario.flow.confirmLive(.reels)
+        scenario.flow.confirmLive(.linkedin)
+        #expect(scenario.finished.networks == [.tiktok, .reels, .linkedin])
+        #expect(scenario.milestones.dueMilestone == 1 && scenario.milestones.shares == 1)
+    }
+
+    /// Saving to Photos finishes the export and spends a free one (owner, 09/11/2026), but it is not a post: no star, no milestone.
+    @Test func savingToPhotosSpendsAnExportButIsNotAPost() async throws {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        await scenario.review.save()
+        #expect(scenario.photos.savedURLs.count == 1)
+        #expect(scenario.quota.exportsUsed == 1)
+        #expect(scenario.milestones.shares == 0 && scenario.milestones.dueMilestone == nil)
     }
 
     @Test func eachConfirmedNetworkAddsItsPlanetButTheVideoCountsOnce() async throws {

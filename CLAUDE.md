@@ -68,7 +68,8 @@ Toda tela, componente ou cor nova **precisa passar** no contraste antes de ser e
   `.swiftlint.yml`. Corrija o código em vez de afrouxar a configuração; `swiftlint --fix` resolve
   parte, mas revise o formato do que ele muda.
 - **Firebase** (projeto `cuestudio-app`, SPM `firebase-ios-sdk`): Analytics (`FirebaseAnalyticsCore`, sem IDFA) e Crashlytics, iniciados em
-  `Managers/Telemetry/TelemetryManager.swift`, e o App Check da Ultra AI (`UltraAppCheck`, só pede token quando a Ultra chama). O **servidor do Cue**
+  `Managers/Telemetry/TelemetryManager.swift`, que só coletam (eventos e non-fatal inclusive) com **Help improve Cue** ligado (desligado de fábrica pelo
+  Info.plist; a DebugView também precisa dele), e o App Check da Ultra AI (`UltraAppCheck`, só pede token quando a Ultra chama). O **servidor do Cue**
   (`server/`, Cloud Functions no mesmo projeto) guarda a chave da Anthropic e é o único caminho do Claude no app: `server/setup.sh` configura e publica,
   `npm test` em `server/functions` testa, modelo e esforço em `server/functions/.env` (DESIGN_PROJECT §57). Testes, `-uiTestInMemory` e previews não enviam nada
   (`TelemetryPolicy`). Upload dos dSYMs só em archive. DebugView: `-FIRAnalyticsDebugEnabled`. Falhas do Apple Intelligence (`AIFailureReport`):
@@ -114,6 +115,7 @@ aparelho não roda aparece como **não validado** (teste cancelado), nunca aprov
 | Áudio (Fase 8) | `AudioMixDeviceTests` (`TEST_RUNNER_CUE_AUDIO_E2E=1`: Text to speech em PT/EN/ES nas quatro velocidades ouvido pelo reconhecedor do aparelho, palavras e tempo de cada efeito de voz, tempo para abrir e decodificar cada música da biblioteca) | `DESIGN_PROJECT.md` §56, `AUDIO_LIBRARY.md` |
 | Biblioteca e fontes próprias | `CustomFontStoreTests` (registro no Core Text, desenho da exportação), `MediaLibraryStoreTests` (links físicos), sem variável; `ScriptFontDeviceTests` (`TEST_RUNNER_CUE_FONT_E2E=1`, na rede: as 58 famílias de outras escritas baixadas, a espera da exportação, memória, e legendas ouvidas em 8 idiomas desenhadas em todo estilo, família e efeito; folhas em Documents/ScriptFontSheets) | `DESIGN_PROJECT.md` §52, §59 |
 | Auditoria de integração (01/11) | `CameraFormatDeviceTests` (a take pedida em 4K60 na frontal e na traseira diz o formato que o arquivo tem de verdade); `IntegrationAuditDeviceUITests` (`device-ui`, `TEST_RUNNER_CUE_AUDIT_UI=1`, em memória: contagem e Home, sair da revisão exportando, Save com edição aberta; com `TEST_RUNNER_CUE_REAL_TAKE` (um take com fala; um vídeo em Documents vale, com som PCM, como diz o arquivo), legendas ouvidas com um rascunho aberto e a fila depois do Edit first; Ajustes › Desenvolvedor › Enable UI Automation) | `reports/auditoria-integracao-2026-11-01.html` |
+| Gravador sobre a câmera real | `RecorderDeviceUITests` (`device-ui`, `TEST_RUNNER_CUE_RECORDER_UI=1`, em memória: fotos e hierarquia da legenda do quadro, zona segura, recomendação, Aa e microfones sobre a câmera, para `tools/contrast/audit.py`; uma take de verdade gravada para a rede do chip entra em Takes sob ela; Ajustes › Desenvolvedor › Enable UI Automation) | `DESIGN_PROJECT.md` §22, §63.1 |
 | Mídia como um criador | `CreatorMediaUseUITests` (`device-ui`, sem variável: toca as miniaturas do Fotos da galeria do aparelho nos quatro lugares e na biblioteca, na edição de demonstração em memória; Ajustes › Desenvolvedor › Enable UI Automation) | `DESIGN_PROJECT.md` §51 |
 
 ## Espaço em disco (não encher o Mac)

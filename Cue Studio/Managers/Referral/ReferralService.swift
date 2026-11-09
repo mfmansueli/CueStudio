@@ -140,7 +140,9 @@ final class ReferralService {
 
     private func joining(_ typed: String) async -> ReferralJoinOutcome {
         guard let code = ReferralCode.normalized(typed) else { return .unknown }
-        guard canJoin, let client, let installID = ensuredInstallID() else { return .already }
+        // No server, a Keychain not readable yet (before the first unlock) or no install id: something to try again, not "already used".
+        guard let client, isReadable, let installID = ensuredInstallID() else { return .offline }
+        guard canJoin else { return .already }
         if status?.code == code { return .own }
         do {
             let outcome = try await client.join(installID: installID, code: code)

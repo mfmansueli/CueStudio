@@ -70,9 +70,10 @@ struct MainView: View {
                 RemoteControllerView()
             }
             .fullScreenCover(item: $presentation.paywall) { PaywallView(context: $0) }
-            // Back from the teleprompter or the editor: a tool's introduction may fit now (one a session at most).
-            .onChange(of: presentation.prompter == nil) { _, closed in
-                if closed { offerIntroduction() }
+            // Back from the teleprompter or the editor: a tool's introduction may fit now (one a session at most). Not after the first
+            // flight's practice: the voyage is still guiding, and a second voice in that moment is one interruption too many.
+            .onChange(of: presentation.prompter) { closing, opened in
+                if opened == nil, let closing, !closing.isPractice { offerIntroduction() }
             }
             // The My Cue Voice tip waits until the app has been opened on two different days.
             .task { voiceQuestions.registerAppOpen() }
@@ -224,13 +225,26 @@ struct MainView: View {
         return cause.reason + " " + String(localized: "Open the draft to write it yourself.")
     }
 
+    /// "Let Cue draft it": the creator's own idea, so the sheet closes onto the Scripts card with its field ready to type (the card's
+    /// lightbulb has Cue's ideas). The focus waits for the sheet to go: a field can't take the keyboard under a closing sheet.
+    private func draftOwnIdea() {
+        presentation.sheet = nil
+        presentation.selectedTab = .scripts
+        presentation.showScriptsList(animated: false)
+        Task {
+            try? await Task.sleep(for: .seconds(UltraMotion.afterSheet))
+            services.ideaDraft.wantsFocus = true
+        }
+    }
+
     @ViewBuilder
     private func sheetContent(_ sheet: AppSheet) -> some View {
         switch sheet {
-        case .newScript:
+        case .newScript(let fromRecording):
             NewScriptSheet(
                 mode: .new,
-                onLetCue: { presentation.present(.ideas) },
+                fromRecording: fromRecording,
+                onLetCue: draftOwnIdea,
                 onWrite: writeNewScript,
                 onImport: { presentation.present(.importScript) },
                 onStartFromFormat: { presentation.present(.startFromFormat) },
@@ -248,7 +262,7 @@ struct MainView: View {
                 recent: Array(library.scripts.prefix(StartRecordingSheet.recentLimit)),
                 readSeconds: { $0.readSeconds },
                 onPick: { presentation.openPrompter(scriptID: $0.id, mode: .selfie) },
-                onNewScript: { presentation.present(.newScript) },
+                onNewScript: { presentation.present(.newScript(fromRecording: true)) },
                 onSkip: { presentation.openPrompter(scriptID: nil, mode: .selfie) }
             )
         case .importScript:

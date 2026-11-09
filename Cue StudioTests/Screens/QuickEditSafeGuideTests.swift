@@ -73,7 +73,7 @@ struct QuickEditSafeGuideTests {
         #expect(viewModel.edit.captionCollection?.safeMargins == stories)
         #expect(stories != tiktok)
         #expect(viewModel.hasUnsavedChanges)
-        #expect(EditStepSummary(from: before, to: viewModel.edit).name == String(localized: "Safe zones"))
+        #expect(EditStepSummary(from: before, to: viewModel.edit).name == String(localized: "Safe zone"))
         viewModel.undo()
         #expect(viewModel.edit.safeGuide == nil)
         #expect(viewModel.edit.captionCollection?.safeMargins == tiktok)

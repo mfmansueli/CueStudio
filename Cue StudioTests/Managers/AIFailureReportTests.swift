@@ -40,6 +40,8 @@ struct AIFailureReportTests {
         #expect(report.line.contains("script failed on onDevice after 4.20s: guardrailViolation (told the creator)"))
         #expect(report.line.contains("thermal=serious lowPower=true freeMemory=640MB app=active device=iPhone16,1"))
         #expect(report.keys["reason"] == "guardrailViolation" && report.keys["device"] == "iPhone16,1" && report.keys["final"] == "true")
+        // The framework's description can quote the request: it never reaches the report, only Console (private).
+        #expect(!report.line.contains("unsafe") && !report.keys.values.contains { $0.contains("unsafe") } && report.keys["detail"] == nil)
     }
 
     @Test func theConditionsAreReadFromThisDevice() {

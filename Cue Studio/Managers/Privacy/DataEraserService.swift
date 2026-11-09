@@ -9,10 +9,14 @@ import Foundation
 /// scripts and folders, takes and their videos and edits, exported videos waiting to be shared and the share queue, the
 /// Logbook, the idea waiting in the dock, saved brands, the media library, brand kits and imported fonts, "your stars", My Cue Voice, the ideas Cue wrote
 /// and the taste it learned, my text and cover styles, the recording setup, the first voyage's marks, Cue's drafts waiting for
-/// a take, the copies of a damaged library, and the reminders, routine and notifications waiting.
+/// a take, the copies of a damaged library, and the reminders, routine and notifications waiting. Ultra AI's permission is taken back (owner,
+/// 09/11/2026: the next Ultra AI script asks again), what Sign in with Apple left goes (`AppleSignInLeftovers`), and so do the crash reports and
+/// analytics waiting on this iPhone to be sent.
 /// Not touched: the purchase (it belongs to the Apple ID), the free-export counter (kept so deleting data can't hand back free
 /// exports; the ledger's records of the erased takes go with them, `ExportLedgerService.forget`), the count of videos shared (the
-/// universe's planets), the language and what Photos already holds. Irreversible, so the screen asks first.
+/// universe's planets), the language, the two switches of Privacy & AI data and what Photos already holds. Nor what already left: Ultra AI's
+/// requests stay with Anthropic up to 30 days, and Cue's server keeps its counts under the install's random id (the confirmation says so).
+/// Irreversible, so the screen asks first.
 @MainActor
 @Observable
 final class DataEraserService {
@@ -40,6 +44,10 @@ final class DataEraserService {
     @ObservationIgnored private let brandKits: BrandKitStore?
     /// The dock's idea and choices, kept on disk (`DockDraft`).
     @ObservationIgnored private let ideaDraft: IdeaDraftService?
+    /// Ultra AI's permission, taken back.
+    @ObservationIgnored private let ultraConsent: UltraConsentService?
+    /// The crash reports and analytics not sent yet.
+    @ObservationIgnored private let telemetry: TelemetryCollecting?
     /// The editor's media folder and the camera's leftover recordings, whole. Tests point it at folders of their own: these
     /// are the app's, shared by every test running at the same time.
     @ObservationIgnored private let eraseLooseFiles: () -> Void
@@ -50,7 +58,8 @@ final class DataEraserService {
         notifications: NotificationService? = nil, voyage: FirstVoyageService? = nil, draftLearning: DraftLearningService? = nil,
         voiceQuestions: VoiceQuestionScheduler? = nil, ledger: ExportLedgerService? = nil, shareQueue: ShareQueueService? = nil,
         ideas: IdeaSuggestionService? = nil, fonts: CustomFontStore? = nil, fontPacks: FontPackStore? = nil, mediaLibrary: MediaLibraryStore? = nil,
-        brandKits: BrandKitStore? = nil, ideaDraft: IdeaDraftService? = nil,
+        brandKits: BrandKitStore? = nil, ideaDraft: IdeaDraftService? = nil, ultraConsent: UltraConsentService? = nil,
+        telemetry: TelemetryCollecting? = nil,
         eraseLooseFiles: @escaping () -> Void = {
             EditMediaFiles.removeAll()
             TakeRecovery.removeLeftovers()
@@ -77,6 +86,8 @@ final class DataEraserService {
         self.mediaLibrary = mediaLibrary
         self.brandKits = brandKits
         self.ideaDraft = ideaDraft
+        self.ultraConsent = ultraConsent
+        self.telemetry = telemetry
         self.eraseLooseFiles = eraseLooseFiles
     }
 
@@ -134,6 +145,13 @@ final class DataEraserService {
         voyage?.reset()
         // Cue's drafts waiting for a take, so nothing is learned from scripts that are gone.
         draftLearning?.clear()
+        // Ultra AI asks again before its next script, and the dock's writer goes back to Apple Intelligence until then. The install's random
+        // id stays in the Keychain (`ReferralService`): it is what Cue's server counts free Ultra AI scripts and invite rewards under, so a new
+        // one would hand them out again; it names no one.
+        ultraConsent?.revoke()
+        ideaDraft?.engine = .apple
+        AppleSignInLeftovers.erase(from: defaults)
+        telemetry?.discardUnsent()
         // Reminders, the routine and the history go with the rest; pending and delivered notifications are taken back.
         if let notifications { Task { await notifications.eraseAll() } }
     }

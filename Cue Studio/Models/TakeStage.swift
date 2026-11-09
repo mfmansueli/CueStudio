@@ -14,11 +14,20 @@ nonisolated enum TakeStage: Int, CaseIterable, Identifiable, Comparable, Sendabl
 
     static func < (lhs: TakeStage, rhs: TakeStage) -> Bool { lhs.rawValue < rhs.rawValue }
 
-    /// The first rule that matches wins: more than one take and none starred is **pick**; an edit
+    /// The newest take when it was recorded after the star was given (the video was filmed again): it is to pick again. Starring any take
+    /// afterwards, the old one too, settles it. A star from before its time was kept never reopens the pick.
+    static func takeAfterStar(in takes: [Take]) -> Take? {
+        guard let star = takes.first(where: \.isBest), let markedAt = star.bestMarkedAt,
+              let newest = takes.max(by: { $0.recordedAt < $1.recordedAt }),
+              newest.id != star.id, newest.recordedAt > markedAt else { return nil }
+        return newest
+    }
+
+    /// The first rule that matches wins: more than one take and none starred, or one recorded after the star, is **pick**; an edit
     /// still open (a Quick edit draft on any of the takes) is **edit**; nothing exported yet is
     /// **ready**; otherwise **shared**.
     init(takes: [Take], hasDraft: (UUID) -> Bool) {
-        if takes.count > 1 && !takes.contains(where: \.isBest) {
+        if takes.count > 1 && (!takes.contains(where: \.isBest) || Self.takeAfterStar(in: takes) != nil) {
             self = .pick
         } else if takes.contains(where: { hasDraft($0.id) }) {
             self = .edit

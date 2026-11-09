@@ -104,11 +104,18 @@ final class TakeReviewViewModel {
     @ObservationIgnored private var captionNotice: String?
     /// Some of the exported video's words came out in the system's face: the message after sending it says so.
     @ObservationIgnored private var fontNotice: String?
-    /// What the creator picked in Export options (nil until they pick). 4K is Cue Pro (owner, 06/11/2026); the export reads `exportQuality`.
-    private var pickedQuality: ExportQuality?
-    /// The quality in Export options: the one picked, else the recording's own with Pro (a 4K recording exports in 4K) and 1080p without.
+    /// What the creator picked in Export options for this video (nil until they pick); the pick is also kept for the next videos
+    /// (`PreferencesService.exportQuality`). 4K is Cue Pro (owner, 06/11/2026); the export reads `exportQuality`.
+    private var pickedQuality: ExportQuality? {
+        didSet { if let pickedQuality { preferences.exportQuality = pickedQuality } }
+    }
+    /// The quality in Export options: the one picked; else the last one picked when it still fits (4K only with Pro and a 4K recording);
+    /// else the recording's own with Pro (a 4K recording exports in 4K) and 1080p without.
     var quality: ExportQuality {
-        pickedQuality ?? (isPro && take?.resolution == .uhd4K ? .uhd4K : .hd1080)
+        let fourKFits = isPro && take?.resolution == .uhd4K
+        if let pickedQuality { return pickedQuality }
+        if let kept = preferences.exportQuality, kept != .uhd4K || fourKFits { return kept }
+        return fourKFits ? .uhd4K : .hd1080
     }
     /// "4K export is Cue Pro" is up: 4K was picked without Pro (Go Pro, or Keep 1080p).
     var offersFourKPro = false
@@ -203,12 +210,12 @@ final class TakeReviewViewModel {
 
     var take: Take? { takes.take(id: takeID) }
 
-    /// This take and the others of the same script, by number ("Your takes · 3").
+    /// This take and the others of its video (same script, same network, `TakeVideoKey`), by number ("Your takes · 3").
     var siblings: [Take] { take.map(takes.siblings(of:)) ?? [] }
 
     var videoURL: URL? { take.map(takes.videoURL(for:)) }
 
-    /// Where this video is on its way out (the takes of its script): derived, never set by hand.
+    /// Where this video is on its way out (the takes of its video): derived, never set by hand.
     var stage: TakeStage {
         TakeStage(takes: siblings, hasDraft: { [drafts] in drafts.hasDraft(for: $0) })
     }
@@ -366,7 +373,7 @@ final class TakeReviewViewModel {
         return BestTakeProposal(
             takes: siblings, best: best,
             reasons: BestTakeReason.reasons(for: best, among: siblings, expectedDuration: expected, idealRange: preset.idealRange),
-            platformLabel: platform.label, ideal: preset.idealRange
+            platformLabel: platform.label, ideal: preset.idealRange, stage: stage
         )
     }
 
@@ -430,11 +437,12 @@ final class TakeReviewViewModel {
         rules.preset(for: platform, monetizationGoals: profile.profile.monetizationGoals).idealRange
     }
 
-    /// The text copied for a network's caption: the script's title, and "#ad" for a sponsored video.
+    /// The text copied for a network's caption (`PostCaption`): the hook, the title, and "#ad" for a sponsored video.
     var postCaption: String {
-        guard let take else { return "" }
-        let title = take.isFreestyle ? "" : take.scriptTitle
-        return [title, isSponsored ? Self.adCaption : nil].compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: " ")
+        guard let take, !take.isFreestyle else { return isSponsored ? Self.adCaption : "" }
+        // The words this take read: its hook leads the caption.
+        let script = take.captionScript(current: library.script(id: take.scriptID)) ?? library.script(id: take.scriptID)
+        return PostCaption.text(scriptText: script?.text, title: take.scriptTitle, isSponsored: isSponsored)
     }
 
     /// A refused Photos permission is a card with the way out; anything else is the export's card, with why and **Try again**, which stays
@@ -468,7 +476,7 @@ final class TakeReviewViewModel {
     /// A sponsored script (8.1): the share sheet warns, and "#ad" travels in the caption.
     var isSponsored: Bool { library.script(id: take?.scriptID)?.type == .ad }
 
-    static let adCaption = "#ad"
+    static let adCaption = PostCaption.adTag
 
     /// A platform's tile. How the video gets there depends on what the platform allows (`ShareRoute`): TikTok's Share Kit,
     /// Instagram's hand-off, the system share sheet, or saving to Photos and opening the app. Nil is "More": the system
@@ -609,10 +617,6 @@ final class TakeReviewViewModel {
         return ledger.isCounted(fingerprint: ExportFingerprint.make(takeID: take.id, source: takes.videoURL(for: take), options: options))
     }
 
-    private func exportOptions(for take: Take, edit: TakeEdit?, burnsInCaptions: Bool) -> ExportOptions {
-        ExportOptions(aspect: take.outputAspect, edit: edit, burnsInCaptions: burnsInCaptions, shortSide: outputShortSide(for: take))
-    }
-
     /// The line on the editor's "Is it ready to post?" (owner, 06/11/2026: the last free export told when it is useful, with no new flow):
     /// "LAST FREE EXPORT" with one left, "0 OF 3 LEFT · EXPORT WITH PRO" with none. Nothing on Pro, with more left, or when sharing `edit`
     /// costs nothing (the same video already out).
@@ -650,7 +654,8 @@ final class TakeReviewViewModel {
             throw ExportPreflightError.notEnoughSpace(megabytes: missing)
         }
         let result = try await exporter.export(videoAt: source, options: options, progress: progress)
-        let url = result.url
+        // Named after the script and the take, for Files, AirDrop and a computer.
+        let url = ExportFileName.rename(result.url, title: take.scriptTitle, takeNumber: take.number)
         ExportedFileRecord(renderStamp: ExportRenderStamp.drawn(edit: options.edit, result: result), fontFallback: result.fontFallback).write(to: url)
         if let continued {
             // The same export, its file made again (the system cleared the first, or it was drawn differently): not a second export. An

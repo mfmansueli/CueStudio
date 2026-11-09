@@ -6,7 +6,8 @@
 import Testing
 @testable import Cue_Studio
 
-/// The hierarchy: a change for this take, then an accepted recommendation, then the Creator Setup.
+/// The hierarchy: a change for this take, then the recommendations used, then the Creator Setup; the lines a recommendation shows, and
+/// what Keep as is and Use Recommended do with them.
 @Suite("SessionSetup")
 struct SessionSetupTests {
     private let usual = CreatorSetupTests.usual()
@@ -21,20 +22,33 @@ struct SessionSetupTests {
         #expect(session.source(of: .quality) == .creatorSetup)
     }
 
-    @Test func aConflictingRecommendationAsksAndIsNotApplied() {
+    @Test func aRecommendationListsWhatWouldChangeAndIsNotApplied() {
         var session = SessionSetup()
         session.recommend(tiktok)
-        let conflicts = session.conflicts(with: usual)
-        #expect(conflicts == [SetupConflict(field: .quality, recommended: "1080p", usual: "4K")])
-        #expect(conflicts.first?.sentence == "1080p instead of your usual 4K.")
-        #expect(session.needsDecision(with: usual))
+        let changes = session.changes(from: usual)
+        #expect(changes == [SetupChange(item: .field(.quality), current: "4K", recommended: "1080p", isManual: false)])
+        #expect(changes.first?.title == "Quality")
+        #expect(changes.first?.values == "4K → 1080p")
         #expect(session.resolved(from: usual).resolution == .uhd4K)
     }
 
-    @Test func aMatchingRecommendationHasNothingToAsk() {
+    @Test func aMatchingRecommendationHasNothingToChange() {
         var session = SessionSetup()
         session.recommend(tiktok)
-        #expect(!session.needsDecision(with: CreatorSetup()))
+        #expect(session.changes(from: CreatorSetup()).isEmpty)
+    }
+
+    /// The lines are against what is on screen, not against the Creator Setup: a frame picked for this take is the "now" side, marked.
+    @Test func theLinesAreAgainstTheScreenAndMarkTheCreatorsOwnChoices() {
+        var session = SessionSetup()
+        session.recommend(tiktok)
+        var picked = usual
+        picked.aspect = .vertical
+        session.record(from: usual, to: picked, creatorSetup: usual)
+        let changes = session.changes(from: usual)
+        #expect(changes.map(\.item) == [.field(.format), .field(.quality)])
+        #expect(changes.first == SetupChange(item: .field(.format), current: "4:5", recommended: "9:16", isManual: true))
+        #expect(changes.last?.isManual == false)
     }
 
     @Test func useRecommendedChangesTheSessionOnly() {
@@ -44,19 +58,37 @@ struct SessionSetupTests {
         #expect(session.resolved(from: usual).resolution == .hd1080)
         #expect(session.source(of: .quality) == .recommended(.tiktok))
         #expect(session.captureSource == .recommended(.tiktok))
-        #expect(!session.needsDecision(with: usual))
+        #expect(session.changes(from: usual).isEmpty)
         // The rest is still the creator's.
         #expect(session.resolved(from: usual).textSize == 36)
         #expect(session.source(of: .textSize) == .creatorSetup)
     }
 
-    @Test func keepMySetupUsesTheCreatorSetup() {
+    /// "Keep as is" changes nothing at all, a frame picked for this take included.
+    @Test func keepAsIsChangesNothing() {
+        var session = SessionSetup()
+        var picked = usual
+        picked.aspect = .vertical
+        session.record(from: usual, to: picked, creatorSetup: usual)
+        session.recommend(tiktok)
+        let before = session.resolved(from: usual)
+        session.keepAsIs()
+        #expect(session.resolved(from: usual) == before)
+        #expect(session.choice == .keepAsIs)
+        #expect(session.source(of: .format) == .thisTake)
+    }
+
+    /// Asking for another network never changes the screen: what the first "Use Recommended" set stays until the creator answers.
+    @Test func anotherNetworkAsksWithoutChangingTheScreen() {
         var session = SessionSetup()
         session.recommend(tiktok)
-        session.keepCreatorSetup()
-        #expect(session.resolved(from: usual).resolution == .uhd4K)
-        #expect(!session.needsDecision(with: usual))
-        #expect(session.captureSource == .creatorSetup)
+        session.useRecommended()
+        let tiktokSetup = session.resolved(from: usual)
+        session.recommend(SetupRecommendation(platform: .youtube, preset: TestData.preset(.youtube)))
+        #expect(session.resolved(from: usual) == tiktokSetup)
+        #expect(!session.changes(from: usual).isEmpty)
+        session.keepAsIs()
+        #expect(session.resolved(from: usual) == tiktokSetup)
     }
 
     @Test func aManualChoiceWinsOverTheRecommendation() {
@@ -98,18 +130,18 @@ struct SessionSetupTests {
         #expect(session.resolved(from: usual).resolution == .hd1080)
     }
 
-    @Test func recordingUndecidedKeepsTheCreatorSetup() {
+    @Test func recordingUndecidedKeepsWhatIsOnScreen() {
         var session = SessionSetup()
         session.recommend(tiktok)
         session.settleUndecided()
-        #expect(session.choice == .keepCreatorSetup)
+        #expect(session.choice == .keepAsIs)
         #expect(session.resolved(from: usual).resolution == .uhd4K)
     }
 
     @Test func anotherPlatformAsksAgain() {
         var session = SessionSetup()
         session.recommend(tiktok)
-        session.keepCreatorSetup()
+        session.keepAsIs()
         session.recommend(SetupRecommendation(platform: .youtube, preset: TestData.preset(.youtube)))
         #expect(session.choice == .undecided)
         session.recommend(SetupRecommendation(platform: .youtube, preset: TestData.preset(.youtube)))
@@ -125,7 +157,7 @@ struct SessionSetupTests {
         session.record(from: session.resolved(from: usual), to: changed, creatorSetup: usual)
         session.backToCreatorSetup()
         #expect(session.resolved(from: usual) == usual)
-        #expect(session.choice == .keepCreatorSetup)
+        #expect(session.choice == .keepAsIs)
     }
 
     @Test func theRecommendationSummaryNamesTheSafeZone() {

@@ -70,7 +70,9 @@ struct TakeReviewExportIdentityTests {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }
         await scenario.viewModel.save()
-        let file = try #require(scenario.exporter.files.first)
+        // The file as delivered: named after the script and the take, in a folder of its own (`ExportFileName`).
+        let operation = try #require(scenario.ledger.operations.first)
+        let file = scenario.ledger.fileURL(of: operation)
         #expect(ExportedFileRecord.read(at: file) != nil)
         removexattr(file.path(percentEncoded: false), ExportedFileRecord.attribute, 0)
         scenario.viewModel.celebration = nil

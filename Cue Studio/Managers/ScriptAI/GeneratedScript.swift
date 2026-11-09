@@ -21,7 +21,7 @@ nonisolated struct GeneratedScript: Hashable, Sendable {
     var needsFactCheck: Bool = false
     /// Which model wrote it; nil for the structured draft and for Ultra.
     var model: AIModelRoute?
-    /// Apple Intelligence, or Ultra (Google's Gemini) when the creator chose it: the page and the saved script say which.
+    /// Apple Intelligence, or Ultra AI (Claude, through Cue's server) when the creator chose it: the page and the saved script say which.
     var engine: ScriptEngine = .apple
     /// Where the time went, when a model wrote it.
     var timings: GenerationTimings?

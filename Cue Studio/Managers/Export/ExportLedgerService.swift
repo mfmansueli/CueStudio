@@ -84,7 +84,7 @@ final class ExportLedgerService {
     /// inside a "Share to universe" queue is the same export, and costs nothing more) or is a video already counted, made again.
     func begin(takeID: UUID, fingerprint: String, file: URL, inheritingCountFrom source: UUID? = nil) -> ExportOperation {
         var operation = ExportOperation(
-            id: UUID(), takeID: takeID, fingerprint: fingerprint, fileName: file.lastPathComponent, createdAt: now()
+            id: UUID(), takeID: takeID, fingerprint: fingerprint, fileName: storedName(of: file), createdAt: now()
         )
         let sameVideo = operations.last { $0.fingerprint == fingerprint && $0.isCounted }?.countedAt
         if let counted = source.flatMap({ self.operation(id: $0)?.countedAt }) ?? sameVideo { operation.countedAt = counted }
@@ -95,7 +95,7 @@ final class ExportLedgerService {
 
     /// The operation's file was made again (the system cleared the old one): same operation, so it isn't counted twice.
     func replaceFile(of id: UUID, with file: URL) {
-        update(id) { $0.fileName = file.lastPathComponent }
+        update(id) { $0.fileName = storedName(of: file) }
     }
 
     /// Records a delivery and counts the export if this is the video's first. Returns true only for the call that deducted; a repeated
@@ -126,7 +126,24 @@ final class ExportLedgerService {
     /// The file isn't needed any more (the review closed with nothing in flight): it goes, the record stays.
     func releaseFile(of id: UUID) {
         guard let operation = operation(id: id) else { return }
-        try? files.removeItem(at: fileURL(of: operation))
+        remove(fileURL(of: operation))
+    }
+
+    /// Where the file is, relative to the folder: a named export sits in a folder of its own (`ExportFileName`), so two videos of one take
+    /// never share a name, and a file that went can't be mistaken for another one later given its name.
+    private func storedName(of file: URL) -> String {
+        let folder = directory.standardizedFileURL.path(percentEncoded: false)
+        let path = file.standardizedFileURL.path(percentEncoded: false)
+        let prefix = folder.hasSuffix("/") ? folder : folder + "/"
+        return path.hasPrefix(prefix) ? String(path.dropFirst(prefix.count)) : file.lastPathComponent
+    }
+
+    /// The file, and its own folder when it had one.
+    private func remove(_ url: URL) {
+        try? files.removeItem(at: url)
+        let parent = url.deletingLastPathComponent()
+        guard parent.standardizedFileURL != directory.standardizedFileURL else { return }
+        if (try? files.contentsOfDirectory(atPath: parent.path(percentEncoded: false)))?.isEmpty == true { try? files.removeItem(at: parent) }
     }
 
     func releaseFiles(forTake takeID: UUID) {
@@ -159,7 +176,7 @@ final class ExportLedgerService {
         var changed = false
         for operation in operations where current.timeIntervalSince(operation.createdAt) > Self.fileRetention {
             if fileExists(for: operation) {
-                try? files.removeItem(at: fileURL(of: operation))
+                remove(fileURL(of: operation))
             }
         }
         let kept = operations.filter { $0.isCounted || current.timeIntervalSince($0.createdAt) <= Self.recordRetention }

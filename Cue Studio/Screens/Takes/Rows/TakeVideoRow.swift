@@ -6,10 +6,12 @@
 import SwiftUI
 
 /// One video in the Takes list: its best take's thumbnail in the take's own frame, platform,
-/// format and quality, when, and chips for its stage, takes and edit.
+/// format and quality, when, and chips for its stage, takes and edit. The first video's first star leads the chips when Takes lights it
+/// (`TakeFirstStarPill`, D4).
 struct TakeVideoRow: View {
     let video: TakeVideo
     let whenLabel: String
+    var showsFirstStar = false
 
     @Environment(\.dynamicTypeSize) private var typeSize
 
@@ -83,6 +85,7 @@ struct TakeVideoRow: View {
     @ViewBuilder
     private var chips: some View {
         FlowLayout(spacing: 5, lineSpacing: 5) {
+            if showsFirstStar { TakeFirstStarPill(onPoster: false) }
             stageChip
             if let label = video.takesLabel {
                 chip(label, foreground: Palette.ink.opacity(0.85), background: Palette.surface2)
@@ -132,6 +135,7 @@ struct TakeVideoRow: View {
         var parts = [video.title, video.stage.sentence, video.platform?.label ?? String(localized: "Freestyle"), whenLabel]
         if let label = video.takesLabel { parts.append(label) }
         if video.isEdited { parts.append(String(localized: "Edited")) }
+        if showsFirstStar { parts.append(String(localized: "First star")) }
         return parts.joined(separator: ", ")
     }
 }

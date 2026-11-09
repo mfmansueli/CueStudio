@@ -21,7 +21,7 @@ struct SettingsEntryRow: View {
     private var content: some View {
         switch entry {
         case .recording, .prompter, .remote, .myCueVoice, .personalize, .languageRegion, .notifications, .privacy, .cuePro, .restorePurchases,
-             .privacyPolicy, .termsOfUse, .acknowledgements, .version:
+             .redeemCode, .privacyPolicy, .termsOfUse, .acknowledgements, .version:
             SettingsRootRow(entry: entry, bindings: bindings)
         case .startsWith, .resolution, .frameRate, .defaultFormat, .microphone, .countdown, .countdownBeforePlay, .grid:
             RecordingEntryRow(entry: entry, camera: bindings.camera)
@@ -37,6 +37,8 @@ struct SettingsEntryRow: View {
             LanguageEntryRow(entry: entry)
         case .onDeviceAI, .helpImprove, .permissions, .deleteData:
             PrivacyEntryRow(entry: entry)
+        case .defaultPlatform:
+            DefaultPlatformEntryRow(entry: entry)
         }
     }
 }

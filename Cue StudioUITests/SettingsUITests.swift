@@ -60,14 +60,15 @@ final class SettingsUITests: XCTestCase {
         XCTAssertTrue(settings.isSelected)
     }
 
-    /// The row the app had before v30 stays where it was, with its own confirmation, until the product owner decides.
-    func testResetCreatorSetupKeepsItsRowAndAsksFirst() {
+    /// "Reset my setup" at the end of Settings, with the line saying what goes back and what stays, asks first.
+    func testResetMySetupSaysWhatItDoesAndAsksFirst() {
         let app = CueApp.launch(seeded: true)
         let settings = tab(app, label: "Settings")
         XCTAssertTrue(settings.exists(within: 15))
         settings.tap()
         let reset = app.buttons["creatorSetup.resetButton"]
         app.scrollAboveTabBar(to: reset)
+        XCTAssertEqual(reset.label, "Reset my setup")
         reset.tap()
         XCTAssertTrue(app.buttons["creatorSetup.confirmResetButton"].exists(within: 5))
         dismissDialog(app)
@@ -136,17 +137,10 @@ final class SettingsUITests: XCTestCase {
         XCTAssertTrue(["0.2×", "0,2×"].contains(sheetSpeed.value as? String ?? ""), "\(String(describing: sheetSpeed.value))")
         sheetSpeed.adjust(toNormalizedSliderPosition: 1)
         XCTAssertEqual(sheetSpeed.value as? String, "2×")
+        // The text size is in Aa's Text tab.
+        app.segmentedControls["display.tabs"].buttons["Text"].tap()
         let sheetSize = app.sliders["settings.textSize"]
-        // The list is under the sheet's handle: drag from its lower half, where the rows are, along the left edge (the sliders' thumbs
-        // in the middle would take the drag).
-        for _ in 0..<6 where !(sheetSize.exists && sheetSize.isHittable) {
-            let from = app.coordinate(withNormalizedOffset: CGVector(dx: 0.05, dy: 0.85))
-            // Held at the end: a list still gliding takes the slider's drag for itself.
-            from.press(
-                forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.05, dy: 0.6)),
-                withVelocity: .default, thenHoldForDuration: 0.1
-            )
-        }
+        XCTAssertTrue(sheetSize.exists(within: 5))
         sheetSize.waitUntilStill()
         sheetSize.adjust(toNormalizedSliderPosition: 0)
         XCTAssertEqual(sheetSize.value as? String, "12 pt")
@@ -303,6 +297,16 @@ final class SettingsUITests: XCTestCase {
         app.swipeDown()
         tab(app, label: "Scripts").tap()
         XCTAssertTrue(sampleScript(app).exists(within: 5))
+    }
+
+    /// "Help improve Cue" starts off and says it covers usage data and crash reports (owner, 09/11/2026: one clear control for both).
+    func testHelpImproveCueStartsOffAndSaysItIncludesCrashReports() {
+        let app = CueApp.launch(seeded: true)
+        openPrivacy(app)
+        let toggle = app.switches["settings.helpImprove"]
+        XCTAssertTrue(toggle.exists(within: 5))
+        XCTAssertEqual(toggle.value as? String, "0")
+        XCTAssertTrue(app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS %@", "crash reports")).firstMatch.exists)
     }
 
     func testDeleteMyDataRemovesTheScripts() {

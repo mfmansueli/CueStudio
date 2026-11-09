@@ -6,6 +6,7 @@ import { parseUltraIdentity } from "../ultraIdentity";
 import {
   admit, allowance, settle, type CallContext, type UltraInstall, type UltraStore, type UltraSubscriber, type UltraTransaction,
 } from "../ultraMetering";
+import { RETENTION_DAYS, retentionEnd } from "../retention";
 import { cost, dailyBudget, dayKey, meteringMode, monthKey, ultraPolicy } from "../ultraPolicy";
 import type { UltraStage } from "../ultraRequest";
 
@@ -181,4 +182,11 @@ test("who a call is for: ids read in any case, a proof only as text of a sane si
   assert.deepEqual(parseUltraIdentity({ installId: "me" }), { ok: false, reason: "installId" });
   assert.deepEqual(parseUltraIdentity({ installId: id, scriptId: 7 }), { ok: false, reason: "scriptId" });
   assert.deepEqual(parseUltraIdentity({ installId: id, proof: "x".repeat(16_001) }), { ok: false, reason: "proof" });
+});
+
+test("an install's counts are kept about 13 months after its last write", () => {
+  const now = Date.UTC(2026, 10, 9);
+  assert.equal(RETENTION_DAYS, 400);
+  assert.equal(retentionEnd(now) - now, 400 * 24 * 60 * 60 * 1000);
+  assert.ok(new Date(retentionEnd(now)).getUTCFullYear() === 2027);
 });

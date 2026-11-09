@@ -38,9 +38,9 @@ nonisolated enum TakeRecovery {
         return .recover(duration: duration)
     }
 
-    /// Files each leftover with the creator's camera settings: under the script its note names (`TakeRecoveryNote`, a take the library
-    /// couldn't take in), as it was then; as a freestyle take when that isn't known (Cue stopped mid-take) or the script is gone. Removes the
-    /// ones that can't be played. Returns how many came back.
+    /// Files each leftover with the creator's camera settings: under the script and the network its note names (`TakeRecoveryNote`, a take
+    /// the library couldn't take in), as it was then; as a freestyle take when that isn't known (Cue stopped mid-take) or the script is gone
+    /// (it keeps the network it was made for). Removes the ones that can't be played. Returns how many came back.
     @MainActor
     @discardableResult
     static func recover(
@@ -57,15 +57,15 @@ nonisolated enum TakeRecovery {
             let url = folder.appending(path: name)
             switch await inspect(url) {
             case .recover(let duration):
-                let readFrom = TakeRecoveryNote.read(for: url).flatMap { note in
-                    script(note.scriptID).map { current -> Script in
-                        var then = current
-                        then.version = note.scriptVersion
-                        return then
-                    }
+                let note = TakeRecoveryNote.read(for: url)
+                let readFrom = note?.scriptID.flatMap(script).map { current -> Script in
+                    var then = current
+                    if let version = note?.scriptVersion { then.version = version }
+                    return then
                 }
                 // A library that can't take it in now leaves the file where it is, for the next launch.
-                if (try? takes.addTake(fileAt: url, duration: duration, script: readFrom, camera: camera)) != nil {
+                let added = try? takes.addTake(fileAt: url, duration: duration, script: readFrom, camera: camera, platform: note?.platform)
+                if added != nil {
                     recovered += 1
                     TakeRecoveryNote.remove(for: url)
                 }

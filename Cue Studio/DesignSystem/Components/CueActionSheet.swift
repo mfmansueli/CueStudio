@@ -7,10 +7,11 @@ import SwiftUI
 
 /// The confirmation the board draws (11.1 "reset confirm"): the page dims, and at the bottom a card with the question in grey and the one action in red,
 /// and under it a separate **Cancel** card in bold. iOS 27's `confirmationDialog` opens as a bubble with no Cancel, so this one is Cue's own; it comes up
-/// over the tab bar like the system's would, and a tap outside cancels.
+/// over the tab bar like the system's would, and a tap outside cancels. A `note` under the question, smaller, says what the action can't reach.
 struct CueActionSheet: ViewModifier {
     @Binding var isPresented: Bool
     let message: LocalizedStringKey
+    var note: LocalizedStringKey?
     let actionTitle: LocalizedStringKey
     let actionIdentifier: String
     let action: () -> Void
@@ -20,12 +21,17 @@ struct CueActionSheet: ViewModifier {
             VStack(spacing: 8) {
                 Spacer(minLength: 0)
                 VStack(spacing: 0) {
-                    Text(message)
-                        .cueFont(13.5)
-                        .foregroundStyle(Palette.ink2)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, 20)
-                        .padding(.vertical, 14)
+                    VStack(spacing: 6) {
+                        Text(message).cueFont(13.5)
+                        if let note {
+                            Text(note).cueFont(12).accessibilityIdentifier("actionSheet.note")
+                        }
+                    }
+                    .foregroundStyle(Palette.ink2)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 14)
                     Rectangle().fill(Palette.separator).frame(height: 0.5)
                     Button {
                         isPresented = false
@@ -60,8 +66,11 @@ struct CueActionSheet: ViewModifier {
 extension View {
     /// A confirmation as the board draws it: a dimmed page, the question and the red action in a card, and Cancel under it.
     func cueActionSheet(
-        isPresented: Binding<Bool>, message: LocalizedStringKey, actionTitle: LocalizedStringKey, actionIdentifier: String, action: @escaping () -> Void
+        isPresented: Binding<Bool>, message: LocalizedStringKey, note: LocalizedStringKey? = nil, actionTitle: LocalizedStringKey,
+        actionIdentifier: String, action: @escaping () -> Void
     ) -> some View {
-        modifier(CueActionSheet(isPresented: isPresented, message: message, actionTitle: actionTitle, actionIdentifier: actionIdentifier, action: action))
+        modifier(CueActionSheet(
+            isPresented: isPresented, message: message, note: note, actionTitle: actionTitle, actionIdentifier: actionIdentifier, action: action
+        ))
     }
 }

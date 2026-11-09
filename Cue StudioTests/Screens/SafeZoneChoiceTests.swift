@@ -10,8 +10,9 @@ import Testing
 struct SafeZoneChoiceTests {
     private let rules = TestData.rules
 
+    /// `script` is the recording's network (the script's, or the one the recorder's chip picked, or the creator's usual one).
     private func resolve(_ aspect: AspectRatio, script: Platform? = nil, pick: SafeZoneChoice? = nil) -> SafeZoneChoice? {
-        SafeZoneChoice.resolve(pick: pick, scriptPlatform: script, aspect: aspect, rules: rules)
+        SafeZoneChoice.resolve(pick: pick, network: script, aspect: aspect, rules: rules)
     }
 
     @Test func chipsFitTheFrame() {
@@ -32,9 +33,11 @@ struct SafeZoneChoiceTests {
         #expect(resolve(.portrait) == .platform(.reels))
     }
 
-    @Test func aPlatformWithoutAZoneForTheFrameFallsBack() {
-        #expect(resolve(.portrait, script: .youtube) == .platform(.reels))
-        #expect(resolve(.vertical, script: .tiktok) == .platform(.linkedin))
+    /// The zone never names another network than the video's (09/11/2026: a YouTube script showed "INSTAGRAM REELS SAFE AREA"): YouTube's
+    /// vertical video is a Short, a TikTok at 4:5 has none, 1:1 keeps Custom.
+    @Test func aPlatformWithoutAZoneForTheFrameNeverShowsAnothersZone() {
+        #expect(resolve(.portrait, script: .youtube) == .platform(.shorts))
+        #expect(resolve(.vertical, script: .tiktok) == nil)
         #expect(resolve(.square, script: .reels) == .custom)
     }
 
@@ -55,22 +58,19 @@ struct SafeZoneChoiceTests {
         #expect(SafeZoneChoice.platform(.tiktok).label == "TikTok")
     }
 
-    // MARK: - Settings › Social safe zone
+    // MARK: - Saved
 
-    @Test func theSettingsListIsTikTokReelsShortsCustom() {
-        #expect(SafeZoneChoice.settingsOptions == [.platform(.tiktok), .platform(.reels), .platform(.shorts), .custom])
-    }
-
-    @Test func aSavedKeyBringsBackItsChoice() {
-        for choice in SafeZoneChoice.settingsOptions {
-            #expect(SafeZoneChoice.pick(fromKey: choice.key) == choice)
-            #expect(SafeZoneChoice.saved(key: choice.key) == choice)
-        }
-    }
-
-    @Test func noKeyFollowsTheScriptAndSettingsShowsTikTokFirst() {
+    /// Only Custom is ever picked: the zone otherwise follows the recording's network, and a key an older build saved for a network
+    /// (Settings once picked one) follows the network too, never a fixed TikTok.
+    @Test func onlyCustomIsAPick() {
+        #expect(SafeZoneChoice.pick(fromKey: SafeZoneChoice.custom.key) == .custom)
         #expect(SafeZoneChoice.pick(fromKey: nil) == nil)
         #expect(SafeZoneChoice.pick(fromKey: "not-a-platform") == nil)
-        #expect(SafeZoneChoice.saved(key: nil) == .platform(.tiktok))
+        #expect(SafeZoneChoice.pick(fromKey: SafeZoneChoice.platform(.tiktok).key) == nil)
+    }
+
+    @Test func anOldNetworkKeyFollowsTheRecordingsNetwork() {
+        let pick = SafeZoneChoice.pick(fromKey: SafeZoneChoice.platform(.tiktok).key)
+        #expect(resolve(.portrait, script: .shorts, pick: pick) == .platform(.shorts))
     }
 }

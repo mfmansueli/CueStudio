@@ -11,7 +11,7 @@ nonisolated enum SettingsEntry: String, CaseIterable, Identifiable, Sendable {
     // The root
     case recording, prompter, remote, myCueVoice, personalize
     case languageRegion, notifications, privacy
-    case cuePro, restorePurchases
+    case cuePro, restorePurchases, redeemCode
     case privacyPolicy, termsOfUse, acknowledgements, version
     // Recording
     case startsWith, resolution, frameRate, defaultFormat, microphone, countdown, grid
@@ -33,6 +33,8 @@ nonisolated enum SettingsEntry: String, CaseIterable, Identifiable, Sendable {
     case appLanguage, voiceFollowingLanguage, scriptLanguage
     // Privacy & AI data
     case onDeviceAI, helpImprove, permissions, deleteData
+    // Found only by the search: the default network lives in Profile › Edit profile, where onboarding's choice is changed.
+    case defaultPlatform
 
     var id: String { rawValue }
 
@@ -48,6 +50,7 @@ nonisolated enum SettingsEntry: String, CaseIterable, Identifiable, Sendable {
         case .privacy: String(localized: "Privacy & AI data")
         case .cuePro: String(localized: "Cue Pro")
         case .restorePurchases: String(localized: "Restore purchases")
+        case .redeemCode: String(localized: "Redeem code")
         case .privacyPolicy: String(localized: "Privacy policy")
         case .termsOfUse: String(localized: "Terms of use")
         case .acknowledgements: String(localized: "Acknowledgements")
@@ -55,12 +58,12 @@ nonisolated enum SettingsEntry: String, CaseIterable, Identifiable, Sendable {
         case .startsWith: String(localized: "Starts with")
         case .resolution: String(localized: "Resolution")
         case .frameRate: String(localized: "Frame rate")
-        case .defaultFormat: String(localized: "Default format")
+        case .defaultFormat: String(localized: "Default frame")
         case .microphone: String(localized: "Input")
         case .countdown: String(localized: "Countdown")
-        case .countdownBeforePlay: String(localized: "Countdown before play")
+        case .countdownBeforePlay: String(localized: "Countdown")
         case .grid: String(localized: "Grid")
-        case .followVoice: String(localized: "Follow my voice")
+        case .followVoice: String(localized: "Voice Following")
         case .speed: String(localized: "Speed")
         case .aiCoach: String(localized: "AI Coach")
         case .textSize: String(localized: "Text size")
@@ -76,7 +79,7 @@ nonisolated enum SettingsEntry: String, CaseIterable, Identifiable, Sendable {
         case .sideMargins: String(localized: "Side margins")
         case .backgroundOpacity: String(localized: "Background opacity")
         case .cameraBlur: String(localized: "Camera blur")
-        case .socialSafeZone: String(localized: "Social safe zone")
+        case .socialSafeZone: String(localized: "Safe zone")
         case .studioBackground: String(localized: "Background color")
         case .mirrorText: String(localized: "Mirror text")
         case .flipVertically: String(localized: "Flip vertically")
@@ -91,12 +94,13 @@ nonisolated enum SettingsEntry: String, CaseIterable, Identifiable, Sendable {
         case .haptics: String(localized: "Haptics")
         case .firstVoyage: String(localized: "First video guide")
         case .appLanguage: String(localized: "App language")
-        case .voiceFollowingLanguage: String(localized: "Voice following")
+        case .voiceFollowingLanguage: String(localized: "Voice Following")
         case .scriptLanguage: String(localized: "Script language")
         case .onDeviceAI: String(localized: "Apple Intelligence")
         case .helpImprove: String(localized: "Help improve Cue")
         case .permissions: String(localized: "Permissions")
         case .deleteData: String(localized: "Delete my Cue data")
+        case .defaultPlatform: String(localized: "New scripts are made for")
         }
     }
 
@@ -111,11 +115,10 @@ nonisolated enum SettingsEntry: String, CaseIterable, Identifiable, Sendable {
         case .mirrorText: String(localized: "For beam-splitter glass")
         case .flipVertically: String(localized: "For rigs that reflect from below")
         case .appIcon: String(localized: "Unlock with milestones. Some come with Pro.")
-        case .topics: String(localized: "Edit them in My Cue Voice")
         case .autoTag: String(localized: "Cue picks the topic on this iPhone")
         case .firstVoyage: String(localized: "Your next step, until your first video is out")
         case .onDeviceAI: String(localized: "Apple Intelligence, nothing else")
-        case .helpImprove: String(localized: "Anonymous usage, never videos or scripts")
+        case .helpImprove: String(localized: "Usage data and crash reports, never videos or scripts")
         default: nil
         }
     }
@@ -126,11 +129,11 @@ nonisolated enum SettingsEntry: String, CaseIterable, Identifiable, Sendable {
         case .recording, .prompter, .remote: String(localized: "Create")
         case .myCueVoice, .personalize: String(localized: "Your Cue")
         case .languageRegion, .notifications, .privacy: String(localized: "General")
-        case .cuePro, .restorePurchases: String(localized: "Pro")
+        case .cuePro, .restorePurchases, .redeemCode: String(localized: "Pro")
         case .privacyPolicy, .termsOfUse, .acknowledgements, .version: String(localized: "About")
         case .startsWith: Self.path(.recording, String(localized: "Camera"))
         case .resolution, .frameRate: Self.path(.recording, String(localized: "Quality"))
-        case .defaultFormat: Self.path(.recording, String(localized: "Default format"))
+        case .defaultFormat: Self.path(.recording, String(localized: "Default frame"))
         case .microphone: Self.path(.recording, String(localized: "Microphone"))
         case .countdown, .grid: Self.path(.recording, String(localized: "While recording"))
         case .followVoice, .speed, .countdownBeforePlay, .aiCoach: Self.path(.prompter, String(localized: "Reading"))
@@ -149,6 +152,7 @@ nonisolated enum SettingsEntry: String, CaseIterable, Identifiable, Sendable {
         case .firstVoyage: Self.path(.personalize, String(localized: "Getting started"))
         case .appLanguage, .voiceFollowingLanguage, .scriptLanguage: SettingsEntry.languageRegion.title
         case .onDeviceAI, .helpImprove, .permissions, .deleteData: SettingsEntry.privacy.title
+        case .defaultPlatform: "\(String(localized: "Profile")) › \(String(localized: "Edit profile"))"
         }
     }
 
@@ -165,6 +169,7 @@ nonisolated enum SettingsEntry: String, CaseIterable, Identifiable, Sendable {
         case .privacy: ["data", "ai", "delete", "permissions"]
         case .cuePro: ["pro", "subscription", "plan", "upgrade"]
         case .restorePurchases: ["purchase", "subscription"]
+        case .redeemCode: ["offer", "code", "promo", "coupon", "gift", "voucher"]
         case .startsWith: ["camera", "front", "back", "selfie", "lens"]
         case .resolution: ["quality", "720p", "1080p", "4k", "hd"]
         case .frameRate: ["fps", "quality", "24", "30", "60"]
@@ -201,13 +206,17 @@ nonisolated enum SettingsEntry: String, CaseIterable, Identifiable, Sendable {
         case .voiceFollowingLanguage: ["speech", "listen", "recognition"]
         case .scriptLanguage: ["write", "new scripts", "auto-detect"]
         case .onDeviceAI: ["apple intelligence", "private", "ai"]
-        case .helpImprove: ["analytics", "usage", "anonymous"]
+        case .helpImprove: ["analytics", "usage", "crash", "reports", "diagnostics"]
         case .permissions: ["camera", "microphone", "speech", "photos", "access"]
         case .deleteData: ["erase", "reset", "remove", "scripts", "takes"]
         case .privacyPolicy: ["legal"]
         case .termsOfUse: ["legal", "eula"]
         case .acknowledgements: ["fonts", "licenses", "credits", "legal"]
         case .version: ["build"]
+        case .defaultPlatform: [
+            "platform", "network", "default", "social", "tiktok", "instagram", "reels", "youtube", "shorts", "linkedin", "facebook",
+            "snapchat", "stories", "safe zone", "length",
+        ]
         }
     }
 

@@ -73,7 +73,7 @@ final class IdeaTransitionService {
     private(set) var origin: CGPoint = .zero
     private(set) var idea = ""
     private(set) var platformName = ""
-    /// Who is writing: the star says "Drafting with Ultra" for Google's Gemini, never Apple Intelligence's words.
+    /// Who is writing: the star says "Drafting with Ultra" for Ultra AI (Claude, through Cue's server), never Apple Intelligence's words.
     private(set) var engine: ScriptEngine = .apple
     /// Whether the exit is because of an error (the toast says so) and not a Cancel.
     private(set) var leftBecauseOfError = false

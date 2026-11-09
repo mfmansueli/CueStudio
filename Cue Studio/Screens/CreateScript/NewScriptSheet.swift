@@ -7,11 +7,14 @@ import SwiftUI
 
 /// "New script": write your own or import a document. The AI lives in the idea card on Scripts
 /// ("Let's Cue!"), not here. Over the camera (attach mode) a blank page makes no sense, so Paste
-/// takes Write's place.
+/// takes Write's place. Opened from Start recording's "New script", it is called that and doesn't offer recording without a script:
+/// that sheet has just offered it.
 struct NewScriptSheet: View {
     enum Mode { case new, attach }
 
     let mode: Mode
+    /// Opened from Start recording: the sheet is "New script", without "Record without a script".
+    var fromRecording = false
     var onLetCue: () -> Void = {}
     var onWrite: () -> Void = {}
     var onPaste: () -> Void = {}
@@ -26,7 +29,7 @@ struct NewScriptSheet: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             SheetHeader(
-                title: mode == .new ? String(localized: "Start a video") : String(localized: "New script"),
+                title: mode == .new && !fromRecording ? String(localized: "Start a video") : String(localized: "New script"),
                 subtitle: mode == .new ? nil : String(localized: "Your words, your way.")
             )
             .padding(.horizontal, 4)
@@ -64,6 +67,8 @@ struct NewScriptSheet: View {
                         "Answer a comment", detail: "Turn a question from your audience into a script", systemImage: "text.bubble",
                         style: .plain, identifier: "newScript.answer", action: onAnswer
                     )
+                }
+                if mode == .new, !fromRecording {
                     Button(action: onFreestyle) {
                         HStack(spacing: 10) {
                             Circle().fill(Palette.record).frame(width: 10, height: 10)

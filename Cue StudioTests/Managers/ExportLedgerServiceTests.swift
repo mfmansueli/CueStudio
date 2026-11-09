@@ -187,6 +187,22 @@ struct ExportLedgerServiceTests {
         #expect(monthLater.isCounted(fingerprint: "o"), "Other takes keep theirs")
     }
 
+    /// A named export sits in its own folder (`ExportFileName`): released, its folder goes, and a later video of the same take with the same
+    /// name is never taken for it.
+    @Test func aReleasedNamedFileIsNeverTakenForALaterOne() throws {
+        let setup = makeSetup()
+        defer { setup.defaults.tearDown() }
+        let take = UUID()
+        let first = ExportFileName.rename(try write("Cue-aaaa.mov", in: setup), title: "Hello", takeNumber: 1)
+        let operation = setup.ledger.begin(takeID: take, fingerprint: "one", file: first)
+        #expect(operation.fileName == "Cue-aaaa/Hello · Take 1.mov" && setup.ledger.fileExists(for: operation))
+        setup.ledger.releaseFile(of: operation.id)
+        #expect(!FileManager.default.fileExists(atPath: setup.directory.appending(path: "Cue-aaaa").path))
+        let later = ExportFileName.rename(try write("Cue-bbbb.mov", in: setup), title: "Hello", takeNumber: 1)
+        _ = setup.ledger.begin(takeID: take, fingerprint: "two", file: later)
+        #expect(!setup.ledger.fileExists(for: operation))
+    }
+
     @Test func replacingTheFileKeepsTheOperationAndItsCount() throws {
         let setup = makeSetup()
         defer { setup.defaults.tearDown() }

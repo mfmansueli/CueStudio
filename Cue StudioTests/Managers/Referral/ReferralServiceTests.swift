@@ -201,6 +201,9 @@ struct ReferralServiceTests {
         let referral = world.service()
         #expect(!referral.isOffered)
         #expect(!referral.canJoin)
+        // Not "this iPhone already used a code": it can be tried again once the Keychain opens.
+        #expect(await referral.join("P4WHNB") == .offline)
+        #expect(world.client.joined.isEmpty)
         await referral.refresh()
         await referral.exportDelivered()
         #expect(world.client.statusCalls == 0)

@@ -16,9 +16,16 @@ extension PrompterViewModel {
 
     var lineHeight: Double { fontSize * session.prompter.lineSpacing }
 
-    /// Newest take of this script (or of freestyle recordings).
+    /// Newest take of the video being recorded (this script, this network; `recordingVideo`), or of the freestyle recordings.
     var lastTake: Take? {
-        takes.takes.first { $0.scriptID == scriptID }
+        guard let video = recordingVideo else { return takes.takes.first(where: \.isFreestyle) }
+        return takes.takes.first { $0.videoKey == video }
+    }
+
+    /// How many takes the video being recorded has (the freestyle recordings, in Freestyle): the last take's badge.
+    var lastTakeCount: Int {
+        guard let video = recordingVideo else { return takes.takes.count(where: \.isFreestyle) }
+        return takes.takes(in: video).count
     }
 
     var monetizationChip: String? {
@@ -31,4 +38,11 @@ extension PrompterViewModel {
     }
 
     var stopWarningMessage: String? { preset?.goal?.stopWarning }
+
+    /// "About 9 min left in 4K" over the Selfie controls while the iPhone has little room left, before a take (`RecordingRoom`).
+    var storageNotice: String? {
+        guard mode == .selfie, !isPractice, !isRecording, reviewingTake == nil else { return nil }
+        let camera = session.camera
+        return RecordingRoom.notice(available: freeBytes, resolution: camera.resolution, frameRate: camera.frameRate, codec: camera.codec)
+    }
 }

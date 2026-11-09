@@ -6,7 +6,7 @@
 import Foundation
 
 /// What the creator chose in Settings › Personalize: which sky the app has (Serene until they choose another), whether the story moments
-/// (send-off, milestones, the first star) play, whether the app taps back (haptics) and whether Cue
+/// (the send-off with its milestone icon, the first star in Takes) play, whether the app taps back (haptics) and whether Cue
 /// tags new scripts with a topic by itself; the colour of the universe's core. Kept on this iPhone.
 @MainActor
 @Observable

@@ -33,7 +33,8 @@ INFOPLIST_KEY_NSLocalNetworkUsageDescription           = Cue connects to your ot
 INFOPLIST_KEY_NSMicrophoneUsageDescription             = Cue records your voice with each take and for voice-overs, can follow your voice to scroll the script, and listens when you dictate an idea.
 INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription        = Cue saves the takes you export to your photo library.
 INFOPLIST_KEY_NSSpeechRecognitionUsageDescription      = Cue recognizes your speech on this iPhone to keep the script on the line you're reading and to turn an idea you dictate into text. Nothing leaves the device.
-INFOPLIST_KEY_UIApplicationSceneManifest_Generation    = YES
+// One window: the camera, the recorder and the editor are single (a second iPad window would fight over them). Info.plist says so.
+INFOPLIST_KEY_UIApplicationSceneManifest_Generation    = NO
 INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES
 INFOPLIST_KEY_UILaunchScreen_Generation                = YES
 INFOPLIST_KEY_UIStatusBarStyle                         = UIStatusBarStyleDefault

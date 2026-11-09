@@ -30,6 +30,27 @@ final class CreationSheetsUITests: XCTestCase {
         try capture(app, "3.5_start_a_video")
     }
 
+    /// "Let Cue draft it" is the creator's own idea: the sheet closes onto the dock's field, keyboard up.
+    func testLetCueDraftItOpensTheDockField() {
+        let app = CueApp.launch(seeded: true)
+        app.buttons["scripts.newButton"].tap()
+        element(app, "newScript.letCue").tap()
+        XCTAssertTrue(app.keyboards.firstMatch.exists(within: 5), "The dock's field didn't take the keyboard")
+        XCTAssertFalse(element(app, "inspiration.sheet").exists, "Let Cue draft it opened Cue's ideas")
+    }
+
+    /// From Start recording, "New script" is that sheet and doesn't offer recording without a script again.
+    func testNewScriptFromStartRecordingDoesNotRepeatFreestyle() {
+        let app = CueApp.launch(seeded: true)
+        app.cueTabBar.buttons.element(boundBy: 2).tap()
+        let newScript = element(app, "startRecording.newScript")
+        XCTAssertTrue(newScript.exists(within: 5))
+        newScript.tap()
+        XCTAssertTrue(element(app, "newScript.write").exists(within: 5))
+        XCTAssertTrue(app.staticTexts["New script"].exists)
+        XCTAssertFalse(element(app, "newScript.freestyle").exists)
+    }
+
     func testWithoutAppleIntelligenceLetCueWriteItIsNotOffered() {
         let app = CueApp.launch(seeded: true, ai: .none)
         app.buttons["scripts.newButton"].tap()

@@ -72,6 +72,7 @@ import Foundation
 ///   a minute and a half: together, how a long script is written, followed and settled on the page.
 /// - `-uiTestFastAnimations`: with the above, no animations (UIKit's sheets and pushes, SwiftUI's transactions), so a UI test
 ///   never waits for one to end; `CueApp.launch` passes it unless a test asks for real animations.
+/// - `-uiTestFreeSpace <MB>`: the iPhone says it has this much room left (the recorder's "About 9 min left in 4K" below 2 GB).
 /// - `-uiTestExportsLeft <0...3>`: the free exports that are left (3 without it): 1 is the last one, 0 asks "Your video is ready" on export.
 /// - `-uiTestOccasions <region>@<yyyy-mm-dd>`: the ideas' occasions are the ones of that region near that day (`IdeaCalendar`); without it, a UI
 ///   test has none.
@@ -83,8 +84,6 @@ import Foundation
 ///   Simulator can't play it), to measure the safe zone guide over a light and a dark video (`PreviewStandInFrame`).
 /// - `-uiTestDockMotionLog`: the Scripts dock counts its lights (the writer's, the network's, the send arrow's) in `dock.motionLog`.
 /// - `-uiTestShareQueue`: a "Share to universe" queue left for the sample take (the Continue posting card).
-/// - `-uiTestStoryAt <seconds>`: the milestone and first-star stories stand still at that second.
-/// - `-uiTestFirstStar` / `-uiTestMilestone <videos>`: the review opens on the first-star (1.7) / milestone (8.3) story.
 /// - `-uiTestSendOffAt <seconds>`: the send-off (8.2) stands still at that second of its timeline.
 /// - `-uiTestProAt <seconds>`: the Pro opening stands still at that second of its timeline (to take its pictures).
 /// - `-uiTestWelcomeAt <seconds>`: the welcome's opening stands still at that second of its timeline (to take its pictures).
@@ -142,17 +141,15 @@ struct LaunchOptions {
     /// UI tests and previews swap in rules read from the bundle only (no cache, no download).
     var platformRules: PlatformRulesService = PlatformRulesService()
     var writer: ScriptWriting = ScriptAIService()
-    /// Ultra AI is offered from launch (Debug with Firebase running or the lab set up, or a UI test's stub).
+    /// Ultra AI is offered from launch: a Release build with Firebase running (TestFlight and the App Store alike; Cue's server keeps each
+    /// creator's credits, DESIGN_PROJECT §57), Debug with Firebase running or the lab set up, or a UI test's stub.
     var ultraAvailable = false
-    /// A Release build offers Ultra AI once `UltraDistribution` says it isn't the App Store's (TestFlight), until the server keeps credits.
-    var checksUltraDistribution = false
     /// Ultra AI's client, made only when a permitted script is first written (`UltraScriptService`).
     var makeUltraClient: @MainActor () -> (any UltraModelClient)? = { nil }
     /// Where the lab counts its calls: the app's standard defaults, which a UI test's throwaway suite can't reset (only the stub counts there).
     var ultraBudgetDefaults: UserDefaults = .standard
     /// Nil is the model on this iPhone (`AppleWritingStyleReader`).
     var styleReader: (any WritingStyleReading)?
-    var credentialChecker: AppleIDCredentialChecking = AppleIDCredentialChecker()
     var remoteTransport: RemoteTransport = NearbyRemoteTransport()
     /// The Apple Watch companion's channel: WatchConnectivity, or nothing in UI tests (`InMemoryWatchTransport`).
     var watchTransport: WatchTransport = WatchConnectivityTransport()
@@ -208,11 +205,6 @@ struct LaunchOptions {
     var platformPickFrozenAge: Double?
     /// UI tests: the send-off stands still at this second (`-uiTestSendOffAt`).
     var sendOffFrozenTime: Double?
-    /// UI tests: the review opens on the first-star story (`-uiTestFirstStar`) or the milestone story (`-uiTestMilestone <videos>`).
-    var showsFirstStar = false
-    /// UI tests: the milestone / first-star stories stand still at this second (`-uiTestStoryAt`).
-    var storyFrozenTime: Double?
-    var milestoneToShow: Int?
     /// UI tests: how many of the free exports are already used (`-uiTestExportsLeft`).
     var exportsUsed = 0
     /// Nil is the system's notification center; UI tests use one in memory that never shows the permission prompt.
@@ -232,8 +224,6 @@ struct LaunchOptions {
         func value(_ name: String) -> String? {
             arguments.firstIndex(of: name).flatMap { arguments.indices.contains($0 + 1) ? arguments[$0 + 1] : nil }
         }
-        options.storyFrozenTime = value("-uiTestStoryAt").flatMap(Double.init)
-        options.milestoneToShow = value("-uiTestMilestone").flatMap(Int.init)
         options.sendOffFrozenTime = value("-uiTestSendOffAt").flatMap(Double.init)
         options.proFrozenTime = value("-uiTestProAt").flatMap(Double.init)
         options.welcomeFrozenTime = value("-uiTestWelcomeAt").flatMap(Double.init)
@@ -476,7 +466,6 @@ struct LaunchOptions {
             options.keepsStarTransitionTimings = arguments.contains("-uiTestStarTransition")
             options.animationsOff = arguments.contains("-uiTestFastAnimations")
             options.keepsWelcomeOpening = arguments.contains("-uiTestWelcomeOpening")
-            options.showsFirstStar = arguments.contains("-uiTestFirstStar")
             Self.readFrozenTimes(arguments, into: &options)
             if let index = arguments.firstIndex(of: "-uiTestPermissions"), arguments.indices.contains(index + 1) {
                 options.permissions = StubPermissions(grants: arguments[index + 1] != "denied")
@@ -524,9 +513,9 @@ struct LaunchOptions {
             }
         }
         #else
-        // TestFlight: Ultra AI through Cue's server, offered once the build is known not to be the App Store's (`UltraDistribution`).
+        // TestFlight and the App Store: Ultra AI through Cue's server, which keeps each creator's credits and Cue's daily spending cap.
         options.makeUltraClient = { CueServerUltraClient.make() }
-        options.checksUltraDistribution = UltraAppCheck.isReady
+        options.ultraAvailable = UltraAppCheck.isReady
         #endif
         return options
     }

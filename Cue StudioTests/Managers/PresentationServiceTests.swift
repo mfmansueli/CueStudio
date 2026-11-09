@@ -62,7 +62,7 @@ struct PresentationServiceTests {
     @Test func openingAScriptClosesTheSheetAndShowsScripts() {
         let presentation = PresentationService()
         presentation.select(.takes)
-        presentation.present(.newScript)
+        presentation.present(.newScript())
         let id = UUID()
         presentation.openScript(id, editing: true)
         #expect(presentation.sheet == nil)

@@ -32,6 +32,8 @@ final class RecorderFramingUITests: XCTestCase {
     private func fillSwitch(_ app: XCUIApplication) -> XCUIElement {
         app.buttons["prompter.cameraSettingsButton"].tap()
         let toggle = app.switches.matching(NSPredicate(format: "label BEGINSWITH 'Fill the screen'")).firstMatch
+        // It sits in the second card, under the note about this take: on a small screen it starts below the sheet.
+        for _ in 0..<3 where !toggle.exists(within: 2) { app.swipeUp(velocity: .slow) }
         if !toggle.exists(within: 5) {
             let switches = app.switches.allElementsBoundByIndex.map(\.label)
             let texts = app.staticTexts.allElementsBoundByIndex.map(\.label).filter { $0.contains("Fill") || $0.contains("Grid") || $0.contains("Frame") }

@@ -9,7 +9,8 @@ import SwiftUI
 /// 9.1 · Edit Profile (large; owner's redesign, 21/10/2026): Cancel and Done (off only while something typed doesn't fit; everything here
 /// is optional), "how you appear" on top (the card of the shared universe, live, with the photo's camera badge: `EditProfilePhoto`), then
 /// You (name and username, the same alignment, a ✓ when the username fits), What you make (`CreatorTypePicker`, with their own type),
-/// When you create (`EditProfilePreferences`) and the account. Nothing reaches the profile until Done, which says "Profile updated".
+/// When you create (`EditProfilePreferences`). No account: nothing in Cue needs one (Sign in with Apple only filled the name and was removed,
+/// owner, 09/11/2026). Nothing reaches the profile until Done, which says "Profile updated".
 struct EditProfileSheet: View {
     @Environment(CreatorProfileService.self) private var profile
     @Environment(ToastService.self) private var toast
@@ -18,6 +19,10 @@ struct EditProfileSheet: View {
     @State private var draft = ProfileDraft(CreatorProfile())
     @State private var hasLoaded = false
     @State private var photoItem: PhotosPickerItem?
+
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    /// The widest label of the form, measured.
+    @State private var labelWidth: CGFloat = 96
 
     var body: some View {
         NavigationStack {
@@ -36,8 +41,6 @@ struct EditProfileSheet: View {
                     CreatorTypePicker(draft: $draft)
                     sectionTitle(String(localized: "When you create"))
                     EditProfilePreferences(draft: $draft)
-                    sectionTitle(String(localized: "Account"))
-                    EditProfileAccount { name in if draft.name.isEmpty { draft.name = name } }
                         .padding(.bottom, 24)
                 }
                 .padding(.horizontal, 16)
@@ -55,7 +58,7 @@ struct EditProfileSheet: View {
             }
         }
         .tint(Palette.ink)
-        // Signing in or out is said in front of the sheet, not under it.
+        // A toast while the sheet is up is said in front of it, not under it.
         .toastHost(inSheet: true)
         .presentationDetents([.large])
         .presentationBackground(Palette.sheetNight)
@@ -109,10 +112,27 @@ struct EditProfileSheet: View {
         .background(Palette.surface2, in: RoundedRectangle(cornerRadius: Metrics.groupedListRadius, style: .continuous))
     }
 
+    /// A label beside its field, in a column as wide as the widest label (at least 96 pt: "Gebruikersnaam" and "Kullanıcı adı" never cut); at
+    /// the accessibility sizes, the label above its field.
+    @ViewBuilder
     private func row<Value: View>(_ title: LocalizedStringKey, @ViewBuilder value: () -> Value) -> some View {
-        HStack(spacing: 8) {
-            Text(title).foregroundStyle(Palette.ink).frame(width: 96, alignment: .leading)
-            value()
+        Group {
+            if dynamicTypeSize.isAccessibilitySize {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(title).foregroundStyle(Palette.ink)
+                    value()
+                }
+                .padding(.vertical, 8)
+            } else {
+                HStack(spacing: 8) {
+                    Text(title)
+                        .foregroundStyle(Palette.ink)
+                        .fixedSize()
+                        .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { labelWidth = max(labelWidth, $0) }
+                        .frame(width: labelWidth, alignment: .leading)
+                    value()
+                }
+            }
         }
         .cueFont(17)
         .foregroundStyle(Palette.ink)

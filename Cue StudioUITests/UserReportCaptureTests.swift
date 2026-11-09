@@ -140,7 +140,7 @@ final class UserReportCaptureTests: XCTestCase {
         }
     }
 
-    /// The Aa sheet over a recording: the page's rows, to see where the reading line's slider is.
+    /// The Aa sheet over a recording: each tab's rows, to see where the reading line's slider is.
     func testThePrompterSettingsSheetOverARecording() throws {
         let app = CueApp.launch(seeded: true)
         let record = app.buttons["row.recordButton"].firstMatch
@@ -149,13 +149,16 @@ final class UserReportCaptureTests: XCTestCase {
         XCTAssertTrue(element(app, "prompter.readingLineHandle").exists(within: 5))
         app.buttons["prompter.displayButton"].tap()
         XCTAssertTrue(element(app, "settings.followVoice").exists(within: 5))
-        try shot(app, "u20_prompter-sheet-1")
-        for index in 2...4 {
-            // Along the left edge: the sliders' thumbs in the middle would take the drag.
-            let from = app.coordinate(withNormalizedOffset: CGVector(dx: 0.05, dy: 0.85))
-            from.press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.05, dy: 0.55)))
-            try shot(app, "u20_prompter-sheet-\(index)")
+        // One picture per tab (Reading | Text | Window | Camera), the Window one scrolled once more (the reading line and the safe zone).
+        for (index, tab) in ["Reading", "Text", "Window", "Camera"].enumerated() {
+            app.segmentedControls["display.tabs"].buttons[tab].tap()
+            try shot(app, "u20_prompter-sheet-\(index + 1)")
         }
+        app.segmentedControls["display.tabs"].buttons["Window"].tap()
+        // Along the left edge: the sliders' thumbs in the middle would take the drag.
+        let from = app.coordinate(withNormalizedOffset: CGVector(dx: 0.05, dy: 0.85))
+        from.press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.05, dy: 0.55)))
+        try shot(app, "u20_prompter-sheet-5")
         if let path = ProcessInfo.processInfo.environment["CUE_FIDELITY_DIR"] {
             try app.debugDescription.write(toFile: path + "/prompter-sheet-hierarchy.txt", atomically: true, encoding: .utf8)
         }

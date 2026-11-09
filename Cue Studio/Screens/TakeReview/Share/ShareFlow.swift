@@ -22,9 +22,6 @@ final class ShareFlow {
     private(set) var isStarting = false
     /// The caption on the pasteboard for this step; the creator can edit it.
     var caption = ""
-    /// The milestone the first confirmed network reached, for the story after the send-off. Taken once (`takeReachedMilestone`): the
-    /// same take shared to another network in the same review never tells it again.
-    private(set) var reachedMilestone: Int?
     /// The networks the creator said were live, in this run of the queue (the queue itself goes once all are posted).
     private(set) var live: [ShareDestination] = []
 
@@ -56,6 +53,9 @@ final class ShareFlow {
         self.library = library
         self.defaults = defaults
         self.toast = toast
+        // The first video ever shared isn't copied into Photos unless asked: one export, counted when the post happens, not a second copy
+        // the creator didn't choose. From then on, the switch starts on as before.
+        alsoSavesToPhotos = milestones.shares > 0
         review.queueInterceptor = { [weak self] destination, result in self?.sheetEnded(for: destination, result: result) ?? false }
         review.queueOperation = { [weak self] in self?.queue?.operationID }
         review.queueResumes = { [weak self] in await self?.start() }
@@ -173,16 +173,11 @@ final class ShareFlow {
     func confirmLive(_ network: ShareDestination) {
         guard let take = review.take else { return }
         let topic = library.script(id: take.scriptID)?.topic
-        if let reached = milestones.recordShare(of: take.id, platform: network.platform, topic: topic) { reachedMilestone = reached }
+        // The milestone it reaches is told by the send-off (`MilestoneService.dueMilestone`), once the queue is done.
+        milestones.recordShare(of: take.id, platform: network.platform, topic: topic)
         if !live.contains(network) { live.append(network) }
         queues.markPosted(takeID: take.id, network: network)
         advance()
-    }
-
-    /// The milestone this run reached, handed over once: the send-off that tells it clears it.
-    func takeReachedMilestone() -> Int? {
-        defer { reachedMilestone = nil }
-        return reachedMilestone
     }
 
     /// "Not yet": back to its step, where it can be sent again or left for later.

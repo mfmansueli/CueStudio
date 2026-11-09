@@ -140,7 +140,7 @@ enum Palette {
 
     // MARK: - Status
 
-    /// "Live preview" dot in Display.
+    /// A "live" dot (the recorder's HUD line).
     static let live = Color(hex: 0x30D158)
 
     // MARK: - Over the camera

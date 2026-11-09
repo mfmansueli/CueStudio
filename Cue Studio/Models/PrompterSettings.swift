@@ -55,8 +55,8 @@ nonisolated struct PrompterSettings: Codable, Hashable, Sendable {
     var isMirrored: Bool = false
     /// Turns the text upside down, for rigs that reflect it from below (Settings › Prompter › Rigs).
     var isFlippedVertically: Bool = false
-    /// The safe zone the Selfie camera starts with (`SafeZoneChoice.key`: a platform's raw value or "custom"); nil follows the
-    /// script's platform (Settings › Prompter › Social safe zone).
+    /// "custom" when the Selfie camera shows the creator's own safe zone (Aa › Window); nil follows the network the video is recorded
+    /// for. A network's raw value saved by older builds reads as nil (`SafeZoneChoice.pick(fromKey:)`).
     var safeZoneKey: String?
     /// Voice Following unless the creator picked Steady (the owner, 30/10/2026: it is what Cue is for). A session that can't follow the voice
     /// (no microphone, a language this iPhone can't recognize) reads Steady for itself and keeps this as it is (`PrompterViewModel`).

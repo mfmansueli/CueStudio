@@ -10,22 +10,48 @@ import Foundation
 extension PrompterViewModel {
     // MARK: - Recommendation
 
-    /// The card asking "Recommended for TikTok · Use 1080p / Keep 4K", before the take starts.
+    /// The card asking "Recommended for Shorts · Frame rate 30 fps → 60 fps", before the take starts, while something would change.
     var showsRecommendation: Bool {
-        mode == .selfie && reviewingTake == nil && !isRecording && countdown == nil && session.needsDecision
+        mode == .selfie && reviewingTake == nil && !isRecording && countdown == nil && session.choice == .undecided
+            && !recommendationChanges.isEmpty
     }
 
-    /// "Use Recommended": this session only; Creator Setup stays as it is.
+    /// What "Use Recommended" would change against what is on screen now: the setup's fields, then the safe zone when it would move
+    /// (the creator's Custom one, or another network's on this frame). Empty when the screen already matches.
+    var recommendationChanges: [SetupChange] {
+        guard let recommendation = session.recommendation else { return [] }
+        var changes = session.changes
+        if let zone = safeZoneChange(for: recommendation) { changes.append(zone) }
+        return changes
+    }
+
+    /// The safe zone line: shown while the zone is on and the network's would replace the one on screen.
+    private func safeZoneChange(for recommendation: SetupRecommendation) -> SetupChange? {
+        guard recommendation.hasSafeZone, session.camera.showsSafeZones, let now = safeZone else { return nil }
+        let aspect = recommendation.values.aspect ?? session.camera.aspect
+        guard let after = SafeZoneChoice.resolve(pick: nil, network: recommendation.platform, aspect: aspect, rules: rules.rules),
+              after != now else { return nil }
+        return SetupChange(item: .safeZone, current: now.label, recommended: after.label, isManual: now == .custom)
+    }
+
+    /// A new recommendation for this recording (a script, another network): asked only when something on screen would change;
+    /// otherwise it is settled at once, so a later change of frame never brings the card up by itself.
+    func offerRecommendation() {
+        session.recommend(recommendation)
+        if session.choice == .undecided, session.recommendation != nil, recommendationChanges.isEmpty { session.keepAsIs() }
+    }
+
+    /// "Use Recommended": exactly the lines the card lists, safe zone included, for this session only; Creator Setup stays as it is.
     func useRecommendedSetup() {
         guard let recommendation = session.recommendation else { return }
-        session.useRecommended()
+        let movesZone = recommendationChanges.contains { $0.item == .safeZone }
+        session.useRecommended(includingSafeZone: movesZone)
         toast.show(String(localized: "Using \(recommendation.setupName)"))
     }
 
-    /// "Keep My Setup".
-    func keepCreatorSetup() {
-        session.keepCreatorSetup()
-        toast.show(String(localized: "Keeping your setup"))
+    /// "Keep as is": nothing changes.
+    func keepAsIs() {
+        session.keepAsIs()
     }
 
     /// Drops this take's changes and the accepted recommendation.
@@ -55,9 +81,25 @@ extension PrompterViewModel {
         sheet = .remote
     }
 
-    /// A command from the remote. The take's recording stays in the creator's hands; the remote
-    /// drives the text.
+    /// A command from the remote (another iPhone or iPad, a keyboard, a pedal): Record and Stop start and end a take the way the Apple
+    /// Watch does (`recordFromAnotherDevice`); the rest drives the text.
     func handle(_ command: RemoteCommand) {
+        switch command {
+        case .record:
+            Task {
+                await recordFromAnotherDevice()
+                publishRemoteStatus()
+            }
+            return
+        case .stop:
+            Task {
+                await stopFromAnotherDevice()
+                publishRemoteStatus()
+            }
+            return
+        default:
+            break
+        }
         guard reviewingTake == nil, hasScript else {
             remote.publish(remoteStatus)
             return
@@ -71,21 +113,27 @@ extension PrompterViewModel {
         case .forward: jump(lines: RemoteCommand.jumpLines)
         case .backward: jump(lines: -RemoteCommand.jumpLines)
         case .restart: rewind()
+        case .record, .stop: break
         }
         publishRemoteStatus()
     }
 
-    /// What the remote shows.
+    /// What the remote shows: the script being read (none while a take is reviewed), and whether it can record, the take's number and
+    /// how long it has recorded.
     var remoteStatus: RemoteStatus {
-        guard reviewingTake == nil, let script else { return .idle }
         let settings = session.prompter
+        let reading = reviewingTake == nil ? script : nil
         return RemoteStatus(
-            scriptTitle: script.displayTitle,
-            isPlaying: isPlaying,
+            scriptTitle: reading?.displayTitle,
+            isPlaying: reading != nil && isPlaying,
             speed: settings.speed,
             followsVoice: settings.scrollMode == .voice,
-            progress: engine.progress,
-            isRecording: isRecording
+            progress: reading == nil ? 0 : engine.progress,
+            isRecording: isRecording,
+            canRecord: recordsFromAnotherDevice,
+            takeNumber: takes.nextNumber(for: scriptID),
+            recordingElapsed: isRecording ? recordingStartedAt.map { Date.now.timeIntervalSince($0) } : nil,
+            isCountingDown: countdown != nil
         )
     }
 
@@ -97,11 +145,7 @@ extension PrompterViewModel {
 
     // MARK: - Camera controls
 
-    /// Frame, lens and the rest change for this take; Creator Setup keeps the defaults.
-    func cycleAspect() {
-        session.camera.aspect = session.camera.aspect.next
-    }
-
+    /// Lens and the rest change for this take; Creator Setup keeps the defaults.
     func flipCamera() {
         session.camera.lens = session.camera.lens.isFront ? .wide : .front
     }

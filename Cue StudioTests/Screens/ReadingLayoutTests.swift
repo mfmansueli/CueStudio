@@ -33,6 +33,20 @@ struct ReadingLayoutTests {
         return ReadingLayout(metrics: metrics, isFrontCamera: front, frameRect: frame, lineOffset: offset, windowHeight: height, readingWidth: width)
     }
 
+    /// The recommendation card over the toolbar before the take: on an iPhone SE the text window ends above it instead of under it, and
+    /// takes its full height back once the card goes.
+    @Test func theWindowEndsAboveTheRecommendationCardOnAShortScreen() {
+        var withCard = iPhoneSE
+        withCard.cardTop = 300
+        let tall = layout(iPhoneSE, height: 360)
+        #expect(tall.windowRect.maxY > 300, "without the card the window reaches lower")
+        let fitted = layout(withCard, height: 360)
+        #expect(fitted.windowRect.maxY <= 300)
+        #expect(fitted.windowRect.height > 0)
+        #expect(layout(height: 250).windowRect == layout({ var m = iPhone17; m.cardTop = 620; return m }(), height: 250).windowRect,
+                "on a tall screen a card under the window changes nothing")
+    }
+
     // MARK: - Line
 
     @Test func frontCameraLineSitsJustUnderTheLens() {

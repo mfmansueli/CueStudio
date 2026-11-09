@@ -287,7 +287,8 @@ final class FirstRunUITests: XCTestCase {
     }
 
     /// The first idea sent with questions open invites to finish them (the owner, 03/11/2026): "Continue answering" goes on from where the
-    /// creator stopped, the idea waits in the field, and the invitation never comes again.
+    /// creator stopped; leaving the questions with "Not now" still writes the idea, which the creator had sent (09/11/2026); the invitation
+    /// never comes again.
     func testTheFirstIdeaSentWithQuestionsOpenInvitesToFinishThemOnce() {
         let app = CueApp.launch(seeded: false, extraArguments: ["-uiTestVoiceInvite"])
         let field = element(app, "ideaCard.field")
@@ -302,8 +303,11 @@ final class FirstRunUITests: XCTestCase {
         app.buttons["voiceInvite.answer"].tap()
         XCTAssertTrue(app.buttons["voiceSetup.skipRole"].exists(within: 5), "from where they stopped: the kind of creator")
         app.buttons["sheet.closeButton"].tap()
-        XCTAssertTrue(element(app, "ideaCard.field").exists(within: 5))
-        XCTAssertTrue((element(app, "ideaCard.field").value as? String)?.contains("Carnival in Salvador") == true, "the idea waits")
+        XCTAssertTrue(element(app, "page.editor").exists(within: 15), "Not now wrote the idea that was sent")
+        app.pageBackButton.tap()
+        XCTAssertTrue(field.exists(within: 5))
+        field.tap()
+        field.typeText("Street food in Recife")
         app.buttons["ideaCard.submit"].tap()
         XCTAssertFalse(element(app, "voiceInvite").exists(within: 2), "never again")
         XCTAssertTrue(element(app, "page.editor").exists(within: 15))

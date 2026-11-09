@@ -23,9 +23,13 @@ nonisolated struct Take: Codable, Identifiable, Hashable, Sendable {
     var recordedAt: Date = .now
     var fileName: String
     var isBest: Bool = false
+    /// When it was marked best (nil: before this was kept, or never). A take recorded after it puts the video back to pick (`TakeStage`).
+    var bestMarkedAt: Date?
     var resolution: VideoResolution
     var frameRate: FrameRate
     var aspect: AspectRatio
+    /// The network this recording was made for (the recorder's network as it was filmed): with the script, it says which video the take is
+    /// (`TakeVideoKey`). Nil only for an imported video and takes older than `TakePlatformMigration` whose script is gone.
     var platform: Platform?
     /// Changed in Quick edit (the original file is never touched).
     var isEdited: Bool = false
@@ -68,6 +72,9 @@ nonisolated struct Take: Codable, Identifiable, Hashable, Sendable {
 
     var isFreestyle: Bool { scriptID == nil }
 
+    /// The video this take belongs to: its script's takes for the same network, or itself alone.
+    var videoKey: TakeVideoKey { TakeVideoKey(self) }
+
     /// A video imported from Photos to edit, not recorded with Cue.
     var isImported: Bool { origin == .imported }
 
@@ -86,6 +93,7 @@ nonisolated struct Take: Codable, Identifiable, Hashable, Sendable {
         recordedAt = try container.decodeIfPresent(Date.self, forKey: .recordedAt) ?? .now
         fileName = try container.decode(String.self, forKey: .fileName)
         isBest = try container.decodeIfPresent(Bool.self, forKey: .isBest) ?? false
+        bestMarkedAt = try container.decodeIfPresent(Date.self, forKey: .bestMarkedAt)
         resolution = try container.decode(VideoResolution.self, forKey: .resolution)
         frameRate = try container.decode(FrameRate.self, forKey: .frameRate)
         aspect = try container.decode(AspectRatio.self, forKey: .aspect)

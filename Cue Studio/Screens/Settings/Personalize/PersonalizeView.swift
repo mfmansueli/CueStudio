@@ -12,6 +12,7 @@ import SwiftUI
 /// shared, the first video guide. Everything here stays on this iPhone.
 struct PersonalizeView: View {
     let bindings: SettingsBindings
+    @AppStorage(DefaultsKey.personalizeSeen) private var personalizeSeen = false
 
     @Environment(PersonalizationService.self) private var personalization
     @Environment(AppIconService.self) private var appIcon
@@ -24,8 +25,11 @@ struct PersonalizeView: View {
             VStack(alignment: .leading, spacing: 0) {
                 PersonalizeHero(icon: appIcon.current, sky: personalization.sky, light: personalization.coreColor)
                     .padding(.top, 4)
-                section("App icon", footer: "Aurora opens with your first shared video. The others open as you share more, with Pro.") {
-                    AppIconPicker()
+                // A Mac running Cue can't change its icon: no icons to pick there.
+                if !ProcessInfo.processInfo.isiOSAppOnMac {
+                    section("App icon", footer: "Aurora opens with your first shared video. The others open as you share more, with Pro.") {
+                        AppIconPicker()
+                    }
                 }
                 section("Starry sky") {
                     SkyPicker(selection: $personalization.sky)
@@ -64,6 +68,7 @@ struct PersonalizeView: View {
         .navigationTitle("Personalize")
         .navigationBarTitleDisplayMode(.inline)
         .accessibilityIdentifier("settings.personalizePage")
+        .onAppear { personalizeSeen = true }
     }
 
     private func section(_ title: LocalizedStringKey, footer: LocalizedStringKey? = nil, @ViewBuilder content: () -> some View) -> some View {

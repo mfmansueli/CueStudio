@@ -6,7 +6,8 @@ visual). Pacotes antigos só no git (commit `bb39f35`). **Como manter:** ao muda
 daqui (o histórico fica no git). Os números das seções são citados no código: não renumere.
 
 O app roda no **iPhone e no iPad** (`TARGETED_DEVICE_FAMILY = 1,2`; decisão do dono, 26/10/2026): no iPad, nativo em tela cheia e em todas as
-orientações; no iPhone, só em retrato; no Mac, como "Designed for iPad". O app é **só escuro**. Regras de negócio: 3 exportações e 3 roteiros Ultra AI grátis (contador das exportações no Keychain), sem teste grátis (decisão do dono, 30/10/2026), preço da StoreKit, cota de IA, pipeline das
+orientações, numa janela só (`UIApplicationSupportsMultipleScenes = false` no Info.plist: câmera, gravador e editor são únicos, e uma segunda janela
+brigaria por eles); no iPhone, só em retrato; no Mac, como "Designed for iPad". O app é **só escuro**. Regras de negócio: 3 exportações e 3 roteiros Ultra AI grátis (contador das exportações no Keychain), sem teste grátis (decisão do dono, 30/10/2026), preço da StoreKit, cota de IA, pipeline das
 takes (`TakeStage`). **Tamanho do texto e da tela:** todo texto da interface cresce com o Dynamic Type e acompanha um pouco a largura do
 iPhone; cada tela cabe do SE ao Pro Max (§53). **Movimento:** o Modo de Baixo Consumo não tira nem encurta nenhuma animação (decisão do dono, 6/10/2026; a regra do `09` §7 foi
 removida); só o **Reduzir Movimento** mostra o estado final. `speed` só serve para encurtar nos testes de UI.
@@ -63,8 +64,9 @@ amarelo), o aviso de Pouca Energia e a dica da barra de ferramentas vestem a mes
   seta com perguntas ainda abertas abre, uma vez só (`VoiceQuestionScheduler.invitesBeforeSending`, guardado no estado da dica), "Make your
   scripts sound like you", o medidor, três linhas de vidro (estilo, público, preferências) que entram uma depois da outra como no convite da
   Ultra AI, "About a minute. Your idea stays right where it is.", **Continue answering** (as perguntas de onde parou; a última diz "✦ Draft
-  my script" e a ideia sai pela seta como sairia) e **Write my script now** (envia como está). A ideia digitada fica no campo; fechar o convite
-  ou as perguntas não envia nada. Testes de UI só o veem com `-uiTestVoiceInvite`.
+  my script" e a ideia sai pela seta como sairia) e **Write my script now** (envia como está). A ideia digitada fica no campo. Fechar o convite
+  arrastando não envia nada; saindo das perguntas que vieram dele (**Not now** ou arrastar), a ideia sai com o que foi respondido, porque o criador
+  já tinha enviado (dono, 09/11/2026); só **Just save my voice**, no fim, a deixa esperando no campo. Testes de UI só o veem com `-uiTestVoiceInvite`.
   Com pouco espaço, cada chip encurta (`ScriptsDock.RowWords`: "TikTok" no lugar de "For TikTok", depois "✦ Voice" sem a porcentagem, que o VoiceOver
   continua dizendo, e o Format só com o símbolo `rectangle.stack`, primeiro no Auto e depois com qualquer formato); a linha inteira cabe sem rolar
   (`ViewThatFits`), e só quando nem a versão mais curta cabe (texto muito grande) os chips rolam com a lâmpada fixa no fim. Onde a Ultra AI é
@@ -639,7 +641,7 @@ realce de palavras. Ficam a linha de leitura, o trilho de seções e o chip de v
 (espelho e Remote continuam). Gravar é do Selfie. Texto `PrompterTextView` em tela cheia com a linha em `guidePosition`; um toque toca ou pausa.
 **Barra** (`StudioControlPanel`, vidro noturno, alça que guarda e ⌃ que traz): (1) Voice | Steady, ‹‹ 3 linhas, play, 3 linhas ››; (2) velocidade ou linha
 de voz e estado; (3) chips **Size · Line · Margin · Mirror · Aa More** (`StudioAdjustBar`): um slider por vez (tamanho 12–56 pt, linha 10–70%, margens 8–40 pt; o slider
-só existe aberto, `showsSlider`), Mirror para rig, Aa abre o Display. Acima do texto, "0:42 LEFT" e "1:12 · IDEAL 1:15–2:30" (`StudioTimeLine`).
+só existe aberto, `showsSlider`), Mirror para rig, Aa abre a folha do Aa (§22). Acima do texto, "0:42 LEFT" e "1:12 · IDEAL 1:15–2:30" (`StudioTimeLine`).
 **Contagem:** play do começo usa a de Settings › Prompter (Off, 3, 5, 10 s); a barra some e um toque cancela; retomar toca na hora. Voice Following ouve
 pelo medidor do microfone.
 
@@ -653,9 +655,12 @@ do microfone do gravador, e no Studio o mesmo cartão, dizem por quê e abrem os
 gravador abre em Steady, a menos que o teste roteirize o reconhecimento (`-uiTestVoiceFollowing`; o Simulator não reconhece fala).
 
 **Selfie:** a caixa abre no lugar recomendado (118 pt sob a lente; uma linha antiga abaixo de ~1/3 da tela foi apagada uma vez, `readingLineResetV30`).
-Ao sair, a caixa, a linha, tamanho e margens do texto, velocidade, espelho e Voice | Steady viram o ponto de partida da próxima sessão
-(`SessionSetupService.rememberReadingLayout`); câmera, qualidade, recomendação da plataforma, fonte e cores são só da sessão; "Back to my setup" volta ao
-que estava ao abrir. A prática do onboarding não grava nada. Barra e controles: §22.
+**Tudo do Aa fica como um ajuste de Settings** (dono, 09/11/2026): ao fechar a folha do Aa e ao sair do gravador, o teleprompter inteiro (caixa, linha,
+tamanho, fonte, espaçamento, alinhamento, cor, margens, velocidade, espelho, fundo e desfoque sobre a câmera, zona Custom e Voice | Steady) vira o ponto
+de partida da próxima sessão (`PrompterViewModel.rememberPrompterSettings` → `SessionSetupService.rememberReadingLayout`); não há "tornar padrão". O
+texto é um só nos dois modos: o que o Selfie muda, o Studio lê, e vice-versa; a caixa e o que fica sobre a câmera são do Selfie, o fundo, a linha
+(`guidePosition`) e a contagem do Studio. Câmera, qualidade, microfone e a recomendação da plataforma são só da sessão; "Back to my setup" volta ao que
+estava ao abrir. A prática do onboarding não grava nada. Barra e controles: §22.
 
 ## 6. Argumentos de teste
 
@@ -734,14 +739,26 @@ o pincel do Personalize, o cadeado da política…), em azulejo de 32 pt raio 9 
 que grava (Recording, Prompter, Remote), **violeta** para a IA (My Cue Voice, Personalize), **cinza** para o resto, e Cue Pro em azulejo amarelo cheio
 (`Palette.Settings`, medidos em `PaletteContrastTests`). Páginas: Recording, Prompter, Remote, Personalize (céu §5, Getting started §32; os 5 ícones e as regras de marco do
 app, não as do protótipo; **Hidden suggestions**, só enquanto há uma: as ferramentas de "Don’t suggest this", cada uma com **Show again**, §27), Language & Region (idioma do app abre os Ajustes; Voice following e Script language são menus), Notifications (§27), Privacy &
-AI data (**Apple Intelligence** é a chave de todos os recursos de IA: `PrivacyPreferencesService` → `ScriptWriting.isEnabled`; Help improve Cue decide se os eventos
-vão ao Analytics; **Delete my Cue data**, `DataEraserService`, apaga do iPhone roteiros e pastas, tomadas com vídeos e edições, vídeos exportados à espera
+AI data (**Apple Intelligence** é a chave de todos os recursos de IA: `PrivacyPreferencesService` → `ScriptWriting.isEnabled`; **Help improve Cue**
+("Usage data and crash reports, never videos or scripts") é o único controle do Analytics e do Crashlytics (decisão do dono, 09/11/2026): começa
+desligado, o Info.plist deixa as duas coletas desligadas desde o primeiro lançamento (`FIREBASE_ANALYTICS_COLLECTION_ENABLED`,
+`FirebaseCrashlyticsCollectionEnabled`), e a chave as liga e desliga no lançamento e a cada mudança (`TelemetryCollecting` → `TelemetryManager`);
+os non-fatal do Cue (`AIFailureReport`, `EditorFailureReport`, MetricKit, `VoiceCheckReport`) e os eventos só saem com ela ligada; desligar apaga os
+relatórios de falha ainda não enviados e os dados do Analytics no aparelho (id novo); o Firebase continua configurado porque o App Check da Ultra AI
+roda nele. A folha **Privacy & AI data** (`PrivacySheet`, aberta pela política e pelo paywall) diz onde fica cada coisa: roteiros, takes e My Cue Voice
+no iPhone e nos backups, o servidor do Cue só com contagens sob um id aleatório, uso e falhas ao Google só com Help improve Cue ligado;
+**Delete my Cue data**, `DataEraserService`, apaga do iPhone roteiros e pastas, tomadas com vídeos e edições, vídeos exportados à espera
 e a fila de compartilhamento, Logbook, marcas, My Cue Voice, ideias e o gosto aprendido, meus estilos, o setup, as marcas da
 primeira viagem, os rascunhos, as cópias de uma biblioteca danificada e os lembretes; as pastas de takes, mídias do editor e rascunhos saem
 inteiras, com o que nenhuma take nomeia mais, as gravações em `tmp/take-*.mov` que a recuperação traria de volta (com as notas delas) e tudo o que o Cue
 deixou no tmp com o nome `Cue-` (vídeos exportados, também de takes apagadas antes, e capas) (na hora, sem a semana que a varredura de órfãos
 espera, §37); ficam a compra, o contador de exportações grátis e o registro delas
-(só ids), a contagem de vídeos compartilhados do universo, o idioma e o que já está no Fotos), Permissions (`PermissionsService`), Acknowledgements. **Reset Creator Setup fica como está** (decisão pendente, `09` §13).
+(só ids), a contagem de vídeos compartilhados do universo, o idioma, as duas chaves de Privacy & AI data e o que já está no Fotos; a permissão da
+Ultra AI é revogada (decisão do dono, 09/11/2026: o próximo roteiro da Ultra AI pede de novo, e o escritor do dock volta ao Apple Intelligence), o que o
+Sign in with Apple deixou sai (`AppleSignInLeftovers`) e os relatórios e o Analytics à espera de envio também; o id aleatório da instalação fica no
+Keychain, porque é por ele que o servidor conta os roteiros grátis da Ultra AI e os prêmios dos convites), Permissions (`PermissionsService`), Acknowledgements. No fim, **Reset my setup** (dono, 09/11/2026), com uma linha embaixo: "Camera, microphone,
+quality, format and teleprompter go back to Cue's defaults. Your scripts, takes and edits stay." Pede confirmação (§17) e volta a câmera inteira
+(lente, microfone, qualidade, quadro, zona segura, grade, contagem…) e o teleprompter ao padrão (`PreferencesService.resetCreatorSetup`).
 **Remote** (`SettingsRemoteView`, redesenho do dono 21/10/2026, conceito "dois aparelhos"): `ScrollView` sobre o céu. No topo a cena
 (`RemoteHero`, posições em `RemoteSceneLayout`, aparelhos em `RemotePhone`, tudo num relógio só): o teleprompter à esquerda (roteiro subindo
 sob a linha de leitura amarela, que passa das laterais e respira) e o controle à direita (play cujo halo chama a cada 3,2 s), flutuando fora de
@@ -753,11 +770,19 @@ volta, os dois se inclinam um para o outro, a ligação se desenha em verde do c
 e luzes correm pela ligação (os comandos); o brilho de fundo passa de amarelo a verde; CONNECTED, o nome do aparelho, "Press play on …" e
 Disconnect; os ícones de "From the remote you can" acendem verdes em sequência. Desconectar recolhe a ligação para o controle. **Sem controle:**
 "No remote yet", Connect a device amarelo grande, os cartões Enter a code / Scan the code (`RemoteJoinCards`, mesmo fluxo da busca:
-`RemoteJoinFlow`), o que o controle faz (`RemoteCapabilities`) e Coming next. Vibrações (Core Haptics, `HapticPatterns`): Connect = toque firme
+`RemoteJoinFlow`), o que o controle faz (`RemoteCapabilities`) e Keyboards and foot pedals (as teclas que já funcionam: um teclado, um pedal Bluetooth ou um passador de slides mandam ao gravador os mesmos comandos do controle, `PrompterKeyCommands`: espaço toca ou pausa, ↓/Page Down e ↑/Page Up andam três linhas, → e ← mudam a velocidade, Home volta ao topo; gravar fica no botão vermelho). Vibrações (Core Haptics, `HapticPatterns`): Connect = toque firme
 e um brilho quando o primeiro anel sai; dois tiques quase imperceptíveis nos anéis seguintes; ao conectar, tique + clique + assentar junto com o
 ✓; Disconnect = queda surda. O texto não promete mais Apple Watch (o app não tem). Reduzir Movimento: mesmas posições, nada se move, estados
-trocam na hora. Cores em `Palette.Remote`.
-**Personalize** (`PersonalizeView`, redesenho do dono 21/10/2026, "vitrine"): `ScrollView` sobre o céu. No topo, "seu Cue" ao vivo
+trocam na hora. Cores em `Palette.Remote`. Enquanto este aparelho é o teleprompter (esperando o controle ou conectado), a tela não apaga
+sozinha (`RemoteControlService.role`, `ScreenAwake` "remoteHost"): bloquear derrubaria a ligação. Um link de pareamento (`cuestudio://remote`,
+a câmera do iOS lendo o QR) espera o onboarding e o gravador fecharem, como a Siri e as notificações (`RootView.handleRemoteLink`), para nunca
+fechar uma gravação; o próprio código deste aparelho, quando é ele o teleprompter, é ignorado. **O controle** (`RemoteControllerView`, o outro iPhone
+ou iPad; dono, 09/11/2026): o cartão do roteiro, um **Record grande** (o mesmo botão do gravador) que vira **Stop** enquanto a take grava (ou cancela a
+contagem), com "TAKE 3" embaixo e, gravando, "TAKE 3 · 0:42", e os controles do texto abaixo. Grava e para pelo mesmo caminho do Apple Watch
+(`RemoteCommand.record`/`.stop` → `recordFromAnotherDevice`/`stopFromAnotherDevice`): só no Selfie ou na revisão de uma take, com o microfone
+permitido (`RemoteStatus.canRecord`); o teleprompter manda o número da take e quanto já gravou, e o controle conta o tempo a partir daí. O Remote
+continua grátis.
+**Personalize** (`PersonalizeView`, redesenho do dono 21/10/2026, "vitrine"; a linha em Settings leva o selo NEW até a primeira visita, `DefaultsKey.personalizeSeen`): `ScrollView` sobre o céu. No topo, "seu Cue" ao vivo
 (`PersonalizeHero`): o céu escolhido (`SkyMiniature`: o mesmo `BgWash` + `StarfieldView` da navegação, estrelas no brilho dos quadros), a luz
 do universo respirando na cor escolhida (`CoreColor.glow`) e o ícone escolhido flutuando (`AppIconArt`; o padrão desenhado das camadas de
 `AppIcon.icon`), com a legenda "Default · Serene sky · Gold light"; trocar o céu esmaece, a luz muda de cor devagar, o ícone entra numa mola.
@@ -769,23 +794,25 @@ passava por baixo dos seguintes), bloqueados apagados com cadeado que balança a
 cartão para o outro. **Your universe's light**: as
 amostras do Profile (`CoreColorSwatches`). **Feel** (`PersonalizeFeelRow`): Celebrations e Haptics com ícone e o que fazem; ligar responde na
 hora (as fagulhas sentidas; o primeiro toque). **Your topics** (`PersonalizeTopics`): os tópicos como etiquetas nas cores de Scripts, Edit (folha
-do My Cue Voice) e a marcação automática. **Getting started** só até o primeiro vídeo. A busca leva aos mesmos lugares (`SettingsRoute.appIcon`
+do My Cue Voice) e a marcação automática; na busca, a linha "Your topics" mostra a contagem e abre o mesmo editor. Num Mac (`isiOSAppOnMac`), que não troca o
+ícone do app, a seção App icon, a linha dela na busca e a linha dos ícones no paywall não aparecem. **Getting started** só até o primeiro vídeo. A busca leva aos mesmos lugares (`SettingsRoute.appIcon`
 abre Personalize).
 **Prompter** (`SettingsPrompterView`): na aba, com prévia no topo e céu. **A prévia** (`PrompterPreviewCard`, pedido do dono, 20/10/2026) é o topo da
 tela deste iPhone no Selfie como o gravador o monta (o mesmo `ReadingLayout`: a linha de leitura sob a lente, onde o criador a pôs ou a 118 pt, e a
 janela em volta dela, na largura e altura dele), ampliado na janela do texto (`focusRect`) para caber num cartão de 272 pt sobre uma câmera de mentira (`Palette.Camera.previewScene*`)
 que ocupa o cartão inteiro: a ilha da câmera, a janela escura e desfocada como no gravador, a linha atravessando a tela, e o texto desenhado pelo próprio
-teleprompter (`PrompterParagraphs`) rolando na velocidade escolhida (o já lido apaga acima da linha; Reduzir Movimento: parado; o texto de exemplo vem no idioma da interface, cues incluídas); pelo **Aa** do Selfie abre como `PrompterSettingsSheet` (`.medium`/`.large`,
-`sheetMaxHeight`, fundo `Palette.surface`, sem prévia, `isRecorderSheet`), sobre os ajustes daquela gravação, medindo a linha de leitura pela tela e lente
-do gravador (`SettingsPrompterView.screen`). Faixas de `PrompterSettings`: altura 160–380, largura 50–93%, margens 8–40, espaçamento 1–2;
-`isFlippedVertically`, `safeZoneKey`, `showsCues` (desligado por padrão).
+teleprompter (`PrompterParagraphs`) rolando na velocidade escolhida (o já lido apaga acima da linha; Reduzir Movimento: parado; o texto de exemplo vem no idioma da interface, cues incluídas). O **Aa** do gravador é outra folha, com as mesmas linhas
+(`AaSettingsSheet`, §22). **Safe zone** (`SettingsSafeZoneView`, a linha diz On/Off): só a chave **Show safe zone** e "A guide, not a guarantee · Never
+recorded"; a zona segue sempre a rede da gravação (a do roteiro, a escolhida no chip do gravador ou a do perfil no Freestyle), e Custom com as margens
+fica no Aa › Window. Faixas de `PrompterSettings`: altura 160–380, largura 50–93%, margens 8–40, espaçamento 1–2; `isFlippedVertically`, `safeZoneKey`
+("custom" ou nada: uma chave de rede salva por uma versão anterior segue a rede, `SafeZoneChoice.pick(fromKey:)`), `showsCues` (desligado por padrão).
 **Velocidade e tamanho do texto** (decisão do dono, 20/10/2026): a velocidade vai de **0,2× a 2×** em paradas de 0,1× (19 paradas, `SpeedScale`;
 1× = 150 palavras por minuto, o padrão; cada parada é um número inteiro de passos de 5 palavras, então o valor salvo é o da parada) e
 `PrompterSettings.speedRange` são as duas pontas, tiradas da escala. Todo lugar segue as mesmas paradas, com um tique em cada uma: o slider de
 Settings › Prompter (pontas "0.2×" e "2×"), o do gravador (`SpeedSlider`, Selfie e Studio, sem marcas no trilho: o valor
 está escrito acima) e o − / + do Remote (uma parada por toque). Uma velocidade salva acima de 2× (os 3×, 4× e 5× de antes) abre em 2×.
 **Text size** é um slider em pontos, de **12 a 56 pt** de 1 em 1 (valor "36 pt", pontas "12" e "56 pt"), o mesmo
-alcance do Size do Studio (`studio.slider.size`) e do Text size do Display do gravador (`display.textSize`); o Studio desenha 1,35× maior. Um
+alcance do Size do Studio (`studio.slider.size`) e do Text size do Aa › Text do gravador (`settings.textSize`); o Studio desenha 1,35× maior. Um
 tamanho salvo fora da faixa abre na ponta mais próxima. Não há tamanhos com nome (Small, Medium, Large, XL): o bloco Text do cartão de setup
 e a folha de setup do gravador mostram os pontos ("36 pt") e a velocidade como o slider ("1×"). Para os testes de UI, os sliders da página
 respondem pelo identificador da linha (`settings.speed`, `settings.textSize`: o `accessibilityIdentifier` de `PrompterEntryRow` cobre o do
@@ -793,7 +820,7 @@ slider); na aba Settings o arrasto sintético do XCUITest não move os sliders d
 do gravador. O valor no canto direito de uma linha com slider tem a largura do seu valor mais largo (`SettingsSliderRow.valueSamples`: todas
 as paradas da velocidade, "40 pt" das margens, "100%" da opacidade, do desfoque e das margens da zona segura), então "1×" virando "1.1×" não
 aperta o título nem a segunda linha ao lado (pedido do dono, 30/10/2026). O mesmo `SteadyValueText` segura o valor do slider de
-velocidade do gravador, dos sliders do Display e do Studio, dos sliders dos painéis do editor (pontas da faixa), da leitura de Adjust e
+velocidade do gravador, dos sliders do Aa e do Studio, dos sliders dos painéis do editor (pontas da faixa), da leitura de Adjust e
 Skin ("Exposure −100", sem empurrar o Reset) e da velocidade do Remote (o − e o + não andam).
 
 **1.1 Welcome** (`09` §12; composição do dono, 02/11/2026): tudo centrado. `WelcomeScript` escreve a cena de 390 × 844 como `PoseTrack`s: a estrela entra
@@ -866,8 +893,14 @@ acima). Tudo cabe sem rolar do SE ao Pro Max (a rolagem só existe para o Dynami
   grátis e não aparecem; nada grátis é trancado para encher a lista. O Remote continua grátis.
 - **Rodapé**: planos lado a lado (1,2 : 1, 72 pt; `ProPlanRow`, `ProPlanCard`), "SAVE n%" ao lado de "Yearly" dentro do cartão; o anel amarelo desliza
   entre eles com mola (`matchedGeometryEffect`); botão amarelo "Subscribe for $39.99/year" (ou /month) com brilho; "Renews yearly at $39.99. Cancel anytime
-  in Settings."; Restore · Terms · Privacy.
-- **Assinando**: os nós correm para o núcleo, um clarão e uma onda dourada no plano da galáxia (0,9 s, `HapticPatterns.proWelcome`), e o Pro sai com o
+  in Settings."; Restore · Redeem code · Terms · Privacy (**Redeem code** abre a folha de código de oferta da Apple, `offerCodeRedemption`; o mesmo
+  em Settings › Pro, ao lado de Restore purchases, com o ícone `SettingsIcons/redeem`; um código que libera o Pro volta pelas atualizações da loja). Sem internet os preços não vêm: no lugar da letra miúda, "Couldn't reach the App Store. Check your
+  connection and try again." sublinhado pede de novo (`StoreManager.productsFailed`; uma abertura offline nunca deixa um alerta esperando). Restore
+  diz uma coisa só, num toast (`RestoreOutcome`): "Purchases restored", "No purchases to restore" quando a App Store respondeu, ou o motivo
+  ("Can't reach the App Store") quando não deu para perguntar; o mesmo em Settings. Settings › Cue Pro abre o gerenciamento da assinatura da Apple
+  para quem já assina, como o Manage › do Profile.
+- **Assinando** (também quando o Pro chega com o paywall aberto, um Ask to Buy aprovado ou uma compra feita fora: em todo contexto, para o vídeo
+  que espera seguir): os nós correm para o núcleo, um clarão e uma onda dourada no plano da galáxia (0,9 s, `HapticPatterns.proWelcome`), e o Pro sai com o
   toast "Welcome to Cue Pro" ("· video exported" no calmo da exportação, "· 30 Ultra AI scripts this month" no da Ultra AI).
 - **Pro calmo** (`.export` e `.ultra`): sem abertura; galáxia de 105 pt. Da exportação: "YOUR VIDEO IS READY", "Keep sharing your universe.", "Subscribe
   and export it now.", o vídeo esperando como uma estrela pulsando na frente do anel, botão "Subscribe · export now". Da Ultra AI (§57): eyebrow violeta
@@ -885,7 +918,8 @@ acima). Tudo cabe sem rolar do SE ao Pro Max (a rolagem só existe para o Dynami
 - **Export options, um estado e um componente** (D11, `ExportOptionsForm`, `TakeReviewViewModel+ExportOptions`, `ExportOutputChoice`): as
   mesmas opções (legendas no vídeo, idioma delas, qualidade) para Save, Share e as respostas do Done, abertas de três lugares: **Options · 1080p**
   em Share to universe, a linha discreta **"Export options · 1080p · captions on ›"** sob o rodapé de exportações da revisão (`review.exportOptions`,
-  quem salva sem passar por Share), as duas numa folha própria (`ShareExportOptions`: título e o formulário), e a mesma linha sob as quatro respostas
+  quem salva sem passar por Share): em Share to universe são um passo da mesma folha (`ShareFlowStep.options`, "‹" `exportOptions.back`
+volta às redes; nenhuma folha sobre outra), e na linha da revisão uma folha própria (`ShareExportOptions`: título e o formulário), e a mesma linha sob as quatro respostas
   do Done do editor (`edit.done.exportOptions`; sobre a edição que o Done vai salvar), que **vira a própria folha do Done para a segunda página**
   (F19, nenhuma folha sobre outra): "‹ Export options" (`edit.done.optionsBack` volta às respostas, o VoiceOver vai ao título e de volta à linha) e
   o formulário, só ele (os avisos de exportações grátis e de fonte ficam na página das respostas, em mono e cor; as opções em texto comum `ink2`).
@@ -927,8 +961,9 @@ e Username alinhados igual, contador do nome perto do limite, ✓ verde quando o
 como etiquetas (um por vez, tocar de novo tira) e **"+ Add your own"**, que vira um campo na própria etiqueta e guarda um tipo próprio
 (`CreatorProfile.customRole`, o mesmo do My Cue Voice e do roteirista; vale no lugar da lista e aparece no perfil), com × para tirar. **When you
 create** (`EditProfilePreferences`): as plataformas como galáxias na cor de cada uma (`Platform.tint`), anel amarelo que desliza, e Monetization
-goals com o que muda ("Script lengths aim at what earns on TikTok"). **Account** (`EditProfileAccount`, ação imediata, fora do Cancel / Done): um
-cartão discreto dizendo que é opcional e só preenche o nome, com o botão branco da Apple (o estilo pedido em fundo escuro), mais baixo.
+goals com o que muda ("Script lengths aim at what earns on TikTok"). **Sem conta** (decisão do dono, 09/11/2026: o Sign in with Apple só preenchia o
+nome e saiu, com o entitlement): o nome é o do perfil, sempre editável aqui. Quem tinha entrado com a Apple mantém o nome que via; o e-mail e o
+identificador da Apple que ficaram guardados são apagados no primeiro lançamento (`AppleSignInLeftovers`).
 
 ## 14. Your universe, um por ano (9.2)
 
@@ -960,15 +995,17 @@ os ícones (§16), e só promete um ícone ainda não destravado; passado o últ
 
 Na revisão, o botão amarelo **Share to universe** renderiza o arquivo (1080 × 1920, sem marca d'água; nada sai do Cue, nada é contado) e abre **Ready to
 travel** com as redes (`ShareNetworkPicker`: TikTok "· from your script", Reels, Shorts, YouTube ("POSTS AS A SHORT" até 3 min na vertical), LinkedIn, "Also
-save to Photos", "Share to n networks", "Uses 1 free export · k left after this"; no canto, o botão de vidro **Options · 1080p** (ou "· 4K",
+save to Photos" (desligado no primeiro vídeo compartilhado, ligado daí em diante: `ShareFlow`), "Share to n networks", "Uses 1 free export · k left after this"; no canto, o botão de vidro **Options · 1080p** (ou "· 4K",
 "· 720p": a qualidade com que o arquivo sai, com a regra do Pro aplicada) abre **Export options**: legendas e qualidade, 1080p ou 4K, que é Pro
-(§12)). Fechado o sheet, Ready mostra **Share to
+(§12); a qualidade escolhida vale também para os próximos vídeos, `PreferencesService.exportQuality`, e um 4K guardado só volta com Pro numa
+gravação 4K); a dica 6/6 da primeira viagem só aparece aqui quando não há rede marcada pelo roteiro (marcada, o botão já é o passo). Fechado o sheet, Ready mostra **Share to
 universe · Save video · compartilhar** (folha do sistema). **Uma exportação por envio** (um arquivo para todas as redes; reexportar na fila não gasta
 outra: `ExportLedgerService.begin(inheritingCountFrom:)`).
 **A fila** (`ShareQueue`, `ShareQueueService`, `ShareFlow`): "Posting to n networks" (com 2+, nas 2 primeiras vezes); o passo de cada rede ("1 OF 3",
-segmentos, legenda copiada e editável, "Your captions are in the video" ou, quando pedidas e o vídeo saiu sem elas, "No captions on this video" com o
+segmentos, legenda copiada e editável (`PostCaption`: o gancho do roteiro que a take leu, a primeira frase falada, com a seguinte quando é curta, até
+150 caracteres; depois o título, se o gancho não o diz, e #ad num vídeo com marca), "Your captions are in the video" ou, quando pedidas e o vídeo saiu sem elas, "No captions on this video" com o
 motivo, "In the share sheet, tap {app}", "◀ Cue", **Send to {app}** · Edit first · **Post later** (`Menu`: Tonight, Tomorrow,
-Pick a date and time…, No reminder; §27)); "Posted on {rede}?": **só "Yes, it's live" conta** e acende o planeta (`MilestoneService.recordShare`).
+Pick a date and time…, No reminder; §27; a data é um passo do próprio sheet, `ReminderSheet(onBack:)` com "‹" `reminder.back`, nunca outra folha por cima)); "Posted on {rede}?": **só "Yes, it's live" conta** e acende o planeta (`MilestoneService.recordShare`).
 Cada passo tem a altura do próprio conteúdo. Uma fila que recomeça para o mesmo vídeo (o **Edit first** de uma rede, depois Share de novo) segue
 com a nova exportação e as redes já postadas continuam postadas, nunca oferecidas de novo (`ShareQueue.keepPosted`). Fechar (✕ ou puxar para baixo) manda o resto para depois ("Saved · continue anytime"); quando é o Cue que tira o sheet (Send, Edit first, a última
 rede), o aviso do iPhone de que o sheet saiu não mexe na fila (`ShareFlow.sheetDismissed`); o card **Continue posting**
@@ -980,29 +1017,39 @@ voltam com uma linha quando validados no aparelho (`SHARING.md`).
 
 ## 16. Telas ligadas
 
-- **8.3 Milestone** (`MilestoneView`, `MilestoneScript`, 4,5 s): seis fagulhas caem num ponto (0–1,35 s), o ícone de 140 pt surge (×0,6 → 1,06 → 1 a partir
-  de 1,17 s, `.success`), cruz de luz (1,55–2,45 s) e anéis dourado e pálido por cima do ícone, raios girando em 40 s. "MILESTONE · 25 VIDEOS SHARED" (o primeiro:
-  "MILESTONE · YOUR FIRST VIDEO"), "A new icon is yours.", "ON YOUR HOME SCREEN" (vidro de 76 pt, quatro ícones), "Use Deep Space" / "Keep my current icon" (sem Pro: "Get … with Pro"). Os marcos
-  (1, 10, 25, 50) contam os vídeos compartilhados **desde sempre**, não por ano (decisão do dono, 30/10/2026); um marco celebrado quando a conta era por ano
-  (chave `ano·1000 + marco`) continua celebrado. Um marco toca uma vez por revisão. Com um ícone a destravar, o `.success` da história é o do ícone, e o
-  send-off que vem antes pousa com toques leves; sem marco, o pouso do send-off é o `.success`. Os espaços do quadro seguem a altura da tela (×0,79 num SE a ×1,13 num Pro Max, o ícone também): no SE tudo fica acima
-  dos botões, no Pro Max se espalha; o texto cresce até o 1º tamanho de acessibilidade.
-- **1.7 First star** (`FirstStarView`, `FirstStarScript`, `FirstStarScene`, `Keyframes`, 8 s; a cena de 390 pt é desenhada com a largura da tela,
-  ×0,96 a ×1,13, e as palavras sobem acima dos botões quando a tela é baixa ou o texto é grande): o take "✓ SAVED" dobra em luz (1,55 s), um cometa o leva até a
-  estrela (1,6–2,9 s), a estrela acende (2,95 s, `.success`) com 10 fagulhas, dois anéis e cruz de luz, a linha de YOU se desenha (3,3–4,1 s), "FIRST
-  VIDEO · FIRST STAR" (12 pt) e **"Your first video. Your first star."** palavra por palavra (desfoque 8 → 0, título em 300 pt, uma frase por linha),
-  "Saved in Takes. Add captions, edit it or share it to light up your 2026 universe." (17 pt) e **Explore Cue** / **Edit my video**; brilho cruza
-  "Explore Cue" uma vez. O acabamento por cima do quadro está em §36. Vem ao abrir a revisão da primeira gravação; uma revisão aberta para editar,
-  escolher ou compartilhar faz isso primeiro, e a estrela vem quando o editor fecha (nunca depois de um compartilhamento: o send-off contou; §27). Toca uma vez até 7,5 s e fica (órbitas girando). Noite `BgWash.firstStar`.
-  `-uiTestStoryAt <s>`.
+- **A primeira comemoração** (D4, decisão do dono, 09/11/2026; `FirstCelebration`, `SendOffMoment`): a primeira jornada tem **no máximo uma tela
+  cheia**. A revisão da primeira gravação abre sem nada por cima: as telas 1.7 (First star) e 8.3 (Milestone) do quadro não são usadas; a estrela e o
+  marco vivem no send-off e em Takes.
+  - **Postagem confirmada na hora** ("Posted on {rede}?" → **Yes, it's live**): o **send-off** (8.2) é a comemoração. Na primeira postagem com a estrela
+    ainda não contada, o rótulo de cima diz **"FIRST VIDEO · FIRST STAR"** no lugar de "SHARED TO {REDE}" (a rede segue no "+1" do mapa e no link do
+    universo). O marco que a postagem abriu aparece **dentro do send-off**, na linha do ícone (`SendOffIconRow`), nunca numa tela depois dele.
+  - **Saiu da revisão sem postar**: nenhuma tela; a estrela fica guardada para aquele take (`OnboardingService.keepFirstStar`) e acende **em Takes**, no
+    cartão (ou linha) do vídeo, quando Takes é a tela da frente (`TakeFirstStarPill`, §18). Conta como contada nessa hora.
+  - **Postagem confirmada depois** (outra sessão, pelo "Continue posting" ou "Post to {rede} later"): o mesmo send-off, com a linha do ícone quando há marco
+    devido; a primeira estrela só aparece nele se Takes ainda não a acendeu.
+  - A estrela é a do primeiro **vídeo** gravado no Cue e só dele (os takes de um roteiro são um vídeo; um importado do Fotos ou um vídeo de uma biblioteca com
+    outros não a acendem, mas o marco vale), com **Celebrations** ligado (desligado: nem send-off, nem estrela em Takes, e o marco fica devido); em Takes,
+    também depois do primeiro voo.
+- **Marcos** (1, 10, 25, 50; `MilestoneService`): contam as **postagens confirmadas** desde sempre (só "Yes, it's live"; salvar no Fotos conclui a exportação e
+  gasta uma exportação grátis, mas não é uma postagem; um vídeo conta uma vez, mesmo em várias redes), não por ano (decisão do dono, 30/10/2026). O send-off
+  mostra o marco **devido**: o último alcançado que ainda não foi contado (`dueMilestone`); alcançado numa postagem sem send-off (Celebrations desligado, o Cue
+  fechado nele), vem no próximo. Qualquer saída do send-off (**Done**, o link do universo, **Share again**, **Go Pro**) o conta como contado, junto com os
+  anteriores (`markCelebrated`), e avisa o porteiro de que houve uma celebração (§27). Um marco contado quando a conta era por ano (chave `ano·1000 + marco`)
+  continua contado.
+- **A linha do ícone** (`SendOffIconRow`, não está no quadro): no lugar do cartão do vídeo, sob o mapa, depois que as estrelas pousam (sobe 10 pt e aparece
+  em 0,45 s, com um toque `.soft`; com Reduzir Movimento já está lá): cartão `surface` de raio 20 com borda `glassBorder`, o ícone de 44 pt (`AppIconArt`),
+  **"{Ícone} icon unlocked"** (15 semibold `ink`), "Your first video shared" / "{n} videos shared" (13 `ink2`) e **Use it** (`cueSecondary` compacto). Usar
+  troca o ícone e a linha diz **✓ In use** (`successText`), com o send-off na tela; deixar a linha como está mantém o ícone atual. Aurora (1) é grátis; os
+  de 10, 25 e 50 vêm com o Pro: sem ele o botão é **Go Pro**, que fecha o send-off e abre o Pro. O pouso do send-off é sempre o `.success`.
 - **6.2 Takes** vindo de um planeta ou tema: chip "{ANO} · SHARED ✕" (§18).
 
 ## 17. Confirmações (11.1 "reset confirm")
 
 `CueActionSheet` (`DesignSystem/Components`): a página escurece, um cartão com a pergunta em cinza e a ação em vermelho, e um cartão **Cancel** separado em
 negrito. Custom porque o `confirmationDialog` do iOS 27 abre como balão, sem Cancel. Usado em **Delete my Cue data** (o mesmo em Settings e na folha
-Privacy & AI data: "Deletes your scripts, takes, edits and My Cue Voice from this iPhone. This can't be undone." / **Delete my Cue data**), **Reset Creator
-Setup**. Confirmação só para o que não tem volta: o resto tem Undo no toast.
+Privacy & AI data: "Deletes your scripts, takes, edits and My Cue Voice from this iPhone. This can't be undone." / **Delete my Cue data**; onde a Ultra AI
+é oferecida, uma linha menor embaixo separa o que não volta: "Already sent can’t be called back: Anthropic keeps Ultra AI requests up to 30 days to detect
+abuse, never for training. Cue’s server keeps only counts, under a random ID.", o `note` do `CueActionSheet`), **Reset my setup**. Confirmação só para o que não tem volta: o resto tem Undo no toast.
 
 ## 18. Movimento vindo dos dados do quadro (handoff-telas)
 
@@ -1012,7 +1059,7 @@ brilho, recorte). `MotionScreen` é o relógio único da tela (`TimelineView`; t
 `skippable`); `MotionTime` leva o segundo da coreografia e o do ambiente. Efeitos em `DesignSystem/Effects` (`GlowDot`, `StarTrail`, `LightFX`); galáxias de
 1.3 e 1.4 por `GalaxyPainter` a partir de `galaxies.json` (`tools/bake_galaxies.py`, cache `HeroDiscCache`). **Conferir:** `tools/fidelity` (HTML parado num
 segundo × app com o relógio congelado) e `HandoffCaptureTests`. Cada quadro tem o próprio `.night` (`BgWash+Presets`: welcome, universe, voyage, message,
-permissions, firstStar, yourUniverse, sendOff, milestone, pro, share; `skyBackground(wash:base:)`); cores de onboarding, prática e send-off em
+permissions, firstStar (a noite da prática), yourUniverse, sendOff, pro, share; `skyBackground(wash:base:)`); cores de onboarding, prática e send-off em
 `Palette+Flight.swift` (nenhum hex solto em `Screens/Onboarding` nem `Screens/Prompter/Practice`).
 
 **Onboarding (1.1–1.7)**
@@ -1047,20 +1094,36 @@ permissions, firstStar, yourUniverse, sendOff, milestone, pro, share; `skyBackgr
 **8.2 Send-off** (quadro de 390 × 844 escalado; `SendOffLayout`, `SendOffScript`, `SendOffMap`, `SendOffView`): órbitas de 316 e 220 pt achatadas a 32% e
 giradas −9°, YOU de 56 pt, planetas de 20/18/17/16/14/12 pt por ordem de vídeos, cartão de 54 × 96 pt vira luz (0,65 s), uma estrela por rede (0,52 s +
 0,35 s·i, voo de 1,05 s, nove pontos de rastro a 38 ms) num arco quadrático (`SendOffLayout.arc`, não está no quadro), pulso ×1,35 → ×1,12, anel ×5,
-"+1", contagem sobe na chegada, estrela nova 0,3 s depois do primeiro pulso. "SHARED TO 3 NETWORKS", "On its way." e o link para a nova estrela; texto e
-botões parados desde o início; redes que não receberam ficam a 38%.
+"+1", contagem sobe na chegada, estrela nova 0,3 s depois do primeiro pulso. "SHARED TO 3 NETWORKS" ("FIRST VIDEO · FIRST STAR" na primeira postagem,
+§16), "On its way." e o link para a nova estrela; texto e botões parados desde o início; redes que não receberam ficam a 38%. Com um marco devido, a linha
+do ícone sobe no lugar do cartão depois do pouso (`SendOffLayout.iconRowTop`/`iconRowBottom`: de 392 a 568 pt do quadro, presa embaixo, crescendo para
+cima com o texto; §16). O link do universo e **Done** terminam do mesmo jeito (`TakeReviewView.endSendOff`).
 
-**6.2 Takes:** título com **Import video** à esquerda (ícone em `Palette.ink`, como os outros botões de barra, dono 30/10/2026) e List | Grid à
+**6.2 Takes:** **um vídeo é o conjunto das takes de um roteiro gravadas para a mesma rede** (`TakeVideoKey`: roteiro + `Take.platform`, a rede para a
+qual aquela gravação foi feita; dono, 09/11/2026); uma take sem roteiro (freestyle, importada) é um vídeo sozinho. Um roteiro gravado para Reels e de
+novo para Shorts são dois cartões com o mesmo título e pés diferentes ("● REELS · 0:58", "● SHORTS · 0:41"), sem selo de versão. ★, estágio, "TAKE i
+OF n", Pick best, UP NEXT, os fatos das notificações, a primeira estrela, a primeira viagem e a última take do gravador contam por vídeo. A rede onde o
+vídeo foi postado (`ShareRecord.platforms`) nunca muda filtro nem agrupamento. Título com **Import video** à esquerda (ícone em `Palette.ink`, como os outros botões de barra, dono 30/10/2026) e List | Grid à
 direita; sob o título, nenhuma contagem (dono, 30/10/2026); **trilha de status** (`TakePipelineCard`: quatro nós de 28 pt, TO PICK cinza, IN EDIT ciano, READY verde com
 anel que pulsa a cada 2 s, ✦ SHARED lilás; tocar filtra, de novo limpa); **Up next** (`TakeUpNextCard`: pôster 40 × 56, "UP NEXT · POST IT", botão amarelo
-Share/Edit/Pick que abre a take naquele passo); **fichas** (`TakesFilterChips`: "2026 · SHARED ✕" primeiro quando vem do universo, sempre à vista e fora do recolhimento, depois All e uma por
-rede que tem vídeos, nenhuma com 0, na mesma linha que se recolhe na escolhida de Scripts, `FilterFan`, §2; a escolhida branca com texto preto; o ✕
-tira o amarelo e, se o planeta tinha escolhido a rede, o chip volta para All). **List | Grid** é `Picker` `.segmented` (`TakesLayoutToggle`). Card da grade (`TakeVideoCard`, 177:270): anel de 1 pt na
-cor do estágio, pílula do estágio, título e "● TIKTOK · 1:02" no pé. Lista (`TakeVideoRow`, título 16 medium, §53): §24. Lista vazia por filtro: "No videos for Shorts here" + **Show every video**.
+Share/Edit/Pick que abre a take naquele passo; some enquanto a dica da primeira viagem está na tela, que diz o mesmo passo); a trilha e o UP NEXT contam
+só o que o chip amarelo deixa na lista, quando há um; **fichas** (`TakesFilterChips`: "2026 · SHARED ✕" primeiro quando vem do universo, ou o título do roteiro ("MORNING ROUTINE ✕", todas as takes dele, de todas as redes, compartilhadas ou não) quando vem do "×3 ›" de Scripts (`TakesRequest.script`), sempre à vista e fora do recolhimento, depois All e uma por
+rede para a qual há vídeos gravados (a rede da take, não a atual do roteiro nem onde foi postado), nenhuma com 0, na mesma linha que se recolhe na escolhida de Scripts, `FilterFan`, §2; a escolhida branca com texto preto). O "See in Takes ›" de um planeta
+mostra os vídeos postados naquela rede pelo chip amarelo e deixa a ficha de rede em All: um vídeo de Reels postado no TikTok aparece no planeta TikTok
+e em Takes; o ✕ tira o amarelo. **List | Grid** é `Picker` `.segmented` (`TakesLayoutToggle`). Card da grade (`TakeVideoCard`, 177:270): anel de 1 pt na
+cor do estágio, pílula do estágio, título e "● TIKTOK · 1:02" no pé. Uma take gravada depois da ★ (o vídeo foi gravado de novo) volta o vídeo
+para TO PICK e é a que abre (`TakeStage.takeAfterStar`, `Take.bestMarkedAt`); dar a ★ de novo, até à antiga, resolve. Segurar um vídeo importado não
+oferece Retake; o Retake de um vídeo abre o gravador na rede do vídeo (`PrompterLaunch.platform`). **Delete** (menu de contexto, deslize da lista)
+apaga na hora, sem pergunta: o toast "Video deleted · 3 takes" ("Video deleted" com uma take) tem **Undo**, que traz todas de volta; os arquivos só
+somem quando o Undo sai de alcance (o mesmo caminho da lixeira da revisão, `TakeLibraryService.awaitPurge`). **A primeira estrela** (§16, `TakeFirstStarPill`): no primeiro vídeo, quando a revisão
+dele foi deixada sem postagem, a pílula **"✦ FIRST STAR"** (mono 10 heavy, `accText`) aparece sobre o título do cartão (no fundo `Palette.Takes.posterPill`)
+ou à frente das fichas da linha (no `surface2`): abre de 60% com uma mola depois de 0,25 s e um anel de luz sai da estrela (0,9 s); com Reduzir Movimento só
+aparece. Um toque `.soft`, o VoiceOver ouve "Your first video. Your first star." e o rótulo do cartão ganha "First star". Acende uma vez, quando o vídeo
+está na lista da frente (um filtro que o esconde faz esperar), e fica no cartão até o Cue fechar; um take apagado deixa a estrela esperando a próxima revisão. Lista (`TakeVideoRow`, título 16 medium, §53): §24. Lista vazia por filtro: "No videos for Shorts here" + **Show every video**.
 Segurar um vídeo abre o menu de contexto (a prévia recebe `.environment(services)` e o pôster lê os serviços como opcionais: o sistema redesenha o cartão
 fora do ambiente do app). **Não feito (decisão do dono):** Select (sem seleção em massa), bolinha de tema no card; títulos de dia (Today, Yesterday) ficam.
 
-**Diferenças em aberto para o dono:** a fonte é SF (o quadro usa Geist, mais larga): títulos que quebram no quadro têm largura ajustada (1.7) ou escala
+**Diferenças em aberto para o dono:** a fonte é SF (o quadro usa Geist, mais larga): títulos que quebram no quadro têm escala
 mínima (9.2).
 
 ## 19. Folhas e telas revistas pelo dono (6/10/2026)
@@ -1165,6 +1228,14 @@ roteiro (v2, v3…) liga as takes ao texto lido: mudar as palavras depois de um 
 são essa mesma versão (também na mesma visita, com o gravador por cima). O texto é **corrido**, sem rótulos de estrutura nem régua de tempo (decisão do dono, 20/10/2026: o criador tem de se
 sentir livre para escrever como quiser). **Sem dicas embaixo do texto** (gancho longo, frase longa, "No CTA yet"): quem quiser mudanças usa o Improve
 (decisão do dono, 20/10/2026).
+- **Mudar a rede do roteiro** (o chip "● TikTok" da página e Details › Create for; dono, 09/11/2026): sem pergunta. O vídeo que o roteiro tinha
+  para a rede antiga vai junto (as takes passam a ser da rede nova), a não ser que já tenha sido postado ou exportado (um `ShareRecord` ou
+  `Take.isExported`) ou que a rede nova já tenha um vídeo desse roteiro: aí fica na antiga. Takes gravadas para outras redes nunca mudam
+  (`ScriptRecategorization`). Com um vídeo na rede antiga, o toast diz o que houve, com **Undo** (roteiro e takes como estavam, ★ incluída): "Moved to
+  Shorts", "Moved to Shorts · Reels video stays (already posted)" ou "Moved to Shorts · Reels video stays (Shorts already has one)"; sem vídeo lá,
+  continua "Create for YouTube Shorts". Quem já tinha takes antes disso: uma vez, cada take de um roteiro ganhou a rede atual do roteiro
+  (`TakePlatformMigration`, `DefaultsKey.takeNetworkMigration`), sem nada mudar na tela. Roteiros escritos pela IA vão para a rede padrão do
+  criador (Profile), como os em branco, a não ser que ele tenha escolhido outra no Create for do dock.
 - **Rascunho ou pronto (decisão do dono, 20/10/2026):** a faixa sob o título (`ScriptStateStrip`, sem caixa) tem o par **Draft** e **Ready to record**
   lado a lado, um dos dois sempre aceso (`DraftChoice` + `ReadyToggle`; RECORDED num roteiro gravado e, em amarelo ao lado, "Changed since take N"
   quando as palavras mudaram depois do take) e Stop no fim enquanto a IA escreve; sem linha de detalhes (dono, 31/10/2026: o par diz se é rascunho, as
@@ -1261,8 +1332,12 @@ sentir livre para escrever como quiser). **Sem dicas embaixo do texto** (gancho 
 - **Desfazer e refazer** na barra das cues (`ScriptEditorUndo`), à esquerda, desativados quando não há o que desfazer.
 - **"AI can get facts wrong"** (`FactCheckBanner`): centrado na vertical, texto `ink`.
 
-**Revisão da take (6.3):** barra de navegação do sistema (`ReviewToolbar`, `NavigationStack` próprio, fundo escondido sobre o vídeo): voltar, "TAKE 2 OF 3 ✦ ⌄"
+**Revisão da take (6.3):** barra de navegação do sistema (`ReviewToolbar`, `NavigationStack` próprio, fundo escondido sobre o vídeo): voltar (‹ leva à câmera para outra take; a Takes quando a revisão foi aberta de lá ou a take já saiu do Cue, salva ou compartilhada, `PrompterView.leaveReview`), "TAKE 2 OF 3 ✦ ⌄"
 como título com menu (takes vizinhas, Suggest best) numa cápsula de vidro, estrela (`star` / `star.fill`) e lixeira numa cápsula à direita.
+"TAKE 2 OF 3", o deslize entre takes, a ★ (uma por vídeo) e o estágio contam as takes do vídeo (o roteiro na mesma rede, `TakeVideoKey`): as takes
+do mesmo roteiro para outra rede são outro vídeo. **Pick your best take** (`PickBestTakeView`) diz sob o título o estágio real do vídeo ("TO PICK · 3
+TAKES", "SHARED · 3 TAKES" quando já foi compartilhado), nunca TO PICK fixo. Abrir a revisão de uma take leva a rede dela ao gravador (Retake grava
+para a mesma rede).
 Refinamento do dono (22/10/2026, canvas "Revisão da take, refinada"): **Play** fica no meio do espaço livre do vídeo, acima dos controles (nunca sobre a
 linha do tempo, como no 15 Pro), encolhe e some ao tocar (`Haptics.light`); tocar no vídeo tocando pausa e pisca o sinal de pausa (`ReviewPauseFlash`,
 `Haptics.soft`). **Linha do tempo** (`ReviewScrubber`): segurando, a bolinha cresce para 24 pt e um balão branco diz o tempo; um tique a cada segundo
@@ -1374,8 +1449,8 @@ effects), `QuickEditToolbarTests` (o conteúdo de cada barra, Show, Translate, C
 apertado ou não) em `PaletteContrastTests`.
 
 **Gravador (Selfie e Studio):** barra de navegação do sistema num `NavigationStack` dentro do `PrompterView` (a revisão fica fora): fechar
-(`Button(role: .close)`) no início, **Selfie | Studio** (`ModeSwitcher`, `Picker` `.segmented`) no meio, e o chip do quadro (Selfie) ou a rede do roteiro
-("● TikTok", abre Create for) e Remote (Studio) no fim; gravando, o REC ocupa o início; escondida na prática. A caixa do Selfie começa embaixo da barra
+(`Button(role: .close)`) no início, **Selfie | Studio** (`ModeSwitcher`, `Picker` `.segmented`) no meio, e o chip da rede no fim ("● TikTok", abre
+Create for; no Studio só com roteiro, ao lado do Remote); gravando, o REC ocupa o início; escondida na prática. A caixa do Selfie começa embaixo da barra
 (`SelfieScreenMetrics.topBarBottom`); a barra de status é medida fora da pilha. Controles de baixo do sistema onde há um: Voice | Steady
 (`ScrollModePicker`), botões redondos `.glass` (`glassIconButton()`), velocidade e sliders como `Slider` com nome e valor (`LabeledSlider`), chips `.glass`
 (`.glassProminent` quando ligado). Do Cue: gravar, medidor de voz, última take, rótulos de microfone e formato e o painel de vidro noturno. Sem gesto que
@@ -1391,10 +1466,35 @@ que para sozinho (ligação, Siri) tenta de novo três vezes em seguida e, depoi
 enquanto o modo Voice está ligado; voltar ao Cue tenta na hora. Sair do gravador no meio (ou enquanto a câmera ainda começa) guarda a
 take sem a revisão, e uma que o sistema encerrou enquanto o criador parava entra uma vez só; o que ficou em `tmp/take-*.mov` (Cue parou no meio, ou a
 biblioteca não a recebeu) volta na abertura seguinte, e o que não toca é apagado (`TakeRecovery`). Se a lista de takes não
-pode ser gravada (iPhone cheio), a take não entra e o vídeo volta para `tmp/take-*.mov` com o nome da câmera ("The take couldn't be saved") e uma nota do
-roteiro e da versão ao lado (`TakeRecoveryNote`), onde a recuperação o acha e o devolve sob aquele roteiro; sem nota (Cue parou no meio) ou com o roteiro
-apagado, volta como "Freestyle recording": nunca um vídeo na biblioteca sem take que aponte para ele. Um Retake aberto da revisão (Takes › Retake) sem
+pode ser gravada (iPhone cheio), a take não entra e o vídeo volta para `tmp/take-*.mov` com o nome da câmera ("The take couldn't be saved"). Ao lado
+de cada gravação fica, desde o primeiro quadro, uma nota do roteiro, da versão e da rede da sessão (`TakeRecoveryNote`, escrita quando a câmera começa
+e apagada quando a take entra na biblioteca): a recuperação a acha e devolve a take sob aquele roteiro e aquela rede, também quando Cue parou no meio;
+sem nota ou com o roteiro apagado, volta como "Freestyle recording" (com a rede, se a nota tinha): nunca um vídeo na biblioteca sem take que aponte para ele. Um Retake aberto da revisão (Takes › Retake) sem
 microfone lê em Steady, como uma sessão nova.
+
+**A rede da gravação** (dono, 09/11/2026): o chip da rede, com roteiro e no Freestyle, abre o **mesmo Create for do cartão da IA do dock**
+(`DestinationSheet`) e muda só a rede **desta sessão** (`PrompterViewModel.platform`: a escolhida no chip, senão a com que o gravador foi aberto, como
+um Retake de um vídeo de Reels, senão a do roteiro, senão a do perfil no Freestyle); **nunca muda a rede do roteiro** (`Script.platform`). Cada take nova
+é guardada com essa rede (`Take.platform`, `TakeLibraryService.addTake(platform:)`) e entra no vídeo dela (`recordingVideo`, a última take e o seu número
+seguem). O chip que trocava o quadro no Freestyle saiu; o quadro está no Camera.
+**O cartão da recomendação** (`SetupRecommendationCard`, perto do painel de baixo, do tamanho do que tem; os controles de leitura recolhem enquanto
+ele está à vista, para não cobrir a janela do texto): "✦ Recommended for TikTok" e uma linha por mudança **contra o que está na tela**
+(`SetupChangeList`: "Frame 4:5 → 9:16", "Quality 4K → 1080p", "Safe zone Custom → TikTok"), com a etiqueta **This take** (ponto azul) no que o criador
+escolheu para esta take. **Keep as is** não muda nada; **Use Recommended** aplica exatamente as linhas listadas, a zona segura incluída (só nesta
+sessão; a Custom salva continua) e diz "Using TikTok setup". Some quando nada mudaria (a recomendação se resolve sozinha como Keep as is) e, no
+Freestyle, só aparece quando o criador troca a rede. A janela de texto e a legenda da zona segura terminam acima de tudo o que fica sobre os controles enquanto aparece (o cartão, a linha de espaço, os avisos; `SelfieScreenMetrics.cardTop`): numa tela baixa (SE) nada cobre as palavras, e a janela volta à altura toda quando eles saem. A zona segura nunca diz outra rede que não a do vídeo (`SafeZoneChoice.resolve`): YouTube em 9:16 é um Short (a zona do Shorts), 1:1 fica Custom, e uma rede sem zona medida nesse quadro (TikTok em 4:5) não mostra nenhuma. Num quadro que deixa parte da câmera de fora (16:9, 1:1, 4:5), a primeira linha sobre os controles diz "16:9 · ONLY THE FRAME IS RECORDED" (`FrameMaskCaption`, branco `Palette.Camera.frameCaption`, medido sobre a máscara na imagem mais clara): ali ela sempre tem lugar, acima da linha de espaço e dos avisos, e a janela termina acima dela. A borda do quadro tem 1 pt. Gravar sem responder é Keep as is. A folha **This take** (`RecordingSetupSheet`, aberta pela
+pílula "1080P · 9:16 ›"; saiu do •••) mostra a mesma recomendação com as mesmas linhas e os mesmos dois nomes (Keep as is, Use Recommended).
+**Aa** (`AaSettingsSheet`): no topo um `Picker` `.segmented` do sistema com as abas e o ✕ de vidro; Selfie **Reading | Text | Window | Camera**
+(Reading: Voice Following, velocidade, AI coach; Text: tamanho, fonte, espaçamento, alinhamento, cor; Window: caixa do texto, linha de leitura, rigs e
+a **Safe zone** da rede ou **Custom** com as quatro margens, `AaSafeZoneSection`; Camera: fundo e desfoque sobre a câmera), Studio **Reading | Text |
+Studio** (Studio: linha de leitura e posição, fundo, margens, contagem, rigs). A contagem saiu do Aa do Selfie (está no Camera e no •••). A folha do
+Studio para acima da linha de leitura (`textWindowBottom`); a do Selfie, abaixo da janela do texto. O Display Basic/Advanced saiu. O que muda no Aa
+fica como em Settings (§5.4).
+**Microfone:** uma lista só (`MicrophoneList`: Automatic, o escolhido quando não está ligado agora, e os conectados), na folha da pílula do microfone e
+no Camera › Recording, que diz embaixo "Changes apply to this take only." A chave do Camera chama **Safe zone**, o mesmo nome de Settings e do editor.
+**Pouco espaço:** abaixo de ~2 GB livres, uma linha quieta sobre os controles do Selfie, antes de gravar (`StorageNotice`, `RecordingRoom`): "About 9 min
+left in 4K" (os minutos no formato e no codec gravados; "Less than 1 min left in 4K"). Sem alerta e sem página de armazenamento; lida ao abrir e
+depois de cada take.
 
 **No Selfie, a janela do texto guarda só as palavras** (dono, 02/11/2026): sem o chip "Following your voice" sobre ela; a linha sob o Voice | Steady
 (`VoiceIndicator`, onde fica a velocidade no Steady) diz **Following your voice** em amarelo enquanto ouve e segue, "Scrolls when you talk, waits when
@@ -1571,7 +1671,8 @@ Sistema completo em `NOTIFICATIONS.md`. Na interface:
     now** (30 dias; no máximo 2 em 90 dias) e "Don’t suggest this" (fica escondida até Settings › Personalize › **Hidden suggestions** › **Show again**,
     `suggestAgain`). Try it abre a ferramenta (Quick edit direto no painel: `EditorTool`, `QuickEditViewModel+Opening`; Skin já em Smooth, `skinOpensOn`).
     As introduções no app não dependem de "Tools and news" (que é só das notificações; decisão do dono, 30/10/2026). Uma introdução adiada só é dada
-    como mostrada quando aparece na tela.
+    como mostrada quando aparece na tela. Fechar o treino da primeira viagem (`PrompterLaunch.isPractice`) não traz introdução nem convite: a viagem
+    ainda está guiando (`MainView`).
   - **Convite** (`NotificationInviteSheet`): a pergunta, "One notification when something is waiting, at most one a day.", "Uses notifications · change it
     anytime in Settings", **Allow notifications** (só ele traz a pergunta do sistema) e **Not now**. Para um roteiro pronto sem take, o botão é **Remind me
     tomorrow**: a pergunta do iOS e o lembrete daquele roteiro amanhã às 10h. Esse convite só vem da própria página do roteiro, ao sair dela.
@@ -1585,8 +1686,9 @@ Sistema completo em `NOTIFICATIONS.md`. Na interface:
   - **sessão** = abrir o app, ou voltar depois de 30 min fora;
   - o **convite** para notificações não vem na sessão da primeira gravação: vem numa sessão seguinte, ao sair da câmera ou da revisão, se há um vídeo por
     compartilhar; nunca depois de uma celebração na mesma sessão (nem uma introdução). Um lembrete pedido à mão pode trazer a pergunta do iOS a qualquer hora;
-  - **celebração só no fim de uma tarefa**: a primeira estrela não cobre uma revisão aberta para editar, escolher ou compartilhar; vem quando o editor
-    fecha (e não vem se o vídeo já foi compartilhado: o send-off contou).
+  - **celebração só no fim de uma tarefa** e **uma tela cheia por jornada** (D4, §16): nada cobre a revisão; a comemoração é o send-off de uma postagem
+    confirmada (com o marco dentro dele) ou, sem postagem, a primeira estrela acesa em Takes. As duas contam como celebração para o porteiro
+    (`GuidanceGate.celebrated`).
 - Contraste: `PaletteContrastTests.theNotificationSheetsReadOnTheirNight`.
 
 ## 28. Notas dos testes de UI
@@ -1692,7 +1794,7 @@ nada de história, resultado, número ou tendência inventados).
   atrás dela, mais suave, e na frente; também na nota "Starter ideas" e na introdução da ferramenta): à direita do My Cue Voice na linha 1, **em qualquer
   estado de Scripts**, 8 pt depois do último chip, cápsula amarela de 44 × 30 pt (`accSoft`, contorno `accLine` de 1 pt, 44 × 44 de toque), "Find
   inspiration" para o VoiceOver; dobra com a linha. Sem largura, os chips encurtam (§2) e só por último rolam com a lâmpada fixa. Sem dica de primeiro uso.
-- **A folha** (`Screens/Scripts/Inspiration/`; abre pela lâmpada, por + › Let Cue draft it e pela notificação de ideia): título, "Ideas to start from.",
+- **A folha** (`Screens/Scripts/Inspiration/`; abre pela lâmpada do card e pela notificação de ideia; + › Let Cue draft it fecha a folha e põe o teclado no campo do card): título, "Ideas to start from.",
   temas no **leque** de Scripts e Takes (`FilterFan`, §2: dobrado no escolhido com um ponto por tema escondido, na cor do mundo dele; abre e dobra com o
   mesmo líquido e as mesmas vibrações; chips de 34 pt em 14 semibold; o escolhido em violeta `inspirationChipOn` com letra branca, porque as ideias são
   da IA), e **Topics** (só o ícone de ajustes num chip cinza de 44 × 34, "Topics" para o VoiceOver; sem temas, "+ Add topics" escrito) sempre à vista no fim da linha, fora do leque (o leque guarda o espaço dele, `trailingInset`, e os
@@ -1881,9 +1983,9 @@ Mais expressão nas cenas de descoberta e celebração, discrição no roteiro, 
   slide recua e o próximo avança (`DepthTransition`).
 - **Luz que soma** (só no 1.3; `GalaxyPainter`): halos, braços, estrelas, bojo e cruz de luz das galáxias usam `.plusLighter` (`ANIMACOES.md` §5). Planetas,
   órbitas e núcleo continuam sólidos.
-- **Celebrações** (`StoryCover`, `CueMotion.storyIn/storyOut`): a primeira estrela e o marco entram em fade sobre a revisão do take (0,35 s, curva da luz) e saem
-  em 0,25 s; de "Ready to travel" para o send-off a capa troca sem descer e subir. Depois da história, primeira estrela, send-off e marco desenham a 30 fps e
-  param com o app inativo.
+- **Celebrações** (§16): de "Ready to travel" para o send-off a capa troca sem descer e subir; a linha do ícone sobe no lugar do cartão depois do pouso
+  (0,45 s); a primeira estrela em Takes abre a pílula com uma mola e solta um anel de luz. Depois do pouso, o send-off desenha a 30 fps e para com o app
+  inativo.
 - **Toasts** (`AnyTransition.toast`, app e editor): entram descendo 8 pt em 0,25 s e saem em fade de 0,2 s (`motion/README.md`); o ícone faz o gesto do
   seu tipo (§1, Avisos), e o fim de um trabalho troca ícone e texto na mesma pílula.
 - **Ícones que trocam** (`symbolSwap`, `CueMotion.symbolSwap`): play/pause do gravador e do editor, o olho dos cues, a conexão do
@@ -1901,8 +2003,8 @@ completa e o roteiro estão em `ONBOARDING_COPY_MEMORY.md`), e a prática passou
   usually talk about?"; 1.3 "Where will you share your videos?", **Choose a platform** / **Continue with {rede}**, "CHOOSE ONE PLATFORM" e "SAFE ZONES ON/OFF" conforme a
   rede (antes dizia ON sempre); 1.4 "Your first script. Ready to read." e **Try the teleprompter**; 1.5 "Let the text follow your voice." e três recusas
   (microfone e câmera, só microfone, só câmera); 1.6 o cartão diz o que fazer e o que move o texto ("Tap play and wait for the count. Then read out
-  loud: the text follows your voice.", "Nothing is recorded."), **Record my first video** e **Explore Cue first**; 1.7 "Your first
-  video. Your first star.", **Explore Cue** e **Edit my video**. Os rótulos dos capítulos: YOUR TOPICS, YOUR FIRST VIDEO, YOUR FIRST SCRIPT, CAMERA &
+  loud: the text follows your voice.", "Nothing is recorded."), **Record my first video** e **Explore Cue first**; "Your first
+  video. Your first star." é o que o VoiceOver ouve quando a estrela acende em Takes (§16). Os rótulos dos capítulos: YOUR TOPICS, YOUR FIRST VIDEO, YOUR FIRST SCRIPT, CAMERA &
   VOICE. Nenhum travessão em texto novo.
 - **Roteiro fixo** (decisão do dono: sempre o mesmo, nada de IA no onboarding): `OnboardingScript.practice(followsVoice:)`, título "From idea to video",
   gancho, corpo e CTA do dono. A 1.4 o mostra chegando no console com o ritmo do quadro (`MessageTimeline`); o tamanho das palavras é o maior que cabe
@@ -1944,12 +2046,12 @@ completa e o roteiro estão em `ONBOARDING_COPY_MEMORY.md`), e a prática passou
 
 ## 36. Refinamentos tela a tela (15 de outubro de 2026; pedido do dono)
 
-O dono revisou no iPhone, tela a tela, o primeiro voo, a primeira estrela, o Pro e Your universe. Onde diverge do quadro, vale este.
+O dono revisou no iPhone, tela a tela, o primeiro voo, o Pro e Your universe. Onde diverge do quadro, vale este.
 
 - **O rastro das estrelas** (`StarRibbon`, `DesignSystem/Effects`): toda estrela que voa deixa o mesmo rastro: o caminho dos últimos 0,32 s como uma fita
   contínua que afina, apaga e esfria do branco ao dourado, sobre uma cópia larga e desfocada; a cabeça é um núcleo branco com halo e uma cruz que gira.
   Usam: 1.1 (`WelcomeStarPainter`), a estrela que entra na 1.2 (`StarTrail`), a luz que leva o tema à órbita (`TopicBirthPainter`, nas cores do tema), o
-  cometa da 1.7, a estrela que vira o planeta do Pro e as luzes que nascem os planetas em Your universe.
+  a estrela que vira o planeta do Pro e as luzes que nascem os planetas em Your universe.
 - **1.1:** os pontos do C piscam ao serem tocados (clarão de 0,9 s) e depois respiram e cintilam, cada um no seu ritmo (`WelcomeScript.shine`/`glint`; o
   relógio segue depois da história, parado com Reduzir Movimento); o sexto ponto respira em amarelo. Ao ser tocada, cada palavra (TELEPROMPTER, AUTO
   CAPTIONS, ✦ AI SCRIPTS) vira uma cápsula **amarela sólida** com letras pretas (`accInk` sobre `acc`) e fica assim. Título "A teleprompter made for your
@@ -1967,11 +2069,6 @@ O dono revisou no iPhone, tela a tela, o primeiro voo, a primeira estrela, o Pro
   44 pt, texto de 15 pt) tem uma onda de 9 barras (`PracticeVoiceWave`) que segue o nível do microfone enquanto ouve a voz e, esperando, uma ondulação
   lenta; a borda acende em amarelo com a voz. O cartão fica 58 pt abaixo da caixa. **Record my first video** sobe depois do play; **Explore Cue first**
   está sempre lá. A etiqueta "✦ PRACTICE · NOT RECORDING" é sólida (`surface3`, borda lilás), não vidro.
-- **1.7 (acabamento por cima do quadro):** uma luz percorre a borda do take antes dele dobrar; onde ele vira luz, um reflexo horizontal de lente e uma onda;
-  o cometa com o rastro e 5 toques táteis que apertam até a chegada; o universo escurece por um instante antes da estrela acender, um clarão branco e
-  dourado, uma onda de luz pelas órbitas de dentro para fora e o YOU pulsando; uma conta de luz desenha a linha do YOU (lilás ao dourado); a cena se
-  aproxima 4% durante a história; a cruz da estrela gira devagar com raios diagonais e a estrela cintila a cada 3,4 s; um brilho dourado cruza o título; uma
-  estrela cadente a cada 9 s depois que tudo para.
 - **Pro:** ver §12 (abertura e arte). A lista de benefícios ficou como estava no texto: o dono decide depois quais recursos são só do Pro (hoje só as
   exportações ilimitadas e os ícones de marco a partir de 10 são).
 - **Your universe:** constrói-se ao abrir (`UniverseOpening`, 2,9 s; não nos anos selados, com Reduzir Movimento, nas imagens do "Share my universe" nem nos
@@ -1982,7 +2079,7 @@ O dono revisou no iPhone, tela a tela, o primeiro voo, a primeira estrela, o Pro
   do ano anterior (dele ficam rotas e planetas, bem fracos).
 - **Testes:** `WelcomeScriptTests` (cápsula fica amarela, brilho dos pontos), `VoyageFitTests`, `ProOpeningScriptTests` (voo, nascimento, nada antes da
   estrela chegar), `UniverseOpeningTests`, `PaletteContrastTests.thePracticeNoticeReadsOnItsSolidCapsule`, `OnboardingUITests` (sem Skip nem "I already use
-  Cue"; Record só depois do play); captura `HandoffCaptureTests.test1_7_FirstStarFinish` com os segundos do acabamento.
+  Cue"; Record só depois do play).
 
 ## 37. Quick edit: montagens confiáveis, capa e exportação (16 de outubro de 2026; pedido do dono)
 
@@ -2445,7 +2542,7 @@ Prévia e exportação passam pelo mesmo compositor (`CueVideoCompositor`), ent�
   linha sob os blocos diz o arquivo de verdade: **"This format exports at 606×1080 · never enlarged"** (um vídeo deitado de 1080p em 9:16;
   `ExportFrameSize`, a mesma regra da exportação, pela qualidade e o Pro da revisão de onde o editor abriu; sem revisão, nada).
 - **Áreas seguras** (`SafeGuideOverlay`, `SafeGuideBadge`, `LookViewModel+SafeGuide`, `SafeGuideZones`; decisão B do dono, 07/11/2026): no fim
-  de Aspect ratio, a chave **Safe zones** ("Where an app’s buttons cover your video · approximate") mostra sobre a prévia onde os botões, a legenda e
+  de Aspect ratio, a chave **Safe zone** ("Where an app’s buttons cover your video · approximate") mostra sobre a prévia onde os botões, a legenda e
   o cabeçalho de um app cobrem o vídeo: as partes cobertas sombreadas de leve (`Palette.Editor.safeGuideShade`) e a borda da parte livre numa linha
   branca **sólida** sobre um halo escuro (`safeGuideLine`, `safeGuideHalo`; sólida para nunca parecer o contorno tracejado de uma foto ou vídeo).
   Ligada, fica ligada em todo vídeo (`EditorPreferencesStoring.showsSafeGuide`, desligada até ser ligada): é o jeito de trabalhar, não uma mudança
@@ -2455,15 +2552,15 @@ Prévia e exportação passam pelo mesmo compositor (`CueVideoCompositor`), ent�
   quadro (`SafeZoneMargins.frameEdges`, 5/7/6/6%). Com ela ligada, chips trocam o app (os medidos no formato, depois Generic) e uma nota diz de
   onde veio a sugestão ("Suggested by your script: TikTok", "No app on your script for this format: generic guide"). Na prévia, no canto de cima
   à esquerda, o rótulo **"TikTok · approximate"** (`ink` sobre a placa `safeGuidePlate`; cresce até Acessibilidade 2 e, numa prévia estreita,
-  fica só com o nome do app) é um `Menu` do sistema: o app (o do roteiro com "· your script") ou **Hide safe zones**, ali mesmo. **A troca é deste
-  vídeo** (`TakeEdit.safeGuide`; um projeto salvo antes abre com nil, a sugestão) **e um passo de desfazer** ("Safe zones"), porque as legendas
+  fica só com o nome do app) é um `Menu` do sistema: o app (o do roteiro com "· your script") ou **Hide safe zone**, ali mesmo. **A troca é deste
+  vídeo** (`TakeEdit.safeGuide`; um projeto salvo antes abre com nil, a sugestão) **e um passo de desfazer** ("Safe zone"), porque as legendas
   vão junto: as margens delas passam a ser a parte livre da guia escolhida (`CaptionSafeArea.margins(for:aspect:pick:)`), na prévia e no
   arquivo; trocar o formato mantém a escolha (volta quando o formato tem aquele app). Desfazer volta o app e as legendas, não esconde a guia.
   Um projeto salvo antes da guia mostra a do app para o qual as legendas dele foram postas (`SafeGuideZones.active`: um take sem plataforma
   tinha as do Reels no 9:16 e as do LinkedIn no 4:5). A guia só existe na prévia do editor: some em tela cheia, sob o roteiro da narração e no
   recorte de um clipe, e nunca entra na composição (arquivo, vídeo da prévia, capa). Arrastar um texto ou a legenda com a guia escondida mostra
-  a parte livre tracejada (as mesmas cores) e o rótulo, sem toque. VoiceOver: a chave (Safe zones, On/Off), os chips (selecionado), o rótulo
-  ("Safe zones: TikTok · approximate", dica "Switches the app or hides the guide") e um anúncio a cada troca. Testes: `SafeGuideZonesTests`,
+  a parte livre tracejada (as mesmas cores) e o rótulo, sem toque. VoiceOver: a chave (Safe zone, On/Off), os chips (selecionado), o rótulo
+  ("Safe zone: TikTok · approximate", dica "Switches the app or hides the guide") e um anúncio a cada troca. Testes: `SafeGuideZonesTests`,
   `QuickEditSafeGuideTests`, exportação real `RealExports/SafeGuideExportTests` (nada da guia no arquivo nem no vídeo da prévia; uma linha
   embaixo fica na parte livre do app escolhido, igual na prévia e no arquivo, mais baixa com Stories que com TikTok),
   `PaletteContrastTests.theSafeGuideReadsOverAnyPicture`, `SafeGuideUITests`; fotos sobre um quadro branco e um preto (`-uiTestPreviewFrame`,
@@ -3400,7 +3497,7 @@ Profile, Pro, celebrações) tinha tamanho fixo copiado do quadro, e várias tel
   crescer: o texto do teleprompter (o controle dele), o que é desenhado no vídeo, miniaturas, mapas, cartões de compartilhar e ícones dentro de
   botões redondos de tamanho fixo. A regra `loose_font_size` do SwiftLint acusa um tamanho solto.
 - **Proporção da tela** (`ScreenProportion`): de 390 a 402 pt de largura o tamanho é o do quadro; menor até ×0,96 no SE e no mini (375 pt), maior até
-  ×1,08 no Pro Max (440 pt; o Air, 420 pt, fica no meio). As cenas desenhadas num quadro (1.1, 1.7, 8.3) também crescem ou encolhem com a tela.
+  ×1,08 no Pro Max (440 pt; o Air, 420 pt, fica no meio). As cenas desenhadas num quadro (1.1, 8.2) também crescem ou encolhem com a tela.
   **O Quick edit não segue a largura** (dono, 30/10/2026): as ferramentas têm o mesmo tamanho em todo iPhone, e um controle do app dentro dele (o
   slider, um chip, as folhas dele) usa o tamanho do editor (`typeFollowsScreenWidth`); o Dynamic Type continua valendo.
 - **Papéis, não tamanhos iguais** (dono, 30/10/2026): o que tem a mesma função segue a mesma regra. Títulos de folha 22 bold (`SheetHeader`; as
@@ -3409,14 +3506,14 @@ Profile, Pro, celebrações) tinha tamanho fixo copiado do quadro, e várias tel
   compacta) e os cartões da grade de Takes 14 bold sobre a miniatura. Nome e valor de um slider em 15 semibold, o valor branco com dígitos fixos
   (o amarelo fica na trilha, nos chips mexidos e no ✓). Texto secundário, dicas e rótulos mono em `ink2` (não há um segundo cinza).
 - **Até onde cresce:** o app inteiro até o 3º tamanho de acessibilidade (`RootView`; além dele uma linha guarda uma ou duas palavras). Cenas com as
-  palavras dentro (primeiro voo, 1.7, 8.2, Your year, Ready to travel) até o 1º; a 1.1, o capítulo dos tópicos, o cartão do roteiro de prática, a
-  8.3, a fileira de ícones do app, o dock de Scripts e o cartão de etapas de Takes até o maior tamanho padrão (xxxLarge; o dock fica por cima da
+  palavras dentro (primeiro voo, 8.2, Your year, Ready to travel) até o 1º; a 1.1, o capítulo dos tópicos, o cartão do roteiro de prática, a
+  fileira de ícones do app, o dock de Scripts e o cartão de etapas de Takes até o maior tamanho padrão (xxxLarge; o dock fica por cima da
   lista); os chips de plataforma até o 1º. O Quick edit e o gravador seguem como estavam (§44).
 - **Nos tamanhos de acessibilidade** o que ficava lado a lado empilha (`ReflowStack`): a foto e o nome no Profile (a seta › no canto), o universo e o
   texto em "Your universe", o nome e o valor nas linhas de Settings, "Ready to record" e as informações na página do roteiro, a ação embaixo do
   "Up next" de Takes, a força da voz. Os formatos e os vídeos de Takes ficam um por linha; o título de um roteiro na lista vai a 4 linhas e a
   linha mono a 2. Chips com texto têm altura mínima (com 2–4 pt em cima e embaixo), não fixa: no tamanho padrão ficam iguais.
-- **iPhone SE (375 × 667):** 1.1 e 8.3 cabem inteiras acima dos botões; o capítulo 3 (1.4) rola acima do botão só quando nem as palavras em 13 pt
+- **iPhone SE (375 × 667):** a 1.1 cabe inteira acima dos botões; o capítulo 3 (1.4) rola acima do botão só quando nem as palavras em 13 pt
   cabem; em todo outro iPhone ele cabe sem rolar (`MessageWordFit`, §35).
 - **Conferido** com `LayoutAuditCaptureTests` (cada tela num lançamento próprio, opt-in: `TEST_RUNNER_CUE_AUDIT_DIR`, `TEST_RUNNER_CUE_AUDIT_NAME`,
   `TEST_RUNNER_CUE_AUDIT_SIZE`, `CUE_SIMULATOR`) no SE com texto padrão, no SE com o maior tamanho de acessibilidade e no Pro Max.
@@ -3792,11 +3889,11 @@ app nunca manda (etapa desconhecida, textos acima de 40 mil caracteres, formato 
 política no modelo que a Anthropic recomenda (`fallbacks: "default"`) e para o Claude quando o criador cancela. O log do servidor guarda etapa, modelo,
 tokens, tempo e como terminou, nunca o texto. O App Check só pede token quando a Ultra AI chama (`UltraAppCheck`, `CueAppCheckProviderFactory`,
 `FirebaseAppCheckTokenAutoRefreshEnabled` desligado). Configurar ou trocar a chave: `server/setup.sh` (chave, publicação, App Attest e token de
-depuração); testes do servidor: `npm test` em `server/functions`. Ainda **não** há créditos por conta no servidor: os grátis e os do Pro são contados no
-iPhone (`UltraAllowanceService`), e o limite de gasto é o saldo da conta da Anthropic.
+depuração); testes do servidor: `npm test` em `server/functions`. Os créditos de cada criador e o teto de gastos do Cue ficam no servidor (ver
+"Créditos no servidor").
 
-**Onde existe:** no **TestFlight** (Release, quando o StoreKit diz que não é a App Store: `UltraDistribution`, ambiente `sandbox` ou `xcode`; na App
-Store continua escondida até o dono ligar o controle do servidor e atualizar os textos de privacidade, ver "Créditos no servidor"), em Debug com o Firebase ligado ou o laboratório configurado (`UltraLabClient.isOffered`) e num
+**Onde existe:** na **App Store** e no **TestFlight** (Release com o Firebase ligado: `LaunchOptions`, `UltraAppCheck.isReady`; decisão do dono,
+09/11/2026: a Ultra AI entra no lançamento como o motivo para assinar o Pro), em Debug com o Firebase ligado ou o laboratório configurado (`UltraLabClient.isOffered`) e num
 teste de UI (`-uiTestUltra`). O Apple Intelligence continua o padrão e nunca é trocado por ela em silêncio (nem ela por ele): cada roteiro da Ultra AI
 é uma escolha explícita.
 
@@ -4013,12 +4110,14 @@ Nada de nome, conta ou contato. O servidor (`server/functions/src/ultraMetering.
   in a few minutes"), 409 fora de ordem e 426 sem id (falhas comuns). `{"action": "allowance"}` responde quanto resta; o app pergunta antes do primeiro
   roteiro de cada abertura e depois de cada um, só com a permissão dada.
 
-**Para ligar na App Store (falta, depende do dono):** publicar `ultra` e as regras com este código (em `observe`); ver o `ultra_would_refuse` e os
-gastos alguns dias no TestFlight; passar a `enforce` quando o build que manda os ids for o do TestFlight; textos de privacidade (a política do site e
-a etiqueta da App Store dizem que o id aleatório e a transação do Pro vão ao servidor do Cue; a folha *What Ultra AI sends* ganha essa linha);
-decidir o teto diário de verdade; e só então trocar `UltraDistribution.allows` para incluir a produção. Limites conhecidos: o período de carência de
-cobrança da Apple ainda conta como sem Pro no servidor (a transação venceu; ler o estado da assinatura pede a App Store Server API com uma chave do
-dono), e um reembolso só é visto quando a transação que o app manda já o traz (sem as App Store Server Notifications).
+**No lançamento** (dono, 09/11/2026): o servidor em `enforce` (todo build desde 05/11/2026 manda os ids), o teto de **USD 20 por dia** (a estimativa
+do dono é de uns 200 criadores por mês: ~USD 0,06 por roteiro, uns 330 roteiros por dia; o mês inteiro, se todos usassem os 3 grátis e 1 em 10
+assinasse e escrevesse os 30, fica perto de USD 75), um limite mensal no Claude Console como segunda rede, e os contadores apagados sozinhos ~13
+meses depois do último uso (`server/functions/src/retention.ts`, a TTL de `server/firestore.indexes.json`). O que falta publicar depende do dono:
+`firebase deploy --only functions:ultra,firestore:indexes` e a política de privacidade (o link em `AppLinks.privacyPolicy`). Limites conhecidos:
+o período de carência de cobrança da Apple conta como sem Pro no servidor (deixar o Billing Grace Period desligado no App Store Connect evita o
+caso), e um reembolso só é visto quando a transação que o app manda já o traz (o StoreKit tira o Pro do iPhone num reembolso, e o app deixa de
+mandar a prova).
 
 Para ver sem gastar chamadas: `-uiTestUltra -uiTestUltraAllowed -uiTestUltraPaced` (cerca de 24 s) ou `-uiTestUltraPacedLong` (polimento que pensa 22 s sem palavras, com cometa; a captura confere que a galáxia muda em todos os quadros).
 
@@ -4367,3 +4466,25 @@ abrindo o último grupo da barra principal e nos atalhos depois de Clean up; nã
   ficando, vídeo com legendas, Before/After, reabrir), `AutoEditZoomPickerTests`, `QuickEditToolbarTests`; `EditorTaskUITests.testAutoEdit…`
   (na edição de demonstração: legendas ficam, quatro pausas saem, Before/After, Turn off, Undo). No aparelho: **não validado** (o Simulator não
   ouve a fala; a demonstração já traz as pausas achadas).
+
+## 63.1. Revisão da take: o painel sobre o vídeo
+
+O painel da revisão (régua, título, etapas, ações) tem um fundo escuro próprio (`Palette.Takes.reviewPanelScrim`, preto a 80%, que some em
+56 pt acima dele): sobre qualquer vídeo, inclusive o mais claro, `ink`, `ink2` e a cor de cada etapa passam de 4,5:1 (`PaletteContrastTests`).
+Medido numa take real no iPhone 15 Pro (09/11/2026): de 3,5–4:1 nas etiquetas PICK / EDIT para 6,3:1.
+
+## 64. Portas, contagens e aparelhos (9 de novembro de 2026; varredura aprovada pelo dono)
+
+- **"Start a video" segue a porta** (`NewScriptSheet(fromRecording:)`, `AppSheet.newScript(fromRecording:)`): aberta por Start recording › New script,
+  chama-se "New script" e não repete "Record without a script" (a folha de antes já o oferece); pelas outras portas é "Start a video" com ele.
+  "Let Cue draft it" é uma linha: fecha a folha, vai a Scripts e põe o teclado no campo do card (`IdeaDraftService.wantsFocus`); as ideias do Cue ficam
+  na lâmpada do card.
+- **Takes em colunas pela largura** (`TakesView`): cartões de ~160 pt (`GridItem(.adaptive(minimum: 160))`), 2 no iPhone, 4 no iPad em pé, 6 deitado;
+  uma coluna nos tamanhos de acessibilidade.
+- **A rede padrão pela busca dos Ajustes** (`SettingsEntry.defaultPlatform`, só na busca): "platform", "network" e o nome de cada rede acham "New scripts
+  are made for", que abre Profile › Edit profile. Nenhuma linha nova na raiz.
+- **Contagens no singular**: as que chegam a 1 primeiro (vídeos compartilhados, marcos, redes do compartilhar, takes, semanas seguidas) têm a forma de
+  um no String Catalog, nos idiomas em que ela muda; o árabe tem as formas de um, dois, poucos e muitos, o hindi a de um.
+- **iPad e Mac**: os textos que dizem "iPhone" têm a variação de aparelho do String Catalog ("this iPad"), com as terminações de cada idioma (turco
+  "iPad’de", coreano "iPad가", sueco e norueguês "iPaden"); o Mac mostra a do iPad. No Mac somem a seção de ícones do app (Personalize, a busca) e a
+  linha dos ícones no paywall (`ProcessInfo.isiOSAppOnMac`).

@@ -48,7 +48,7 @@ struct IdeaPromptDraftTests {
     }
 
     @Test func theIdeaSheetsHaveTheirOwnIdentity() {
-        let ids = [AppSheet.ideas.id, AppSheet.format.id, AppSheet.createFor.id, AppSheet.newScript.id]
+        let ids = [AppSheet.ideas.id, AppSheet.format.id, AppSheet.createFor.id, AppSheet.newScript().id, AppSheet.newScript(fromRecording: true).id]
         #expect(Set(ids).count == ids.count)
     }
 

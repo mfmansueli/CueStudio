@@ -98,6 +98,16 @@ final class StudioUITests: XCTestCase {
         XCTAssertTrue(app.buttons["studio.adjust.size"].isHittable, "The adjustments did not come back")
     }
 
+    /// A keyboard, foot pedal or clicker drives the text like the remote: space plays (after the countdown) and pauses.
+    func testSpaceOnAKeyboardOrPedalPlaysAndPauses() {
+        let app = launchStudio()
+        let play = app.buttons["prompter.playButton"]
+        app.typeKey(" ", modifierFlags: [])
+        XCTAssertTrue(play.matches(NSPredicate(format: "label == 'Pause'"), within: 12), "Space did not start the text")
+        app.typeKey(" ", modifierFlags: [])
+        XCTAssertTrue(play.matches(NSPredicate(format: "label == 'Play'"), within: 5), "Space did not pause it")
+    }
+
     /// Play from the top waits for the countdown set in Settings, so there is time to get in front of the other camera, then the text runs.
     func testPlayFromTheTopCountsDownThenPlays() throws {
         let app = launchStudio()

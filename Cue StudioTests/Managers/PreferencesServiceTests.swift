@@ -91,7 +91,8 @@ struct PreferencesServiceTests {
         service.prompter.font = .newYork
         service.resetCreatorSetup()
         #expect(service.creatorSetup == CreatorSetup())
-        #expect(service.camera.countdown == .ten)
+        // "Reset my setup" is the whole camera too, the countdown included.
+        #expect(service.camera == CameraSettings())
         #expect(service.prompter == PrompterSettings())
     }
 

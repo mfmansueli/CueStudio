@@ -53,7 +53,7 @@ struct SettingsRemoteView: View {
                 if moment != .pairing, moment != .remote {
                     RemoteCapabilities(isLive: stage == .linked).padding(.top, 32)
                 }
-                comingNext.padding(.top, 32)
+                keyboardsAndPedals.padding(.top, 32)
             }
             .padding(.horizontal, Metrics.gutter)
             .padding(.bottom, 32)
@@ -183,30 +183,27 @@ struct SettingsRemoteView: View {
         .accessibilityIdentifier("remote.connected")
     }
 
-    private var comingNext: some View {
+    /// A keyboard, foot pedal or clicker already drives the prompter (`PrompterKeyCommands`): which keys do what.
+    private var keyboardsAndPedals: some View {
         VStack(alignment: .leading, spacing: 8) {
-            CueSectionHeader("Coming next")
+            CueSectionHeader("Keyboards and foot pedals")
                 .padding(.horizontal, Metrics.textGutter)
-            HStack(spacing: 12) {
+            HStack(alignment: .top, spacing: 12) {
                 Image(systemName: "keyboard")
                     .cueFont(17, weight: .medium)
                     .foregroundStyle(Palette.ink2)
+                    .padding(.top, 2)
                     .accessibilityHidden(true)
-                Text("Keyboards and foot pedals").foregroundStyle(Palette.ink2)
-                Spacer(minLength: 8)
-                Text("Soon")
-                    .cueFont(.caption, weight: .bold)
-                    .textCase(.uppercase)
-                    .tracking(1)
+                Text("Pair one in iOS Settings › Bluetooth. Space plays or pauses, ↓ and ↑ move three lines, → and ← change the speed.")
+                    .cueFont(.subheadline)
                     .foregroundStyle(Palette.ink2)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 3)
-                    .overlay(Capsule().strokeBorder(Palette.separator, lineWidth: 1))
+                    .fixedSize(horizontal: false, vertical: true)
             }
-            .padding(.horizontal, 16)
-            .frame(minHeight: 52)
+            .padding(16)
+            .frame(maxWidth: .infinity, alignment: .leading)
             .background(Palette.surface, in: RoundedRectangle(cornerRadius: Metrics.groupedListRadius, style: .continuous))
             .accessibilityElement(children: .combine)
+            .accessibilityIdentifier("remote.keyboards")
         }
     }
 }

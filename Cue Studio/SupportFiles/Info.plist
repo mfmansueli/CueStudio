@@ -21,7 +21,11 @@
 	</array>
 	<key>CueAppStoreID</key>
 	<string>$(CUE_APP_STORE_ID)</string>
+	<key>FIREBASE_ANALYTICS_COLLECTION_ENABLED</key>
+	<false/>
 	<key>FirebaseAppCheckTokenAutoRefreshEnabled</key>
+	<false/>
+	<key>FirebaseCrashlyticsCollectionEnabled</key>
 	<false/>
 	<key>MetaAppID</key>
 	<string></string>
@@ -33,6 +37,11 @@
 	<string></string>
 	<key>TikTokShareRedirectURI</key>
 	<string></string>
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+		<key>UIApplicationSupportsMultipleScenes</key>
+		<false/>
+	</dict>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>processing</string>

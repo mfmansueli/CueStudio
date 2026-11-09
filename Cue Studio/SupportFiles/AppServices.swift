@@ -14,7 +14,6 @@ struct AppServices {
     let takes: TakeLibraryService
     let preferences: PreferencesService
     let profile: CreatorProfileService
-    let session: SessionService
     let rules: PlatformRulesService
     let quota: UsageQuotaService
     let store: StoreManager
@@ -39,7 +38,7 @@ struct AppServices {
     /// The pause between the groups of words of a script the AI writes into the page.
     let scriptRevealPause: Duration
     let writer: ScriptWriting
-    /// AI Scripts Ultra (Google's Gemini), written only when the creator chose it and allowed it; unavailable in Release.
+    /// AI Scripts Ultra (Anthropic's Claude, through Cue's server), written only when the creator chose it and allowed it; unavailable in Release.
     let ultra: UltraScriptService
     /// Reads what the creator imports for how they sound (Import my writing), with the model on this iPhone.
     let styleReader: any WritingStyleReading
@@ -116,10 +115,6 @@ struct AppServices {
     let platformPickFrozenAge: Double?
     /// UI tests: the send-off stands still at this second.
     let sendOffFrozenTime: Double?
-    /// UI tests: the review opens on the first-star / milestone story.
-    let showsFirstStar: Bool
-    let storyFrozenTime: Double?
-    let milestoneToShow: Int?
     /// UI tests: a stand-in for the system share sheet.
     let fakesShareSheet: Bool
     /// UI tests: the editor reads Low Power Mode as on.
@@ -162,14 +157,12 @@ struct AppServices {
         topicBirthFrozenAge = options.topicBirthFrozenAge
         platformPickFrozenAge = options.platformPickFrozenAge
         sendOffFrozenTime = options.sendOffFrozenTime
-        showsFirstStar = options.showsFirstStar
-        storyFrozenTime = options.storyFrozenTime
-        milestoneToShow = options.milestoneToShow
         // What UI tests stand in for: the share sheet, Low Power Mode, the editor's video.
         (fakesShareSheet, forcesLowPowerMode, previewStandInFrame) = (options.fakesShareSheet, options.forcesLowPowerMode, options.previewStandInFrame)
         logsDockMotion = options.logsDockMotion
         profile = CreatorProfileService(defaults: options.defaults)
-        session = SessionService(defaults: options.defaults, checker: options.credentialChecker)
+        // Sign in with Apple is gone (owner, 09/11/2026): what it kept goes, the profile's name stays (`AppleSignInLeftovers`).
+        AppleSignInLeftovers.erase(from: options.defaults)
         rules = options.platformRules
         quota = UsageQuotaService(
             counter: options.exportCounter, defaults: options.defaults, resetsOnNewInstall: options.resetsExportsOnNewInstall
@@ -194,7 +187,7 @@ struct AppServices {
         self.ideaTransition = ideaTransition
         // The free scripts and Pro's monthly ones: this iPhone's count, replaced by Cue's server's while it enforces one (`UltraAllowanceService`).
         let ultra = UltraScriptService(
-            isAvailable: options.ultraAvailable, checksDistribution: options.checksUltraDistribution,
+            isAvailable: options.ultraAvailable,
             consent: UltraConsentService(defaults: options.defaults), budget: UltraCallBudget(defaults: options.ultraBudgetDefaults),
             allowance: UltraAllowanceService(defaults: options.defaults) { [store] in
                 UltraAllowance.Membership(tier: store.tier)
@@ -279,7 +272,8 @@ struct AppServices {
             library: library, takes: takes, drafts: options.draftStore, logbook: logbook, brands: brands,
             profile: profile, preferences: preferences, defaults: options.defaults, notifications: notifications, voyage: voyage,
             draftLearning: draftLearning, voiceQuestions: voiceQuestions, ledger: ledger, shareQueue: shareQueue, ideas: ideaSuggestions,
-            fonts: fonts, fontPacks: fontPacks, mediaLibrary: mediaLibrary, brandKits: brandKits, ideaDraft: ideaDraft
+            fonts: fonts, fontPacks: fontPacks, mediaLibrary: mediaLibrary, brandKits: brandKits, ideaDraft: ideaDraft,
+            ultraConsent: ultra.consent, telemetry: FirebaseTelemetry()
         )
         topicTagging = TopicTaggingService(library: library, profile: profile, personalization: personalization, writer: writer)
     }
@@ -287,6 +281,7 @@ struct AppServices {
     func load() {
         library.load()
         takes.load()
+        migrateTakeNetworks()
         brands.load()
         // Before anything draws words: the imported fonts are registered for Cue.
         fonts.load()
@@ -316,6 +311,7 @@ struct AppServices {
     func reloadWhatCouldntBeRead() {
         library.reloadIfUnread()
         takes.reloadIfUnread()
+        migrateTakeNetworks()
         brands.reloadIfUnread()
         quota.reloadIfUnread()
         fonts.reloadIfUnread()
@@ -324,6 +320,19 @@ struct AppServices {
         // And writes what a failed save (a full iPhone) left only in memory, now that space may be free.
         library.saveAgainIfFailed()
         takes.saveAgainIfFailed()
+    }
+
+    /// Once, with both libraries read: every take of a script gets the script's network (`TakePlatformMigration`). Marked done only once it
+    /// was written, so a full iPhone tries again at the next launch.
+    private func migrateTakeNetworks() {
+        guard defaults.integer(forKey: DefaultsKey.takeNetworkMigration) < TakePlatformMigration.version, library.isRead, takes.isRead else { return }
+        let scripts = Dictionary(library.scripts.map { ($0.id, $0.platform) }, uniquingKeysWith: { first, _ in first })
+        takes.adoptScriptNetworks { scripts[$0] }
+        // The first flight used to leave its network picked on the empty dock, so AI scripts kept going there after the default changed: an
+        // empty dock follows the default again.
+        if ideaDraft.isEmpty { ideaDraft.platform = nil }
+        guard !takes.saveFailed else { return }
+        defaults.set(TakePlatformMigration.version, forKey: DefaultsKey.takeNetworkMigration)
     }
 
     /// Scripts or takes changed but couldn't be written: kept in memory, lost if Cue is closed before a save works.
@@ -510,7 +519,6 @@ extension View {
             .environment(services.ledger)
             .environment(services.preferences)
             .environment(services.profile)
-            .environment(services.session)
             .environment(services.rules)
             .environment(services.quota)
             .environment(services.store)
@@ -559,7 +567,6 @@ extension View {
             .environment(\.proOpeningFrozenAt, services.proFrozenTime)
             .environment(\.onboardingChapterFrozenAt, services.chapterFrozenTime)
             .environment(\.sendOffFrozenAt, services.sendOffFrozenTime)
-            .environment(\.storyFrozenAt, services.storyFrozenTime)
             .environment(\.fakesShareSheet, services.fakesShareSheet)
             .environment(\.forcesLowPowerMode, services.forcesLowPowerMode)
             .environment(\.previewStandInFrame, services.previewStandInFrame)

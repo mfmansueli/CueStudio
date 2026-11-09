@@ -6,10 +6,12 @@
 import AppIntents
 import SwiftUI
 
-/// Injects the app session's services and takes requests from Siri and Shortcuts. Cue has no
-/// onboarding gate: a first run simply shows the empty library.
+/// Injects the app session's services and takes requests from Siri and Shortcuts. A fresh install shows the first flight over the
+/// whole app (`OnboardingView`, while `OnboardingService.isActive`), until it is told or skipped.
 struct RootView: View {
     let services: AppServices
+    /// A pairing code from a link, until it can be used (`handleRemoteLink`).
+    @State private var pendingRemoteCode: String?
 
     @Environment(\.scenePhase) private var scenePhase
 
@@ -47,9 +49,6 @@ struct RootView: View {
             .task {
                 await services.rules.refresh()
             }
-            .task {
-                await services.session.verify()
-            }
             // A friend's first export the server didn't hear yet, and a creator who invites: their friends' first exports.
             .task {
                 await services.referral.refreshIfInviting()
@@ -63,8 +62,6 @@ struct RootView: View {
                 services.reloadWhatCouldntBeRead()
                 if services.hasUnsavedWork { warnUnsavedWork() }
                 Task { await services.store.refreshEntitlements() }
-                // "Stop Using Apple ID" happens in Settings, outside Cue.
-                Task { await services.session.verify() }
                 Task { await services.referral.refreshIfInviting() }
             }
             // A save that failed in front of the creator is said at once (one that failed in the background, locked, is tried
@@ -80,10 +77,12 @@ struct RootView: View {
             .onChange(of: services.onboarding.isActive) {
                 handleNotificationTaps()
                 handleIntent()
+                handleRemoteLink()
             }
             .onChange(of: services.presentation.prompter == nil) {
                 handleNotificationTaps()
                 handleIntent()
+                handleRemoteLink()
             }
             .onChange(of: services.presentation.showsRemoteController) { handleIntent() }
             .modifier(NotificationTriggers(services: services, onActive: handleNotificationTaps))
@@ -91,8 +90,9 @@ struct RootView: View {
             .onOpenURL { url in
                 // TikTok's Share Kit answers through a universal link.
                 if services.sharing.handleCallback(url) { return }
-                guard let code = RemotePairing.code(from: url), services.remote.join(code: code) else { return }
-                services.presentation.openRemoteController()
+                guard let code = RemotePairing.code(from: url) else { return }
+                pendingRemoteCode = code
+                handleRemoteLink()
             }
             .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) { activity in
                 if let url = activity.webpageURL { _ = services.sharing.handleCallback(url) }
@@ -151,6 +151,17 @@ struct RootView: View {
 
     /// A Siri shortcut waits like a notification tap: the first flight, the camera (a take being recorded would end) and the remote keep it
     /// until they close.
+    /// A pairing link waits, like Siri and notifications, until the onboarding and the prompter (a recording) have closed, so it never
+    /// shuts the camera; this device's own code (it is the teleprompter showing it) is ignored instead of dropping its own link.
+    private func handleRemoteLink() {
+        let presentation = services.presentation
+        guard !services.onboarding.isActive, presentation.prompter == nil, let code = pendingRemoteCode else { return }
+        pendingRemoteCode = nil
+        if services.remote.role == .teleprompter, services.remote.code == code { return }
+        guard services.remote.join(code: code) else { return }
+        presentation.openRemoteController()
+    }
+
     private func handleIntent() {
         let presentation = services.presentation
         guard !services.onboarding.isActive, presentation.prompter == nil, !presentation.showsRemoteController,
@@ -160,7 +171,7 @@ struct RootView: View {
             guard services.library.script(id: id) != nil else { return }
             presentation.openPrompter(scriptID: id, mode: .selfie)
         case .newScript:
-            presentation.present(.newScript)
+            presentation.present(.newScript())
         }
     }
 }

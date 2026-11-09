@@ -47,6 +47,8 @@ struct ShareFlowPresentations: ViewModifier {
             switch flow.step {
             case .picker?:
                 if let take = review.take { ShareNetworkPicker(flow: flow, review: review, take: take) }
+            case .options?:
+                ShareExportOptions(review: review, edit: review.take?.edit, onBack: { flow.step = .picker })
             case .explainer?:
                 ShareQueueExplainer(networks: flow.queue?.items.map(\.network) ?? []) { flow.finishExplainer() }
             case .step(let network)?:

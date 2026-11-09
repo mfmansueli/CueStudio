@@ -7,7 +7,8 @@ import SwiftUI
 
 /// "Remind me": tonight, tomorrow, or a date and time the creator picks, for a script, a take or a network left for later. The reminders
 /// already set for it are listed with a way to remove them. A time inside the quiet hours is allowed (the creator chose it) and the sheet says
-/// so. The reminder opens the script, the take or the queue's step, never the camera, an export or a post.
+/// so. The reminder opens the script, the take or the queue's step, never the camera, an export or a post. Inside another sheet (Post later's
+/// "Pick a date and time…" in Share to universe) it is a step of that sheet, with ‹ Back, never a sheet over the sheet.
 struct ReminderSheet: View {
     let subject: ReminderSubject
     /// The project's title, for this sheet and the list in Settings (in a notification only with titles allowed in previews).
@@ -18,6 +19,8 @@ struct ReminderSheet: View {
     var editing: Reminder?
     /// After a reminder was set (or kept); the sheet has closed.
     var onSet: (ReminderResult) -> Void = { _ in }
+    /// As a step of another sheet: ‹ Back to the step before. Nil as a sheet of its own.
+    var onBack: (() -> Void)?
 
     @Environment(NotificationService.self) private var notifications
     @Environment(\.dismiss) private var dismiss
@@ -34,11 +37,32 @@ struct ReminderSheet: View {
     private var pickedTime: LocalDateTime { LocalDateTime(picked, calendar: calendar) }
 
     var body: some View {
+        if onBack == nil {
+            content.fittedSheet()
+        } else {
+            content
+        }
+    }
+
+    private var content: some View {
         VStack(alignment: .leading, spacing: 16) {
-            SheetHeader(
-                title: editing == nil ? String(localized: "Remind me") : String(localized: "Change reminder"),
-                subtitle: title.isEmpty ? nil : title
-            )
+            HStack(alignment: .top, spacing: 4) {
+                if let onBack {
+                    Button(action: onBack) {
+                        Image(systemName: "chevron.backward")
+                            .font(.fixed(16, weight: .bold))
+                            .foregroundStyle(Palette.ink)
+                            .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
+                            .contentShape(Rectangle())
+                    }
+                    .accessibilityLabel(Text("Back"))
+                    .accessibilityIdentifier("reminder.back")
+                }
+                SheetHeader(
+                    title: editing == nil ? String(localized: "Remind me") : String(localized: "Change reminder"),
+                    subtitle: title.isEmpty ? nil : title
+                )
+            }
             GroupedCard {
                 if !picksTime {
                     if let tonight { choice(String(localized: "Tonight"), tonight, id: "reminder.tonight") }
@@ -66,7 +90,6 @@ struct ReminderSheet: View {
         }
         .padding(EdgeInsets(top: 4, leading: Metrics.gutter, bottom: 16, trailing: Metrics.gutter))
         .disabled(isSaving)
-        .fittedSheet()
         .task {
             picksTime = startsPicking || editing != nil
             if let editing, let date = editing.time.date(in: calendar) { picked = date }
@@ -160,7 +183,7 @@ struct ReminderSheet: View {
                 problem = String(localized: "Pick a time in the future")
                 return
             }
-            dismiss()
+            if onBack == nil { dismiss() }
             onSet(result)
         }
     }

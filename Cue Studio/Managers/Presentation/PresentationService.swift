@@ -68,16 +68,17 @@ final class PresentationService {
         withTransaction(transaction, change)
     }
 
-    func openPrompter(scriptID: UUID?, mode: PrompterMode) {
+    /// - Parameter platform: the network to record for (a Retake of a video keeps its own); nil, the script's.
+    func openPrompter(scriptID: UUID?, mode: PrompterMode, platform: Platform? = nil) {
         sheet = nil
-        prompter = PrompterLaunch(scriptID: scriptID, mode: mode)
+        prompter = PrompterLaunch(scriptID: scriptID, mode: mode, platform: platform)
     }
 
     func openReview(of take: Take, then action: ReviewLaunchAction? = nil) {
         sheet = nil
         // Already there: the export it tells about, or the queue's "Continue posting" card, is on the review the creator sees.
         guard reviewOnScreen != take.id || !(action == nil || action == .continueQueue) else { return }
-        prompter = PrompterLaunch(scriptID: take.scriptID, mode: .selfie, reviewTakeID: take.id, reviewAction: action)
+        prompter = PrompterLaunch(scriptID: take.scriptID, mode: .selfie, platform: take.platform, reviewTakeID: take.id, reviewAction: action)
     }
 
     /// "See in Takes ›": the videos shared to a platform, or of a theme, in a year.

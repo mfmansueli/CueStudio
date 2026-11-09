@@ -8,25 +8,33 @@ import SwiftUI
 /// "On its way." (8.2), played once: the video's card folds into light, and one star per network (350 ms apart) carries it to that network's planet in
 /// the universe; each planet lights and grows by one ("+1"), and a new small star lights beside YOU. The text and the buttons are there from the first
 /// frame, as on the board. The scene is the board's 390 × 844 frame, scaled to the screen (`SendOffLayout`, `SendOffScript`). Under Reduce Motion it
-/// simply arrives.
+/// simply arrives. It is the only celebration of a post (D4, owner 09/11/2026): the creator's first one says "FIRST VIDEO · FIRST STAR", and the
+/// milestone icon the post opened rises in the card's place once the stars have landed (`SendOffIconRow`).
 struct SendOffView: View {
     let video: ExportedVideo
     let networks: [ShareDestination]
     /// The year's universe with these shares in it.
     let snapshot: UniverseSnapshot
+    /// The first star and the milestone icon this post tells (`FirstCelebration`).
+    var moment = SendOffMoment()
+    /// The milestone's icon can be used (Aurora, or Pro).
+    var iconAvailable = true
     let onShareAgain: () -> Void
     let onUniverse: () -> Void
     let onDone: () -> Void
-    /// The send-off is the whole story (no milestone's icon comes after it): its landing is the peak and gets the story's one `.success`.
-    /// With a milestone next, the landing is a `.light` tap and the icon's pop has the `.success` (one per story).
-    var endsStory = true
+    /// "Use it" (or "Go Pro") on the icon's row.
+    var onUseIcon: () -> Void = {}
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.sendOffFrozenAt) private var frozenAt
     @Environment(\.scenePhase) private var scenePhase
+    /// Read here, inside the cover: "Use it" turns into "In use" as the icon changes, with the send-off on screen.
+    @Environment(AppIconService.self) private var appIcon: AppIconService?
     @State private var start = Date.now
     /// The send-off has played: anything still moving is ambient, at 30 fps.
     @State private var isSettled = false
+    /// The milestone's icon row is up (after the last landing; at once under Reduce Motion).
+    @State private var showsIconRow = false
 
     private var counts: [Platform: Int] {
         Dictionary(uniqueKeysWithValues: Platform.allCases.map { ($0, snapshot.count(for: $0)) })
@@ -45,6 +53,11 @@ struct SendOffView: View {
                     .frame(width: proxy.size.width, height: proxy.size.height)
                     .onChange(of: time >= SendOffScript.end(networks: networks.count)) { _, settled in isSettled = settled }
             }
+            // Over the scene, outside its clock: the row animates on its own instead of being redrawn every frame.
+            iconRow
+                .frame(width: SendOffLayout.board.width, height: SendOffLayout.board.height, alignment: .topLeading)
+                .scaleEffect(fit)
+                .frame(width: proxy.size.width, height: proxy.size.height)
         }
         .ignoresSafeArea()
         .skyBackground(wash: BgWash.sendOff)
@@ -88,11 +101,27 @@ struct SendOffView: View {
             .accessibilityHidden(true)
     }
 
+    // MARK: - The milestone's icon
+
+    /// In the card's place, under the map, once the stars have landed: it rises 10 pt and fades in (0.45 s). Its bottom stays above the
+    /// words, and a bigger text grows it upwards into the empty space the card left.
+    @ViewBuilder
+    private var iconRow: some View {
+        // Inserted with a transition, never kept under an opacity: there, "Use it"'s interactive glass took no touch (measured, 09/11/2026).
+        if let icon = moment.icon, let milestone = moment.milestone, showsIconRow {
+            SendOffIconRow(icon: icon, milestone: milestone, isInUse: appIcon?.current == icon, isAvailable: iconAvailable, onUse: onUseIcon)
+                .padding(.horizontal, 16)
+                .frame(width: SendOffLayout.board.width, height: SendOffLayout.iconRowBottom - SendOffLayout.iconRowTop, alignment: .bottom)
+                .offset(y: SendOffLayout.iconRowTop)
+                .transition(.opacity.combined(with: .offset(y: 10)))
+        }
+    }
+
     // MARK: - Words
 
     private var texts: some View {
         VStack(spacing: 8) {
-            Text(headline)
+            Text(moment.isFirstStar ? String(localized: "FIRST VIDEO · FIRST STAR") : headline)
                 .monoFont(size: 11, weight: .semibold)
                 .interfaceTracking(1.32)
                 .foregroundStyle(Palette.acc)
@@ -157,17 +186,27 @@ struct SendOffView: View {
 
     // MARK: - Haptics
 
-    /// A `.light` tap on each arrival (the first one only when three or more land within 0.7 s), and the story's one `.success` on the last
-    /// landing when nothing comes after it (`endsStory`).
+    /// A `.light` tap on each arrival (the first one only when three or more land within 0.7 s), the story's one `.success` on the last
+    /// landing, and a `.soft` one as the milestone's icon rises.
     private func play() async {
-        guard !reduceMotion, frozenAt == nil else { return }
+        let end = SendOffScript.end(networks: networks.count)
+        guard !reduceMotion, frozenAt == nil else {
+            showsIconRow = (frozenAt ?? end) >= end
+            return
+        }
         start = .now
         let arrivals = SendOffScript.hapticArrivals(networks: networks.count)
         for (index, moment) in arrivals.enumerated() {
             let wait = moment - Date.now.timeIntervalSince(start)
             if wait > 0 { try? await Task.sleep(for: .seconds(wait)) }
             if Task.isCancelled { return }
-            if endsStory, index == arrivals.count - 1 { Haptics.success() } else { Haptics.light() }
+            if index == arrivals.count - 1 { Haptics.success() } else { Haptics.light() }
         }
+        guard self.moment.icon != nil else { return }
+        let wait = end - Date.now.timeIntervalSince(start)
+        if wait > 0 { try? await Task.sleep(for: .seconds(wait)) }
+        if Task.isCancelled { return }
+        withAnimation(.easeOut(duration: 0.45)) { showsIconRow = true }
+        Haptics.soft()
     }
 }

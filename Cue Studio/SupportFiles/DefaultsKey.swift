@@ -85,10 +85,17 @@ nonisolated enum DefaultsKey {
     static let takeOrphanSightings = "takeOrphanSightings"
     /// Copies a failed import left in the edits' media that couldn't be removed then (`EditMediaFiles.discardPartial`).
     static let editMediaDeletionsPending = "editMediaDeletionsPending"
+    /// The last `TakePlatformMigration.version` that ran (`Int`; absent = never): every take of a script knows its network from then on.
+    static let takeNetworkMigration = "takeNetworkMigration"
     /// How the Takes tab lays videos out (`TakeLayout` raw value); absent = the grid.
     static let takesLayout = "takesLayout"
-    /// The Sign in with Apple account (ID, and the name and email Apple shared once).
-    static let appleAccount = "appleAccount"
+    /// The quality last picked in Export options (`ExportQuality` raw value; absent = the recording's own).
+    static let exportQuality = "exportQuality"
+    /// Personalize was opened once: its NEW badge in Settings is gone.
+    static let personalizeSeen = "personalizeSeen"
+    /// The account Sign in with Apple kept before it was removed (Apple's user identifier, and the name and email Apple shared once): only
+    /// erased now (`AppleSignInLeftovers`).
+    static let legacyAppleAccount = "appleAccount"
     /// Settings › Personalize: the sky (`SkyDensity` raw value; absent = Calm), the story moments, the
     /// haptics and the automatic topic tag (absent = on).
     static let skyDensity = "skyDensity"
@@ -102,6 +109,8 @@ nonisolated enum DefaultsKey {
     /// The chapter a first flight was left on after 1.4 kept its script (`OnboardingService`): it resumes there.
     static let onboardingStep = "onboardingStep"
     static let firstStarShown = "firstStarShown"
+    /// The take whose first star waits for Takes (`OnboardingService.keepFirstStar`, D4).
+    static let firstStarWaitingTake = "firstStarWaitingTake"
     /// The first voyage's own marks (`VoyageMarks`, JSON): its stage, the practice, a skipped Polish, tips closed, segments lit.
     static let firstVoyage = "firstVoyage"
     /// The words Cue drafted for each script, until it is recorded (`DraftLearningService`).
@@ -130,7 +139,7 @@ nonisolated enum DefaultsKey {
     static let logbookDraft = "logbookDraft"
     /// How many times each teaching note of the editor was shown (`PanelNoteMemory`), by a digest of its words.
     static let panelNotesRead = "panelNotesRead"
-    /// Settings › Privacy & AI data: Apple Intelligence on or off (absent = on) and the anonymous usage switch (absent = off).
+    /// Settings › Privacy & AI data: Apple Intelligence on or off (absent = on) and "Help improve Cue", usage data and crash reports (absent = off).
     static let onDeviceAI = "onDeviceAI"
     static let helpImproveCue = "helpImproveCue"
     /// The notifications: the creator's choices, reminders and routine, and the history the caps read (`NotificationState`, JSON).

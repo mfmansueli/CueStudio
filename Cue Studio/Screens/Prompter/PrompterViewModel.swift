@@ -14,6 +14,10 @@ import Foundation
 @Observable
 final class PrompterViewModel {
     private(set) var scriptID: UUID?
+    /// The network picked on the recorder's chip for this session (`platform`); nil follows the script's, or the default.
+    private(set) var chosenPlatform: Platform?
+    /// The network the recorder was opened for (a Retake of a video recorded for Reels records for Reels, `PrompterLaunch.platform`).
+    private let launchPlatform: Platform?
     private(set) var mode: PrompterMode
     private(set) var engine = PrompterScrollEngine()
     private(set) var isPlaying = false
@@ -79,6 +83,8 @@ final class PrompterViewModel {
     // MARK: Selfie layout (see PrompterViewModel+Layout)
     /// What the Selfie screen measured on this device.
     var screenMetrics = SelfieScreenMetrics()
+    /// Where Studio's text is on screen (global), so a sheet over it stops under the reading line.
+    var studioTextFrame: CGRect?
 
     /// This recording's setup. Views read and bind `session.camera` / `session.prompter`.
     let session: SessionSetupService
@@ -109,6 +115,9 @@ final class PrompterViewModel {
     let toast: ToastService
     /// Whether the microphone was refused (the practice then reads at a steady pace).
     let microphone: MicrophoneAccess
+    /// Bytes free on the iPhone, read when the recorder opens and after each take (`storageNotice`).
+    private let freeSpace: () -> Int64?
+    private(set) var freeBytes: Int64?
 
     private var driver: DisplayLinkDriver?
     private var countdownTask: Task<Void, Never>?
@@ -193,12 +202,15 @@ final class PrompterViewModel {
         clock: @escaping () -> TimeInterval = { ProcessInfo.processInfo.systemUptime },
         speechRestartDelay: Duration = .seconds(1),
         speechRetryInterval: Duration = .seconds(5),
-        recordingGrace: @escaping @MainActor () -> @MainActor () -> Void = { ApplicationGrace.begin(named: "Cue take") }
+        recordingGrace: @escaping @MainActor () -> @MainActor () -> Void = { ApplicationGrace.begin(named: "Cue take") },
+        freeSpace: @escaping () -> Int64? = { StorageSpace.available() }
     ) {
+        self.freeSpace = freeSpace
         self.speechRestartDelay = speechRestartDelay
         self.speechRetryInterval = speechRetryInterval
         self.recordingGrace = recordingGrace
         scriptID = launch.scriptID
+        launchPlatform = launch.platform
         mode = launch.mode
         session = SessionSetupService(preferences: preferences)
         self.library = library
@@ -246,14 +258,24 @@ final class PrompterViewModel {
 
     @ObservationIgnored private var directionCache: (key: DirectionKey, rightToLeft: Bool)?
 
-    var preset: PlatformPreset? {
-        script.map { rules.preset(for: $0.platform, monetizationGoals: profile.profile.monetizationGoals) }
+    /// The network this recording is made for: the one chosen on the recorder's chip, else the one it was opened for (a Retake), else
+    /// the script's, else (freestyle) the creator's default. Only this session's: the script keeps its own network, and each take is
+    /// filed with this one.
+    var platform: Platform {
+        chosenPlatform ?? launchPlatform ?? script?.platform ?? profile.profile.defaultPlatform
     }
 
-    /// What Cue recommends for this script's platform. Nil freestyle.
+    /// The network's rules (frame, length goals, safe zone). Nil freestyle: no length to reach without a script.
+    var preset: PlatformPreset? {
+        guard hasScript else { return nil }
+        return rules.preset(for: platform, monetizationGoals: profile.profile.monetizationGoals)
+    }
+
+    /// What Cue recommends for the recording's network. Freestyle only once the creator chose a network on the chip: opening a
+    /// freestyle recording never asks.
     var recommendation: SetupRecommendation? {
-        guard let script, let preset else { return nil }
-        return SetupRecommendation(platform: script.platform, preset: preset)
+        guard hasScript || chosenPlatform != nil else { return nil }
+        return SetupRecommendation(platform: platform, preset: rules.preset(for: platform, monetizationGoals: profile.profile.monetizationGoals))
     }
 
     // MARK: - Lifecycle
@@ -267,6 +289,7 @@ final class PrompterViewModel {
         )
         camera.onRecordingEnded = { [weak self] clip, reason in self?.recordingEndedByItself(clip, reason: reason) }
         attachWatch()
+        refreshFreeSpace()
         guard reviewingTake == nil else { return }
         preparePractice()
         prepareScrollMode()
@@ -275,8 +298,7 @@ final class PrompterViewModel {
 
     func disappear() async {
         hasLeft = true
-        // What the creator adjusted here (the box, the line, the size, the speed…) is what the next session opens with.
-        if !isPractice { session.rememberReadingLayout(includingScrollMode: !sessionChoseScrollMode) }
+        rememberPrompterSettings()
         countdownTask?.cancel()
         autoStopTask?.cancel()
         practiceTask?.cancel()
@@ -287,6 +309,18 @@ final class PrompterViewModel {
         watch?.detach()
         camera.onRecordingEnded = nil
         await camera.stop()
+    }
+
+    /// Reads the free space again (opening the recorder, after each take): the storage line follows it.
+    func refreshFreeSpace() {
+        freeBytes = freeSpace()
+    }
+
+    /// What the creator set in the prompter (Aa, the box, the line, the size, the speed…) is what the next session opens with, as a change
+    /// in Settings would be: kept when a sheet closes and when the prompter does. The practice keeps nothing.
+    func rememberPrompterSettings() {
+        guard !isPractice else { return }
+        session.rememberReadingLayout(includingScrollMode: !sessionChoseScrollMode)
     }
 
     func switchMode(to newMode: PrompterMode) async {
@@ -321,26 +355,20 @@ final class PrompterViewModel {
     private func startSessionOnce() {
         guard !hasStartedSession else { return }
         hasStartedSession = true
-        session.recommend(recommendation)
+        offerRecommendation()
     }
 
-    /// "Create for" from the camera: the script moves to the platform, whose setup is offered.
+    /// "Create for" from the recorder's chip (the Scripts dock's picker): the network of this recording only. The next takes are filed
+    /// under it, the safe zone follows it and its setup is offered; the script keeps its own network.
     func setPlatform(_ platform: Platform) {
-        guard let scriptID else { return }
-        library.update(scriptID) { $0.platform = platform }
         sheet = nil
-        session.recommend(recommendation)
-        toast.show(String(localized: "Create for \(platform.destinationName)"))
+        chosenPlatform = platform
+        offerRecommendation()
     }
 
-    /// The chip next to the mode switch: with a script it opens "Create for"; freestyle it cycles
-    /// the frame.
+    /// The network chip at the end of the bar, with a script or without: it opens "Create for".
     func platformChipTapped() {
-        if hasScript {
-            sheet = .destination
-        } else {
-            cycleAspect()
-        }
+        sheet = .destination
     }
 
     func setScrollMode(_ mode: ScrollMode) {
@@ -584,7 +612,7 @@ final class PrompterViewModel {
         countdownTask = Task { [weak self] in
             for remaining in stride(from: seconds, to: 0, by: -1) {
                 self?.countdown = remaining
-                self?.watch?.publishCurrent()
+                self?.publishRemoteStatus()
                 try? await Task.sleep(for: .seconds(1))
                 if Task.isCancelled { return }
             }
@@ -600,7 +628,7 @@ final class PrompterViewModel {
         countdownTask?.cancel()
         countdownTask = nil
         countdown = nil
-        watch?.publishCurrent()
+        publishRemoteStatus()
         if wasCounting { AccessibilityNotification.Announcement(String(localized: "Countdown cancelled")).post() }
     }
 
@@ -640,7 +668,10 @@ final class PrompterViewModel {
         // The phone does not buzz while the take records: it could be heard in its audio (`AudioRoute.allowHapticsDuringRecording`).
         AudioRoute.allowHapticsDuringRecording(false)
         do {
-            try await camera.startRecording()
+            // Written before a frame is: a take Cue loses mid-way (closed, out of memory) comes back under this script and network.
+            if let file = try await camera.startRecording() {
+                TakeRecoveryNote(scriptID: script?.id, scriptVersion: script?.version, platform: platform).write(for: file)
+            }
         } catch {
             AudioRoute.allowHapticsDuringRecording(true)
             toast.show(error.localizedDescription, kind: .problem)
@@ -716,7 +747,8 @@ final class PrompterViewModel {
             endRecordingGrace = nil
             isSavingTake = false
             recordingStartedAt = nil
-            watch?.publishCurrent()
+            refreshFreeSpace()
+            publishRemoteStatus()
         }
         guard let clip else {
             toast.show(String(localized: "The take couldn't be saved"), kind: .problem)
@@ -726,7 +758,7 @@ final class PrompterViewModel {
         do {
             let take = try takes.addTake(
                 fileAt: clip.url, duration: clip.duration, script: script, camera: session.camera, background: camera.background,
-                delivered: (clip.resolution, clip.frameRate)
+                delivered: (clip.resolution, clip.frameRate), platform: platform
             )
             if openReview {
                 reviewStartsWithPick = shouldPickBest(after: take)
@@ -784,8 +816,8 @@ final class PrompterViewModel {
 
     // MARK: - Script
 
-    /// Adds a script to a freestyle session. The camera keeps its current frame; the script's
-    /// platform setup is offered.
+    /// Adds a script to a freestyle session. The camera keeps its current frame; the setup of the recording's network (the one chosen on
+    /// the chip, else the script's) is offered.
     func attach(_ script: Script) {
         scriptID = script.id
         engine = PrompterScrollEngine()
@@ -793,7 +825,7 @@ final class PrompterViewModel {
         readingPlaces = [:]
         layoutAnchor = nil
         sheet = nil
-        session.recommend(recommendation)
+        offerRecommendation()
         updateVoiceMonitoring()
         toast.show(String(localized: "Script added"))
     }

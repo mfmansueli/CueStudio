@@ -23,7 +23,7 @@ final class SafeGuideUITests: XCTestCase {
         let toggle = app.descendants(matching: .any)["edit.crop.safeGuide"]
         XCTAssertTrue(toggle.exists(within: 5))
         reveal(toggle, in: app)
-        XCTAssertEqual(toggle.label, "Safe zones")
+        XCTAssertEqual(toggle.label, "Safe zone")
         XCTAssertEqual(toggle.value as? String, "Off")
         toggle.tap()
         XCTAssertEqual(toggle.value as? String, "On")
@@ -34,14 +34,14 @@ final class SafeGuideUITests: XCTestCase {
         XCTAssertTrue(tiktok.isSelected, "The guide opens on the script's platform")
         XCTAssertTrue(app.descendants(matching: .any)["edit.crop.safeGuideNote"].exists)
         XCTAssertTrue(badge.exists(within: 5))
-        XCTAssertTrue(badge.hasLabel("Safe zones: TikTok · approximate"), badge.label)
+        XCTAssertTrue(badge.hasLabel("Safe zone: TikTok · approximate"), badge.label)
 
         // Another app in the panel.
         let reels = app.buttons["edit.crop.safeGuideApp.reels"]
         reveal(reels, in: app)
         reels.tap()
         XCTAssertTrue(reels.isSelected)
-        XCTAssertTrue(badge.hasLabel("Safe zones: Reels · approximate"), badge.label)
+        XCTAssertTrue(badge.hasLabel("Safe zone: Reels · approximate"), badge.label)
         app.buttons["edit.panel.apply"].tap()
 
         // From the label's menu on the preview, with no panel open.
@@ -50,18 +50,18 @@ final class SafeGuideUITests: XCTestCase {
         let shorts = app.buttons["Shorts"]
         XCTAssertTrue(shorts.exists(within: 5), "The label's menu lists the apps")
         shorts.tap()
-        XCTAssertTrue(badge.hasLabel("Safe zones: Shorts · approximate"), badge.label)
+        XCTAssertTrue(badge.hasLabel("Safe zone: Shorts · approximate"), badge.label)
 
         // The app is this video's choice, one undo step; Undo leaves the guide showing.
         app.buttons["edit.undoButton"].tap()
-        XCTAssertTrue(badge.hasLabel("Safe zones: Reels · approximate"), badge.label)
+        XCTAssertTrue(badge.hasLabel("Safe zone: Reels · approximate"), badge.label)
 
         // Hidden from the same menu.
         badge.tap()
-        let hide = app.buttons["Hide safe zones"]
+        let hide = app.buttons["Hide safe zone"]
         XCTAssertTrue(hide.exists(within: 5))
         hide.tap()
-        XCTAssertTrue(badge.isGone(within: 5), "Hide safe zones didn't hide the guide")
+        XCTAssertTrue(badge.isGone(within: 5), "Hide safe zone didn't hide the guide")
     }
 
     // MARK: - Helpers

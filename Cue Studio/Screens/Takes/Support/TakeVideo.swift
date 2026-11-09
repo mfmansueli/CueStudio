@@ -5,20 +5,25 @@
 
 import Foundation
 
-/// One row of the Takes library: the takes of one script (a freestyle recording stands alone), shown
-/// through its best take, at the stage its takes put it in.
+/// One row of the Takes library: the takes of one script recorded for one network (`TakeVideoKey`; a freestyle recording stands alone),
+/// shown through its best take, at the stage its takes put it in. A script recorded for two networks is two cards with the same title and
+/// their own "● NETWORK · 1:02" footers.
 nonisolated struct TakeVideo: Hashable, Identifiable, Sendable {
     /// Newest number first.
     let takes: [Take]
     let title: String
+    /// The network the takes were recorded for (never the script's current one, never where it was posted).
     let platform: Platform?
     /// Derived from the takes and the open edits (`TakeStage`), never set by hand.
     var stage: TakeStage = .ready
 
-    var id: String { takes.first?.scriptID?.uuidString ?? takes.first?.id.uuidString ?? "" }
+    var id: String { takes.first?.videoKey.id ?? "" }
 
-    /// The take marked best, or the newest.
-    var best: Take? { takes.first(where: \.isBest) ?? takes.first }
+    /// The take marked best, or the newest; a take recorded after the starred one is the one to look at first (the video was filmed again).
+    var best: Take? { TakeStage.takeAfterStar(in: takes) ?? starred ?? takes.first }
+
+    /// The take marked best, if any.
+    var starred: Take? { takes.first(where: \.isBest) }
 
     var hasMarkedBest: Bool { takes.contains(where: \.isBest) }
 
@@ -31,7 +36,7 @@ nonisolated struct TakeVideo: Hashable, Identifiable, Sendable {
     var takesLabel: String? {
         guard takes.count > 1 else { return nil }
         let count = String(localized: "\(takes.count) takes")
-        guard hasMarkedBest, let best else { return count }
-        return count + " · " + String(localized: "Best: \(best.label)")
+        guard let starred else { return count }
+        return count + " · " + String(localized: "Best: \(starred.label)")
     }
 }
