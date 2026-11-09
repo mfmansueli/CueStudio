@@ -10,6 +10,8 @@ import SwiftUI
 /// onboarding gate: a first run simply shows the empty library.
 struct RootView: View {
     let services: AppServices
+    /// A pairing code from a link, until it can be used (`handleRemoteLink`).
+    @State private var pendingRemoteCode: String?
 
     @Environment(\.scenePhase) private var scenePhase
 
@@ -80,10 +82,12 @@ struct RootView: View {
             .onChange(of: services.onboarding.isActive) {
                 handleNotificationTaps()
                 handleIntent()
+                handleRemoteLink()
             }
             .onChange(of: services.presentation.prompter == nil) {
                 handleNotificationTaps()
                 handleIntent()
+                handleRemoteLink()
             }
             .onChange(of: services.presentation.showsRemoteController) { handleIntent() }
             .modifier(NotificationTriggers(services: services, onActive: handleNotificationTaps))
@@ -91,8 +95,9 @@ struct RootView: View {
             .onOpenURL { url in
                 // TikTok's Share Kit answers through a universal link.
                 if services.sharing.handleCallback(url) { return }
-                guard let code = RemotePairing.code(from: url), services.remote.join(code: code) else { return }
-                services.presentation.openRemoteController()
+                guard let code = RemotePairing.code(from: url) else { return }
+                pendingRemoteCode = code
+                handleRemoteLink()
             }
             .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) { activity in
                 if let url = activity.webpageURL { _ = services.sharing.handleCallback(url) }
@@ -151,6 +156,17 @@ struct RootView: View {
 
     /// A Siri shortcut waits like a notification tap: the first flight, the camera (a take being recorded would end) and the remote keep it
     /// until they close.
+    /// A pairing link waits, like Siri and notifications, until the onboarding and the prompter (a recording) have closed, so it never
+    /// shuts the camera; this device's own code (it is the teleprompter showing it) is ignored instead of dropping its own link.
+    private func handleRemoteLink() {
+        let presentation = services.presentation
+        guard !services.onboarding.isActive, presentation.prompter == nil, let code = pendingRemoteCode else { return }
+        pendingRemoteCode = nil
+        if services.remote.role == .teleprompter, services.remote.code == code { return }
+        guard services.remote.join(code: code) else { return }
+        presentation.openRemoteController()
+    }
+
     private func handleIntent() {
         let presentation = services.presentation
         guard !services.onboarding.isActive, presentation.prompter == nil, !presentation.showsRemoteController,

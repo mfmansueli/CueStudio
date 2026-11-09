@@ -12,7 +12,21 @@ import Testing
 struct RemoteControlServiceTests {
     private func makeService() -> (RemoteControlService, FakeRemoteTransport) {
         let transport = FakeRemoteTransport()
-        return (RemoteControlService(transport: transport, makeCode: { "ABC234" }), transport)
+        return (RemoteControlService(transport: transport, makeCode: { "ABC234" }, screenAwake: ScreenAwake(apply: { _ in })), transport)
+    }
+
+    @Test func theTeleprompterKeepsItsScreenOnFromWaitingUntilItDisconnects() {
+        var screenOn: [Bool] = []
+        let awake = ScreenAwake(apply: { screenOn.append($0) })
+        let remote = RemoteControlService(transport: FakeRemoteTransport(), makeCode: { "ABC234" }, screenAwake: awake)
+        remote.startHosting()
+        #expect(awake.isHeld)
+        remote.startHosting()
+        #expect(screenOn == [true])
+        remote.disconnect()
+        #expect(!awake.isHeld && screenOn == [true, false])
+        remote.join(code: "ABC234")
+        #expect(!awake.isHeld)
     }
 
     // MARK: - Teleprompter

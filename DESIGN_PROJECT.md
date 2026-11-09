@@ -756,7 +756,10 @@ Disconnect; os ícones de "From the remote you can" acendem verdes em sequência
 `RemoteJoinFlow`), o que o controle faz (`RemoteCapabilities`) e Coming next. Vibrações (Core Haptics, `HapticPatterns`): Connect = toque firme
 e um brilho quando o primeiro anel sai; dois tiques quase imperceptíveis nos anéis seguintes; ao conectar, tique + clique + assentar junto com o
 ✓; Disconnect = queda surda. O texto não promete mais Apple Watch (o app não tem). Reduzir Movimento: mesmas posições, nada se move, estados
-trocam na hora. Cores em `Palette.Remote`.
+trocam na hora. Cores em `Palette.Remote`. Enquanto este aparelho é o teleprompter (esperando o controle ou conectado), a tela não apaga
+sozinha (`RemoteControlService.role`, `ScreenAwake` "remoteHost"): bloquear derrubaria a ligação. Um link de pareamento (`cuestudio://remote`,
+a câmera do iOS lendo o QR) espera o onboarding e o gravador fecharem, como a Siri e as notificações (`RootView.handleRemoteLink`), para nunca
+fechar uma gravação; o próprio código deste aparelho, quando é ele o teleprompter, é ignorado.
 **Personalize** (`PersonalizeView`, redesenho do dono 21/10/2026, "vitrine"): `ScrollView` sobre o céu. No topo, "seu Cue" ao vivo
 (`PersonalizeHero`): o céu escolhido (`SkyMiniature`: o mesmo `BgWash` + `StarfieldView` da navegação, estrelas no brilho dos quadros), a luz
 do universo respirando na cor escolhida (`CoreColor.glow`) e o ícone escolhido flutuando (`AppIconArt`; o padrão desenhado das camadas de

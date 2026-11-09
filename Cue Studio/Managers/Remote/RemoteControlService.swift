@@ -20,7 +20,15 @@ final class RemoteControlService {
         case remote
     }
 
-    private(set) var role: Role?
+    /// While this device is the teleprompter (waiting for the remote or connected to it), its screen stays on: locking would drop the link.
+    private(set) var role: Role? {
+        didSet {
+            guard role != oldValue else { return }
+            if role == .teleprompter { screenAwake.hold(Self.awakeOwner) } else { screenAwake.release(Self.awakeOwner) }
+        }
+    }
+    private static let awakeOwner = "remoteHost"
+    private let screenAwake: ScreenAwake
     private(set) var state: RemoteConnectionState = .off
     /// The pairing code in use.
     private(set) var code: String?
@@ -34,8 +42,11 @@ final class RemoteControlService {
     private let transport: RemoteTransport
     private let makeCode: () -> String
 
-    init(transport: RemoteTransport, makeCode: @escaping () -> String = { RemotePairing.makeCode() }) {
+    init(
+        transport: RemoteTransport, makeCode: @escaping () -> String = { RemotePairing.makeCode() }, screenAwake: ScreenAwake = .shared
+    ) {
         self.transport = transport
+        self.screenAwake = screenAwake
         self.makeCode = makeCode
         transport.onEvent = { [weak self] event in self?.handle(event) }
     }
