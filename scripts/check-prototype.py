@@ -40,8 +40,9 @@ def check_index(data: dict) -> list[str]:
     for screen in data.get("screens", []):
         sid = screen.get("id", "?")
         if "file" in screen:
-            listed.add(screen["file"])
-            if not (PROTO / screen["file"]).is_file():
+            page = screen["file"].split("#")[0]  # `file#ultra` is the same page opened in another state
+            listed.add(page)
+            if not (PROTO / page).is_file():
                 problems.append(f"{sid}: file {screen['file']} does not exist")
         elif screen.get("component"):
             if not (PROTO / screen["component"]).is_file():

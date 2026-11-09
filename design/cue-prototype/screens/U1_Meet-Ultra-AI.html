@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=390">
+<title>Cue — Meet Ultra AI</title>
+<style>
+/* U1 Meet Ultra AI · the permission sheet. Code: UltraConsentSheet, UltraConsentHero, UltraMotion (read from main, 2 Nov–5 Nov 2026; DESIGN_PROJECT §57).
+   Asked once, before the first send to Ultra AI, from the Scripts dock's writer chip or Find inspiration's "Draft with Ultra AI".
+   Motion (the same numbers as the app): the sheet comes up; the galaxy opens (nebula, three tilted orbits draw themselves round the centre);
+   at 0.55 s the ✦ ignites (small and turned, past its size and back) with a flash, a ring and six sparks; then two moons ride the orbits with
+   a short tail, the ✦ breathes under a slow cross of light and the stars twinkle. "Meet Ultra AI" gets a cream light across it once at 0.85 s;
+   the three glass rows come in one after the other from 1.0 s (0.12 s apart) out of a blur, each symbol in a violet disc that lights as it lands;
+   the button shines every 5 s. Reduce Motion: the settled galaxy, nothing moves.
+   Try it free → the permission is given and the dock's writer chip lights on Ultra AI (3.2 · the ✦ flies from the invitation). Not now → nothing changes.
+   Texts: "Meet Ultra AI", "Your first 3 scripts are free.", three lines, one line of disclosure (Anthropic writes it; where to turn it off). */
+:root{--bg:#0A0B12;--fill:rgba(110,116,150,.26);--glassBorder:rgba(180,167,255,.22);--ink:#fff;--ink2:rgba(225,228,245,.62);--acc:#FFD60A;--ai:#B4A7FF;--aiStrong:#E4DEFF;--aiFill:rgba(157,140,255,.17);--aiBorder:rgba(180,167,255,.30);--sheet:rgba(20,22,42,.96)}
+body{margin:0;background:#000}*{box-sizing:border-box}
+.phone{width:390px;height:844px;position:relative;overflow:hidden;font-family:-apple-system,"SF Pro Text",system-ui,sans-serif;color:var(--ink);background:var(--bg)}
+svg{display:block}
+#sheet{position:absolute;left:0;right:0;top:54px;bottom:0;border-radius:38px 38px 0 0;background:var(--sheet);-webkit-backdrop-filter:blur(30px);backdrop-filter:blur(30px);box-shadow:inset 0 .5px 0 rgba(255,255,255,.14);display:flex;flex-direction:column;transform:translateY(100%);transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.shown #sheet{transform:none}
+.gone #sheet{transform:translateY(100%);transition:transform .38s cubic-bezier(.4,0,.2,1)}
+#dim{position:absolute;inset:0;background:#000;opacity:0;transition:opacity .45s}
+.shown #dim{opacity:.4}.gone #dim{opacity:0}
+.grab{position:absolute;left:50%;top:7px;width:36px;height:5px;margin-left:-18px;border-radius:3px;background:rgba(235,235,245,.3)}
+#page{flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;display:flex;flex-direction:column;justify-content:center}
+#page::-webkit-scrollbar{display:none}
+.inner{display:flex;flex-direction:column;gap:22px;padding:12px 16px 16px;align-items:stretch}
+#hero{position:relative;height:232px;width:100%}
+#hero canvas{position:absolute;left:0;top:0}
+#star{position:absolute;left:50%;top:50%;font-size:54px;font-weight:700;line-height:1;color:var(--aiStrong);opacity:0;transform:translate(-50%,-50%) scale(.2);will-change:transform;font-family:-apple-system,"SF Pro Display",system-ui,sans-serif}
+.head{text-align:center;display:flex;flex-direction:column;gap:8px}
+.title{position:relative;font-size:28px;line-height:34px;font-weight:700;display:inline-block;align-self:center}
+.title i{position:absolute;inset:0;font-style:normal;color:transparent;background:linear-gradient(90deg,rgba(255,246,194,0),rgba(255,246,194,.95),rgba(255,246,194,0)) no-repeat;background-size:35% 100%;background-position:-60% 0;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.shown .title i{animation:light .9s .85s ease-in-out both}
+@keyframes light{from{background-position:-60% 0}to{background-position:170% 0}}
+.allow{font-size:20px;line-height:24px;font-weight:600;color:var(--ai)}
+.rows{display:flex;flex-direction:column;gap:10px}
+.row{display:flex;align-items:center;gap:14px;padding:10px 12px;border-radius:18px;background:var(--fill);box-shadow:inset 0 0 0 .75px var(--glassBorder);opacity:0;transform:translateY(12px);filter:blur(4px);font-size:17px;font-weight:500;line-height:22px}
+.shown .row{animation:rowin .5s ease-out both;animation-delay:calc(1s + var(--n)*.12s)}
+.disc{width:38px;height:38px;border-radius:19px;background:var(--aiFill);box-shadow:inset 0 0 0 .75px var(--aiBorder);display:flex;align-items:center;justify-content:center;color:var(--aiStrong);flex-shrink:0;transform:scale(.6)}
+.shown .disc{animation:discin .6s cubic-bezier(.3,1.6,.5,1) both;animation-delay:calc(1.1s + var(--n)*.12s)}
+@keyframes rowin{to{opacity:1;transform:none;filter:none}}
+@keyframes discin{to{transform:scale(1);box-shadow:inset 0 0 0 .75px var(--aiBorder),0 0 10px rgba(180,167,255,.45)}}
+.foot{padding:8px 16px 12px;display:flex;flex-direction:column;gap:12px;align-items:stretch}
+.disclosure{font-size:13px;line-height:17px;color:var(--ink2);text-align:center}
+.btn{height:54px;border-radius:27px;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;cursor:pointer;position:relative;overflow:hidden}
+.primary{background:var(--acc);color:#000}
+.primary::after{content:"";position:absolute;top:0;bottom:0;width:60px;left:-80px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-18deg);animation:shine 5s 3.2s infinite}
+@keyframes shine{0%{left:-80px}16%{left:110%}100%{left:110%}}
+.secondary{background:var(--fill);color:var(--ink)}
+.home{height:34px}
+@media (prefers-reduced-motion:reduce){.row,.disc{animation:none!important;opacity:1;transform:none;filter:none}.title i,.primary::after{animation:none!important}}
+</style>
+<script src="assets/ultra.js"></script></head><body>
+<div class="phone" id="ph">
+  <!-- the Scripts tab behind the sheet, dimmed -->
+  <div style="position:absolute;inset:0;background:radial-gradient(70% 30% at 20% 6%,rgba(157,140,255,.20),rgba(157,140,255,0) 70%),var(--bg)"></div>
+  <div style="position:absolute;left:20px;top:64px;font-size:34px;font-weight:700;letter-spacing:.3px;opacity:.9">Scripts</div>
+  <div style="position:absolute;left:16px;right:16px;top:130px;height:150px;border-radius:26px;background:rgba(22,24,38,.64);box-shadow:inset 0 0 0 .5px rgba(255,255,255,.12)"></div>
+  <div style="position:absolute;left:16px;right:16px;top:300px;height:84px;border-radius:26px;background:rgba(22,24,38,.5);box-shadow:inset 0 0 0 .5px rgba(255,255,255,.1)"></div>
+  <div style="position:absolute;left:12px;right:12px;bottom:92px;height:128px;border-radius:30px;background:rgba(14,16,28,.72);box-shadow:inset 0 0 0 .5px rgba(180,167,255,.22)"></div>
+  <div id="dim"></div>
+
+  <div id="sheet" role="dialog" aria-label="Meet Ultra AI">
+    <div class="grab"></div>
+    <div id="page"><div class="inner">
+      <div id="hero" aria-hidden="true"><canvas id="hc"></canvas><div id="star">✦</div></div>
+      <div class="head">
+        <div class="title" role="heading" aria-level="1">Meet Ultra AI<i aria-hidden="true">Meet Ultra AI</i></div>
+        <div class="allow">Your first 3 scripts are free.</div>
+      </div>
+      <div class="rows">
+        <div class="row" style="--n:0"><span class="disc"><svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4C10.7 10 12.3 11.6 18 12.3C12.3 13 10.7 14.6 10 20.6C9.3 14.6 7.7 13 2 12.3C7.7 11.6 9.3 10 10 4Z"/><path d="M19 2.5C19.3 5 20 5.7 22.5 6C20 6.3 19.3 7 19 9.5C18.7 7 18 6.3 15.5 6C18 5.7 18.7 5 19 2.5Z"/></svg></span><span>Goes further with every idea</span></div>
+        <div class="row" style="--n:1"><span class="disc"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5l2.3 1.6 2.8-.1 1 2.6 2.4 1.5-.7 2.7 1 2.6-2 2-.2 2.8-2.7.7-1.7 2.2L12 20.6l-2.2 1.2-1.7-2.2-2.7-.7-.2-2.8-2-2 1-2.6-.7-2.7L6 6.6l1-2.6 2.8.1z" transform="scale(.82) translate(2.6 .6)"/><path d="M8.5 12.2l2.5 2.5 4.6-5"/></svg></span><span>Checks its claims as it writes</span></div>
+        <div class="row" style="--n:2"><span class="disc"><svg width="20" height="18" viewBox="0 0 24 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 8v4M7.5 4v12M12 1.5v17M16.5 5v10M21 8.5v3"/></svg></span><span>Polished in your voice</span></div>
+      </div>
+    </div></div>
+    <div class="foot">
+      <div class="disclosure">Your idea, your choices and your My Cue Voice preferences go to Anthropic, which writes it. Turn it off any time in Settings.</div>
+      <div id="allow" class="btn primary" role="button" aria-label="Try it free">Try it free</div>
+      <div id="no" class="btn secondary" role="button" aria-label="Not now">Not now</div>
+      <div class="home"></div>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var ph=document.getElementById('ph'),sheet=document.getElementById('sheet');
+  var hero=UltraHero({canvas:document.getElementById('hc'),star:document.getElementById('star'),width:358,height:232});
+  requestAnimationFrame(function(){requestAnimationFrame(function(){ph.classList.add('shown');setTimeout(function(){hero.start()},180)})});
+  function close(allowed){
+    if(allowed){try{parent.__cueUltraAllowed=true}catch(e){}}
+    ph.classList.remove('shown');ph.classList.add('gone');hero.stop();
+    setTimeout(function(){ph.classList.remove('gone');ph.classList.add('shown');hero.start();
+      var rows=document.querySelectorAll('.row,.disc');rows.forEach(function(r){r.style.animation='none';void r.offsetWidth;r.style.animation=''});},allowed?2400:1800);
+  }
+  document.getElementById('allow').onclick=function(){close(true)};
+  document.getElementById('no').onclick=function(){close(false)};
+})();
+</script>
+<script>(function(){function f(){document.body.style.zoom=Math.min(1,(innerHeight-8)/860)}f();addEventListener('resize',f)})();</script>
+</body></html>

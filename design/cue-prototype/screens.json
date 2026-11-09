@@ -193,7 +193,11 @@
       "status": "current",
       "pageTitle": "Cue — Scripts",
       "appFiles": [
-        "Cue Studio/Screens/Scripts/ScriptsView.swift"
+        "Cue Studio/Screens/Scripts/ScriptsView.swift",
+        "Cue Studio/Screens/Scripts/Dock/ScriptsDock.swift",
+        "Cue Studio/Screens/Scripts/Dock/DockWriterChip.swift",
+        "Cue Studio/Screens/Scripts/Dock/DockSendArrow.swift",
+        "Cue Studio/Screens/Shared/Ultra/UltraInviteCard.swift"
       ],
       "appFilesStatus": "suggested, confirm in code",
       "drawnFrom": "879bee2e468a",
@@ -267,6 +271,40 @@
       ],
       "appFilesStatus": "suggested, confirm in code",
       "drawnFrom": "879bee2e468a",
+      "drawnFromKind": "cited"
+    },
+    {
+      "id": "U1",
+      "title": "Meet Ultra AI (permission sheet)",
+      "group": "Ultra AI",
+      "file": "screens/U1_Meet-Ultra-AI.html",
+      "status": "current",
+      "pageTitle": "Cue — Meet Ultra AI",
+      "appFiles": [
+        "Cue Studio/Screens/Shared/Ultra/UltraConsentSheet.swift",
+        "Cue Studio/Screens/Shared/Ultra/UltraConsentHero.swift"
+      ],
+      "appFilesStatus": "confirmed in code",
+      "drawnFrom": "a9946507a162",
+      "drawnFromKind": "cited"
+    },
+    {
+      "id": "4.1u",
+      "title": "Script page Ultra AI writing (galaxy wait, then the page opens)",
+      "group": "Ultra AI",
+      "file": "screens/4.1_Script-page-AI-writing-in-your-voice.html#ultra",
+      "status": "current",
+      "pageTitle": "Cue — Script page",
+      "appFiles": [
+        "Cue Studio/Screens/Scripts/Transition/UltraWaitScene.swift",
+        "Cue Studio/Screens/Scripts/Transition/UltraPassOrbit.swift",
+        "Cue Studio/Screens/Scripts/Transition/UltraWaitTimeline.swift",
+        "Cue Studio/Screens/Scripts/Transition/UltraSceneMoment.swift",
+        "Cue Studio/Screens/Scripts/Transition/StarTransitionOverlay.swift",
+        "Cue Studio/Screens/Scripts/Transition/StarTransitionWords.swift"
+      ],
+      "appFilesStatus": "confirmed in code",
+      "drawnFrom": "a9946507a162",
       "drawnFromKind": "cited"
     },
     {

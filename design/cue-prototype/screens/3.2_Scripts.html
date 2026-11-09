@@ -32,6 +32,32 @@ svg{display:block}
 @keyframes spin1{to{transform:rotate(360deg)}}
 .w{display:inline-block;animation:win .3s ease-out both}@keyframes win{from{opacity:0;filter:blur(4px)}to{opacity:1;filter:none}}
 @media (prefers-reduced-motion:reduce){#ring,.w{animation:none!important}}
+
+/* Writer chip, Ultra AI's invitation and the send arrow (ScriptsDock · DockWriterChip, UltraInviteCard, DockSendArrow, UltraSendRim; 879bee2e468a → main, Nov 2026). */
+:root{--heroGlass:rgba(235,235,245,.1);--heroStroke:rgba(235,235,245,.22);--heroAI:rgba(157,140,255,.2);--heroAIStroke:rgba(196,184,255,.4);--accSoft:rgba(255,214,10,.16);--accLine:rgba(255,214,10,.3)}
+.dchip{height:30px;padding:0 10px;border-radius:15px;display:inline-flex;align-items:center;gap:6px;font-size:13.5px;font-weight:600;white-space:nowrap;flex-shrink:0}
+.mi{display:flex;align-items:center;gap:8px;height:42px;padding:0 10px;border-radius:9px;cursor:pointer}.mi:hover{background:rgba(255,255,255,.08)}.mi .ck{width:16px;color:#fff;font-size:14px}
+#wring{position:absolute;inset:0;border-radius:15px;border:1.5px solid var(--ai);opacity:0;pointer-events:none}
+#wlap{position:absolute;inset:-3px;border-radius:18px;pointer-events:none;opacity:0;padding:2px;background:conic-gradient(from 0deg,#9D8CFF,#E4DEFF,#FFD60A,#B4A7FF,#7B6CFF,#9D8CFF);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+#wsparks{position:absolute;left:15px;top:15px;width:0;height:0;pointer-events:none}
+#wsparks i{position:absolute;left:-3px;top:-3px;font-style:normal;font-size:8px;line-height:6px;opacity:0}
+#rim{position:absolute;inset:-3px;border-radius:50%;pointer-events:none;opacity:0;transition:opacity .3s;padding:2px;background:conic-gradient(from var(--turn,0deg),#9D8CFF,#E4DEFF,#FFD60A,#B4A7FF,#7B6CFF,#9D8CFF);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:lap4 4s linear infinite;filter:drop-shadow(0 0 3px rgba(157,140,255,.5))}
+.ultra #rim{opacity:1}
+@property --turn{syntax:'<angle>';inherits:false;initial-value:0deg}
+@keyframes lap4{to{--turn:360deg}}
+#sring{position:absolute;inset:0;border-radius:50%;border:1.5px solid var(--ai);opacity:0;pointer-events:none}
+#ilap{position:absolute;inset:0;border-radius:16px;pointer-events:none;opacity:0;padding:1.2px;background:conic-gradient(from var(--il,0deg),rgba(228,222,255,0) 0deg,rgba(228,222,255,.95) 60deg,rgba(228,222,255,0) 64deg);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+#hop{position:absolute;left:0;top:0;z-index:40;color:var(--aiStrong);font-size:14px;font-weight:700;line-height:14px;width:14px;height:14px;text-align:center;opacity:0;pointer-events:none;margin:-7px 0 0 -7px;text-shadow:0 0 8px rgba(180,167,255,.9)}
+#invite>*{position:relative;z-index:1}#invite>#ilap{position:absolute;z-index:2}
+.rise{opacity:0;filter:blur(6px);transform:translateY(8px);transition:opacity .55s,filter .55s,transform .55s;transition-delay:calc(.08s + var(--s)*.07s)}
+.lit .rise{opacity:1;filter:none;transform:none}
+#istar{transform:scale(.2) rotate(-70deg);opacity:0;transition:transform .42s cubic-bezier(.3,1.6,.5,1),opacity .2s}
+.lit #istar{transform:none;opacity:1}
+#invite{background:transparent}
+#invite::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:0;border-radius:16px;background:var(--aiFill);opacity:0;transform:scale(.97);transform-origin:top;transition:opacity .55s,transform .55s}
+.lit#invite::before{opacity:1;transform:none}
+#invite.folded{opacity:0;transform:scale(.96);min-height:0;height:0;margin-top:0;overflow:hidden}
+@media (prefers-reduced-motion:reduce){#rim{animation:none}.rise,#istar{transition:opacity .2s;filter:none;transform:none}}
 </style></head><body>
 <div class="phone" id="ph">
 <div style="position:absolute;inset:0;background:radial-gradient(70% 30% at 20% 6%,rgba(157,140,255,.20),rgba(157,140,255,0) 70%),var(--bg)"></div>
@@ -80,11 +106,21 @@ svg{display:block}
   <div class="glass" style="position:absolute;inset:0;border-radius:28px;background:linear-gradient(180deg,rgba(72,62,140,.55),rgba(44,38,96,.72))"></div>
   <div id="ringwrap"><div id="ring"></div><div id="ringmask"></div></div>
   <div style="position:relative;padding:16px 12px 12px">
-  <div class="i-only" style="display:flex;align-items:center;gap:5px;height:36px;min-width:0">
-    <span class="chip" role="button" aria-label="Format" style="flex-shrink:0;height:34px;padding:0 9px;gap:5px;background:rgba(14,16,28,.7);font-size:12.5px">Format <span style="color:var(--inkHint);margin-left:2px">⌄</span></span>
-    <span class="chip" style="flex-shrink:0;height:34px;padding:0 9px;gap:5px;background:rgba(14,16,28,.7);font-size:12.5px"><span class="dot" style="background:var(--info)"></span>For TikTok</span>
-    <span class="chip" style="flex-shrink:0;height:34px;padding:0 9px;gap:5px;background:var(--aiFill);color:var(--aiStrong);font-size:12.5px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M11 4C11.6 9.6 13.4 11.4 19 12C13.4 12.6 11.6 14.4 11 20C10.4 14.4 8.6 12.6 3 12C8.6 11.4 10.4 9.6 11 4Z"/></svg>Voice <span class="mono" style="font-size:10.5px;color:var(--ai)">69%</span></span>
-    <span class="circ" role="button" aria-label="Find inspiration" style="margin-left:auto;width:34px;height:36px;color:var(--acc);cursor:pointer"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.44 11.38A9 2.6 -18 0 1 5.74 8.58M17.54 4.88A9 2.6 -18 0 1 20.56 5.82"/><path d="M9 17v-1.6c0-1.2-.6-2.2-1.5-3.1A6.3 6.3 0 1 1 16.5 12.3c-.9.9-1.5 1.9-1.5 3.1V17z"/><path d="M9.5 19.6h5M10.6 22h2.8"/><path d="M20.56 5.82A9 2.6 -18 0 1 12.80 11.07A9 2.6 -18 0 1 3.44 11.38"/></svg></span>
+  <div class="i-only" id="row1" style="display:flex;align-items:center;gap:8px;height:36px;min-width:0;position:relative">
+    <span class="dchip" role="button" aria-label="Format" style="padding:0 10px;background:var(--heroGlass);box-shadow:inset 0 0 0 1px var(--heroStroke)"><svg width="17" height="16" viewBox="0 0 24 22" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 2.5h14"/><path d="M3 6.4h18" opacity=".7"/><rect x="2.5" y="10" width="19" height="10.5" rx="2.6"/></svg></span>
+    <span class="dchip" role="button" aria-label="For TikTok" style="background:var(--heroGlass);box-shadow:inset 0 0 0 1px var(--heroStroke)"><svg width="15" height="15" viewBox="0 0 24 24" fill="#fff"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>TikTok</span>
+    <span class="dchip" role="button" aria-label="Voice" style="background:var(--heroAI);box-shadow:inset 0 0 0 1px var(--heroAIStroke);color:var(--aiStrong)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M11 4C11.6 9.6 13.4 11.4 19 12C13.4 12.6 11.6 14.4 11 20C10.4 14.4 8.6 12.6 3 12C8.6 11.4 10.4 9.6 11 4Z"/></svg>Voice</span>
+    <!-- DockWriterChip: who writes the next idea (a native menu in the app). One width for both looks. -->
+    <span id="wchip" class="dchip" role="button" aria-label="Writer, Apple Intelligence" aria-haspopup="menu" style="position:relative;width:64px;padding:0;justify-content:center;cursor:pointer;background:var(--heroGlass);box-shadow:inset 0 0 0 1px var(--heroStroke);transition:background .3s,box-shadow .3s,color .3s">
+      <span id="wapple" style="position:absolute;display:flex;transition:opacity .12s,transform .3s"><svg width="19" height="19" viewBox="0 0 24 24"><defs><linearGradient id="aig" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF8FD0"/><stop offset=".5" stop-color="#B4A7FF"/><stop offset="1" stop-color="#8FD3FF"/></linearGradient></defs><path fill="url(#aig)" d="M10 3.5C10.7 9.6 12.4 11.3 18.5 12C12.4 12.7 10.7 14.4 10 20.5C9.3 14.4 7.6 12.7 1.5 12C7.6 11.3 9.3 9.6 10 3.5Z"/><path fill="url(#aig)" d="M19 2.2C19.3 4.7 20 5.4 22.5 5.7C20 6 19.3 6.7 19 9.2C18.7 6.7 18 6 15.5 5.7C18 5.4 18.7 4.7 19 2.2Z"/><path fill="url(#aig)" d="M18.5 15C18.7 16.8 19.2 17.3 21 17.5C19.2 17.7 18.7 18.2 18.5 20C18.3 18.2 17.8 17.7 16 17.5C17.8 17.3 18.3 16.8 18.5 15Z"/></svg></span>
+      <span id="wultra" style="position:absolute;display:flex;align-items:center;gap:5px;opacity:0;transform:scale(.8);transition:opacity .12s,transform .3s;color:var(--aiStrong)"><b id="wstar" style="font-weight:700;font-size:13px">✦</b>Ultra</span>
+      <i id="wring" aria-hidden="true"></i><i id="wlap" aria-hidden="true"></i><span id="wsparks" aria-hidden="true"></span>
+    </span>
+    <span id="bulb" role="button" aria-label="Find inspiration" style="margin-left:auto;width:44px;height:30px;border-radius:15px;background:var(--accSoft);box-shadow:inset 0 0 0 1px var(--accLine);display:flex;align-items:center;justify-content:center;color:var(--acc);cursor:pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 17v-1.6c0-1.2-.6-2.2-1.5-3.1A6.3 6.3 0 1 1 16.5 12.3c-.9.9-1.5 1.9-1.5 3.1V17z"/><path d="M9.5 19.6h5M10.6 22h2.8"/></svg></span>
+    <div id="wmenu" role="menu" style="display:none;position:absolute;right:-4px;bottom:44px;width:250px;border-radius:14px;background:rgba(40,42,60,.96);box-shadow:inset 0 0 0 .5px rgba(255,255,255,.2),0 10px 30px rgba(0,0,0,.5);padding:6px;z-index:30;font-size:15px;font-weight:500">
+      <div class="mi" data-w="apple" role="menuitemradio"><span class="ck">✓</span>Apple Intelligence</div>
+      <div class="mi" data-w="ultra" role="menuitemradio"><span class="ck"></span><span id="mitxt">Ultra AI · 3 of 3 free left</span></div>
+    </div>
   </div>
   <div class="v-only" style="align-items:center;gap:8px;height:36px;padding-left:4px;color:var(--acc);font-size:14px;font-weight:600" id="vhead"></div>
   <div style="margin-top:10px;background:rgba(14,16,28,.7);border-radius:20px;padding:6px 6px 6px 14px;display:flex;align-items:center;gap:6px;min-height:56px">
@@ -92,15 +128,24 @@ svg{display:block}
     <div class="i-only" style="display:flex;align-items:center;gap:6px">
       <span id="next" data-tool="next" role="button" aria-label="Another idea" style="width:32px;height:44px;display:flex;align-items:center;justify-content:center;color:var(--aiStrong);font-size:17px;cursor:pointer;transition:transform .4s">↻</span>
       <span id="mic" data-tool="mic" role="button" aria-label="Dictate" class="circ" style="width:44px;height:44px;color:var(--ink2);cursor:pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3h0a3 3 0 0 1 3 3v5a3 3 0 0 1 -3 3h0a3 3 0 0 1 -3 -3v-5a3 3 0 0 1 3 -3z"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg></span>
-      <span id="send" role="button" aria-label="Write it" class="circ" style="width:40px;height:40px;background:var(--acc);color:var(--accInk);cursor:pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5.5 11.5L12 5l6.5 6.5"/></svg></span>
+      <span id="send" role="button" aria-label="Write it" class="circ" style="position:relative;width:40px;height:40px;background:var(--acc);color:var(--accInk);cursor:pointer"><span id="sendv" style="position:absolute;inset:0;border-radius:50%;background:#6F5CFF;transform:scale(.001);transition:transform .4s cubic-bezier(.2,.8,.2,1)"></span><svg style="position:relative" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5.5 11.5L12 5l6.5 6.5"/></svg><i id="rim" aria-hidden="true"></i><i id="sring" aria-hidden="true"></i></span>
     </div>
     <div class="v-only" style="align-items:center;gap:8px">
       <span id="stop" data-tool="stop" role="button" aria-label="Stop" class="circ" style="width:40px;height:40px;box-shadow:inset 0 0 0 2px var(--record);cursor:pointer"><span style="width:13px;height:13px;border-radius:3px;background:var(--record)"></span></span>
       <span data-tool="off" class="circ" style="width:40px;height:40px;background:rgba(110,116,150,.32);color:rgba(225,228,245,.4)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5.5 11.5L12 5l6.5 6.5"/></svg></span>
     </div>
   </div>
+  <!-- UltraInviteCard, dock placement: "Meet Ultra AI · 3 free scripts", Try it, × (from the second use of the AI on, until it is allowed) -->
+  <div id="invite" role="group" aria-label="Meet Ultra AI" style="margin-top:8px;min-height:44px;border-radius:16px;background:var(--aiFill);display:flex;align-items:center;gap:8px;padding-left:14px;position:relative;overflow:hidden;transition:opacity .32s,transform .32s,height .32s,margin .32s,min-height .32s">
+    <span id="istar" style="color:var(--ai);font-size:13px;font-weight:700;display:inline-block">✦</span>
+    <span class="rise" style="--s:1;flex:1;font-size:13px;font-weight:600;line-height:17px">Meet Ultra AI · 3 free scripts</span>
+    <span id="itry" class="rise" role="button" aria-label="Try it" style="--s:2;height:34px;padding:0 14px;border-radius:17px;background:rgba(157,140,255,.3);box-shadow:inset 0 0 0 .5px rgba(196,184,255,.4);color:var(--aiStrong);font-size:14px;font-weight:600;display:flex;align-items:center;cursor:pointer">Try it</span>
+    <span id="iclose" class="rise" role="button" aria-label="Not now" style="--s:2;width:44px;height:44px;display:flex;align-items:center;justify-content:center;color:var(--ink2);font-size:12px;font-weight:700;cursor:pointer">✕</span>
+    <i id="ilap" aria-hidden="true"></i>
+  </div>
   </div>
 </div>
+<div id="hop" aria-hidden="true">✦</div>
 
 <!-- Tab bar: CueTabImage templates (26 pt); Scripts selected in yellow; Record = 30 pt ring + red dot -->
 <div class="glass" style="position:absolute;left:16px;right:16px;bottom:30px;height:62px;border-radius:31px;display:flex;align-items:center;justify-content:space-around;background:rgba(14,16,28,.8)">
@@ -140,6 +185,90 @@ svg{display:block}
     document.getElementById('next').style.display=user?'none':'flex'}
   document.getElementById('mic').onclick=voice;document.getElementById('stop').onclick=stop;
   window.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('#send')){try{parent.__cueDraft=F.textContent.trim()}catch(x){}}},true);
+})();
+
+// ---- Ultra AI on the dock (ScriptsDock.chooseWriter / syncUltra, DockWriterChip, UltraStarHop, UltraChipRing, UltraChipSparks, DockSendArrow, UltraMotion) ----
+(function(){
+  var $=function(i){return document.getElementById(i)},ph=$('ph'),dock=$('dock'),wchip=$('wchip'),hop=$('hop'),inv=$('invite');
+  var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches,P=null;
+  try{P=parent}catch(e){}
+  var left=3,allowed=false,writer='apple';
+  try{if(P&&P.__cueUltraWriter){writer=P.__cueUltraWriter;allowed=true}}catch(e){}
+  function rect(el){var r=el.getBoundingClientRect(),d=dock.getBoundingClientRect(),z=parseFloat(document.body.style.zoom)||1;return{x:(r.left-d.left)/z,y:(r.top-d.top)/z,w:r.width/z,h:r.height/z}}
+  function mid(el){var r=rect(el);return[r.x+r.w/2,r.y+r.h/2]}
+  // a ✦ flying in an arc (UltraStarHop): swells as it lifts off, arcs up and over, shrinks into where it lands
+  function fly(from,to,done){
+    if(reduce){if(done)done();return}
+    var N=24,frames=[],ctrl=[(from[0]+to[0])/2+(to[0]-from[0])*.2,Math.min(from[1],to[1])-36];
+    for(var k=0;k<=N;k++){var u=k/N,e=1-Math.pow(1-u,3),r=1-e,x=r*r*from[0]+2*r*e*ctrl[0]+e*e*to[0],y=r*r*from[1]+2*r*e*ctrl[1]+e*e*to[1],sc=u<.4?1+.7*(u/.4):1.7-.9*((u-.4)/.6);
+      frames.push({transform:'translate('+x.toFixed(1)+'px,'+y.toFixed(1)+'px) scale('+sc.toFixed(2)+')',opacity:u<.09?1:(u>.88?Math.max(0,(1-u)/.12):1)})}
+    hop.style.display='block';
+    var a=hop.animate(frames,{duration:460,easing:'linear',fill:'forwards'});
+    a.onfinish=function(){hop.style.opacity=0;hop.style.display='none';if(done)done()}}
+  // UltraChipRing: a ring leaves the chip's edge in violet and widens as it fades
+  function ring(el){if(reduce)return;el.animate([{transform:'scale(1)',opacity:.9},{transform:'scale(1.6)',opacity:0}],{duration:700,easing:'cubic-bezier(.2,.7,.3,1)'})}
+  // UltraChipSparks: six small stars, violet, lilac and yellow
+  function sparks(){if(reduce)return;var box=$('wsparks'),cols=['#B4A7FF','#E4DEFF','#FFD60A'];box.innerHTML='';
+    for(var k=0;k<6;k++){var i=document.createElement('i'),a=(k/6)*Math.PI*2+.3,d=26+(k%2)*8;i.textContent='✦';i.style.color=cols[k%3];box.appendChild(i);
+      i.animate([{transform:'translate(0,0) scale(.3) rotate(0)',opacity:0},{transform:'translate('+(Math.cos(a)*d*.6)+'px,'+(Math.sin(a)*d*.6)+'px) scale(1.2) rotate(90deg)',opacity:1,offset:.35},{transform:'translate('+Math.cos(a)*d+'px,'+Math.sin(a)*d+'px) scale(.5) rotate(180deg)',opacity:0}],{duration:650,easing:'ease-out',fill:'forwards'})}}
+  // DockChipLight: Cue's violet and gold go once round the chip
+  function lap(el,ms){if(reduce)return;el.animate([{opacity:0,transform:'rotate(0deg)'},{opacity:1,offset:.12},{opacity:1,offset:.8},{opacity:0,transform:'rotate(360deg)'}],{duration:ms||1200,easing:'ease-in-out'})}
+  // the chip turns to who writes: what it says goes, the capsule takes the new look, the new words come in (UltraMotion.chip*)
+  function look(w,lit){
+    var ap=$('wapple'),ul=$('wultra'),ultra=w==='ultra';
+    ap.style.opacity=ultra?0:1;ap.style.transform=ultra?'scale(.8)':'none';
+    setTimeout(function(){ul.style.opacity=ultra?1:0;ul.style.transform=ultra?'none':'scale(.8)'},reduce?0:220);
+    wchip.style.background=ultra?'var(--heroAI)':'var(--heroGlass)';wchip.style.boxShadow='inset 0 0 0 1px '+(ultra?'var(--heroAIStroke)':'var(--heroStroke)');
+    wchip.setAttribute('aria-label','Writer, '+(ultra?'Ultra AI · '+left+' of 3 free left':'Apple Intelligence'));
+    $('mitxt').textContent='Ultra AI · '+left+' of 3 free left';
+    document.querySelectorAll('.mi').forEach(function(m){m.firstChild.textContent=m.dataset.w===w?'✓':''});
+    if(lit){ring(wchip.querySelector('#wring'));setTimeout(function(){sparks();lap($('wlap'));try{wchip.querySelector('#wstar').animate([{transform:'rotate(-70deg) scale(.4)'},{transform:'rotate(0) scale(1.4)',offset:.6},{transform:'none'}],{duration:480})}catch(e){}},reduce?0:180)}
+  }
+  // the send arrow turns Ultra AI's: violet spreads from the middle, a rim of violet and gold goes slowly round it
+  function arrow(on,pop){var v=$('sendv');v.style.transform=on?'scale(1.05)':'scale(.001)';ph.classList.toggle('ultra',on);
+    if(on){$('send').style.color='#fff'}else{$('send').style.color=''}
+    if(pop&&!reduce){$('send').animate([{transform:'scale(1)'},{transform:'scale(1.18)',offset:.2},{transform:'scale(1)'}],{duration:570,easing:'cubic-bezier(.3,1.5,.5,1)'});ring($('sring'))}}
+  // UltraInviteCard arrives: the ✦ ignites, the lines rise out of the blur, a light runs once round the edge
+  function arrive(){inv.classList.add('lit');if(reduce)return;setTimeout(function(){var l=$('ilap');l.animate([{opacity:0,'--il':'0deg'},{opacity:1,offset:.08},{opacity:1,offset:.7},{opacity:0,'--il':'360deg'}],{duration:1200,easing:'cubic-bezier(.4,0,.2,1)'})},180)}
+  function fold(){inv.classList.add('folded')}
+  // Ultra AI allowed from the invitation (the sheet is gone): the ✦ flies from the invitation to the chip, the chip lights, the ✦ flies on to the arrow
+  function turnOn(){
+    writer='ultra';try{if(P)P.__cueUltraWriter='ultra'}catch(e){}
+    var from=mid($('istar')),chip=mid(wchip),send=mid($('send'));
+    fold();
+    setTimeout(function(){fly(from,[chip[0]-14+((64-62)/2),chip[1]],function(){look('ultra',true);
+      setTimeout(function(){fly([chip[0]-14,chip[1]],send,function(){arrow(true,true)})},reduce?0:320)})},reduce?0:350);
+  }
+  // the writer picked on the chip's menu (ScriptsDock.chooseWriter): Ultra AI asks first until it is allowed
+  function choose(w){
+    $('wmenu').style.display='none';
+    if(w===writer)return;
+    if(w==='ultra'&&!allowed){try{P.__cueUltraAsk=true}catch(e){}return ask()}
+    writer=w;try{if(P)P.__cueUltraWriter=w==='ultra'?'ultra':null}catch(e){}
+    setTimeout(function(){look(w,true);arrow(w==='ultra',w==='ultra')},reduce?0:200);
+  }
+  // the permission sheet is a screen of its own (U1); standalone, the invitation just says what would happen
+  function ask(){
+    var link=document.createElement('a');link.href='U1_Meet-Ultra-AI.html';
+    try{if(P&&P!==window&&P.__cueGoUltra){P.__cueGoUltra();return}}catch(e){}
+    location.href='U1_Meet-Ultra-AI.html'}
+  wchip.addEventListener('click',function(e){var m=$('wmenu');m.style.display=m.style.display==='block'?'none':'block';e.stopPropagation()});
+  document.querySelectorAll('.mi').forEach(function(m){m.addEventListener('click',function(e){e.stopPropagation();choose(m.dataset.w)})});
+  document.addEventListener('click',function(){$('wmenu').style.display='none'});
+  $('itry').addEventListener('click',function(e){e.stopPropagation();ask()});
+  $('iclose').addEventListener('click',function(e){e.stopPropagation();fold()});
+  // send: the writer goes with the idea (4.1 draws Ultra AI's wait)
+  window.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('#send')){try{P.__cueEngine=writer==='ultra'?'ultra':null}catch(x){}}},true);
+  // arriving
+  var fresh=true;try{fresh=!(P&&P.__cueInviteSeen)}catch(e){}
+  if(writer==='ultra'&&allowed){
+    inv.classList.add('folded');look('ultra',false);arrow(true,false)
+  }else{
+    var asked=false;try{asked=P&&P.__cueUltraAllowed&&!P.__cueUltraWriter}catch(e){}
+    if(asked){allowed=true;inv.classList.add('lit');look('apple',false);arrow(false,false);setTimeout(turnOn,reduce?0:420)}
+    else{look('apple',false);setTimeout(arrive,fresh&&!reduce?500:0);try{if(P)P.__cueInviteSeen=true}catch(e){}}
+  }
+  if(location.hash==='#ultra'){allowed=true;writer='ultra';inv.classList.add('folded');look('ultra',false);arrow(true,false)}
 })();
 </script>
 </body></html>
