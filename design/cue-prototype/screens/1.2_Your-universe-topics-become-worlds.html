@@ -2,7 +2,9 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=390">
 <title>Cue — Your topics</title>
 <style>
-/* 1.2 Chapter 1, read from source (879bee2e468a): UniverseChapter (heading, universe canvas 120–300 pt, counter + chips with 6 pt spacing, Continue that reads
+/* 1.2 Chapter 1, redrawn from main (03/11/2026): glass chips with the empty 3 × 14 bar, tint + edge + a light across a picked one, the light that leaves the chip
+   (0.15 s, 1.6 s flight, StarRibbon tail) and lands on the topic's dashed orbit in a ring; planet springs out ×1.9 → 1, the orbit draws (1.4–2.7 s), the name arrives, the core pulses.
+   Earlier read from source (879bee2e468a): UniverseChapter (heading, universe canvas 120–300 pt, counter + chips with 6 pt spacing, Continue that reads
    "Pick a topic" in grey until one is picked), OnboardingParts (5-segment bar 22 × 4, heading: HUD label in yellow, title 30 bold −0.6, line 15 ink2; yellow
    pill 54 pt), OnboardingTopicChip (32 pt, 12.5 semibold, picked = white with a 3 × 14 bar of its world's colour), TopicCounter (three 3 × 16 bars, 12 mono
    semibold, tracking 1.2, gold at three), Niche.offered + chipLabel, OnboardingTopic (limit 3, colours warm · mint · pink), OnboardingStep.chapterLabel.
@@ -10,11 +12,15 @@
 body{margin:0;background:#000}*{box-sizing:border-box}
 .phone{width:390px;height:844px;position:relative;overflow:hidden;font-family:-apple-system,"SF Pro Text",system-ui,sans-serif;color:#fff;background:#07080E;display:flex;flex-direction:column;padding:54px 0 34px}
 .mono{font-family:ui-monospace,"SF Mono",Menlo,monospace}
-.chip{height:32px;padding:0 11px;border-radius:16px;display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;background:rgba(110,116,150,.26);color:rgba(225,228,245,.62);white-space:nowrap;cursor:pointer;transition:background .16s ease-out,color .16s ease-out,opacity .2s}
-.chip.on{background:#fff;color:#000;padding:0 10px 0 8px}
-.chip .bar{width:3px;height:14px;border-radius:1.5px;display:none}
-.chip.on .bar{display:block;animation:pop .25s cubic-bezier(.3,1.5,.5,1) .05s both}
+.chip{position:relative;height:32px;padding:0 12px 0 10px;border-radius:16px;display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;background:rgba(110,116,150,.26);box-shadow:inset 0 0 0 .75px rgba(180,167,255,.22);color:rgba(225,228,245,.62);white-space:nowrap;cursor:pointer;transition:background .22s ease-out .02s,color .22s ease-out .02s,box-shadow .22s ease-out .02s,opacity .2s;overflow:hidden}
+.chip.on{color:#fff}
+.chip .bar{position:relative;width:3px;height:14px;border-radius:1.5px;box-shadow:inset 0 0 0 1px rgba(225,228,245,.45);flex-shrink:0}
+.chip .bar i{position:absolute;inset:0;border-radius:1.5px;transform:scaleY(0);transition:transform .4s cubic-bezier(.3,1.5,.5,1) .05s}
+.chip.on .bar i{transform:scaleY(1)}
+.chip .lt{position:absolute;top:-30%;height:160%;border-radius:50%;filter:blur(3px);opacity:0;pointer-events:none}
 .chip.dim{opacity:.4}
+.chip.own{background:transparent;box-shadow:inset 0 0 0 1px rgba(225,228,245,.45)}
+.chip.own.dash{box-shadow:none;outline:1px dashed rgba(225,228,245,.45);outline-offset:-1px}
 @keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
 @keyframes orbit{to{transform:rotate(360deg)}}
 @keyframes rise{from{opacity:0;transform:translateY(16px);filter:blur(10px)}to{opacity:1;transform:none;filter:none}}
@@ -58,22 +64,80 @@ body{margin:0;background:#000}*{box-sizing:border-box}
 (function(){function f(){document.body.style.zoom=Math.min(1,(innerHeight-8)/860)}f();addEventListener('resize',f)})();
 (function(){
   var TOP=['Fitness & wellness','Food & cooking','Beauty & skincare','Fashion & style','Personal finance','Tech & AI','Budget travel','Productivity & career','Parenting & family','Daily routines'];
-  var COL=['#FFC46B','#7EE0B8','#FF9BD2'],R=[[70,22],[110,34],[150,46]],picked=[];
-  var chips=document.getElementById('chips'),bars=document.getElementById('bars'),count=document.getElementById('count'),go=document.getElementById('go'),uni=document.getElementById('uni');
-  var els=TOP.map(function(t){var c=document.createElement('span');c.className='chip';c.setAttribute('data-tool','topic');c.innerHTML='<span class="bar"></span>'+t.replace(/&/g,'&amp;');chips.appendChild(c);c.addEventListener('click',function(){tap(t)});return c;});
-  var own=document.createElement('span');own.className='chip';own.textContent='+ Your own';own.style.cssText='background:transparent;box-shadow:none;outline:1px dashed rgba(225,228,245,.45);outline-offset:-1px';chips.appendChild(own);
+  var SHORT=['Fitness','Food','Beauty','Fashion','Finance','Tech','Travel','Career','Family','Routines'];
+  var COL=['#FFC46B','#7EE0B8','#FF9BD2'],RGB=['255,196,107','126,224,184','255,155,210'],R=[[70,22],[110,34],[150,46]],picked=[],worlds={};
+  var ph=document.querySelector('.phone'),chips=document.getElementById('chips'),bars=document.getElementById('bars'),count=document.getElementById('count'),go=document.getElementById('go'),uni=document.getElementById('uni');
+  var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function bez(x1,y1,x2,y2){return function(x){if(x<=0)return 0;if(x>=1)return 1;var t=x;for(var i=0;i<8;i++){var cx=3*x1*t*(1-t)*(1-t)+3*x2*t*t*(1-t)+t*t*t-x;var d=3*x1*(1-t)*(1-t)+6*(x2-x1)*t*(1-t)+3*(1-x2)*t*t;if(Math.abs(d)<1e-6)break;t-=cx/d;t=Math.max(0,Math.min(1,t));}return 3*y1*t*(1-t)*(1-t)+3*y2*t*t*(1-t)+t*t*t;}}
+  var FLY=bez(.5,0,.3,1),OUT=bez(.1,.7,.3,1),SPR=bez(.3,1.4,.5,1),SWP=bez(.5,0,.2,1);
+  function offs(el){var x=0,y=0;while(el&&el!==ph){x+=el.offsetLeft;y+=el.offsetTop;el=el.offsetParent;}return[x,y];}
+  // the three empty orbits are the counter (dashed)
+  for(var i=0;i<3;i++){var o=document.createElement('div');o.style.cssText='position:absolute;left:'+(-R[i][0])+'px;top:'+(-R[i][1])+'px;width:'+(2*R[i][0])+'px;height:'+(2*R[i][1])+'px;border-radius:50%;border:1px dashed rgba(180,167,255,.2)';uni.insertBefore(o,uni.firstChild);}
+  var cv=document.createElement('canvas');cv.width=780;cv.height=1688;cv.style.cssText='position:absolute;left:0;top:0;width:390px;height:844px;pointer-events:none;z-index:5';ph.appendChild(cv);var cx=cv.getContext('2d');cx.scale(2,2);
+  var core=uni.children[uni.children.length-2];
+  var els=TOP.map(function(t,k){var c=document.createElement('span');c.className='chip rise';c.style.animationDelay=(.25+k*.045)+'s';c.setAttribute('data-tool','topic');c.innerHTML='<span class="bar"><i></i></span><span>'+t.replace(/&/g,'&amp;')+'</span><span class="lt"></span>';chips.appendChild(c);c.addEventListener('click',function(){tap(t,k)});return c;});
+  var own=document.createElement('span');own.className='chip own dash rise';own.style.animationDelay='.7s';own.textContent='+ Your own';chips.appendChild(own);
   for(var i=0;i<3;i++){var b=document.createElement('span');b.style.cssText='width:3px;height:16px;border-radius:1.5px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.4);transition:transform .45s cubic-bezier(.3,1.5,.5,1)';bars.appendChild(b);}
-  function tap(t){var i=picked.indexOf(t);if(i>=0)picked.splice(i,1);else{if(picked.length>=3)return;picked.push(t);}draw();}
-  function draw(){var n=picked.length,full=n>=3;
-    els.forEach(function(c,k){var j=picked.indexOf(TOP[k]);c.classList.toggle('on',j>=0);c.classList.toggle('dim',full&&j<0);c.querySelector('.bar').style.background=j>=0?COL[j]:'';c.querySelector('.bar').style.boxShadow=j>=0?'0 0 8px '+COL[j]+'99':'';});
+  var flights=[],now=function(){return performance.now()/1000};
+  function tap(t,k){var i=picked.indexOf(t);if(i>=0)picked.splice(i,1);else{if(picked.length>=3)return;picked.push(t);}draw(t,k,i<0);}
+  function centre(el){var o=offs(el);return[o[0]+el.offsetWidth/2,o[1]+el.offsetHeight/2];}
+  function draw(tapped,tk,added){var n=picked.length,full=n>=3;
+    els.forEach(function(c,k){var j=picked.indexOf(TOP[k]);c.classList.toggle('on',j>=0);c.classList.toggle('dim',full&&j<0);
+      c.querySelector('.bar i').style.background=j>=0?COL[j]:'';c.querySelector('.bar i').style.boxShadow=j>=0?'0 0 6px '+COL[j]+'b3':'none';
+      c.style.background=j>=0?'linear-gradient(rgba('+RGB[j]+',.22),rgba('+RGB[j]+',.22)),rgba(110,116,150,.26)':'';
+      c.style.boxShadow=j>=0?'inset 0 0 0 1px rgba('+RGB[j]+',.7),0 0 10px rgba('+RGB[j]+',.35)':'';});
     own.style.opacity=full?.4:1;
     [].forEach.call(bars.children,function(b,k){b.style.background=k<n?COL[k]:'transparent';b.style.boxShadow=k<n?'0 0 8px '+COL[k]+'99':'inset 0 0 0 1px rgba(255,255,255,.4)';});
     count.textContent=n===0?'PICK 1 TO 3 TOPICS':n===1?'1 OF 3 · ADD MORE OR CONTINUE':n===3?'3 OF 3 · TAP ONE TO SWAP':n+' OF 3 · ADD ONE MORE OR CONTINUE';count.style.color=full?'#FFE680':'rgba(255,255,255,.82)';
     if(n){go.textContent='Continue';go.style.background='#FFD60A';go.style.color='#000';go.removeAttribute('data-tool');}else{go.textContent='Pick a topic';go.style.background='rgba(110,116,150,.26)';go.style.color='rgba(225,228,245,.45)';go.setAttribute('data-tool','off');}
-    [].slice.call(uni.querySelectorAll('.orb')).forEach(function(o){o.remove()});
-    picked.forEach(function(t,k){var o=document.createElement('div');o.className='orb';o.style.cssText='position:absolute;left:0;top:0;width:0;height:0;transform:scaleY('+(R[k][1]/R[k][0])+')';var spin=document.createElement('div');spin.className='orb';spin.style.cssText='position:absolute;left:0;top:0;width:0;height:0;animation:orbit '+(18+k*8)+'s linear infinite;animation-delay:-'+(k*5)+'s';var p=document.createElement('div');p.style.cssText='position:absolute;left:'+(R[k][0]-7)+'px;top:-7px;width:14px;height:14px;border-radius:7px;background:radial-gradient(circle at 35% 30%,#fff,'+COL[k]+' 55%,rgba(0,0,0,.35));box-shadow:0 0 12px '+COL[k];spin.appendChild(p);o.appendChild(spin);uni.appendChild(o);});
+    // worlds: the ones no longer picked go, the others take the orbit of their order, the new one is born
+    Object.keys(worlds).forEach(function(t){if(picked.indexOf(t)<0){var w=worlds[t];w.el.remove();w.lab.remove();delete worlds[t];}});
+    picked.forEach(function(t,j){var w=worlds[t];
+      if(!w){var k=TOP.indexOf(t);w=worlds[t]={t:t,born:now(),flight:!reduce&&t===tapped&&added,a:0};
+        var pl=document.createElement('div');pl.style.cssText='position:absolute;left:0;top:0;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:7px;will-change:transform';uni.appendChild(pl);w.el=pl;
+        var lab=document.createElement('div');lab.className='mono';lab.textContent=SHORT[k];lab.style.cssText='position:absolute;left:0;top:0;font-size:8.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;color:rgba(228,222,255,.85);opacity:0;transform:translate(-50%,0)';uni.appendChild(lab);w.lab=lab;
+        var sv=document.createElementNS('http://www.w3.org/2000/svg','svg');sv.setAttribute('width',2*R[j][0]+4);sv.setAttribute('height',2*R[j][1]+4);sv.style.cssText='position:absolute;left:'+(-R[j][0]-2)+'px;top:'+(-R[j][1]-2)+'px;overflow:visible';
+        sv.innerHTML='<ellipse cx="'+(R[j][0]+2)+'" cy="'+(R[j][1]+2)+'" rx="'+R[j][0]+'" ry="'+R[j][1]+'" fill="none" stroke-width="1.1" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>';uni.insertBefore(sv,uni.children[3]);w.sv=sv;w.orb=sv.firstChild;
+        if(!w.flight){w.landed=-9;}
+      }
+      w.j=j;w.orb.setAttribute('stroke',COL[j]);w.orb.setAttribute('stroke-opacity','.7');w.el.style.background='radial-gradient(circle at 35% 30%,#fff,'+COL[j]+' 55%,rgba(0,0,0,.35))';w.el.style.boxShadow='0 0 12px '+COL[j];
+      sv=w.sv;sv.style.left=(-R[j][0]-2)+'px';sv.style.top=(-R[j][1]-2)+'px';
+    });
+    // the light leaves the chip
+    var w=worlds[tapped];if(w&&w.flight){var c=centre(els[tk]),u=centre(uni),to=[u[0]+R[w.j][0],u[1]],core=u;
+      var ch=[to[0]-c[0],to[1]-c[1]],len=Math.max(Math.hypot(ch[0],ch[1]),1),nrm=[-ch[1]/len,ch[0]/len],mid=[(c[0]+to[0])/2,(c[1]+to[1])/2],side=nrm[0]*(mid[0]-core[0])+nrm[1]*(mid[1]-core[1]);
+      if(side<0||(Math.abs(side)<8&&nrm[0]<0)){nrm=[-nrm[0],-nrm[1]];}
+      var amt=Math.min(150,.5*len+40),bw=[nrm[0]*amt*1.3,nrm[1]*amt*1.3];
+      w.from=c;w.to=to;w.c1=[c[0]+(to[0]-c[0])*.25+bw[0],c[1]+(to[1]-c[1])*.25+bw[1]];w.c2=[c[0]+(to[0]-c[0])*.75+bw[0],c[1]+(to[1]-c[1])*.75+bw[1]];w.t0=now();w.chip=els[tk];w.col=RGB[w.j];w.k=w.j;}
   }
-  draw();
+  function bz(w,u){var v=1-u;return[v*v*v*w.from[0]+3*v*v*u*w.c1[0]+3*v*u*u*w.c2[0]+u*u*u*w.to[0],v*v*v*w.from[1]+3*v*v*u*w.c1[1]+3*v*u*u*w.c2[1]+u*u*u*w.to[1]];}
+  function loop(){var t=now(),u0=centre(uni);cx.clearRect(0,0,390,844);var pulse=0;
+    Object.keys(worlds).forEach(function(key){var w=worlds[key],age=w.flight?t-w.t0:99,R0=R[w.j],spin=t*(.35/(1+w.j*.45))+w.j*2.1;
+      var land=1.75,sp=w.flight?Math.max(0,Math.min(1,(age-land)/.5)):1,sc=w.flight?(age<land?0:1.9-.9*SPR(sp)):1,drawn=w.flight?Math.max(0,Math.min(1,(age-1.4)/1.3)):1;
+      var ang=w.flight&&age<land+.0?0:(w.flight?(spin-(w.spin0==null?(w.spin0=spin):w.spin0)):spin);
+      var px=R0[0]*Math.cos(ang),py=R0[1]*Math.sin(ang);
+      w.el.style.transform='translate('+px+'px,'+py+'px) scale('+sc+')';w.el.style.opacity=w.flight&&age<land?0:1;
+      w.orb.setAttribute('stroke-dashoffset',1-SWP(drawn));
+      var la=w.flight?Math.max(0,Math.min(1,(age-2.0)/.5)):1;w.lab.style.opacity=la;w.lab.style.left=px+'px';w.lab.style.top=(py+12)+'px';
+      if(w.flight&&age>=land&&age<land+.6)pulse=Math.max(pulse,Math.sin(Math.PI*(age-land)/.6));
+      if(w.flight&&age<3.4){
+        var ca=t-w.t0,lc='rgba('+w.col+',';
+        // oval of light across the chip (0.12–0.64 s)
+        var lt=w.chip.querySelector('.lt');if(ca>=.12&&ca<=.64){var q=SWP((ca-.12)/.52),wd=w.chip.offsetWidth*.55;lt.style.width=wd+'px';lt.style.left=((-1.2+4.5*q)*wd)+'px';lt.style.background='radial-gradient(closest-side,rgba('+w.col+',.6),rgba('+w.col+',.25),rgba('+w.col+',0))';lt.style.opacity=1;}else lt.style.opacity=0;
+        // ring on the chip at the tap
+        if(ca<.6){var rq=OUT(ca/.6);cx.save();cx.strokeStyle=lc+(.8*(1-rq))+')';cx.lineWidth=1.2;var cc=centre(w.chip);cx.beginPath();cx.ellipse(cc[0],cc[1],w.chip.offsetWidth/2*(.9+.2*rq),16*(.9+.4*rq),0,0,7);cx.stroke();cx.restore();}
+        // the light: leaves at .15 s, flight 1.6 s, with a short tail
+        if(ca>=.15&&ca<=land){var fu=FLY((ca-.15)/1.6),pt=bz(w,fu);
+          for(var k=14;k>=1;k--){var pu=FLY(Math.max(0,(ca-.15-k*.018)/1.6)),pp=bz(w,pu);cx.save();cx.globalAlpha=.55*(1-k/15);cx.fillStyle=lc+'1)';cx.shadowColor=lc+'1)';cx.shadowBlur=6;cx.beginPath();cx.arc(pp[0],pp[1],2.6*(1-k/16),0,7);cx.fill();cx.restore();}
+          cx.save();cx.shadowColor=lc+'1)';cx.shadowBlur=14;cx.fillStyle='#fff';cx.beginPath();cx.arc(pt[0],pt[1],3,0,7);cx.fill();cx.restore();}
+        // the landing ring
+        if(ca>=land&&ca<land+.7){var lq=OUT((ca-land)/.7);cx.save();cx.strokeStyle=lc+(.85*(1-lq))+')';cx.lineWidth=1.3;cx.beginPath();cx.arc(w.to[0],w.to[1],5+20*lq,0,7);cx.stroke();cx.restore();}
+        // "Continue": its ring (1.6–2.9 s)
+        if(ca>1.6&&ca<2.9){var bq=(ca-1.6)/1.3,bo=go.getBoundingClientRect();}
+      }});
+    core.style.transform='scale('+(1+.3*pulse)+')';
+    requestAnimationFrame(loop);}
+  draw();loop();
 })();
 </script>
 </body></html>
