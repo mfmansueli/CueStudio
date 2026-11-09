@@ -93,13 +93,14 @@ struct PrompterViewModelSetupTests {
 
     // MARK: - Recommendations
 
-    /// Test 3: 4K by default, 1080p recommended for TikTok: the conflict is shown.
-    @Test func aConflictingRecommendationIsShown() async {
+    /// Test 3: 4K by default, 1080p recommended for TikTok: the card lists that change against the screen.
+    @Test func aRecommendationListsWhatWouldChange() async {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }
         await scenario.viewModel.appear()
         #expect(scenario.viewModel.showsRecommendation)
-        #expect(scenario.viewModel.session.conflicts == [SetupConflict(field: .quality, recommended: "1080p", usual: "4K")])
+        #expect(scenario.viewModel.recommendationChanges.map(\.item) == [.field(.quality)])
+        #expect(scenario.viewModel.recommendationChanges.first?.values == "4K → 1080p")
         #expect(scenario.viewModel.session.recommendation?.title == "Recommended for TikTok")
         // Shown, not applied.
         #expect(scenario.camera.startedSettings.last?.resolution == .uhd4K)
@@ -133,12 +134,14 @@ struct PrompterViewModelSetupTests {
         await scenario.viewModel.disappear()
     }
 
-    /// Test 5: Keep My Setup → this session in 4K.
-    @Test func keepMySetupRecordsWithTheCreatorSetup() async {
+    /// Test 5: Keep as is → this session in 4K, nothing changed.
+    @Test func keepAsIsRecordsWithWhatIsOnScreen() async {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }
         await scenario.viewModel.appear()
-        scenario.viewModel.keepCreatorSetup()
+        let before = scenario.viewModel.session.current
+        scenario.viewModel.keepAsIs()
+        #expect(scenario.viewModel.session.current == before)
         #expect(scenario.viewModel.session.camera.resolution == .uhd4K)
         #expect(!scenario.viewModel.showsRecommendation)
         await scenario.viewModel.cameraSettingsChanged()
@@ -153,7 +156,7 @@ struct PrompterViewModelSetupTests {
         await scenario.viewModel.appear()
         await scenario.viewModel.recordButtonTapped()
         #expect(cameraResolution(scenario) == .uhd4K)
-        #expect(scenario.viewModel.session.choice == .keepCreatorSetup)
+        #expect(scenario.viewModel.session.choice == .keepAsIs)
         await scenario.viewModel.stopRecording(openReview: false)
         #expect(!scenario.viewModel.showsRecommendation)
         await scenario.viewModel.disappear()
@@ -181,7 +184,7 @@ struct PrompterViewModelSetupTests {
         defer { scenario.defaults.tearDown() }
         await scenario.viewModel.appear()
         scenario.viewModel.useRecommendedSetup()
-        scenario.viewModel.cycleAspect()
+        scenario.viewModel.session.camera.aspect = .square
         scenario.viewModel.setSpeed(1.8)
         scenario.viewModel.backToCreatorSetup()
         #expect(scenario.viewModel.session.current == scenario.preferences.creatorSetup)
@@ -271,6 +274,30 @@ struct PrompterViewModelSetupTests {
 
         await scenario.viewModel.disappear()
         #expect(scenario.transport.sentStatuses.last == .idle)
+    }
+
+    /// The second device's big button records and stops a take the way the Apple Watch does, and its status says the take's number
+    /// and how long it has recorded.
+    @Test func theRemoteRecordsAndStopsATake() async {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        scenario.remote.startHosting()
+        scenario.transport.emit(.connected(deviceName: "iPad"))
+        await scenario.viewModel.appear()
+        #expect(scenario.transport.sentStatuses.last?.canRecord == true)
+        #expect(scenario.transport.sentStatuses.last?.takeNumber == 1)
+
+        scenario.transport.emit(.received(.command(.record)))
+        for _ in 0..<100 where !scenario.viewModel.isRecording { try? await Task.sleep(for: .milliseconds(10)) }
+        #expect(scenario.viewModel.isRecording)
+        #expect(scenario.transport.sentStatuses.last?.isRecording == true)
+        #expect(scenario.transport.sentStatuses.last?.recordingElapsed != nil)
+
+        scenario.transport.emit(.received(.command(.stop)))
+        for _ in 0..<100 where scenario.takes.takes.isEmpty { try? await Task.sleep(for: .milliseconds(10)) }
+        #expect(!scenario.viewModel.isRecording)
+        #expect(scenario.takes.takes.count == 1)
+        await scenario.viewModel.disappear()
     }
 
     @Test func theRemoteSheetOpensFromThePrompter() {

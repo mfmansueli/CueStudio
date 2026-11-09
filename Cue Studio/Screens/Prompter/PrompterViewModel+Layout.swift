@@ -35,20 +35,31 @@ extension PrompterViewModel {
         )
     }
 
-    /// Bottom of the Selfie text window, when there is one.
+    /// What a sheet must leave in sight, from the top of the screen: the bottom of the Selfie text window, or in Studio a line under
+    /// the reading line (the words being read). Nil without a script.
     var textWindowBottom: CGFloat? {
-        hasScript && mode == .selfie ? readingLayout.windowRect.maxY : nil
+        guard hasScript else { return nil }
+        switch mode {
+        case .selfie:
+            return readingLayout.windowRect.maxY
+        case .studio:
+            guard let frame = studioTextFrame else { return nil }
+            return frame.minY + CGFloat(session.prompter.guidePosition) * frame.height + CGFloat(lineHeight)
+        }
     }
 
     // MARK: - Safe zone
 
-    /// The zone for this frame: the one chosen in Settings › Social safe zone, else the script's platform, else Reels (9:16) or
-    /// LinkedIn (4:5). None for horizontal video.
+    /// The zone for this frame: Custom while the creator picked it in Aa › Window, else the recording's network (`platform`, also
+    /// freestyle), else Reels (9:16) or LinkedIn (4:5). None for horizontal video.
     var safeZone: SafeZoneChoice? {
-        SafeZoneChoice.resolve(
-            pick: SafeZoneChoice.pick(fromKey: session.prompter.safeZoneKey), scriptPlatform: script?.platform,
-            aspect: session.camera.aspect, rules: rules.rules
-        )
+        SafeZoneChoice.resolve(pick: session.safeZonePick, network: platform, aspect: session.camera.aspect, rules: rules.rules)
+    }
+
+    /// The zone the recording's network gives this frame, which Aa › Window offers beside Custom; nil when only Custom fits (1:1).
+    var networkSafeZone: SafeZoneChoice? {
+        let zone = SafeZoneChoice.resolve(pick: nil, network: platform, aspect: session.camera.aspect, rules: rules.rules)
+        return zone == .custom ? nil : zone
     }
 
     /// The part of the frame the zone leaves clear, on screen.

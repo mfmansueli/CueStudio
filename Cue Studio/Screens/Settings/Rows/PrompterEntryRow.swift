@@ -112,8 +112,7 @@ struct PrompterEntryRow: View {
             NavigationLink(value: SettingsRoute.safeZone) {
                 SettingsValueLabel(
                     title: entry.title,
-                    value: bindings.camera.wrappedValue.showsSafeZones
-                        ? SafeZoneChoice.saved(key: settings.wrappedValue.safeZoneKey).label : String(localized: "Off")
+                    value: bindings.camera.wrappedValue.showsSafeZones ? String(localized: "On") : String(localized: "Off")
                 )
             }
         case .studioBackground:

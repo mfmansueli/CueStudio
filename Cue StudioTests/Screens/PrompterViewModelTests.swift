@@ -125,11 +125,13 @@ struct PrompterViewModelTests {
         #expect(scenario.viewModel.session.prompter.textWindowHeight == 200)
         #expect(scenario.preferences.prompter == prompter)
         #expect(scenario.viewModel.session.camera.aspect == .portrait)
-        #expect(scenario.viewModel.session.conflicts.map(\.field) == [.format])
+        #expect(scenario.viewModel.session.changes.map(\.item) == [.field(.format)])
         await scenario.viewModel.disappear()
     }
 
-    @Test func createForFromTheCameraMovesTheScriptAndOffersItsSetup() async {
+    /// The recorder's network chip changes this session's network only: the script keeps its own, the setup is offered for the new one
+    /// and the next take is filed under it.
+    @Test func createForFromTheCameraChangesTheSessionNeverTheScript() async {
         let script = TestData.script(platform: .tiktok)
         let scenario = makeScenario(script: script)
         defer { scenario.defaults.tearDown() }
@@ -137,19 +139,32 @@ struct PrompterViewModelTests {
         #expect(scenario.viewModel.sheet == .destination)
         scenario.viewModel.setPlatform(.stories)
         #expect(scenario.viewModel.sheet == nil)
-        #expect(scenario.viewModel.script?.platform == .stories)
+        #expect(scenario.viewModel.platform == .stories)
+        #expect(scenario.viewModel.script?.platform == .tiktok)
         #expect(scenario.viewModel.session.recommendation?.platform == .stories)
-        #expect(scenario.toast.message == "Create for Instagram Stories")
+        await scenario.viewModel.recordButtonTapped()
+        await scenario.viewModel.stopRecording(openReview: false)
+        #expect(scenario.takes.takes.first?.platform == .stories)
+        #expect(scenario.viewModel.script?.platform == .tiktok)
+        await scenario.viewModel.disappear()
     }
 
-    @Test func freestyleChipCyclesTheFrame() {
+    /// Freestyle starts at the creator's usual network and records under it; its chip opens the same picker, and the setup is offered
+    /// only once the creator picks another network.
+    @Test func freestyleStartsAtTheUsualNetworkAndItsChipPicksAnother() async {
         let scenario = makeScenario(script: nil)
         defer { scenario.defaults.tearDown() }
-        scenario.preferences.camera.aspect = .portrait
+        #expect(scenario.viewModel.platform == CreatorProfile().defaultPlatform)
+        #expect(scenario.viewModel.recommendation == nil)
         scenario.viewModel.platformChipTapped()
-        #expect(scenario.viewModel.sheet == nil)
-        #expect(scenario.viewModel.session.camera.aspect == .vertical)
-        #expect(scenario.preferences.camera.aspect == .portrait)
+        #expect(scenario.viewModel.sheet == .destination)
+        #expect(scenario.viewModel.session.camera.aspect == scenario.preferences.camera.aspect)
+        await scenario.viewModel.recordButtonTapped()
+        await scenario.viewModel.stopRecording(openReview: false)
+        #expect(scenario.takes.takes.first?.platform == CreatorProfile().defaultPlatform)
+        scenario.viewModel.setPlatform(.youtube)
+        #expect(scenario.viewModel.session.recommendation?.platform == .youtube)
+        await scenario.viewModel.disappear()
     }
 
     /// The switch changes this session at once; the pick is saved when the session ends (`rememberReadingLayout`).
@@ -568,7 +583,7 @@ struct PrompterViewModelTests {
     @Test func cameraShortcutsChangeThisTakeAndSaveTheRest() {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }
-        scenario.viewModel.cycleAspect()
+        scenario.viewModel.session.camera.aspect = .vertical
         scenario.viewModel.flipCamera()
         #expect(scenario.viewModel.session.camera.aspect == .vertical)
         #expect(scenario.viewModel.session.camera.lens == .wide)

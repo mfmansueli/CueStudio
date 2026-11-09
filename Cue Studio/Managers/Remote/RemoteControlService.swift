@@ -34,6 +34,8 @@ final class RemoteControlService {
     private(set) var code: String?
     /// On the remote: what the teleprompter last reported.
     private(set) var teleprompterStatus: RemoteStatus?
+    /// When it arrived, on this device's clock: the take's time counts on from here (the two clocks may differ).
+    private(set) var statusReceivedAt: Date?
 
     /// The prompter, while it's open: where commands go and what it reports.
     @ObservationIgnored private var commandHandler: ((RemoteCommand) -> Void)?
@@ -142,6 +144,7 @@ final class RemoteControlService {
         case .received(.status(let status)):
             guard role == .remote else { return }
             teleprompterStatus = status
+            statusReceivedAt = .now
         case .failed(let message):
             state = .failed(message)
         }

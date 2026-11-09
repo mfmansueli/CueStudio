@@ -75,7 +75,7 @@ nonisolated extension FeatureID {
         case .layers: String(localized: "Photo or video")
         case .voiceOver: String(localized: "Voice-over")
         case .remoteControl: String(localized: "Remote Control")
-        case .safeZones: String(localized: "Social safe zone")
+        case .safeZones: String(localized: "Safe zone")
         case .yourUniverse: String(localized: "Your universe")
         }
     }

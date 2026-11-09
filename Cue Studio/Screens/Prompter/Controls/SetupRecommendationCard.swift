@@ -5,41 +5,28 @@
 
 import SwiftUI
 
-/// "Recommended for TikTok · 1080p instead of your usual 4K", with a choice. Shown before the take
-/// when the platform's setup differs from the Creator Setup; the creator's setup stays in use until
-/// they pick, and picking only affects this video.
+/// "Recommended for YouTube Shorts", with each change against what is on screen ("Frame rate 30 fps → 60 fps", "Safe zone Custom →
+/// Shorts", the creator's own choices for this take marked "This take") and a choice: **Keep as is** changes nothing, **Use Recommended**
+/// applies exactly those lines. Small, just above the controls (it hugs its lines and never reaches the text window); shown before the
+/// take only while something would change.
 struct SetupRecommendationCard: View {
     let recommendation: SetupRecommendation
-    let conflicts: [SetupConflict]
-    /// The creator's usual values for the same fields: "9:16 · 4K · 30 fps".
-    let usualSummary: String
+    let changes: [SetupChange]
     let onUseRecommended: () -> Void
-    let onKeepSetup: () -> Void
+    let onKeepAsIs: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            HStack(alignment: .top, spacing: 12) {
-                Image(systemName: "sparkles")
-                    .cueFont(.body, weight: .semibold)
-                    .foregroundStyle(Palette.Camera.recommendationIcon)
-                    .frame(width: 36, height: 36)
-                    .background(Palette.Camera.recommendationIconFill, in: Circle())
-                    .accessibilityHidden(true)
-                VStack(alignment: .leading, spacing: 3) {
-                    Text(recommendation.title).cueFont(.headline, weight: .semibold)
-                    Text(recommendation.summary)
-                        .cueFont(.subheadline).monospacedDigit()
-                        .foregroundStyle(Palette.aiTextStrong)
-                    Text(detail)
-                        .cueFont(.footnote)
-                        .foregroundStyle(Palette.aiTextStrong)
-                        .padding(.top, 2)
+        VStack(alignment: .leading, spacing: 10) {
+            VStack(alignment: .leading, spacing: 6) {
+                Label {
+                    Text(recommendation.title).cueFont(.subheadline, weight: .semibold)
+                } icon: {
+                    Image(systemName: "sparkles").foregroundStyle(Palette.Camera.recommendationIcon)
                 }
-                .fixedSize(horizontal: false, vertical: true)
+                SetupChangeList(changes: changes)
             }
-            .accessibilityElement(children: .combine)
-            // Side by side while both names fit whole; otherwise one over the other, the recommended first (owner, 02/11/2026: "Manter
-            // minh…" and "Usar o recom…" could not be read).
+            // Side by side while both names fit whole; otherwise one over the other, the recommended first (owner, 02/11/2026: no name is
+            // ever cut).
             ViewThatFits(in: .horizontal) {
                 FairShareLayout(spacing: 8) {
                     keepButton
@@ -50,8 +37,10 @@ struct SetupRecommendationCard: View {
                     keepButton
                 }
             }
+            // The row is as tall as its buttons (the layout would take all the height it is offered).
+            .fixedSize(horizontal: false, vertical: true)
         }
-        .padding(16)
+        .padding(14)
         .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous))
         .background(
             LinearGradient(
@@ -62,54 +51,45 @@ struct SetupRecommendationCard: View {
         )
         .overlay(RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous).strokeBorder(Palette.Camera.recommendationRim, lineWidth: 0.5))
         .shadow(color: Palette.Camera.recommendationShadow, radius: 25, y: 20)
+        .fixedSize(horizontal: false, vertical: true)
         // A container of its own, so the card's identifier doesn't replace the buttons'.
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("prompter.recommendationCard")
     }
 
     private var keepButton: some View {
-        Button(keepTitle, action: onKeepSetup)
-            .buttonStyle(.cueGlass())
+        Button(String(localized: "Keep as is"), action: onKeepAsIs)
+            .buttonStyle(.cueGlass(.compact))
             .accessibilityIdentifier("prompter.keepSetupButton")
     }
 
     private var useButton: some View {
-        Button(useTitle, action: onUseRecommended)
-            .buttonStyle(.cuePrimary())
+        Button(String(localized: "Use Recommended"), action: onUseRecommended)
+            .buttonStyle(.cuePrimary(.compact))
             .accessibilityIdentifier("prompter.useRecommendedButton")
-    }
-
-    /// One difference reads as a sentence; several show the whole usual setup.
-    private var detail: String {
-        if conflicts.count == 1, let conflict = conflicts.first { return conflict.sentence }
-        return String(localized: "Your usual setup is \(usualSummary).")
-    }
-
-    private var useTitle: String {
-        if conflicts.count == 1, let conflict = conflicts.first { return String(localized: "Use \(conflict.recommended)") }
-        return String(localized: "Use Recommended")
-    }
-
-    private var keepTitle: String {
-        if conflicts.count == 1, let conflict = conflicts.first { return String(localized: "Keep \(conflict.usual)") }
-        return String(localized: "Keep My Setup")
     }
 }
 
 #if DEBUG
 #Preview {
     let recommendation = SetupRecommendation(
-        platform: .tiktok,
-        values: SetupValues(resolution: .hd1080, frameRate: .fps30, aspect: .portrait),
+        platform: .shorts,
+        values: SetupValues(resolution: .hd1080, frameRate: .fps60, aspect: .portrait),
         hasSafeZone: true
     )
-    SetupRecommendationCard(
-        recommendation: recommendation,
-        conflicts: [SetupConflict(field: .quality, recommended: "1080p", usual: "4K")],
-        usualSummary: "9:16 · 4K · 30 fps",
-        onUseRecommended: {}, onKeepSetup: {}
-    )
-    .padding()
+    VStack {
+        Spacer()
+        SetupRecommendationCard(
+            recommendation: recommendation,
+            changes: [
+                SetupChange(item: .field(.format), current: "4:5", recommended: "9:16", isManual: true),
+                SetupChange(item: .field(.frameRate), current: "30 fps", recommended: "60 fps", isManual: false),
+                SetupChange(item: .safeZone, current: "Custom", recommended: "Shorts", isManual: true),
+            ],
+            onUseRecommended: {}, onKeepAsIs: {}
+        )
+        .padding()
+    }
     .background(CameraFeedPlaceholder())
 }
 #endif

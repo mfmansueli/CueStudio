@@ -116,12 +116,16 @@ struct PrompterViewModelLayoutTests {
 
     // MARK: - Safe zone
 
-    @Test func theSafeZoneFollowsTheScriptThenTheSettingsPick() throws {
+    /// The zone follows the recording's network: the script's, then the one the recorder's chip picks (never a network saved in Settings).
+    @Test func theSafeZoneFollowsTheRecordingsNetwork() throws {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }
         let viewModel = scenario.viewModel
         #expect(viewModel.safeZone == .platform(.tiktok))
-        viewModel.session.prompter.safeZoneKey = SafeZoneChoice.platform(.shorts).key
+        // A network an older build saved as the pick is ignored.
+        viewModel.session.prompter.safeZoneKey = SafeZoneChoice.platform(.reels).key
+        #expect(viewModel.safeZone == .platform(.tiktok))
+        viewModel.setPlatform(.shorts)
         #expect(viewModel.safeZone == .platform(.shorts))
 
         let shorts = try #require(TestData.rules.safeZone(for: .shorts))
@@ -129,10 +133,11 @@ struct PrompterViewModelLayoutTests {
         #expect(viewModel.safeZoneContentRect == expected)
     }
 
-    @Test func freestyleShowsReelsSafeZone() {
+    /// Freestyle records for the creator's usual network (TikTok by default), so its zone shows.
+    @Test func freestyleShowsTheUsualNetworksSafeZone() {
         let scenario = makeScenario(script: nil)
         defer { scenario.defaults.tearDown() }
-        #expect(scenario.viewModel.safeZone == .platform(.reels))
+        #expect(scenario.viewModel.safeZone == .platform(CreatorProfile().defaultPlatform))
         #expect(scenario.viewModel.showsSafeZone)
     }
 

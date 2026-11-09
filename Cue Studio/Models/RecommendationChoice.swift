@@ -7,8 +7,10 @@ import Foundation
 
 /// What the creator answered to a platform recommendation, for this recording session.
 nonisolated enum RecommendationChoice: Hashable, Sendable {
-    /// Not answered yet: the Creator Setup stays in use while the card asks.
+    /// Not answered yet: what is on screen stays in use while the card asks.
     case undecided
+    /// "Use Recommended": the listed changes were applied.
     case useRecommended
-    case keepCreatorSetup
+    /// "Keep as is": nothing changed.
+    case keepAsIs
 }

@@ -52,7 +52,7 @@ struct CropPanel: View {
     private var safeZones: some View {
         let look = viewModel.look
         PanelToggleRow(
-            label: String(localized: "Safe zones"), detail: String(localized: "Where an app’s buttons cover your video · approximate"),
+            label: String(localized: "Safe zone"), detail: String(localized: "Where an app’s buttons cover your video · approximate"),
             isOn: look.showsSafeGuide, identifier: "edit.crop.safeGuide"
         ) { look.setShowsSafeGuide(!look.showsSafeGuide) }
         if look.showsSafeGuide {

@@ -93,10 +93,10 @@ final class PreferencesService {
         }
     }
 
-    /// "Reset Creator Setup": recording and reading defaults. Scripts, takes, edits and the
-    /// other camera options stay.
+    /// "Reset my setup": every camera and recording option (lens, microphone, quality, frame, safe zone, grid, countdown…) and the
+    /// teleprompter go back to Cue's defaults. Scripts, takes and edits stay.
     func resetCreatorSetup() {
-        creatorSetup = CreatorSetup()
+        camera = CameraSettings()
         resetPrompter()
     }
 

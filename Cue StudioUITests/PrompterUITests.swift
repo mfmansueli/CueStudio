@@ -130,6 +130,8 @@ final class PrompterUITests: XCTestCase {
         app.buttons["prompter.displayButton"].tap()
         let position = app.sliders["settings.readingLinePosition"]
         XCTAssertTrue(element(app, "settings.followVoice").exists(within: 5))
+        // The reading line is in Aa › Window.
+        aaTab(app, "Window")
         // The list is under the sheet's handle: drag from its lower half, where the rows are, along the left edge (the sliders' thumbs
         // in the middle would take the drag).
         for _ in 0..<6 where !(position.exists && position.isHittable) {
@@ -177,8 +179,8 @@ final class PrompterUITests: XCTestCase {
         app.buttons["display.doneButton"].tap()
     }
 
-    /// Social safe zone, from the Prompter page: the platforms, Custom with its own margins.
-    func testCustomSafeZoneFromThePrompterPage() {
+    /// Aa › Window's safe zone: the recording's network or Custom, whose margins show only once picked.
+    func testCustomSafeZoneFromAaWindow() {
         let app = CueApp.launch(seeded: true)
         let record = app.buttons["row.recordButton"].firstMatch
         XCTAssertTrue(record.exists(within: 15))
@@ -187,35 +189,46 @@ final class PrompterUITests: XCTestCase {
         XCTAssertTrue(app.buttons["prompter.displayButton"].exists(within: 5))
         app.buttons["prompter.displayButton"].tap()
         XCTAssertTrue(element(app, "settings.followVoice").exists(within: 5))
+        aaTab(app, "Window")
         // The sheet is the lower part of the screen (the text window stays above it): the swipes go to its list, which is short, so they
-        // are quick ones.
-        let zone = element(app, "settings.socialSafeZone")
+        // are quick ones. `isHittable` says yes for a row past the sheet's bottom: its place on screen is what counts.
+        let picker = app.segmentedControls["display.safeZonePicker"]
         let page = app.collectionViews["settings.prompterPage"]
-        let sheetBottom = app.windows.firstMatch.frame.maxY - 40
-        for _ in 0..<12 where !(zone.exists && zone.frame.maxY < sheetBottom) {
+        let bottom = app.windows.firstMatch.frame.maxY - 40
+        for _ in 0..<12 where !(picker.exists && picker.frame.maxY < bottom) {
             page.swipeUp(velocity: .fast)
         }
-        XCTAssertLessThan(zone.frame.maxY, sheetBottom, "Social safe zone isn't reachable in the sheet")
-        zone.tap()
-        XCTAssertTrue(element(app, "settings.safeZoneToggle").exists(within: 5))
-        XCTAssertTrue(app.buttons["settings.safeZone.reels"].exists)
+        XCTAssertLessThan(picker.frame.maxY, bottom, "The safe zone isn't reachable in the sheet")
+        // The seeded script is for TikTok: its zone, then Custom.
+        XCTAssertTrue(picker.buttons["TikTok"].isSelected)
         XCTAssertFalse(element(app, "settings.safeZoneMargin.top").exists)
-        // The page is in the same short sheet: Custom and its margins are further down.
-        // `isHittable` says yes for a row past the sheet's bottom: its place on screen is what counts.
-        let zonePage = app.collectionViews["settings.safeZonePage"]
-        let custom = app.buttons["settings.safeZone.custom"]
-        let bottom = app.windows.firstMatch.frame.maxY - 40
-        for _ in 0..<6 where !(custom.exists && custom.frame.maxY < bottom) {
-            zonePage.swipeUp(velocity: .fast)
-        }
-        XCTAssertLessThan(custom.frame.maxY, bottom, "Custom is out of sight")
-        custom.tap()
-        XCTAssertTrue(custom.isSelected)
+        picker.buttons["Custom"].tap()
+        XCTAssertTrue(picker.buttons["Custom"].isSelected)
+        // The margins come in right under the picker (a fast swipe would carry them past the top of the short sheet).
         let top = element(app, "settings.safeZoneMargin.top")
-        for _ in 0..<6 where !(top.exists && top.frame.maxY < bottom) {
-            zonePage.swipeUp(velocity: .fast)
+        XCTAssertTrue(top.exists(within: 5))
+        picker.buttons["TikTok"].tap()
+        XCTAssertTrue(top.isGone(within: 5))
+    }
+
+    /// The Aa sheet's tabs: Selfie has Reading | Text | Window | Camera, and the countdown isn't among them.
+    func testSelfieAaHasItsFourTabsAndNoCountdown() {
+        let app = CueApp.launch(seeded: true)
+        let record = app.buttons["row.recordButton"].firstMatch
+        XCTAssertTrue(record.exists(within: 15))
+        record.tap()
+        app.buttons["prompter.displayButton"].tap()
+        let tabs = app.segmentedControls["display.tabs"]
+        XCTAssertTrue(tabs.exists(within: 5))
+        XCTAssertEqual(tabs.buttons.count, 4)
+        for name in ["Reading", "Text", "Window", "Camera"] {
+            XCTAssertTrue(tabs.buttons[name].exists, "Missing the \(name) tab")
         }
-        XCTAssertTrue(top.exists(within: 2))
+        for name in ["Reading", "Text", "Window", "Camera"] {
+            tabs.buttons[name].tap()
+            XCTAssertFalse(element(app, "settings.countdownBeforePlay").exists, "Selfie's Aa has the countdown in \(name)")
+        }
+        app.buttons["display.doneButton"].tap()
     }
 
     func testPlatformChipOpensCreateFor() {
@@ -239,6 +252,13 @@ final class PrompterUITests: XCTestCase {
         // YouTube's 16:9 · 4K · 24 fps is offered, not applied: the frame (in the setup line) stays 9:16 until the creator picks.
         let setup = app.buttons["prompter.setupButton"]
         XCTAssertTrue((setup.value as? String ?? "").contains("9:16"))
+        // The card lists each change against what is on screen, and Keep as is next to Use Recommended.
+        // VoiceOver reads the title, then each line whole ("Frame, 9:16 → 16:9").
+        let frame = element(app, "setup.change.format")
+        XCTAssertTrue(frame.exists(within: 5))
+        XCTAssertTrue(frame.label.contains("Frame") && frame.label.contains("9:16 → 16:9"), frame.label)
+        XCTAssertTrue(app.buttons["prompter.keepSetupButton"].exists)
+        XCTAssertEqual(app.buttons["prompter.keepSetupButton"].label, "Keep as is")
         let use = app.buttons["prompter.useRecommendedButton"]
         XCTAssertTrue(use.exists(within: 5))
         XCTAssertEqual(use.label, "Use Recommended")
@@ -259,6 +279,11 @@ final class PrompterUITests: XCTestCase {
         XCTAssertTrue(pill.exists(within: 5))
         pill.tap()
         XCTAssertTrue(app.staticTexts["Audio Input"].exists(within: 5))
+        // The recorder's one microphone list: Automatic first, the same as Camera › Recording (where the microphone is allowed; the
+        // Simulator may not allow it, and then the sheet says why).
+        if !app.buttons["Open Settings"].exists(within: 2) {
+            XCTAssertTrue(app.buttons["audioInput.automatic"].exists(within: 5))
+        }
 
         // Whatever the Simulator offers: picking an input closes the sheet and the pill names it.
         let option = app.buttons.matching(identifier: "audioInput.option").firstMatch
@@ -275,8 +300,8 @@ final class PrompterUITests: XCTestCase {
         app.buttons["prompter.closeButton"].tap()
     }
 
-    /// The toolbar's "•••" holds what has no room on the bar: Countdown, Remote Control and "This take".
-    func testMoreMenuHoldsCountdownRemoteControlAndThisTake() {
+    /// The toolbar's "•••" holds what has no room on the bar: Countdown and Remote Control. "This take" opens from the setup pill.
+    func testMoreMenuHoldsCountdownAndRemoteControl() {
         let app = CueApp.launch(seeded: true)
         let record = app.buttons["row.recordButton"].firstMatch
         XCTAssertTrue(record.exists(within: 15))
@@ -286,8 +311,11 @@ final class PrompterUITests: XCTestCase {
         XCTAssertTrue(more.exists(within: 5))
         more.tap()
         XCTAssertTrue(app.buttons["prompter.moreRemote"].exists(within: 5))
-        XCTAssertTrue(app.buttons["prompter.moreThisTake"].exists)
-        app.buttons["prompter.moreThisTake"].tap()
+        XCTAssertFalse(app.buttons["prompter.moreThisTake"].exists)
+        // Closes the menu.
+        app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.3)).tap()
+        XCTAssertTrue(app.buttons["prompter.moreRemote"].isGone(within: 5))
+        app.buttons["prompter.setupButton"].tap()
         XCTAssertTrue(app.buttons["sheet.closeButton"].exists(within: 5))
         app.buttons["sheet.closeButton"].tap()
         XCTAssertTrue(app.buttons["sheet.closeButton"].isGone(within: 5))
@@ -393,5 +421,12 @@ final class PrompterUITests: XCTestCase {
         if allow.exists(within: 3) {
             allow.tap()
         }
+    }
+
+    /// Picks one of the Aa sheet's tabs (the system's segmented control on top).
+    private func aaTab(_ app: XCUIApplication, _ name: String) {
+        let tab = app.segmentedControls["display.tabs"].buttons[name]
+        XCTAssertTrue(tab.exists(within: 5), "No \(name) tab in Aa")
+        tab.tap()
     }
 }

@@ -42,6 +42,8 @@ struct StudioModeView: View {
                     .overlay { PrompterTextOverlays(viewModel: viewModel) }
                     .frame(height: proxy.size.height, alignment: .top)
                 }
+                // Where the text is on screen: Aa stops under its reading line.
+                .onGeometryChange(for: CGRect.self) { $0.frame(in: .global) } action: { viewModel.studioTextFrame = $0 }
                 .padding(.top, 5)
                 // Voice Following needs the microphone: asked for it, or fallen back to Steady without it.
                 if !audio.isMicrophoneAllowed, settings.scrollMode == .voice || viewModel.sessionChoseScrollMode {
@@ -69,8 +71,9 @@ struct StudioModeView: View {
         .toolbar { topBar }
     }
 
-    /// The navigation bar, the system's: close at the start, Selfie | Studio in the middle and, at the end, the script's platform ("● TikTok",
-    /// opens Create for, which sets the ideal length shown above the text). Remote is in the bar below, among the quick adjustments.
+    /// The navigation bar, the system's: close at the start, Selfie | Studio in the middle and, at the end, the recording's network ("● TikTok",
+    /// opens Create for, which sets the ideal length shown above the text, for this session only). Remote is in the bar below, among the
+    /// quick adjustments.
     @ToolbarContentBuilder
     private var topBar: some ToolbarContent {
         ToolbarItem(placement: .topBarLeading) {
@@ -82,17 +85,18 @@ struct StudioModeView: View {
                 Task { await viewModel.switchMode(to: mode) }
             }
         }
-        if let script = viewModel.script {
+        if viewModel.hasScript {
             ToolbarItem(placement: .topBarTrailing) {
+                let platform = viewModel.platform
                 Button { viewModel.platformChipTapped() } label: {
                     HStack(spacing: 6) {
-                        PlatformDot(color: script.platform.tint)
-                        Text(script.platform.label).cueFont(.footnote, weight: .semibold)
+                        PlatformDot(color: platform.tint)
+                        Text(platform.label).cueFont(.footnote, weight: .semibold)
                     }
                     .foregroundStyle(Palette.ink)
                 }
                 .accessibilityLabel(Text("Create for"))
-                .accessibilityValue(Text(script.platform.label))
+                .accessibilityValue(Text(platform.label))
                 .accessibilityIdentifier("prompter.platformButton")
             }
         }

@@ -108,7 +108,7 @@ struct CameraSettingsSheet: View {
             segmentedRow(String(localized: "Resolution"), selection: $session.camera.resolution, options: VideoResolution.allCases) { $0.label }
             segmentedRow(String(localized: "Frame rate"), selection: $session.camera.frameRate, options: FrameRate.allCases) { $0.label }
             SettingToggleRow(
-                title: String(localized: "Platform safe zones"),
+                title: String(localized: "Safe zone"),
                 detail: String(localized: "Shows where app buttons and captions cover the frame"),
                 isOn: $session.camera.showsSafeZones, minHeight: 52
             )
@@ -194,19 +194,9 @@ struct CameraSettingsSheet: View {
     private var recordingTab: some View {
         @Bindable var session = session
         SectionHeading(text: String(localized: "Microphone")).padding(EdgeInsets(top: 8, leading: 4, bottom: 0, trailing: 4))
-        GroupedCard(background: Palette.surface2, radius: 22) {
-            checkRow(
-                title: String(localized: "Automatic"), detail: String(localized: "Uses the connected mic, or the iPhone's"),
-                isSelected: session.camera.microphoneID == nil
-            ) {
-                selectMicrophone(nil)
-            }
-            ForEach(audio.inputs) { input in
-                checkRow(title: input.name, detail: input.detail, isSelected: session.camera.microphoneID == input.id) {
-                    selectMicrophone(input)
-                }
-            }
-        }
+        MicrophoneList()
+        // The microphone is the Creator Setup's, like the lens: a change here is for this take. What follows is saved as it is.
+        setupNote
 
         SectionHeading(text: String(localized: "Take")).padding(EdgeInsets(top: 12, leading: 4, bottom: 0, trailing: 4))
         GroupedCard(background: Palette.surface2, radius: 22) {
@@ -227,14 +217,6 @@ struct CameraSettingsSheet: View {
             .cueFont(.footnote)
             .foregroundStyle(Palette.ink2)
             .padding(EdgeInsets(top: 4, leading: 4, bottom: 0, trailing: 4))
-    }
-
-    private func selectMicrophone(_ input: MicrophoneOption?) {
-        var camera = session.camera
-        camera.microphoneID = input?.id
-        camera.microphoneName = input?.name
-        session.camera = camera
-        audio.select(input?.id)
     }
 
     // MARK: - Rows

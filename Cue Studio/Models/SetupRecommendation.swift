@@ -39,13 +39,16 @@ nonisolated struct SetupRecommendation: Hashable, Sendable {
         values.applied(to: setup)
     }
 
-    /// Where it differs from `setup`, in reading order. Empty when the creator's setup already
-    /// matches, so there is nothing to ask.
-    func conflicts(with setup: CreatorSetup) -> [SetupConflict] {
-        let recommended = applied(to: setup)
-        let differing = values.differences(from: setup)
+    /// What "Use Recommended" would change against `onScreen`, in reading order; `manual` are the fields the creator set for this take.
+    /// Empty when what is on screen already matches, so there is nothing to ask.
+    func changes(from onScreen: CreatorSetup, manual: Set<SetupField> = []) -> [SetupChange] {
+        let recommended = applied(to: onScreen)
+        let differing = values.differences(from: onScreen)
         return SetupField.allCases.filter(differing.contains).map { field in
-            SetupConflict(field: field, recommended: recommended.label(for: field), usual: setup.label(for: field))
+            SetupChange(
+                item: .field(field), current: onScreen.label(for: field), recommended: recommended.label(for: field),
+                isManual: manual.contains(field)
+            )
         }
     }
 

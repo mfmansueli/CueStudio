@@ -76,7 +76,7 @@ nonisolated enum SettingsEntry: String, CaseIterable, Identifiable, Sendable {
         case .sideMargins: String(localized: "Side margins")
         case .backgroundOpacity: String(localized: "Background opacity")
         case .cameraBlur: String(localized: "Camera blur")
-        case .socialSafeZone: String(localized: "Social safe zone")
+        case .socialSafeZone: String(localized: "Safe zone")
         case .studioBackground: String(localized: "Background color")
         case .mirrorText: String(localized: "Mirror text")
         case .flipVertically: String(localized: "Flip vertically")

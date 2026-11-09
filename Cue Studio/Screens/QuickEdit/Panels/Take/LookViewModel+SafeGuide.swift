@@ -47,7 +47,7 @@ extension LookViewModel {
     func setShowsSafeGuide(_ shows: Bool) {
         guard shows != showsSafeGuide else { return }
         showsSafeGuide = shows
-        announce(shows ? String(localized: "Safe zones: \(safeGuide.approximateLabel)") : String(localized: "Safe zones hidden"))
+        announce(shows ? String(localized: "Safe zone: \(safeGuide.approximateLabel)") : String(localized: "Safe zone hidden"))
     }
 
     /// Shows another app's guide on this video, one undo step: the captions take its clear area with it, so where they sit in the
@@ -60,6 +60,6 @@ extension LookViewModel {
             edit.safeGuide = choice
             edit.captionCollection?.safeMargins = CaptionSafeArea.margins(for: take, aspect: edit.aspect, pick: choice)
         }
-        announce(String(localized: "Safe zones: \(choice.approximateLabel)"))
+        announce(String(localized: "Safe zone: \(choice.approximateLabel)"))
     }
 }
