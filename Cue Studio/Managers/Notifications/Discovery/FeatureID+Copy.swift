@@ -33,7 +33,7 @@ nonisolated extension FeatureID {
 
     var notificationBody: String {
         switch self {
-        case .myCueVoice: String(localized: "Four quick questions. Cue's drafts start closer to you.")
+        case .myCueVoice: String(localized: "Five quick questions. Cue's drafts start closer to you.")
         case .importWriting: String(localized: "Refine your writing style from texts you wrote.")
         case .ideas: String(localized: "Explore ideas for your topics.")
         case .logbook: String(localized: "Catch it in the Logbook now. Develop it later.")

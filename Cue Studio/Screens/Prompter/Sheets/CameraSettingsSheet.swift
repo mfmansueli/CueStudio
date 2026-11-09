@@ -107,12 +107,19 @@ struct CameraSettingsSheet: View {
         GroupedCard(background: Palette.surface2, radius: 22) {
             segmentedRow(String(localized: "Resolution"), selection: $session.camera.resolution, options: VideoResolution.allCases) { $0.label }
             segmentedRow(String(localized: "Frame rate"), selection: $session.camera.frameRate, options: FrameRate.allCases) { $0.label }
-            SettingToggleRow(title: String(localized: "Grid"), isOn: $session.camera.showsGrid, minHeight: 52)
             SettingToggleRow(
                 title: String(localized: "Platform safe zones"),
                 detail: String(localized: "Shows where app buttons and captions cover the frame"),
                 isOn: $session.camera.showsSafeZones, minHeight: 52
             )
+        }
+        .padding(.top, 10)
+        // Lens, frame, quality and safe zones are the Creator Setup's: a change here is for this take (`SessionSetupService.camera`).
+        setupNote
+
+        // Saved as they are (grid, stabilization) or for as long as the camera is open (fill): the note above isn't about them.
+        GroupedCard(background: Palette.surface2, radius: 22) {
+            SettingToggleRow(title: String(localized: "Grid"), isOn: $session.camera.showsGrid, minHeight: 52)
             SettingToggleRow(
                 title: String(localized: "Fill the screen"),
                 detail: String(localized: "The sides that don’t fit are still recorded, just not shown"),
@@ -120,8 +127,7 @@ struct CameraSettingsSheet: View {
             )
             SettingToggleRow(title: String(localized: "Stabilization"), isOn: $session.camera.stabilization, minHeight: 52)
         }
-        .padding(.top, 10)
-        setupNote
+        .padding(.top, 16)
         backgroundSection
     }
 

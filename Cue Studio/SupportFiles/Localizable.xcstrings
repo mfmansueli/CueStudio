@@ -10729,6 +10729,125 @@
         }
       }
     },
+    "5 quick questions, about a minute. No typing needed." : {
+      "comment" : "Profile › My Cue Voice card: the setup's length",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "5 أسئلة سريعة، نحو دقيقة. بلا كتابة."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "5 hurtige spørgsmål, cirka et minut. Du skal ikke skrive noget."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "5 kurze Fragen, etwa eine Minute. Kein Tippen nötig."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "5 preguntas rápidas, alrededor de un minuto. Sin escribir."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "5 questions rapides, environ une minute. Rien à écrire."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "5 छोटे सवाल, करीब एक मिनट। टाइप करने की ज़रूरत नहीं।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "5 pertanyaan singkat, sekitar satu menit. Tanpa mengetik."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "5 domande veloci, circa un minuto. Senza scrivere."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "5つの簡単な質問、約1分。入力は不要です。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "간단한 질문 5개, 약 1분. 입력은 필요 없어요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "5 raske spørsmål, omtrent ett minutt. Du trenger ikke skrive."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "5 korte vragen, ongeveer een minuut. Je hoeft niets te typen."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "5 perguntas rápidas, cerca de um minuto. Sem digitar."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "5 snabba frågor, cirka en minut. Du behöver inte skriva."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "5 คำถามสั้น ๆ ราวหนึ่งนาที ไม่ต้องพิมพ์"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "5 kısa soru, yaklaşık bir dakika. Yazmana gerek yok."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "5 câu hỏi nhanh, khoảng một phút. Không cần gõ."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "5 个简短问题，约一分钟，无需打字。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "5 個簡單問題，約一分鐘，不用打字。"
+          }
+        }
+      }
+    },
     "A 7-day %@ challenge" : {
       "comment" : "Find inspiration: the title of a starter made from the creator's own topic (%@ is the topic, as they typed it)",
       "localizations" : {
@@ -57075,6 +57194,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "健身與訓練"
+          }
+        }
+      }
+    },
+    "Five quick questions. Cue's drafts start closer to you." : {
+      "comment" : "Feature introduction of My Cue Voice (its setup has five questions)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "خمسة أسئلة سريعة. تبدأ مسودات Cue أقرب إليك."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fem hurtige spørgsmål. Cues udkast starter tættere på dig."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fünf kurze Fragen. So klingen Cues Entwürfe von Anfang an mehr nach dir."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cinco preguntas rápidas. Los borradores de Cue empiezan más cerca de ti."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cinq questions rapides. Les brouillons de Cue partent plus près de vous."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "पाँच छोटे सवाल। Cue के ड्राफ़्ट आपके और क़रीब से शुरू होंगे।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lima pertanyaan singkat. Draf dari Cue jadi lebih mirip denganmu sejak awal."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cinque domande veloci. Le bozze di Cue partono più vicine a te."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "5つの簡単な質問で、Cueの下書きがあなたに近づきます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "짧은 질문 다섯 개. Cue의 초안이 처음부터 나에게 더 가까워져요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fem raske spørsmål. Cues utkast starter nærmere deg."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vijf korte vragen. De concepten van Cue beginnen dichter bij jou."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cinco perguntas rápidas. Os rascunhos do Cue começam mais perto de você."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fem snabba frågor. Cues utkast börjar närmare dig."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ห้าคำถามสั้นๆ ฉบับร่างของ Cue จะเริ่มใกล้ตัวคุณขึ้น"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beş kısa soru. Cue’nun taslakları sana daha yakın başlar."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Năm câu hỏi nhanh. Bản nháp của Cue sẽ gần bạn hơn."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "五个快速问题，让 Cue 的草稿更贴近你。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "五個快速問題，讓 Cue 的草稿更貼近你。"
           }
         }
       }
@@ -190284,125 +190522,6 @@
         }
       }
     },
-    "4 quick questions, about 20 seconds. No typing needed." : {
-      "comment" : "Profile › My Cue Voice card: what the questions take. No dashes in any language.",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4 أسئلة سريعة، نحو 20 ثانية. بلا كتابة."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4 hurtige spørgsmål, cirka 20 sekunder. Du skal ikke skrive noget."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4 kurze Fragen, etwa 20 Sekunden. Kein Tippen nötig."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4 preguntas rápidas, unos 20 segundos. Sin escribir."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4 questions rapides, environ 20 secondes. Rien à écrire."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4 छोटे सवाल, करीब 20 सेकंड। टाइप करने की ज़रूरत नहीं।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4 pertanyaan singkat, sekitar 20 detik. Tanpa mengetik."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4 domande veloci, circa 20 secondi. Senza scrivere."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4つの簡単な質問、約20秒。入力は不要です。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "간단한 질문 4개, 약 20초. 입력은 필요 없어요."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4 raske spørsmål, omtrent 20 sekunder. Du trenger ikke skrive."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4 korte vragen, ongeveer 20 seconden. Je hoeft niets te typen."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4 perguntas rápidas, cerca de 20 segundos. Sem digitar."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4 snabba frågor, cirka 20 sekunder. Du behöver inte skriva."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4 คำถามสั้น ๆ ราว 20 วินาที ไม่ต้องพิมพ์"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4 kısa soru, yaklaşık 20 saniye. Yazmana gerek yok."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4 câu hỏi nhanh, khoảng 20 giây. Không cần gõ."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4 个简短问题，约 20 秒，无需打字。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4 個簡單問題，約 20 秒，不用打字。"
-          }
-        }
-      }
-    },
     "4K" : {
       "localizations" : {
         "ar" : {
@@ -256420,124 +256539,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "搞笑一擊"
-          }
-        }
-      }
-    },
-    "Coming next" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "قريبًا"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kommer snart"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Als Nächstes"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Próximamente"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bientôt"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "जल्द आ रहा है"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Segera hadir"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "In arrivo"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "近日公開"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "곧 출시"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kommer snart"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Binnenkort"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Em breve"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "På väg"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "เร็ว ๆ นี้"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Yakında"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sắp ra mắt"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "即将推出"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "即將推出"
           }
         }
       }
@@ -324135,125 +324136,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "由你的 iPhone 從你自「檔案」加入的音樂中偵測。"
-          }
-        }
-      }
-    },
-    "Four quick questions. Cue's drafts start closer to you." : {
-      "comment" : "My Cue Voice introduction: answers make Cue's drafts start closer to the creator",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "أربعة أسئلة سريعة. تبدأ مسودات Cue أقرب إليك."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fire hurtige spørgsmål. Cues udkast starter tættere på dig."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vier kurze Fragen. So klingen Cues Entwürfe von Anfang an mehr nach dir."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cuatro preguntas rápidas. Los borradores de Cue empiezan más cerca de ti."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Quatre questions rapides. Les brouillons de Cue partent plus près de vous."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "चार छोटे सवाल। Cue के ड्राफ़्ट आपके और क़रीब से शुरू होंगे।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Empat pertanyaan singkat. Draf dari Cue jadi lebih mirip denganmu sejak awal."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Quattro domande veloci. Le bozze di Cue partono più vicine a te."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4つの簡単な質問で、Cueの下書きがあなたに近づきます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "짧은 질문 네 개. Cue의 초안이 처음부터 나에게 더 가까워져요."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fire raske spørsmål. Cues utkast starter nærmere deg."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vier korte vragen. De concepten van Cue beginnen dichter bij jou."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Quatro perguntas rápidas. Os rascunhos do Cue começam mais perto de você."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fyra snabba frågor. Cues utkast börjar närmare dig."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "สี่คำถามสั้นๆ ฉบับร่างของ Cue จะเริ่มใกล้ตัวคุณขึ้น"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dört kısa soru. Cue’nun taslakları sana daha yakın başlar."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bốn câu hỏi nhanh. Bản nháp của Cue sẽ gần bạn hơn."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "四个快速问题，让 Cue 的草稿更贴近你。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "四個快速問題，讓 Cue 的草稿更貼近你。"
           }
         }
       }
@@ -516436,124 +516318,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "詞曲創作"
-          }
-        }
-      }
-    },
-    "Soon" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "قريبًا"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Snart"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bald"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pronto"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bientôt"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "जल्द"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Segera"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "In arrivo"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "近日対応"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "곧 지원"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Snart"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Binnenkort"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Em breve"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Snart"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "เร็วๆ นี้"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Yakında"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sắp có"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "即将推出"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "即將推出"
           }
         }
       }
