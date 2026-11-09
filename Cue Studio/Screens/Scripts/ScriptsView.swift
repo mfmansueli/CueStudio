@@ -198,7 +198,7 @@ struct ScriptsView: View {
             .accessibilityLabel(Text("Logbook"))
             .accessibilityValue(logbook.waiting.isEmpty ? Text(verbatim: "") : Text("\(logbook.waiting.count) ideas waiting"))
             .accessibilityIdentifier("scripts.logbookButton")
-            Button { presentation.present(.newScript) } label: {
+            Button { presentation.present(.newScript()) } label: {
                 Image(systemName: "plus")
                     .foregroundStyle(Palette.aiTextStrong)
             }

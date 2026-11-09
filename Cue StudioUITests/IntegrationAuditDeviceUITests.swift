@@ -122,7 +122,7 @@ final class IntegrationAuditDeviceUITests: XCTestCase {
         XCTAssertTrue(captions.exists(within: 5))
         if captions.value as? String != "1" { toggle(captions) }
         attach(app, "B20 captions on")
-        app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.12)).tap()
+        app.buttons["exportOptions.back"].tap()
         let photos = app.switches["shareFlow.saveToPhotos"]
         if photos.exists(within: 3), photos.value as? String == "1" {
             app.scroll(to: photos)

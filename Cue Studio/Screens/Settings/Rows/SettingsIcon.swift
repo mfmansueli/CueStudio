@@ -11,7 +11,7 @@ import SwiftUI
 enum SettingsIcon: String {
     case recording, prompter, remote
     case voice, personalize
-    case language, notifications, privacy, restore, policy, terms, acknowledgements, version
+    case language, notifications, privacy, restore, redeem, policy, terms, acknowledgements, version
     case pro
 
     var image: Image { Image("SettingsIcons/\(rawValue)") }

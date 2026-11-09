@@ -171,7 +171,7 @@ struct RootView: View {
             guard services.library.script(id: id) != nil else { return }
             presentation.openPrompter(scriptID: id, mode: .selfie)
         case .newScript:
-            presentation.present(.newScript)
+            presentation.present(.newScript())
         }
     }
 }

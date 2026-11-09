@@ -226,8 +226,11 @@ struct TakesView: View {
                 emptyStage
                 ForEach(viewModel.sections) { section in
                     dayTitle(section.day)
-                    // One column at the accessibility text sizes: in two, a card's title held a word.
-                    let columns = Array(repeating: GridItem(.flexible(), spacing: 10), count: dynamicTypeSize.isAccessibilitySize ? 1 : 2)
+                    // Cards of about 160 pt, as many as the width holds: 2 on an iPhone, 4 on an iPad in portrait, 6 in landscape. One column at
+                    // the accessibility text sizes: in two, a card's title held a word.
+                    let columns = dynamicTypeSize.isAccessibilitySize
+                        ? [GridItem(.flexible())]
+                        : [GridItem(.adaptive(minimum: 160), spacing: 10)]
                     LazyVGrid(columns: columns, spacing: 14) {
                         ForEach(section.videos) { video in
                             Button { viewModel.open(video) } label: {

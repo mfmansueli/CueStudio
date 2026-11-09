@@ -18,6 +18,7 @@ struct SettingsRootRow: View {
     @Environment(CreatorProfileService.self) private var profile
     @Environment(UsageQuotaService.self) private var quota
     @Environment(NotificationService.self) private var notifications
+    @State private var redeemsCode = false
 
     @State private var paywall: PaywallContext?
     @State private var showsManageSubscription = false
@@ -69,6 +70,13 @@ struct SettingsRootRow: View {
                 SettingsIconLabel(icon: .restore, title: entry.title, titleColor: Palette.accText)
             }
             .buttonStyle(.plain)
+        case .redeemCode:
+            // Apple's sheet for an offer code; a code that unlocks Pro comes back through the store's updates, like a purchase.
+            Button { redeemsCode = true } label: {
+                SettingsIconLabel(icon: .redeem, title: entry.title, titleColor: Palette.accText)
+            }
+            .buttonStyle(.plain)
+            .offerCodeRedemption(options: [], isPresented: $redeemsCode) { _ in }
         case .privacyPolicy:
             if let url = AppLinks.privacyPolicy {
                 Link(destination: url) {

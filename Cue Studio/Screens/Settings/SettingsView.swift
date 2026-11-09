@@ -56,7 +56,7 @@ struct SettingsView: View {
         section(String(localized: "Create"), [.recording, .prompter, .remote], bindings, footer: String(localized: "Set it up once. Every recording starts from here."))
         section(String(localized: "Your Cue"), [.myCueVoice, .personalize], bindings)
         section(String(localized: "General"), [.languageRegion, .notifications, .privacy], bindings)
-        section(String(localized: "Pro"), [.cuePro, .restorePurchases], bindings)
+        section(String(localized: "Pro"), [.cuePro, .restorePurchases, .redeemCode], bindings)
         section(String(localized: "About"), [.privacyPolicy, .termsOfUse, .acknowledgements, .version], bindings)
         // The app's own row, kept exactly as it was until the product owner decides (v30 does not design it).
         Section {

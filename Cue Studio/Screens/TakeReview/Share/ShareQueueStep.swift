@@ -25,6 +25,23 @@ struct ShareQueueStep: View {
     private var item: ShareQueueItem { queue.items.first { $0.network == network } ?? ShareQueueItem(network: network, state: .pending) }
 
     var body: some View {
+        if picksTime {
+            // "Pick a date and time…": the date is this sheet's next step, with ‹ Back to the network's step.
+            ReminderSheet(
+                subject: subject, title: queue.title, startsPicking: true,
+                onSet: { [toast] result in
+                    flow.postLater(network)
+                    ReminderFeedback.show(result, toast: toast)
+                },
+                onBack: { picksTime = false }
+            )
+            .padding(.top, 8)
+        } else {
+            stepContent
+        }
+    }
+
+    private var stepContent: some View {
         VStack(spacing: 14) {
             header
             ShareQueueBar(items: queue.items, current: network).padding(.horizontal, Metrics.gutter)
@@ -76,12 +93,6 @@ struct ShareQueueStep: View {
             Text("Post later")
         }
         .accessibilityIdentifier("shareFlow.postLater")
-        .sheet(isPresented: $picksTime) {
-            ReminderSheet(subject: subject, title: queue.title, startsPicking: true) { [toast] result in
-                flow.postLater(network)
-                ReminderFeedback.show(result, toast: toast)
-            }
-        }
     }
 
     private func clock(_ time: LocalDateTime) -> String {

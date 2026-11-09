@@ -64,8 +64,9 @@ amarelo), o aviso de Pouca Energia e a dica da barra de ferramentas vestem a mes
   seta com perguntas ainda abertas abre, uma vez só (`VoiceQuestionScheduler.invitesBeforeSending`, guardado no estado da dica), "Make your
   scripts sound like you", o medidor, três linhas de vidro (estilo, público, preferências) que entram uma depois da outra como no convite da
   Ultra AI, "About a minute. Your idea stays right where it is.", **Continue answering** (as perguntas de onde parou; a última diz "✦ Draft
-  my script" e a ideia sai pela seta como sairia) e **Write my script now** (envia como está). A ideia digitada fica no campo; fechar o convite
-  ou as perguntas não envia nada. Testes de UI só o veem com `-uiTestVoiceInvite`.
+  my script" e a ideia sai pela seta como sairia) e **Write my script now** (envia como está). A ideia digitada fica no campo. Fechar o convite
+  arrastando não envia nada; saindo das perguntas que vieram dele (**Not now** ou arrastar), a ideia sai com o que foi respondido, porque o criador
+  já tinha enviado (dono, 09/11/2026); só **Just save my voice**, no fim, a deixa esperando no campo. Testes de UI só o veem com `-uiTestVoiceInvite`.
   Com pouco espaço, cada chip encurta (`ScriptsDock.RowWords`: "TikTok" no lugar de "For TikTok", depois "✦ Voice" sem a porcentagem, que o VoiceOver
   continua dizendo, e o Format só com o símbolo `rectangle.stack`, primeiro no Auto e depois com qualquer formato); a linha inteira cabe sem rolar
   (`ViewThatFits`), e só quando nem a versão mais curta cabe (texto muito grande) os chips rolam com a lâmpada fixa no fim. Onde a Ultra AI é
@@ -783,7 +784,8 @@ passava por baixo dos seguintes), bloqueados apagados com cadeado que balança a
 cartão para o outro. **Your universe's light**: as
 amostras do Profile (`CoreColorSwatches`). **Feel** (`PersonalizeFeelRow`): Celebrations e Haptics com ícone e o que fazem; ligar responde na
 hora (as fagulhas sentidas; o primeiro toque). **Your topics** (`PersonalizeTopics`): os tópicos como etiquetas nas cores de Scripts, Edit (folha
-do My Cue Voice) e a marcação automática. **Getting started** só até o primeiro vídeo. A busca leva aos mesmos lugares (`SettingsRoute.appIcon`
+do My Cue Voice) e a marcação automática; na busca, a linha "Your topics" mostra a contagem e abre o mesmo editor. Num Mac (`isiOSAppOnMac`), que não troca o
+ícone do app, a seção App icon, a linha dela na busca e a linha dos ícones no paywall não aparecem. **Getting started** só até o primeiro vídeo. A busca leva aos mesmos lugares (`SettingsRoute.appIcon`
 abre Personalize).
 **Prompter** (`SettingsPrompterView`): na aba, com prévia no topo e céu. **A prévia** (`PrompterPreviewCard`, pedido do dono, 20/10/2026) é o topo da
 tela deste iPhone no Selfie como o gravador o monta (o mesmo `ReadingLayout`: a linha de leitura sob a lente, onde o criador a pôs ou a 118 pt, e a
@@ -880,7 +882,8 @@ acima). Tudo cabe sem rolar do SE ao Pro Max (a rolagem só existe para o Dynami
   grátis e não aparecem; nada grátis é trancado para encher a lista. O Remote continua grátis.
 - **Rodapé**: planos lado a lado (1,2 : 1, 72 pt; `ProPlanRow`, `ProPlanCard`), "SAVE n%" ao lado de "Yearly" dentro do cartão; o anel amarelo desliza
   entre eles com mola (`matchedGeometryEffect`); botão amarelo "Subscribe for $39.99/year" (ou /month) com brilho; "Renews yearly at $39.99. Cancel anytime
-  in Settings."; Restore · Terms · Privacy. Sem internet os preços não vêm: no lugar da letra miúda, "Couldn't reach the App Store. Check your
+  in Settings."; Restore · Redeem code · Terms · Privacy (**Redeem code** abre a folha de código de oferta da Apple, `offerCodeRedemption`; o mesmo
+  em Settings › Pro, ao lado de Restore purchases, com o ícone `SettingsIcons/redeem`; um código que libera o Pro volta pelas atualizações da loja). Sem internet os preços não vêm: no lugar da letra miúda, "Couldn't reach the App Store. Check your
   connection and try again." sublinhado pede de novo (`StoreManager.productsFailed`; uma abertura offline nunca deixa um alerta esperando). Restore
   diz uma coisa só, num toast (`RestoreOutcome`): "Purchases restored", "No purchases to restore" quando a App Store respondeu, ou o motivo
   ("Can't reach the App Store") quando não deu para perguntar; o mesmo em Settings. Settings › Cue Pro abre o gerenciamento da assinatura da Apple
@@ -904,7 +907,8 @@ acima). Tudo cabe sem rolar do SE ao Pro Max (a rolagem só existe para o Dynami
 - **Export options, um estado e um componente** (D11, `ExportOptionsForm`, `TakeReviewViewModel+ExportOptions`, `ExportOutputChoice`): as
   mesmas opções (legendas no vídeo, idioma delas, qualidade) para Save, Share e as respostas do Done, abertas de três lugares: **Options · 1080p**
   em Share to universe, a linha discreta **"Export options · 1080p · captions on ›"** sob o rodapé de exportações da revisão (`review.exportOptions`,
-  quem salva sem passar por Share), as duas numa folha própria (`ShareExportOptions`: título e o formulário), e a mesma linha sob as quatro respostas
+  quem salva sem passar por Share): em Share to universe são um passo da mesma folha (`ShareFlowStep.options`, "‹" `exportOptions.back`
+volta às redes; nenhuma folha sobre outra), e na linha da revisão uma folha própria (`ShareExportOptions`: título e o formulário), e a mesma linha sob as quatro respostas
   do Done do editor (`edit.done.exportOptions`; sobre a edição que o Done vai salvar), que **vira a própria folha do Done para a segunda página**
   (F19, nenhuma folha sobre outra): "‹ Export options" (`edit.done.optionsBack` volta às respostas, o VoiceOver vai ao título e de volta à linha) e
   o formulário, só ele (os avisos de exportações grátis e de fonte ficam na página das respostas, em mono e cor; as opções em texto comum `ink2`).
@@ -987,9 +991,10 @@ gravação 4K); a dica 6/6 da primeira viagem só aparece aqui quando não há r
 universe · Save video · compartilhar** (folha do sistema). **Uma exportação por envio** (um arquivo para todas as redes; reexportar na fila não gasta
 outra: `ExportLedgerService.begin(inheritingCountFrom:)`).
 **A fila** (`ShareQueue`, `ShareQueueService`, `ShareFlow`): "Posting to n networks" (com 2+, nas 2 primeiras vezes); o passo de cada rede ("1 OF 3",
-segmentos, legenda copiada e editável, "Your captions are in the video" ou, quando pedidas e o vídeo saiu sem elas, "No captions on this video" com o
+segmentos, legenda copiada e editável (`PostCaption`: o gancho do roteiro que a take leu, a primeira frase falada, com a seguinte quando é curta, até
+150 caracteres; depois o título, se o gancho não o diz, e #ad num vídeo com marca), "Your captions are in the video" ou, quando pedidas e o vídeo saiu sem elas, "No captions on this video" com o
 motivo, "In the share sheet, tap {app}", "◀ Cue", **Send to {app}** · Edit first · **Post later** (`Menu`: Tonight, Tomorrow,
-Pick a date and time…, No reminder; §27)); "Posted on {rede}?": **só "Yes, it's live" conta** e acende o planeta (`MilestoneService.recordShare`).
+Pick a date and time…, No reminder; §27; a data é um passo do próprio sheet, `ReminderSheet(onBack:)` com "‹" `reminder.back`, nunca outra folha por cima)); "Posted on {rede}?": **só "Yes, it's live" conta** e acende o planeta (`MilestoneService.recordShare`).
 Cada passo tem a altura do próprio conteúdo. Uma fila que recomeça para o mesmo vídeo (o **Edit first** de uma rede, depois Share de novo) segue
 com a nova exportação e as redes já postadas continuam postadas, nunca oferecidas de novo (`ShareQueue.keepPosted`). Fechar (✕ ou puxar para baixo) manda o resto para depois ("Saved · continue anytime"); quando é o Cue que tira o sheet (Send, Edit first, a última
 rede), o aviso do iPhone de que o sheet saiu não mexe na fila (`ShareFlow.sheetDismissed`); o card **Continue posting**

@@ -12,7 +12,8 @@ struct SettingsSearchResults: View {
     let bindings: SettingsBindings
 
     var body: some View {
-        let groups = SettingsSearchGroup.results(for: query)
+        // A Mac running Cue can't change its icon: the app icon row isn't found there.
+        let groups = SettingsSearchGroup.results(for: query) { $0 != .appIcon || !ProcessInfo.processInfo.isiOSAppOnMac }
         if groups.isEmpty {
             Section {
                 ContentUnavailableView {

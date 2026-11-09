@@ -77,7 +77,7 @@ struct NotificationNavigator {
             presentation.profilePath = [destination == .universe ? .universe : .yearInReview]
         case .newScript:
             presentation.selectedTab = .scripts
-            presentation.present(.newScript)
+            presentation.present(.newScript())
         case .notificationSettings:
             openSettings([.notifications])
         default:

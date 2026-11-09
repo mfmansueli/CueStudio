@@ -12,8 +12,6 @@ struct ShareNetworkPicker: View {
     @Bindable var review: TakeReviewViewModel
     let take: Take
 
-    @State private var showsOptions = false
-
     @Environment(FirstVoyageService.self) private var voyage
 
     /// The script's network is one of the list, so it came ticked.
@@ -84,14 +82,12 @@ struct ShareNetworkPicker: View {
             .padding(EdgeInsets(top: 4, leading: Metrics.gutter, bottom: 20, trailing: Metrics.gutter))
         }
         .scrollIndicators(.hidden)
-        .sheet(isPresented: $showsOptions) {
-            ShareExportOptions(review: review, edit: review.take?.edit).presentationDetents([.medium]).presentationBackground(Palette.sheetNight)
-        }
     }
 
     /// "Options · 1080p" (or "· 4K", or "· 606×1080" when the format's crop makes the file smaller): the sliders, named, with what the file is.
+    /// They open as the sheet's next step, with ‹ Back.
     private var optionsButton: some View {
-        Button { showsOptions = true } label: {
+        Button { flow.step = .options } label: {
             Label(String(localized: "Options · \(review.outputSizeLabel(for: review.take?.edit))"), systemImage: "slider.horizontal.3")
                 .lineLimit(1)
         }

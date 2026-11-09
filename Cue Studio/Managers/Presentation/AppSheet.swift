@@ -7,8 +7,9 @@ import Foundation
 
 /// Sheets presented over the tab bar.
 enum AppSheet: Identifiable, Hashable {
-    /// "+" on Scripts: write my own, or import.
-    case newScript
+    /// "+" on Scripts, a notification or the app shortcut: "Start a video" (a script, or recording without one). From Start recording's
+    /// "New script" (`fromRecording`) it is "New script" and doesn't offer recording without a script again: that sheet just did.
+    case newScript(fromRecording: Bool = false)
     /// The Record tab: read from a recent script, start a new one, or record freestyle.
     case startRecording
     case importScript
@@ -40,7 +41,7 @@ enum AppSheet: Identifiable, Hashable {
 
     var id: String {
         switch self {
-        case .newScript: "newScript"
+        case .newScript(let fromRecording): fromRecording ? "newScript.recording" : "newScript"
         case .startRecording: "startRecording"
         case .importScript: "importScript"
         case .ideas: "ideas"

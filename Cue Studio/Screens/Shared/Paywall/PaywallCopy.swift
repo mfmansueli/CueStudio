@@ -41,7 +41,8 @@ nonisolated enum PaywallCopy {
     /// series tags and "Text behind me" are free for everyone, and nothing free is locked to fill this list. The watermark line says that
     /// exported videos never carry one: only a screen recording or mirroring of Cue does, on the free plan (`CaptureWatermark`).
     static let benefits: [ProBenefit] = [
-        ProBenefit(text: String(localized: "The milestone app icons from 10 videos on")),
+        // A Mac running Cue can't change its icon: the line stays out there.
+        ProBenefit(text: String(localized: "The milestone app icons from 10 videos on"), isAvailable: !ProcessInfo.processInfo.isiOSAppOnMac),
         ProBenefit(text: String(localized: "No Cue mark on screen recordings · exported videos never have one")),
     ]
 

@@ -11,7 +11,7 @@ nonisolated enum SettingsEntry: String, CaseIterable, Identifiable, Sendable {
     // The root
     case recording, prompter, remote, myCueVoice, personalize
     case languageRegion, notifications, privacy
-    case cuePro, restorePurchases
+    case cuePro, restorePurchases, redeemCode
     case privacyPolicy, termsOfUse, acknowledgements, version
     // Recording
     case startsWith, resolution, frameRate, defaultFormat, microphone, countdown, grid
@@ -33,6 +33,8 @@ nonisolated enum SettingsEntry: String, CaseIterable, Identifiable, Sendable {
     case appLanguage, voiceFollowingLanguage, scriptLanguage
     // Privacy & AI data
     case onDeviceAI, helpImprove, permissions, deleteData
+    // Found only by the search: the default network lives in Profile › Edit profile, where onboarding's choice is changed.
+    case defaultPlatform
 
     var id: String { rawValue }
 
@@ -48,6 +50,7 @@ nonisolated enum SettingsEntry: String, CaseIterable, Identifiable, Sendable {
         case .privacy: String(localized: "Privacy & AI data")
         case .cuePro: String(localized: "Cue Pro")
         case .restorePurchases: String(localized: "Restore purchases")
+        case .redeemCode: String(localized: "Redeem code")
         case .privacyPolicy: String(localized: "Privacy policy")
         case .termsOfUse: String(localized: "Terms of use")
         case .acknowledgements: String(localized: "Acknowledgements")
@@ -97,6 +100,7 @@ nonisolated enum SettingsEntry: String, CaseIterable, Identifiable, Sendable {
         case .helpImprove: String(localized: "Help improve Cue")
         case .permissions: String(localized: "Permissions")
         case .deleteData: String(localized: "Delete my Cue data")
+        case .defaultPlatform: String(localized: "New scripts are made for")
         }
     }
 
@@ -111,7 +115,6 @@ nonisolated enum SettingsEntry: String, CaseIterable, Identifiable, Sendable {
         case .mirrorText: String(localized: "For beam-splitter glass")
         case .flipVertically: String(localized: "For rigs that reflect from below")
         case .appIcon: String(localized: "Unlock with milestones. Some come with Pro.")
-        case .topics: String(localized: "Edit them in My Cue Voice")
         case .autoTag: String(localized: "Cue picks the topic on this iPhone")
         case .firstVoyage: String(localized: "Your next step, until your first video is out")
         case .onDeviceAI: String(localized: "Apple Intelligence, nothing else")
@@ -126,7 +129,7 @@ nonisolated enum SettingsEntry: String, CaseIterable, Identifiable, Sendable {
         case .recording, .prompter, .remote: String(localized: "Create")
         case .myCueVoice, .personalize: String(localized: "Your Cue")
         case .languageRegion, .notifications, .privacy: String(localized: "General")
-        case .cuePro, .restorePurchases: String(localized: "Pro")
+        case .cuePro, .restorePurchases, .redeemCode: String(localized: "Pro")
         case .privacyPolicy, .termsOfUse, .acknowledgements, .version: String(localized: "About")
         case .startsWith: Self.path(.recording, String(localized: "Camera"))
         case .resolution, .frameRate: Self.path(.recording, String(localized: "Quality"))
@@ -149,6 +152,7 @@ nonisolated enum SettingsEntry: String, CaseIterable, Identifiable, Sendable {
         case .firstVoyage: Self.path(.personalize, String(localized: "Getting started"))
         case .appLanguage, .voiceFollowingLanguage, .scriptLanguage: SettingsEntry.languageRegion.title
         case .onDeviceAI, .helpImprove, .permissions, .deleteData: SettingsEntry.privacy.title
+        case .defaultPlatform: "\(String(localized: "Profile")) › \(String(localized: "Edit profile"))"
         }
     }
 
@@ -165,6 +169,7 @@ nonisolated enum SettingsEntry: String, CaseIterable, Identifiable, Sendable {
         case .privacy: ["data", "ai", "delete", "permissions"]
         case .cuePro: ["pro", "subscription", "plan", "upgrade"]
         case .restorePurchases: ["purchase", "subscription"]
+        case .redeemCode: ["offer", "code", "promo", "coupon", "gift", "voucher"]
         case .startsWith: ["camera", "front", "back", "selfie", "lens"]
         case .resolution: ["quality", "720p", "1080p", "4k", "hd"]
         case .frameRate: ["fps", "quality", "24", "30", "60"]
@@ -208,6 +213,10 @@ nonisolated enum SettingsEntry: String, CaseIterable, Identifiable, Sendable {
         case .termsOfUse: ["legal", "eula"]
         case .acknowledgements: ["fonts", "licenses", "credits", "legal"]
         case .version: ["build"]
+        case .defaultPlatform: [
+            "platform", "network", "default", "social", "tiktok", "instagram", "reels", "youtube", "shorts", "linkedin", "facebook",
+            "snapchat", "stories", "safe zone", "length",
+        ]
         }
     }
 

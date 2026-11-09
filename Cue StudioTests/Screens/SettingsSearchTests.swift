@@ -53,6 +53,13 @@ struct SettingsSearchTests {
     }
 
     /// Text size is a slider now: searching for a smaller or bigger text still finds its row.
+    /// The default network lives in Profile › Edit profile; the search finds it by the word "platform" or a network's name.
+    @Test func theDefaultNetworkIsFoundByPlatformAndANetworksName() {
+        for query in ["platform", "tiktok", "shorts"] {
+            #expect(SettingsSearchGroup.results(for: query).flatMap(\.entries).contains(.defaultPlatform), "\(query)")
+        }
+    }
+
     @Test func textSizeIsFoundBySmallerAndBigger() {
         for word in ["size", "smaller", "bigger"] {
             #expect(SettingsSearchGroup.results(for: word).flatMap(\.entries).contains(.textSize), "\(word)")

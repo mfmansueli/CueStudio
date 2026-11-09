@@ -437,11 +437,12 @@ final class TakeReviewViewModel {
         rules.preset(for: platform, monetizationGoals: profile.profile.monetizationGoals).idealRange
     }
 
-    /// The text copied for a network's caption: the script's title, and "#ad" for a sponsored video.
+    /// The text copied for a network's caption (`PostCaption`): the hook, the title, and "#ad" for a sponsored video.
     var postCaption: String {
-        guard let take else { return "" }
-        let title = take.isFreestyle ? "" : take.scriptTitle
-        return [title, isSponsored ? Self.adCaption : nil].compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: " ")
+        guard let take, !take.isFreestyle else { return isSponsored ? Self.adCaption : "" }
+        // The words this take read: its hook leads the caption.
+        let script = take.captionScript(current: library.script(id: take.scriptID)) ?? library.script(id: take.scriptID)
+        return PostCaption.text(scriptText: script?.text, title: take.scriptTitle, isSponsored: isSponsored)
     }
 
     /// A refused Photos permission is a card with the way out; anything else is the export's card, with why and **Try again**, which stays
@@ -475,7 +476,7 @@ final class TakeReviewViewModel {
     /// A sponsored script (8.1): the share sheet warns, and "#ad" travels in the caption.
     var isSponsored: Bool { library.script(id: take?.scriptID)?.type == .ad }
 
-    static let adCaption = "#ad"
+    static let adCaption = PostCaption.adTag
 
     /// A platform's tile. How the video gets there depends on what the platform allows (`ShareRoute`): TikTok's Share Kit,
     /// Instagram's hand-off, the system share sheet, or saving to Photos and opening the app. Nil is "More": the system
