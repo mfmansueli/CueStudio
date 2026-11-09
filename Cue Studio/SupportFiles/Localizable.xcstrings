@@ -95765,6 +95765,125 @@
         }
       }
     },
+    "Pair one in iOS Settings › Bluetooth. Space plays or pauses, ↓ and ↑ move three lines, → and ← change the speed." : {
+      "comment" : "Settings › Remote: how a hardware keyboard, foot pedal or clicker drives the teleprompter",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اربطه من إعدادات iOS › Bluetooth. المسافة للتشغيل أو الإيقاف المؤقت، و↓ و↑ للتحرك ثلاثة أسطر، و→ و← لتغيير السرعة."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Par den i iOS-indstillinger › Bluetooth. Mellemrum afspiller eller pauser, ↓ og ↑ flytter tre linjer, → og ← ændrer hastigheden."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In den iOS-Einstellungen › Bluetooth koppeln. Leertaste startet oder pausiert, ↓ und ↑ springen drei Zeilen, → und ← ändern das Tempo."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vincúlalo en Ajustes de iOS › Bluetooth. Espacio reproduce o pausa, ↓ y ↑ mueven tres líneas, → y ← cambian la velocidad."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jumelez-le dans Réglages iOS › Bluetooth. Espace lance ou met en pause, ↓ et ↑ avancent ou reculent de trois lignes, → et ← changent la vitesse."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS सेटिंग्स › Bluetooth में जोड़ें। स्पेस चलाता या रोकता है, ↓ और ↑ तीन पंक्तियाँ खिसकाते हैं, → और ← गति बदलते हैं।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pasangkan di Pengaturan iOS › Bluetooth. Spasi memutar atau menjeda, ↓ dan ↑ memindah tiga baris, → dan ← mengubah kecepatan."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abbinalo in Impostazioni iOS › Bluetooth. Spazio avvia o mette in pausa, ↓ e ↑ spostano di tre righe, → e ← cambiano la velocità."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOSの設定 › Bluetoothでペアリング。スペースで再生／一時停止、↓と↑で3行移動、→と←で速度を変更。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS 설정 › Bluetooth에서 연결하세요. 스페이스는 재생 또는 일시정지, ↓와 ↑는 세 줄 이동, →와 ←는 속도 변경."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Par den i iOS-innstillinger › Bluetooth. Mellomrom spiller av eller pauser, ↓ og ↑ flytter tre linjer, → og ← endrer farten."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Koppel hem in iOS-instellingen › Bluetooth. Spatie speelt af of pauzeert, ↓ en ↑ verplaatsen drie regels, → en ← veranderen de snelheid."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pareie nos Ajustes do iOS › Bluetooth. Espaço toca ou pausa, ↓ e ↑ andam três linhas, → e ← mudam a velocidade."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parkoppla i iOS-inställningar › Bluetooth. Mellanslag spelar eller pausar, ↓ och ↑ flyttar tre rader, → och ← ändrar hastigheten."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "จับคู่ในการตั้งค่า iOS › Bluetooth ปุ่มเว้นวรรคเล่นหรือหยุดชั่วคราว ↓ และ ↑ เลื่อนสามบรรทัด → และ ← เปลี่ยนความเร็ว"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS Ayarlar › Bluetooth'tan eşleyin. Boşluk oynatır veya duraklatır, ↓ ve ↑ üç satır kaydırır, → ve ← hızı değiştirir."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ghép nối trong Cài đặt iOS › Bluetooth. Phím cách phát hoặc tạm dừng, ↓ và ↑ chuyển ba dòng, → và ← đổi tốc độ."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 iOS 设置 › 蓝牙中配对。空格键播放或暂停，↓ 和 ↑ 移动三行，→ 和 ← 调整速度。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 iOS 設定 › 藍牙中配對。空白鍵播放或暫停，↓ 和 ↑ 移動三行，→ 和 ← 調整速度。"
+          }
+        }
+      }
+    },
     "Parodies" : {
       "comment" : "My Cue Voice: a more specific topic inside the theme “comedy and entertainment” (a short chip)",
       "localizations" : {

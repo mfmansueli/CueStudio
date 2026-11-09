@@ -753,7 +753,7 @@ volta, os dois se inclinam um para o outro, a ligação se desenha em verde do c
 e luzes correm pela ligação (os comandos); o brilho de fundo passa de amarelo a verde; CONNECTED, o nome do aparelho, "Press play on …" e
 Disconnect; os ícones de "From the remote you can" acendem verdes em sequência. Desconectar recolhe a ligação para o controle. **Sem controle:**
 "No remote yet", Connect a device amarelo grande, os cartões Enter a code / Scan the code (`RemoteJoinCards`, mesmo fluxo da busca:
-`RemoteJoinFlow`), o que o controle faz (`RemoteCapabilities`) e Coming next. Vibrações (Core Haptics, `HapticPatterns`): Connect = toque firme
+`RemoteJoinFlow`), o que o controle faz (`RemoteCapabilities`) e Keyboards and foot pedals (as teclas que já funcionam: um teclado, um pedal Bluetooth ou um passador de slides mandam ao gravador os mesmos comandos do controle, `PrompterKeyCommands`: espaço toca ou pausa, ↓/Page Down e ↑/Page Up andam três linhas, → e ← mudam a velocidade, Home volta ao topo; gravar fica no botão vermelho). Vibrações (Core Haptics, `HapticPatterns`): Connect = toque firme
 e um brilho quando o primeiro anel sai; dois tiques quase imperceptíveis nos anéis seguintes; ao conectar, tique + clique + assentar junto com o
 ✓; Disconnect = queda surda. O texto não promete mais Apple Watch (o app não tem). Reduzir Movimento: mesmas posições, nada se move, estados
 trocam na hora. Cores em `Palette.Remote`. Enquanto este aparelho é o teleprompter (esperando o controle ou conectado), a tela não apaga

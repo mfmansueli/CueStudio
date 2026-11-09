@@ -89,6 +89,7 @@ struct PrompterView: View {
                         StudioModeView(viewModel: viewModel, onClose: presentation.closePrompter)
                     }
                 }
+                .background { PrompterKeyCommands { viewModel.handle($0) } }
             }
         }
         .onGeometryChange(for: CGFloat.self) { $0.frame(in: .global).maxY } action: { safeAreaBottom = $0 }
