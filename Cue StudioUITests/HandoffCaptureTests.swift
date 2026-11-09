@@ -400,24 +400,10 @@ final class HandoffCaptureTests: XCTestCase {
         try shot(app, "6.2_continue-posting-card", wait: 1)
     }
 
-    // MARK: - 7 · Linked screens (8.3, 1.7, 9.3, 6.2) and 8.2
+    // MARK: - 7 · Linked screens (9.3, 6.2) and 8.2
 
     func test7_LinkedScreens() throws {
         _ = try requireFolder()
-        func openTake(_ args: [String]) -> XCUIApplication {
-            let app = CueApp.launch(seeded: true, sampleVideo: true, extraArguments: args)
-            app.cueTabBar.buttons["Takes"].tap()
-            let row = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'takes.video.' AND label CONTAINS '3 morning habits'")).firstMatch
-            XCTAssertTrue(row.exists(within: 10))
-            row.tap()
-            return app
-        }
-        let milestone = openTake(["-uiTestMilestone", "25", "-uiTestUniverse", "sample", "-uiTestStoryAt", "6"])
-        XCTAssertTrue(element(milestone, "milestone.sheet").exists(within: 15))
-        try shot(milestone, "8.3_milestone", wait: 1)
-        let firstStar = openTake(["-uiTestFirstStar", "-uiTestStoryAt", "7.5"])
-        XCTAssertTrue(element(firstStar, "firstStar.sheet").exists(within: 15))
-        try shot(firstStar, "1.7_first-star", wait: 1)
         let voice = CueApp.launch(seeded: true, extraArguments: ["-uiTestUniverse", "sample"])
         voice.cueTabBar.buttons["Profile"].tap()
         let edit = voice.buttons["Edit voice"]
@@ -436,46 +422,27 @@ final class HandoffCaptureTests: XCTestCase {
         try shot(takes, "6.2_takes-from-planet", wait: 1)
     }
 
-    /// 1.7 at the seconds of its finish on top of the board: the light round the take, the flare where it folds, the comet's trail, the
-    /// universe holding its breath, the bloom, the wave across the orbits and the gold light on the title.
-    func test1_7_FirstStarFinish() throws {
+    /// D4 (owner, 09/11/2026), the first journey's one celebration: the send-off of a first post confirmed right away (the first star in its
+    /// eyebrow, Aurora's row in the card's place, stood still after the landing), and the first star lit on the video in Takes after a review
+    /// left without a post, in the grid and in the list. `tools/contrast/audit.py` measures them.
+    func test8_FirstCelebration() throws {
         _ = try requireFolder()
-        for second in ["1.25", "1.6", "2.3", "2.92", "3.05", "3.4", "3.8", "5.85", "7.5"] {
-            let app = CueApp.launch(seeded: true, sampleVideo: true, extraArguments: ["-uiTestFirstStar", "-uiTestStoryAt", second])
-            app.cueTabBar.buttons["Takes"].tap()
-            let row = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'takes.video.' AND label CONTAINS '3 morning habits'")).firstMatch
-            XCTAssertTrue(row.exists(within: 10))
-            row.tap()
-            XCTAssertTrue(element(app, "firstStar.sheet").exists(within: 15))
-            try shot(app, "1.7_finish_\(second)", wait: 1)
-            app.terminate()
-        }
-    }
+        let posted = recordFirstTake(animations: true, extraArguments: ["-uiTestSendOffAt", "5"])
+        postRightAway(posted)
+        XCTAssertTrue(posted.buttons["sendoff.icon.use"].exists(within: 10))
+        try shot(posted, "8.2_first-post-aurora", wait: 1)
+        posted.terminate()
 
-    /// The 1.7 and 8.3 stories at fixed seconds, to compare each keyframe with the board.
-    func test7_StoryFrames() throws {
-        _ = try requireFolder()
-        for second in ["0.5", "1.3", "2.3", "3.5", "4.6", "6.0", "7.5"] {
-            let app = CueApp.launch(seeded: true, sampleVideo: true, extraArguments: ["-uiTestFirstStar", "-uiTestStoryAt", second])
-            app.cueTabBar.buttons["Takes"].tap()
-            let row = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'takes.video.' AND label CONTAINS '3 morning habits'")).firstMatch
-            XCTAssertTrue(row.exists(within: 10))
-            row.tap()
-            XCTAssertTrue(element(app, "firstStar.sheet").exists(within: 15))
-            try shot(app, "1.7_at_\(second)", wait: 1)
-            app.terminate()
-        }
-        for second in ["0.8", "1.3", "1.7", "2.2"] {
-            let arguments = ["-uiTestMilestone", "25", "-uiTestUniverse", "sample", "-uiTestStoryAt", second]
-            let app = CueApp.launch(seeded: true, sampleVideo: true, extraArguments: arguments)
-            app.cueTabBar.buttons["Takes"].tap()
-            let row = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'takes.video.' AND label CONTAINS '3 morning habits'")).firstMatch
-            XCTAssertTrue(row.exists(within: 10))
-            row.tap()
-            XCTAssertTrue(element(app, "milestone.sheet").exists(within: 15))
-            try shot(app, "8.3_at_\(second)", wait: 1)
-            app.terminate()
-        }
+        let left = recordFirstTake()
+        left.buttons["review.backButton"].tap()
+        XCTAssertTrue(left.buttons["prompter.closeButton"].exists(within: 10))
+        left.buttons["prompter.closeButton"].tap()
+        left.cueTabBar.buttons["Takes"].tap()
+        let card = left.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'takes.video.' AND label CONTAINS 'First star'")).firstMatch
+        XCTAssertTrue(card.exists(within: 10))
+        try shot(left, "6.2_first-star-grid", wait: 2)
+        left.segmentedControls["takes.layout"].buttons["List"].tap()
+        try shot(left, "6.2_first-star-list", wait: 2)
     }
 
     func test8_2_SendOffFrames() throws {
@@ -561,13 +528,6 @@ final class HandoffCaptureTests: XCTestCase {
             try shot(app, "1.6_\(voice)_\(permissions)", wait: 2)
             app.terminate()
         }
-        let app = CueApp.launch(seeded: true, sampleVideo: true, extraArguments: ["-uiTestFirstStar", "-uiTestStoryAt", "9"])
-        app.cueTabBar.buttons["Takes"].tap()
-        let row = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'takes.video.' AND label CONTAINS '3 morning habits'")).firstMatch
-        XCTAssertTrue(row.exists(within: 10))
-        row.tap()
-        XCTAssertTrue(element(app, "firstStar.sheet").exists(within: 15))
-        try shot(app, "1.7_final", wait: 1)
     }
 }
 
