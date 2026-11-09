@@ -518,6 +518,20 @@
       "drawnFromKind": "estimated"
     },
     {
+      "id": "7.7",
+      "title": "Clean up",
+      "group": "Editor",
+      "file": "screens/7.7_Clean-up.html",
+      "status": "current",
+      "pageTitle": "Cue — Clean up",
+      "appFiles": [
+        "Cue Studio/Screens/QuickEdit/Panels/CleanUp"
+      ],
+      "appFilesStatus": "confirmed",
+      "drawnFrom": "d69a5262283d",
+      "drawnFromKind": "cited"
+    },
+    {
       "id": "8.1",
       "title": "Ready to travel",
       "group": "Share and celebrate",

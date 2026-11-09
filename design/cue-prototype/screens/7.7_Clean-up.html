@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=390">
+<title>Cue — Clean up</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&amp;family=Geist+Mono:wght@500;600&amp;display=swap" rel="stylesheet">
+<style>
+/* 7.7 Clean up · drawn from main (DESIGN_PROJECT §61; CleanUpPanel, CleanUpPausesTab, CleanUpWordsTab, CleanUpTextTab, CleanUpCard, CleanUpFooter, CleanUpQuickPassButton, CleanUpListening).
+   One panel, three tabs Pauses · Words · Text; the marks are the same on the timeline (yellow goes, grey stays). Opens on "Listening for pauses…", then the start row and the pause cards
+   (122 pt: duration, Remove/Keep, time, Listen) come in one after the other and their marks light up on the timeline. Tap a card: Remove ↔ Keep (the footer counts again: "−5.8s", "01:02.0 → 00:56.2").
+   Quick pass marks everything clear. Remove takes out what is marked (the pieces close up on the timeline), "Removed" keeps each one with Put back. ✓ closes without removing what is only marked.
+   Not drawn: the settings row (Pauses longer than · Gap left), the Text tab's selection actions, retake cards. */
+body{margin:0}*{box-sizing:border-box}
+html,body{background:#000}
+.phone{width:390px;height:844px;position:relative;overflow:hidden;background:#0A0B12;font-family:Geist,-apple-system,sans-serif;color:#fff}
+.mono{font-family:'Geist Mono',ui-monospace,monospace}
+.glass{background:rgba(20,22,36,.72);box-shadow:inset 0 0 0 .5px rgba(180,167,255,.22)}
+.panel{background:radial-gradient(80% 30% at 50% 0%,rgba(157,140,255,.14),rgba(157,140,255,0) 70%),#14151F;box-shadow:inset 0 .5px 0 rgba(180,167,255,.3)}
+.chipb{height:32px;padding:0 10px;border-radius:16px;background:rgba(110,116,150,.26);display:flex;align-items:center;gap:4px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
+.tab{flex:1;height:32px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:rgba(225,228,245,.62);cursor:pointer;transition:background .2s,color .2s}
+.tab.on{background:rgba(110,116,150,.5);color:#fff}
+.card{flex:0 0 122px;height:64px;border-radius:14px;padding:6px 10px;background:rgba(110,116,150,.22);box-shadow:inset 0 0 0 .5px rgba(255,255,255,.12);cursor:pointer;transition:background .2s,box-shadow .2s,opacity .35s,transform .35s,flex-basis .4s,margin .4s;opacity:0;transform:translateY(10px);position:relative}
+.card.in{opacity:1;transform:none}
+.card.m{background:rgba(255,214,10,.14);box-shadow:inset 0 0 0 1px rgba(255,214,10,.55)}
+.card .r1{display:flex;align-items:baseline;justify-content:space-between}.card .t{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.2px}
+.card .st{font-size:12px;font-weight:700;color:rgba(225,228,245,.62)}.card.m .st{color:#FFD60A}
+.card .r2{display:flex;align-items:center;justify-content:space-between;margin-top:3px}.card .tm{font-size:12px;color:rgba(225,228,245,.62);font-variant-numeric:tabular-nums}
+.ls{width:28px;height:28px;border-radius:14px;background:rgba(80,86,120,.6);display:flex;align-items:center;justify-content:center;color:#fff}
+.ls.on{background:#FFD60A;color:#000}
+.card.hl{outline:2px solid #fff;outline-offset:2px}
+.seg{height:100%;flex:none;position:relative;overflow:hidden;transition:width .6s cubic-bezier(.5,0,.2,1);background-image:url(assets/creator.jpg);background-size:auto 100%;background-repeat:repeat-x}
+.seg.p::after{content:"";position:absolute;inset:0;background:rgba(150,150,165,.55);transition:background .3s}
+.seg.p.m::after{background:rgba(255,214,10,.78)}
+.seg.p.rm{width:0!important}
+.toast{position:absolute;left:50%;top:112px;transform:translate(-50%,-8px);opacity:0;height:34px;padding:0 6px 0 12px;border-radius:17px;background:rgba(22,20,52,.94);box-shadow:inset 0 0 0 .5px rgba(180,167,255,.5);display:flex;align-items:center;gap:10px;white-space:nowrap;font-size:13px;font-weight:600;color:#E4DEFF;z-index:9;transition:opacity .25s,transform .25s;pointer-events:none}
+.toast.on{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+.undo{height:26px;padding:0 10px;border-radius:13px;background:rgba(255,214,10,.18);color:#FFD60A;font-size:12.5px;font-weight:700;display:flex;align-items:center;cursor:pointer}
+@keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
+.dots i{display:inline-block;width:5px;height:5px;border-radius:3px;background:#B4A7FF;margin:0 2px;animation:pulse 1s infinite}.dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
+.hs{display:none}.hs::-webkit-scrollbar{display:none}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="phone" id="ph">
+  <div style="position:absolute;left:16px;right:16px;top:54px;height:38px;display:flex;align-items:center;justify-content:space-between">
+    <button aria-label="Back" class="glass" style="width:38px;height:38px;border-radius:19px;border:0;display:flex;align-items:center;justify-content:center;padding:0"><svg width="10" height="16" viewBox="4.5 0 15 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5.5L8.5 12l6.5 6.5"/></svg></button>
+    <div class="mono" style="display:flex;gap:6px;font-size:11px;font-weight:600;letter-spacing:.08em;white-space:nowrap"><span style="color:#64D2FF">IN EDIT</span><span style="color:rgba(225,228,245,.45)">· AUTOSAVED</span></div>
+    <button style="height:34px;padding:0 16px;border-radius:17px;border:0;background:#FFD60A;color:#000;font-family:inherit;font-size:15px;font-weight:700">Done</button>
+  </div>
+
+  <!-- preview -->
+  <div style="position:absolute;left:125px;top:102px;width:140px;height:248px;border-radius:14px;overflow:hidden;box-shadow:0 0 0 .5px rgba(255,255,255,.14)">
+    <img src="assets/creator.jpg" alt="Video preview" style="width:100%;height:100%;object-fit:cover;object-position:42% 30%">
+    <div style="position:absolute;left:6px;right:6px;top:176px;display:flex;flex-direction:column;align-items:center;gap:3px;font-family:Poppins,Geist,sans-serif;font-weight:900;font-size:13px;line-height:16px;text-transform:uppercase">
+      <div style="color:#fff;text-shadow:0 2px 0 #000">no phone for the</div><div style="padding:0 5px;border-radius:4px;background:#FFD60A;color:#0A0B12">first 20 minutes</div>
+    </div>
+  </div>
+  <div id="toast" class="toast" role="status"><span style="color:#34C759">✓</span><span id="ttxt"></span><span id="undo" class="undo" role="button" aria-label="Undo">Undo</span></div>
+
+  <!-- timeline: the pieces of the video, pauses marked -->
+  <div style="position:absolute;left:0;right:0;top:362px;height:92px;background:#101119;border-top:.5px solid rgba(80,86,120,.4)">
+    <div id="ruler" class="mono" style="position:absolute;left:14px;top:8px;display:flex;gap:56px;font-size:9px;color:rgba(225,228,245,.4)"><span>00:00</span><span>00:10</span><span>00:20</span><span>00:30</span><span>00:40</span></div>
+    <div id="tl" style="position:absolute;left:14px;top:26px;height:50px;border-radius:8px;overflow:hidden;display:flex;box-shadow:0 0 0 1.5px rgba(255,255,255,.85);transition:width .6s cubic-bezier(.5,0,.2,1)"></div>
+    <div id="head" style="position:absolute;left:96px;top:20px;width:2px;height:62px;border-radius:1px;background:#fff;box-shadow:0 0 6px rgba(255,255,255,.6)"></div>
+  </div>
+
+  <!-- the panel -->
+  <div class="panel" style="position:absolute;left:0;right:0;top:470px;bottom:0;border-radius:30px 30px 0 0">
+    <div style="position:absolute;left:20px;right:14px;top:14px;height:44px;display:flex;align-items:center;justify-content:space-between">
+      <div><div style="font-size:20px;font-weight:700;line-height:24px">Clean up</div><div class="mono" style="font-size:10px;letter-spacing:.06em;color:rgba(225,228,245,.55);margin-top:1px">WHOLE VIDEO</div></div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <span id="qp" class="chipb" role="button" aria-label="Quick pass"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 19.5L14 10M12.5 8.5l3 3"/><path d="M17.5 2.4c.3 2.55 1.25 3.5 3.8 3.8-2.55.3-3.5 1.25-3.8 3.8-.3-2.55-1.25-3.5-3.8-3.8 2.55-.3 3.5-1.25 3.8-3.8z" fill="currentColor"/></svg>Quick pass</span>
+        <span id="gear" class="chipb mono" role="button" aria-label="Pause settings" style="font-size:12px">0.7s</span>
+        <span id="ok" role="button" aria-label="Close panel" style="width:38px;height:38px;border-radius:19px;background:#FFD60A;display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+      </div>
+    </div>
+    <div style="position:absolute;left:16px;right:16px;top:64px;height:38px;border-radius:19px;background:rgba(110,116,150,.2);padding:3px;display:flex;gap:2px">
+      <span class="tab on" data-tab="pauses" role="button">Pauses</span><span class="tab" data-tab="words" role="button">Words</span><span class="tab" data-tab="text" role="button">Text</span>
+    </div>
+    <div id="content" style="position:absolute;left:0;right:0;top:112px;height:160px">
+      <div id="listen" style="padding:30px 20px;display:flex;flex-direction:column;align-items:center;gap:12px;font-size:15px;font-weight:600"><div class="dots"><i></i><i></i><i></i></div>Listening for pauses…</div>
+    </div>
+    <div id="foot" style="position:absolute;left:20px;right:16px;bottom:34px;height:56px;display:none;align-items:center;justify-content:space-between">
+      <div><div id="sav" style="white-space:nowrap;font-size:18px;font-weight:700;color:#FFD60A;font-variant-numeric:tabular-nums">−5.8s</div><div id="res" class="mono" style="font-size:10.5px;white-space:nowrap;color:rgba(225,228,245,.62);margin-top:1px">01:02.0 → 00:56.2</div></div>
+      <div id="apply" role="button" aria-label="Remove" style="height:44px;padding:0 16px;margin-left:12px;text-align:center;line-height:17px;border-radius:22px;background:#FFD60A;color:#000;font-size:15px;font-weight:700;display:flex;align-items:center;cursor:pointer;transition:background .2s,color .2s">Remove 5 pauses</div>
+    </div>
+  </div>
+</div>
+<script>
+(function(){function f(){document.body.style.zoom=Math.min(1,(innerHeight-8)/860)}f();addEventListener('resize',f)})();
+(function(){
+  var TOTAL=62.0,PX=4.7,reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // pauses (start time, length) and hesitations
+  var PA=[[3.2,1.4],[9.8,1.1],[18.4,0.9],[27.6,1.6],[41.0,0.8]];
+  var WO=[['um',0.4,6.1,1],['uh',0.3,14.7,1],['you know',0.6,33.2,0],['um',0.5,47.9,1]];
+  var tab='pauses',removed=false,listened=-1;
+  var M=PA.map(function(){return true}),WM=WO.map(function(w){return !!w[3]});
+  var tl=document.getElementById('tl'),content=document.getElementById('content'),foot=document.getElementById('foot'),apply=document.getElementById('apply'),sav=document.getElementById('sav'),res=document.getElementById('res'),toast=document.getElementById('toast'),ttxt=document.getElementById('ttxt');
+  function mmss(s){var m=Math.floor(s/60),x=s-m*60;return('0'+m).slice(-2)+':'+(x<10?'0':'')+x.toFixed(1);}
+  function t1(s){return s.toFixed(1)+'s';}
+  // timeline pieces
+  var pieces=[],pos=0;
+  function build(){tl.innerHTML='';pieces=[];var at=0;PA.forEach(function(p,i){var a=document.createElement('div');a.className='seg';a.style.width=((p[0]-at)*PX)+'px';a.style.backgroundPosition=(-(at*PX*.7))+'px 0';tl.appendChild(a);
+      var b=document.createElement('div');b.className='seg p m';b.style.width=Math.max(6,p[1]*PX)+'px';b.dataset.i=i;b.style.backgroundPosition=(-(p[0]*PX*.7))+'px 0';tl.appendChild(b);pieces.push(b);at=p[0]+p[1];});
+    var z=document.createElement('div');z.className='seg';z.style.width=((TOTAL-at)*PX)+'px';z.style.backgroundPosition=(-(at*PX*.7))+'px 0';tl.appendChild(z);tl.style.width=(TOTAL*PX)+'px';}
+  build();
+  pieces.forEach(function(b,i){b.style.cursor='pointer';b.addEventListener('click',function(){var c=document.querySelector('.card[data-i="'+i+'"]');if(tab!=='pauses')return;if(c&&!c.classList.contains('hl')){hl(i);}else toggle(i);});});
+  function hl(i){[].forEach.call(document.querySelectorAll('.card'),function(c){c.classList.toggle('hl',+c.dataset.i===i)});var c=document.querySelector('.card[data-i="'+i+'"]');if(c)c.parentNode.scrollTo({left:c.offsetLeft-20,behavior:'smooth'});document.getElementById('head').style.left=(14+PA[i][0]*PX)+'px';}
+  function paintMarks(){pieces.forEach(function(b,i){b.classList.toggle('m',tab==='pauses'?M[i]:M[i])});}
+  function totals(){var s=0,n=0;if(tab==='pauses'||tab==='text'){PA.forEach(function(p,i){if(M[i]&&!p.gone){s+=p[1];n++}});}if(tab==='words'||tab==='text'){WO.forEach(function(w,i){if(WM[i]&&!w.gone){s+=w[1];n++}});}
+    return{s:s,n:n};}
+  function all(){var s=0,n=0,np=0;PA.forEach(function(p,i){if(M[i]&&!p.gone){s+=p[1];n++;np++}});WO.forEach(function(w,i){if(WM[i]&&!w.gone){s+=w[1];n++}});return{s:s,n:n,np:np,nw:n-np};}
+  function foote(){var a=all(),cur=TOTAL-PA.reduce(function(x,p){return x+(p.gone?p[1]:0)},0)-WO.reduce(function(x,w){return x+(w.gone?w[1]:0)},0);
+    sav.textContent='−'+a.s.toFixed(1)+'s';sav.style.opacity=a.n?1:.4;res.textContent=mmss(cur)+' → '+mmss(cur-a.s);
+    var lab=a.n===0?'Nothing selected':(a.nw===0?'Remove '+a.n+' pauses':(a.np===0?'Remove hesitations':'Remove pauses and hesitations'));apply.textContent=lab;
+    apply.style.background=a.n?'#FFD60A':'rgba(110,116,150,.26)';apply.style.color=a.n?'#000':'rgba(225,228,245,.62)';}
+  function card(title,time,marked,i,kind,gone){var c=document.createElement('div');c.className='card'+(marked?' m':'');c.dataset.i=i;c.dataset.k=kind;
+    c.innerHTML='<div class="r1"><span class="t">'+title+'</span><span class="st">'+(marked?'Remove':'Keep')+'</span></div><div class="r2"><span class="tm mono">'+time+'</span><span class="ls" role="button" aria-label="Listen"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15v-3a8 8 0 0116 0v3"/><rect x="3" y="14" width="4" height="7" rx="1.6"/><rect x="17" y="14" width="4" height="7" rx="1.6"/></svg></span></div>';
+    c.addEventListener('click',function(e){if(e.target.closest('.ls')){listen(c);return;}if(kind==='p')toggle(i);else{WM[i]=!WM[i];render(true);}});return c;}
+  function listen(c){var b=c.querySelector('.ls');b.classList.add('on');b.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 8.5a5 5 0 010 7M18.5 6a8.5 8.5 0 010 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';setTimeout(function(){b.classList.remove('on');b.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15v-3a8 8 0 0116 0v3"/><rect x="3" y="14" width="4" height="7" rx="1.6"/><rect x="17" y="14" width="4" height="7" rx="1.6"/></svg>';},1500);if(c.dataset.k==='p')hl(+c.dataset.i);}
+  function toggle(i){M[i]=!M[i];render(true);}
+  function render(quiet){
+    [].forEach.call(document.querySelectorAll('.tab'),function(t){t.classList.toggle('on',t.dataset.tab===tab)});
+    var live=!removed;content.innerHTML='';
+    if(tab==='pauses'){
+      var start=document.createElement('div');start.style.cssText='margin:0 20px 10px;display:flex;align-items:center;gap:10px;font-size:13px';start.innerHTML='<span style="flex:1;color:rgba(225,228,245,.85)">Starts at “Okay, real talk.” · <span class="mono" style="color:rgba(225,228,245,.62)">1.8s</span> before the first word</span><span style="height:30px;padding:0 12px;border-radius:15px;background:rgba(110,116,150,.3);font-weight:700;display:flex;align-items:center;cursor:pointer" role="button" aria-label="Trim">Trim −1.8s</span>';content.appendChild(start);
+      var row=document.createElement('div');row.style.cssText='display:flex;gap:8px;padding:0 20px;overflow-x:auto;scrollbar-width:none';content.appendChild(row);
+      PA.forEach(function(p,i){if(p.gone)return;var c=card(t1(p[1]),mmss(p[0]),M[i],i,'p');row.appendChild(c);if(quiet)c.classList.add('in');else setTimeout(function(){c.classList.add('in')},reduce?0:120+i*110);});
+      var rem=PA.filter(function(p){return p.gone});if(rem.length){var rl=document.createElement('div');rl.style.cssText='margin:12px 20px 0;font-size:12px;color:rgba(225,228,245,.62)';rl.innerHTML='<span class="mono" style="letter-spacing:.08em">REMOVED</span> · '+rem.length+' pauses · <span id="putback" role="button" aria-label="Put back" style="color:#FFD60A;font-weight:700;cursor:pointer">Put back</span>';content.appendChild(rl);}
+    }else if(tab==='words'){
+      var n=document.createElement('div');n.style.cssText='margin:0 20px 10px;font-size:13px;color:rgba(225,228,245,.62)';n.textContent='Ums, uhs and words said twice. Tap one to keep it.';content.appendChild(n);
+      var row=document.createElement('div');row.style.cssText='display:flex;gap:8px;padding:0 20px;overflow-x:auto;scrollbar-width:none';content.appendChild(row);
+      WO.forEach(function(w,i){if(w.gone)return;var c=card('“'+w[0]+'”',mmss(w[2]),WM[i],i,'w');row.appendChild(c);if(quiet)c.classList.add('in');else setTimeout(function(){c.classList.add('in')},60+i*90);});
+    }else{
+      var tx=document.createElement('div');tx.style.cssText='margin:0 20px;font-size:15px;line-height:24px;color:rgba(255,255,255,.92)';
+      tx.innerHTML='Okay, real talk. <span style="background:rgba(255,214,10,.22);border-radius:5px;padding:0 3px;text-decoration:line-through;text-decoration-color:#FFD60A">um</span> Three tiny habits changed my mornings, <span style="background:rgba(255,214,10,.22);border-radius:5px;padding:0 3px;text-decoration:line-through;text-decoration-color:#FFD60A">uh</span> and none of them take more than five minutes. Number one: no phone for the first twenty minutes.';content.appendChild(tx);
+      var h=document.createElement('div');h.style.cssText='margin:10px 20px 0;font-size:12px;color:rgba(225,228,245,.55)';h.textContent='Select words to remove them. Marked ones go with Remove.';content.appendChild(h);
+    }
+    foot.style.display=(removed&&all().n===0)||tab==='text'&&false?'none':'flex';foote();paintMarks();
+    var pb=document.getElementById('putback');if(pb)pb.onclick=function(){PA.forEach(function(p,i){p.gone=false;M[i]=true});WO.forEach(function(w,i){w.gone=false;});removed=false;rebuildTL();render(true);showToast('Put back · 5 pauses',false);};
+  }
+  function rebuildTL(){build();pieces.forEach(function(b,i){b.style.cursor='pointer';b.addEventListener('click',function(){if(tab==='pauses')toggle(i);});});tl.style.width=(TOTAL*PX)+'px';paintMarks();}
+  var undoTimer;function showToast(msg,undo){ttxt.textContent=msg;document.getElementById('undo').style.display=undo?'flex':'none';toast.classList.add('on');clearTimeout(undoTimer);undoTimer=setTimeout(function(){toast.classList.remove('on')},3500);}
+  var lastCut=null;
+  apply.addEventListener('click',function(){var a=all();if(!a.n)return;var cut=[];
+    PA.forEach(function(p,i){if(M[i]&&!p.gone){p.gone=true;cut.push(['p',i]);pieces[i].classList.add('rm');}});WO.forEach(function(w,i){if(WM[i]&&!w.gone){w.gone=true;cut.push(['w',i]);}});
+    var s=a.s;lastCut={cut:cut,s:s};tl.style.width=((TOTAL-s)*PX)+'px';
+    // the ruler closes up with it
+    removed=true;setTimeout(function(){render(true);foot.style.display='flex';},reduce?0:650);showToast('Removed '+(a.np?a.np+' pauses':'')+(a.np&&a.nw?' and ':'')+(a.nw?a.nw+' hesitations':'')+' · −'+s.toFixed(1)+'s',true);});
+  document.getElementById('undo').addEventListener('click',function(){if(!lastCut)return;lastCut.cut.forEach(function(c){(c[0]==='p'?PA:WO)[c[1]].gone=false;});lastCut=null;removed=false;rebuildTL();render(true);toast.classList.remove('on');});
+  document.getElementById('qp').addEventListener('click',function(){M=PA.map(function(){return true});WM=WO.map(function(w){return true});if(removed)removed=false;render(true);showToast('Quick pass · marked the clear ones',false);});
+  [].forEach.call(document.querySelectorAll('.tab'),function(t){t.addEventListener('click',function(){tab=t.dataset.tab;render(false);});});
+  // "Listening for pauses…" then the cards
+  setTimeout(function(){document.getElementById('listen').remove();render(false);foot.style.display='flex';},reduce?0:1500);
+  paintMarks();
+  // before it has listened nothing is marked on the timeline
+  pieces.forEach(function(b){b.classList.remove('m')});setTimeout(function(){pieces.forEach(function(b,i){setTimeout(function(){b.classList.add('m')},i*110)})},reduce?0:1500);
+})();
+</script>
+</body>
+</html>

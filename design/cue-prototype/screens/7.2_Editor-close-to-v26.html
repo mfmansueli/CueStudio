@@ -70,14 +70,59 @@ body{margin:0}
     <div style="position: absolute; left: 194px; top: 20px; width: 2px; height: 150px; border-radius: 1px; background: #fff; box-shadow: 0 0 6px rgba(255,255,255,0.6)"></div>
   </div>
 
-  <div style="position: absolute; left: 0; right: 0; top: 766px; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); font-size: 10px; font-weight: 500; color: rgba(225,228,245,0.7)">
-    <div style="display: flex; flex-direction: column; align-items: center; gap: 5px"><svg width="21" height="21" viewBox="0 0 24 24" style="color: currentColor" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.83" stroke-linecap="round" stroke-linejoin="round"><circle cx="6.5" cy="6.5" r="2.5"></circle><circle cx="6.5" cy="17.5" r="2.5"></circle><path d="M8.6 8l10.9 9.5M8.6 16L19.5 6.5"></path></svg>Edit</div>
-    <div style="display: flex; flex-direction: column; align-items: center; gap: 5px"><svg width="21" height="21" viewBox="0 0 24 24" style="color: currentColor" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.83" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V6l10-2v12"></path><circle cx="6.5" cy="18" r="2.5"></circle><circle cx="16.5" cy="16" r="2.5"></circle></svg>Audio</div>
-    <div style="display: flex; flex-direction: column; align-items: center; gap: 5px"><svg width="21" height="21" viewBox="0 0 24 24" style="color: currentColor" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.83" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7V5h14v2M12 5v14M9.5 19h5"></path></svg>Text</div>
-    <div style="display: flex; flex-direction: column; align-items: center; gap: 5px"><svg width="21" height="21" viewBox="0 0 24 24" style="color: currentColor" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.83" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"></rect><path d="M7 12.5h5M14 12.5h3M7 15.5h7"></path></svg>Captions</div>
-    <div style="display: flex; flex-direction: column; align-items: center; gap: 5px"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="color: currentColor" aria-hidden="true"><circle cx="9.5" cy="10" r="5.5"></circle><circle cx="14.5" cy="14" r="5.5"></circle></svg>Filters</div>
-    <div style="display: flex; flex-direction: column; align-items: center; gap: 5px; color: #B4A7FF; font-weight: 600"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="color: currentColor" aria-hidden="true"><path d="M4.5 19.5L14 10M12.5 8.5l3 3"></path><path d="M17.50 2.40C17.80 4.95 18.75 5.90 21.30 6.20C18.75 6.50 17.80 7.45 17.50 10.00C17.20 7.45 16.25 6.50 13.70 6.20C16.25 5.90 17.20 4.95 17.50 2.40Z" fill="currentColor" stroke="none"></path><path d="M20.60 9.90C20.75 11.17 21.23 11.65 22.50 11.80C21.23 11.95 20.75 12.43 20.60 13.70C20.45 12.43 19.97 11.95 18.70 11.80C19.97 11.65 20.45 11.17 20.60 9.90Z" fill="currentColor" stroke="none"></path></svg>Smart</div>
-  </div>
-</div>
+  <!-- EditorToolbar (§55): one long bar, 33 tools in groups with a thin line between them, labels under the icons (11 pt), a fade where more wait; Delete only when something is picked.
+       Edit · Split · Captions · Text · Clean up · Media · Audio | Speed · Volume · Zoom | Adjust · Skin · Filters · Background · Crop · Stabilize · Blur area · Copy look · Paste look |
+       Animation · Duplicate · Freeze frame · Reverse · Replace · Reorder · Extract audio | Auto edit · Edit by text · Studio Voice · Format · Templates · Brand kit · Cover -->
+  <div style="position: absolute; left: 0; right: 0; top: 760px; height: 84px; background: #0A0B12; border-top: .5px solid rgba(80,86,120,.4)"></div>
+  <div id="tbar" style="position: absolute; left: 0; right: 0; top: 764px; height: 62px; overflow-x: auto; scrollbar-width: none; display: flex; padding: 0 4px; scroll-behavior: smooth"></div>
+  <div style="position:absolute;right:0;top:760px;width:34px;height:70px;background:linear-gradient(90deg,rgba(10,11,18,0),#0A0B12);pointer-events:none"></div>
+  <script>
+  (function(){
+    var I={
+      edit:'<circle cx="6.5" cy="6.5" r="2.5"/><circle cx="6.5" cy="17.5" r="2.5"/><path d="M8.6 8l10.9 9.5M8.6 16L19.5 6.5"/>',
+      split:'<path d="M12 3v18"/><rect x="3.5" y="7" width="6" height="10" rx="1.5"/><rect x="14.5" y="7" width="6" height="10" rx="1.5"/>',
+      captions:'<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M7 12.5h5M14 12.5h3M7 15.5h7"/>',
+      text:'<path d="M5 7V5h14v2M12 5v14M9.5 19h5"/>',
+      cleanup:'<path d="M3 12h3l2-5 3 10 3-8 2 3h5"/>',
+      media:'<rect x="3.5" y="4.5" width="17" height="15" rx="3"/><circle cx="9" cy="10" r="1.6"/><path d="M4 17l5-4 4 3 3-2.5 4.5 3.5"/>',
+      audio:'<path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/>',
+      speed:'<path d="M4.5 16.5a8 8 0 1115 0"/><path d="M12 16l4-5"/>',
+      volume:'<path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5z"/><path d="M15.5 9a4 4 0 010 6M18 6.5a7.5 7.5 0 010 11"/>',
+      zoom:'<circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5M8 10.5h5M10.5 8v5"/>',
+      adjust:'<path d="M4 7h9M17 7h3M4 12h3M11 12h9M4 17h11M19 17h1"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="17" r="2"/>',
+      skin:'<circle cx="12" cy="9" r="4"/><path d="M5 20c.8-4 3.6-6 7-6s6.2 2 7 6"/><path d="M17.5 3.5l.6 1.4 1.4.6-1.4.6-.6 1.4-.6-1.4-1.4-.6 1.4-.6z" fill="currentColor"/>',
+      filters:'<circle cx="9.5" cy="10" r="5.5"/><circle cx="14.5" cy="14" r="5.5"/>',
+      background:'<rect x="3.5" y="4.5" width="17" height="15" rx="3"/><path d="M3.5 15l5-4 4 3 3-2 5 4"/><circle cx="16.5" cy="9" r="1.3"/>',
+      crop:'<path d="M7 3v14h14M3 7h14v14"/>',
+      stabilize:'<rect x="5" y="5" width="14" height="14" rx="3"/><path d="M9 12h6M12 9v6"/>',
+      blur:'<circle cx="12" cy="12" r="8" stroke-dasharray="2.5 2.5"/><circle cx="12" cy="12" r="3.4"/>',
+      copy:'<rect x="8.5" y="8.5" width="11" height="11" rx="2.5"/><path d="M15.5 8.5V6A2.5 2.5 0 0013 3.5H6A2.5 2.5 0 003.5 6v7A2.5 2.5 0 006 15.5h2.5"/>',
+      paste:'<rect x="5" y="5" width="14" height="16" rx="2.5"/><path d="M9 5V3.5h6V5M9 11h6M9 15h4"/>',
+      anim:'<path d="M12 3.5l2 5 5 .6-3.8 3.4 1.2 5-4.4-2.7-4.4 2.7 1.2-5L5 9.1l5-.6z"/>',
+      dup:'<rect x="8" y="8" width="12" height="12" rx="2.5"/><path d="M5 15V6a2 2 0 012-2h9"/>',
+      freeze:'<path d="M12 3v18M4.5 7.5l15 9M19.5 7.5l-15 9"/>',
+      reverse:'<path d="M20 8H8a4 4 0 000 8h2"/><path d="M16 4l4 4-4 4"/>',
+      replace:'<path d="M4 9h13l-3-3M20 15H7l3 3"/>',
+      reorder:'<path d="M4 7h16M4 12h16M4 17h16"/><path d="M9 4.5l-2 2.5 2 2.5M15 14.5l2 2.5-2 2.5" transform="translate(0 0)"/>',
+      extract:'<path d="M9 18V6l10-2v12"/><path d="M3 21h8"/>',
+      auto:'<path d="M4.5 19.5L14 10M12.5 8.5l3 3"/><path d="M17.5 2.4c.3 2.55 1.25 3.5 3.8 3.8-2.55.3-3.5 1.25-3.8 3.8-.3-2.55-1.25-3.5-3.8-3.8 2.55-.3 3.5-1.25 3.8-3.8z" fill="currentColor"/>',
+      bytext:'<path d="M4 6h16M4 11h10M4 16h16M4 21h8"/>',
+      studio:'<path d="M12 3v14M8 7v6M16 6v8M4 9.5v3M20 9.5v3"/><path d="M8 21h8"/>',
+      format:'<rect x="6" y="3.5" width="12" height="17" rx="2.5"/><path d="M3 12h2M19 12h2"/>',
+      templates:'<rect x="4" y="4" width="7" height="9" rx="2"/><rect x="13" y="4" width="7" height="5" rx="2"/><rect x="13" y="11" width="7" height="9" rx="2"/><rect x="4" y="15" width="7" height="5" rx="2"/>',
+      brand:'<path d="M12 3l2.7 5.5 6 .9-4.4 4.2 1 6L12 16.7 6.7 19.6l1-6L3.3 9.4l6-.9z"/>',
+      cover:'<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M4 15l4.5-4 3.5 3 3-2.5 5 4"/><circle cx="15.5" cy="8.5" r="1.4"/>'
+    };
+    var G=[[['edit','Edit'],['split','Split'],['captions','Captions'],['text','Text'],['cleanup','Clean up'],['media','Media'],['audio','Audio']],
+      [['speed','Speed'],['volume','Volume'],['zoom','Zoom']],
+      [['adjust','Adjust'],['skin','Skin'],['filters','Filters'],['background','Background'],['crop','Crop'],['stabilize','Stabilize'],['blur','Blur area'],['copy','Copy look'],['paste','Paste look']],
+      [['anim','Animation'],['dup','Duplicate'],['freeze','Freeze frame'],['reverse','Reverse'],['replace','Replace'],['reorder','Reorder'],['extract','Extract audio']],
+      [['auto','Auto edit'],['bytext','Edit by text'],['studio','Studio Voice'],['format','Format'],['templates','Templates'],['brand','Brand kit'],['cover','Cover']]];
+    var bar=document.getElementById('tbar');
+    G.forEach(function(g,gi){if(gi){var sp=document.createElement('i');sp.style.cssText='flex:none;width:.5px;height:30px;margin:12px 2px 0;background:rgba(80,86,120,.7)';bar.appendChild(sp);}
+      g.forEach(function(t){var d=document.createElement('div');d.setAttribute('role','button');d.setAttribute('aria-label',t[1]);d.style.cssText='flex:none;width:68px;display:flex;flex-direction:column;align-items:center;gap:5px;padding-top:6px;font-size:11px;font-weight:500;color:rgba(225,228,245,.7);cursor:pointer;white-space:nowrap';
+        d.innerHTML='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+I[t[0]]+'</svg>'+t[1];bar.appendChild(d);});});
+  })();
+  </script>
 </body>
 </html>
