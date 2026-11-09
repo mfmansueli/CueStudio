@@ -650,7 +650,8 @@ final class TakeReviewViewModel {
             throw ExportPreflightError.notEnoughSpace(megabytes: missing)
         }
         let result = try await exporter.export(videoAt: source, options: options, progress: progress)
-        let url = result.url
+        // Named after the script and the take, for Files, AirDrop and a computer.
+        let url = ExportFileName.rename(result.url, title: take.scriptTitle, takeNumber: take.number)
         ExportedFileRecord(renderStamp: ExportRenderStamp.drawn(edit: options.edit, result: result), fontFallback: result.fontFallback).write(to: url)
         if let continued {
             // The same export, its file made again (the system cleared the first, or it was drawn differently): not a second export. An
