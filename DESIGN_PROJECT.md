@@ -760,7 +760,7 @@ trocam na hora. Cores em `Palette.Remote`. Enquanto este aparelho é o telepromp
 sozinha (`RemoteControlService.role`, `ScreenAwake` "remoteHost"): bloquear derrubaria a ligação. Um link de pareamento (`cuestudio://remote`,
 a câmera do iOS lendo o QR) espera o onboarding e o gravador fecharem, como a Siri e as notificações (`RootView.handleRemoteLink`), para nunca
 fechar uma gravação; o próprio código deste aparelho, quando é ele o teleprompter, é ignorado.
-**Personalize** (`PersonalizeView`, redesenho do dono 21/10/2026, "vitrine"): `ScrollView` sobre o céu. No topo, "seu Cue" ao vivo
+**Personalize** (`PersonalizeView`, redesenho do dono 21/10/2026, "vitrine"; a linha em Settings leva o selo NEW até a primeira visita, `DefaultsKey.personalizeSeen`): `ScrollView` sobre o céu. No topo, "seu Cue" ao vivo
 (`PersonalizeHero`): o céu escolhido (`SkyMiniature`: o mesmo `BgWash` + `StarfieldView` da navegação, estrelas no brilho dos quadros), a luz
 do universo respirando na cor escolhida (`CoreColor.glow`) e o ícone escolhido flutuando (`AppIconArt`; o padrão desenhado das camadas de
 `AppIcon.icon`), com a legenda "Default · Serene sky · Gold light"; trocar o céu esmaece, a luz muda de cor devagar, o ícone entra numa mola.

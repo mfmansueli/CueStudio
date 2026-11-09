@@ -87,6 +87,8 @@ nonisolated enum DefaultsKey {
     static let editMediaDeletionsPending = "editMediaDeletionsPending"
     /// How the Takes tab lays videos out (`TakeLayout` raw value); absent = the grid.
     static let takesLayout = "takesLayout"
+    /// Personalize was opened once: its NEW badge in Settings is gone.
+    static let personalizeSeen = "personalizeSeen"
     /// The Sign in with Apple account (ID, and the name and email Apple shared once).
     static let appleAccount = "appleAccount"
     /// Settings › Personalize: the sky (`SkyDensity` raw value; absent = Calm), the story moments, the

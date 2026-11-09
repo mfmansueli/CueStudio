@@ -19,6 +19,7 @@ struct SettingsRootRow: View {
     @Environment(NotificationService.self) private var notifications
 
     @State private var paywall: PaywallContext?
+    @AppStorage(DefaultsKey.personalizeSeen) private var personalizeSeen = false
     @State private var showsPrivacy = false
 
     var body: some View {
@@ -39,7 +40,8 @@ struct SettingsRootRow: View {
         case .myCueVoice:
             link(.myCueVoice, .voice, value: "\(profile.profile.voiceStrength)%")
         case .personalize:
-            link(.personalize, .personalize, badge: String(localized: "NEW"))
+            // NEW until Personalize is opened once.
+            link(.personalize, .personalize, badge: personalizeSeen ? nil : String(localized: "NEW"))
         case .languageRegion:
             link(.languageRegion, .language, value: languages.interfaceLanguage.nativeName)
         case .notifications:

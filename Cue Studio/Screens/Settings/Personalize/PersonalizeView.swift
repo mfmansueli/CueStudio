@@ -12,6 +12,7 @@ import SwiftUI
 /// shared, the first video guide. Everything here stays on this iPhone.
 struct PersonalizeView: View {
     let bindings: SettingsBindings
+    @AppStorage(DefaultsKey.personalizeSeen) private var personalizeSeen = false
 
     @Environment(PersonalizationService.self) private var personalization
     @Environment(AppIconService.self) private var appIcon
@@ -64,6 +65,7 @@ struct PersonalizeView: View {
         .navigationTitle("Personalize")
         .navigationBarTitleDisplayMode(.inline)
         .accessibilityIdentifier("settings.personalizePage")
+        .onAppear { personalizeSeen = true }
     }
 
     private func section(_ title: LocalizedStringKey, footer: LocalizedStringKey? = nil, @ViewBuilder content: () -> some View) -> some View {
