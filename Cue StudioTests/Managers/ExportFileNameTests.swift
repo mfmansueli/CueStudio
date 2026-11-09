@@ -11,7 +11,6 @@ import Testing
 struct ExportFileNameTests {
     @Test func theNameIsTheScriptAndTheTake() {
         #expect(ExportFileName.name(title: "Morning routine", takeNumber: 2) == "Morning routine · Take 2.mov")
-        #expect(ExportFileName.name(title: "Morning routine", takeNumber: 2, copy: 3) == "Morning routine · Take 2 3.mov")
     }
 
     @Test func aTitleBecomesOneSafeLine() {
@@ -20,7 +19,7 @@ struct ExportFileNameTests {
         #expect(ExportFileName.sanitized(String(repeating: "a", count: 90)).count == ExportFileName.maxTitleLength)
     }
 
-    @Test func renamingKeepsBothCopiesAndTheRecord() throws {
+    @Test func twoVideosOfOneTakeNeverShareAPath() throws {
         let folder = URL.temporaryDirectory.appending(path: "ExportFileNameTests-\(UUID().uuidString)")
         try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
         defer { try? FileManager.default.removeItem(at: folder) }
@@ -32,8 +31,9 @@ struct ExportFileNameTests {
 
         let named = ExportFileName.rename(first, title: "Hello", takeNumber: 1)
         let again = ExportFileName.rename(second, title: "Hello", takeNumber: 1)
-        #expect(named.lastPathComponent == "Hello · Take 1.mov")
-        #expect(again.lastPathComponent == "Hello · Take 1 2.mov")
+        // Both named alike, each in its own folder: never the same path.
+        #expect(named.lastPathComponent == "Hello · Take 1.mov" && again.lastPathComponent == "Hello · Take 1.mov")
+        #expect(named != again && FileManager.default.fileExists(atPath: named.path) && FileManager.default.fileExists(atPath: again.path))
         #expect(ExportedFileRecord.read(at: named)?.renderStamp == "s")
     }
 }
