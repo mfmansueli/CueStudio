@@ -130,6 +130,21 @@
       "drawnFromKind": "estimated"
     },
     {
+      "id": "2.1b",
+      "title": "My Cue Voice how scripts talk about you",
+      "group": "My Cue Voice",
+      "file": "screens/2.1b_My-Cue-Voice-how-scripts-talk-about-you.html",
+      "status": "current",
+      "pageTitle": "Cue — My Cue Voice · how scripts talk about you",
+      "appFiles": [
+        "Cue Studio/Screens/Profile/Voice/Editor/VoiceSpeechField.swift",
+        "Cue Studio/Screens/Profile/Voice/Editor/VoiceAgreementField.swift"
+      ],
+      "appFilesStatus": "confirmed",
+      "drawnFrom": "6eeda1f2e71b",
+      "drawnFromKind": "cited"
+    },
+    {
       "id": "2.2",
       "title": "My Cue Voice topics your colors",
       "group": "My Cue Voice",
@@ -609,11 +624,14 @@
       "status": "current",
       "pageTitle": "Cue — My Cue Voice",
       "appFiles": [
-        "Cue Studio/Screens/Profile/Voice/MyCueVoicePage.swift"
+        "Cue Studio/Screens/Profile/Voice/MyCueVoicePage.swift",
+        "Cue Studio/Screens/Profile/Voice/VoiceFuelTank.swift",
+        "Cue Studio/Screens/Profile/Voice/VoiceFuelPainter.swift",
+        "Cue Studio/Screens/Profile/Voice/VoiceShipFlight.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code",
-      "drawnFrom": "622ce9617acb",
-      "drawnFromKind": "estimated"
+      "appFilesStatus": "confirmed",
+      "drawnFrom": "adfc77edc213",
+      "drawnFromKind": "cited"
     },
     {
       "id": "9.4",
