@@ -58,6 +58,28 @@ svg{display:block}
 .lit#invite::before{opacity:1;transform:none}
 #invite.folded{opacity:0;transform:scale(.96);min-height:0;height:0;margin-top:0;overflow:hidden}
 @media (prefers-reduced-motion:reduce){#rim{animation:none}.rise,#istar{transition:opacity .2s;filter:none;transform:none}}
+
+/* Scripts list (ScriptRow, GroupHeader, FilterFan) */
+.grp{margin-top:6px;transition:opacity .3s}.grp.gone{display:none}
+.gh{display:flex;justify-content:space-between;align-items:center;height:30px;padding:0 12px;font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:12px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase}
+.selbtn{color:var(--ink2);cursor:pointer}
+.card .row{position:relative;display:flex;align-items:center;gap:12px;min-height:58px;padding:6px 12px 6px 14px;cursor:pointer;transition:opacity .25s}
+.card .row+.row::before{content:"";position:absolute;left:29px;right:0;top:0;height:.5px;background:rgba(235,235,245,.14)}
+.row.gone{display:none}
+.rail{width:3px;height:30px;border-radius:2px;flex-shrink:0}
+.rt{flex:1;min-width:0}.rtitle{font-size:15.5px;font-weight:500;line-height:19px}
+.rl{margin-top:3px;display:flex;align-items:center;gap:6px;font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:10px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--ink2);white-space:nowrap}
+.pd{width:6px;height:6px;border-radius:3px;flex-shrink:0}
+.rec{height:26px;padding:0 9px;border-radius:13px;display:inline-flex;align-items:center;gap:5px;box-shadow:inset 0 0 0 1px rgba(225,228,245,.22);font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:10.5px;font-weight:800;letter-spacing:1px;cursor:pointer}
+.rec b{width:6px;height:6px;border-radius:3px;background:var(--record)}
+.chev{color:var(--ink2);width:24px;display:flex;justify-content:flex-end;cursor:pointer}
+.tk{font-size:13.5px;font-weight:600;color:var(--ink2);white-space:nowrap;cursor:pointer}
+#fan .fc{position:absolute;left:0;top:0;height:34px;padding:0 12px 0 10px;border-radius:17px;display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;background:var(--fill);white-space:nowrap;cursor:pointer;transition:transform .56s cubic-bezier(.34,1.35,.64,1),opacity .28s,background .25s,color .25s;will-change:transform}
+#fan .fc.all{padding:0 14px}
+#fan .fc .n{font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:11px;color:var(--inkHint)}
+#fan .fc.on{background:var(--chipOn);color:#000}#fan .fc.on .n{color:rgba(0,0,0,.62)}
+#fan .fc.hid{opacity:0;pointer-events:none}
+#fan .pk{position:absolute;top:13.5px;width:7px;height:7px;border-radius:4px;transition:transform .5s cubic-bezier(.34,1.35,.64,1),opacity .25s;pointer-events:none}
 </style></head><body>
 <div class="phone" id="ph">
 <div style="position:absolute;inset:0;background:radial-gradient(70% 30% at 20% 6%,rgba(157,140,255,.20),rgba(157,140,255,0) 70%),var(--bg)"></div>
@@ -66,39 +88,37 @@ svg{display:block}
 <div style="position:absolute;left:0;right:0;top:56px;padding:0 20px;display:flex;align-items:center;justify-content:space-between">
   <div style="font-size:40px;font-weight:700;letter-spacing:-.02em;line-height:44px">Scripts</div>
   <div class="glass" style="height:52px;padding:0 6px;border-radius:26px;display:flex;align-items:center;background:rgba(14,16,28,.8)">
-    <span class="circ" style="width:44px;height:44px;color:var(--acc)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4.3 10.5a6.2 6.2 0 1 0 12.4 0a6.2 6.2 0 1 0 -12.4 0z"/><path d="M15.2 15.2l4.6 4.6"/></svg></span>
-    <span class="circ" style="width:44px;height:44px;color:var(--aiStrong)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 18.5V4.5A1.5 1.5 0 0 1 6.5 3H19v15.5H6.5A1.5 1.5 0 0 0 5 20a1 1 0 0 0 1 1h13"/><path d="M12.50 6.20C12.79 8.61 13.69 9.51 16.10 9.80C13.69 10.09 12.79 10.99 12.50 13.40C12.21 10.99 11.31 10.09 8.90 9.80C11.31 9.51 12.21 8.61 12.50 6.20Z" fill="currentColor" stroke="none"/></svg></span>
-    <span class="circ" style="width:44px;height:44px;color:var(--acc)"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
+    <span class="circ" style="width:44px;height:44px;color:var(--aiStrong)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4.3 10.5a6.2 6.2 0 1 0 12.4 0a6.2 6.2 0 1 0 -12.4 0z"/><path d="M15.2 15.2l4.6 4.6"/></svg></span>
+    <span class="circ" style="width:44px;height:44px;color:var(--acc)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 18.5V4.5A1.5 1.5 0 0 1 6.5 3H19v15.5H6.5A1.5 1.5 0 0 0 5 20a1 1 0 0 0 1 1h13"/><path d="M12.50 6.20C12.79 8.61 13.69 9.51 16.10 9.80C13.69 10.09 12.79 10.99 12.50 13.40C12.21 10.99 11.31 10.09 8.90 9.80C11.31 9.51 12.21 8.61 12.50 6.20Z" fill="currentColor" stroke="none"/></svg></span>
+    <span class="circ" style="width:44px;height:44px;color:var(--aiStrong)"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
   </div>
 </div>
 
 <div id="list">
-<div class="hud" style="position:absolute;left:24px;top:150px;color:var(--acc)">1 scripts · 0 ready</div>
-
-<!-- PlatformFilterChips: horizontal, edge to edge, 34 pt chips, selected = white with black text -->
-<div style="position:absolute;left:0;right:0;top:186px;display:flex;gap:8px;padding:0 16px;overflow-x:auto;scrollbar-width:none">
-  <span class="chip" style="background:var(--chipOn);color:#000;font-weight:600">All <span class="mono" style="font-size:11px;color:rgba(0,0,0,.62)">1</span></span>
-  <span class="chip"><span class="dot" style="width:7px;height:7px;background:var(--info)"></span>TikTok <span class="mono" style="font-size:11px;color:var(--inkHint)">1</span></span>
-  <span class="chip"><span class="dot" style="background:#BF5AF2"></span>Reels <span class="mono" style="font-size:11px;color:var(--inkHint)">0</span></span>
-  <span class="chip"><span class="dot" style="background:#FF6B5A"></span>Shorts <span class="mono" style="font-size:11px;color:var(--inkHint)">0</span></span>
+<!-- PlatformFilterChips in a FilterFan (DESIGN_PROJECT §2): folded = the chosen chip + one 7 pt dot per hidden option; tap the chosen to open,
+     tap an option to choose and fold. Counts live in the chips only; nothing under the title. -->
+<div id="fanbox" style="position:absolute;left:0;right:0;top:124px;height:34px;overflow:hidden;z-index:6">
+  <div id="fan" style="position:relative;height:34px;margin:0 16px"></div>
 </div>
 
-<!-- groupHeader: "Drafts · 1 — In progress" (mono 10, tracking 1.2); Select on the right -->
-<div style="position:absolute;left:28px;right:28px;top:254px;display:flex;justify-content:space-between;align-items:center">
-  <span class="sec">Drafts · 1 — In progress</span>
-  <span class="sec">Select</span>
+<!-- The list: groups READY TO RECORD (green) · DRAFTS (violet) · RECORDED (ink2), mono 12 / 1.4, no numbers; SELECT closes the first -->
+<div id="scroll" style="position:absolute;left:0;right:0;top:172px;bottom:0;overflow-y:auto;scrollbar-width:none;padding:0 16px 340px">
+  <div class="grp" data-g="ready"><div class="gh"><span style="color:#34C759">Ready to record</span><span class="selbtn" role="button">Select</span></div>
+    <div class="card">
+      <div class="row" data-p="reels"><i class="rail" style="background:#8FB8FF"></i><div class="rt"><div class="rtitle">Unboxing the Lumen desk lamp</div><div class="rl"><b class="pd" style="background:#BF5AF2"></b>Reels</div></div><span class="rec" role="button" aria-label="Record"><b></b>REC</span></div>
+      <div class="row" data-p="linkedin"><i class="rail" style="background:#FFC46B"></i><div class="rt"><div class="rtitle">What 100 brand deals taught me</div><div class="rl"><b class="pd" style="background:#0A84FF"></b>LinkedIn</div></div><span class="rec" role="button" aria-label="Record"><b></b>REC</span></div>
+      <div class="row" data-p="tiktok"><i class="rail" style="background:#7EE0B8"></i><div class="rt"><div class="rtitle">3 morning habits that changed my life</div><div class="rl"><b class="pd" style="background:#64D2FF"></b>TikTok</div></div><span class="rec" role="button" aria-label="Record"><b></b>REC</span></div>
+    </div></div>
+  <div class="grp" data-g="drafts"><div class="gh"><span style="color:#C084FC">Drafts</span></div>
+    <div class="card">
+      <div class="row" data-p="shorts"><i class="rail" style="background:rgba(235,235,245,.3)"></i><div class="rt"><div class="rtitle">Cold showers: one month in</div><div class="rl"><b class="pd" style="background:#FF6B5A"></b>Shorts · 5h ago</div></div><span class="chev" role="button" aria-label="Continue ›"><svg width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 1.5L6.5 7l-5 5.5"/></svg></span></div>
+    </div></div>
+  <div class="grp" data-g="recorded"><div class="gh"><span style="color:var(--ink2)">Recorded</span></div>
+    <div class="card">
+      <div class="row" data-p="tiktok"><i class="rail" style="background:#FF9BD2"></i><div class="rt"><div class="rtitle">Oat &amp; Co. · sponsored read</div><div class="rl"><b class="pd" style="background:#64D2FF"></b>TikTok · 3 takes · Ready</div></div><span class="tk" role="button">×3 ›</span></div>
+      <div class="row" data-p="youtube"><i class="rail" style="background:#FFC46B"></i><div class="rt"><div class="rtitle">Weekly Q&amp;A · episode 12</div><div class="rl"><b class="pd" style="background:#FF9F0A"></b>YouTube · 1 take · Ready</div></div><span class="tk" role="button">×1 ›</span></div>
+    </div></div>
 </div>
-
-<!-- ScriptRow: ThemeRail 3×30 pt, title 15.5/600, mono line with PlatformDot, trailing "Continue ›" at a fixed width -->
-<div class="card" style="position:absolute;top:286px;left:16px;right:16px;height:72px;display:flex;align-items:center;gap:12px;padding:6px 12px 6px 14px">
-  <span style="width:3px;height:30px;border-radius:2px;background:var(--info);flex-shrink:0"></span>
-  <div style="flex:1;min-width:0">
-    <div style="font-size:15.5px;font-weight:600;line-height:19px">The Budget Mistake No One Notes</div>
-    <div class="hud" style="margin-top:4px;font-size:10px;letter-spacing:.06em;color:var(--inkHint);display:flex;align-items:center;gap:6px"><span class="dot" style="width:6px;height:6px;background:var(--info)"></span>TikTok · 1:06 · 6 cues</div>
-  </div>
-  <span style="width:84px;flex-shrink:0;text-align:right;font-size:13.5px;font-weight:600;color:var(--ink2);white-space:nowrap">Continue ›</span>
-</div>
-
 </div>
 
 <!-- ScriptsDock: row 1 Format · For TikTok · Voice (sparkAi, violet) · lightbulb (findInspiration); row 2 field, ↻, mic, yellow send -->
@@ -269,6 +289,58 @@ svg{display:block}
     else{look('apple',false);setTimeout(arrive,fresh&&!reduce?500:0);try{if(P)P.__cueInviteSeen=true}catch(e){}}
   }
   if(location.hash==='#ultra'){allowed=true;writer='ultra';inv.classList.add('folded');look('ultra',false);arrow(true,false)}
+})();
+</script>
+
+<script>
+/* FilterFan: the same numbers as the app (28 ms between chips, spring .56 s, up to 4 dots of 7 pt, 3 pt apart, 7 pt after the chosen chip). */
+(function(){
+  var fan=document.getElementById('fan'),fb=document.getElementById('fanbox');
+  var opts=[['all','All',6,null],['tiktok','TikTok',2,'#64D2FF'],['reels','Reels',1,'#BF5AF2'],['shorts','Shorts',1,'#FF6B5A'],['youtube','YouTube',1,'#FF9F0A'],['linkedin','LinkedIn',1,'#0A84FF']];
+  var sel=0,open=false,chips=[],dots=[],w=[],natX=[];
+  opts.forEach(function(o,i){
+    var c=document.createElement('span');c.className='fc'+(i==0?' all':'');c.setAttribute('role','button');c.setAttribute('aria-label',o[1]+' '+o[2]);
+    if(o[3]){var d=document.createElement('b');d.style.cssText='width:7px;height:7px;border-radius:4px;background:'+o[3];c.appendChild(d)}
+    c.appendChild(document.createTextNode(o[1]));var n=document.createElement('span');n.className='n';n.textContent=o[2];c.appendChild(n);
+    c.onclick=function(e){e.stopPropagation();tap(i)};fan.appendChild(c);chips.push(c);
+    var k=document.createElement('i');k.className='pk';k.style.background=o[3]||'#fff';fan.appendChild(k);dots.push(k);
+  });
+  function measure(){var x=0;opts.forEach(function(o,i){w[i]=chips[i].offsetWidth;natX[i]=x;x+=w[i]+8});return x-8}
+  function layout(){
+    var total=measure();
+    if(open){
+      fan.style.width=total+'px';fb.style.overflowX='auto';fb.style.scrollbarWidth='none';
+      var dist=function(i){return Math.abs(i-sel)};
+      chips.forEach(function(c,i){c.classList.remove('hid');c.classList.toggle('on',i==sel);c.style.transitionDelay=(dist(i)*28)+'ms';c.style.transform='translateX('+natX[i]+'px)'});
+      dots.forEach(function(k){k.style.opacity=0;k.style.transitionDelay='0ms'});
+    }else{
+      fan.style.width='';fb.scrollLeft=0;fb.style.overflowX='hidden';
+      var far=Math.max(sel,opts.length-1-sel);
+      chips.forEach(function(c,i){c.classList.toggle('on',i==sel);var d=dist2(i);c.style.transitionDelay=((far-d)*28)+'ms';
+        if(i==sel){c.classList.remove('hid');c.style.transform='translateX(0)'}
+        else{c.classList.add('hid');c.style.transform='translateX(0) scale(.6)'}});
+      var hidden=[];opts.forEach(function(o,i){if(i!=sel)hidden.push(i)});
+      dots.forEach(function(k,i){var j=hidden.indexOf(i);
+        if(j<0||j>3){k.style.opacity=0;k.style.transform='translateX(0)';return}
+        k.style.transitionDelay=(120+j*30)+'ms';k.style.opacity=1;k.style.transform='translateX('+(w[sel]+7+j*10)+'px)'});
+    }
+  }
+  function dist2(i){return Math.abs(i-sel)}
+  function filter(){
+    var p=opts[sel][0];
+    document.querySelectorAll('.card .row').forEach(function(r){r.classList.toggle('gone',p!='all'&&r.dataset.p!=p)});
+    document.querySelectorAll('.selbtn').forEach(function(x){x.remove()});
+    var firstGrp=null;document.querySelectorAll('.grp').forEach(function(g){var any=g.querySelector('.row:not(.gone)');g.classList.toggle('gone',!any);if(any&&!firstGrp)firstGrp=g});
+    if(firstGrp){var sb=document.createElement('span');sb.className='selbtn';sb.setAttribute('role','button');sb.textContent='Select';firstGrp.querySelector('.gh').appendChild(sb)}
+  }
+  function tap(i){
+    if(!open){if(i==sel){open=true;layout()}return}
+    if(i!=sel){sel=i;filter();document.getElementById('scroll').scrollTop=0}
+    open=false;layout();
+  }
+  document.addEventListener('click',function(e){if(open&&!fan.contains(e.target)){open=false;layout()}});
+  document.getElementById('scroll').addEventListener('scroll',function(){if(open){open=false;layout()}});
+  layout();
 })();
 </script>
 </body></html>
