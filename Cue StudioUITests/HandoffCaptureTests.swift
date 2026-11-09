@@ -440,9 +440,10 @@ final class HandoffCaptureTests: XCTestCase {
         left.cueTabBar.buttons["Takes"].tap()
         let card = left.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'takes.video.' AND label CONTAINS 'First star'")).firstMatch
         XCTAssertTrue(card.exists(within: 10))
-        try shot(left, "6.2_first-star-grid", wait: 2)
-        left.segmentedControls["takes.layout"].buttons["List"].tap()
+        // The list is the layout a new library opens in; the grid puts the pill over the poster.
         try shot(left, "6.2_first-star-list", wait: 2)
+        left.buttons["Grid"].firstMatch.tap()
+        try shot(left, "6.2_first-star-grid", wait: 2)
     }
 
     func test8_2_SendOffFrames() throws {

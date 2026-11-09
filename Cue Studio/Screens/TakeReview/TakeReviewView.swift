@@ -590,7 +590,6 @@ struct TakeReviewView: View {
         case .sentOff(let video, let networks):
             SendOffView(
                 video: video, networks: networks, snapshot: sentOffSnapshot(), moment: sendOff,
-                iconInUse: sendOff.icon.map { $0 == appIcon.current } ?? false,
                 iconAvailable: sendOff.icon.map { !$0.needsPro || store.tier.isPro } ?? true,
                 onShareAgain: { endSendOff(then: .shareAgain(video)) },
                 // The same ending as Done: the milestone it told counts as told, and the gate knows a celebration played.

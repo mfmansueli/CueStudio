@@ -17,8 +17,6 @@ struct SendOffView: View {
     let snapshot: UniverseSnapshot
     /// The first star and the milestone icon this post tells (`FirstCelebration`).
     var moment = SendOffMoment()
-    /// The milestone's icon is the one on the Home Screen now.
-    var iconInUse = false
     /// The milestone's icon can be used (Aurora, or Pro).
     var iconAvailable = true
     let onShareAgain: () -> Void
@@ -30,9 +28,13 @@ struct SendOffView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.sendOffFrozenAt) private var frozenAt
     @Environment(\.scenePhase) private var scenePhase
+    /// Read here, inside the cover: "Use it" turns into "In use" as the icon changes, with the send-off on screen.
+    @Environment(AppIconService.self) private var appIcon: AppIconService?
     @State private var start = Date.now
     /// The send-off has played: anything still moving is ambient, at 30 fps.
     @State private var isSettled = false
+    /// The milestone's icon row is up (after the last landing; at once under Reduce Motion).
+    @State private var showsIconRow = false
 
     private var counts: [Platform: Int] {
         Dictionary(uniqueKeysWithValues: Platform.allCases.map { ($0, snapshot.count(for: $0)) })
@@ -51,6 +53,11 @@ struct SendOffView: View {
                     .frame(width: proxy.size.width, height: proxy.size.height)
                     .onChange(of: time >= SendOffScript.end(networks: networks.count)) { _, settled in isSettled = settled }
             }
+            // Over the scene, outside its clock: the row animates on its own instead of being redrawn every frame.
+            iconRow
+                .frame(width: SendOffLayout.board.width, height: SendOffLayout.board.height, alignment: .topLeading)
+                .scaleEffect(fit)
+                .frame(width: proxy.size.width, height: proxy.size.height)
         }
         .ignoresSafeArea()
         .skyBackground(wash: BgWash.sendOff)
@@ -66,7 +73,6 @@ struct SendOffView: View {
         ZStack(alignment: .topLeading) {
             SendOffMap(networks: networks, counts: counts, time: time)
             card(time: time)
-            iconRow(time: time)
             texts.offset(y: SendOffLayout.textsTop)
             VStack(spacing: 0) {
                 Spacer()
@@ -97,27 +103,18 @@ struct SendOffView: View {
 
     // MARK: - The milestone's icon
 
-    /// In the card's place, under the map, once the stars have landed: it rises 10 pt and fades in. Its bottom stays above the words, and a
-    /// bigger text grows it upwards into the empty space the card left.
+    /// In the card's place, under the map, once the stars have landed: it rises 10 pt and fades in (0.45 s). Its bottom stays above the
+    /// words, and a bigger text grows it upwards into the empty space the card left.
     @ViewBuilder
-    private func iconRow(time: Double) -> some View {
-        if let icon = moment.icon, let milestone = moment.milestone {
-            let reveal = Self.iconReveal(at: time, networks: networks.count)
-            SendOffIconRow(icon: icon, milestone: milestone, isInUse: iconInUse, isAvailable: iconAvailable, onUse: onUseIcon)
-                .opacity(reveal)
-                .offset(y: (1 - reveal) * 10)
-                .allowsHitTesting(reveal >= 1)
-                .accessibilityHidden(reveal == 0)
+    private var iconRow: some View {
+        // Inserted with a transition, never kept under an opacity: there, "Use it"'s interactive glass took no touch (measured, 09/11/2026).
+        if let icon = moment.icon, let milestone = moment.milestone, showsIconRow {
+            SendOffIconRow(icon: icon, milestone: milestone, isInUse: appIcon?.current == icon, isAvailable: iconAvailable, onUse: onUseIcon)
                 .padding(.horizontal, 16)
                 .frame(width: SendOffLayout.board.width, height: SendOffLayout.iconRowBottom - SendOffLayout.iconRowTop, alignment: .bottom)
                 .offset(y: SendOffLayout.iconRowTop)
+                .transition(.opacity.combined(with: .offset(y: 10)))
         }
-    }
-
-    /// 0 until the last star has landed, then up to 1 in 0.45 s (eased out).
-    static func iconReveal(at time: Double, networks: Int) -> Double {
-        let progress = min(1, max(0, (time - SendOffScript.end(networks: networks)) / 0.45))
-        return 1 - pow(1 - progress, 3)
     }
 
     // MARK: - Words
@@ -192,7 +189,11 @@ struct SendOffView: View {
     /// A `.light` tap on each arrival (the first one only when three or more land within 0.7 s), the story's one `.success` on the last
     /// landing, and a `.soft` one as the milestone's icon rises.
     private func play() async {
-        guard !reduceMotion, frozenAt == nil else { return }
+        let end = SendOffScript.end(networks: networks.count)
+        guard !reduceMotion, frozenAt == nil else {
+            showsIconRow = (frozenAt ?? end) >= end
+            return
+        }
         start = .now
         let arrivals = SendOffScript.hapticArrivals(networks: networks.count)
         for (index, moment) in arrivals.enumerated() {
@@ -202,8 +203,10 @@ struct SendOffView: View {
             if index == arrivals.count - 1 { Haptics.success() } else { Haptics.light() }
         }
         guard self.moment.icon != nil else { return }
-        let wait = SendOffScript.end(networks: networks.count) - Date.now.timeIntervalSince(start)
+        let wait = end - Date.now.timeIntervalSince(start)
         if wait > 0 { try? await Task.sleep(for: .seconds(wait)) }
-        if !Task.isCancelled { Haptics.soft() }
+        if Task.isCancelled { return }
+        withAnimation(.easeOut(duration: 0.45)) { showsIconRow = true }
+        Haptics.soft()
     }
 }
