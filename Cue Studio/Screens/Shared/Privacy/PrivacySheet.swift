@@ -5,8 +5,9 @@
 
 import SwiftUI
 
-/// What Cue does with the creator's data: it stays on the device, and the AI is Apple Intelligence (and, where it is offered, AI Scripts Ultra
-/// with Google's Gemini, only when the creator allowed it and picked it). Opened from Settings and from the paywall's footer.
+/// What Cue does with the creator's data: what they make stays on the device, Cue's server keeps only counts under a random id, usage data and
+/// crash reports go to Google only with "Help improve Cue" on, and the AI is Apple Intelligence (and, where it is offered, Ultra AI with
+/// Anthropic, only when the creator allowed it and picked it). Opened from Settings and from the paywall's footer.
 struct PrivacySheet: View {
     /// Private Cloud Compute is named only when the app can use it.
     var usesPrivateCloudCompute = ScriptAIService.hasPrivateCloudComputeEntitlement
@@ -22,7 +23,7 @@ struct PrivacySheet: View {
             List {
                 item(
                     title: "Scripts and takes stay on this iPhone",
-                    detail: String(localized: "Cue has no server. Your scripts, takes and My Cue Voice are stored on this device and in your device backups. Sign in with Apple is optional and only keeps your Apple ID on this iPhone."),
+                    detail: String(localized: "Your scripts, takes and My Cue Voice are kept on this iPhone and in its backups. Cue’s server keeps only counts, under a random ID. Usage data and crash reports go to Google only with Help improve Cue on."),
                     systemImage: "iphone"
                 )
                 if ultra.isAvailable {
@@ -59,6 +60,7 @@ struct PrivacySheet: View {
             .cueActionSheet(
                 isPresented: $confirmsErase,
                 message: "Deletes your scripts, takes, edits and My Cue Voice from this iPhone. This can't be undone.",
+                note: ultra.isAvailable ? "Already sent can’t be called back: Anthropic keeps Ultra AI requests up to 30 days to detect abuse, never for training. Cue’s server keeps only counts, under a random ID." : nil,
                 actionTitle: "Delete my Cue data", actionIdentifier: "privacy.confirmDelete"
             ) {
                 eraser.eraseEverything()

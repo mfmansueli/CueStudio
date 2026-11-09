@@ -17155,6 +17155,125 @@
         }
       }
     },
+    "Already sent can’t be called back: Anthropic keeps Ultra AI requests up to 30 days to detect abuse, never for training. Cue’s server keeps only counts, under a random ID." : {
+      "comment" : "Delete my Cue data confirmation, the small line under the question: what deleting can't reach (Ultra AI requests already sent, the counts on Cue's server)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ما أُرسل لا يمكن استرجاعه: تحتفظ Anthropic بطلبات Ultra AI لمدة تصل إلى 30 يومًا لاكتشاف إساءة الاستخدام، ولا تستخدمها للتدريب أبدًا. لا يحتفظ خادم Cue إلا بأعداد، تحت معرّف عشوائي."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Det, der allerede er sendt, kan ikke kaldes tilbage: Anthropic gemmer Ultra AI-forespørgsler i op til 30 dage for at opdage misbrug, aldrig til træning. Cues server gemmer kun antal under et tilfældigt id."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bereits Gesendetes lässt sich nicht zurückholen: Anthropic bewahrt Anfragen an Ultra AI bis zu 30 Tage auf, um Missbrauch zu erkennen, nie zum Training. Der Server von Cue speichert nur Zählungen unter einer zufälligen ID."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lo ya enviado no se puede recuperar: Anthropic guarda las solicitudes de Ultra AI hasta 30 días para detectar abusos, nunca para entrenar. El servidor de Cue solo guarda recuentos, con un ID aleatorio."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce qui est déjà envoyé ne peut pas être rappelé : Anthropic garde les requêtes Ultra AI jusqu’à 30 jours pour détecter les abus, jamais pour l’entraînement. Le serveur de Cue ne garde que des comptages, sous un identifiant aléatoire."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "जो भेजा जा चुका है, वह वापस नहीं लिया जा सकता: Anthropic दुरुपयोग पकड़ने के लिए Ultra AI के अनुरोध 30 दिनों तक रखता है, प्रशिक्षण के लिए कभी नहीं। Cue का सर्वर एक रैंडम ID के तहत सिर्फ़ गिनती रखता है।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yang sudah terkirim tidak bisa ditarik kembali: Anthropic menyimpan permintaan Ultra AI hingga 30 hari untuk mendeteksi penyalahgunaan, tidak pernah untuk pelatihan. Server Cue hanya menyimpan hitungan, dengan ID acak."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ciò che è già stato inviato non si può richiamare: Anthropic conserva le richieste a Ultra AI fino a 30 giorni per rilevare abusi, mai per l’addestramento. Il server di Cue conserva solo dei conteggi, con un ID casuale."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "送信済みのものは取り消せません。AnthropicはUltra AIへのリクエストを不正利用の検出のため最大30日間保管し、トレーニングには使いません。CueのサーバーはランダムなIDで回数だけを記録します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이미 보낸 것은 되돌릴 수 없어요. Anthropic은 악용을 감지하기 위해 Ultra AI 요청을 최대 30일 동안 보관하며 학습에는 절대 사용하지 않아요. Cue 서버는 무작위 ID로 횟수만 보관해요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Det som alt er sendt, kan ikke hentes tilbake: Anthropic lagrer Ultra AI-forespørsler i opptil 30 dager for å oppdage misbruk, aldri til trening. Cues server lagrer bare antall, under en tilfeldig ID."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wat al verstuurd is, kan niet worden teruggehaald: Anthropic bewaart verzoeken aan Ultra AI tot 30 dagen om misbruik op te sporen, nooit voor training. De server van Cue bewaart alleen tellingen, onder een willekeurige ID."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O que já foi enviado não volta: a Anthropic guarda os pedidos do Ultra AI por até 30 dias para detectar abusos, nunca para treinar. O servidor do Cue guarda só contagens, sob um ID aleatório."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Det som redan har skickats går inte att ta tillbaka: Anthropic sparar förfrågningar till Ultra AI i upp till 30 dagar för att upptäcka missbruk, aldrig för träning. Cues server sparar bara antal, under ett slumpmässigt ID."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "สิ่งที่ส่งไปแล้วเรียกคืนไม่ได้: Anthropic เก็บคำขอของ Ultra AI ไว้ไม่เกิน 30 วันเพื่อตรวจหาการใช้งานในทางที่ผิด และไม่นำไปใช้ฝึกโมเดล เซิร์ฟเวอร์ของ Cue เก็บแค่จำนวนครั้งภายใต้ ID แบบสุ่ม"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gönderilmiş olan geri alınamaz: Anthropic, Ultra AI isteklerini kötüye kullanımı tespit etmek için en fazla 30 gün saklar, asla eğitim için kullanmaz. Cue’nun sunucusu rastgele bir kimlikle yalnızca sayıları tutar."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Những gì đã gửi không thể lấy lại: Anthropic giữ yêu cầu Ultra AI tối đa 30 ngày để phát hiện lạm dụng, không bao giờ dùng để huấn luyện. Máy chủ của Cue chỉ lưu số đếm, dưới một ID ngẫu nhiên."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已发送的内容无法撤回：Anthropic 为检测滥用最多保留 Ultra AI 请求 30 天，绝不用于训练。Cue 的服务器只以随机 ID 保留计数。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已傳送的內容無法撤回：Anthropic 為偵測濫用最多保留 Ultra AI 請求 30 天，絕不用於訓練。Cue 的伺服器只以隨機 ID 保留計數。"
+          }
+        }
+      }
+    },
     "Already within the target length · %@" : {
       "comment" : "Toast when a length tool finds the script already inside the platform's recommended length; the range, e.g. 1:00 to 1:30.",
       "localizations" : {
@@ -141435,6 +141554,125 @@
         }
       }
     },
+    "Usage data and crash reports, never videos or scripts" : {
+      "comment" : "Settings › Privacy & AI data: the line under the Help improve Cue switch, what it sends",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بيانات الاستخدام وتقارير الأعطال، ولا فيديوهات ولا نصوص أبدًا"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brugsdata og nedbrudsrapporter, aldrig videoer eller manuskripter"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nutzungsdaten und Absturzberichte, nie Videos oder Skripte"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datos de uso e informes de fallos, nunca videos ni guiones"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Données d’utilisation et rapports de plantage, jamais de vidéos ni de scripts"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "इस्तेमाल का डेटा और क्रैश रिपोर्ट, वीडियो या स्क्रिप्ट कभी नहीं"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data penggunaan dan laporan crash, tidak pernah video atau naskah"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dati di utilizzo e report sugli arresti anomali, mai video o copioni"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "利用状況データとクラッシュレポートのみ。動画や台本は送りません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사용 데이터와 충돌 보고서만, 영상과 대본은 절대 보내지 않아요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bruksdata og krasjrapporter, aldri videoer eller manus"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gebruiksgegevens en crashrapporten, nooit video’s of scripts"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dados de uso e relatórios de falhas, nunca vídeos nem roteiros"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Användningsdata och kraschrapporter, aldrig videor eller manus"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ข้อมูลการใช้งานและรายงานข้อขัดข้อง ไม่รวมวิดีโอหรือสคริปต์"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kullanım verileri ve çökme raporları, asla video ya da senaryo değil"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dữ liệu sử dụng và báo cáo sự cố, không bao giờ gồm video hay kịch bản"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用数据和崩溃报告，绝不包含视频或脚本"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用資料與當機報告，絕不包含影片或腳本"
+          }
+        }
+      }
+    },
     "Use “%@” from your iPhone" : {
       "comment" : "My Cue Voice › I am: button offering the gender iOS knows (Settings › Term of Address); %@ is Feminine, Masculine or No gender",
       "localizations" : {
@@ -153636,6 +153874,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "你的偏好：你聊什麼，以及腳本如何稱呼你"
+          }
+        }
+      }
+    },
+    "Your scripts, takes and My Cue Voice are kept on this iPhone and in its backups. Cue’s server keeps only counts, under a random ID. Usage data and crash reports go to Google only with Help improve Cue on." : {
+      "comment" : "Privacy sheet: where the creator's data is. Help improve Cue is the name of the switch in Settings › Privacy & AI data (keep it as translated there)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تُحفظ نصوصك ولقطاتك وMy Cue Voice على هذا الـ iPhone وفي نسخه الاحتياطية. لا يحتفظ خادم Cue إلا بأعداد، تحت معرّف عشوائي. لا تُرسَل بيانات الاستخدام وتقارير الأعطال إلى Google إلا عند تشغيل «ساعد في تحسين Cue»."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dine manuskripter, optagelser og My Cue Voice gemmes på denne iPhone og i dens sikkerhedskopier. Cues server gemmer kun antal under et tilfældigt id. Brugsdata og nedbrudsrapporter sendes kun til Google, når Hjælp med at forbedre Cue er slået til."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Skripte, Takes und My Cue Voice liegen auf diesem iPhone und in seinen Backups. Der Server von Cue speichert nur Zählungen unter einer zufälligen ID. Nutzungsdaten und Absturzberichte gehen nur an Google, wenn „Hilf mit, Cue zu verbessern“ an ist."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus guiones, tomas y My Cue Voice se guardan en este iPhone y en sus copias de seguridad. El servidor de Cue solo guarda recuentos, con un ID aleatorio. Los datos de uso y los informes de fallos solo van a Google con Ayuda a mejorar Cue activado."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vos scripts, prises et My Cue Voice sont stockés sur cet iPhone et dans ses sauvegardes. Le serveur de Cue ne garde que des comptages, sous un identifiant aléatoire. Les données d’utilisation et les rapports de plantage ne vont à Google qu’avec Aider à améliorer Cue activé."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपकी स्क्रिप्ट, टेक और My Cue Voice इसी iPhone और उसके बैकअप में रहते हैं। Cue का सर्वर एक रैंडम ID के तहत सिर्फ़ गिनती रखता है। इस्तेमाल का डेटा और क्रैश रिपोर्ट Google को तभी जाती हैं जब “Cue को बेहतर बनाने में मदद करें” चालू हो।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naskah, take, dan My Cue Voice-mu disimpan di iPhone ini dan cadangannya. Server Cue hanya menyimpan hitungan, dengan ID acak. Data penggunaan dan laporan crash hanya dikirim ke Google jika Bantu tingkatkan Cue aktif."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copioni, riprese e My Cue Voice restano su questo iPhone e nei suoi backup. Il server di Cue conserva solo dei conteggi, con un ID casuale. Dati di utilizzo e report sugli arresti anomali vanno a Google solo con Aiuta a migliorare Cue attivo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "台本、テイク、My Cue VoiceはこのiPhoneとそのバックアップに保存されます。CueのサーバーはランダムなIDで回数だけを記録します。利用状況データとクラッシュレポートは「Cueの改善に協力」がオンのときだけGoogleに送られます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "대본, 테이크, My Cue Voice는 이 iPhone과 백업에 저장돼요. Cue 서버는 무작위 ID로 횟수만 보관해요. 사용 데이터와 충돌 보고서는 ‘Cue 개선에 참여’를 켰을 때만 Google로 보내져요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manusene, opptakene og My Cue Voice lagres på denne iPhonen og i sikkerhetskopiene av den. Cues server lagrer bare antall, under en tilfeldig ID. Bruksdata og krasjrapporter går bare til Google når Hjelp til å forbedre Cue er på."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je scripts, opnames en My Cue Voice staan op deze iPhone en in de back-ups ervan. De server van Cue bewaart alleen tellingen, onder een willekeurige ID. Gebruiksgegevens en crashrapporten gaan alleen naar Google als Help Cue te verbeteren aan staat."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seus roteiros, takes e My Cue Voice ficam neste iPhone e nos backups dele. O servidor do Cue guarda só contagens, sob um ID aleatório. Dados de uso e relatórios de falhas só vão ao Google com Ajude a melhorar o Cue ligado."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dina manus, tagningar och My Cue Voice sparas på den här iPhonen och i dess säkerhetskopior. Cues server sparar bara antal, under ett slumpmässigt ID. Användningsdata och kraschrapporter går till Google bara när Hjälp till att förbättra Cue är på."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "สคริปต์ เทค และ My Cue Voice ของคุณเก็บไว้ใน iPhone เครื่องนี้และในข้อมูลสำรอง เซิร์ฟเวอร์ของ Cue เก็บแค่จำนวนครั้งภายใต้ ID แบบสุ่ม ข้อมูลการใช้งานและรายงานข้อขัดข้องจะส่งไปยัง Google เฉพาะเมื่อเปิด “ช่วยพัฒนา Cue”"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Senaryoların, çekimlerin ve My Cue Voice bu iPhone’da ve yedeklerinde saklanır. Cue’nun sunucusu rastgele bir kimlikle yalnızca sayıları tutar. Kullanım verileri ve çökme raporları yalnızca Cue’yu geliştirmeye yardım et açıkken Google’a gider."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kịch bản, cảnh quay và My Cue Voice được lưu trên iPhone này và trong bản sao lưu. Máy chủ của Cue chỉ lưu số đếm, dưới một ID ngẫu nhiên. Dữ liệu sử dụng và báo cáo sự cố chỉ gửi đến Google khi bật Giúp cải thiện Cue."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的脚本、镜头和 My Cue Voice 存储在这台 iPhone 及其备份中。Cue 的服务器只以随机 ID 保留计数。只有打开“帮助改进 Cue”时，使用数据和崩溃报告才会发送给 Google。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的腳本、鏡頭與 My Cue Voice 儲存在這部 iPhone 與其備份中。Cue 的伺服器只以隨機 ID 保留計數。只有開啟「協助改進 Cue」時，使用資料與當機報告才會傳送給 Google。"
           }
         }
       }
@@ -197168,125 +197525,6 @@
         }
       }
     },
-    "Account" : {
-      "comment" : "My Cue Voice (Apple Intelligence plan)",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "الحساب"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Konto"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Konto"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cuenta"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Compte"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "खाता"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Akun"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Account"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "アカウント"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "계정"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Konto"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Account"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Conta"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Konto"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "บัญชี"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hesap"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tài khoản"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "账户"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "帳號"
-          }
-        }
-      }
-    },
     "Acknowledge" : {
       "localizations" : {
         "ar" : {
@@ -210469,124 +210707,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "年繳"
-          }
-        }
-      }
-    },
-    "Anonymous usage, never videos or scripts" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "استخدام مجهول الهوية، ولا فيديوهات ولا نصوص أبدًا"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Anonym brug, aldrig videoer eller manuskripter"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Anonyme Nutzung, nie Videos oder Skripte"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Uso anónimo, nunca videos ni guiones"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Usage anonyme, jamais de vidéos ni de scripts"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "अनाम इस्तेमाल का डेटा, वीडियो या स्क्रिप्ट कभी नहीं"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Penggunaan anonim, tidak pernah video atau naskah"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Utilizzo anonimo, mai video o copioni"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "匿名の利用状況のみ。動画や台本は送りません"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "익명 사용 정보만, 영상과 대본은 절대 보내지 않아요"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Anonym bruk, aldri videoer eller manus"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Anoniem gebruik, nooit video’s of scripts"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Uso anônimo, nunca vídeos nem roteiros"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Anonym användning, aldrig videor eller manus"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "การใช้งานแบบไม่ระบุตัวตน ไม่รวมวิดีโอหรือสคริปต์"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Anonim kullanım, asla video ya da senaryo değil"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dữ liệu dùng ẩn danh, không bao giờ gồm video hay kịch bản"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "匿名使用数据，绝不包含视频或脚本"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "匿名使用資料，絕不包含影片或腳本"
           }
         }
       }
@@ -265210,124 +265330,6 @@
         }
       }
     },
-    "Couldn't sign in · Try again" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تعذّر تسجيل الدخول · حاول مرة أخرى"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kunne ikke logge ind · Prøv igen"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Anmeldung fehlgeschlagen · Noch mal versuchen"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No se pudo iniciar sesión · Inténtalo de nuevo"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Connexion impossible · Réessayez"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "साइन इन नहीं हो सका · फिर कोशिश करें"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gagal masuk · Coba lagi"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Accesso non riuscito · Riprova"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "サインインできませんでした · もう一度お試しください"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "로그인하지 못했어요 · 다시 시도"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kunne ikke logge inn · Prøv igjen"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Inloggen mislukt · Probeer opnieuw"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Não deu para iniciar sessão · Tente de novo"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kunde inte logga in · Försök igen"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "เข้าสู่ระบบไม่ได้ · ลองอีกครั้ง"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Giriş yapılamadı · Yeniden dene"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Không đăng nhập được · Thử lại"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "无法登录 · 请重试"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "無法登入 · 請再試一次"
-          }
-        }
-      }
-    },
     "Couldn't speak this text with this voice · Try another voice" : {
       "comment" : "Text to speech sheet error: the picked system voice could not read this text (the preview or the voice-over failed)",
       "localizations" : {
@@ -270188,124 +270190,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cue 會在這部 iPhone 上逐格找到你，並更換你周圍的一切。"
-          }
-        }
-      }
-    },
-    "Cue has no server. Your scripts, takes and My Cue Voice are stored on this device and in your device backups. Sign in with Apple is optional and only keeps your Apple ID on this iPhone." : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ليس لدى Cue خادم. تُحفظ نصوصك ولقطاتك وMy Cue Voice على هذا الجهاز وفي نسخه الاحتياطية. تسجيل الدخول باستخدام Apple اختياري ويحتفظ فقط بحساب Apple الخاص بك على هذا الـ iPhone."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue har ingen server. Dine manuskripter, optagelser og My Cue Voice gemmes på denne enhed og i dine enhedssikkerhedskopier. Log ind med Apple er valgfrit og gemmer kun dit Apple-ID på denne iPhone."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue hat keinen Server. Deine Skripte, Takes und My Cue Voice liegen auf diesem Gerät und in seinen Backups. Mit Apple anmelden ist optional und speichert nur deinen Apple Account auf diesem iPhone."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue no tiene servidor. Tus guiones, tomas y My Cue Voice se guardan en este dispositivo y en sus copias de seguridad. Iniciar sesión con Apple es opcional y solo guarda tu Apple ID en este iPhone."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue n’a pas de serveur. Vos scripts, prises et My Cue Voice sont stockés sur cet appareil et dans ses sauvegardes. La connexion avec Apple est facultative et ne garde que votre identifiant Apple sur cet iPhone."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue का कोई सर्वर नहीं है। आपकी स्क्रिप्ट, टेक और My Cue Voice इसी डिवाइस और उसके बैकअप में रहते हैं। Apple से साइन इन करना वैकल्पिक है और यह इस iPhone पर सिर्फ़ आपका Apple अकाउंट रखता है।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue tidak punya server. Naskah, take, dan My Cue Voice disimpan di perangkat ini dan cadangannya. Masuk dengan Apple bersifat opsional dan hanya menyimpan Akun Apple-mu di iPhone ini."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue non ha server. Copioni, riprese e My Cue Voice restano su questo dispositivo e nei suoi backup. L’accesso con Apple è facoltativo e conserva solo il tuo Apple ID su questo iPhone."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cueにはサーバーがありません。台本、テイク、My Cue Voiceはこのデバイスとそのバックアップに保存されます。Appleでサインインは任意で、このiPhoneにApple Accountだけを保存します。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue에는 서버가 없어요. 대본, 테이크, My Cue Voice는 이 기기와 기기 백업에 저장돼요. Apple로 로그인은 선택 사항이고 이 iPhone에 Apple 계정만 저장해요."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue har ingen server. Manusene dine, opptakene dine og My Cue Voice lagres på denne enheten og i sikkerhetskopiene av den. Logg på med Apple er valgfritt og lagrer bare Apple-kontoen din på denne iPhonen."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue heeft geen server. Je scripts, opnames en My Cue Voice staan op dit apparaat en in de back-ups van je apparaat. Inloggen met Apple is optioneel en bewaart je Apple ID alleen op deze iPhone."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O Cue não tem servidor. Seus roteiros, takes e My Cue Voice ficam neste aparelho e nos backups dele. Iniciar sessão com a Apple é opcional e só guarda seu ID Apple neste iPhone."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue har ingen server. Dina manus, tagningar och My Cue Voice lagras på den här enheten och i enhetens säkerhetskopior. Logga in med Apple är valfritt och sparar bara ditt Apple-ID på den här iPhonen."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue ไม่มีเซิร์ฟเวอร์ สคริปต์ เทค และ My Cue Voice ของคุณเก็บไว้ในอุปกรณ์นี้และในข้อมูลสำรองของอุปกรณ์ การลงชื่อเข้าด้วย Apple เป็นตัวเลือก และเก็บแค่บัญชี Apple ของคุณไว้ใน iPhone เครื่องนี้"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue’nun sunucusu yok. Senaryoların, çekimlerin ve My Cue Voice bu aygıtta ve yedeklerinde saklanır. Apple ile giriş isteğe bağlıdır ve yalnızca Apple Hesabı’nı bu iPhone’da tutar."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue không có máy chủ. Kịch bản, cảnh quay và My Cue Voice được lưu trên thiết bị này và trong bản sao lưu của thiết bị. Đăng nhập bằng Apple là tùy chọn và chỉ lưu Tài khoản Apple của bạn trên iPhone này."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue 没有服务器。你的脚本、镜头和 My Cue Voice 都存储在这台设备及其备份中。通过 Apple 登录是可选的，只会在这台 iPhone 上保留你的 Apple 账户。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue 沒有伺服器。你的腳本、鏡頭與 My Cue Voice 都儲存在這部裝置與裝置備份中。使用 Apple 登入為選用功能，只會把你的 Apple ID 保存在這部 iPhone 上。"
           }
         }
       }
@@ -425595,125 +425479,6 @@
         }
       }
     },
-    "Optional. Nothing in Cue needs an account; signing in only fills your name." : {
-      "comment" : "Edit Profile: text above the Sign in with Apple button",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "اختياري. لا شيء في Cue يحتاج إلى حساب؛ تسجيل الدخول يملأ اسمك فقط."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Valgfrit. Intet i Cue kræver en konto; at logge ind udfylder kun dit navn."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Optional. Nichts in Cue braucht ein Konto; die Anmeldung trägt nur deinen Namen ein."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Opcional. Nada en Cue necesita una cuenta; iniciar sesión solo completa tu nombre."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Facultatif. Rien dans Cue ne nécessite de compte ; la connexion remplit seulement votre nom."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "वैकल्पिक। Cue में किसी चीज़ के लिए खाते की ज़रूरत नहीं; साइन इन करने से सिर्फ़ आपका नाम भर जाता है।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Opsional. Tidak ada fitur Cue yang butuh akun; masuk hanya mengisi namamu."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Facoltativo. In Cue nulla richiede un account; l’accesso compila solo il tuo nome."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "任意です。Cueではアカウントは不要で、サインインしても名前が入力されるだけです。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "선택 사항이에요. Cue는 계정 없이 모두 쓸 수 있고, 로그인하면 이름만 채워져요."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Valgfritt. Ingenting i Cue krever en konto. Pålogging fyller bare inn navnet ditt."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Optioneel. Niets in Cue vraagt om een account; inloggen vult alleen je naam in."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Opcional. Nada no Cue precisa de conta; iniciar sessão só preenche seu nome."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Valfritt. Inget i Cue kräver ett konto; att logga in fyller bara i ditt namn."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ไม่บังคับ ไม่มีอะไรใน Cue ที่ต้องใช้บัญชี การเข้าสู่ระบบแค่กรอกชื่อของคุณให้"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "İsteğe bağlı. Cue’da hiçbir şey hesap gerektirmez; giriş yapmak yalnızca adını doldurur."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Không bắt buộc. Không gì trong Cue cần tài khoản; đăng nhập chỉ điền tên của bạn."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "可选。Cue 的任何功能都不需要账户；登录只会填入你的名字。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "選填。Cue 的任何功能都不需要帳號；登入只會填入你的名稱。"
-          }
-        }
-      }
-    },
     "Or drag the ⌟ handle on the recorder." : {
       "localizations" : {
         "ar" : {
@@ -507768,124 +507533,6 @@
         }
       }
     },
-    "Sign out" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تسجيل الخروج"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Log ud"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abmelden"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cerrar sesión"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Se déconnecter"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "साइन आउट करें"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Keluar"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Esci"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "サインアウト"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "로그아웃"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Logg ut"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Uitloggen"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sair"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Logga ut"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ออกจากระบบ"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Çıkış yap"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Đăng xuất"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "退出登录"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "登出"
-          }
-        }
-      }
-    },
     "Signal" : {
       "localizations" : {
         "ar" : {
@@ -508000,242 +507647,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "訊號"
-          }
-        }
-      }
-    },
-    "Signed in with Apple" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تم تسجيل الدخول باستخدام Apple"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Logget ind med Apple"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mit Apple angemeldet"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sesión iniciada con Apple"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Connecté avec Apple"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple से साइन इन किया"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Masuk dengan Apple"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Accesso con Apple effettuato"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Appleでサインイン済み"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple로 로그인됨"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Logget inn med Apple"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ingelogd met Apple"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sessão iniciada com a Apple"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Inloggad med Apple"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ลงชื่อเข้าด้วย Apple แล้ว"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple ile giriş yapıldı"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Đã đăng nhập bằng Apple"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已通过 Apple 登录"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已使用 Apple 登入"
-          }
-        }
-      }
-    },
-    "Signed out" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تم تسجيل الخروج"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Logget ud"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abgemeldet"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sesión cerrada"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Déconnecté"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "साइन आउट हुआ"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sudah keluar"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Disconnesso"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "サインアウトしました"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "로그아웃됨"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Logget ut"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Uitgelogd"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Você saiu"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Utloggad"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ออกจากระบบแล้ว"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Çıkış yapıldı"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Đã đăng xuất"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已退出登录"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已登出"
           }
         }
       }

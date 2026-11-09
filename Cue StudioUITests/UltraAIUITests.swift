@@ -221,6 +221,32 @@ final class UltraAIUITests: XCTestCase {
         XCTAssertTrue(chip.label.contains("Apple Intelligence"), chip.label)
     }
 
+    /// "Delete my Cue data" takes Ultra AI's permission back (owner, 09/11/2026): the confirmation says what already left can't be called back,
+    /// the switch is off afterwards, and picking Ultra AI again asks first.
+    func testDeletingMyDataAsksForUltraAgain() {
+        let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestUltra", "-uiTestUltraAllowed"])
+        let settings = app.cueTabBar.buttons["Settings"]
+        XCTAssertTrue(settings.exists(within: 15))
+        settings.tap()
+        let privacy = element(app, "settings.privacy")
+        app.scroll(to: privacy)
+        privacy.tap()
+        let ultraSwitch = app.switches["privacy.ultra"]
+        XCTAssertTrue(ultraSwitch.exists(within: 5))
+        XCTAssertEqual(ultraSwitch.value as? String, "1")
+        let delete = element(app, "settings.deleteData")
+        app.scroll(to: delete)
+        delete.tap()
+        XCTAssertTrue(element(app, "actionSheet.note").exists(within: 5), "The confirmation doesn't say what can't be called back")
+        XCTAssertTrue(text(app, containing: "30 days").exists)
+        app.buttons["privacy.confirmDelete"].firstMatch.tap()
+        app.scroll(to: ultraSwitch)
+        XCTAssertTrue(ultraSwitch.matches(NSPredicate(format: "value == '0'"), within: 5), "Ultra AI is still allowed after deleting the data")
+        app.cueTabBar.buttons["Scripts"].tap()
+        pickUltra(app)
+        XCTAssertTrue(element(app, "ultra.consent").exists(within: 5), "Ultra AI was picked without asking again")
+    }
+
     /// Find inspiration's "Draft with Ultra AI": the card's idea is written by Ultra AI, and the dock's own draft is untouched.
     func testFindInspirationDraftsWithUltra() {
         let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestUltra", "-uiTestUltraAllowed", "-uiTestTopics", "food"])

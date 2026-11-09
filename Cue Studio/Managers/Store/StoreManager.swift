@@ -8,8 +8,8 @@ import StoreKit
 /// Cue Pro purchases (StoreKit 2): monthly and annual subscriptions, with no free trial (trying Cue is its free exports, `UsagePolicy`).
 /// Pro changes one thing, unlimited exports; every feature is open on the free plan too.
 ///
-/// There is no backend, so entitlements rely on StoreKit's own JWS verification (`.verified`).
-/// If Cue ever gets a server, purchases must be re-verified there before unlocking anything.
+/// What Pro unlocks on this iPhone relies on StoreKit's own JWS verification (`.verified`). What Cue's server grants for Pro (Ultra AI's
+/// monthly scripts, invites credited as scripts) is checked there with Apple first (`proProof()`).
 @MainActor
 @Observable
 final class StoreManager {
