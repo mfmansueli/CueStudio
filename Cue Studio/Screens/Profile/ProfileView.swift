@@ -8,7 +8,7 @@ import SwiftUI
 
 /// 9.1 · Profile, on the night sky (owner's redesign, 21/10/2026, kept short): who this is (Edit in the card), "Your universe" live, "My Cue
 /// Voice" and the plan (those two as they were), and "Invite friends" while invites are offered (§60). Everything else the
-/// old Profile held lives one tap away: name, handle, sign in and defaults in the profile sheet (tap the first block), the
+/// old Profile held lives one tap away: name, handle and defaults in the profile sheet (tap the first block), the
 /// fine-tuning of the voice under My Cue Voice (Edit voice), the plans in the paywall (tap the plan).
 struct ProfileView: View {
     @Environment(CreatorProfileService.self) private var profile

@@ -89,8 +89,9 @@ nonisolated enum DefaultsKey {
     static let takesLayout = "takesLayout"
     /// Personalize was opened once: its NEW badge in Settings is gone.
     static let personalizeSeen = "personalizeSeen"
-    /// The Sign in with Apple account (ID, and the name and email Apple shared once).
-    static let appleAccount = "appleAccount"
+    /// The account Sign in with Apple kept before it was removed (Apple's user identifier, and the name and email Apple shared once): only
+    /// erased now (`AppleSignInLeftovers`).
+    static let legacyAppleAccount = "appleAccount"
     /// Settings › Personalize: the sky (`SkyDensity` raw value; absent = Calm), the story moments, the
     /// haptics and the automatic topic tag (absent = on).
     static let skyDensity = "skyDensity"
@@ -132,7 +133,7 @@ nonisolated enum DefaultsKey {
     static let logbookDraft = "logbookDraft"
     /// How many times each teaching note of the editor was shown (`PanelNoteMemory`), by a digest of its words.
     static let panelNotesRead = "panelNotesRead"
-    /// Settings › Privacy & AI data: Apple Intelligence on or off (absent = on) and the anonymous usage switch (absent = off).
+    /// Settings › Privacy & AI data: Apple Intelligence on or off (absent = on) and "Help improve Cue", usage data and crash reports (absent = off).
     static let onDeviceAI = "onDeviceAI"
     static let helpImproveCue = "helpImproveCue"
     /// The notifications: the creator's choices, reminders and routine, and the history the caps read (`NotificationState`, JSON).

@@ -34,7 +34,6 @@ struct NotificationTriggers: ViewModifier {
             .onChange(of: services.takes.takes.count) { notifications.setNeedsReconcile() }
             .onChange(of: services.shareQueue.queues) { notifications.setNeedsReconcile() }
             .onChange(of: services.logbook.entries.count) { notifications.setNeedsReconcile() }
-            .onChange(of: services.session.account?.userID) { notifications.setNeedsReconcile() }
             .onChange(of: services.languages.interfaceLanguage) { notifications.setNeedsReconcile(rewritesTexts: true) }
             .onChange(of: services.remote.state.isConnected) { _, connected in
                 if connected { notifications.recordUse(.remoteControl) }

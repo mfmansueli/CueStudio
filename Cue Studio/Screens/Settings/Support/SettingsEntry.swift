@@ -115,7 +115,7 @@ nonisolated enum SettingsEntry: String, CaseIterable, Identifiable, Sendable {
         case .autoTag: String(localized: "Cue picks the topic on this iPhone")
         case .firstVoyage: String(localized: "Your next step, until your first video is out")
         case .onDeviceAI: String(localized: "Apple Intelligence, nothing else")
-        case .helpImprove: String(localized: "Anonymous usage, never videos or scripts")
+        case .helpImprove: String(localized: "Usage data and crash reports, never videos or scripts")
         default: nil
         }
     }
@@ -201,7 +201,7 @@ nonisolated enum SettingsEntry: String, CaseIterable, Identifiable, Sendable {
         case .voiceFollowingLanguage: ["speech", "listen", "recognition"]
         case .scriptLanguage: ["write", "new scripts", "auto-detect"]
         case .onDeviceAI: ["apple intelligence", "private", "ai"]
-        case .helpImprove: ["analytics", "usage", "anonymous"]
+        case .helpImprove: ["analytics", "usage", "crash", "reports", "diagnostics"]
         case .permissions: ["camera", "microphone", "speech", "photos", "access"]
         case .deleteData: ["erase", "reset", "remove", "scripts", "takes"]
         case .privacyPolicy: ["legal"]

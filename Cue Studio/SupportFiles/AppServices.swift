@@ -14,7 +14,6 @@ struct AppServices {
     let takes: TakeLibraryService
     let preferences: PreferencesService
     let profile: CreatorProfileService
-    let session: SessionService
     let rules: PlatformRulesService
     let quota: UsageQuotaService
     let store: StoreManager
@@ -39,7 +38,7 @@ struct AppServices {
     /// The pause between the groups of words of a script the AI writes into the page.
     let scriptRevealPause: Duration
     let writer: ScriptWriting
-    /// AI Scripts Ultra (Google's Gemini), written only when the creator chose it and allowed it; unavailable in Release.
+    /// AI Scripts Ultra (Anthropic's Claude, through Cue's server), written only when the creator chose it and allowed it; unavailable in Release.
     let ultra: UltraScriptService
     /// Reads what the creator imports for how they sound (Import my writing), with the model on this iPhone.
     let styleReader: any WritingStyleReading
@@ -169,7 +168,8 @@ struct AppServices {
         (fakesShareSheet, forcesLowPowerMode, previewStandInFrame) = (options.fakesShareSheet, options.forcesLowPowerMode, options.previewStandInFrame)
         logsDockMotion = options.logsDockMotion
         profile = CreatorProfileService(defaults: options.defaults)
-        session = SessionService(defaults: options.defaults, checker: options.credentialChecker)
+        // Sign in with Apple is gone (owner, 09/11/2026): what it kept goes, the profile's name stays (`AppleSignInLeftovers`).
+        AppleSignInLeftovers.erase(from: options.defaults)
         rules = options.platformRules
         quota = UsageQuotaService(
             counter: options.exportCounter, defaults: options.defaults, resetsOnNewInstall: options.resetsExportsOnNewInstall
@@ -279,7 +279,8 @@ struct AppServices {
             library: library, takes: takes, drafts: options.draftStore, logbook: logbook, brands: brands,
             profile: profile, preferences: preferences, defaults: options.defaults, notifications: notifications, voyage: voyage,
             draftLearning: draftLearning, voiceQuestions: voiceQuestions, ledger: ledger, shareQueue: shareQueue, ideas: ideaSuggestions,
-            fonts: fonts, fontPacks: fontPacks, mediaLibrary: mediaLibrary, brandKits: brandKits, ideaDraft: ideaDraft
+            fonts: fonts, fontPacks: fontPacks, mediaLibrary: mediaLibrary, brandKits: brandKits, ideaDraft: ideaDraft,
+            ultraConsent: ultra.consent, telemetry: FirebaseTelemetry()
         )
         topicTagging = TopicTaggingService(library: library, profile: profile, personalization: personalization, writer: writer)
     }
@@ -510,7 +511,6 @@ extension View {
             .environment(services.ledger)
             .environment(services.preferences)
             .environment(services.profile)
-            .environment(services.session)
             .environment(services.rules)
             .environment(services.quota)
             .environment(services.store)

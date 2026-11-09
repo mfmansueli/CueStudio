@@ -6,8 +6,8 @@
 import AppIntents
 import SwiftUI
 
-/// Injects the app session's services and takes requests from Siri and Shortcuts. Cue has no
-/// onboarding gate: a first run simply shows the empty library.
+/// Injects the app session's services and takes requests from Siri and Shortcuts. A fresh install shows the first flight over the
+/// whole app (`OnboardingView`, while `OnboardingService.isActive`), until it is told or skipped.
 struct RootView: View {
     let services: AppServices
     /// A pairing code from a link, until it can be used (`handleRemoteLink`).
@@ -49,9 +49,6 @@ struct RootView: View {
             .task {
                 await services.rules.refresh()
             }
-            .task {
-                await services.session.verify()
-            }
             // A friend's first export the server didn't hear yet, and a creator who invites: their friends' first exports.
             .task {
                 await services.referral.refreshIfInviting()
@@ -65,8 +62,6 @@ struct RootView: View {
                 services.reloadWhatCouldntBeRead()
                 if services.hasUnsavedWork { warnUnsavedWork() }
                 Task { await services.store.refreshEntitlements() }
-                // "Stop Using Apple ID" happens in Settings, outside Cue.
-                Task { await services.session.verify() }
                 Task { await services.referral.refreshIfInviting() }
             }
             // A save that failed in front of the creator is said at once (one that failed in the background, locked, is tried

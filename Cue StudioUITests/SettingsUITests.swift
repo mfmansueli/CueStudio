@@ -305,6 +305,16 @@ final class SettingsUITests: XCTestCase {
         XCTAssertTrue(sampleScript(app).exists(within: 5))
     }
 
+    /// "Help improve Cue" starts off and says it covers usage data and crash reports (owner, 09/11/2026: one clear control for both).
+    func testHelpImproveCueStartsOffAndSaysItIncludesCrashReports() {
+        let app = CueApp.launch(seeded: true)
+        openPrivacy(app)
+        let toggle = app.switches["settings.helpImprove"]
+        XCTAssertTrue(toggle.exists(within: 5))
+        XCTAssertEqual(toggle.value as? String, "0")
+        XCTAssertTrue(app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS %@", "crash reports")).firstMatch.exists)
+    }
+
     func testDeleteMyDataRemovesTheScripts() {
         let app = CueApp.launch(seeded: true)
         openPrivacy(app)

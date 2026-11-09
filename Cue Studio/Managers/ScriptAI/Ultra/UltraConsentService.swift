@@ -5,9 +5,9 @@
 
 import Foundation
 
-/// The creator's explicit permission for Ultra to send their request and voice preferences to Google, apart from the Apple Intelligence switch:
+/// The creator's explicit permission for Ultra to send their request and voice preferences to Anthropic, apart from the Apple Intelligence switch:
 /// allowing or revoking one never changes the other. Revoking stops any Ultra request from going out from then on, also one waiting between its
-/// calls (`UltraScriptService` asks again before each).
+/// calls (`UltraScriptService` asks again before each). "Delete my Cue data" revokes it too (`DataEraserService`): the next Ultra script asks again.
 @MainActor
 @Observable
 final class UltraConsentService {
@@ -26,7 +26,7 @@ final class UltraConsentService {
 
     var isGranted: Bool { grantedAt != nil }
 
-    /// "Allow Google processing" on the disclosure.
+    /// "Allow" on the disclosure (`UltraConsentSheet`).
     func grant() {
         let date = now()
         grantedAt = date

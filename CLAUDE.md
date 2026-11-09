@@ -68,7 +68,8 @@ Toda tela, componente ou cor nova **precisa passar** no contraste antes de ser e
   `.swiftlint.yml`. Corrija o código em vez de afrouxar a configuração; `swiftlint --fix` resolve
   parte, mas revise o formato do que ele muda.
 - **Firebase** (projeto `cuestudio-app`, SPM `firebase-ios-sdk`): Analytics (`FirebaseAnalyticsCore`, sem IDFA) e Crashlytics, iniciados em
-  `Managers/Telemetry/TelemetryManager.swift`, e o App Check da Ultra AI (`UltraAppCheck`, só pede token quando a Ultra chama). O **servidor do Cue**
+  `Managers/Telemetry/TelemetryManager.swift`, que só coletam (eventos e non-fatal inclusive) com **Help improve Cue** ligado (desligado de fábrica pelo
+  Info.plist; a DebugView também precisa dele), e o App Check da Ultra AI (`UltraAppCheck`, só pede token quando a Ultra chama). O **servidor do Cue**
   (`server/`, Cloud Functions no mesmo projeto) guarda a chave da Anthropic e é o único caminho do Claude no app: `server/setup.sh` configura e publica,
   `npm test` em `server/functions` testa, modelo e esforço em `server/functions/.env` (DESIGN_PROJECT §57). Testes, `-uiTestInMemory` e previews não enviam nada
   (`TelemetryPolicy`). Upload dos dSYMs só em archive. DebugView: `-FIRAnalyticsDebugEnabled`. Falhas do Apple Intelligence (`AIFailureReport`):

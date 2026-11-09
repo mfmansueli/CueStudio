@@ -734,14 +734,24 @@ o pincel do Personalize, o cadeado da política…), em azulejo de 32 pt raio 9 
 que grava (Recording, Prompter, Remote), **violeta** para a IA (My Cue Voice, Personalize), **cinza** para o resto, e Cue Pro em azulejo amarelo cheio
 (`Palette.Settings`, medidos em `PaletteContrastTests`). Páginas: Recording, Prompter, Remote, Personalize (céu §5, Getting started §32; os 5 ícones e as regras de marco do
 app, não as do protótipo; **Hidden suggestions**, só enquanto há uma: as ferramentas de "Don’t suggest this", cada uma com **Show again**, §27), Language & Region (idioma do app abre os Ajustes; Voice following e Script language são menus), Notifications (§27), Privacy &
-AI data (**Apple Intelligence** é a chave de todos os recursos de IA: `PrivacyPreferencesService` → `ScriptWriting.isEnabled`; Help improve Cue decide se os eventos
-vão ao Analytics; **Delete my Cue data**, `DataEraserService`, apaga do iPhone roteiros e pastas, tomadas com vídeos e edições, vídeos exportados à espera
+AI data (**Apple Intelligence** é a chave de todos os recursos de IA: `PrivacyPreferencesService` → `ScriptWriting.isEnabled`; **Help improve Cue**
+("Usage data and crash reports, never videos or scripts") é o único controle do Analytics e do Crashlytics (decisão do dono, 09/11/2026): começa
+desligado, o Info.plist deixa as duas coletas desligadas desde o primeiro lançamento (`FIREBASE_ANALYTICS_COLLECTION_ENABLED`,
+`FirebaseCrashlyticsCollectionEnabled`), e a chave as liga e desliga no lançamento e a cada mudança (`TelemetryCollecting` → `TelemetryManager`);
+os non-fatal do Cue (`AIFailureReport`, `EditorFailureReport`, MetricKit, `VoiceCheckReport`) e os eventos só saem com ela ligada; desligar apaga os
+relatórios de falha ainda não enviados e os dados do Analytics no aparelho (id novo); o Firebase continua configurado porque o App Check da Ultra AI
+roda nele. A folha **Privacy & AI data** (`PrivacySheet`, aberta pela política e pelo paywall) diz onde fica cada coisa: roteiros, takes e My Cue Voice
+no iPhone e nos backups, o servidor do Cue só com contagens sob um id aleatório, uso e falhas ao Google só com Help improve Cue ligado;
+**Delete my Cue data**, `DataEraserService`, apaga do iPhone roteiros e pastas, tomadas com vídeos e edições, vídeos exportados à espera
 e a fila de compartilhamento, Logbook, marcas, My Cue Voice, ideias e o gosto aprendido, meus estilos, o setup, as marcas da
 primeira viagem, os rascunhos, as cópias de uma biblioteca danificada e os lembretes; as pastas de takes, mídias do editor e rascunhos saem
 inteiras, com o que nenhuma take nomeia mais, as gravações em `tmp/take-*.mov` que a recuperação traria de volta (com as notas delas) e tudo o que o Cue
 deixou no tmp com o nome `Cue-` (vídeos exportados, também de takes apagadas antes, e capas) (na hora, sem a semana que a varredura de órfãos
 espera, §37); ficam a compra, o contador de exportações grátis e o registro delas
-(só ids), a contagem de vídeos compartilhados do universo, o idioma e o que já está no Fotos), Permissions (`PermissionsService`), Acknowledgements. **Reset Creator Setup fica como está** (decisão pendente, `09` §13).
+(só ids), a contagem de vídeos compartilhados do universo, o idioma, as duas chaves de Privacy & AI data e o que já está no Fotos; a permissão da
+Ultra AI é revogada (decisão do dono, 09/11/2026: o próximo roteiro da Ultra AI pede de novo, e o escritor do dock volta ao Apple Intelligence), o que o
+Sign in with Apple deixou sai (`AppleSignInLeftovers`) e os relatórios e o Analytics à espera de envio também; o id aleatório da instalação fica no
+Keychain, porque é por ele que o servidor conta os roteiros grátis da Ultra AI e os prêmios dos convites), Permissions (`PermissionsService`), Acknowledgements. **Reset Creator Setup fica como está** (decisão pendente, `09` §13).
 **Remote** (`SettingsRemoteView`, redesenho do dono 21/10/2026, conceito "dois aparelhos"): `ScrollView` sobre o céu. No topo a cena
 (`RemoteHero`, posições em `RemoteSceneLayout`, aparelhos em `RemotePhone`, tudo num relógio só): o teleprompter à esquerda (roteiro subindo
 sob a linha de leitura amarela, que passa das laterais e respira) e o controle à direita (play cujo halo chama a cada 3,2 s), flutuando fora de
@@ -930,8 +940,9 @@ e Username alinhados igual, contador do nome perto do limite, ✓ verde quando o
 como etiquetas (um por vez, tocar de novo tira) e **"+ Add your own"**, que vira um campo na própria etiqueta e guarda um tipo próprio
 (`CreatorProfile.customRole`, o mesmo do My Cue Voice e do roteirista; vale no lugar da lista e aparece no perfil), com × para tirar. **When you
 create** (`EditProfilePreferences`): as plataformas como galáxias na cor de cada uma (`Platform.tint`), anel amarelo que desliza, e Monetization
-goals com o que muda ("Script lengths aim at what earns on TikTok"). **Account** (`EditProfileAccount`, ação imediata, fora do Cancel / Done): um
-cartão discreto dizendo que é opcional e só preenche o nome, com o botão branco da Apple (o estilo pedido em fundo escuro), mais baixo.
+goals com o que muda ("Script lengths aim at what earns on TikTok"). **Sem conta** (decisão do dono, 09/11/2026: o Sign in with Apple só preenchia o
+nome e saiu, com o entitlement): o nome é o do perfil, sempre editável aqui. Quem tinha entrado com a Apple mantém o nome que via; o e-mail e o
+identificador da Apple que ficaram guardados são apagados no primeiro lançamento (`AppleSignInLeftovers`).
 
 ## 14. Your universe, um por ano (9.2)
 
@@ -1004,8 +1015,9 @@ voltam com uma linha quando validados no aparelho (`SHARING.md`).
 
 `CueActionSheet` (`DesignSystem/Components`): a página escurece, um cartão com a pergunta em cinza e a ação em vermelho, e um cartão **Cancel** separado em
 negrito. Custom porque o `confirmationDialog` do iOS 27 abre como balão, sem Cancel. Usado em **Delete my Cue data** (o mesmo em Settings e na folha
-Privacy & AI data: "Deletes your scripts, takes, edits and My Cue Voice from this iPhone. This can't be undone." / **Delete my Cue data**), **Reset Creator
-Setup**. Confirmação só para o que não tem volta: o resto tem Undo no toast.
+Privacy & AI data: "Deletes your scripts, takes, edits and My Cue Voice from this iPhone. This can't be undone." / **Delete my Cue data**; onde a Ultra AI
+é oferecida, uma linha menor embaixo separa o que não volta: "Already sent can’t be called back: Anthropic keeps Ultra AI requests up to 30 days to detect
+abuse, never for training. Cue’s server keeps only counts, under a random ID.", o `note` do `CueActionSheet`), **Reset Creator Setup**. Confirmação só para o que não tem volta: o resto tem Undo no toast.
 
 ## 18. Movimento vindo dos dados do quadro (handoff-telas)
 

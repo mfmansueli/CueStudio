@@ -204,4 +204,41 @@ struct DataEraserServiceTests {
         try takes.addTake(fileAt: recording, duration: 5, script: nil, camera: CameraSettings())
         #expect(try LocalTakeRepository(directory: takeFolder).loadTakes().count == 1)
     }
+
+    /// Ultra AI's permission is taken back with the rest (owner, 09/11/2026): the next Ultra AI script asks again, and the dock's writer is
+    /// Apple Intelligence until then. What Sign in with Apple left and what waits to be sent to the telemetry go too; the two switches of
+    /// Privacy & AI data stay as the creator set them.
+    @Test func ultraAsksAgainAndNothingOfTheLoginOrTheReportsIsLeft() {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let consent = UltraConsentService(defaults: defaults.defaults, now: { TestData.now })
+        consent.grant()
+        let ultra = UltraScriptService(client: FakeUltraModelClient(), consent: consent, budget: UltraCallBudget(defaults: defaults.defaults))
+        #expect(ultra.isReady)
+        let ideaDraft = IdeaDraftService(defaults: defaults.defaults)
+        ideaDraft.engine = .ultra
+        defaults.defaults.set(Data("account".utf8), forKey: DefaultsKey.legacyAppleAccount)
+        let telemetry = FakeTelemetry()
+        let privacy = PrivacyPreferencesService(defaults: defaults.defaults, writer: FakeScriptWriter(), telemetry: telemetry)
+        privacy.helpsImproveCue = true
+        let eraser = DataEraserService(
+            library: ScriptLibraryService(repository: FakeScriptRepository(scripts: [])), takes: TakeLibraryService(repository: FakeTakeRepository()),
+            drafts: FakeDraftStore(), logbook: LogbookService(defaults: defaults.defaults), brands: BrandStore(repository: InMemoryBrandRepository()),
+            profile: CreatorProfileService(defaults: defaults.defaults), preferences: PreferencesService(defaults: defaults.defaults),
+            defaults: defaults.defaults, ideaDraft: ideaDraft, ultraConsent: consent, telemetry: telemetry, eraseLooseFiles: {}
+        )
+
+        eraser.eraseEverything()
+
+        #expect(!ultra.isReady, "Ultra AI writes nothing more until the creator allows it again")
+        #expect(!UltraConsentService(defaults: defaults.defaults).isGranted, "the next launch asks too")
+        #expect(UltraScriptService(
+            client: FakeUltraModelClient(), consent: UltraConsentService(defaults: defaults.defaults), budget: UltraCallBudget(defaults: defaults.defaults)
+        ).isReady == false)
+        #expect(ideaDraft.engine == .apple)
+        #expect(defaults.defaults.object(forKey: DefaultsKey.legacyAppleAccount) == nil)
+        #expect(telemetry.discards == 1)
+        #expect(telemetry.isCollecting == true, "the switch is the creator's, not their data")
+        #expect(PrivacyPreferencesService(defaults: defaults.defaults, writer: FakeScriptWriter(), telemetry: FakeTelemetry()).helpsImproveCue)
+    }
 }

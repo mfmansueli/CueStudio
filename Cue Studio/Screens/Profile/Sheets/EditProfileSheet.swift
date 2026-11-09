@@ -9,7 +9,8 @@ import SwiftUI
 /// 9.1 · Edit Profile (large; owner's redesign, 21/10/2026): Cancel and Done (off only while something typed doesn't fit; everything here
 /// is optional), "how you appear" on top (the card of the shared universe, live, with the photo's camera badge: `EditProfilePhoto`), then
 /// You (name and username, the same alignment, a ✓ when the username fits), What you make (`CreatorTypePicker`, with their own type),
-/// When you create (`EditProfilePreferences`) and the account. Nothing reaches the profile until Done, which says "Profile updated".
+/// When you create (`EditProfilePreferences`). No account: nothing in Cue needs one (Sign in with Apple only filled the name and was removed,
+/// owner, 09/11/2026). Nothing reaches the profile until Done, which says "Profile updated".
 struct EditProfileSheet: View {
     @Environment(CreatorProfileService.self) private var profile
     @Environment(ToastService.self) private var toast
@@ -36,8 +37,6 @@ struct EditProfileSheet: View {
                     CreatorTypePicker(draft: $draft)
                     sectionTitle(String(localized: "When you create"))
                     EditProfilePreferences(draft: $draft)
-                    sectionTitle(String(localized: "Account"))
-                    EditProfileAccount { name in if draft.name.isEmpty { draft.name = name } }
                         .padding(.bottom, 24)
                 }
                 .padding(.horizontal, 16)
@@ -55,7 +54,7 @@ struct EditProfileSheet: View {
             }
         }
         .tint(Palette.ink)
-        // Signing in or out is said in front of the sheet, not under it.
+        // A toast while the sheet is up is said in front of it, not under it.
         .toastHost(inSheet: true)
         .presentationDetents([.large])
         .presentationBackground(Palette.sheetNight)

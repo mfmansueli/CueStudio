@@ -36,7 +36,7 @@
         "AudioMixUITests/testTextIsSpokenIntoAVoiceOverAtThePlayhead()",
         "FirstRunUITests/testRecordingWithoutAScript()",
         "FreePlanUITests/testSuggestBestPicksATake()",
-        "ProfileUITests/testSignInWithAppleIsOfferedWhenSignedOut()",
+        "ProfileUITests/testEditProfileHasNoAccountAndTheNameIsTheCreatorsToEdit()",
         "YourUniverseUITests/testTheLiveYearShowsItsCountAndPlanets()",
         "VoiceV29UITests/testTheProfileCardShowsTheMeterTheSentenceAndTheNextQuestion()",
         "VoiceTipUITests/testTheTipAsksOneQuestionAndOffersOneMore()",
