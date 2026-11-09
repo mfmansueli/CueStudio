@@ -31,7 +31,8 @@ struct ScriptDetailView: View {
             toast: services.toast,
             voiceQuestions: services.voiceQuestions,
             transition: services.ideaTransition,
-            draftLearning: services.draftLearning
+            draftLearning: services.draftLearning,
+            sharedTakeIDs: { [milestones = services.milestones] in milestones.sharedTakeIDs }
         ))
     }
 

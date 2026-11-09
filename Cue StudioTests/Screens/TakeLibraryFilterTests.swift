@@ -58,9 +58,19 @@ struct TakeLibraryFilterTests {
         #expect(TakeLibraryFilter.videos(from: [take(scriptA, 1, hoursAgo: 1)])[0].takesLabel == nil)
     }
 
-    @Test func theScriptsCurrentPlatformWins() {
-        let videos = TakeLibraryFilter.videos(from: [take(scriptA, 1, hoursAgo: 1, platform: .tiktok)]) { _ in .youtube }
-        #expect(videos[0].platform == .youtube)
+    /// A video is a script's takes for one network (owner, 09/11/2026): recorded for Reels and again for Shorts, two cards with the same title,
+    /// each filed under the network its takes were recorded for.
+    @Test func aScriptRecordedForTwoNetworksIsTwoVideos() {
+        let videos = TakeLibraryFilter.videos(from: [
+            take(scriptA, 1, hoursAgo: 3, platform: .reels), take(scriptA, 2, hoursAgo: 2, platform: .reels),
+            take(scriptA, 3, hoursAgo: 1, platform: .shorts),
+        ])
+        #expect(videos.count == 2)
+        #expect(videos.map(\.platform) == [.shorts, .reels])
+        #expect(videos.map(\.title) == ["Script", "Script"])
+        #expect(Set(videos.map(\.id)).count == 2)
+        #expect(videos[1].takes.map(\.number) == [2, 1])
+        #expect(TakeLibraryFilter(platform: .reels).apply(to: videos).map { $0.takes.count } == [2])
     }
 
     @Test func platformAndStageFiltersCombine() {

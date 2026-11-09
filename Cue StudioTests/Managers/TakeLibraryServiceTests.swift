@@ -106,7 +106,7 @@ struct TakeLibraryServiceTests {
         let clip = clipURL()
         defer { TakeRecoveryNote.remove(for: clip) }
         _ = try? service.addTake(fileAt: clip, duration: 30, script: script, camera: CameraSettings())
-        #expect(TakeRecoveryNote.read(for: clip) == TakeRecoveryNote(scriptID: script.id, scriptVersion: 2))
+        #expect(TakeRecoveryNote.read(for: clip) == TakeRecoveryNote(scriptID: script.id, scriptVersion: 2, platform: script.platform))
     }
 
     /// A take gone for good tells the services that keep something for it (its exported files, a share queue); one deleted with Undo

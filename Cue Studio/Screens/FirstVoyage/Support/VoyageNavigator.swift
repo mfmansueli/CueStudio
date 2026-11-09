@@ -37,10 +37,10 @@ struct VoyageNavigator {
         }
     }
 
-    /// The latest take has siblings to compare with and none is the best yet: Pick opens "Pick the best take".
+    /// The latest take has siblings in its video to compare with and none is the best yet: Pick opens "Pick the best take".
     var canCompare: Bool {
         guard let take = latestTake else { return false }
-        let siblings = takes.takes.filter { $0.scriptID == take.scriptID }
+        let siblings = takes.takes(in: take.videoKey)
         return siblings.count > 1 && !siblings.contains(where: \.isBest)
     }
 
@@ -52,9 +52,9 @@ struct VoyageNavigator {
         takes.takes.max { $0.recordedAt < $1.recordedAt }
     }
 
-    /// The take that becomes the video: the best take of the latest take's script, or the latest take.
+    /// The take that becomes the video: the best take of the latest take's video, or the latest take.
     var videoTake: Take? {
         guard let latest = latestTake else { return nil }
-        return takes.takes.first { $0.scriptID == latest.scriptID && $0.isBest } ?? latest
+        return takes.takes(in: latest.videoKey).first(where: \.isBest) ?? latest
     }
 }

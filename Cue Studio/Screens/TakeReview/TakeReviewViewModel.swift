@@ -210,12 +210,12 @@ final class TakeReviewViewModel {
 
     var take: Take? { takes.take(id: takeID) }
 
-    /// This take and the others of the same script, by number ("Your takes · 3").
+    /// This take and the others of its video (same script, same network, `TakeVideoKey`), by number ("Your takes · 3").
     var siblings: [Take] { take.map(takes.siblings(of:)) ?? [] }
 
     var videoURL: URL? { take.map(takes.videoURL(for:)) }
 
-    /// Where this video is on its way out (the takes of its script): derived, never set by hand.
+    /// Where this video is on its way out (the takes of its video): derived, never set by hand.
     var stage: TakeStage {
         TakeStage(takes: siblings, hasDraft: { [drafts] in drafts.hasDraft(for: $0) })
     }
@@ -373,7 +373,7 @@ final class TakeReviewViewModel {
         return BestTakeProposal(
             takes: siblings, best: best,
             reasons: BestTakeReason.reasons(for: best, among: siblings, expectedDuration: expected, idealRange: preset.idealRange),
-            platformLabel: platform.label, ideal: preset.idealRange
+            platformLabel: platform.label, ideal: preset.idealRange, stage: stage
         )
     }
 

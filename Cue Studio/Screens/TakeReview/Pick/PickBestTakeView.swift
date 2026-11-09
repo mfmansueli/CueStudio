@@ -48,7 +48,7 @@ struct PickBestTakeView: View {
                 }
             }
             .navigationTitle("Pick your best take")
-            .navigationSubtitle("TO PICK · \(proposal.takes.count) TAKES")
+            .navigationSubtitle(proposal.subtitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackgroundVisibility(.hidden, for: .navigationBar)
             .toolbar {

@@ -6,7 +6,7 @@
 import PhotosUI
 import SwiftUI
 
-/// Every recording, one card or row per video (takes grouped by script), under the pipeline: how
+/// Every recording, one card or row per video (takes grouped by script and the network they were recorded for), under the pipeline: how
 /// many videos are to pick, in edit, ready and shared, and what to do next. A 9:16 grid by default,
 /// a list on request, filtered by platform and by stage, in Today, Yesterday and Earlier. "Import video" brings a video from
 /// Photos in to edit, shown as imported (not as a take).
@@ -99,18 +99,6 @@ struct TakesView: View {
         .onChange(of: isQuiet) { _, quiet in if quiet { lightFirstStar() } }
         .onChange(of: scenePhase) { _, phase in
             if phase == .active { viewModel.refresh() }
-        }
-        .confirmationDialog(
-            viewModel.videoToDelete?.title ?? "",
-            isPresented: Binding(get: { viewModel.videoToDelete != nil }, set: { if !$0 { viewModel.videoToDelete = nil } }),
-            titleVisibility: .visible,
-            presenting: viewModel.videoToDelete
-        ) { video in
-            Button(video.takes.count == 1 ? String(localized: "Delete take") : String(localized: "Delete \(video.takes.count) takes"), role: .destructive) {
-                viewModel.deleteConfirmed()
-            }
-        } message: { _ in
-            Text("The videos are removed from Cue. Copies you saved to Photos stay there.")
         }
         .sheet(item: $reminding) { video in
             if let take = video.best {
@@ -285,7 +273,7 @@ struct TakesView: View {
                         .cardRowSurface(Palette.surface, position: CardRowPosition(index: index, count: section.videos.count))
                         .contextMenu { actions(for: video) } preview: { peek(video) }
                         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                            Button(role: .destructive) { viewModel.videoToDelete = video } label: {
+                            Button(role: .destructive) { viewModel.delete(video) } label: {
                                 Label("Delete", systemImage: "trash")
                             }
                             .tint(Palette.dangerFill)
@@ -311,7 +299,7 @@ struct TakesView: View {
 
     // MARK: - Peek
 
-    /// Hold a video: Share, Edit, Retake, mark the best, Delete.
+    /// Hold a video: Share, Edit, Retake, mark the best, Delete (at once, with Undo in the toast).
     @ViewBuilder
     private func actions(for video: TakeVideo) -> some View {
         Button { viewModel.open(video, then: .share) } label: { Label("Share", systemImage: "square.and.arrow.up") }
@@ -328,7 +316,7 @@ struct TakesView: View {
                 Label("Mark as best", systemImage: "star")
             }
         }
-        Button(role: .destructive) { viewModel.videoToDelete = video } label: { Label("Delete", systemImage: "trash") }
+        Button(role: .destructive) { viewModel.delete(video) } label: { Label("Delete", systemImage: "trash") }
     }
 
     /// The lifted card. The system draws it outside this screen's hierarchy, without the services the app hands its screens, so it
