@@ -14,6 +14,10 @@ extension Palette {
         static let upNextGlow = Color(hex: 0xFFD60A, opacity: 0.14)
         static let upNextRim = Color(hex: 0xFFD60A, opacity: 0.35)
 
+        /// Behind the take review's panel (scrubber, title, stages, actions), over the playing video: dark enough that `ink2` reads 4.5:1
+        /// over the brightest frame (`PaletteContrastTests`).
+        static let reviewPanelScrim = Color.black.opacity(0.8)
+
         /// The dark well a take's thumbnail sits in, at its own frame.
         static let thumbnailWell = Color(hex: 0x0E0E10)
 

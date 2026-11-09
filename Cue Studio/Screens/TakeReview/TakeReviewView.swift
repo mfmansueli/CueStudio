@@ -474,6 +474,16 @@ struct TakeReviewView: View {
             }
             .padding(.horizontal, Metrics.gutter)
             .padding(.bottom, 6)
+            // The panel reads over any video: the scrim is full under it and fades out above it, over the free space.
+            .background {
+                VStack(spacing: 0) {
+                    LinearGradient(colors: [.clear, Palette.Takes.reviewPanelScrim], startPoint: .top, endPoint: .bottom).frame(height: 56)
+                    Palette.Takes.reviewPanelScrim
+                }
+                .padding(.top, -56)
+                .ignoresSafeArea(edges: .bottom)
+                .allowsHitTesting(false)
+            }
         }
     }
 

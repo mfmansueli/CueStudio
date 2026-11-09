@@ -1482,7 +1482,7 @@ ele está à vista, para não cobrir a janela do texto): "✦ Recommended for Ti
 (`SetupChangeList`: "Frame 4:5 → 9:16", "Quality 4K → 1080p", "Safe zone Custom → TikTok"), com a etiqueta **This take** (ponto azul) no que o criador
 escolheu para esta take. **Keep as is** não muda nada; **Use Recommended** aplica exatamente as linhas listadas, a zona segura incluída (só nesta
 sessão; a Custom salva continua) e diz "Using TikTok setup". Some quando nada mudaria (a recomendação se resolve sozinha como Keep as is) e, no
-Freestyle, só aparece quando o criador troca a rede. A janela de texto e a legenda da zona segura terminam acima de tudo o que fica sobre os controles enquanto aparece (o cartão, a linha de espaço, os avisos; `SelfieScreenMetrics.cardTop`): numa tela baixa (SE) nada cobre as palavras, e a janela volta à altura toda quando eles saem. A zona segura nunca diz outra rede que não a do vídeo (`SafeZoneChoice.resolve`): YouTube em 9:16 é um Short (a zona do Shorts), 1:1 fica Custom, e uma rede sem zona medida nesse quadro (TikTok em 4:5) não mostra nenhuma. Num quadro que deixa parte da câmera de fora (16:9, 1:1, 4:5), a parte escurecida diz "16:9 · ONLY THE FRAME IS RECORDED" (`FrameMaskCaption`, branco `Palette.Camera.frameCaption` sobre a máscara, medido sobre a imagem mais clara) na primeira faixa livre sob o quadro e a janela, acima dos controles, ou acima de ambos; sem espaço, não aparece. A borda do quadro tem 1 pt. Gravar sem responder é Keep as is. A folha **This take** (`RecordingSetupSheet`, aberta pela
+Freestyle, só aparece quando o criador troca a rede. A janela de texto e a legenda da zona segura terminam acima de tudo o que fica sobre os controles enquanto aparece (o cartão, a linha de espaço, os avisos; `SelfieScreenMetrics.cardTop`): numa tela baixa (SE) nada cobre as palavras, e a janela volta à altura toda quando eles saem. A zona segura nunca diz outra rede que não a do vídeo (`SafeZoneChoice.resolve`): YouTube em 9:16 é um Short (a zona do Shorts), 1:1 fica Custom, e uma rede sem zona medida nesse quadro (TikTok em 4:5) não mostra nenhuma. Num quadro que deixa parte da câmera de fora (16:9, 1:1, 4:5), a primeira linha sobre os controles diz "16:9 · ONLY THE FRAME IS RECORDED" (`FrameMaskCaption`, branco `Palette.Camera.frameCaption`, medido sobre a máscara na imagem mais clara): ali ela sempre tem lugar, acima da linha de espaço e dos avisos, e a janela termina acima dela. A borda do quadro tem 1 pt. Gravar sem responder é Keep as is. A folha **This take** (`RecordingSetupSheet`, aberta pela
 pílula "1080P · 9:16 ›"; saiu do •••) mostra a mesma recomendação com as mesmas linhas e os mesmos dois nomes (Keep as is, Use Recommended).
 **Aa** (`AaSettingsSheet`): no topo um `Picker` `.segmented` do sistema com as abas e o ✕ de vidro; Selfie **Reading | Text | Window | Camera**
 (Reading: Voice Following, velocidade, AI coach; Text: tamanho, fonte, espaçamento, alinhamento, cor; Window: caixa do texto, linha de leitura, rigs e
@@ -4466,6 +4466,12 @@ abrindo o último grupo da barra principal e nos atalhos depois de Clean up; nã
   ficando, vídeo com legendas, Before/After, reabrir), `AutoEditZoomPickerTests`, `QuickEditToolbarTests`; `EditorTaskUITests.testAutoEdit…`
   (na edição de demonstração: legendas ficam, quatro pausas saem, Before/After, Turn off, Undo). No aparelho: **não validado** (o Simulator não
   ouve a fala; a demonstração já traz as pausas achadas).
+
+## 63.1. Revisão da take: o painel sobre o vídeo
+
+O painel da revisão (régua, título, etapas, ações) tem um fundo escuro próprio (`Palette.Takes.reviewPanelScrim`, preto a 80%, que some em
+56 pt acima dele): sobre qualquer vídeo, inclusive o mais claro, `ink`, `ink2` e a cor de cada etapa passam de 4,5:1 (`PaletteContrastTests`).
+Medido numa take real no iPhone 15 Pro (09/11/2026): de 3,5–4:1 nas etiquetas PICK / EDIT para 6,3:1.
 
 ## 64. Portas, contagens e aparelhos (9 de novembro de 2026; varredura aprovada pelo dono)
 

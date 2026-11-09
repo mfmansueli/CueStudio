@@ -74,14 +74,6 @@ struct SelfieModeView: View {
             }
             if !viewModel.isPractice {
                 FrameGuideOverlay(frame: geometry.frameRect)
-                if session.camera.aspect != .portrait, let y = FrameMaskCaption.centerY(
-                    frame: geometry.frameRect, window: viewModel.hasScript ? viewModel.readingLayout.windowRect : nil,
-                    top: viewModel.screenMetrics.topBarBottom,
-                    bottom: min(viewModel.screenMetrics.toolbarTop, viewModel.screenMetrics.cardTop ?? .infinity)
-                ) {
-                    FrameMaskCaption(aspect: session.camera.aspect, center: CGPoint(x: geometry.frameRect.midX, y: y))
-                        .transition(.opacity)
-                }
             }
             if !viewModel.isPractice, viewModel.showsSafeZone, let zone = viewModel.safeZone,
                let content = viewModel.safeZoneContentRect {
@@ -237,10 +229,16 @@ struct SelfieModeView: View {
         }
     }
 
-    /// The recommendation, the storage line and the notices over the controls. Their top, while any shows, is where the text window and
+    /// The frame's caption, the recommendation, the storage line and the notices over the controls. Their top, while any shows, is where the text window and
     /// the safe zone's caption end (`SelfieScreenMetrics.cardTop`): nothing over the controls covers the words or the caption.
     private var cardsOverTheControls: some View {
         VStack(spacing: 0) {
+            // A frame that leaves part of the camera out says so, first over the controls: it always has its room there.
+            if session.camera.aspect != .portrait, !viewModel.isPractice {
+                FrameMaskCaption(aspect: session.camera.aspect)
+                    .padding(.bottom, 8)
+                    .transition(.opacity)
+            }
             if viewModel.showsRecommendation, let recommendation = viewModel.session.recommendation {
                 SetupRecommendationCard(
                     recommendation: recommendation,

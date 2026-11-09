@@ -46,6 +46,19 @@ extension PaletteContrastTests {
         }
     }
 
+    /// The take review's panel over the brightest video (`reviewPanelScrim` over white): the title and the time in `ink`/`ink2`, the
+    /// stages' names in `ink2` and the current one in its tint (09/11/2026: "PICK", "EDIT" read 3.5:1 over a real take).
+    @Test func theReviewPanelReadsOverABrightVideo() {
+        let white = ColorContrast.RGB(red: 1, green: 1, blue: 1)
+        for traits in Self.recorderTraits {
+            let scrim = Self.recorderResolved(Palette.Takes.reviewPanelScrim, traits, over: white)
+            for token in [Palette.ink, Palette.ink2] + TakeStage.allCases.map(\.pillTint) {
+                let measured = ColorContrast.ratio(Self.recorderResolved(token, traits, over: scrim), scrim)
+                #expect(measured >= ColorContrast.textMinimum, "review panel text over white video: \(measured)")
+            }
+        }
+    }
+
     private static let recorderTraits = [UIAccessibilityContrast.normal, .high].map { contrast in
         UITraitCollection(userInterfaceStyle: .dark).modifyingTraits { $0.accessibilityContrast = contrast }
     }
