@@ -734,8 +734,9 @@ struct TakeReviewView: View {
         case .stay:
             break
         case .universe:
-            services.presentation.selectedTab = .profile
+            // Out of the review first: leaving a shared take picks Takes, and the universe is what was asked for.
             onBack()
+            services.presentation.selectedTab = .profile
         case .shareAgain(let video):
             Task {
                 try? await Task.sleep(for: .milliseconds(600))

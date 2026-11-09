@@ -183,9 +183,12 @@ final class TakeLibraryService {
     /// its own, so it never unmarks other freestyle takes.
     func setBest(_ id: UUID, isBest: Bool) {
         guard let target = take(id: id) else { return }
-        for index in takes.indices where takes[index].id == id || (target.scriptID != nil && takes[index].scriptID == target.scriptID) {
+        let video = takes.indices.filter { takes[$0].id == id || (target.scriptID != nil && takes[$0].scriptID == target.scriptID) }
+        // The star settles every take the video has now, whatever the clock says about their dates (`TakeStage.takeAfterStar`).
+        let markedAt = max(.now, video.map { takes[$0].recordedAt }.max() ?? .now)
+        for index in video {
             takes[index].isBest = isBest && takes[index].id == id
-            takes[index].bestMarkedAt = takes[index].isBest ? .now : nil
+            takes[index].bestMarkedAt = takes[index].isBest ? markedAt : nil
         }
         persist()
     }

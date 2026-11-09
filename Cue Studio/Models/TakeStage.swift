@@ -15,10 +15,11 @@ nonisolated enum TakeStage: Int, CaseIterable, Identifiable, Comparable, Sendabl
     static func < (lhs: TakeStage, rhs: TakeStage) -> Bool { lhs.rawValue < rhs.rawValue }
 
     /// The newest take when it was recorded after the star was given (the video was filmed again): it is to pick again. Starring any take
-    /// afterwards, the old one too, settles it.
+    /// afterwards, the old one too, settles it. A star from before its time was kept never reopens the pick.
     static func takeAfterStar(in takes: [Take]) -> Take? {
-        guard let star = takes.first(where: \.isBest), let newest = takes.max(by: { $0.recordedAt < $1.recordedAt }),
-              newest.id != star.id, newest.recordedAt > (star.bestMarkedAt ?? star.recordedAt) else { return nil }
+        guard let star = takes.first(where: \.isBest), let markedAt = star.bestMarkedAt,
+              let newest = takes.max(by: { $0.recordedAt < $1.recordedAt }),
+              newest.id != star.id, newest.recordedAt > markedAt else { return nil }
         return newest
     }
 

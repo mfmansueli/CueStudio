@@ -35,7 +35,8 @@ struct IdeaSuggestionServiceTests {
         let notes = Notes()
         let service = IdeaSuggestionService(
             writer: writer, profile: profile, interfaceLanguage: { .english }, inspiration: { notes.inspiration }, notes: { notes.entries },
-            defaults: defaults.defaults
+            // A day and a place with no occasion near: an occasion takes a starter's place, so the real date made the topics depend on the week.
+            region: { nil }, now: { TestData.now }, defaults: defaults.defaults
         )
         return Rig(service: service, writer: writer, profile: profile, defaults: defaults, notes: notes)
     }

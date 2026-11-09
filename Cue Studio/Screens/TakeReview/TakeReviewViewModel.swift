@@ -616,10 +616,6 @@ final class TakeReviewViewModel {
         return ledger.isCounted(fingerprint: ExportFingerprint.make(takeID: take.id, source: takes.videoURL(for: take), options: options))
     }
 
-    private func exportOptions(for take: Take, edit: TakeEdit?, burnsInCaptions: Bool) -> ExportOptions {
-        ExportOptions(aspect: take.outputAspect, edit: edit, burnsInCaptions: burnsInCaptions, shortSide: outputShortSide(for: take))
-    }
-
     /// The line on the editor's "Is it ready to post?" (owner, 06/11/2026: the last free export told when it is useful, with no new flow):
     /// "LAST FREE EXPORT" with one left, "0 OF 3 LEFT · EXPORT WITH PRO" with none. Nothing on Pro, with more left, or when sharing `edit`
     /// costs nothing (the same video already out).
