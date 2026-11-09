@@ -6,7 +6,8 @@ visual). Pacotes antigos só no git (commit `bb39f35`). **Como manter:** ao muda
 daqui (o histórico fica no git). Os números das seções são citados no código: não renumere.
 
 O app roda no **iPhone e no iPad** (`TARGETED_DEVICE_FAMILY = 1,2`; decisão do dono, 26/10/2026): no iPad, nativo em tela cheia e em todas as
-orientações; no iPhone, só em retrato; no Mac, como "Designed for iPad". O app é **só escuro**. Regras de negócio: 3 exportações e 3 roteiros Ultra AI grátis (contador das exportações no Keychain), sem teste grátis (decisão do dono, 30/10/2026), preço da StoreKit, cota de IA, pipeline das
+orientações, numa janela só (`UIApplicationSupportsMultipleScenes = false` no Info.plist: câmera, gravador e editor são únicos, e uma segunda janela
+brigaria por eles); no iPhone, só em retrato; no Mac, como "Designed for iPad". O app é **só escuro**. Regras de negócio: 3 exportações e 3 roteiros Ultra AI grátis (contador das exportações no Keychain), sem teste grátis (decisão do dono, 30/10/2026), preço da StoreKit, cota de IA, pipeline das
 takes (`TakeStage`). **Tamanho do texto e da tela:** todo texto da interface cresce com o Dynamic Type e acompanha um pouco a largura do
 iPhone; cada tela cabe do SE ao Pro Max (§53). **Movimento:** o Modo de Baixo Consumo não tira nem encurta nenhuma animação (decisão do dono, 6/10/2026; a regra do `09` §7 foi
 removida); só o **Reduzir Movimento** mostra o estado final. `speed` só serve para encurtar nos testes de UI.
