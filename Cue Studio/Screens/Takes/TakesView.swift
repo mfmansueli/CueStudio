@@ -35,7 +35,7 @@ struct TakesView: View {
         self.services = services
         _viewModel = State(initialValue: TakesViewModel(
             takes: services.takes, library: services.library, drafts: services.drafts,
-            presentation: services.presentation, toast: services.toast
+            presentation: services.presentation, toast: services.toast, onboarding: services.onboarding, guidance: services.guidance
         ))
     }
 
@@ -93,8 +93,10 @@ struct TakesView: View {
             importing = nil
             Task { await viewModel.importVideo(item) }
         }
-        .onAppear { viewModel.refresh(); takeRequest() }
+        .onAppear { viewModel.refresh(); takeRequest(); lightFirstStar() }
         .onChange(of: presentation.takesRequest) { _, _ in takeRequest() }
+        // Back from the camera or a review, or on its tab again: the first star lights where the creator sees it.
+        .onChange(of: isQuiet) { _, quiet in if quiet { lightFirstStar() } }
         .onChange(of: scenePhase) { _, phase in
             if phase == .active { viewModel.refresh() }
         }
@@ -115,6 +117,13 @@ struct TakesView: View {
                 ReminderSheet(subject: .take(take.id), title: video.title) { ReminderFeedback.show($0, toast: services.toast) }
             }
         }
+    }
+
+    /// The first video's star, lit on its card once Takes is the screen in front: a soft tap, and VoiceOver hears it.
+    private func lightFirstStar() {
+        guard isQuiet, viewModel.lightFirstStar() else { return }
+        Haptics.soft()
+        AccessibilityNotification.Announcement(String(localized: "Your first video. Your first star.")).post()
     }
 
     /// The request "Your universe" left for Takes, taken once.
@@ -220,7 +229,9 @@ struct TakesView: View {
                     let columns = Array(repeating: GridItem(.flexible(), spacing: 10), count: dynamicTypeSize.isAccessibilitySize ? 1 : 2)
                     LazyVGrid(columns: columns, spacing: 14) {
                         ForEach(section.videos) { video in
-                            Button { viewModel.open(video) } label: { TakeVideoCard(video: video) }
+                            Button { viewModel.open(video) } label: {
+                                TakeVideoCard(video: video, showsFirstStar: video.id == viewModel.firstStarVideoID)
+                            }
                                 .buttonStyle(.plain)
                                 .contextMenu { actions(for: video) } preview: { peek(video) }
                                 .accessibilityIdentifier("takes.video.\(video.id)")
@@ -260,7 +271,10 @@ struct TakesView: View {
                 Section {
                     ForEach(Array(section.videos.enumerated()), id: \.element.id) { index, video in
                         Button { viewModel.open(video) } label: {
-                            TakeVideoRow(video: video, whenLabel: video.latest.map(viewModel.whenLabel(for:)) ?? "")
+                            TakeVideoRow(
+                                video: video, whenLabel: video.latest.map(viewModel.whenLabel(for:)) ?? "",
+                                showsFirstStar: video.id == viewModel.firstStarVideoID
+                            )
                         }
                         .buttonStyle(.plain)
                         .listRowInsets(EdgeInsets())

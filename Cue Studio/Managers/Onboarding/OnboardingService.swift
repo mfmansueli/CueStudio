@@ -20,8 +20,10 @@ final class OnboardingService {
     }
     private(set) var topics: [OnboardingTopic] = []
     var platform: Platform = .tiktok
-    /// The first take played its "first star": it is told once.
+    /// The first star was told (in the send-off of the first confirmed post, or on the first video in Takes): it is told once.
     private(set) var firstStarShown: Bool
+    /// The take whose first star waits for Takes: its review was left without a confirmed post (D4, owner 09/11/2026).
+    private(set) var firstStarWaitingTake: UUID?
     /// The flight came back where a past session left it (after 1.4): its choices went into the app then, and only the chapter was kept.
     let isResumed: Bool
 
@@ -34,6 +36,7 @@ final class OnboardingService {
         self.isEnabled = isEnabled
         isCompleted = !isEnabled || defaults.bool(forKey: DefaultsKey.onboardingCompleted)
         firstStarShown = defaults.bool(forKey: DefaultsKey.firstStarShown)
+        firstStarWaitingTake = defaults.string(forKey: DefaultsKey.firstStarWaitingTake).flatMap(UUID.init(uuidString:))
         let kept = Self.keptStep(in: defaults)
         isResumed = startStep == nil && kept != nil
         step = startStep ?? kept ?? .welcome
@@ -114,6 +117,20 @@ final class OnboardingService {
     func markFirstStarShown() {
         firstStarShown = true
         defaults.set(true, forKey: DefaultsKey.firstStarShown)
+        dropWaitingFirstStar()
+    }
+
+    /// The review of `takeID` was left without a confirmed post: Takes lights the first star on that video when it next shows it.
+    func keepFirstStar(for takeID: UUID) {
+        guard !firstStarShown else { return }
+        firstStarWaitingTake = takeID
+        defaults.set(takeID.uuidString, forKey: DefaultsKey.firstStarWaitingTake)
+    }
+
+    /// The waiting take is gone (deleted): the star waits for the next review left, untold.
+    func dropWaitingFirstStar() {
+        firstStarWaitingTake = nil
+        defaults.removeObject(forKey: DefaultsKey.firstStarWaitingTake)
     }
 
     private func markCompleted() {

@@ -83,8 +83,6 @@ import Foundation
 ///   Simulator can't play it), to measure the safe zone guide over a light and a dark video (`PreviewStandInFrame`).
 /// - `-uiTestDockMotionLog`: the Scripts dock counts its lights (the writer's, the network's, the send arrow's) in `dock.motionLog`.
 /// - `-uiTestShareQueue`: a "Share to universe" queue left for the sample take (the Continue posting card).
-/// - `-uiTestStoryAt <seconds>`: the milestone and first-star stories stand still at that second.
-/// - `-uiTestFirstStar` / `-uiTestMilestone <videos>`: the review opens on the first-star (1.7) / milestone (8.3) story.
 /// - `-uiTestSendOffAt <seconds>`: the send-off (8.2) stands still at that second of its timeline.
 /// - `-uiTestProAt <seconds>`: the Pro opening stands still at that second of its timeline (to take its pictures).
 /// - `-uiTestWelcomeAt <seconds>`: the welcome's opening stands still at that second of its timeline (to take its pictures).
@@ -206,11 +204,6 @@ struct LaunchOptions {
     var platformPickFrozenAge: Double?
     /// UI tests: the send-off stands still at this second (`-uiTestSendOffAt`).
     var sendOffFrozenTime: Double?
-    /// UI tests: the review opens on the first-star story (`-uiTestFirstStar`) or the milestone story (`-uiTestMilestone <videos>`).
-    var showsFirstStar = false
-    /// UI tests: the milestone / first-star stories stand still at this second (`-uiTestStoryAt`).
-    var storyFrozenTime: Double?
-    var milestoneToShow: Int?
     /// UI tests: how many of the free exports are already used (`-uiTestExportsLeft`).
     var exportsUsed = 0
     /// Nil is the system's notification center; UI tests use one in memory that never shows the permission prompt.
@@ -230,8 +223,6 @@ struct LaunchOptions {
         func value(_ name: String) -> String? {
             arguments.firstIndex(of: name).flatMap { arguments.indices.contains($0 + 1) ? arguments[$0 + 1] : nil }
         }
-        options.storyFrozenTime = value("-uiTestStoryAt").flatMap(Double.init)
-        options.milestoneToShow = value("-uiTestMilestone").flatMap(Int.init)
         options.sendOffFrozenTime = value("-uiTestSendOffAt").flatMap(Double.init)
         options.proFrozenTime = value("-uiTestProAt").flatMap(Double.init)
         options.welcomeFrozenTime = value("-uiTestWelcomeAt").flatMap(Double.init)
@@ -474,7 +465,6 @@ struct LaunchOptions {
             options.keepsStarTransitionTimings = arguments.contains("-uiTestStarTransition")
             options.animationsOff = arguments.contains("-uiTestFastAnimations")
             options.keepsWelcomeOpening = arguments.contains("-uiTestWelcomeOpening")
-            options.showsFirstStar = arguments.contains("-uiTestFirstStar")
             Self.readFrozenTimes(arguments, into: &options)
             if let index = arguments.firstIndex(of: "-uiTestPermissions"), arguments.indices.contains(index + 1) {
                 options.permissions = StubPermissions(grants: arguments[index + 1] != "denied")

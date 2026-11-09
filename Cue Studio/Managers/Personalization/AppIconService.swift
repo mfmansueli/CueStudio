@@ -5,7 +5,7 @@
 
 import UIKit
 
-/// The creator's icon choice, for Settings › Personalize and the milestone screen.
+/// The creator's icon choice, for Settings › Personalize and the send-off's milestone row.
 @MainActor
 @Observable
 final class AppIconService {

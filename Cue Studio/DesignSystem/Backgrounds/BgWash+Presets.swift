@@ -74,7 +74,7 @@ extension BgWash {
         blob(left: 200, top: 140, width: 240, height: 200, color: Palette.Universe.nightViolet.opacity(0.16)),
     ]
 
-    /// 1.7: the first star's night, a little deeper than the others (`#06070D`).
+    /// The practice's night (once 1.7's, the first star's), a little deeper than the others (`#06070D`).
     static let firstStar = [
         Light(color: Palette.Universe.nightViolet.opacity(0.3), radiusX: 0.8, radiusY: 0.4, centerX: 0.5, centerY: 0.34),
         Light(color: Palette.Settings.iconIndigo.opacity(0.16), radiusX: 0.6, radiusY: 0.3, centerX: 0.2, centerY: 0.9),
@@ -94,12 +94,6 @@ extension BgWash {
     static let sendOff = [
         Light(color: Palette.Universe.nightViolet.opacity(0.26), radiusX: 0.9, radiusY: 0.4, centerX: 0.7, centerY: 0.10),
         Light(color: Palette.Settings.iconIndigo.opacity(0.16), radiusX: 0.6, radiusY: 0.3, centerX: 0.2, centerY: 0.45),
-    ]
-
-    /// 8.3 The milestone: a strong haze at the middle (`#07080E` under it, `Palette.Flight.night`).
-    static let milestone = [
-        Light(color: Palette.Universe.nightViolet.opacity(0.30), radiusX: 0.9, radiusY: 0.4, centerX: 0.5, centerY: 0.34),
-        Light(color: Palette.Settings.iconIndigo.opacity(0.14), radiusX: 0.6, radiusY: 0.3, centerX: 0.2, centerY: 0.80),
     ]
 
     /// 11.4 Pro: the haze falls from the top, behind the planet that is you.

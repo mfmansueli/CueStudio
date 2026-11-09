@@ -83,9 +83,6 @@ nonisolated enum CueMotion {
     static let hazeShift = Animation.easeInOut(duration: 0.8)
     /// An SF Symbol swapping for another (`symbolSwap`): quick, no bounce.
     static let symbolSwap = Animation.snappy(duration: 0.22)
-    /// A full-screen story coming over the screen (`StoryCover`): light's curve, and going, quicker.
-    static let storyIn = light(duration: 0.35)
-    static let storyOut = Animation.easeIn(duration: 0.25)
     /// A story skipped with a tap: everything eases to its final place instead of jumping there.
     static let skipSettle = Animation.easeOut(duration: 0.3)
     /// The sky drifting up a little with each chapter: slower still, the farthest layer of the three.

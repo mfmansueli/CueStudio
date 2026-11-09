@@ -35,6 +35,7 @@
         "CaptionToolsUITests/testFindAndReplaceFixesAWordInEveryLine()",
         "AudioMixUITests/testTextIsSpokenIntoAVoiceOverAtThePlayhead()",
         "FirstRunUITests/testRecordingWithoutAScript()",
+        "FirstCelebrationUITests/testLeavingWithoutPostingShowsNoScreenAndLightsTheStarInTakes()",
         "FreePlanUITests/testSuggestBestPicksATake()",
         "ProfileUITests/testEditProfileHasNoAccountAndTheNameIsTheCreatorsToEdit()",
         "YourUniverseUITests/testTheLiveYearShowsItsCountAndPlanets()",

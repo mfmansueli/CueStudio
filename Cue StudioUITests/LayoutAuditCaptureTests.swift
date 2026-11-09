@@ -110,24 +110,16 @@ final class LayoutAuditCaptureTests: XCTestCase {
         } else { miss("review.saveButton") }
     }
 
+    /// The first journey's one celebration (D4): the send-off of a first post with Aurora's row, and the first star on the video in Takes.
     func testCelebrations() throws {
         try begin()
-        let milestone = launch(seeded: true, sampleVideo: true, extra: ["-uiTestMilestone", "25", "-uiTestUniverse", "sample", "-uiTestStoryAt", "6"])
-        if openTab(milestone, "Takes"), let row = morningHabits(milestone) {
-            row.tap()
-            if wait(milestone, "milestone.sheet", timeout: 15) {
-                sleep(3)
-                shot(milestone, "milestone")
-            }
-        }
-        milestone.terminate()
-        let firstStar = launch(seeded: true, sampleVideo: true, extra: ["-uiTestFirstStar", "-uiTestStoryAt", "7.5"])
-        if openTab(firstStar, "Takes"), let row = morningHabits(firstStar) {
-            row.tap()
-            if wait(firstStar, "firstStar.sheet", timeout: 15) {
-                sleep(3)
-                shot(firstStar, "first-star")
-            }
+        let posted = recordFirstTake(animations: true, appLanguage: language, contentSize: size, extraArguments: ["-uiTestSendOffAt", "5"])
+        postRightAway(posted)
+        if wait(posted, "sendoff.icon.use", timeout: 10) { shot(posted, "send-off-first-post") }
+        posted.terminate()
+        let left = recordFirstTake(appLanguage: language, contentSize: size)
+        if tap(left, "review.backButton"), tap(left, "prompter.closeButton"), openTab(left, "Takes") {
+            shot(left, "first-star-takes")
         }
     }
 
