@@ -74,6 +74,30 @@ struct ExportProRulesTests {
 
     // MARK: - 4K is Pro
 
+    /// The quality picked is the next video's too (14.1-5): a Pro who picked 1080p for a 4K recording isn't put back on 4K; a kept 4K only applies
+    /// where it fits.
+    @Test func thePickedQualityIsKeptForTheNextVideo() {
+        let first = makeScenario(tier: .subscriber, resolution: .uhd4K)
+        defer { first.defaults.tearDown() }
+        #expect(first.viewModel.quality == .uhd4K)
+        first.viewModel.setQuality(.hd1080)
+        #expect(first.preferences.exportQuality == .hd1080)
+        let next = TakeReviewViewModel(
+            takeID: first.take.id, takes: first.takes, quota: first.quota, tier: { .subscriber }, exporter: first.exporter, photos: FakePhotoSaver(),
+            sharing: FakeVideoSharing(), ledger: first.ledger, editing: first.editor,
+            library: ScriptLibraryService(repository: FakeScriptRepository(scripts: [])), rules: TestData.rulesService(),
+            profile: CreatorProfileService(defaults: first.defaults.defaults), preferences: first.preferences, drafts: FakeDraftStore(),
+            toast: ToastService()
+        )
+        #expect(next.quality == .hd1080)
+        // A kept 4K without Pro (it lapsed) is 1080p.
+        first.preferences.exportQuality = .uhd4K
+        let lapsed = makeScenario(resolution: .uhd4K)
+        defer { lapsed.defaults.tearDown() }
+        lapsed.preferences.exportQuality = .uhd4K
+        #expect(lapsed.viewModel.quality == .hd1080)
+    }
+
     /// Without Pro, 4K isn't picked: "4K export is Cue Pro" asks, and the 4K recording is saved in 1080p.
     @Test func withoutProFourKAsksAndARecordingInFourKExportsInHD() async throws {
         let scenario = makeScenario(resolution: .uhd4K)

@@ -87,6 +87,8 @@ nonisolated enum DefaultsKey {
     static let editMediaDeletionsPending = "editMediaDeletionsPending"
     /// How the Takes tab lays videos out (`TakeLayout` raw value); absent = the grid.
     static let takesLayout = "takesLayout"
+    /// The quality last picked in Export options (`ExportQuality` raw value; absent = the recording's own).
+    static let exportQuality = "exportQuality"
     /// Personalize was opened once: its NEW badge in Settings is gone.
     static let personalizeSeen = "personalizeSeen"
     /// The account Sign in with Apple kept before it was removed (Apple's user identifier, and the name and email Apple shared once): only

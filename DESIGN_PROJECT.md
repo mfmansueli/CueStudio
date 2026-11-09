@@ -980,9 +980,10 @@ os ícones (§16), e só promete um ícone ainda não destravado; passado o últ
 
 Na revisão, o botão amarelo **Share to universe** renderiza o arquivo (1080 × 1920, sem marca d'água; nada sai do Cue, nada é contado) e abre **Ready to
 travel** com as redes (`ShareNetworkPicker`: TikTok "· from your script", Reels, Shorts, YouTube ("POSTS AS A SHORT" até 3 min na vertical), LinkedIn, "Also
-save to Photos", "Share to n networks", "Uses 1 free export · k left after this"; no canto, o botão de vidro **Options · 1080p** (ou "· 4K",
+save to Photos" (desligado no primeiro vídeo compartilhado, ligado daí em diante: `ShareFlow`), "Share to n networks", "Uses 1 free export · k left after this"; no canto, o botão de vidro **Options · 1080p** (ou "· 4K",
 "· 720p": a qualidade com que o arquivo sai, com a regra do Pro aplicada) abre **Export options**: legendas e qualidade, 1080p ou 4K, que é Pro
-(§12)). Fechado o sheet, Ready mostra **Share to
+(§12); a qualidade escolhida vale também para os próximos vídeos, `PreferencesService.exportQuality`, e um 4K guardado só volta com Pro numa
+gravação 4K); a dica 6/6 da primeira viagem só aparece aqui quando não há rede marcada pelo roteiro (marcada, o botão já é o passo). Fechado o sheet, Ready mostra **Share to
 universe · Save video · compartilhar** (folha do sistema). **Uma exportação por envio** (um arquivo para todas as redes; reexportar na fila não gasta
 outra: `ExportLedgerService.begin(inheritingCountFrom:)`).
 **A fila** (`ShareQueue`, `ShareQueueService`, `ShareFlow`): "Posting to n networks" (com 2+, nas 2 primeiras vezes); o passo de cada rede ("1 OF 3",
@@ -1592,7 +1593,8 @@ Sistema completo em `NOTIFICATIONS.md`. Na interface:
     now** (30 dias; no máximo 2 em 90 dias) e "Don’t suggest this" (fica escondida até Settings › Personalize › **Hidden suggestions** › **Show again**,
     `suggestAgain`). Try it abre a ferramenta (Quick edit direto no painel: `EditorTool`, `QuickEditViewModel+Opening`; Skin já em Smooth, `skinOpensOn`).
     As introduções no app não dependem de "Tools and news" (que é só das notificações; decisão do dono, 30/10/2026). Uma introdução adiada só é dada
-    como mostrada quando aparece na tela.
+    como mostrada quando aparece na tela. Fechar o treino da primeira viagem (`PrompterLaunch.isPractice`) não traz introdução nem convite: a viagem
+    ainda está guiando (`MainView`).
   - **Convite** (`NotificationInviteSheet`): a pergunta, "One notification when something is waiting, at most one a day.", "Uses notifications · change it
     anytime in Settings", **Allow notifications** (só ele traz a pergunta do sistema) e **Not now**. Para um roteiro pronto sem take, o botão é **Remind me
     tomorrow**: a pergunta do iOS e o lembrete daquele roteiro amanhã às 10h. Esse convite só vem da própria página do roteiro, ao sair dela.

@@ -30,6 +30,11 @@ final class PreferencesService {
         didSet { defaults.set(showsCuesOnPage, forKey: DefaultsKey.showsCuesOnPage) }
     }
 
+    /// The quality last picked in Export options, for the next videos (nil until one is picked; `TakeReviewViewModel.quality`).
+    var exportQuality: ExportQuality? {
+        didSet { defaults.set(exportQuality?.rawValue, forKey: DefaultsKey.exportQuality) }
+    }
+
     /// Takes with an export running now.
     var exportsInFlight: Set<UUID> {
         didSet { Self.store(exportsInFlight, key: DefaultsKey.exportsInFlight, in: defaults) }
@@ -49,6 +54,7 @@ final class PreferencesService {
         camera = Self.load(CameraSettings.self, key: DefaultsKey.cameraSettings, from: defaults) ?? CameraSettings()
         customCues = defaults.stringArray(forKey: DefaultsKey.customCues) ?? []
         showsCuesOnPage = defaults.object(forKey: DefaultsKey.showsCuesOnPage) as? Bool ?? true
+        exportQuality = defaults.string(forKey: DefaultsKey.exportQuality).flatMap(ExportQuality.init(rawValue:))
         // An export still marked as running belongs to the last time Cue ran: it stopped with it.
         stoppedExports = Self.ids(DefaultsKey.stoppedExports, in: defaults).union(Self.ids(DefaultsKey.exportsInFlight, in: defaults))
         exportsInFlight = []

@@ -16,6 +16,11 @@ struct ShareNetworkPicker: View {
 
     @Environment(FirstVoyageService.self) private var voyage
 
+    /// The script's network is one of the list, so it came ticked.
+    private var scriptNetworkIsTicked: Bool {
+        take.platform.map { ShareNetworkLine.networks.contains(ShareDestination($0)) } ?? false
+    }
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 14) {
@@ -32,8 +37,9 @@ struct ShareNetworkPicker: View {
                     }
                 }
                 header
-                // The first voyage's last step.
-                VoyageInPlaceTip(step: .share, place: .share, isAllowed: true) { isDone in
+                // The first voyage's last step, when there is a choice to make: with the script's network already ticked, the button below
+                // is the whole step (the step still counts once the video is shared, `FirstVoyageService`).
+                VoyageInPlaceTip(step: .share, place: .share, isAllowed: !scriptNetworkIsTicked) { isDone in
                     VoyageTipCard(
                         step: .share, title: VoyageStep.share.tipTitle(network: take.platform?.label),
                         message: VoyageStep.share.tipMessage(network: take.platform?.label), isDone: isDone,

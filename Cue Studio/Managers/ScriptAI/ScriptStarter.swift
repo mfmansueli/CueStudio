@@ -64,7 +64,7 @@ final class ScriptStarter {
 
     /// Whether the dock's ideas can be drafted, told before anything is typed: in the Script Language when one is set. On Auto-detect the
     /// language is the idea's own, known only when it is sent (`write`), so only what doesn't depend on it is told. With Ultra chosen (and
-    /// allowed) Apple Intelligence's availability doesn't matter: Gemini writes it.
+    /// allowed) Apple Intelligence's availability doesn't matter: Ultra AI writes it.
     var dockDrafting: DraftingAvailability { writesWithUltra ? .available : appleDrafting }
 
     /// Whether Apple Intelligence itself can draft in the Script Language, whoever the dock's chip picked.

@@ -104,11 +104,18 @@ final class TakeReviewViewModel {
     @ObservationIgnored private var captionNotice: String?
     /// Some of the exported video's words came out in the system's face: the message after sending it says so.
     @ObservationIgnored private var fontNotice: String?
-    /// What the creator picked in Export options (nil until they pick). 4K is Cue Pro (owner, 06/11/2026); the export reads `exportQuality`.
-    private var pickedQuality: ExportQuality?
-    /// The quality in Export options: the one picked, else the recording's own with Pro (a 4K recording exports in 4K) and 1080p without.
+    /// What the creator picked in Export options for this video (nil until they pick); the pick is also kept for the next videos
+    /// (`PreferencesService.exportQuality`). 4K is Cue Pro (owner, 06/11/2026); the export reads `exportQuality`.
+    private var pickedQuality: ExportQuality? {
+        didSet { if let pickedQuality { preferences.exportQuality = pickedQuality } }
+    }
+    /// The quality in Export options: the one picked; else the last one picked when it still fits (4K only with Pro and a 4K recording);
+    /// else the recording's own with Pro (a 4K recording exports in 4K) and 1080p without.
     var quality: ExportQuality {
-        pickedQuality ?? (isPro && take?.resolution == .uhd4K ? .uhd4K : .hd1080)
+        let fourKFits = isPro && take?.resolution == .uhd4K
+        if let pickedQuality { return pickedQuality }
+        if let kept = preferences.exportQuality, kept != .uhd4K || fourKFits { return kept }
+        return fourKFits ? .uhd4K : .hd1080
     }
     /// "4K export is Cue Pro" is up: 4K was picked without Pro (Go Pro, or Keep 1080p).
     var offersFourKPro = false

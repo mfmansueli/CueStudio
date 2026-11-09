@@ -118,12 +118,26 @@ struct ShareFlowTests {
 
     // MARK: - One export for every network
 
+    /// The first video ever shared isn't copied into Photos unless asked; once one was shared, the switch starts on.
+    @Test func photosStartsOffOnlyForTheFirstVideoShared() {
+        let first = makeScenario()
+        defer { first.defaults.tearDown() }
+        #expect(!first.flow.alsoSavesToPhotos)
+        first.milestones.recordShare(of: UUID(), platform: .tiktok, topic: nil)
+        let later = ShareFlow(
+            review: first.review, queues: first.queues, milestones: first.milestones,
+            library: ScriptLibraryService(repository: FakeScriptRepository(scripts: [])), defaults: first.defaults.defaults, toast: ToastService()
+        )
+        #expect(later.alsoSavesToPhotos)
+    }
+
     @Test func startingExportsOnceSavesToPhotosAndCountsOne() async throws {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }
         scenario.flow.openPicker(with: try #require(await rendered(scenario)))
         scenario.flow.toggle(.reels)
         scenario.flow.toggle(.linkedin)
+        scenario.flow.alsoSavesToPhotos = true
         await scenario.flow.start()
         #expect(scenario.exporter.exports.count == 1, "one file for the three networks")
         #expect(scenario.photos.savedURLs.count == 1)
@@ -178,6 +192,7 @@ struct ShareFlowTests {
         let scenario = makeScenario(usedExports: UsagePolicy.freeExports) { tier.value }
         defer { scenario.defaults.tearDown() }
         scenario.flow.openPicker(with: try #require(await rendered(scenario)))
+        scenario.flow.alsoSavesToPhotos = true
         await scenario.flow.start()
         #expect(scenario.review.showsExportReady && scenario.queues.queue(forTake: scenario.take.id) == nil)
         tier.value = .subscriber
@@ -205,6 +220,7 @@ struct ShareFlowTests {
         scenario.flow.openPicker(with: try #require(await rendered(scenario)))
         scenario.flow.toggle(.reels)
         scenario.flow.toggle(.linkedin)
+        scenario.flow.alsoSavesToPhotos = true
         await scenario.flow.start()
         scenario.flow.finishExplainer()
     }

@@ -70,9 +70,10 @@ struct MainView: View {
                 RemoteControllerView()
             }
             .fullScreenCover(item: $presentation.paywall) { PaywallView(context: $0) }
-            // Back from the teleprompter or the editor: a tool's introduction may fit now (one a session at most).
-            .onChange(of: presentation.prompter == nil) { _, closed in
-                if closed { offerIntroduction() }
+            // Back from the teleprompter or the editor: a tool's introduction may fit now (one a session at most). Not after the first
+            // flight's practice: the voyage is still guiding, and a second voice in that moment is one interruption too many.
+            .onChange(of: presentation.prompter) { closing, opened in
+                if opened == nil, let closing, !closing.isPractice { offerIntroduction() }
             }
             // The My Cue Voice tip waits until the app has been opened on two different days.
             .task { voiceQuestions.registerAppOpen() }

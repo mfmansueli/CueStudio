@@ -56,6 +56,9 @@ final class ShareFlow {
         self.library = library
         self.defaults = defaults
         self.toast = toast
+        // The first video ever shared isn't copied into Photos unless asked: one export, counted when the post happens, not a second copy
+        // the creator didn't choose. From then on, the switch starts on as before.
+        alsoSavesToPhotos = milestones.shares > 0
         review.queueInterceptor = { [weak self] destination, result in self?.sheetEnded(for: destination, result: result) ?? false }
         review.queueOperation = { [weak self] in self?.queue?.operationID }
         review.queueResumes = { [weak self] in await self?.start() }

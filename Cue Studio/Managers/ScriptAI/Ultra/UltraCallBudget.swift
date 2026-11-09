@@ -5,7 +5,7 @@
 
 import Foundation
 
-/// The lab's cap on Gemini calls from this iPhone: each call is counted before it goes out, failures included, and none goes out past the limit.
+/// The lab's cap on model calls from this iPhone: each call is counted before it goes out, failures included, and none goes out past the limit.
 /// A guard for the experiment the owner authorized (1,000 calls, 31/10/2026), never a credit system: the production one has to be the server's
 /// (purchases verified there, balances and idempotent operations kept there). The count lives in the app's standard defaults whatever suite a
 /// UI test uses, so a test run can't reset it, and nothing here ever lowers it.

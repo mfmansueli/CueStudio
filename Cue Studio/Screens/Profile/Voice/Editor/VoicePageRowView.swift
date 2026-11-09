@@ -14,14 +14,17 @@ struct VoicePageRowView: View {
     let profile: CreatorProfile
     let action: () -> Void
 
+    @ScaledMetric(relativeTo: .subheadline) private var labelWidth: CGFloat = 96
+
     var body: some View {
         let value = row.value(in: profile)
         Button(action: action) {
             HStack(spacing: 12) {
+                // The label's column grows with the text size, so a long label wraps instead of being cut.
                 Text(row.title)
                     .cueFont(.subheadline)
                     .foregroundStyle(Palette.ink2)
-                    .frame(width: 96, alignment: .leading)
+                    .frame(width: labelWidth, alignment: .leading)
                 VStack(alignment: .leading, spacing: 3) {
                     if value.isEmpty, row == .learned {
                         Text("Nothing yet").cueFont(16).foregroundStyle(Palette.ink2)

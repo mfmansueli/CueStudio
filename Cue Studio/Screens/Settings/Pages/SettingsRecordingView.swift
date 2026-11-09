@@ -29,7 +29,7 @@ struct SettingsRecordingView: View {
             Section {
                 SettingsEntryRow(entry: .defaultFormat, bindings: bindings)
             } header: {
-                CueSectionHeader("Default format")
+                CueSectionHeader("Default frame")
             } footer: {
                 Text("Framing, safe zones and export follow it.")
             }

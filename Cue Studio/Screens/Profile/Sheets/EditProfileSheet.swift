@@ -20,6 +20,10 @@ struct EditProfileSheet: View {
     @State private var hasLoaded = false
     @State private var photoItem: PhotosPickerItem?
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    /// The widest label of the form, measured.
+    @State private var labelWidth: CGFloat = 96
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -108,10 +112,27 @@ struct EditProfileSheet: View {
         .background(Palette.surface2, in: RoundedRectangle(cornerRadius: Metrics.groupedListRadius, style: .continuous))
     }
 
+    /// A label beside its field, in a column as wide as the widest label (at least 96 pt: "Gebruikersnaam" and "Kullanıcı adı" never cut); at
+    /// the accessibility sizes, the label above its field.
+    @ViewBuilder
     private func row<Value: View>(_ title: LocalizedStringKey, @ViewBuilder value: () -> Value) -> some View {
-        HStack(spacing: 8) {
-            Text(title).foregroundStyle(Palette.ink).frame(width: 96, alignment: .leading)
-            value()
+        Group {
+            if dynamicTypeSize.isAccessibilitySize {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(title).foregroundStyle(Palette.ink)
+                    value()
+                }
+                .padding(.vertical, 8)
+            } else {
+                HStack(spacing: 8) {
+                    Text(title)
+                        .foregroundStyle(Palette.ink)
+                        .fixedSize()
+                        .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { labelWidth = max(labelWidth, $0) }
+                        .frame(width: labelWidth, alignment: .leading)
+                    value()
+                }
+            }
         }
         .cueFont(17)
         .foregroundStyle(Palette.ink)
