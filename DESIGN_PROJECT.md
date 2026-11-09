@@ -1086,10 +1086,12 @@ cima com o texto; §16). O link do universo e **Done** terminam do mesmo jeito (
 **6.2 Takes:** título com **Import video** à esquerda (ícone em `Palette.ink`, como os outros botões de barra, dono 30/10/2026) e List | Grid à
 direita; sob o título, nenhuma contagem (dono, 30/10/2026); **trilha de status** (`TakePipelineCard`: quatro nós de 28 pt, TO PICK cinza, IN EDIT ciano, READY verde com
 anel que pulsa a cada 2 s, ✦ SHARED lilás; tocar filtra, de novo limpa); **Up next** (`TakeUpNextCard`: pôster 40 × 56, "UP NEXT · POST IT", botão amarelo
-Share/Edit/Pick que abre a take naquele passo); **fichas** (`TakesFilterChips`: "2026 · SHARED ✕" primeiro quando vem do universo, sempre à vista e fora do recolhimento, depois All e uma por
+Share/Edit/Pick que abre a take naquele passo; some enquanto a dica da primeira viagem está na tela, que diz o mesmo passo); **fichas** (`TakesFilterChips`: "2026 · SHARED ✕" primeiro quando vem do universo, ou o título do roteiro ("MORNING ROUTINE ✕", todas as takes dele, compartilhadas ou não) quando vem do "×3 ›" de Scripts (`TakesRequest.script`), sempre à vista e fora do recolhimento, depois All e uma por
 rede que tem vídeos, nenhuma com 0, na mesma linha que se recolhe na escolhida de Scripts, `FilterFan`, §2; a escolhida branca com texto preto; o ✕
 tira o amarelo e, se o planeta tinha escolhido a rede, o chip volta para All). **List | Grid** é `Picker` `.segmented` (`TakesLayoutToggle`). Card da grade (`TakeVideoCard`, 177:270): anel de 1 pt na
-cor do estágio, pílula do estágio, título e "● TIKTOK · 1:02" no pé. **A primeira estrela** (§16, `TakeFirstStarPill`): no primeiro vídeo, quando a revisão
+cor do estágio, pílula do estágio, título e "● TIKTOK · 1:02" no pé. Uma take gravada depois da ★ (o vídeo foi gravado de novo) volta o vídeo
+para TO PICK e é a que abre (`TakeStage.takeAfterStar`, `Take.bestMarkedAt`); dar a ★ de novo, até à antiga, resolve. Segurar um vídeo importado não
+oferece Retake. **A primeira estrela** (§16, `TakeFirstStarPill`): no primeiro vídeo, quando a revisão
 dele foi deixada sem postagem, a pílula **"✦ FIRST STAR"** (mono 10 heavy, `accText`) aparece sobre o título do cartão (no fundo `Palette.Takes.posterPill`)
 ou à frente das fichas da linha (no `surface2`): abre de 60% com uma mola depois de 0,25 s e um anel de luz sai da estrela (0,9 s); com Reduzir Movimento só
 aparece. Um toque `.soft`, o VoiceOver ouve "Your first video. Your first star." e o rótulo do cartão ganha "First star". Acende uma vez, quando o vídeo

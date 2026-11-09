@@ -156,13 +156,14 @@ struct TakesView: View {
         let pipeline = viewModel.pipeline
         return VStack(alignment: .leading, spacing: 14) {
             TakePipelineCard(pipeline: pipeline, selected: viewModel.filter.stage, onSelect: { viewModel.toggle($0) })
-            if let next = pipeline.next {
+            // UP NEXT and the first voyage's tip would say the same next step twice: the tip, while it is up, is the one.
+            if let next = pipeline.next, voyage.floatingStep == nil {
                 TakeUpNextCard(
                     next: next, onOpen: { viewModel.open(next.video) }, onAct: { viewModel.open(next.video, then: Self.action(for: next.stage)) }
                 )
             }
             TakesFilterChips(
-                scopeYear: viewModel.scope?.year, onClearScope: { viewModel.clearScope() },
+                scope: viewModel.scope, onClearScope: { viewModel.clearScope() },
                 platform: $viewModel.filter.platform, fan: $filterFan, options: viewModel.platformOptions
             )
             .padding(.horizontal, -Metrics.gutter)
@@ -312,7 +313,10 @@ struct TakesView: View {
     private func actions(for video: TakeVideo) -> some View {
         Button { viewModel.open(video, then: .share) } label: { Label("Share", systemImage: "square.and.arrow.up") }
         Button { viewModel.open(video, then: .edit) } label: { Label("Edit", systemImage: "pencil") }
-        Button { viewModel.retake(video) } label: { Label("Retake", systemImage: "arrow.counterclockwise") }
+        // An imported video has no script or camera to go back to (the review hides Retake too).
+        if video.best?.isImported != true {
+            Button { viewModel.retake(video) } label: { Label("Retake", systemImage: "arrow.counterclockwise") }
+        }
         Button { reminding = video } label: { Label("Remind me…", systemImage: "bell") }
         Button { viewModel.markBest(video) } label: {
             if video.best?.isBest == true {

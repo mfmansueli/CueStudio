@@ -161,10 +161,14 @@ final class TakesViewModel {
         editRevision += 1
     }
 
-    /// A request from "Your universe": the chip goes first, the platform it names is picked, and the stage filter is cleared.
+    /// A request from "Your universe" or a script's "×3 ›": the chip goes first, the platform it names is picked, and the stage filter is cleared.
     func apply(_ request: TakesRequest, sharedVideos: [UniverseVideo]) {
         scope = request
-        scopeTakeIDs = request.matching(sharedVideos)
+        if let script = request.script {
+            scopeTakeIDs = Set(takes.takes.filter { $0.scriptID == script.id }.map(\.id))
+        } else {
+            scopeTakeIDs = request.matching(sharedVideos)
+        }
         scopeSetPlatform = request.platform != nil
         if let platform = request.platform { filter.platform = platform }
         filter.stage = nil

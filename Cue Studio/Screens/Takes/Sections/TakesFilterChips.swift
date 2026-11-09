@@ -9,7 +9,7 @@ import SwiftUI
 /// and one chip for each platform in a row that folds into the chosen one (`FilterFan`). The chosen one is white with black text (a chip is
 /// never solid yellow).
 struct TakesFilterChips: View {
-    let scopeYear: Int?
+    let scope: TakesRequest?
     let onClearScope: () -> Void
     @Binding var platform: Platform?
     @Binding var fan: FilterFanState
@@ -21,9 +21,9 @@ struct TakesFilterChips: View {
             peekColor: { $0?.tint ?? Palette.ink }, identifier: { "takes.platform.\($0?.rawValue ?? "all")" },
             label: { $0?.label ?? String(localized: "All platforms") },
             leading: {
-                if let scopeYear {
+                if let scope {
                     // The chips after it slide into its place as it goes.
-                    TakesScopeChip(year: scopeYear) { withAnimation(FilterFanMotion.fold) { onClearScope() } }
+                    TakesScopeChip(scope: scope) { withAnimation(FilterFanMotion.fold) { onClearScope() } }
                 }
             },
             chip: { option, isSelected in chip(option, isSelected: isSelected) }

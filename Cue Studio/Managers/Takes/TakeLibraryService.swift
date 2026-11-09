@@ -185,6 +185,7 @@ final class TakeLibraryService {
         guard let target = take(id: id) else { return }
         for index in takes.indices where takes[index].id == id || (target.scriptID != nil && takes[index].scriptID == target.scriptID) {
             takes[index].isBest = isBest && takes[index].id == id
+            takes[index].bestMarkedAt = takes[index].isBest ? .now : nil
         }
         persist()
     }

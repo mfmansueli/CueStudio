@@ -17,8 +17,11 @@ nonisolated struct TakeVideo: Hashable, Identifiable, Sendable {
 
     var id: String { takes.first?.scriptID?.uuidString ?? takes.first?.id.uuidString ?? "" }
 
-    /// The take marked best, or the newest.
-    var best: Take? { takes.first(where: \.isBest) ?? takes.first }
+    /// The take marked best, or the newest; a take recorded after the starred one is the one to look at first (the video was filmed again).
+    var best: Take? { TakeStage.takeAfterStar(in: takes) ?? starred ?? takes.first }
+
+    /// The take marked best, if any.
+    var starred: Take? { takes.first(where: \.isBest) }
 
     var hasMarkedBest: Bool { takes.contains(where: \.isBest) }
 
@@ -31,7 +34,7 @@ nonisolated struct TakeVideo: Hashable, Identifiable, Sendable {
     var takesLabel: String? {
         guard takes.count > 1 else { return nil }
         let count = String(localized: "\(takes.count) takes")
-        guard hasMarkedBest, let best else { return count }
-        return count + " · " + String(localized: "Best: \(best.label)")
+        guard let starred else { return count }
+        return count + " · " + String(localized: "Best: \(starred.label)")
     }
 }

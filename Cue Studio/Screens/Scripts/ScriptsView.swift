@@ -373,7 +373,7 @@ struct ScriptsView: View {
             topic: tagging.world(of: script).map { ($0.topic.label, $0.color) }, showsTrailing: !viewModel.isSelecting,
             isSelected: viewModel.isSelecting ? viewModel.selection.contains(script.id) : nil,
             onRecord: { actions.record(script) },
-            onTakes: { presentation.selectedTab = .takes }
+            onTakes: { presentation.openTakes(TakesRequest(script: script.id, title: script.displayTitle)) }
         )
         return Group {
             if viewModel.isSelecting {
