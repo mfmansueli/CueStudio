@@ -21,29 +21,19 @@ nonisolated enum SafeZoneChoice: Hashable, Sendable {
         return order.filter { rules.safeZone(for: $0)?.aspect == aspect }.map { .platform($0) } + [.custom]
     }
 
-    /// What the camera shows: the creator's pick while it fits the frame, else the script's
-    /// platform, else the first platform measured on the frame, else Custom (1:1). Nil for
-    /// horizontal video.
-    static func resolve(pick: SafeZoneChoice?, scriptPlatform: Platform?, aspect: AspectRatio, rules: PlatformRules) -> SafeZoneChoice? {
+    /// What the camera shows: Custom while the creator picked it, else the recording's network when its zone was measured on the
+    /// frame, else the first network measured on it (Reels for 9:16, LinkedIn for 4:5), else Custom (1:1). Nil for horizontal video.
+    static func resolve(pick: SafeZoneChoice?, network: Platform?, aspect: AspectRatio, rules: PlatformRules) -> SafeZoneChoice? {
         let options = options(for: aspect, rules: rules)
         if let pick, options.contains(pick) { return pick }
-        if let scriptPlatform, options.contains(.platform(scriptPlatform)) { return .platform(scriptPlatform) }
+        if let network, options.contains(.platform(network)) { return .platform(network) }
         return options.first
     }
 
-    /// The platforms Settings › Social safe zone offers, then Custom.
-    static let settingsOptions: [SafeZoneChoice] = [.platform(.tiktok), .platform(.reels), .platform(.shorts), .custom]
-
-    /// The choice a saved key names (`key`); TikTok, the first of the Settings list, when none is saved.
-    static func saved(key: String?) -> SafeZoneChoice {
-        pick(fromKey: key) ?? .platform(.tiktok)
-    }
-
-    /// The creator's saved pick, or nil to follow the script's platform.
+    /// The creator's saved pick: Custom, or nil to follow the recording's network. A network saved by an older Settings page (TikTok,
+    /// Reels…) is no pick any more: the zone always follows the network the video is recorded for.
     static func pick(fromKey key: String?) -> SafeZoneChoice? {
-        guard let key else { return nil }
-        if key == SafeZoneChoice.custom.key { return .custom }
-        return Platform(rawValue: key).map { .platform($0) }
+        key == SafeZoneChoice.custom.key ? .custom : nil
     }
 
     /// Chip title: "Reels", "Custom".

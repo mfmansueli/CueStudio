@@ -25,6 +25,8 @@ struct RemoteControllerView: View {
                 searching
             }
             Spacer(minLength: 24)
+            recordSection
+            Spacer(minLength: 24)
             controls
         }
         .padding(EdgeInsets(top: 12, leading: Metrics.textGutter, bottom: 24, trailing: Metrics.textGutter))
@@ -119,6 +121,42 @@ struct RemoteControllerView: View {
         .surfaceCard()
         .accessibilityElement(children: .combine)
         .accessibilityIdentifier("remoteController.scriptCard")
+    }
+
+    // MARK: - Record
+
+    /// The teleprompter's camera can record from here.
+    private var canRecord: Bool { remote.isConnected && status?.canRecord == true }
+    private var isTakeRunning: Bool { status?.isRecording == true || status?.isCountingDown == true }
+
+    /// The big Record button, which becomes Stop while a take records (or cancels its countdown), the way the Apple Watch starts and ends
+    /// one; under it the take's number and, recording, its time.
+    private var recordSection: some View {
+        VStack(spacing: 10) {
+            RecordButton(isRecording: status?.isRecording == true, isCountingDown: status?.isCountingDown == true) {
+                remote.send(isTakeRunning ? .stop : .record)
+            }
+            .disabled(!canRecord && !isTakeRunning)
+            .opacity(canRecord || isTakeRunning ? 1 : 0.4)
+            .accessibilityIdentifier("remoteController.record")
+            TimelineView(.periodic(from: .now, by: 1)) { context in
+                Text(verbatim: takeLine(at: context.date))
+                    .monoFont(size: 15, weight: .semibold)
+                    .monospacedDigit()
+                    .foregroundStyle(status?.isRecording == true ? Palette.ink : Palette.ink2)
+            }
+            .accessibilityIdentifier("remoteController.take")
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    /// "TAKE 3", and "TAKE 3 · 0:42" while it records (its time counts on from when the teleprompter last said it).
+    private func takeLine(at date: Date) -> String {
+        guard let number = status?.takeNumber else { return "" }
+        let take = String(localized: "TAKE \(number)")
+        guard status?.isRecording == true, let elapsed = status?.recordingElapsed else { return take }
+        let since = remote.statusReceivedAt.map { max(0, date.timeIntervalSince($0)) } ?? 0
+        return take + " · " + DurationText.recording(Int(elapsed + since))
     }
 
     private var controls: some View {

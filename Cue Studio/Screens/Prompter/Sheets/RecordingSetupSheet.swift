@@ -56,8 +56,10 @@ struct RecordingSetupSheet: View {
 
     // MARK: - Recommendation
 
+    /// The recommendation with the same lines and the same two choices as the card over the camera: what "Use Recommended" would change
+    /// against what records now. Nothing left to change once it matches.
     private func recommendationCard(_ recommendation: SetupRecommendation) -> some View {
-        let conflicts = session.conflicts
+        let changes = viewModel.recommendationChanges
         return VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 8) {
                 Image(systemName: "sparkles").foregroundStyle(Palette.accText)
@@ -66,14 +68,12 @@ struct RecordingSetupSheet: View {
             Text(recommendation.summary)
                 .cueFont(.footnote).monospacedDigit()
                 .foregroundStyle(Palette.ink2)
-            if conflicts.isEmpty {
+            if changes.isEmpty {
                 Text("Your setup already matches it.")
                     .cueFont(.footnote)
                     .foregroundStyle(Palette.ink2)
             } else {
-                Text("Your usual setup is \(session.usualSummary).")
-                    .cueFont(.footnote)
-                    .foregroundStyle(Palette.ink2)
+                SetupChangeList(changes: changes, titleColor: Palette.ink2)
                 // Side by side while both names fit whole, one over the other otherwise (owner, 02/11/2026: "Manter minh…").
                 ViewThatFits(in: .horizontal) {
                     HStack(spacing: 8) { choiceChips }
@@ -87,12 +87,13 @@ struct RecordingSetupSheet: View {
         .overlay(RoundedRectangle(cornerRadius: Metrics.innerRadius, style: .continuous).strokeBorder(Palette.accBorder, lineWidth: 0.5))
     }
 
+    /// In the card's order: Keep as is, then Use Recommended.
     @ViewBuilder private var choiceChips: some View {
+        choiceChip(String(localized: "Keep as is"), isSelected: session.choice == .keepAsIs, identifier: "setup.keepAsIs") {
+            viewModel.keepAsIs()
+        }
         choiceChip(String(localized: "Use Recommended"), isSelected: session.choice == .useRecommended, identifier: "setup.useRecommended") {
             viewModel.useRecommendedSetup()
-        }
-        choiceChip(String(localized: "Keep My Setup"), isSelected: session.choice == .keepCreatorSetup, identifier: "setup.keepMySetup") {
-            viewModel.keepCreatorSetup()
         }
     }
 

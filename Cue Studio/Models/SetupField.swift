@@ -16,14 +16,14 @@ nonisolated enum SetupField: String, CaseIterable, Identifiable, Sendable {
         switch self {
         case .camera: String(localized: "Camera")
         case .microphone: String(localized: "Microphone")
-        case .format: String(localized: "Format")
+        case .format: String(localized: "Frame")
         case .quality: String(localized: "Quality")
         case .frameRate: String(localized: "Frame rate")
         case .textSize: String(localized: "Text size")
         case .speed: String(localized: "Scroll speed")
         case .readingLine: String(localized: "Reading line")
         case .mirror: String(localized: "Mirror text")
-        case .safeZones: String(localized: "Safe zones")
+        case .safeZones: String(localized: "Safe zone")
         }
     }
 }

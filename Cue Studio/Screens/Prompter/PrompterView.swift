@@ -135,7 +135,8 @@ struct PrompterView: View {
         .onChange(of: viewModel.camera.interruption) {
             viewModel.cameraInterruptionChanged()
         }
-        .sheet(item: $viewModel.sheet) { sheet in
+        // What Aa (or any sheet) changed in the prompter is kept as Settings keeps it, as soon as the sheet closes.
+        .sheet(item: $viewModel.sheet, onDismiss: viewModel.rememberPrompterSettings) { sheet in
             sheetContent(sheet)
         }
         // After the sheets, so they read the same session.
@@ -157,19 +158,18 @@ struct PrompterView: View {
     private func sheetContent(_ sheet: PrompterSheet) -> some View {
         switch sheet {
         case .display:
-            // Selfie opens the Prompter page of Settings (09 §11); Studio keeps its own Display sheet.
-            if viewModel.mode == .selfie {
-                PrompterSettingsSheet(
-                    maxHeight: sheetMaxHeight,
-                    screen: ReadingLinePercent(
-                        screenHeight: Double(viewModel.screenMetrics.screen.height), lensY: Double(viewModel.screenMetrics.lensY)
-                    )
-                )
-            } else {
-                DisplaySettingsSheet(viewModel: viewModel, maxHeight: sheetMaxHeight)
-            }
+            AaSettingsSheet(
+                mode: viewModel.mode,
+                maxHeight: sheetMaxHeight,
+                screen: ReadingLinePercent(
+                    screenHeight: Double(viewModel.screenMetrics.screen.height), lensY: Double(viewModel.screenMetrics.lensY)
+                ),
+                networkZone: viewModel.networkSafeZone,
+                hasSafeZone: viewModel.session.camera.aspect != .landscape
+            )
         case .destination:
-            DestinationSheet(current: viewModel.script?.platform ?? profile.profile.defaultPlatform) { viewModel.setPlatform($0) }
+            // The Scripts dock's picker: the network of this recording, never the script's.
+            DestinationSheet(current: viewModel.platform) { viewModel.setPlatform($0) }
         case .camera:
             CameraSettingsSheet(maxHeight: sheetMaxHeight)
         case .audioInput:

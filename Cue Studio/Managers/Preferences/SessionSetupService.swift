@@ -11,8 +11,8 @@ import Foundation
 /// from here instead of the stored preferences.
 ///
 /// Writing through it keeps the rule that matters most: a recommendation or a change for one take
-/// never rewrites the creator's defaults. Reading settings stay in the session while it is open, and the layout the
-/// creator left is remembered when it closes (`rememberReadingLayout`). Other camera
+/// never rewrites the creator's camera defaults. Prompter settings stay in the session while it is open, and what the
+/// creator left is remembered when Aa closes and when the prompter does (`rememberReadingLayout`). Other camera
 /// options (grid, countdown…) are still saved as before. Defaults are captured when the session
 /// opens, so editing Creator Setup cannot change an open recording.
 @MainActor
@@ -67,24 +67,31 @@ final class SessionSetupService {
         }
     }
 
-    // MARK: - Remembering the layout
+    // MARK: - Safe zone
 
-    /// What the creator adjusted while reading (the box, the line, the text size, the speed, the mode…) becomes what the next session opens
-    /// with, so the prompter comes back as it was left. Only the reading layout is kept: the camera, a platform recommendation or any
-    /// other change for one take stays with its session. `includingScrollMode` false keeps the saved mode (one the practice set by itself).
+    /// "Use Recommended" moved the safe zone off the creator's Custom one onto the network's, for this session only: their Custom
+    /// margins stay saved for the next one.
+    private(set) var followsNetworkZone = false
+
+    /// The safe zone the creator picked in Aa › Window: Custom, or nil to follow the recording's network. Choosing again (Custom or
+    /// the network) ends what "Use Recommended" set.
+    var safeZonePick: SafeZoneChoice? {
+        get { followsNetworkZone ? nil : SafeZoneChoice.pick(fromKey: prompter.safeZoneKey) }
+        set {
+            followsNetworkZone = false
+            prompter.safeZoneKey = newValue == .custom ? SafeZoneChoice.custom.key : nil
+        }
+    }
+
+    // MARK: - Remembering
+
+    /// Everything the creator set in the prompter (Aa, the box, the line, the size, the speed, the mode…) becomes what the next session
+    /// opens with, as a change in Settings would: the prompter comes back as it was left, in Selfie and in Studio. The camera, a
+    /// recommendation used or any other change for one take stays with its session. `includingScrollMode` false keeps the saved mode
+    /// (one the practice, or a session that can't follow the voice, set by itself).
     func rememberReadingLayout(includingScrollMode: Bool = true) {
-        let now = prompter
-        var stored = preferences.prompter
-        stored.readingLineOffset = now.readingLineOffset
-        stored.textWindowHeight = now.textWindowHeight
-        stored.readingWidth = now.readingWidth
-        stored.size = now.size
-        stored.speed = now.speed
-        stored.guidePosition = now.guidePosition
-        stored.margin = now.margin
-        stored.isMirrored = now.isMirrored
-        stored.isFlippedVertically = now.isFlippedVertically
-        if includingScrollMode { stored.scrollMode = now.scrollMode }
+        var stored = prompter
+        if !includingScrollMode { stored.scrollMode = preferences.prompter.scrollMode }
         if stored != preferences.prompter { preferences.prompter = stored }
     }
 
@@ -94,15 +101,13 @@ final class SessionSetupService {
 
     var choice: RecommendationChoice { setup.choice }
 
-    /// Where the recommendation differs from the Creator Setup.
-    var conflicts: [SetupConflict] { setup.conflicts(with: creatorSetup) }
-
-    /// The recommendation card asks until the creator answers.
-    var needsDecision: Bool { setup.needsDecision(with: creatorSetup) }
+    /// What "Use Recommended" would change in the setup, against what is on screen (the safe zone is the prompter's to add).
+    var changes: [SetupChange] { setup.changes(from: creatorSetup) }
 
     /// Changed anything for this take.
     var hasChanges: Bool {
-        !setup.overrides.isEmpty || creatorSetup.applied(to: sessionPrompter) != initialPrompter
+        !setup.overrides.isEmpty || !setup.accepted.isEmpty || followsNetworkZone
+            || creatorSetup.applied(to: sessionPrompter) != initialPrompter
     }
 
     func source(of field: SetupField) -> SetupSource {
@@ -112,23 +117,21 @@ final class SessionSetupService {
     /// Where the frame and quality on screen come from.
     var captureSource: SetupSource { setup.captureSource }
 
-    /// The creator's usual values for the fields the recommendation sets: "9:16 · 4K · 30 fps".
-    var usualSummary: String {
-        creatorSetup.summary(of: recommendation?.fields ?? [])
-    }
-
     // MARK: - Actions
 
     func recommend(_ recommendation: SetupRecommendation?) {
         setup.recommend(recommendation)
     }
 
-    func useRecommended() {
+    /// "Use Recommended"; `includingSafeZone` when the card listed the safe zone (the creator's Custom one gives way to the network's).
+    func useRecommended(includingSafeZone: Bool = false) {
         setup.useRecommended()
+        if includingSafeZone { followsNetworkZone = true }
     }
 
-    func keepCreatorSetup() {
-        setup.keepCreatorSetup()
+    /// "Keep as is".
+    func keepAsIs() {
+        setup.keepAsIs()
     }
 
     func settleUndecided() {
@@ -137,6 +140,7 @@ final class SessionSetupService {
 
     func backToCreatorSetup() {
         setup.backToCreatorSetup()
+        followsNetworkZone = false
         sessionPrompter = initialPrompter
     }
 

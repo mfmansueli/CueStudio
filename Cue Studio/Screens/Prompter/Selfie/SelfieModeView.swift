@@ -51,7 +51,7 @@ struct SelfieModeView: View {
         .toolbarVisibility(viewModel.isPractice ? .hidden : .visible, for: .navigationBar)
         .toolbar {
             if !viewModel.isPractice {
-                SelfieTopBar(viewModel: viewModel, session: session, onClose: onClose)
+                SelfieTopBar(viewModel: viewModel, onClose: onClose)
             }
         }
     }
@@ -214,14 +214,20 @@ struct SelfieModeView: View {
             if viewModel.showsRecommendation, let recommendation = viewModel.session.recommendation {
                 SetupRecommendationCard(
                     recommendation: recommendation,
-                    conflicts: viewModel.session.conflicts,
-                    usualSummary: viewModel.session.usualSummary,
+                    changes: viewModel.recommendationChanges,
                     onUseRecommended: { viewModel.useRecommendedSetup() },
-                    onKeepSetup: { viewModel.keepCreatorSetup() }
+                    onKeepAsIs: { viewModel.keepAsIs() }
                 )
                 .padding(.horizontal, 18)
                 .padding(.bottom, 12)
                 .transition(.scale(scale: 0.9, anchor: .bottom).combined(with: .opacity))
+            }
+            // Little room left on the iPhone: a quiet line over the controls, never a pop-up ("About 9 min left in 4K").
+            if let notice = viewModel.storageNotice {
+                StorageNotice(text: notice)
+                    .padding(.horizontal, 18)
+                    .padding(.bottom, 10)
+                    .transition(.opacity)
             }
             if !audio.isMicrophoneAllowed, !viewModel.isPractice, !viewModel.isRecording {
                 MicrophoneNeededCard()

@@ -216,7 +216,7 @@ nonisolated struct EditStepSummary: Equatable, Sendable {
             return String(localized: "Captions")
         }
         // Another safe zone guide brings the captions' margins with it (`LookViewModel.pickSafeGuide`): it is the guide that changed.
-        if lookBefore.safeGuide != lookAfter.safeGuide, lookBefore.aspect == lookAfter.aspect { return String(localized: "Safe zones") }
+        if lookBefore.safeGuide != lookAfter.safeGuide, lookBefore.aspect == lookAfter.aspect { return String(localized: "Safe zone") }
         // A new shape brings the captions' margins with it (`LookViewModel.setAspect`): it is the shape that changed.
         if (before.captionCollection != after.captionCollection && lookBefore.aspect == lookAfter.aspect) || before.captionStyle != after.captionStyle
             || before.captionLook != after.captionLook || before.captionPreset != after.captionPreset

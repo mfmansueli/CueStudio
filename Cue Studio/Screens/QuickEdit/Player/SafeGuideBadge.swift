@@ -24,13 +24,13 @@ struct SafeGuideBadge: View {
                         Text(menuTitle(choice)).tag(choice)
                     }
                 } label: {
-                    Text("Safe zones")
+                    Text("Safe zone")
                 }
                 .pickerStyle(.inline)
                 Button {
                     look.setShowsSafeGuide(false)
                 } label: {
-                    Label("Hide safe zones", systemImage: "eye.slash")
+                    Label("Hide safe zone", systemImage: "eye.slash")
                 }
                 .accessibilityIdentifier("edit.safeGuide.hide")
             } label: {
@@ -39,7 +39,7 @@ struct SafeGuideBadge: View {
                     .contentShape(Rectangle())
             }
             .menuOrder(.fixed)
-            .accessibilityLabel(Text("Safe zones: \(look.safeGuide.approximateLabel)"))
+            .accessibilityLabel(Text("Safe zone: \(look.safeGuide.approximateLabel)"))
             .accessibilityHint(Text("Switches the app or hides the guide"))
             .accessibilityIdentifier("edit.safeGuide.badge")
         } else {

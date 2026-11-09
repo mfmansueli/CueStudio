@@ -641,7 +641,7 @@ realce de palavras. Ficam a linha de leitura, o trilho de seções e o chip de v
 (espelho e Remote continuam). Gravar é do Selfie. Texto `PrompterTextView` em tela cheia com a linha em `guidePosition`; um toque toca ou pausa.
 **Barra** (`StudioControlPanel`, vidro noturno, alça que guarda e ⌃ que traz): (1) Voice | Steady, ‹‹ 3 linhas, play, 3 linhas ››; (2) velocidade ou linha
 de voz e estado; (3) chips **Size · Line · Margin · Mirror · Aa More** (`StudioAdjustBar`): um slider por vez (tamanho 12–56 pt, linha 10–70%, margens 8–40 pt; o slider
-só existe aberto, `showsSlider`), Mirror para rig, Aa abre o Display. Acima do texto, "0:42 LEFT" e "1:12 · IDEAL 1:15–2:30" (`StudioTimeLine`).
+só existe aberto, `showsSlider`), Mirror para rig, Aa abre a folha do Aa (§22). Acima do texto, "0:42 LEFT" e "1:12 · IDEAL 1:15–2:30" (`StudioTimeLine`).
 **Contagem:** play do começo usa a de Settings › Prompter (Off, 3, 5, 10 s); a barra some e um toque cancela; retomar toca na hora. Voice Following ouve
 pelo medidor do microfone.
 
@@ -655,9 +655,12 @@ do microfone do gravador, e no Studio o mesmo cartão, dizem por quê e abrem os
 gravador abre em Steady, a menos que o teste roteirize o reconhecimento (`-uiTestVoiceFollowing`; o Simulator não reconhece fala).
 
 **Selfie:** a caixa abre no lugar recomendado (118 pt sob a lente; uma linha antiga abaixo de ~1/3 da tela foi apagada uma vez, `readingLineResetV30`).
-Ao sair, a caixa, a linha, tamanho e margens do texto, velocidade, espelho e Voice | Steady viram o ponto de partida da próxima sessão
-(`SessionSetupService.rememberReadingLayout`); câmera, qualidade, recomendação da plataforma, fonte e cores são só da sessão; "Back to my setup" volta ao
-que estava ao abrir. A prática do onboarding não grava nada. Barra e controles: §22.
+**Tudo do Aa fica como um ajuste de Settings** (dono, 09/11/2026): ao fechar a folha do Aa e ao sair do gravador, o teleprompter inteiro (caixa, linha,
+tamanho, fonte, espaçamento, alinhamento, cor, margens, velocidade, espelho, fundo e desfoque sobre a câmera, zona Custom e Voice | Steady) vira o ponto
+de partida da próxima sessão (`PrompterViewModel.rememberPrompterSettings` → `SessionSetupService.rememberReadingLayout`); não há "tornar padrão". O
+texto é um só nos dois modos: o que o Selfie muda, o Studio lê, e vice-versa; a caixa e o que fica sobre a câmera são do Selfie, o fundo, a linha
+(`guidePosition`) e a contagem do Studio. Câmera, qualidade, microfone e a recomendação da plataforma são só da sessão; "Back to my setup" volta ao que
+estava ao abrir. A prática do onboarding não grava nada. Barra e controles: §22.
 
 ## 6. Argumentos de teste
 
@@ -753,7 +756,9 @@ espera, §37); ficam a compra, o contador de exportações grátis e o registro 
 (só ids), a contagem de vídeos compartilhados do universo, o idioma, as duas chaves de Privacy & AI data e o que já está no Fotos; a permissão da
 Ultra AI é revogada (decisão do dono, 09/11/2026: o próximo roteiro da Ultra AI pede de novo, e o escritor do dock volta ao Apple Intelligence), o que o
 Sign in with Apple deixou sai (`AppleSignInLeftovers`) e os relatórios e o Analytics à espera de envio também; o id aleatório da instalação fica no
-Keychain, porque é por ele que o servidor conta os roteiros grátis da Ultra AI e os prêmios dos convites), Permissions (`PermissionsService`), Acknowledgements. **Reset Creator Setup fica como está** (decisão pendente, `09` §13).
+Keychain, porque é por ele que o servidor conta os roteiros grátis da Ultra AI e os prêmios dos convites), Permissions (`PermissionsService`), Acknowledgements. No fim, **Reset my setup** (dono, 09/11/2026), com uma linha embaixo: "Camera, microphone,
+quality, format and teleprompter go back to Cue's defaults. Your scripts, takes and edits stay." Pede confirmação (§17) e volta a câmera inteira
+(lente, microfone, qualidade, quadro, zona segura, grade, contagem…) e o teleprompter ao padrão (`PreferencesService.resetCreatorSetup`).
 **Remote** (`SettingsRemoteView`, redesenho do dono 21/10/2026, conceito "dois aparelhos"): `ScrollView` sobre o céu. No topo a cena
 (`RemoteHero`, posições em `RemoteSceneLayout`, aparelhos em `RemotePhone`, tudo num relógio só): o teleprompter à esquerda (roteiro subindo
 sob a linha de leitura amarela, que passa das laterais e respira) e o controle à direita (play cujo halo chama a cada 3,2 s), flutuando fora de
@@ -771,7 +776,12 @@ e um brilho quando o primeiro anel sai; dois tiques quase imperceptíveis nos an
 trocam na hora. Cores em `Palette.Remote`. Enquanto este aparelho é o teleprompter (esperando o controle ou conectado), a tela não apaga
 sozinha (`RemoteControlService.role`, `ScreenAwake` "remoteHost"): bloquear derrubaria a ligação. Um link de pareamento (`cuestudio://remote`,
 a câmera do iOS lendo o QR) espera o onboarding e o gravador fecharem, como a Siri e as notificações (`RootView.handleRemoteLink`), para nunca
-fechar uma gravação; o próprio código deste aparelho, quando é ele o teleprompter, é ignorado.
+fechar uma gravação; o próprio código deste aparelho, quando é ele o teleprompter, é ignorado. **O controle** (`RemoteControllerView`, o outro iPhone
+ou iPad; dono, 09/11/2026): o cartão do roteiro, um **Record grande** (o mesmo botão do gravador) que vira **Stop** enquanto a take grava (ou cancela a
+contagem), com "TAKE 3" embaixo e, gravando, "TAKE 3 · 0:42", e os controles do texto abaixo. Grava e para pelo mesmo caminho do Apple Watch
+(`RemoteCommand.record`/`.stop` → `recordFromAnotherDevice`/`stopFromAnotherDevice`): só no Selfie ou na revisão de uma take, com o microfone
+permitido (`RemoteStatus.canRecord`); o teleprompter manda o número da take e quanto já gravou, e o controle conta o tempo a partir daí. O Remote
+continua grátis.
 **Personalize** (`PersonalizeView`, redesenho do dono 21/10/2026, "vitrine"; a linha em Settings leva o selo NEW até a primeira visita, `DefaultsKey.personalizeSeen`): `ScrollView` sobre o céu. No topo, "seu Cue" ao vivo
 (`PersonalizeHero`): o céu escolhido (`SkyMiniature`: o mesmo `BgWash` + `StarfieldView` da navegação, estrelas no brilho dos quadros), a luz
 do universo respirando na cor escolhida (`CoreColor.glow`) e o ícone escolhido flutuando (`AppIconArt`; o padrão desenhado das camadas de
@@ -791,17 +801,18 @@ abre Personalize).
 tela deste iPhone no Selfie como o gravador o monta (o mesmo `ReadingLayout`: a linha de leitura sob a lente, onde o criador a pôs ou a 118 pt, e a
 janela em volta dela, na largura e altura dele), ampliado na janela do texto (`focusRect`) para caber num cartão de 272 pt sobre uma câmera de mentira (`Palette.Camera.previewScene*`)
 que ocupa o cartão inteiro: a ilha da câmera, a janela escura e desfocada como no gravador, a linha atravessando a tela, e o texto desenhado pelo próprio
-teleprompter (`PrompterParagraphs`) rolando na velocidade escolhida (o já lido apaga acima da linha; Reduzir Movimento: parado; o texto de exemplo vem no idioma da interface, cues incluídas); pelo **Aa** do Selfie abre como `PrompterSettingsSheet` (`.medium`/`.large`,
-`sheetMaxHeight`, fundo `Palette.surface`, sem prévia, `isRecorderSheet`), sobre os ajustes daquela gravação, medindo a linha de leitura pela tela e lente
-do gravador (`SettingsPrompterView.screen`). Faixas de `PrompterSettings`: altura 160–380, largura 50–93%, margens 8–40, espaçamento 1–2;
-`isFlippedVertically`, `safeZoneKey`, `showsCues` (desligado por padrão).
+teleprompter (`PrompterParagraphs`) rolando na velocidade escolhida (o já lido apaga acima da linha; Reduzir Movimento: parado; o texto de exemplo vem no idioma da interface, cues incluídas). O **Aa** do gravador é outra folha, com as mesmas linhas
+(`AaSettingsSheet`, §22). **Safe zone** (`SettingsSafeZoneView`, a linha diz On/Off): só a chave **Show safe zone** e "A guide, not a guarantee · Never
+recorded"; a zona segue sempre a rede da gravação (a do roteiro, a escolhida no chip do gravador ou a do perfil no Freestyle), e Custom com as margens
+fica no Aa › Window. Faixas de `PrompterSettings`: altura 160–380, largura 50–93%, margens 8–40, espaçamento 1–2; `isFlippedVertically`, `safeZoneKey`
+("custom" ou nada: uma chave de rede salva por uma versão anterior segue a rede, `SafeZoneChoice.pick(fromKey:)`), `showsCues` (desligado por padrão).
 **Velocidade e tamanho do texto** (decisão do dono, 20/10/2026): a velocidade vai de **0,2× a 2×** em paradas de 0,1× (19 paradas, `SpeedScale`;
 1× = 150 palavras por minuto, o padrão; cada parada é um número inteiro de passos de 5 palavras, então o valor salvo é o da parada) e
 `PrompterSettings.speedRange` são as duas pontas, tiradas da escala. Todo lugar segue as mesmas paradas, com um tique em cada uma: o slider de
 Settings › Prompter (pontas "0.2×" e "2×"), o do gravador (`SpeedSlider`, Selfie e Studio, sem marcas no trilho: o valor
 está escrito acima) e o − / + do Remote (uma parada por toque). Uma velocidade salva acima de 2× (os 3×, 4× e 5× de antes) abre em 2×.
 **Text size** é um slider em pontos, de **12 a 56 pt** de 1 em 1 (valor "36 pt", pontas "12" e "56 pt"), o mesmo
-alcance do Size do Studio (`studio.slider.size`) e do Text size do Display do gravador (`display.textSize`); o Studio desenha 1,35× maior. Um
+alcance do Size do Studio (`studio.slider.size`) e do Text size do Aa › Text do gravador (`settings.textSize`); o Studio desenha 1,35× maior. Um
 tamanho salvo fora da faixa abre na ponta mais próxima. Não há tamanhos com nome (Small, Medium, Large, XL): o bloco Text do cartão de setup
 e a folha de setup do gravador mostram os pontos ("36 pt") e a velocidade como o slider ("1×"). Para os testes de UI, os sliders da página
 respondem pelo identificador da linha (`settings.speed`, `settings.textSize`: o `accessibilityIdentifier` de `PrompterEntryRow` cobre o do
@@ -809,7 +820,7 @@ slider); na aba Settings o arrasto sintético do XCUITest não move os sliders d
 do gravador. O valor no canto direito de uma linha com slider tem a largura do seu valor mais largo (`SettingsSliderRow.valueSamples`: todas
 as paradas da velocidade, "40 pt" das margens, "100%" da opacidade, do desfoque e das margens da zona segura), então "1×" virando "1.1×" não
 aperta o título nem a segunda linha ao lado (pedido do dono, 30/10/2026). O mesmo `SteadyValueText` segura o valor do slider de
-velocidade do gravador, dos sliders do Display e do Studio, dos sliders dos painéis do editor (pontas da faixa), da leitura de Adjust e
+velocidade do gravador, dos sliders do Aa e do Studio, dos sliders dos painéis do editor (pontas da faixa), da leitura de Adjust e
 Skin ("Exposure −100", sem empurrar o Reset) e da velocidade do Remote (o − e o + não andam).
 
 **1.1 Welcome** (`09` §12; composição do dono, 02/11/2026): tudo centrado. `WelcomeScript` escreve a cena de 390 × 844 como `PoseTrack`s: a estrela entra
@@ -1038,7 +1049,7 @@ voltam com uma linha quando validados no aparelho (`SHARING.md`).
 negrito. Custom porque o `confirmationDialog` do iOS 27 abre como balão, sem Cancel. Usado em **Delete my Cue data** (o mesmo em Settings e na folha
 Privacy & AI data: "Deletes your scripts, takes, edits and My Cue Voice from this iPhone. This can't be undone." / **Delete my Cue data**; onde a Ultra AI
 é oferecida, uma linha menor embaixo separa o que não volta: "Already sent can’t be called back: Anthropic keeps Ultra AI requests up to 30 days to detect
-abuse, never for training. Cue’s server keeps only counts, under a random ID.", o `note` do `CueActionSheet`), **Reset Creator Setup**. Confirmação só para o que não tem volta: o resto tem Undo no toast.
+abuse, never for training. Cue’s server keeps only counts, under a random ID.", o `note` do `CueActionSheet`), **Reset my setup**. Confirmação só para o que não tem volta: o resto tem Undo no toast.
 
 ## 18. Movimento vindo dos dados do quadro (handoff-telas)
 
@@ -1438,8 +1449,8 @@ effects), `QuickEditToolbarTests` (o conteúdo de cada barra, Show, Translate, C
 apertado ou não) em `PaletteContrastTests`.
 
 **Gravador (Selfie e Studio):** barra de navegação do sistema num `NavigationStack` dentro do `PrompterView` (a revisão fica fora): fechar
-(`Button(role: .close)`) no início, **Selfie | Studio** (`ModeSwitcher`, `Picker` `.segmented`) no meio, e o chip do quadro (Selfie) ou a rede do roteiro
-("● TikTok", abre Create for) e Remote (Studio) no fim; gravando, o REC ocupa o início; escondida na prática. A caixa do Selfie começa embaixo da barra
+(`Button(role: .close)`) no início, **Selfie | Studio** (`ModeSwitcher`, `Picker` `.segmented`) no meio, e o chip da rede no fim ("● TikTok", abre
+Create for; no Studio só com roteiro, ao lado do Remote); gravando, o REC ocupa o início; escondida na prática. A caixa do Selfie começa embaixo da barra
 (`SelfieScreenMetrics.topBarBottom`); a barra de status é medida fora da pilha. Controles de baixo do sistema onde há um: Voice | Steady
 (`ScrollModePicker`), botões redondos `.glass` (`glassIconButton()`), velocidade e sliders como `Slider` com nome e valor (`LabeledSlider`), chips `.glass`
 (`.glassProminent` quando ligado). Do Cue: gravar, medidor de voz, última take, rótulos de microfone e formato e o painel de vidro noturno. Sem gesto que
@@ -1459,6 +1470,30 @@ pode ser gravada (iPhone cheio), a take não entra e o vídeo volta para `tmp/ta
 roteiro e da versão ao lado (`TakeRecoveryNote`), onde a recuperação o acha e o devolve sob aquele roteiro; sem nota (Cue parou no meio) ou com o roteiro
 apagado, volta como "Freestyle recording": nunca um vídeo na biblioteca sem take que aponte para ele. Um Retake aberto da revisão (Takes › Retake) sem
 microfone lê em Steady, como uma sessão nova.
+
+**A rede da gravação** (dono, 09/11/2026): o chip da rede, com roteiro e no Freestyle, abre o **mesmo Create for do cartão da IA do dock**
+(`DestinationSheet`) e muda só a rede **desta sessão** (`PrompterViewModel.platform`: a escolhida no chip, senão a com que o gravador foi aberto, como
+um Retake de um vídeo de Reels, senão a do roteiro, senão a do perfil no Freestyle); **nunca muda a rede do roteiro** (`Script.platform`). Cada take nova
+é guardada com essa rede (`Take.platform`, `TakeLibraryService.addTake(platform:)`) e entra no vídeo dela (`recordingVideo`, a última take e o seu número
+seguem). O chip que trocava o quadro no Freestyle saiu; o quadro está no Camera.
+**O cartão da recomendação** (`SetupRecommendationCard`, perto do painel de baixo, do tamanho do que tem; os controles de leitura recolhem enquanto
+ele está à vista, para não cobrir a janela do texto): "✦ Recommended for TikTok" e uma linha por mudança **contra o que está na tela**
+(`SetupChangeList`: "Frame 4:5 → 9:16", "Quality 4K → 1080p", "Safe zone Custom → TikTok"), com a etiqueta **This take** (ponto azul) no que o criador
+escolheu para esta take. **Keep as is** não muda nada; **Use Recommended** aplica exatamente as linhas listadas, a zona segura incluída (só nesta
+sessão; a Custom salva continua) e diz "Using TikTok setup". Some quando nada mudaria (a recomendação se resolve sozinha como Keep as is) e, no
+Freestyle, só aparece quando o criador troca a rede. Gravar sem responder é Keep as is. A folha **This take** (`RecordingSetupSheet`, aberta pela
+pílula "1080P · 9:16 ›"; saiu do •••) mostra a mesma recomendação com as mesmas linhas e os mesmos dois nomes (Keep as is, Use Recommended).
+**Aa** (`AaSettingsSheet`): no topo um `Picker` `.segmented` do sistema com as abas e o ✕ de vidro; Selfie **Reading | Text | Window | Camera**
+(Reading: Voice Following, velocidade, AI coach; Text: tamanho, fonte, espaçamento, alinhamento, cor; Window: caixa do texto, linha de leitura, rigs e
+a **Safe zone** da rede ou **Custom** com as quatro margens, `AaSafeZoneSection`; Camera: fundo e desfoque sobre a câmera), Studio **Reading | Text |
+Studio** (Studio: linha de leitura e posição, fundo, margens, contagem, rigs). A contagem saiu do Aa do Selfie (está no Camera e no •••). A folha do
+Studio para acima da linha de leitura (`textWindowBottom`); a do Selfie, abaixo da janela do texto. O Display Basic/Advanced saiu. O que muda no Aa
+fica como em Settings (§5.4).
+**Microfone:** uma lista só (`MicrophoneList`: Automatic, o escolhido quando não está ligado agora, e os conectados), na folha da pílula do microfone e
+no Camera › Recording, que diz embaixo "Changes apply to this take only." A chave do Camera chama **Safe zone**, o mesmo nome de Settings e do editor.
+**Pouco espaço:** abaixo de ~2 GB livres, uma linha quieta sobre os controles do Selfie, antes de gravar (`StorageNotice`, `RecordingRoom`): "About 9 min
+left in 4K" (os minutos no formato e no codec gravados; "Less than 1 min left in 4K"). Sem alerta e sem página de armazenamento; lida ao abrir e
+depois de cada take.
 
 **No Selfie, a janela do texto guarda só as palavras** (dono, 02/11/2026): sem o chip "Following your voice" sobre ela; a linha sob o Voice | Steady
 (`VoiceIndicator`, onde fica a velocidade no Steady) diz **Following your voice** em amarelo enquanto ouve e segue, "Scrolls when you talk, waits when
@@ -2506,7 +2541,7 @@ Prévia e exportação passam pelo mesmo compositor (`CueVideoCompositor`), ent�
   linha sob os blocos diz o arquivo de verdade: **"This format exports at 606×1080 · never enlarged"** (um vídeo deitado de 1080p em 9:16;
   `ExportFrameSize`, a mesma regra da exportação, pela qualidade e o Pro da revisão de onde o editor abriu; sem revisão, nada).
 - **Áreas seguras** (`SafeGuideOverlay`, `SafeGuideBadge`, `LookViewModel+SafeGuide`, `SafeGuideZones`; decisão B do dono, 07/11/2026): no fim
-  de Aspect ratio, a chave **Safe zones** ("Where an app’s buttons cover your video · approximate") mostra sobre a prévia onde os botões, a legenda e
+  de Aspect ratio, a chave **Safe zone** ("Where an app’s buttons cover your video · approximate") mostra sobre a prévia onde os botões, a legenda e
   o cabeçalho de um app cobrem o vídeo: as partes cobertas sombreadas de leve (`Palette.Editor.safeGuideShade`) e a borda da parte livre numa linha
   branca **sólida** sobre um halo escuro (`safeGuideLine`, `safeGuideHalo`; sólida para nunca parecer o contorno tracejado de uma foto ou vídeo).
   Ligada, fica ligada em todo vídeo (`EditorPreferencesStoring.showsSafeGuide`, desligada até ser ligada): é o jeito de trabalhar, não uma mudança
@@ -2516,15 +2551,15 @@ Prévia e exportação passam pelo mesmo compositor (`CueVideoCompositor`), ent�
   quadro (`SafeZoneMargins.frameEdges`, 5/7/6/6%). Com ela ligada, chips trocam o app (os medidos no formato, depois Generic) e uma nota diz de
   onde veio a sugestão ("Suggested by your script: TikTok", "No app on your script for this format: generic guide"). Na prévia, no canto de cima
   à esquerda, o rótulo **"TikTok · approximate"** (`ink` sobre a placa `safeGuidePlate`; cresce até Acessibilidade 2 e, numa prévia estreita,
-  fica só com o nome do app) é um `Menu` do sistema: o app (o do roteiro com "· your script") ou **Hide safe zones**, ali mesmo. **A troca é deste
-  vídeo** (`TakeEdit.safeGuide`; um projeto salvo antes abre com nil, a sugestão) **e um passo de desfazer** ("Safe zones"), porque as legendas
+  fica só com o nome do app) é um `Menu` do sistema: o app (o do roteiro com "· your script") ou **Hide safe zone**, ali mesmo. **A troca é deste
+  vídeo** (`TakeEdit.safeGuide`; um projeto salvo antes abre com nil, a sugestão) **e um passo de desfazer** ("Safe zone"), porque as legendas
   vão junto: as margens delas passam a ser a parte livre da guia escolhida (`CaptionSafeArea.margins(for:aspect:pick:)`), na prévia e no
   arquivo; trocar o formato mantém a escolha (volta quando o formato tem aquele app). Desfazer volta o app e as legendas, não esconde a guia.
   Um projeto salvo antes da guia mostra a do app para o qual as legendas dele foram postas (`SafeGuideZones.active`: um take sem plataforma
   tinha as do Reels no 9:16 e as do LinkedIn no 4:5). A guia só existe na prévia do editor: some em tela cheia, sob o roteiro da narração e no
   recorte de um clipe, e nunca entra na composição (arquivo, vídeo da prévia, capa). Arrastar um texto ou a legenda com a guia escondida mostra
-  a parte livre tracejada (as mesmas cores) e o rótulo, sem toque. VoiceOver: a chave (Safe zones, On/Off), os chips (selecionado), o rótulo
-  ("Safe zones: TikTok · approximate", dica "Switches the app or hides the guide") e um anúncio a cada troca. Testes: `SafeGuideZonesTests`,
+  a parte livre tracejada (as mesmas cores) e o rótulo, sem toque. VoiceOver: a chave (Safe zone, On/Off), os chips (selecionado), o rótulo
+  ("Safe zone: TikTok · approximate", dica "Switches the app or hides the guide") e um anúncio a cada troca. Testes: `SafeGuideZonesTests`,
   `QuickEditSafeGuideTests`, exportação real `RealExports/SafeGuideExportTests` (nada da guia no arquivo nem no vídeo da prévia; uma linha
   embaixo fica na parte livre do app escolhido, igual na prévia e no arquivo, mais baixa com Stories que com TikTok),
   `PaletteContrastTests.theSafeGuideReadsOverAnyPicture`, `SafeGuideUITests`; fotos sobre um quadro branco e um preto (`-uiTestPreviewFrame`,

@@ -20,9 +20,9 @@ extension PrompterViewModel {
         return siblings.count > 1 && !siblings.contains(where: \.isBest)
     }
 
-    /// The video this session's takes join: the script's takes for the network they are recorded for (`Take.platform`, which `addTake`
-    /// gives the script's network unless the session passes its own). Nil in Freestyle, where every take is a video of its own.
+    /// The video this session's takes join: the script's takes for the network this session records for (`platform`, which every new
+    /// take is filed with). Nil in Freestyle, where every take is a video of its own.
     var recordingVideo: TakeVideoKey? {
-        scriptID.map { TakeVideoKey.script($0, script?.platform) }
+        scriptID.map { TakeVideoKey.script($0, platform) }
     }
 }

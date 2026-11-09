@@ -55,22 +55,21 @@ struct SessionSetupServiceTests {
         defer { defaults.tearDown() }
         let (session, preferences) = makeService(defaults)
         session.recommend(SetupRecommendation(platform: .tiktok, preset: TestData.preset(.tiktok)))
-        #expect(session.needsDecision)
-        #expect(session.usualSummary == "9:16 · 4K · 30 fps")
+        #expect(session.changes.map(\.values) == ["4K → 1080p"])
         session.useRecommended()
         #expect(session.camera.resolution == .hd1080)
         #expect(preferences.camera.resolution == .uhd4K)
         #expect(preferences.creatorSetup == CreatorSetupTests.usual())
     }
 
-    @Test func keepingTheSetupUsesTheDefault() {
+    @Test func keepAsIsKeepsWhatIsOnScreen() {
         let defaults = TestDefaults()
         defer { defaults.tearDown() }
         let (session, _) = makeService(defaults)
         session.recommend(SetupRecommendation(platform: .tiktok, preset: TestData.preset(.tiktok)))
-        session.keepCreatorSetup()
+        session.keepAsIs()
         #expect(session.camera.resolution == .uhd4K)
-        #expect(!session.needsDecision)
+        #expect(session.choice == .keepAsIs)
     }
 
     @Test func aNewDefaultOnlyAffectsNewSessions() {
@@ -198,16 +197,65 @@ struct SessionSetupServiceTests {
         #expect(!SessionSetupService(preferences: PreferencesService(defaults: defaults.defaults)).fillsScreen)
     }
 
-    @Test func rememberingTheLayoutLeavesEverythingElseAlone() {
+    /// Everything in Aa persists like Settings (owner, 09/11/2026), the font and color included; the camera's take-only changes don't.
+    @Test func rememberingKeepsAllOfAaButNotTheTakesCamera() {
         let defaults = TestDefaults()
         defer { defaults.tearDown() }
         let (session, preferences) = makeService(defaults)
         session.camera.resolution = .hd720
         session.prompter.font = .newYork
+        session.prompter.textColor = .cream
         session.prompter.size = 30
         session.rememberReadingLayout()
         #expect(preferences.prompter.size == 30)
-        #expect(preferences.prompter.font == .lexend, "only the layout is kept")
+        #expect(preferences.prompter.font == .newYork)
+        #expect(preferences.prompter.textColor == .cream)
         #expect(preferences.camera.resolution == .uhd4K, "a change for one take stays with the take")
+    }
+
+    /// Without the scroll mode (the first flight's practice, a mode Cue chose): the saved one stays.
+    @Test func rememberingWithoutTheScrollModeKeepsTheSavedOne() {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let (session, preferences) = makeService(defaults)
+        let saved = preferences.prompter.scrollMode
+        session.prompter.scrollMode = saved == .voice ? .steady : .voice
+        session.prompter.size = 40
+        session.rememberReadingLayout(includingScrollMode: false)
+        #expect(preferences.prompter.scrollMode == saved)
+        #expect(preferences.prompter.size == 40)
+    }
+
+    /// Aa's text settings are one set for both modes: what Selfie set, Studio reads, in this session and the next.
+    @Test func textSettingsCarryAcrossModes() {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let (session, _) = makeService(defaults)
+        session.prompter.font = .newYork
+        session.prompter.lineSpacing = 1.6
+        session.rememberReadingLayout()
+        let next = SessionSetupService(preferences: PreferencesService(defaults: defaults.defaults))
+        #expect(next.prompter.font == .newYork)
+        #expect(next.prompter.lineSpacing == 1.6)
+    }
+
+    /// The safe zone follows the recording's network; only a Custom one is picked, and "Use Recommended" can hand it back to the network
+    /// for this session without forgetting the saved Custom.
+    @Test func theSafeZoneFollowsTheNetworkUnlessCustom() {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let (session, preferences) = makeService(defaults)
+        #expect(session.safeZonePick == nil)
+        session.safeZonePick = .custom
+        #expect(session.safeZonePick == .custom)
+        #expect(session.prompter.safeZoneKey == SafeZoneChoice.custom.key)
+        session.recommend(SetupRecommendation(platform: .tiktok, preset: TestData.preset(.tiktok)))
+        session.useRecommended(includingSafeZone: true)
+        #expect(session.safeZonePick == nil)
+        #expect(session.prompter.safeZoneKey == SafeZoneChoice.custom.key)
+        session.rememberReadingLayout()
+        #expect(preferences.prompter.safeZoneKey == SafeZoneChoice.custom.key)
+        session.safeZonePick = nil
+        #expect(session.prompter.safeZoneKey == nil)
     }
 }

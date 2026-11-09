@@ -38,4 +38,11 @@ extension PrompterViewModel {
     }
 
     var stopWarningMessage: String? { preset?.goal?.stopWarning }
+
+    /// "About 9 min left in 4K" over the Selfie controls while the iPhone has little room left, before a take (`RecordingRoom`).
+    var storageNotice: String? {
+        guard mode == .selfie, !isPractice, !isRecording, reviewingTake == nil else { return nil }
+        let camera = session.camera
+        return RecordingRoom.notice(available: freeBytes, resolution: camera.resolution, frameRate: camera.frameRate, codec: camera.codec)
+    }
 }

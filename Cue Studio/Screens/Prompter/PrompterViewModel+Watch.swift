@@ -90,13 +90,24 @@ extension PrompterViewModel {
         publishRemoteStatus()
     }
 
-    /// Record from the wrist: from a saved take, the take again ("Record another"), then the countdown or the take, as the
-    /// red button does. Answered once it has started, or with why not.
+    /// Record from the wrist: answered once it has started, or with why not.
     private func recordFromWatch(_ id: UUID) async {
         defer {
             watchAnswer = id
             watch?.publishCurrent()
         }
+        await recordFromAnotherDevice()
+    }
+
+    /// Another device (the Apple Watch, or the second iPhone or iPad of Remote) can start a take here: Selfie or a take's review, never
+    /// Studio or the first flight's practice, and the microphone allowed.
+    var recordsFromAnotherDevice: Bool {
+        watchPhase != .unavailable && !microphone.isDenied()
+    }
+
+    /// Record from another device: from a saved take, the take again ("Record another"), then the countdown or the take, as the red
+    /// button does. How it went is in `watchOutcome`.
+    func recordFromAnotherDevice() async {
         guard watchPhase != .unavailable else { return }
         watchOutcome = nil
         watchRehearsing = false
@@ -122,6 +133,16 @@ extension PrompterViewModel {
         defer {
             watchAnswer = id
             watch?.publishCurrent()
+        }
+        await stopFromAnotherDevice()
+    }
+
+    /// End from another device: no monetization warning (the creator chose there); the take is filed and its review opens. During the
+    /// countdown it cancels it, as the red button does.
+    func stopFromAnotherDevice() async {
+        if countdown != nil {
+            cancelCountdown()
+            return
         }
         guard isRecording else { return }
         await stopRecording()

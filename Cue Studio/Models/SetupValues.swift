@@ -53,6 +53,16 @@ nonisolated struct SetupValues: Hashable, Sendable {
         return setup
     }
 
+    /// `other` with these values on top: the fields both set take this one's value.
+    func applied(over other: SetupValues) -> SetupValues {
+        SetupValues(
+            lens: lens ?? other.lens, microphone: microphone ?? other.microphone, resolution: resolution ?? other.resolution,
+            frameRate: frameRate ?? other.frameRate, aspect: aspect ?? other.aspect, textSize: textSize ?? other.textSize,
+            speed: speed ?? other.speed, readingLine: readingLine ?? other.readingLine, isMirrored: isMirrored ?? other.isMirrored,
+            showsSafeZones: showsSafeZones ?? other.showsSafeZones
+        )
+    }
+
     /// The fields whose value here is not the one `setup` has.
     func differences(from setup: CreatorSetup) -> Set<SetupField> {
         applied(to: setup).fields(differingFrom: setup)
