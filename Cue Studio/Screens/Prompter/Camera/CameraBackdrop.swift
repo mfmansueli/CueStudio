@@ -55,6 +55,15 @@ struct CameraBackdrop: View {
             case .failed(let reason):
                 message(title: String(localized: "The camera stopped"), detail: reason, showsSettings: false)
             }
+            #if DEBUG
+            // Over any state: the Simulator's camera never runs.
+            if let scene = Self.standInScene {
+                scene
+                    .frame(width: sensorRect.width, height: sensorRect.height)
+                    .position(x: sensorRect.midX, y: sensorRect.midY)
+                    .accessibilityHidden(true)
+            }
+            #endif
         }
         // The whole camera area is signed on the free plan while the screen is recorded, whatever it shows.
         .captureWatermarked(isSceneCaptured, markY: captureMarkY)
@@ -88,6 +97,17 @@ struct CameraBackdrop: View {
             }
         }
     }
+
+    #if DEBUG
+    /// UI tests: the Simulator has no camera, so `-uiTestCameraScene <RRGGBB>` puts a scene of that colour where the picture goes, to measure
+    /// what is drawn over the camera against its worst case (`FFFFFF`, a white wall in daylight).
+    private static let standInScene: Color? = {
+        let arguments = ProcessInfo.processInfo.arguments
+        guard let index = arguments.firstIndex(of: "-uiTestCameraScene"), arguments.indices.contains(index + 1),
+              let hex = UInt32(arguments[index + 1], radix: 16) else { return nil }
+        return Color(hex: hex)
+    }()
+    #endif
 
     private func message(title: String, detail: String, showsSettings: Bool) -> some View {
         ZStack {
