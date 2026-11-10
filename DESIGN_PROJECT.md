@@ -639,7 +639,7 @@ realce de palavras. Ficam a linha de leitura, o trilho de seções e o chip de v
 
 **Studio** (`Screens/Prompter/Studio`): sem câmera, sem gravar, sem permissão de câmera; para ensaiar, ajustar o texto ou ler com outra câmera filmando
 (espelho e Remote continuam). Gravar é do Selfie. Texto `PrompterTextView` em tela cheia com a linha em `guidePosition`; um toque toca ou pausa.
-**Barra** (`StudioControlPanel`, vidro noturno, alça que guarda e ⌃ que traz): (1) Voice | Steady, ‹‹ 3 linhas, play, 3 linhas ››; (2) velocidade ou linha
+**Barra** (`StudioControlPanel`, Liquid Glass `.regular` tingido de vidro noturno a 15%, sem borda própria (a do vidro), como o painel do Selfie (`SheetFrame`); ela e o painel do Selfie terminam a 21 pt da borda, na faixa do indicador de início, como a tab bar de Scripts: `FloatingBottomBarPlacement`, `Metrics.floatingBarBottom`; sem indicador de início ficam onde estavam; alça que guarda e ⌃ que traz): (1) Voice | Steady, ‹‹ 3 linhas, play, 3 linhas ››; (2) velocidade ou linha
 de voz e estado; (3) chips **Size · Line · Margin · Mirror · Aa More** (`StudioAdjustBar`): um slider por vez (tamanho 12–56 pt, linha 10–70%, margens 8–40 pt; o slider
 só existe aberto, `showsSlider`), Mirror para rig, Aa abre a folha do Aa (§22). Acima do texto, "0:42 LEFT" e "1:12 · IDEAL 1:15–2:30" (`StudioTimeLine`).
 **Contagem:** play do começo usa a de Settings › Prompter (Off, 3, 5, 10 s); a barra some e um toque cancela; retomar toca na hora. Voice Following ouve
