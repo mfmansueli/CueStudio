@@ -52,6 +52,10 @@ enum Metrics {
     /// Room kept under a panel's last control, on top of the bottom safe area (the Home Indicator's
     /// strip): the panel's background runs to the screen's edge, its controls stop above both.
     static let editorPanelBottomClearance: CGFloat = 8
+
+    /// Where the system's tab bar ends over the screen's edge on a phone with a Home Indicator (Scripts, iPhone 17: 21 pt). A bar that floats
+    /// over a full-screen view (the recorder's controls) ends there too, so every bottom bar of the app sits at the same height.
+    static let floatingBarBottom: CGFloat = 21
     /// The same under the styling panels (Text style, Caption style), whose controls scroll: their last
     /// row (swatches, the captions action) kept clear of the Home Indicator, with the fade above it.
     static let editorStylePanelBottomClearance: CGFloat = 18

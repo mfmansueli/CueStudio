@@ -73,7 +73,7 @@ final class FreeExportsUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["Keep sharing your universe."].exists)
     }
 
-    /// The calm Pro keeps the plans and Restore, Terms and Privacy.
+    /// The calm Pro keeps the plans and Restore, Terms and Privacy (the published policy, a link that leaves the app, so it isn't tapped).
     func testTheCalmProOffersThePlansAndTheSmallPrint() {
         let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestExportsLeft", "0"])
         openTake(app)
@@ -82,7 +82,6 @@ final class FreeExportsUITests: XCTestCase {
         XCTAssertTrue(app.buttons["paywall.buyButton"].exists(within: 8))
         XCTAssertTrue(app.buttons["paywall.plan.annual"].exists && app.buttons["paywall.plan.monthly"].exists)
         XCTAssertTrue(app.buttons["Restore"].exists)
-        app.buttons["paywall.privacyButton"].tap()
-        XCTAssertTrue(app.navigationBars["Privacy & AI data"].exists(within: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["paywall.privacyLink"].firstMatch.exists, "The paywall has no link to the privacy policy")
     }
 }

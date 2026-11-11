@@ -227,6 +227,8 @@ struct SelfieModeView: View {
         .onGeometryChange(for: CGFloat.self) { $0.frame(in: .global).minY } action: { top in
             viewModel.measured { $0.topBarBottom = top }
         }
+        // The panel ends as low as Scripts' tab bar, inside the Home Indicator's strip.
+        .floatingBottomBarPlacement()
     }
 
     /// The frame's caption, the recommendation, the storage line and the notices over the controls. Their top, while any shows, is where the text window and

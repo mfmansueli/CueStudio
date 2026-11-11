@@ -27,6 +27,8 @@
 	<false/>
 	<key>FirebaseCrashlyticsCollectionEnabled</key>
 	<false/>
+	<key>GOOGLE_ANALYTICS_IDFV_COLLECTION_ENABLED</key>
+	<false/>
 	<key>MetaAppID</key>
 	<string></string>
 	<key>NSBonjourServices</key>

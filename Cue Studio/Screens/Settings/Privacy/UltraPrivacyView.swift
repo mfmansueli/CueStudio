@@ -19,12 +19,11 @@ struct UltraPrivacyView: View {
                 row("The language, platform, format and length", position: .middle)
                 row("Your My Cue Voice preferences: who you are, your audience and how you speak", position: .middle)
                 row("The inspiration the idea came from, a sponsored script’s brand details and words you ask it to say", position: .middle)
-                row("The draft between steps, for the check and the polish", position: .middle)
-                row("With Fit to time, on a script Ultra AI wrote: that script with your edits", position: .last)
+                row("The draft between writing steps, for the polish and, if it runs long, to fit it to length", position: .last)
             } header: {
                 CueSectionHeader("Sent to Anthropic")
             } footer: {
-                Text("Only when you pick Ultra AI: up to 3 requests for a script (draft, check and polish) and 1 for Fit to time. Nothing is sent in the background.")
+                Text("Only when you pick Ultra AI: up to 3 requests for a script. Nothing is sent in the background.")
                     .foregroundStyle(Palette.ink2)
             }
             Section {
@@ -39,7 +38,7 @@ struct UltraPrivacyView: View {
             }
             Section {
                 row("Anthropic runs its AI model to write, check, polish or fit the script, and sends the text back.", position: .first)
-                row("It goes through Cue’s server, which keeps none of it. Under Anthropic’s commercial terms, Anthropic doesn’t use it to train its models and keeps it for up to 30 days to detect abuse.", position: .middle)
+                row("It goes through Cue’s server, which keeps none of it. Under its commercial terms, Anthropic doesn’t use it to train its models and deletes it within 30 days, or keeps it up to 2 years if its safety systems flag it as breaking its usage policy.", position: .middle)
                 row("A check from Google (Firebase App Check) confirms each request comes from Cue.", position: .last)
             } header: {
                 CueSectionHeader("What Anthropic does with it")

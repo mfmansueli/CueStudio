@@ -299,6 +299,22 @@ final class SettingsUITests: XCTestCase {
         XCTAssertTrue(sampleScript(app).exists(within: 5))
     }
 
+    /// The published privacy policy is one tap away in Settings › About and in Privacy & AI data (links that leave the app, so not tapped).
+    func testThePrivacyPolicyIsLinkedFromAboutAndPrivacy() {
+        let app = CueApp.launch(seeded: true)
+        openPrivacy(app)
+        let policy = row(app, "privacy.policyLink")
+        XCTAssertTrue(policy.exists(within: 5), "Privacy & AI data has no Privacy policy")
+        app.scroll(to: policy)
+        XCTAssertTrue(policy.label.contains("Privacy policy"), policy.label)
+        app.navigationBars.buttons.firstMatch.tap()
+        XCTAssertTrue(row(app, "settings.privacy").exists(within: 5))
+        // About is the last section: the list builds its rows only once they come on screen.
+        let about = row(app, "settings.privacyPolicy")
+        app.scroll(to: about)
+        XCTAssertTrue(about.isHittable, "Settings › About has no Privacy policy")
+    }
+
     /// "Help improve Cue" starts off and says it covers usage data and crash reports (owner, 09/11/2026: one clear control for both).
     func testHelpImproveCueStartsOffAndSaysItIncludesCrashReports() {
         let app = CueApp.launch(seeded: true)

@@ -4,13 +4,19 @@
   Cue Studio's privacy manifest (Apple: "Privacy manifest files"). It must match the App Store privacy label and the privacy policy
   (DESIGN_PROJECT §57 and the Privacy section). Cue never tracks: no advertising identifier, no data shared with data brokers.
 
-  Collected data:
-  - Crash, performance and other diagnostic data, product interaction and the Firebase install identifier: only with
-    "Help improve Cue" on (off by default), for analytics; not linked to the person.
+  Collected data (Firebase Analytics ships no privacy manifest of its own in this SDK, 12.19, so what it collects is declared here;
+  Crashlytics, Installations and GoogleDataTransport ship theirs, with crash and other diagnostic data, which these entries match):
+  - Crash, performance and other diagnostic data and product interaction: only with "Help improve Cue" on (off by default), for
+    analytics and to fix crashes and freezes (app functionality, as Crashlytics' own manifest says); not linked to the person.
+  - Coarse location: Firebase Analytics derives an approximate location from the masked IP address, only with "Help improve Cue" on;
+    analytics; not linked to the person.
   - Other user content: Ultra AI's request (the idea, choices and My Cue Voice preferences) goes through Cue's server to Anthropic, only
     when the creator picks Ultra AI; app functionality; not linked to the person.
-  - Device ID: Cue's random install ID, sent to Cue's server to count Ultra AI scripts and invites (app functionality, fraud prevention).
-  - Purchase history: with Cue Pro, the App Store's signed transaction goes to Cue's server so Pro's Ultra AI scripts are counted.
+  - Device ID: Cue's random install ID, sent to Cue's server to count Ultra AI scripts and invites (app functionality, which covers fraud
+    prevention), and Firebase's app instance ID with "Help improve Cue" on (analytics). Not the IDFV: Info.plist turns it off
+    (GOOGLE_ANALYTICS_IDFV_COLLECTION_ENABLED), and never the advertising identifier.
+  - Purchase history: with Cue Pro, the App Store's signed transaction goes to Cue's server so Pro's Ultra AI scripts are counted (app
+    functionality); with "Help improve Cue" on, Firebase Analytics logs in-app purchases on its own (analytics).
 
   Required-reason APIs used by Cue's own code:
   - UserDefaults: CA92.1 (the app's own settings).
@@ -36,6 +42,7 @@
 			<key>NSPrivacyCollectedDataTypePurposes</key>
 			<array>
 				<string>NSPrivacyCollectedDataTypePurposeAnalytics</string>
+				<string>NSPrivacyCollectedDataTypePurposeAppFunctionality</string>
 			</array>
 		</dict>
 		<dict>
@@ -48,6 +55,7 @@
 			<key>NSPrivacyCollectedDataTypePurposes</key>
 			<array>
 				<string>NSPrivacyCollectedDataTypePurposeAnalytics</string>
+				<string>NSPrivacyCollectedDataTypePurposeAppFunctionality</string>
 			</array>
 		</dict>
 		<dict>
@@ -60,11 +68,24 @@
 			<key>NSPrivacyCollectedDataTypePurposes</key>
 			<array>
 				<string>NSPrivacyCollectedDataTypePurposeAnalytics</string>
+				<string>NSPrivacyCollectedDataTypePurposeAppFunctionality</string>
 			</array>
 		</dict>
 		<dict>
 			<key>NSPrivacyCollectedDataType</key>
 			<string>NSPrivacyCollectedDataTypeProductInteraction</string>
+			<key>NSPrivacyCollectedDataTypeLinked</key>
+			<false/>
+			<key>NSPrivacyCollectedDataTypeTracking</key>
+			<false/>
+			<key>NSPrivacyCollectedDataTypePurposes</key>
+			<array>
+				<string>NSPrivacyCollectedDataTypePurposeAnalytics</string>
+			</array>
+		</dict>
+		<dict>
+			<key>NSPrivacyCollectedDataType</key>
+			<string>NSPrivacyCollectedDataTypeCoarseLocation</string>
 			<key>NSPrivacyCollectedDataTypeLinked</key>
 			<false/>
 			<key>NSPrivacyCollectedDataTypeTracking</key>
@@ -109,6 +130,7 @@
 			<key>NSPrivacyCollectedDataTypePurposes</key>
 			<array>
 				<string>NSPrivacyCollectedDataTypePurposeAppFunctionality</string>
+				<string>NSPrivacyCollectedDataTypePurposeAnalytics</string>
 			</array>
 		</dict>
 	</array>

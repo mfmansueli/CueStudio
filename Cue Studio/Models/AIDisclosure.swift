@@ -5,8 +5,8 @@
 
 import Foundation
 
-/// What Cue tells the creator about where My Cue Voice goes, in one place for every screen that says it (Settings › Privacy & AI data, the privacy
-/// sheet, the voice page, What Cue sends, the examples editor and the import). Since the owner's D1 (02/11/2026) the proof (pasted examples,
+/// What Cue tells the creator about where My Cue Voice goes, in one place for every screen that says it (Settings › Privacy & AI data, the voice page,
+/// What Cue sends, the examples editor and the import). Since the owner's D1 (02/11/2026) the proof (pasted examples,
 /// imported writing, approved scripts) reaches Apple Intelligence on this iPhone and in Private Cloud Compute (`AIRequestPolicy`); Ultra AI gets
 /// the voice without it (`VoiceBriefBuilder.ultraProjection`).
 nonisolated enum AIDisclosure {
@@ -28,10 +28,5 @@ nonisolated enum AIDisclosure {
     /// What Cue sends, over Ultra AI's calls once it is allowed.
     static var ultraSends: String {
         String(localized: "Sent only for the scripts you pick Ultra AI for. It gets everything but your examples.")
-    }
-
-    /// The privacy sheet where Ultra AI is offered.
-    static var ultraPrivacy: String {
-        String(localized: "Apple Intelligence writes by default. Ultra AI sends your request and voice preferences to Anthropic, which runs its model, only when you allow it and pick it for a script. Writing examples and imported excerpts never go to Anthropic.")
     }
 }

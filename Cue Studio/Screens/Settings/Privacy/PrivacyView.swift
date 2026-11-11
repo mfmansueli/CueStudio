@@ -5,11 +5,11 @@
 
 import SwiftUI
 
-/// Settings › Privacy & AI data: what stays on this iPhone, the permissions, and "Delete my Cue data".
+/// Settings › Privacy & AI data: the AI and Help improve Cue switches, Ultra AI, the published privacy policy, the permissions, and
+/// "Delete my Cue data".
 struct PrivacyView: View {
     let bindings: SettingsBindings
 
-    @State private var showsPolicy = false
     @State private var asksUltra = false
 
     @Environment(UltraScriptService.self) private var ultra
@@ -38,9 +38,9 @@ struct PrivacyView: View {
             if ultra.isAvailable { ultraSection }
             Section {
                 if let url = AppLinks.privacyPolicy {
-                    Link(destination: url) { policyRow }.cardRowBackground(position: .first)
-                } else {
-                    Button { showsPolicy = true } label: { policyRow }.buttonStyle(.plain).cardRowBackground(position: .first)
+                    Link(destination: url) { policyRow }
+                        .accessibilityIdentifier("privacy.policyLink")
+                        .cardRowBackground(position: .first)
                 }
                 SettingsEntryRow(entry: .permissions, bindings: bindings, position: .last)
             }
@@ -55,7 +55,6 @@ struct PrivacyView: View {
         .navigationTitle("Privacy & AI data")
         .navigationBarTitleDisplayMode(.inline)
         .contentMargins(.top, 0, for: .scrollContent)
-        .sheet(isPresented: $showsPolicy) { PrivacySheet() }
         .sheet(isPresented: $asksUltra) { UltraConsentSheet { ultra.consent.grant() } }
     }
 

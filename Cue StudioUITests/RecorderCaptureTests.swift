@@ -27,6 +27,22 @@ final class RecorderCaptureTests: XCTestCase {
         app.descendants(matching: .any)[id].firstMatch
     }
 
+    /// The recorder's sheet is Liquid Glass with a light tint (10/11): its texts measured over a white scene, the camera's worst case, at rest,
+    /// with Voice waiting, and in the compact bar while it records.
+    func testTheSheetOverAWhiteScene() throws {
+        guard ProcessInfo.processInfo.environment["CUE_FIDELITY_DIR"] != nil else { throw XCTSkip("Set TEST_RUNNER_CUE_FIDELITY_DIR to capture") }
+        let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestDemoCamera", "-uiTestCameraScene", "FFFFFF"])
+        let record = app.buttons["row.recordButton"].firstMatch
+        XCTAssertTrue(record.exists(within: 15))
+        record.tap()
+        XCTAssertTrue(app.buttons["prompter.recordButton"].exists(within: 10))
+        try shot(app, "w01_sheet-over-white")
+        app.buttons["prompter.recordButton"].tap()
+        XCTAssertTrue(element(app, "prompter.recordingBadge").exists(within: 15))
+        sleep(2)
+        try shot(app, "w02_recording-bar-over-white")
+    }
+
     func testTheSelfieRecordersNewSurfaces() throws {
         guard ProcessInfo.processInfo.environment["CUE_FIDELITY_DIR"] != nil else { throw XCTSkip("Set TEST_RUNNER_CUE_FIDELITY_DIR to capture") }
         // 1.5 GB left: the quiet "About … min left in 4K" line over the controls.

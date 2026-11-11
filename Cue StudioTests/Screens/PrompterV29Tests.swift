@@ -47,11 +47,7 @@ struct PrompterV29Tests {
     private let metrics = SelfieScreenMetrics()
 
     private func layout(isRecording: Bool) -> ReadingLayout {
-        let frame = FrameGeometry(sensorRect: FrameGeometry.sensorRect(in: metrics.screen), aspect: .portrait, resolution: .hd1080).frameRect
-        return ReadingLayout(
-            metrics: metrics, isFrontCamera: true, frameRect: frame, lineOffset: nil, windowHeight: 300, readingWidth: 0.9,
-            isRecording: isRecording
-        )
+        ReadingLayout(metrics: metrics, lineOffset: nil, windowHeight: 300, readingWidth: 0.9, isRecording: isRecording)
     }
 
     @Test func theBoxShrinksWhileRecording() {

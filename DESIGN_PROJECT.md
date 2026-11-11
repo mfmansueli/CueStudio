@@ -639,7 +639,7 @@ realce de palavras. Ficam a linha de leitura, o trilho de seções e o chip de v
 
 **Studio** (`Screens/Prompter/Studio`): sem câmera, sem gravar, sem permissão de câmera; para ensaiar, ajustar o texto ou ler com outra câmera filmando
 (espelho e Remote continuam). Gravar é do Selfie. Texto `PrompterTextView` em tela cheia com a linha em `guidePosition`; um toque toca ou pausa.
-**Barra** (`StudioControlPanel`, vidro noturno, alça que guarda e ⌃ que traz): (1) Voice | Steady, ‹‹ 3 linhas, play, 3 linhas ››; (2) velocidade ou linha
+**Barra** (`StudioControlPanel`, Liquid Glass `.regular` tingido de vidro noturno a 15%, sem borda própria (a do vidro); decisão do dono (10/11): fica em 15% mesmo abaixo do mínimo sobre uma cena branca, o pior caso (Voice 2,3:1, Speed 2,7:1, Steady 3,0:1; 1× e a linha de setup passam), medido com `-uiTestCameraScene FFFFFF` em `RecorderCaptureTests.testTheSheetOverAWhiteScene`, como o painel do Selfie (`SheetFrame`); ela e o painel do Selfie terminam a 21 pt da borda, na faixa do indicador de início, como a tab bar de Scripts: `FloatingBottomBarPlacement`, `Metrics.floatingBarBottom`; sem indicador de início ficam onde estavam; alça que guarda e ⌃ que traz): (1) Voice | Steady, ‹‹ 3 linhas, play, 3 linhas ››; (2) velocidade ou linha
 de voz e estado; (3) chips **Size · Line · Margin · Mirror · Aa More** (`StudioAdjustBar`): um slider por vez (tamanho 12–56 pt, linha 10–70%, margens 8–40 pt; o slider
 só existe aberto, `showsSlider`), Mirror para rig, Aa abre a folha do Aa (§22). Acima do texto, "0:42 LEFT" e "1:12 · IDEAL 1:15–2:30" (`StudioTimeLine`).
 **Contagem:** play do começo usa a de Settings › Prompter (Off, 3, 5, 10 s); a barra some e um toque cancela; retomar toca na hora. Voice Following ouve
@@ -654,7 +654,13 @@ do microfone do gravador, e no Studio o mesmo cartão, dizem por quê e abrem os
 (o toast diz "Can't follow {idioma} · Scrolling", a cada vez que cai). Nada finge seguir a voz. A prática tem a regra dela (§35). Nos testes de UI o
 gravador abre em Steady, a menos que o teste roteirize o reconhecimento (`-uiTestVoiceFollowing`; o Simulator não reconhece fala).
 
-**Selfie:** a caixa abre no lugar recomendado (118 pt sob a lente; uma linha antiga abaixo de ~1/3 da tela foi apagada uma vez, `readingLineResetV30`).
+**Selfie:** a caixa abre no lugar recomendado (a linha 118 pt sob a lente; uma linha antiga abaixo de ~1/3 da tela foi apagada uma vez, `readingLineResetV30`).
+No lugar recomendado, **a caixa começa logo abaixo dos botões da barra de cima**, 8 pt sob o vidro deles (dono, 11/11/2026): com a câmera frontal ou
+a traseira (a traseira lê no mesmo lugar; o `ReadingLayout` não pergunta mais a câmera), qualquer altura de caixa, antes e durante a take. A barra do
+sistema é mais alta que os botões, então o meio deles é medido (`SelfieScreenMetrics.topBarCenter`, `topControlsBottom`) e a caixa não começa sob a
+barra. Ali a linha fica até a metade da caixa (`recommendedLeadLimit`); uma linha que o criador moveu deixa um quarto da caixa acima dela e a caixa a
+segue. Gravando, a caixa encolhe só por baixo: o topo e a linha ficam onde o criador lia. Testes: `ReadingLayoutTests`
+(`cuesPlaceHugsTheTopBarsButtonsAtEveryHeight`, `recordingKeepsTheWindowsTopAndLine`), `RecorderTopBarUITests`.
 **Tudo do Aa fica como um ajuste de Settings** (dono, 09/11/2026): ao fechar a folha do Aa e ao sair do gravador, o teleprompter inteiro (caixa, linha,
 tamanho, fonte, espaçamento, alinhamento, cor, margens, velocidade, espelho, fundo e desfoque sobre a câmera, zona Custom e Voice | Steady) vira o ponto
 de partida da próxima sessão (`PrompterViewModel.rememberPrompterSettings` → `SessionSetupService.rememberReadingLayout`); não há "tornar padrão". O
@@ -742,11 +748,12 @@ app, não as do protótipo; **Hidden suggestions**, só enquanto há uma: as fer
 AI data (**Apple Intelligence** é a chave de todos os recursos de IA: `PrivacyPreferencesService` → `ScriptWriting.isEnabled`; **Help improve Cue**
 ("Usage data and crash reports, never videos or scripts") é o único controle do Analytics e do Crashlytics (decisão do dono, 09/11/2026): começa
 desligado, o Info.plist deixa as duas coletas desligadas desde o primeiro lançamento (`FIREBASE_ANALYTICS_COLLECTION_ENABLED`,
-`FirebaseCrashlyticsCollectionEnabled`), e a chave as liga e desliga no lançamento e a cada mudança (`TelemetryCollecting` → `TelemetryManager`);
+`FirebaseCrashlyticsCollectionEnabled`) e o IDFV fora do Analytics sempre (`GOOGLE_ANALYTICS_IDFV_COLLECTION_ENABLED`), e a chave as liga e desliga no lançamento e a cada mudança (`TelemetryCollecting` → `TelemetryManager`);
 os non-fatal do Cue (`AIFailureReport`, `EditorFailureReport`, MetricKit, `VoiceCheckReport`) e os eventos só saem com ela ligada; desligar apaga os
 relatórios de falha ainda não enviados e os dados do Analytics no aparelho (id novo); o Firebase continua configurado porque o App Check da Ultra AI
-roda nele. A folha **Privacy & AI data** (`PrivacySheet`, aberta pela política e pelo paywall) diz onde fica cada coisa: roteiros, takes e My Cue Voice
-no iPhone e nos backups, o servidor do Cue só com contagens sob um id aleatório, uso e falhas ao Google só com Help improve Cue ligado;
+roda nele. **Privacy policy** (aqui, em Settings › About e no Privacy do paywall) abre a política publicada,
+https://appoliumlabs.web.app/cue/privacy (`AppLinks.privacyPolicy`; a fonte é `AppoliumLabs/site/src/cue/privacy.html`, e
+`PrivacyInfo.xcprivacy` e `legal/app-store-connect.md` dizem o mesmo que ela, conferidos em `PrivacyDisclosureTests`);
 **Delete my Cue data**, `DataEraserService`, apaga do iPhone roteiros e pastas, tomadas com vídeos e edições, vídeos exportados à espera
 e a fila de compartilhamento, Logbook, marcas, My Cue Voice, ideias e o gosto aprendido, meus estilos, o setup, as marcas da
 primeira viagem, os rascunhos, as cópias de uma biblioteca danificada e os lembretes; as pastas de takes, mídias do editor e rascunhos saem
@@ -893,7 +900,7 @@ acima). Tudo cabe sem rolar do SE ao Pro Max (a rolagem só existe para o Dynami
   grátis e não aparecem; nada grátis é trancado para encher a lista. O Remote continua grátis.
 - **Rodapé**: planos lado a lado (1,2 : 1, 72 pt; `ProPlanRow`, `ProPlanCard`), "SAVE n%" ao lado de "Yearly" dentro do cartão; o anel amarelo desliza
   entre eles com mola (`matchedGeometryEffect`); botão amarelo "Subscribe for $39.99/year" (ou /month) com brilho; "Renews yearly at $39.99. Cancel anytime
-  in Settings."; Restore · Redeem code · Terms · Privacy (**Redeem code** abre a folha de código de oferta da Apple, `offerCodeRedemption`; o mesmo
+  in Settings."; Restore · Redeem code · Terms · Privacy (Terms e Privacy são links: o EULA padrão da Apple e a política publicada, `AppLinks`; **Redeem code** abre a folha de código de oferta da Apple, `offerCodeRedemption`; o mesmo
   em Settings › Pro, ao lado de Restore purchases, com o ícone `SettingsIcons/redeem`; um código que libera o Pro volta pelas atualizações da loja). Sem internet os preços não vêm: no lugar da letra miúda, "Couldn't reach the App Store. Check your
   connection and try again." sublinhado pede de novo (`StoreManager.productsFailed`; uma abertura offline nunca deixa um alerta esperando). Restore
   diz uma coisa só, num toast (`RestoreOutcome`): "Purchases restored", "No purchases to restore" quando a App Store respondeu, ou o motivo
@@ -1046,10 +1053,10 @@ voltam com uma linha quando validados no aparelho (`SHARING.md`).
 ## 17. Confirmações (11.1 "reset confirm")
 
 `CueActionSheet` (`DesignSystem/Components`): a página escurece, um cartão com a pergunta em cinza e a ação em vermelho, e um cartão **Cancel** separado em
-negrito. Custom porque o `confirmationDialog` do iOS 27 abre como balão, sem Cancel. Usado em **Delete my Cue data** (o mesmo em Settings e na folha
-Privacy & AI data: "Deletes your scripts, takes, edits and My Cue Voice from this iPhone. This can't be undone." / **Delete my Cue data**; onde a Ultra AI
-é oferecida, uma linha menor embaixo separa o que não volta: "Already sent can’t be called back: Anthropic keeps Ultra AI requests up to 30 days to detect
-abuse, never for training. Cue’s server keeps only counts, under a random ID.", o `note` do `CueActionSheet`), **Reset my setup**. Confirmação só para o que não tem volta: o resto tem Undo no toast.
+negrito. Custom porque o `confirmationDialog` do iOS 27 abre como balão, sem Cancel. Usado em **Delete my Cue data** (Settings › Privacy & AI data: "Deletes your scripts, takes, edits and My Cue Voice from this iPhone. This can't be undone." / **Delete my Cue data**; onde a Ultra AI
+é oferecida, uma linha menor embaixo separa o que não volta: "Already sent can’t be called back: Anthropic doesn’t train on Ultra AI requests and deletes
+them within 30 days, or keeps one flagged for breaking its usage policy up to 2 years. Cue’s server keeps only counts, under a random ID.", o `note` do
+`CueActionSheet`), **Reset my setup**. Confirmação só para o que não tem volta: o resto tem Undo no toast.
 
 ## 18. Movimento vindo dos dados do quadro (handoff-telas)
 
@@ -1450,7 +1457,11 @@ apertado ou não) em `PaletteContrastTests`.
 
 **Gravador (Selfie e Studio):** barra de navegação do sistema num `NavigationStack` dentro do `PrompterView` (a revisão fica fora): fechar
 (`Button(role: .close)`) no início, **Selfie | Studio** (`ModeSwitcher`, `Picker` `.segmented`) no meio, e o chip da rede no fim ("● TikTok", abre
-Create for; no Studio só com roteiro, ao lado do Remote); gravando, o REC ocupa o início; escondida na prática. A caixa do Selfie começa embaixo da barra
+Create for; no Studio só com roteiro, ao lado do Remote); escondida na prática. **Gravando** (dono, 11/11/2026: "info demais"), a barra tem um item só,
+no início: o REC com o relógio e, ao lado, a take ("Take 4", "Freestyle · Take 4") com o tempo que falta para o mínimo da rede embaixo ("58s to 1:00",
+`RecordingTakeTitle`); sem a configuração ("TikTok setup") e sem o chip da rede. Os dois dividem a largura da tela (`RecordingBarLayout`: o REC no tamanho
+dele, a take no que sobra, com as letras diminuindo até 75% antes de cortar), então nada passa por baixo do relógio em nenhum iPhone, idioma ou tamanho de
+texto (`RecorderTopBarUITests`, rodado no SE, no 17 e no 18 Pro Max, em pt, it e no maior tamanho de texto; `RecordingBarLayoutTests`). A caixa do Selfie começa embaixo da barra
 (`SelfieScreenMetrics.topBarBottom`); a barra de status é medida fora da pilha. Controles de baixo do sistema onde há um: Voice | Steady
 (`ScrollModePicker`), botões redondos `.glass` (`glassIconButton()`), velocidade e sliders como `Slider` com nome e valor (`LabeledSlider`), chips `.glass`
 (`.glassProminent` quando ligado). Do Cue: gravar, medidor de voz, última take, rótulos de microfone e formato e o painel de vidro noturno. Sem gesto que
@@ -3918,13 +3929,14 @@ Settings › Privacy & AI data e no *What Cue sends* do My Cue Voice (`UltraPayl
 data tem o interruptor **Ultra AI** (ligar abre a folha; desligar revoga e nada mais sai, nem a próxima chamada de um roteiro em andamento), a página
 **What Ultra AI sends** (`UltraPrivacyView`, o detalhe que a App Review pede em 5.1.2(i) sem aumentar o consentimento: *Sent to Anthropic* (a ideia como foi
 digitada ou as respostas do formato; idioma, rede, formato e duração; as preferências do My Cue Voice; a inspiração, os dados da marca de um patrocinado e
-as palavras pedidas; o rascunho entre as etapas; no Fit to time de um roteiro da Ultra AI, o roteiro com as edições), só quando a Ultra AI é escolhida,
-até 3 pedidos por roteiro e 1 por Fit to time, nada em segundo plano; *Never sent* (nome e @, exemplos de escrita, trechos importados, outros roteiros,
+as palavras pedidas; o rascunho entre as etapas da escrita, para o polimento e, quando o roteiro passa da duração, para o encaixe que o encurta), só
+quando a Ultra AI é escolhida, até 3 pedidos por roteiro (no Release, rascunho e polimento, `UltraFlow.standard`, mais esse encaixe; o Fit to time da
+página é do Apple Intelligence e nada editado volta à Ultra AI), nada em segundo plano; *Never sent* (nome e @, exemplos de escrita, trechos importados, outros roteiros,
 vídeos, áudio e fotos); *What Anthropic does with it* (roda o modelo e devolve o texto; passa pelo servidor do Cue, que não guarda nada; pelos termos
-comerciais da Anthropic não treina com isso e guarda até 30 dias para detectar abuso; o App Check confere que o pedido vem do Cue); **See the requests,
+comerciais da Anthropic não treina com isso; apaga em até 30 dias, ou guarda até 2 anos um pedido que os sistemas de segurança dela marquem como
+contra a política de uso; o App Check confere que o pedido vem do Cue); **See the requests,
 word for word** (`UltraPayloadView` com a ideia do dock) e o link **Anthropic’s commercial terms**; o rodapé diz como parar e que o Apple Intelligence não muda) e, em Debug,
-**Ultra AI · Lab**; o Apple Intelligence passa a dizer "Cue’s default writer. Ultra AI has its own switch." e a folha de privacidade deixa de dizer "nothing
-else" onde a Ultra AI existe.
+**Ultra AI · Lab**; o Apple Intelligence passa a dizer "Cue’s default writer. Ultra AI has its own switch."
 
 **Laboratório** (Debug; dono, 02/11/2026: provar o Claude no lugar do Google e modelos mais baratos): o Ultra AI · Lab escolhe quem escreve
 (`UltraLabProvider`: **Cue server (as on TestFlight)**, o padrão, exatamente o caminho do TestFlight; Gemini 3.5 Flash; Claude Opus 5.5, Sonnet 5.5 ou
@@ -4114,7 +4126,8 @@ Nada de nome, conta ou contato. O servidor (`server/functions/src/ultraMetering.
 do dono é de uns 200 criadores por mês: ~USD 0,06 por roteiro, uns 330 roteiros por dia; o mês inteiro, se todos usassem os 3 grátis e 1 em 10
 assinasse e escrevesse os 30, fica perto de USD 75), um limite mensal no Claude Console como segunda rede, e os contadores apagados sozinhos ~13
 meses depois do último uso (`server/functions/src/retention.ts`, a TTL de `server/firestore.indexes.json`). O que falta publicar depende do dono:
-`firebase deploy --only functions:ultra,firestore:indexes` e a política de privacidade (o link em `AppLinks.privacyPolicy`). Limites conhecidos:
+`firebase deploy --only functions:ultra,firestore:indexes` e publicar a política de privacidade no endereço que `AppLinks.privacyPolicy` já abre
+(https://appoliumlabs.web.app/cue/privacy). Limites conhecidos:
 o período de carência de cobrança da Apple conta como sem Pro no servidor (deixar o Billing Grace Period desligado no App Store Connect evita o
 caso), e um reembolso só é visto quando a transação que o app manda já o traz (o StoreKit tira o Pro do iPhone num reembolso, e o app deixa de
 mandar a prova).

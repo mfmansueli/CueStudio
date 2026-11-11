@@ -45,6 +45,7 @@ import Foundation
 /// - `-uiTestSampleVideo`: with the sample takes, writes small real videos behind the "3 morning
 ///   habits" takes, so Quick edit can play, scrub and trim them.
 /// - `-uiTestDemoCamera`: the recorder's camera records with no hardware (a small real video per take), for the Simulator.
+/// - `-uiTestCameraScene <RRGGBB>`: a scene of that colour where the camera's picture goes, to measure what is drawn over it (`CameraBackdrop`).
 /// - `-uiTestAppsInstalled`: with the above, the platforms' apps count as installed and take the video (`DemoVideoSharing`:
 ///   the send-off after "Share to").
 /// - `-uiTestSky <off|serene|adrift|interstellar>`: with the above, the sky starts like that (off otherwise: an endless animation
