@@ -5,9 +5,10 @@
 
 import SwiftUI
 
-/// What the Selfie navigation bar says about the take while it records, in the middle: "Take 4 · TikTok setup" ("Freestyle · Take 4" with no
-/// script) and, when the platform has a minimum, the time left to it under it. A toolbar item in the system's type on Liquid Glass of its own
-/// (the bar gives a middle item none), and it keeps its own size so nothing in it is ever cut.
+/// What the Selfie navigation bar says about the take while it records, beside the REC pill: "Take 4" ("Freestyle · Take 4" with no script)
+/// and, when the platform has a minimum, the time left to it under it. The setup and the network stay off the bar while recording (owner,
+/// 11/11/2026: too much at once). On Liquid Glass of its own, the REC pill's neighbour; where the bar has little room (`RecordingBarLayout`)
+/// the words shrink a little rather than run under the clock.
 struct RecordingTakeTitle: View {
     let viewModel: PrompterViewModel
 
@@ -18,17 +19,17 @@ struct RecordingTakeTitle: View {
             Text(subtitle)
                 .cueFont(.footnote, weight: .semibold)
                 .lineLimit(1)
-                .fixedSize()
+                .minimumScaleFactor(Self.smallestScale)
             if let chip = viewModel.monetizationChip {
                 Text(chip)
                     .cueFont(.caption2, weight: .semibold)
                     .foregroundStyle(Palette.accText)
                     .lineLimit(1)
-                    .fixedSize()
+                    .minimumScaleFactor(Self.smallestScale)
             }
         }
-        // A middle toolbar item gets no glass from the bar, so it has its own, the same Liquid Glass as the chip at the end: without it the words
-        // are lost over the picture.
+        // The recording item hides the bar's shared glass (the REC pill is red), so this has its own: without it the words are lost over the
+        // picture.
         .padding(.horizontal, 14)
         .padding(.vertical, 6)
         .glassEffect(.regular, in: Capsule())
@@ -36,12 +37,13 @@ struct RecordingTakeTitle: View {
         .accessibilityIdentifier("prompter.recordingTitle")
     }
 
-    /// "Take 4 · TikTok setup" (or "Freestyle · Take 4" without a script).
+    /// How small the words may get before they are cut, on the narrowest bar.
+    private static let smallestScale: CGFloat = 0.75
+
+    /// "Take 4" (or "Freestyle · Take 4" without a script).
     private var subtitle: String {
         let number = String(localized: "Take \(takes.nextNumber(for: viewModel.scriptID))")
-        if viewModel.hasScript {
-            return number + " · " + viewModel.session.captureSource.label
-        }
-        return String(localized: "Freestyle") + " · " + number
+        guard viewModel.hasScript else { return String(localized: "Freestyle") + " · " + number }
+        return number
     }
 }

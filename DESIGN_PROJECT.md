@@ -654,7 +654,13 @@ do microfone do gravador, e no Studio o mesmo cartão, dizem por quê e abrem os
 (o toast diz "Can't follow {idioma} · Scrolling", a cada vez que cai). Nada finge seguir a voz. A prática tem a regra dela (§35). Nos testes de UI o
 gravador abre em Steady, a menos que o teste roteirize o reconhecimento (`-uiTestVoiceFollowing`; o Simulator não reconhece fala).
 
-**Selfie:** a caixa abre no lugar recomendado (118 pt sob a lente; uma linha antiga abaixo de ~1/3 da tela foi apagada uma vez, `readingLineResetV30`).
+**Selfie:** a caixa abre no lugar recomendado (a linha 118 pt sob a lente; uma linha antiga abaixo de ~1/3 da tela foi apagada uma vez, `readingLineResetV30`).
+No lugar recomendado, **a caixa começa logo abaixo dos botões da barra de cima**, 8 pt sob o vidro deles (dono, 11/11/2026): com a câmera frontal ou
+a traseira (a traseira lê no mesmo lugar; o `ReadingLayout` não pergunta mais a câmera), qualquer altura de caixa, antes e durante a take. A barra do
+sistema é mais alta que os botões, então o meio deles é medido (`SelfieScreenMetrics.topBarCenter`, `topControlsBottom`) e a caixa não começa sob a
+barra. Ali a linha fica até a metade da caixa (`recommendedLeadLimit`); uma linha que o criador moveu deixa um quarto da caixa acima dela e a caixa a
+segue. Gravando, a caixa encolhe só por baixo: o topo e a linha ficam onde o criador lia. Testes: `ReadingLayoutTests`
+(`cuesPlaceHugsTheTopBarsButtonsAtEveryHeight`, `recordingKeepsTheWindowsTopAndLine`), `RecorderTopBarUITests`.
 **Tudo do Aa fica como um ajuste de Settings** (dono, 09/11/2026): ao fechar a folha do Aa e ao sair do gravador, o teleprompter inteiro (caixa, linha,
 tamanho, fonte, espaçamento, alinhamento, cor, margens, velocidade, espelho, fundo e desfoque sobre a câmera, zona Custom e Voice | Steady) vira o ponto
 de partida da próxima sessão (`PrompterViewModel.rememberPrompterSettings` → `SessionSetupService.rememberReadingLayout`); não há "tornar padrão". O
@@ -1450,7 +1456,11 @@ apertado ou não) em `PaletteContrastTests`.
 
 **Gravador (Selfie e Studio):** barra de navegação do sistema num `NavigationStack` dentro do `PrompterView` (a revisão fica fora): fechar
 (`Button(role: .close)`) no início, **Selfie | Studio** (`ModeSwitcher`, `Picker` `.segmented`) no meio, e o chip da rede no fim ("● TikTok", abre
-Create for; no Studio só com roteiro, ao lado do Remote); gravando, o REC ocupa o início; escondida na prática. A caixa do Selfie começa embaixo da barra
+Create for; no Studio só com roteiro, ao lado do Remote); escondida na prática. **Gravando** (dono, 11/11/2026: "info demais"), a barra tem um item só,
+no início: o REC com o relógio e, ao lado, a take ("Take 4", "Freestyle · Take 4") com o tempo que falta para o mínimo da rede embaixo ("58s to 1:00",
+`RecordingTakeTitle`); sem a configuração ("TikTok setup") e sem o chip da rede. Os dois dividem a largura da tela (`RecordingBarLayout`: o REC no tamanho
+dele, a take no que sobra, com as letras diminuindo até 75% antes de cortar), então nada passa por baixo do relógio em nenhum iPhone, idioma ou tamanho de
+texto (`RecorderTopBarUITests`, rodado no SE, no 17 e no 18 Pro Max, em pt, it e no maior tamanho de texto; `RecordingBarLayoutTests`). A caixa do Selfie começa embaixo da barra
 (`SelfieScreenMetrics.topBarBottom`); a barra de status é medida fora da pilha. Controles de baixo do sistema onde há um: Voice | Steady
 (`ScrollModePicker`), botões redondos `.glass` (`glassIconButton()`), velocidade e sliders como `Slider` com nome e valor (`LabeledSlider`), chips `.glass`
 (`.glassProminent` quando ligado). Do Cue: gravar, medidor de voz, última take, rótulos de microfone e formato e o painel de vidro noturno. Sem gesto que

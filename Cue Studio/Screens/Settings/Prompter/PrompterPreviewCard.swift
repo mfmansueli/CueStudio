@@ -50,7 +50,7 @@ struct PrompterPreviewCard: View {
     /// Where the recorder puts the line and the window on this screen, with these settings.
     private var layout: ReadingLayout {
         ReadingLayout(
-            metrics: metrics, isFrontCamera: true, frameRect: .zero, lineOffset: settings.readingLineOffset,
+            metrics: metrics, lineOffset: settings.readingLineOffset,
             windowHeight: settings.textWindowHeight, readingWidth: settings.readingWidth
         )
     }
