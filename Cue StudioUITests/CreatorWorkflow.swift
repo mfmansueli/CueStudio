@@ -38,11 +38,6 @@ final class CreatorWorkflow {
             && app.buttons["edit.toolbar.addMedia"].exists && !app.buttons["edit.toolbar.back"].exists
     }
 
-    /// The toast's own Undo, the one on screen (the screen under the editor has a toast host of its own).
-    var toastUndo: XCUIElement? {
-        app.buttons.matching(identifier: "toast.action").allElementsBoundByIndex.first { $0.isHittable }
-    }
-
     // MARK: - Gestures
 
     /// Taps `element` once it is there and on screen. XCUITest sometimes calls an element that is plainly on screen (a filter card
@@ -63,6 +58,13 @@ final class CreatorWorkflow {
             retries.append("\(what) tapped where it shows")
             app.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(dx: shown.midX, dy: shown.midY)).tap()
         }
+        taps += 1
+    }
+
+    /// Taps `element` at once, with no wait and no look at whether it is hittable first: for a button that is up for a while only (the
+    /// toast's, 4 s), right after the caller saw it.
+    func tapNow(_ element: XCUIElement) {
+        element.tap()
         taps += 1
     }
 

@@ -4165,7 +4165,10 @@ A metade reativa da revisão de comunicação (`reports/comunicacao-revisao-2026
   Save não tem toast: o botão diz "Saved to Photos" ou "Video and cover saved", e a contagem grátis fica no medidor (a capa que não salvou tem o seu,
   com Try again, §9).
 - **Hosts de toast nas folhas grandes** (`toastHost(inSheet: true)`): Import a script, Brand brief, Edit profile, Share my universe, as capas da celebração
-  e o fluxo de envio; Add media já tinha o do editor.
+  e o fluxo de envio; Add media já tinha o do editor. **O toast fica com o host da frente** (`ToastService.frontHosts`): enquanto uma dessas folhas
+  ou o editor (`EditorToastHost`, na capa dele e nas folhas por cima, como Add media, que desenham o seu sobre o do editor) está aberto, os hosts do app
+  (o da raiz e o do gravador) deixam o toast para ele, em vez de desenhá-lo de novo fora de vista por baixo; com o editor aberto, um toast sem tempo
+  próprio fica os 2 s do editor.
 - **Editor, menos toasts**: o que a prévia já mostra não tem toast, só o anúncio do VoiceOver (`EditorSession.announce`), e o Undo fica na barra do player:
   "Captions format: …", "… on this text", "Places swapped", "Line split", "Line break added", "Joined with next line", "Mask removed", "Mask reset", "Look pasted".
   Ficam os toasts de consequências que não se veem ("… on every text", "Look pasted on every clip", "Replaced · its Blur area and its voice's captions went with

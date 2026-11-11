@@ -27,8 +27,8 @@ final class ToastService {
     /// The pill on screen: a new one for every toast, except the toast that ends work under way, which takes its own working
     /// toast's place in the same pill (its ring becomes the new icon, its words the new ones).
     private(set) var pill = UUID()
-    /// How long a toast stays when none is given: the editor's last 2 s.
-    var defaultDuration: Duration = .seconds(2.4)
+    /// How long a toast stays when none is given: the editor's last 2 s, while one of its hosts is up (`editorHosts`).
+    var defaultDuration: Duration { editorHosts > 0 ? .seconds(2) : .seconds(2.4) }
     /// How long a toast with a button ("Undo") stays when none is given: long enough to reach it.
     static let actionDuration: Duration = .seconds(4)
     /// How long work under way can keep its ring turning with nothing said: a piece of work that ends in silence lets its toast go
@@ -37,9 +37,14 @@ final class ToastService {
     /// When the tap of a kind lands, from the toast's arrival: as the ✓ starts to draw and the ! to shake, at the ★'s widest.
     static let tapDelay: Duration = .milliseconds(200)
     static let cueTapDelay: Duration = .milliseconds(350)
-    /// Sheets that show the toast themselves (`toastHost(inSheet: true)`), counted while they are up: the root's host leaves the toast to
-    /// them, so it is shown once, in front, and never half under a sheet.
-    private(set) var sheetHosts = 0
+    /// The hosts in front of the app's own (the root's and the recorder's `toastHost()`), counted while they are up: a sheet's
+    /// (`toastHost(inSheet: true)`) and the editor's (`EditorToastHost`: its full-screen cover and the sheets over it). The app's hosts
+    /// leave the toast to them, so it is shown in front: never half under a sheet, nor drawn again out of sight under the editor (a sheet
+    /// over the editor, Add media or a brand kit, draws its own over the editor's, which the sheet hides).
+    private(set) var frontHosts = 0
+    /// The editor's hosts among them: while one is up, a toast without a time of its own lasts the editor's 2 s (closing Add media over
+    /// the editor leaves it at 2 s).
+    private(set) var editorHosts = 0
     /// Called when the toast leaves, for whoever waits on it (`onLeave`): a deleted take's video is purged only once its Undo is gone.
     @ObservationIgnored private var leaveHandlers: [UUID: () -> Void] = [:]
     /// A result that arrived while a toast with a button was up (`showResult`): it comes in when that toast goes.
@@ -60,9 +65,15 @@ final class ToastService {
     /// A toast with a button is up: what it offers (Undo, Try again, Settings) is still within reach.
     var holdsAButton: Bool { message != nil && action != nil }
 
-    func sheetHostAppeared() { sheetHosts += 1 }
+    func frontHostAppeared(editor: Bool = false) {
+        frontHosts += 1
+        if editor { editorHosts += 1 }
+    }
 
-    func sheetHostDisappeared() { sheetHosts = max(0, sheetHosts - 1) }
+    func frontHostDisappeared(editor: Bool = false) {
+        frontHosts = max(0, frontHosts - 1)
+        if editor { editorHosts = max(0, editorHosts - 1) }
+    }
 
     /// The answer to what the creator just did: it takes the place of whatever is up. `ending` is the pill `showWorking` returned when
     /// this is what came of that work: only then does it take the ring's place in the same pill, with the success tap.

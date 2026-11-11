@@ -7,7 +7,7 @@ import SwiftUI
 
 /// Shows the current toast over the view. Apply it to every full-screen container (root, prompter)
 /// so the toast is visible above covers, and to a sheet whose own actions say something (`inSheet`): while that sheet is up, it shows the
-/// toast instead of the root.
+/// toast instead of the root and the prompter, as the editor's host does while the editor is up (`ToastService.frontHosts`).
 struct ToastHost: ViewModifier {
     var inSheet = false
 
@@ -17,7 +17,7 @@ struct ToastHost: ViewModifier {
     func body(content: Content) -> some View {
         content
             .overlay(alignment: .top) {
-                if let message = toast.message, inSheet || toast.sheetHosts == 0 {
+                if let message = toast.message, inSheet || toast.frontHosts == 0 {
                     ToastView(
                         message: message, kind: toast.kind, action: toast.action,
                         onAction: {
@@ -41,8 +41,8 @@ struct ToastHost: ViewModifier {
                 }
             }
             .animation(.spring(duration: 0.3), value: toast.message)
-            .onAppear { if inSheet { toast.sheetHostAppeared() } }
-            .onDisappear { if inSheet { toast.sheetHostDisappeared() } }
+            .onAppear { if inSheet { toast.frontHostAppeared() } }
+            .onDisappear { if inSheet { toast.frontHostDisappeared() } }
     }
 }
 

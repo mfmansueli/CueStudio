@@ -163,8 +163,7 @@ final class EditorTaskUITests: XCTestCase {
         confirm.tap()
         XCTAssertTrue(EditorApp.toastSays(app, "lines deleted"))
         XCTAssertFalse(first.exists)
-        // The editor's toast has its Undo; the app's own toast host under the editor shows one too,
-        // out of sight, so the one tapped is the one on screen.
+        // The editor's toast has its Undo, the one tapped once it is on screen.
         let undo = app.buttons.matching(identifier: "toast.action").allElementsBoundByIndex.first { $0.isHittable }
         XCTAssertNotNil(undo)
         undo?.tap()
