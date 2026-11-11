@@ -15,7 +15,8 @@ import Foundation
 /// Not touched: the purchase (it belongs to the Apple ID), the free-export counter (kept so deleting data can't hand back free
 /// exports; the ledger's records of the erased takes go with them, `ExportLedgerService.forget`), the count of videos shared (the
 /// universe's planets), the language, the two switches of Privacy & AI data and what Photos already holds. Nor what already left: Ultra AI's
-/// requests stay with Anthropic up to 30 days, and Cue's server keeps its counts under the install's random id (the confirmation says so).
+/// requests stay with Anthropic up to 30 days (up to 2 years for one its safety systems flag), and Cue's server keeps its counts under the install's
+/// random id (the confirmation says so).
 /// Irreversible, so the screen asks first.
 @MainActor
 @Observable

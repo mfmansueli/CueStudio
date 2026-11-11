@@ -23,7 +23,6 @@ struct SettingsRootRow: View {
     @State private var paywall: PaywallContext?
     @State private var showsManageSubscription = false
     @AppStorage(DefaultsKey.personalizeSeen) private var personalizeSeen = false
-    @State private var showsPrivacy = false
 
     var body: some View {
         content
@@ -82,12 +81,6 @@ struct SettingsRootRow: View {
                 Link(destination: url) {
                     SettingsIconLabel(icon: .policy, title: entry.title)
                 }
-            } else {
-                Button { showsPrivacy = true } label: {
-                    SettingsIconLabel(icon: .policy, title: entry.title)
-                }
-                .buttonStyle(.plain)
-                .sheet(isPresented: $showsPrivacy) { PrivacySheet() }
             }
         case .termsOfUse:
             if let url = AppLinks.termsOfUse {

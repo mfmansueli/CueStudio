@@ -32,7 +32,6 @@ struct ProPlansScreen: View {
     @State private var selectedPlan: ProPlan = .annual
     @State private var ring = ProGalaxyArt.RingLight(lit: 12, was: 12, since: .distantPast)
     @State private var finishedAt: Date?
-    @State private var showsPrivacy = false
     @State private var isRestoring = false
     /// Apple's sheet for an offer code (a launch or a creator's code); a code that unlocks Pro comes back through the store's updates.
     @State private var redeemsCode = false
@@ -68,7 +67,6 @@ struct ProPlansScreen: View {
         } message: {
             Text(store.errorMessage ?? "")
         }
-        .sheet(isPresented: $showsPrivacy) { PrivacySheet() }
     }
 
     private var galaxyStyle: ProGalaxyArt.Style {
@@ -138,11 +136,8 @@ struct ProPlansScreen: View {
                 Button("Restore") { Task { await restore() } }
                 Button("Redeem code") { redeemsCode = true }.accessibilityIdentifier("paywall.redeemCode")
                 if let terms = AppLinks.termsOfUse { Link("Terms", destination: terms) }
-                // Until the policy has a URL, Privacy opens the same summary as the Profile.
                 if let privacy = AppLinks.privacyPolicy {
-                    Link("Privacy", destination: privacy)
-                } else {
-                    Button("Privacy") { showsPrivacy = true }.accessibilityIdentifier("paywall.privacyButton")
+                    Link("Privacy", destination: privacy).accessibilityIdentifier("paywall.privacyLink")
                 }
             }
             .cueFont(12.5)

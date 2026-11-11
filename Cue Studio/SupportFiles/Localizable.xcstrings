@@ -18496,121 +18496,121 @@
         }
       }
     },
-    "Already sent can’t be called back: Anthropic keeps Ultra AI requests up to 30 days to detect abuse, never for training. Cue’s server keeps only counts, under a random ID." : {
-      "comment" : "Delete my Cue data confirmation, the small line under the question: what deleting can't reach (Ultra AI requests already sent, the counts on Cue's server)",
+    "Already sent can’t be called back: Anthropic doesn’t train on Ultra AI requests and deletes them within 30 days, or keeps one flagged for breaking its usage policy up to 2 years. Cue’s server keeps only counts, under a random ID." : {
+      "comment" : "Delete my Cue data confirmation, the small line under the question: what deleting can't reach (Ultra AI requests already sent, which Anthropic deletes within 30 days or keeps up to 2 years if flagged; the counts on Cue's server)",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ما أُرسل لا يمكن استرجاعه: تحتفظ Anthropic بطلبات Ultra AI لمدة تصل إلى 30 يومًا لاكتشاف إساءة الاستخدام، ولا تستخدمها للتدريب أبدًا. لا يحتفظ خادم Cue إلا بأعداد، تحت معرّف عشوائي."
+            "value" : "ما أُرسل لا يمكن استرجاعه: لا تدرّب Anthropic نماذجها على طلبات Ultra AI وتحذفها خلال 30 يومًا، أو تحتفظ بالطلب الذي يُرصد لمخالفته سياسة الاستخدام لمدة تصل إلى سنتين. لا يحتفظ خادم Cue إلا بأعداد، تحت معرّف عشوائي."
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Det, der allerede er sendt, kan ikke kaldes tilbage: Anthropic gemmer Ultra AI-forespørgsler i op til 30 dage for at opdage misbrug, aldrig til træning. Cues server gemmer kun antal under et tilfældigt id."
+            "value" : "Det, der allerede er sendt, kan ikke kaldes tilbage: Anthropic træner ikke på Ultra AI-forespørgsler og sletter dem inden for 30 dage, eller gemmer en forespørgsel, der markeres for at bryde selskabets brugspolitik, i op til 2 år. Cues server gemmer kun antal under et tilfældigt id."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bereits Gesendetes lässt sich nicht zurückholen: Anthropic bewahrt Anfragen an Ultra AI bis zu 30 Tage auf, um Missbrauch zu erkennen, nie zum Training. Der Server von Cue speichert nur Zählungen unter einer zufälligen ID."
+            "value" : "Bereits Gesendetes lässt sich nicht zurückholen: Anthropic trainiert nicht mit Anfragen an Ultra AI und löscht sie innerhalb von 30 Tagen; eine Anfrage, die als Verstoß gegen die Nutzungsrichtlinien markiert wird, kann bis zu 2 Jahre aufbewahrt werden. Der Server von Cue speichert nur Zählungen unter einer zufälligen ID."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lo ya enviado no se puede recuperar: Anthropic guarda las solicitudes de Ultra AI hasta 30 días para detectar abusos, nunca para entrenar. El servidor de Cue solo guarda recuentos, con un ID aleatorio."
+            "value" : "Lo ya enviado no se puede recuperar: Anthropic no entrena con las solicitudes de Ultra AI y las borra en 30 días, o guarda hasta 2 años una que se marque por incumplir su política de uso. El servidor de Cue solo guarda recuentos, con un ID aleatorio."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ce qui est déjà envoyé ne peut pas être rappelé : Anthropic garde les requêtes Ultra AI jusqu’à 30 jours pour détecter les abus, jamais pour l’entraînement. Le serveur de Cue ne garde que des comptages, sous un identifiant aléatoire."
+            "value" : "Ce qui est déjà envoyé ne peut pas être rappelé : Anthropic ne s’entraîne pas sur les requêtes Ultra AI et les supprime sous 30 jours, ou garde jusqu’à 2 ans une requête signalée comme contraire à sa politique d’utilisation. Le serveur de Cue ne garde que des comptages, sous un identifiant aléatoire."
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "जो भेजा जा चुका है, वह वापस नहीं लिया जा सकता: Anthropic दुरुपयोग पकड़ने के लिए Ultra AI के अनुरोध 30 दिनों तक रखता है, प्रशिक्षण के लिए कभी नहीं। Cue का सर्वर एक रैंडम ID के तहत सिर्फ़ गिनती रखता है।"
+            "value" : "जो भेजा जा चुका है, वह वापस नहीं लिया जा सकता: Anthropic Ultra AI के अनुरोधों पर प्रशिक्षण नहीं करता और उन्हें 30 दिनों के भीतर मिटा देता है, या उपयोग नीति तोड़ने के लिए चिह्नित अनुरोध को 2 साल तक रख सकता है। Cue का सर्वर एक रैंडम ID के तहत सिर्फ़ गिनती रखता है।"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Yang sudah terkirim tidak bisa ditarik kembali: Anthropic menyimpan permintaan Ultra AI hingga 30 hari untuk mendeteksi penyalahgunaan, tidak pernah untuk pelatihan. Server Cue hanya menyimpan hitungan, dengan ID acak."
+            "value" : "Yang sudah terkirim tidak bisa ditarik kembali: Anthropic tidak melatih model dengan permintaan Ultra AI dan menghapusnya dalam 30 hari, atau menyimpan hingga 2 tahun permintaan yang ditandai melanggar kebijakan penggunaannya. Server Cue hanya menyimpan hitungan, dengan ID acak."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ciò che è già stato inviato non si può richiamare: Anthropic conserva le richieste a Ultra AI fino a 30 giorni per rilevare abusi, mai per l’addestramento. Il server di Cue conserva solo dei conteggi, con un ID casuale."
+            "value" : "Ciò che è già stato inviato non si può richiamare: Anthropic non si addestra sulle richieste a Ultra AI e le elimina entro 30 giorni, oppure conserva fino a 2 anni una richiesta segnalata per violazione delle sue norme d’uso. Il server di Cue conserva solo dei conteggi, con un ID casuale."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "送信済みのものは取り消せません。AnthropicはUltra AIへのリクエストを不正利用の検出のため最大30日間保管し、トレーニングには使いません。CueのサーバーはランダムなIDで回数だけを記録します。"
+            "value" : "送信済みのものは取り消せません。AnthropicはUltra AIへのリクエストをトレーニングに使わず、30日以内に削除します。利用ポリシー違反として検出されたリクエストは最大2年間保管されることがあります。CueのサーバーはランダムなIDで回数だけを記録します。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이미 보낸 것은 되돌릴 수 없어요. Anthropic은 악용을 감지하기 위해 Ultra AI 요청을 최대 30일 동안 보관하며 학습에는 절대 사용하지 않아요. Cue 서버는 무작위 ID로 횟수만 보관해요."
+            "value" : "이미 보낸 것은 되돌릴 수 없어요. Anthropic은 Ultra AI 요청을 학습에 사용하지 않으며 30일 이내에 삭제해요. 다만 사용 정책 위반으로 감지된 요청은 최대 2년 동안 보관할 수 있어요. Cue 서버는 무작위 ID로 횟수만 보관해요."
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Det som alt er sendt, kan ikke hentes tilbake: Anthropic lagrer Ultra AI-forespørsler i opptil 30 dager for å oppdage misbruk, aldri til trening. Cues server lagrer bare antall, under en tilfeldig ID."
+            "value" : "Det som alt er sendt, kan ikke hentes tilbake: Anthropic trener ikke på Ultra AI-forespørsler og sletter dem innen 30 dager, eller lagrer en forespørsel som flagges for brudd på bruksreglene, i opptil 2 år. Cues server lagrer bare antall, under en tilfeldig ID."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wat al verstuurd is, kan niet worden teruggehaald: Anthropic bewaart verzoeken aan Ultra AI tot 30 dagen om misbruik op te sporen, nooit voor training. De server van Cue bewaart alleen tellingen, onder een willekeurige ID."
+            "value" : "Wat al verstuurd is, kan niet worden teruggehaald: Anthropic traint niet op verzoeken aan Ultra AI en verwijdert ze binnen 30 dagen, of bewaart een verzoek dat wordt gemarkeerd als schending van het gebruiksbeleid tot 2 jaar. De server van Cue bewaart alleen tellingen, onder een willekeurige ID."
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O que já foi enviado não volta: a Anthropic guarda os pedidos do Ultra AI por até 30 dias para detectar abusos, nunca para treinar. O servidor do Cue guarda só contagens, sob um ID aleatório."
+            "value" : "O que já foi enviado não volta: a Anthropic não treina com os pedidos do Ultra AI e os apaga em até 30 dias, ou guarda por até 2 anos um pedido sinalizado por violar a política de uso dela. O servidor do Cue guarda só contagens, sob um ID aleatório."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Det som redan har skickats går inte att ta tillbaka: Anthropic sparar förfrågningar till Ultra AI i upp till 30 dagar för att upptäcka missbruk, aldrig för träning. Cues server sparar bara antal, under ett slumpmässigt ID."
+            "value" : "Det som redan har skickats går inte att ta tillbaka: Anthropic tränar inte på förfrågningar till Ultra AI och raderar dem inom 30 dagar, eller sparar en förfrågan som flaggas för brott mot användarpolicyn i upp till 2 år. Cues server sparar bara antal, under ett slumpmässigt ID."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "สิ่งที่ส่งไปแล้วเรียกคืนไม่ได้: Anthropic เก็บคำขอของ Ultra AI ไว้ไม่เกิน 30 วันเพื่อตรวจหาการใช้งานในทางที่ผิด และไม่นำไปใช้ฝึกโมเดล เซิร์ฟเวอร์ของ Cue เก็บแค่จำนวนครั้งภายใต้ ID แบบสุ่ม"
+            "value" : "สิ่งที่ส่งไปแล้วเรียกคืนไม่ได้: Anthropic ไม่นำคำขอของ Ultra AI ไปฝึกโมเดล และจะลบภายใน 30 วัน หรืออาจเก็บคำขอที่ถูกระบุว่าละเมิดนโยบายการใช้งานไว้ได้นานถึง 2 ปี เซิร์ฟเวอร์ของ Cue เก็บแค่จำนวนครั้งภายใต้ ID แบบสุ่ม"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gönderilmiş olan geri alınamaz: Anthropic, Ultra AI isteklerini kötüye kullanımı tespit etmek için en fazla 30 gün saklar, asla eğitim için kullanmaz. Cue’nun sunucusu rastgele bir kimlikle yalnızca sayıları tutar."
+            "value" : "Gönderilmiş olan geri alınamaz: Anthropic, Ultra AI istekleriyle model eğitmez ve onları 30 gün içinde siler; kullanım politikasını ihlal ettiği işaretlenen bir isteği ise 2 yıla kadar saklayabilir. Cue’nun sunucusu rastgele bir kimlikle yalnızca sayıları tutar."
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Những gì đã gửi không thể lấy lại: Anthropic giữ yêu cầu Ultra AI tối đa 30 ngày để phát hiện lạm dụng, không bao giờ dùng để huấn luyện. Máy chủ của Cue chỉ lưu số đếm, dưới một ID ngẫu nhiên."
+            "value" : "Những gì đã gửi không thể lấy lại: Anthropic không dùng yêu cầu Ultra AI để huấn luyện và xóa chúng trong vòng 30 ngày, hoặc giữ tối đa 2 năm yêu cầu bị gắn cờ vi phạm chính sách sử dụng. Máy chủ của Cue chỉ lưu số đếm, dưới một ID ngẫu nhiên."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已发送的内容无法撤回：Anthropic 为检测滥用最多保留 Ultra AI 请求 30 天，绝不用于训练。Cue 的服务器只以随机 ID 保留计数。"
+            "value" : "已发送的内容无法撤回：Anthropic 不会用 Ultra AI 请求训练模型，并会在 30 天内删除；被标记为违反其使用政策的请求最多可保留 2 年。Cue 的服务器只以随机 ID 保留计数。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已傳送的內容無法撤回：Anthropic 為偵測濫用最多保留 Ultra AI 請求 30 天，絕不用於訓練。Cue 的伺服器只以隨機 ID 保留計數。"
+            "value" : "已傳送的內容無法撤回：Anthropic 不會用 Ultra AI 請求訓練模型，並會在 30 天內刪除；被標記為違反其使用政策的請求最多可保留 2 年。Cue 的伺服器只以隨機 ID 保留計數。"
           }
         }
       }
@@ -20400,125 +20400,6 @@
         }
       }
     },
-    "Apple Intelligence writes by default. Ultra AI sends your request and voice preferences to Anthropic, which runs its model, only when you allow it and pick it for a script. Writing examples and imported excerpts never go to Anthropic." : {
-      "comment" : "Privacy sheet: which AI is used, what Ultra AI sends, and that writing examples never go to Anthropic",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "يكتب Apple Intelligence المسودات افتراضيًا. يرسل Ultra AI طلبك وتفضيلات أسلوبك إلى Anthropic، التي تشغّل نموذجها، فقط عندما تسمح بذلك وتختاره لنص. لا تصل أمثلة الكتابة والمقتطفات المستوردة إلى Anthropic أبدًا."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence laver udkastene som standard. Ultra AI sender din anmodning og dine stilpræferencer til Anthropic, som kører sin model, kun når du tillader det og vælger det til et manuskript. Skriveeksempler og importerede uddrag sendes aldrig til Anthropic."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence entwirft standardmäßig. Ultra AI sendet deine Anfrage und Stilpräferenzen an Anthropic, das sein Modell betreibt, nur wenn du es erlaubst und für ein Skript wählst. Schreibbeispiele und importierte Auszüge gehen nie an Anthropic."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence redacta por defecto. Ultra AI envía tu solicitud y tus preferencias de estilo a Anthropic, que ejecuta su modelo, solo cuando lo permites y lo eliges para un guion. Los ejemplos de escritura y los fragmentos importados nunca van a Anthropic."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence rédige par défaut. Ultra AI envoie votre demande et vos préférences de style à Anthropic, qui exécute son modèle, seulement si vous l’autorisez et le choisissez pour un script. Les exemples de textes et les extraits importés ne vont jamais à Anthropic."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "डिफ़ॉल्ट रूप से Apple Intelligence ड्राफ़्ट बनाता है। Ultra AI आपका अनुरोध और शैली संबंधी प्राथमिकताएँ Anthropic को, जो उसका मॉडल चलाता है, सिर्फ़ तब भेजता है जब आप अनुमति दें और किसी स्क्रिप्ट के लिए उसे चुनें। लेखन के उदाहरण और आयात किए गए अंश कभी Anthropic को नहीं जाते।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Secara bawaan, Apple Intelligence yang menyusun draf. Ultra AI mengirim permintaan dan preferensi gayamu ke Anthropic, yang menjalankan modelnya, hanya saat kamu mengizinkannya dan memilihnya untuk sebuah naskah. Contoh tulisan dan kutipan yang diimpor tidak pernah dikirim ke Anthropic."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence crea le bozze per impostazione predefinita. Ultra AI invia la tua richiesta e le preferenze di stile ad Anthropic, che esegue il suo modello, solo se lo consenti e lo scegli per un copione. Gli esempi di scrittura e gli estratti importati non vanno mai ad Anthropic."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "標準ではApple Intelligenceが下書きします。Ultra AIは、許可して台本に選んだときだけ、リクエストと文体の設定を、モデルを動かすAnthropicに送ります。文章のサンプルと読み込んだ抜粋がAnthropicに送られることはありません。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "기본적으로 Apple Intelligence가 초안을 만들어요. Ultra AI는 허용하고 대본에 선택했을 때만 요청과 문체 설정을 모델을 실행하는 Anthropic으로 보내요. 글쓰기 예시와 가져온 발췌문은 절대 Anthropic으로 가지 않아요."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence lager utkastene som standard. Ultra AI sender forespørselen og stilpreferansene dine til Anthropic, som kjører modellen sin, bare når du tillater det og velger det for et manus. Skriveeksempler og importerte utdrag sendes aldri til Anthropic."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence maakt standaard de concepten. Ultra AI stuurt je verzoek en stijlvoorkeuren naar Anthropic, dat zijn model draait, alleen als je het toestaat en het voor een script kiest. Schrijfvoorbeelden en geïmporteerde fragmenten gaan nooit naar Anthropic."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O Apple Intelligence rascunha por padrão. O Ultra AI envia seu pedido e suas preferências de estilo à Anthropic, que roda o modelo, só quando você permite e o escolhe para um roteiro. Exemplos de escrita e trechos importados nunca vão para a Anthropic."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence gör utkasten som standard. Ultra AI skickar din begäran och dina stilpreferenser till Anthropic, som kör sin modell, bara när du tillåter det och väljer det för ett manus. Skrivexempel och importerade utdrag skickas aldrig till Anthropic."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "โดยค่าเริ่มต้น Apple Intelligence จะเป็นผู้ร่าง ส่วน Ultra AI จะส่งคำขอและการตั้งค่าสไตล์ของคุณไปยัง Anthropic ซึ่งรันโมเดลของตัวเอง เฉพาะเมื่อคุณอนุญาตและเลือกใช้กับสคริปต์เท่านั้น ตัวอย่างงานเขียนและข้อความที่นำเข้าจะไม่ถูกส่งไปยัง Anthropic เลย"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Varsayılan olarak taslakları Apple Intelligence hazırlar. Ultra AI, isteğini ve üslup tercihlerini modelini çalıştıran Anthropic’e yalnızca sen izin verdiğinde ve bir senaryo için seçtiğinde gönderir. Yazı örnekleri ve içe aktarılan alıntılar asla Anthropic’e gitmez."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Theo mặc định, Apple Intelligence soạn nháp. Ultra AI chỉ gửi yêu cầu và tùy chọn phong cách của bạn đến Anthropic, nơi chạy mô hình của họ, khi bạn cho phép và chọn nó cho một kịch bản. Ví dụ bài viết và đoạn trích đã nhập không bao giờ được gửi đến Anthropic."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "默认由 Apple Intelligence 起草。只有在你允许并为某个脚本选择 Ultra AI 时，它才会把你的请求和文风偏好发送给运行其模型的 Anthropic。写作示例和导入的摘录绝不会发送给 Anthropic。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "預設由 Apple Intelligence 起草。只有在你允許並為某個腳本選擇 Ultra AI 時，它才會把你的要求和文風偏好傳送給執行其模型的 Anthropic。寫作範例和輸入的摘錄絕不會傳送給 Anthropic。"
-          }
-        }
-      }
-    },
     "Apple Intelligence writes like these, ideas included, on this iPhone or in Private Cloud Compute. Ultra AI never gets them." : {
       "comment" : "My Cue Voice, under Proof: examples, imported writing and approved scripts guide Apple Intelligence on both routes, never Ultra AI",
       "localizations" : {
@@ -21245,125 +21126,6 @@
                 }
               }
             }
-          }
-        }
-      }
-    },
-    "Apple Intelligence, and Ultra AI if you allow it" : {
-      "comment" : "Privacy sheet: heading of the point about which AI is used",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence، وUltra AI إذا سمحت به"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence og Ultra AI, hvis du tillader det"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence und, wenn du es erlaubst, Ultra AI"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence y, si lo permites, Ultra AI"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence, et Ultra AI si vous l’autorisez"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence, और अनुमति देने पर Ultra AI"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence, dan Ultra AI jika kamu izinkan"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence e, se lo consenti, Ultra AI"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence、許可すればUltra AIも"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence, 허용하면 Ultra AI도"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence, og Ultra AI hvis du tillater det"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence, en Ultra AI als je het toestaat"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence e, se você permitir, Ultra AI"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence, och Ultra AI om du tillåter det"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence และ Ultra AI หากคุณอนุญาต"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence ve izin verirsen Ultra AI"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence, và Ultra AI nếu bạn cho phép"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence，以及经你允许的 Ultra AI"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence，以及經你允許的 Ultra AI"
           }
         }
       }
@@ -74771,121 +74533,121 @@
         }
       }
     },
-    "It goes through Cue’s server, which keeps none of it. Under Anthropic’s commercial terms, Anthropic doesn’t use it to train its models and keeps it for up to 30 days to detect abuse." : {
-      "comment" : "What Ultra AI sends › What Anthropic does with it: a row (the request passes through Cue's server; Anthropic's commercial terms on training and retention)",
+    "It goes through Cue’s server, which keeps none of it. Under its commercial terms, Anthropic doesn’t use it to train its models and deletes it within 30 days, or keeps it up to 2 years if its safety systems flag it as breaking its usage policy." : {
+      "comment" : "What Ultra AI sends › What Anthropic does with it: a row (the request passes through Cue's server; Anthropic's commercial terms on training; it deletes requests within 30 days, or keeps one its safety systems flag up to 2 years)",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "يمر عبر خادم Cue، الذي لا يحتفظ بشيء منه. بموجب الشروط التجارية لـ Anthropic، لا تستخدمه Anthropic لتدريب نماذجها، وتحتفظ به لمدة تصل إلى 30 يومًا لاكتشاف إساءة الاستخدام."
+            "value" : "يمر عبر خادم Cue، الذي لا يحتفظ بشيء منه. بموجب شروطها التجارية، لا تستخدمه Anthropic لتدريب نماذجها وتحذفه خلال 30 يومًا، أو تحتفظ به لمدة تصل إلى سنتين إذا رصدت أنظمة الأمان لديها أنه يخالف سياسة الاستخدام."
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Det går gennem Cues server, som ikke gemmer noget af det. Ifølge Anthropics forretningsvilkår bruger Anthropic det ikke til at træne sine modeller og gemmer det i op til 30 dage for at opdage misbrug."
+            "value" : "Det går gennem Cues server, som ikke gemmer noget af det. Ifølge Anthropics forretningsvilkår bruger Anthropic det ikke til at træne sine modeller og sletter det inden for 30 dage, eller gemmer det i op til 2 år, hvis selskabets sikkerhedssystemer markerer det som et brud på brugspolitikken."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Es läuft über den Server von Cue, der nichts davon speichert. Nach den Geschäftsbedingungen von Anthropic nutzt Anthropic es nicht, um seine Modelle zu trainieren, und bewahrt es bis zu 30 Tage auf, um Missbrauch zu erkennen."
+            "value" : "Es läuft über den Server von Cue, der nichts davon speichert. Nach seinen Geschäftsbedingungen nutzt Anthropic es nicht, um seine Modelle zu trainieren, und löscht es innerhalb von 30 Tagen; markieren seine Sicherheitssysteme es als Verstoß gegen die Nutzungsrichtlinien, kann es bis zu 2 Jahre aufbewahrt werden."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pasa por el servidor de Cue, que no guarda nada. Según las condiciones comerciales de Anthropic, Anthropic no lo usa para entrenar sus modelos y lo guarda hasta 30 días para detectar abusos."
+            "value" : "Pasa por el servidor de Cue, que no guarda nada. Según sus condiciones comerciales, Anthropic no lo usa para entrenar sus modelos y lo borra en 30 días, o lo guarda hasta 2 años si sus sistemas de seguridad lo marcan por incumplir su política de uso."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Il passe par le serveur de Cue, qui n’en garde rien. Selon les conditions commerciales d’Anthropic, Anthropic ne l’utilise pas pour entraîner ses modèles et le conserve jusqu’à 30 jours pour détecter les abus."
+            "value" : "Il passe par le serveur de Cue, qui n’en garde rien. Selon ses conditions commerciales, Anthropic ne l’utilise pas pour entraîner ses modèles et le supprime sous 30 jours, ou le conserve jusqu’à 2 ans si ses systèmes de sécurité le signalent comme contraire à sa politique d’utilisation."
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "यह Cue के सर्वर से होकर जाता है, जो इसमें से कुछ भी नहीं रखता। Anthropic की व्यावसायिक शर्तों के तहत Anthropic इसका इस्तेमाल अपने मॉडल प्रशिक्षित करने के लिए नहीं करता, और दुरुपयोग पकड़ने के लिए इसे 30 दिनों तक रखता है।"
+            "value" : "यह Cue के सर्वर से होकर जाता है, जो इसमें से कुछ भी नहीं रखता। अपनी व्यावसायिक शर्तों के तहत Anthropic इसका इस्तेमाल अपने मॉडल प्रशिक्षित करने के लिए नहीं करता और इसे 30 दिनों के भीतर मिटा देता है, या अगर उसके सुरक्षा सिस्टम इसे उपयोग नीति का उल्लंघन मानें, तो इसे 2 साल तक रख सकता है।"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Data melewati server Cue, yang tidak menyimpan apa pun. Berdasarkan ketentuan komersial Anthropic, Anthropic tidak menggunakannya untuk melatih modelnya dan menyimpannya hingga 30 hari untuk mendeteksi penyalahgunaan."
+            "value" : "Data melewati server Cue, yang tidak menyimpan apa pun. Berdasarkan ketentuan komersialnya, Anthropic tidak menggunakannya untuk melatih modelnya dan menghapusnya dalam 30 hari, atau menyimpannya hingga 2 tahun jika sistem keamanannya menandainya melanggar kebijakan penggunaan."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Passa dal server di Cue, che non ne conserva nulla. Secondo le condizioni commerciali di Anthropic, Anthropic non lo usa per addestrare i suoi modelli e lo conserva fino a 30 giorni per rilevare abusi."
+            "value" : "Passa dal server di Cue, che non ne conserva nulla. Secondo le sue condizioni commerciali, Anthropic non lo usa per addestrare i suoi modelli e lo elimina entro 30 giorni, oppure lo conserva fino a 2 anni se i suoi sistemi di sicurezza lo segnalano come violazione delle norme d’uso."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cueのサーバーを経由しますが、サーバーには何も残りません。Anthropicの商用規約により、Anthropicはこれをモデルのトレーニングに使わず、不正利用を検出するため最大30日間保管します。"
+            "value" : "Cueのサーバーを経由しますが、サーバーには何も残りません。Anthropicは商用規約により、これをモデルのトレーニングに使わず、30日以内に削除します。安全システムが利用ポリシー違反として検出した場合は、最大2年間保管することがあります。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue 서버를 거쳐 가지만 서버에는 아무것도 남지 않아요. Anthropic 상업 약관에 따라 Anthropic은 이를 모델 학습에 사용하지 않으며, 악용을 감지하기 위해 최대 30일 동안 보관해요."
+            "value" : "Cue 서버를 거쳐 가지만 서버에는 아무것도 남지 않아요. Anthropic은 상업 약관에 따라 이를 모델 학습에 사용하지 않으며 30일 이내에 삭제해요. 안전 시스템이 사용 정책 위반으로 감지하면 최대 2년 동안 보관할 수 있어요."
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Det går gjennom Cues server, som ikke lagrer noe av det. Etter Anthropics forretningsvilkår bruker ikke Anthropic det til å trene modellene sine, og lagrer det i opptil 30 dager for å oppdage misbruk."
+            "value" : "Det går gjennom Cues server, som ikke lagrer noe av det. Etter Anthropics forretningsvilkår bruker ikke Anthropic det til å trene modellene sine, og sletter det innen 30 dager, eller lagrer det i opptil 2 år hvis sikkerhetssystemene flagger det for brudd på bruksreglene."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Het gaat via de server van Cue, die er niets van bewaart. Volgens de zakelijke voorwaarden van Anthropic gebruikt Anthropic het niet om zijn modellen te trainen en bewaart het tot 30 dagen om misbruik op te sporen."
+            "value" : "Het gaat via de server van Cue, die er niets van bewaart. Volgens de zakelijke voorwaarden gebruikt Anthropic het niet om zijn modellen te trainen en verwijdert het binnen 30 dagen, of bewaart het tot 2 jaar als de beveiligingssystemen het markeren als schending van het gebruiksbeleid."
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Passa pelo servidor do Cue, que não guarda nada. Pelos termos comerciais da Anthropic, a Anthropic não usa isso para treinar os modelos dela e guarda por até 30 dias para detectar abusos."
+            "value" : "Passa pelo servidor do Cue, que não guarda nada. Pelos termos comerciais dela, a Anthropic não usa isso para treinar os modelos dela e apaga em até 30 dias, ou guarda por até 2 anos se os sistemas de segurança dela sinalizarem que viola a política de uso."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Det går via Cues server, som inte sparar något av det. Enligt Anthropics affärsvillkor använder Anthropic det inte för att träna sina modeller och sparar det i upp till 30 dagar för att upptäcka missbruk."
+            "value" : "Det går via Cues server, som inte sparar något av det. Enligt sina affärsvillkor använder Anthropic det inte för att träna sina modeller och raderar det inom 30 dagar, eller sparar det i upp till 2 år om säkerhetssystemen flaggar det för brott mot användarpolicyn."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ข้อมูลจะผ่านเซิร์ฟเวอร์ของ Cue ซึ่งไม่เก็บอะไรไว้ ตามข้อกำหนดเชิงพาณิชย์ของ Anthropic นั้น Anthropic จะไม่นำไปใช้ฝึกโมเดล และจะเก็บไว้ไม่เกิน 30 วันเพื่อตรวจหาการใช้งานในทางที่ผิด"
+            "value" : "ข้อมูลจะผ่านเซิร์ฟเวอร์ของ Cue ซึ่งไม่เก็บอะไรไว้ ตามข้อกำหนดเชิงพาณิชย์ของ Anthropic นั้น Anthropic จะไม่นำไปใช้ฝึกโมเดล และจะลบภายใน 30 วัน หรืออาจเก็บไว้ได้นานถึง 2 ปีหากระบบความปลอดภัยระบุว่าละเมิดนโยบายการใช้งาน"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue’nun sunucusundan geçer; sunucu hiçbirini saklamaz. Anthropic’in ticari koşullarına göre Anthropic bunu modellerini eğitmek için kullanmaz ve kötüye kullanımı tespit etmek için en fazla 30 gün saklar."
+            "value" : "Cue’nun sunucusundan geçer; sunucu hiçbirini saklamaz. Ticari koşullarına göre Anthropic bunu modellerini eğitmek için kullanmaz ve 30 gün içinde siler; güvenlik sistemleri kullanım politikasını ihlal ettiğini işaretlerse 2 yıla kadar saklayabilir."
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dữ liệu đi qua máy chủ của Cue, nơi không lưu lại gì. Theo điều khoản thương mại của Anthropic, Anthropic không dùng dữ liệu này để huấn luyện mô hình và giữ tối đa 30 ngày để phát hiện lạm dụng."
+            "value" : "Dữ liệu đi qua máy chủ của Cue, nơi không lưu lại gì. Theo điều khoản thương mại của mình, Anthropic không dùng dữ liệu này để huấn luyện mô hình và xóa trong vòng 30 ngày, hoặc giữ tối đa 2 năm nếu hệ thống an toàn gắn cờ vi phạm chính sách sử dụng."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "内容会经过 Cue 的服务器，服务器不会保留任何内容。根据 Anthropic 的商业条款，Anthropic 不会用它训练模型，为检测滥用最多保留 30 天。"
+            "value" : "内容会经过 Cue 的服务器，服务器不会保留任何内容。根据其商业条款，Anthropic 不会用它训练模型，并会在 30 天内删除；如果其安全系统将其标记为违反使用政策，最多可保留 2 年。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "內容會經過 Cue 的伺服器，伺服器不會保留任何內容。根據 Anthropic 的商業條款，Anthropic 不會用它訓練模型，為偵測濫用最多保留 30 天。"
+            "value" : "內容會經過 Cue 的伺服器，伺服器不會保留任何內容。根據其商業條款，Anthropic 不會用它訓練模型，並會在 30 天內刪除；如果其安全系統將其標記為違反使用政策，最多可保留 2 年。"
           }
         }
       }
@@ -98717,6 +98479,125 @@
         }
       }
     },
+    "Only when you pick Ultra AI: up to 3 requests for a script. Nothing is sent in the background." : {
+      "comment" : "What Ultra AI sends › Sent to Anthropic: footer (a script takes up to 3 requests: the draft, the polish and, if it runs long, a fit to length)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فقط عندما تختار Ultra AI: حتى 3 طلبات لكل نص. لا يُرسل أي شيء في الخلفية."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kun når du vælger Ultra AI: op til 3 forespørgsler pr. manuskript. Intet sendes i baggrunden."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nur wenn du Ultra AI wählst: bis zu 3 Anfragen pro Skript. Im Hintergrund wird nichts gesendet."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solo cuando eliges Ultra AI: hasta 3 solicitudes por guion. No se envía nada en segundo plano."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seulement quand vous choisissez Ultra AI : jusqu’à 3 requêtes par script. Rien n’est envoyé en arrière-plan."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "सिर्फ़ जब आप Ultra AI चुनते हैं: एक स्क्रिप्ट के लिए ज़्यादा से ज़्यादा 3 अनुरोध। बैकग्राउंड में कुछ नहीं भेजा जाता।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hanya saat kamu memilih Ultra AI: hingga 3 permintaan per naskah. Tidak ada yang dikirim di latar belakang."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solo quando scegli Ultra AI: fino a 3 richieste per copione. Non viene inviato nulla in background."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AIを選んだときだけ：1本の台本につき最大3回のリクエスト。バックグラウンドでは何も送られません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI를 선택할 때만: 대본 하나에 최대 3번의 요청. 백그라운드에서는 아무것도 보내지 않아요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bare når du velger Ultra AI: opptil 3 forespørsler per manus. Ingenting sendes i bakgrunnen."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alleen als je Ultra AI kiest: tot 3 verzoeken per script. Er wordt niets op de achtergrond verstuurd."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Só quando você escolhe o Ultra AI: até 3 pedidos por roteiro. Nada é enviado em segundo plano."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bara när du väljer Ultra AI: upp till 3 förfrågningar per manus. Inget skickas i bakgrunden."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เฉพาะเมื่อคุณเลือก Ultra AI: สูงสุด 3 คำขอต่อสคริปต์ ไม่มีการส่งอะไรในเบื้องหลัง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yalnızca Ultra AI’ı seçtiğinde: bir metin için en fazla 3 istek. Arka planda hiçbir şey gönderilmez."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chỉ khi bạn chọn Ultra AI: tối đa 3 yêu cầu cho một kịch bản. Không có gì được gửi ở chế độ nền."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "仅在你选择 Ultra AI 时：每个脚本最多 3 次请求。不会在后台发送任何内容。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "僅在你選擇 Ultra AI 時：每個腳本最多 3 次請求。不會在背景傳送任何內容。"
+          }
+        }
+      }
+    },
     "Open editor" : {
       "comment" : "Button in the Missing media alert: opens the video editor on this take to fix or replace what is missing",
       "localizations" : {
@@ -100379,125 +100260,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "超出 %@ 的理想時長"
-          }
-        }
-      }
-    },
-    "Only when you pick Ultra AI: up to 3 requests for a script (draft, check and polish) and 1 for Fit to time. Nothing is sent in the background." : {
-      "comment" : "What Ultra AI sends › Sent to Google: footer",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "فقط عندما تختار Ultra AI: حتى 3 طلبات لكل نص (مسودة وتدقيق وتحسين) وطلب واحد لـ«ملاءمة المدة». لا يُرسل أي شيء في الخلفية."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kun når du vælger Ultra AI: op til 3 forespørgsler pr. manuskript (udkast, tjek og finpudsning) og 1 til Tilpas længden. Intet sendes i baggrunden."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nur wenn du Ultra AI wählst: bis zu 3 Anfragen pro Skript (Entwurf, Prüfung und Feinschliff) und 1 für „Auf Länge bringen“. Im Hintergrund wird nichts gesendet."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Solo cuando eliges Ultra AI: hasta 3 solicitudes por guion (borrador, revisión y pulido) y 1 para Ajustar a la duración. No se envía nada en segundo plano."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Seulement quand vous choisissez Ultra AI : jusqu’à 3 requêtes par script (brouillon, vérification et finition) et 1 pour Ajuster à la durée. Rien n’est envoyé en arrière-plan."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "सिर्फ़ जब आप Ultra AI चुनते हैं: एक स्क्रिप्ट के लिए ज़्यादा से ज़्यादा 3 अनुरोध (ड्राफ़्ट, जाँच और निखार) और “समय में फ़िट करें” के लिए 1। बैकग्राउंड में कुछ नहीं भेजा जाता।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hanya saat kamu memilih Ultra AI: hingga 3 permintaan per naskah (draf, pengecekan, dan pemolesan) dan 1 untuk Sesuaikan durasi. Tidak ada yang dikirim di latar belakang."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Solo quando scegli Ultra AI: fino a 3 richieste per copione (bozza, controllo e rifinitura) e 1 per Adatta alla durata. Non viene inviato nulla in background."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AIを選んだときだけ：1本の台本につき最大3回のリクエスト（下書き、チェック、仕上げ）と、「時間に合わせる」で1回。バックグラウンドでは何も送られません。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI를 선택할 때만: 대본 하나에 최대 3번의 요청(초안, 검토, 다듬기)과 시간에 맞추기 1번. 백그라운드에서는 아무것도 보내지 않아요."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bare når du velger Ultra AI: opptil 3 forespørsler per manus (utkast, sjekk og finpuss) og 1 for Tilpass til tid. Ingenting sendes i bakgrunnen."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alleen als je Ultra AI kiest: tot 3 verzoeken per script (concept, controle en afwerking) en 1 voor Op lengte brengen. Er wordt niets op de achtergrond verstuurd."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Só quando você escolhe o Ultra AI: até 3 pedidos por roteiro (rascunho, checagem e polimento) e 1 para Ajustar ao tempo. Nada é enviado em segundo plano."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bara när du väljer Ultra AI: upp till 3 förfrågningar per manus (utkast, kontroll och putsning) och 1 för Anpassa till tid. Inget skickas i bakgrunden."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "เฉพาะเมื่อคุณเลือก Ultra AI: สูงสุด 3 คำขอต่อสคริปต์ (ร่าง ตรวจ และขัดเกลา) และ 1 คำขอสำหรับ “ปรับให้พอดีเวลา” ไม่มีการส่งอะไรในเบื้องหลัง"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Yalnızca Ultra AI’ı seçtiğinde: bir metin için en fazla 3 istek (taslak, kontrol ve cila) ve Süreye sığdır için 1. Arka planda hiçbir şey gönderilmez."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chỉ khi bạn chọn Ultra AI: tối đa 3 yêu cầu cho một kịch bản (nháp, kiểm tra và trau chuốt) và 1 cho Vừa thời lượng. Không có gì được gửi ở chế độ nền."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "仅在你选择 Ultra AI 时：每个脚本最多 3 次请求（草稿、核查和润色），“适配时长”1 次。不会在后台发送任何内容。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "僅在你選擇 Ultra AI 時：每個腳本最多 3 次請求（草稿、核查和潤飾），「配合時長」1 次。不會在背景傳送任何內容。"
           }
         }
       }
@@ -133639,121 +133401,121 @@
         }
       }
     },
-    "The draft between steps, for the check and the polish" : {
-      "comment" : "What Ultra AI sends › Sent to Google: a row",
+    "The draft between writing steps, for the polish and, if it runs long, to fit it to length" : {
+      "comment" : "What Ultra AI sends › Sent to Anthropic: a row (the draft goes back for the polish and, only when the script runs past the platform's length, once more to shorten it)",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "المسودة بين الخطوات، للتدقيق والتحسين"
+            "value" : "المسودة بين خطوات الكتابة، للتحسين، ولضبط طولها إذا طالت"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Udkastet mellem trinene, til tjekket og finpudsningen"
+            "value" : "Udkastet mellem skrivetrinene, til finpudsningen og, hvis det bliver for langt, for at tilpasse længden"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Der Entwurf zwischen den Schritten, für die Prüfung und den Feinschliff"
+            "value" : "Der Entwurf zwischen den Schreibschritten, für den Feinschliff und, wenn er zu lang wird, um ihn auf Länge zu bringen"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "El borrador entre pasos, para la revisión y el pulido"
+            "value" : "El borrador entre pasos de escritura, para el pulido y, si se alarga, para ajustarlo a la duración"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le brouillon entre les étapes, pour la vérification et la finition"
+            "value" : "Le brouillon entre les étapes d’écriture, pour la finition et, s’il est trop long, pour l’ajuster à la durée"
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "चरणों के बीच का ड्राफ़्ट, जाँच और निखार के लिए"
+            "value" : "लिखने के चरणों के बीच का ड्राफ़्ट, निखार के लिए और, अगर वह लंबा हो जाए, तो उसे सही लंबाई में लाने के लिए"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Draf di antara langkah, untuk pengecekan dan pemolesan"
+            "value" : "Draf di antara langkah penulisan, untuk pemolesan dan, jika terlalu panjang, untuk menyesuaikan durasinya"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La bozza tra i passaggi, per il controllo e la rifinitura"
+            "value" : "La bozza tra i passaggi di scrittura, per la rifinitura e, se viene troppo lunga, per adattarla alla durata"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ステップ間の下書き（チェックと仕上げのため）"
+            "value" : "書く工程の間の下書き（仕上げのため、長すぎる場合は長さを合わせるため）"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "단계 사이의 초안(검토와 다듬기용)"
+            "value" : "작성 단계 사이의 초안(다듬기용, 너무 길면 길이를 맞추는 데에도)"
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Utkastet mellom stegene, til sjekken og finpussen"
+            "value" : "Utkastet mellom skrivestegene, til finpussen og, hvis det blir for langt, for å tilpasse lengden"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Het concept tussen de stappen, voor de controle en de afwerking"
+            "value" : "Het concept tussen de schrijfstappen, voor de afwerking en, als het te lang wordt, om het op lengte te brengen"
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O rascunho entre as etapas, para a checagem e o polimento"
+            "value" : "O rascunho entre as etapas da escrita, para o polimento e, se ficar longo, para ajustar ao tempo"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Utkastet mellan stegen, för kontrollen och putsningen"
+            "value" : "Utkastet mellan skrivstegen, för putsningen och, om det blir för långt, för att anpassa längden"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ฉบับร่างระหว่างขั้นตอน สำหรับการตรวจและขัดเกลา"
+            "value" : "ฉบับร่างระหว่างขั้นตอนการเขียน สำหรับการขัดเกลา และหากยาวเกินไป เพื่อปรับให้พอดีความยาว"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Adımlar arasındaki taslak, kontrol ve cila için"
+            "value" : "Yazma adımları arasındaki taslak, cila için ve uzun kaçarsa süreye sığdırmak için"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bản nháp giữa các bước, để kiểm tra và trau chuốt"
+            "value" : "Bản nháp giữa các bước viết, để trau chuốt và, nếu quá dài, để chỉnh cho vừa thời lượng"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "步骤之间的草稿，用于核查和润色"
+            "value" : "写作步骤之间的草稿，用于润色，过长时用于调整到合适的长度"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "步驟之間的草稿，用於核查和潤飾"
+            "value" : "寫作步驟之間的草稿，用於潤飾，過長時用於調整到合適的長度"
           }
         }
       }
@@ -154736,125 +154498,6 @@
         }
       }
     },
-    "With Fit to time, on a script Ultra AI wrote: that script with your edits" : {
-      "comment" : "What Ultra AI sends › Sent to Google: a row",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "مع «ملاءمة المدة» على نص كتبه Ultra AI: ذلك النص مع تعديلاتك"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Med Tilpas længden på et manuskript, Ultra AI skrev: det manuskript med dine ændringer"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mit „Auf Länge bringen“ bei einem Skript von Ultra AI: dieses Skript mit deinen Änderungen"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Con Ajustar a la duración, en un guion que escribió Ultra AI: ese guion con tus cambios"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Avec Ajuster à la durée, sur un script écrit par Ultra AI : ce script avec vos modifications"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI की लिखी स्क्रिप्ट पर “समय में फ़िट करें” से: आपके बदलावों के साथ वही स्क्रिप्ट"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dengan Sesuaikan durasi, pada naskah yang ditulis Ultra AI: naskah itu beserta suntinganmu"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Con Adatta alla durata, su un copione scritto da Ultra AI: quel copione con le tue modifiche"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AIが書いた台本で「時間に合わせる」を使うと：あなたの編集を含むその台本"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI가 쓴 대본에서 시간에 맞추기를 쓰면: 내가 고친 내용을 포함한 그 대본"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Med Tilpass til tid, på et manus Ultra AI skrev: det manuset med endringene dine"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Met Op lengte brengen, bij een script van Ultra AI: dat script met je aanpassingen"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Com Ajustar ao tempo, num roteiro que o Ultra AI escreveu: esse roteiro com as suas edições"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Med Anpassa till tid, på ett manus Ultra AI skrev: det manuset med dina ändringar"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "เมื่อใช้ “ปรับให้พอดีเวลา” กับสคริปต์ที่ Ultra AI เขียน: สคริปต์นั้นพร้อมการแก้ไขของคุณ"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AI’ın yazdığı bir metinde Süreye sığdır ile: düzenlemelerinle birlikte o metin"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Với Vừa thời lượng, trên kịch bản Ultra AI đã viết: kịch bản đó cùng các chỉnh sửa của bạn"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "对 Ultra AI 写的脚本使用“适配时长”时：包含你修改的该脚本"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "對 Ultra AI 寫的腳本使用「配合時長」時：包含你修改的該腳本"
-          }
-        }
-      }
-    },
     "Within the target length · %@" : {
       "comment" : "A finished take's length against its platform's recommended range (the range, e.g. 1:00 to 1:30). Never 'fits'.",
       "localizations" : {
@@ -159968,371 +159611,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "你的偏好：你聊什麼，以及腳本如何稱呼你"
-          }
-        }
-      }
-    },
-    "Your scripts, takes and My Cue Voice are kept on this iPhone and in its backups. Cue’s server keeps only counts, under a random ID. Usage data and crash reports go to Google only with Help improve Cue on." : {
-      "comment" : "Privacy sheet: where the creator's data is. Help improve Cue is the name of the switch in Settings › Privacy & AI data (keep it as translated there)",
-      "localizations" : {
-        "ar" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "تُحفظ نصوصك ولقطاتك وMy Cue Voice على هذا الـ iPad وفي نسخه الاحتياطية. لا يحتفظ خادم Cue إلا بأعداد، تحت معرّف عشوائي. لا تُرسَل بيانات الاستخدام وتقارير الأعطال إلى Google إلا عند تشغيل «ساعد في تحسين Cue»."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "تُحفظ نصوصك ولقطاتك وMy Cue Voice على هذا الـ iPhone وفي نسخه الاحتياطية. لا يحتفظ خادم Cue إلا بأعداد، تحت معرّف عشوائي. لا تُرسَل بيانات الاستخدام وتقارير الأعطال إلى Google إلا عند تشغيل «ساعد في تحسين Cue»."
-                }
-              }
-            }
-          }
-        },
-        "da" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Dine manuskripter, optagelser og My Cue Voice gemmes på denne iPad og i dens sikkerhedskopier. Cues server gemmer kun antal under et tilfældigt id. Brugsdata og nedbrudsrapporter sendes kun til Google, når Hjælp med at forbedre Cue er slået til."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Dine manuskripter, optagelser og My Cue Voice gemmes på denne iPhone og i dens sikkerhedskopier. Cues server gemmer kun antal under et tilfældigt id. Brugsdata og nedbrudsrapporter sendes kun til Google, når Hjælp med at forbedre Cue er slået til."
-                }
-              }
-            }
-          }
-        },
-        "de" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Deine Skripte, Takes und My Cue Voice liegen auf diesem iPad und in seinen Backups. Der Server von Cue speichert nur Zählungen unter einer zufälligen ID. Nutzungsdaten und Absturzberichte gehen nur an Google, wenn „Hilf mit, Cue zu verbessern“ an ist."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Deine Skripte, Takes und My Cue Voice liegen auf diesem iPhone und in seinen Backups. Der Server von Cue speichert nur Zählungen unter einer zufälligen ID. Nutzungsdaten und Absturzberichte gehen nur an Google, wenn „Hilf mit, Cue zu verbessern“ an ist."
-                }
-              }
-            }
-          }
-        },
-        "en" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Your scripts, takes and My Cue Voice are kept on this iPad and in its backups. Cue’s server keeps only counts, under a random ID. Usage data and crash reports go to Google only with Help improve Cue on."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Your scripts, takes and My Cue Voice are kept on this iPhone and in its backups. Cue’s server keeps only counts, under a random ID. Usage data and crash reports go to Google only with Help improve Cue on."
-                }
-              }
-            }
-          }
-        },
-        "es" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Tus guiones, tomas y My Cue Voice se guardan en este iPad y en sus copias de seguridad. El servidor de Cue solo guarda recuentos, con un ID aleatorio. Los datos de uso y los informes de fallos solo van a Google con Ayuda a mejorar Cue activado."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Tus guiones, tomas y My Cue Voice se guardan en este iPhone y en sus copias de seguridad. El servidor de Cue solo guarda recuentos, con un ID aleatorio. Los datos de uso y los informes de fallos solo van a Google con Ayuda a mejorar Cue activado."
-                }
-              }
-            }
-          }
-        },
-        "fr" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Vos scripts, prises et My Cue Voice sont stockés sur cet iPad et dans ses sauvegardes. Le serveur de Cue ne garde que des comptages, sous un identifiant aléatoire. Les données d’utilisation et les rapports de plantage ne vont à Google qu’avec Aider à améliorer Cue activé."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Vos scripts, prises et My Cue Voice sont stockés sur cet iPhone et dans ses sauvegardes. Le serveur de Cue ne garde que des comptages, sous un identifiant aléatoire. Les données d’utilisation et les rapports de plantage ne vont à Google qu’avec Aider à améliorer Cue activé."
-                }
-              }
-            }
-          }
-        },
-        "hi" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "आपकी स्क्रिप्ट, टेक और My Cue Voice इसी iPad और उसके बैकअप में रहते हैं। Cue का सर्वर एक रैंडम ID के तहत सिर्फ़ गिनती रखता है। इस्तेमाल का डेटा और क्रैश रिपोर्ट Google को तभी जाती हैं जब “Cue को बेहतर बनाने में मदद करें” चालू हो।"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "आपकी स्क्रिप्ट, टेक और My Cue Voice इसी iPhone और उसके बैकअप में रहते हैं। Cue का सर्वर एक रैंडम ID के तहत सिर्फ़ गिनती रखता है। इस्तेमाल का डेटा और क्रैश रिपोर्ट Google को तभी जाती हैं जब “Cue को बेहतर बनाने में मदद करें” चालू हो।"
-                }
-              }
-            }
-          }
-        },
-        "id" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Naskah, take, dan My Cue Voice-mu disimpan di iPad ini dan cadangannya. Server Cue hanya menyimpan hitungan, dengan ID acak. Data penggunaan dan laporan crash hanya dikirim ke Google jika Bantu tingkatkan Cue aktif."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Naskah, take, dan My Cue Voice-mu disimpan di iPhone ini dan cadangannya. Server Cue hanya menyimpan hitungan, dengan ID acak. Data penggunaan dan laporan crash hanya dikirim ke Google jika Bantu tingkatkan Cue aktif."
-                }
-              }
-            }
-          }
-        },
-        "it" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Copioni, riprese e My Cue Voice restano su questo iPad e nei suoi backup. Il server di Cue conserva solo dei conteggi, con un ID casuale. Dati di utilizzo e report sugli arresti anomali vanno a Google solo con Aiuta a migliorare Cue attivo."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Copioni, riprese e My Cue Voice restano su questo iPhone e nei suoi backup. Il server di Cue conserva solo dei conteggi, con un ID casuale. Dati di utilizzo e report sugli arresti anomali vanno a Google solo con Aiuta a migliorare Cue attivo."
-                }
-              }
-            }
-          }
-        },
-        "ja" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "台本、テイク、My Cue VoiceはこのiPadとそのバックアップに保存されます。CueのサーバーはランダムなIDで回数だけを記録します。利用状況データとクラッシュレポートは「Cueの改善に協力」がオンのときだけGoogleに送られます。"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "台本、テイク、My Cue VoiceはこのiPhoneとそのバックアップに保存されます。CueのサーバーはランダムなIDで回数だけを記録します。利用状況データとクラッシュレポートは「Cueの改善に協力」がオンのときだけGoogleに送られます。"
-                }
-              }
-            }
-          }
-        },
-        "ko" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "대본, 테이크, My Cue Voice는 이 iPad와 백업에 저장돼요. Cue 서버는 무작위 ID로 횟수만 보관해요. 사용 데이터와 충돌 보고서는 ‘Cue 개선에 참여’를 켰을 때만 Google로 보내져요."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "대본, 테이크, My Cue Voice는 이 iPhone과 백업에 저장돼요. Cue 서버는 무작위 ID로 횟수만 보관해요. 사용 데이터와 충돌 보고서는 ‘Cue 개선에 참여’를 켰을 때만 Google로 보내져요."
-                }
-              }
-            }
-          }
-        },
-        "nb" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Manusene, opptakene og My Cue Voice lagres på denne iPaden og i sikkerhetskopiene av den. Cues server lagrer bare antall, under en tilfeldig ID. Bruksdata og krasjrapporter går bare til Google når Hjelp til å forbedre Cue er på."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Manusene, opptakene og My Cue Voice lagres på denne iPhonen og i sikkerhetskopiene av den. Cues server lagrer bare antall, under en tilfeldig ID. Bruksdata og krasjrapporter går bare til Google når Hjelp til å forbedre Cue er på."
-                }
-              }
-            }
-          }
-        },
-        "nl" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Je scripts, opnames en My Cue Voice staan op deze iPad en in de back-ups ervan. De server van Cue bewaart alleen tellingen, onder een willekeurige ID. Gebruiksgegevens en crashrapporten gaan alleen naar Google als Help Cue te verbeteren aan staat."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Je scripts, opnames en My Cue Voice staan op deze iPhone en in de back-ups ervan. De server van Cue bewaart alleen tellingen, onder een willekeurige ID. Gebruiksgegevens en crashrapporten gaan alleen naar Google als Help Cue te verbeteren aan staat."
-                }
-              }
-            }
-          }
-        },
-        "pt" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Seus roteiros, takes e My Cue Voice ficam neste iPad e nos backups dele. O servidor do Cue guarda só contagens, sob um ID aleatório. Dados de uso e relatórios de falhas só vão ao Google com Ajude a melhorar o Cue ligado."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Seus roteiros, takes e My Cue Voice ficam neste iPhone e nos backups dele. O servidor do Cue guarda só contagens, sob um ID aleatório. Dados de uso e relatórios de falhas só vão ao Google com Ajude a melhorar o Cue ligado."
-                }
-              }
-            }
-          }
-        },
-        "sv" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Dina manus, tagningar och My Cue Voice sparas på den här iPaden och i dess säkerhetskopior. Cues server sparar bara antal, under ett slumpmässigt ID. Användningsdata och kraschrapporter går till Google bara när Hjälp till att förbättra Cue är på."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Dina manus, tagningar och My Cue Voice sparas på den här iPhonen och i dess säkerhetskopior. Cues server sparar bara antal, under ett slumpmässigt ID. Användningsdata och kraschrapporter går till Google bara när Hjälp till att förbättra Cue är på."
-                }
-              }
-            }
-          }
-        },
-        "th" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "สคริปต์ เทค และ My Cue Voice ของคุณเก็บไว้ใน iPad เครื่องนี้และในข้อมูลสำรอง เซิร์ฟเวอร์ของ Cue เก็บแค่จำนวนครั้งภายใต้ ID แบบสุ่ม ข้อมูลการใช้งานและรายงานข้อขัดข้องจะส่งไปยัง Google เฉพาะเมื่อเปิด “ช่วยพัฒนา Cue”"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "สคริปต์ เทค และ My Cue Voice ของคุณเก็บไว้ใน iPhone เครื่องนี้และในข้อมูลสำรอง เซิร์ฟเวอร์ของ Cue เก็บแค่จำนวนครั้งภายใต้ ID แบบสุ่ม ข้อมูลการใช้งานและรายงานข้อขัดข้องจะส่งไปยัง Google เฉพาะเมื่อเปิด “ช่วยพัฒนา Cue”"
-                }
-              }
-            }
-          }
-        },
-        "tr" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Senaryoların, çekimlerin ve My Cue Voice bu iPad’de ve yedeklerinde saklanır. Cue’nun sunucusu rastgele bir kimlikle yalnızca sayıları tutar. Kullanım verileri ve çökme raporları yalnızca Cue’yu geliştirmeye yardım et açıkken Google’a gider."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Senaryoların, çekimlerin ve My Cue Voice bu iPhone’da ve yedeklerinde saklanır. Cue’nun sunucusu rastgele bir kimlikle yalnızca sayıları tutar. Kullanım verileri ve çökme raporları yalnızca Cue’yu geliştirmeye yardım et açıkken Google’a gider."
-                }
-              }
-            }
-          }
-        },
-        "vi" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Kịch bản, cảnh quay và My Cue Voice được lưu trên iPad này và trong bản sao lưu. Máy chủ của Cue chỉ lưu số đếm, dưới một ID ngẫu nhiên. Dữ liệu sử dụng và báo cáo sự cố chỉ gửi đến Google khi bật Giúp cải thiện Cue."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Kịch bản, cảnh quay và My Cue Voice được lưu trên iPhone này và trong bản sao lưu. Máy chủ của Cue chỉ lưu số đếm, dưới một ID ngẫu nhiên. Dữ liệu sử dụng và báo cáo sự cố chỉ gửi đến Google khi bật Giúp cải thiện Cue."
-                }
-              }
-            }
-          }
-        },
-        "zh-Hans" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "你的脚本、镜头和 My Cue Voice 存储在这台 iPad 及其备份中。Cue 的服务器只以随机 ID 保留计数。只有打开“帮助改进 Cue”时，使用数据和崩溃报告才会发送给 Google。"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "你的脚本、镜头和 My Cue Voice 存储在这台 iPhone 及其备份中。Cue 的服务器只以随机 ID 保留计数。只有打开“帮助改进 Cue”时，使用数据和崩溃报告才会发送给 Google。"
-                }
-              }
-            }
-          }
-        },
-        "zh-Hant" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "你的腳本、鏡頭與 My Cue Voice 儲存在這部 iPad 與其備份中。Cue 的伺服器只以隨機 ID 保留計數。只有開啟「協助改進 Cue」時，使用資料與當機報告才會傳送給 Google。"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "你的腳本、鏡頭與 My Cue Voice 儲存在這部 iPhone 與其備份中。Cue 的伺服器只以隨機 ID 保留計數。只有開啟「協助改進 Cue」時，使用資料與當機報告才會傳送給 Google。"
-                }
-              }
-            }
           }
         }
       }
@@ -480791,370 +480069,6 @@
         }
       }
     },
-    "Removes your scripts, takes, edits and My Cue Voice from this iPhone. Videos saved to Photos stay there." : {
-      "localizations" : {
-        "ar" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "يزيل نصوصك ولقطاتك وتعديلاتك وMy Cue Voice من هذا الـ iPad. تبقى الفيديوهات المحفوظة في الصور."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "يزيل نصوصك ولقطاتك وتعديلاتك وMy Cue Voice من هذا الـ iPhone. تبقى الفيديوهات المحفوظة في الصور."
-                }
-              }
-            }
-          }
-        },
-        "da" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Fjerner dine manuskripter, optagelser, redigeringer og My Cue Voice fra denne iPad. Videoer gemt i Fotos bliver der."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Fjerner dine manuskripter, optagelser, redigeringer og My Cue Voice fra denne iPhone. Videoer gemt i Fotos bliver der."
-                }
-              }
-            }
-          }
-        },
-        "de" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Entfernt deine Skripte, Takes, Bearbeitungen und My Cue Voice von diesem iPad. In Fotos gesicherte Videos bleiben dort."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Entfernt deine Skripte, Takes, Bearbeitungen und My Cue Voice von diesem iPhone. In Fotos gesicherte Videos bleiben dort."
-                }
-              }
-            }
-          }
-        },
-        "en" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Removes your scripts, takes, edits and My Cue Voice from this iPad. Videos saved to Photos stay there."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Removes your scripts, takes, edits and My Cue Voice from this iPhone. Videos saved to Photos stay there."
-                }
-              }
-            }
-          }
-        },
-        "es" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Elimina tus guiones, tomas, ediciones y My Cue Voice de este iPad. Los videos guardados en Fotos se quedan allí."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Elimina tus guiones, tomas, ediciones y My Cue Voice de este iPhone. Los videos guardados en Fotos se quedan allí."
-                }
-              }
-            }
-          }
-        },
-        "fr" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Supprime vos scripts, prises, montages et My Cue Voice de cet iPad. Les vidéos enregistrées dans Photos y restent."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Supprime vos scripts, prises, montages et My Cue Voice de cet iPhone. Les vidéos enregistrées dans Photos y restent."
-                }
-              }
-            }
-          }
-        },
-        "hi" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "इस iPad से आपकी स्क्रिप्ट, टेक, एडिट और My Cue Voice हट जाते हैं। तस्वीरें ऐप में सेव वीडियो वहीं रहते हैं।"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "इस iPhone से आपकी स्क्रिप्ट, टेक, एडिट और My Cue Voice हट जाते हैं। तस्वीरें ऐप में सेव वीडियो वहीं रहते हैं।"
-                }
-              }
-            }
-          }
-        },
-        "id" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Menghapus naskah, take, hasil edit, dan My Cue Voice dari iPad ini. Video yang disimpan di Foto tetap ada."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Menghapus naskah, take, hasil edit, dan My Cue Voice dari iPhone ini. Video yang disimpan di Foto tetap ada."
-                }
-              }
-            }
-          }
-        },
-        "it" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Rimuove da questo iPad copioni, riprese, montaggi e My Cue Voice. I video salvati in Foto restano lì."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Rimuove da questo iPhone copioni, riprese, montaggi e My Cue Voice. I video salvati in Foto restano lì."
-                }
-              }
-            }
-          }
-        },
-        "ja" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "このiPadから台本、テイク、編集、My Cue Voiceを削除します。写真に保存した動画はそのまま残ります。"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "このiPhoneから台本、テイク、編集、My Cue Voiceを削除します。写真に保存した動画はそのまま残ります。"
-                }
-              }
-            }
-          }
-        },
-        "ko" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "이 iPad에서 대본, 테이크, 편집, My Cue Voice를 삭제해요. 사진에 저장한 영상은 그대로 남아요."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "이 iPhone에서 대본, 테이크, 편집, My Cue Voice를 삭제해요. 사진에 저장한 영상은 그대로 남아요."
-                }
-              }
-            }
-          }
-        },
-        "nb" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Fjerner manus, opptak, redigeringer og My Cue Voice fra denne iPaden. Videoer lagret i Bilder blir værende."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Fjerner manus, opptak, redigeringer og My Cue Voice fra denne iPhonen. Videoer lagret i Bilder blir værende."
-                }
-              }
-            }
-          }
-        },
-        "nl" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Verwijdert je scripts, opnames, bewerkingen en My Cue Voice van deze iPad. Video’s die in Foto’s zijn bewaard, blijven daar."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Verwijdert je scripts, opnames, bewerkingen en My Cue Voice van deze iPhone. Video’s die in Foto’s zijn bewaard, blijven daar."
-                }
-              }
-            }
-          }
-        },
-        "pt" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Remove seus roteiros, takes, edições e My Cue Voice deste iPad. Vídeos salvos em Fotos continuam lá."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Remove seus roteiros, takes, edições e My Cue Voice deste iPhone. Vídeos salvos em Fotos continuam lá."
-                }
-              }
-            }
-          }
-        },
-        "sv" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Tar bort dina manus, tagningar, redigeringar och My Cue Voice från den här iPaden. Videor sparade i Bilder finns kvar."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Tar bort dina manus, tagningar, redigeringar och My Cue Voice från den här iPhonen. Videor sparade i Bilder finns kvar."
-                }
-              }
-            }
-          }
-        },
-        "th" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "ลบสคริปต์ เทค การตัดต่อ และ My Cue Voice ออกจาก iPad เครื่องนี้ วิดีโอที่บันทึกไว้ในรูปภาพจะยังอยู่"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "ลบสคริปต์ เทค การตัดต่อ และ My Cue Voice ออกจาก iPhone เครื่องนี้ วิดีโอที่บันทึกไว้ในรูปภาพจะยังอยู่"
-                }
-              }
-            }
-          }
-        },
-        "tr" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Senaryolarını, çekimlerini, düzenlemelerini ve My Cue Voice’u bu iPad’den kaldırır. Fotoğraflar’a kaydedilen videolar orada kalır."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Senaryolarını, çekimlerini, düzenlemelerini ve My Cue Voice’u bu iPhone’dan kaldırır. Fotoğraflar’a kaydedilen videolar orada kalır."
-                }
-              }
-            }
-          }
-        },
-        "vi" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Xóa kịch bản, cảnh quay, bản chỉnh sửa và My Cue Voice khỏi iPad này. Video đã lưu vào Ảnh vẫn còn ở đó."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Xóa kịch bản, cảnh quay, bản chỉnh sửa và My Cue Voice khỏi iPhone này. Video đã lưu vào Ảnh vẫn còn ở đó."
-                }
-              }
-            }
-          }
-        },
-        "zh-Hans" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "将从这台 iPad 移除你的脚本、镜头、剪辑和 My Cue Voice。已存入“照片”的视频会保留。"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "将从这台 iPhone 移除你的脚本、镜头、剪辑和 My Cue Voice。已存入“照片”的视频会保留。"
-                }
-              }
-            }
-          }
-        },
-        "zh-Hant" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "將從這部 iPad 移除你的腳本、鏡頭、剪輯和 My Cue Voice。已存入「照片」的影片會保留。"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "將從這部 iPhone 移除你的腳本、鏡頭、剪輯和 My Cue Voice。已存入「照片」的影片會保留。"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "Rename style" : {
       "comment" : "Title of the alert that renames a saved style.",
       "localizations" : {
@@ -499410,370 +498324,6 @@
         }
       }
     },
-    "Scripts and takes stay on this iPhone" : {
-      "localizations" : {
-        "ar" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "تبقى النصوص واللقطات على هذا الـ iPad"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "تبقى النصوص واللقطات على هذا الـ iPhone"
-                }
-              }
-            }
-          }
-        },
-        "da" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Manuskripter og optagelser bliver på denne iPad"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Manuskripter og optagelser bliver på denne iPhone"
-                }
-              }
-            }
-          }
-        },
-        "de" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Skripte und Takes bleiben auf diesem iPad"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Skripte und Takes bleiben auf diesem iPhone"
-                }
-              }
-            }
-          }
-        },
-        "en" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Scripts and takes stay on this iPad"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Scripts and takes stay on this iPhone"
-                }
-              }
-            }
-          }
-        },
-        "es" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Los guiones y las tomas se quedan en este iPad"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Los guiones y las tomas se quedan en este iPhone"
-                }
-              }
-            }
-          }
-        },
-        "fr" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Les scripts et les prises restent sur cet iPad"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Les scripts et les prises restent sur cet iPhone"
-                }
-              }
-            }
-          }
-        },
-        "hi" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "स्क्रिप्ट और टेक इसी iPad पर रहते हैं"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "स्क्रिप्ट और टेक इसी iPhone पर रहते हैं"
-                }
-              }
-            }
-          }
-        },
-        "id" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Naskah dan take tetap di iPad ini"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Naskah dan take tetap di iPhone ini"
-                }
-              }
-            }
-          }
-        },
-        "it" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Copioni e riprese restano su questo iPad"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Copioni e riprese restano su questo iPhone"
-                }
-              }
-            }
-          }
-        },
-        "ja" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "台本とテイクはこのiPadに残ります"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "台本とテイクはこのiPhoneに残ります"
-                }
-              }
-            }
-          }
-        },
-        "ko" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "대본과 테이크는 이 iPad에 남아요"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "대본과 테이크는 이 iPhone에 남아요"
-                }
-              }
-            }
-          }
-        },
-        "nb" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Manus og opptak blir på denne iPaden"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Manus og opptak blir på denne iPhonen"
-                }
-              }
-            }
-          }
-        },
-        "nl" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Scripts en opnames blijven op deze iPad"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Scripts en opnames blijven op deze iPhone"
-                }
-              }
-            }
-          }
-        },
-        "pt" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Roteiros e takes ficam neste iPad"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Roteiros e takes ficam neste iPhone"
-                }
-              }
-            }
-          }
-        },
-        "sv" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Manus och tagningar stannar på den här iPaden"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Manus och tagningar stannar på den här iPhonen"
-                }
-              }
-            }
-          }
-        },
-        "th" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "สคริปต์และเทคอยู่ใน iPad เครื่องนี้"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "สคริปต์และเทคอยู่ใน iPhone เครื่องนี้"
-                }
-              }
-            }
-          }
-        },
-        "tr" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Senaryolar ve çekimler bu iPad’de kalır"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Senaryolar ve çekimler bu iPhone’da kalır"
-                }
-              }
-            }
-          }
-        },
-        "vi" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Kịch bản và cảnh quay ở lại trên iPad này"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Kịch bản và cảnh quay ở lại trên iPhone này"
-                }
-              }
-            }
-          }
-        },
-        "zh-Hans" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "脚本和镜头都保留在这台 iPad 上"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "脚本和镜头都保留在这台 iPhone 上"
-                }
-              }
-            }
-          }
-        },
-        "zh-Hant" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "腳本與鏡頭都保留在這部 iPad 上"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "腳本與鏡頭都保留在這部 iPhone 上"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "Scripts keep you on track and cut retakes. Pick one to read from." : {
       "localizations" : {
         "ar" : {
@@ -500126,370 +498676,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "讓腳本更像你。只需四個問題，答案隨時可改。"
-          }
-        }
-      }
-    },
-    "Scripts, rewrites, hooks and theme ideas are all written on this iPhone. No other AI service is involved." : {
-      "localizations" : {
-        "ar" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "النصوص وإعادة الصياغة والافتتاحيات وأفكار المواضيع تُكتب كلها على هذا الـ iPad. لا توجد أي خدمة ذكاء اصطناعي أخرى."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "النصوص وإعادة الصياغة والافتتاحيات وأفكار المواضيع تُكتب كلها على هذا الـ iPhone. لا توجد أي خدمة ذكاء اصطناعي أخرى."
-                }
-              }
-            }
-          }
-        },
-        "da" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Manuskripter, omskrivninger, hooks og temaidéer skrives alle på denne iPad. Ingen anden AI-tjeneste er involveret."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Manuskripter, omskrivninger, hooks og temaidéer skrives alle på denne iPhone. Ingen anden AI-tjeneste er involveret."
-                }
-              }
-            }
-          }
-        },
-        "de" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Skripte, Umformulierungen, Hooks und Themenideen entstehen alle auf diesem iPad. Kein anderer KI-Dienst ist beteiligt."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Skripte, Umformulierungen, Hooks und Themenideen entstehen alle auf diesem iPhone. Kein anderer KI-Dienst ist beteiligt."
-                }
-              }
-            }
-          }
-        },
-        "en" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Scripts, rewrites, hooks and theme ideas are all written on this iPad. No other AI service is involved."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Scripts, rewrites, hooks and theme ideas are all written on this iPhone. No other AI service is involved."
-                }
-              }
-            }
-          }
-        },
-        "es" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Los guiones, las reescrituras, los ganchos y las ideas de temas se escriben en este iPad. No interviene ningún otro servicio de IA."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Los guiones, las reescrituras, los ganchos y las ideas de temas se escriben en este iPhone. No interviene ningún otro servicio de IA."
-                }
-              }
-            }
-          }
-        },
-        "fr" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Scripts, réécritures, accroches et idées de thèmes sont tous écrits sur cet iPad. Aucun autre service d’IA n’intervient."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Scripts, réécritures, accroches et idées de thèmes sont tous écrits sur cet iPhone. Aucun autre service d’IA n’intervient."
-                }
-              }
-            }
-          }
-        },
-        "hi" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "स्क्रिप्ट, रीराइट, हुक और थीम आइडिया सब इसी iPad पर लिखे जाते हैं। कोई दूसरी AI सर्विस शामिल नहीं है।"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "स्क्रिप्ट, रीराइट, हुक और थीम आइडिया सब इसी iPhone पर लिखे जाते हैं। कोई दूसरी AI सर्विस शामिल नहीं है।"
-                }
-              }
-            }
-          }
-        },
-        "id" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Naskah, penulisan ulang, hook, dan ide tema semuanya ditulis di iPad ini. Tidak ada layanan AI lain yang terlibat."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Naskah, penulisan ulang, hook, dan ide tema semuanya ditulis di iPhone ini. Tidak ada layanan AI lain yang terlibat."
-                }
-              }
-            }
-          }
-        },
-        "it" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Copioni, riscritture, ganci e idee sugli argomenti vengono scritti tutti su questo iPad. Nessun altro servizio IA è coinvolto."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Copioni, riscritture, ganci e idee sugli argomenti vengono scritti tutti su questo iPhone. Nessun altro servizio IA è coinvolto."
-                }
-              }
-            }
-          }
-        },
-        "ja" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "台本、書き直し、フック、テーマのアイデアはすべてこのiPad上で書かれます。ほかのAIサービスは使いません。"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "台本、書き直し、フック、テーマのアイデアはすべてこのiPhone上で書かれます。ほかのAIサービスは使いません。"
-                }
-              }
-            }
-          }
-        },
-        "ko" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "대본, 다시 쓰기, 훅, 주제 아이디어는 모두 이 iPad에서 작성돼요. 다른 AI 서비스는 사용하지 않아요."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "대본, 다시 쓰기, 훅, 주제 아이디어는 모두 이 iPhone에서 작성돼요. 다른 AI 서비스는 사용하지 않아요."
-                }
-              }
-            }
-          }
-        },
-        "nb" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Manus, omskrivinger, hooks og temaideer skrives alle på denne iPaden. Ingen annen KI-tjeneste er involvert."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Manus, omskrivinger, hooks og temaideer skrives alle på denne iPhonen. Ingen annen KI-tjeneste er involvert."
-                }
-              }
-            }
-          }
-        },
-        "nl" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Scripts, herschrijvingen, hooks en thema-ideeën worden allemaal op deze iPad geschreven. Er is geen andere AI-dienst bij betrokken."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Scripts, herschrijvingen, hooks en thema-ideeën worden allemaal op deze iPhone geschreven. Er is geen andere AI-dienst bij betrokken."
-                }
-              }
-            }
-          }
-        },
-        "pt" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Roteiros, reescritas, ganchos e ideias de tema são todos escritos neste iPad. Nenhum outro serviço de IA é usado."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Roteiros, reescritas, ganchos e ideias de tema são todos escritos neste iPhone. Nenhum outro serviço de IA é usado."
-                }
-              }
-            }
-          }
-        },
-        "sv" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Manus, omskrivningar, hooks och temaidéer skrivs alla på den här iPaden. Ingen annan AI-tjänst är inblandad."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Manus, omskrivningar, hooks och temaidéer skrivs alla på den här iPhonen. Ingen annan AI-tjänst är inblandad."
-                }
-              }
-            }
-          }
-        },
-        "th" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "สคริปต์ การเขียนใหม่ ฮุก และไอเดียหัวข้อ เขียนบน iPad เครื่องนี้ทั้งหมด ไม่มีบริการ AI อื่นเกี่ยวข้อง"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "สคริปต์ การเขียนใหม่ ฮุก และไอเดียหัวข้อ เขียนบน iPhone เครื่องนี้ทั้งหมด ไม่มีบริการ AI อื่นเกี่ยวข้อง"
-                }
-              }
-            }
-          }
-        },
-        "tr" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Senaryolar, yeniden yazmalar, kancalar ve konu fikirleri bu iPad’de yazılır. Başka hiçbir yapay zekâ hizmeti kullanılmaz."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Senaryolar, yeniden yazmalar, kancalar ve konu fikirleri bu iPhone’da yazılır. Başka hiçbir yapay zekâ hizmeti kullanılmaz."
-                }
-              }
-            }
-          }
-        },
-        "vi" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Kịch bản, bản viết lại, hook và ý tưởng chủ đề đều được viết trên iPad này. Không có dịch vụ AI nào khác tham gia."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Kịch bản, bản viết lại, hook và ý tưởng chủ đề đều được viết trên iPhone này. Không có dịch vụ AI nào khác tham gia."
-                }
-              }
-            }
-          }
-        },
-        "zh-Hans" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "脚本、改写、钩子和主题创意都在这台 iPad 上生成。不使用其他任何 AI 服务。"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "脚本、改写、钩子和主题创意都在这台 iPhone 上生成。不使用其他任何 AI 服务。"
-                }
-              }
-            }
-          }
-        },
-        "zh-Hant" : {
-          "variations" : {
-            "device" : {
-              "ipad" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "腳本、改寫、開場鉤子與主題想法全都在這部 iPad 上撰寫。不涉及其他任何 AI 服務。"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "腳本、改寫、開場鉤子與主題想法全都在這部 iPhone 上撰寫。不涉及其他任何 AI 服務。"
-                }
-              }
-            }
           }
         }
       }
@@ -603323,124 +601509,6 @@
         }
       }
     },
-    "Videos leave Cue only when you save them to Photos or share them. Camera and microphone are used only while the camera is open." : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "لا تغادر الفيديوهات Cue إلا عند حفظها في الصور أو مشاركتها. تُستخدم الكاميرا والميكروفون فقط أثناء فتح الكاميرا."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Videoer forlader kun Cue, når du gemmer dem i Fotos eller deler dem. Kamera og mikrofon bruges kun, mens kameraet er åbent."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Videos verlassen Cue nur, wenn du sie in Fotos sicherst oder teilst. Kamera und Mikrofon werden nur genutzt, solange die Kamera offen ist."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Los videos solo salen de Cue cuando los guardas en Fotos o los compartes. La cámara y el micrófono solo se usan mientras la cámara está abierta."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Les vidéos ne sortent de Cue que si vous les enregistrez dans Photos ou les partagez. La caméra et le micro ne servent que lorsque la caméra est ouverte."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "वीडियो Cue से तभी बाहर जाते हैं जब आप उन्हें तस्वीरें ऐप में सेव या शेयर करते हैं। कैमरा और माइक्रोफ़ोन सिर्फ़ कैमरा खुला होने पर इस्तेमाल होते हैं।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Video hanya keluar dari Cue saat kamu menyimpannya ke Foto atau membagikannya. Kamera dan mikrofon hanya dipakai saat kamera terbuka."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "I video escono da Cue solo quando li salvi in Foto o li condividi. Fotocamera e microfono si usano solo mentre la fotocamera è aperta."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "動画がCueの外に出るのは、写真に保存したり共有したりしたときだけです。カメラとマイクはカメラを開いている間だけ使われます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "영상은 사진에 저장하거나 공유할 때만 Cue 밖으로 나가요. 카메라와 마이크는 카메라가 열려 있을 때만 사용돼요."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Videoer forlater bare Cue når du lagrer dem i Bilder eller deler dem. Kamera og mikrofon brukes bare mens kameraet er åpent."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Video’s verlaten Cue alleen wanneer je ze in Foto’s bewaart of deelt. Camera en microfoon worden alleen gebruikt zolang de camera open is."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Os vídeos só saem do Cue quando você salva no Fotos ou compartilha. Câmera e microfone só são usados enquanto a câmera está aberta."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Videor lämnar bara Cue när du sparar dem i Bilder eller delar dem. Kamera och mikrofon används bara medan kameran är öppen."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "วิดีโอจะออกจาก Cue เฉพาะเมื่อคุณบันทึกลงในรูปภาพหรือแชร์ กล้องและไมโครโฟนจะใช้เฉพาะตอนที่กล้องเปิดอยู่"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Videolar Cue’dan yalnızca Fotoğraflar’a kaydettiğinde veya paylaştığında çıkar. Kamera ve mikrofon yalnızca kamera açıkken kullanılır."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Video chỉ rời khỏi Cue khi bạn lưu vào Ảnh hoặc chia sẻ. Camera và micrô chỉ được dùng khi camera đang mở."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "只有在你存储到“照片”或分享时，视频才会离开 Cue。相机和麦克风仅在相机打开时使用。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "影片只有在你儲存到「照片」或分享時才會離開 Cue。相機與麥克風只在相機開啟時使用。"
-          }
-        }
-      }
-    },
     "videos shared" : {
       "localizations" : {
         "ar" : {
@@ -624556,124 +622624,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "你可以離開 Cue，匯出會繼續進行。"
-          }
-        }
-      }
-    },
-    "You decide what leaves" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "أنت تقرر ما يُحذف"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Du bestemmer, hvad der forlader enheden"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Du entscheidest, was rausfliegt"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tú decides qué sale"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vous décidez de ce qui part"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "क्या हटेगा, आप तय करें"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kamu yang memutuskan apa yang keluar"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Decidi tu cosa togliere"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "削るかどうかはあなた次第"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "무엇을 뺄지는 직접 정하세요"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Du bestemmer hva som forlater enheten"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jij bepaalt wat het apparaat verlaat"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Você decide o que sai"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Du bestämmer vad som lämnar enheten"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "คุณตัดสินใจว่าจะเอาอะไรออก"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Neyin çıkacağına sen karar verirsin"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bạn quyết định bỏ gì"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "删不删由你决定"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "由你決定哪些內容會離開裝置"
           }
         }
       }

@@ -165,9 +165,8 @@ struct VoiceProofRouteTests {
         #expect(AIDisclosure.proof.contains("Private Cloud Compute") && AIDisclosure.proof.contains("Ultra AI never gets them"))
         #expect(AIDisclosure.example.contains("Never sent to Ultra AI"))
         #expect(AIDisclosure.ultraSends.contains("everything but your examples"))
-        #expect(AIDisclosure.ultraPrivacy.contains("never go to Anthropic"))
         let texts = [
-            AIDisclosure.privateCloud, AIDisclosure.proof, AIDisclosure.example, AIDisclosure.ultraSends, AIDisclosure.ultraPrivacy,
+            AIDisclosure.privateCloud, AIDisclosure.proof, AIDisclosure.example, AIDisclosure.ultraSends,
             FeatureID.importWriting.notificationBody,
         ]
         for text in texts {

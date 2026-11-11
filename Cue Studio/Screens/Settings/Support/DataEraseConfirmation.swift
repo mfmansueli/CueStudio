@@ -17,7 +17,7 @@ private struct DataEraseConfirmation: ViewModifier {
         content.cueActionSheet(
             isPresented: $eraser.isConfirming,
             message: "Deletes your scripts, takes, edits and My Cue Voice from this iPhone. This can't be undone.",
-            note: ultra.isAvailable ? "Already sent can’t be called back: Anthropic keeps Ultra AI requests up to 30 days to detect abuse, never for training. Cue’s server keeps only counts, under a random ID." : nil,
+            note: ultra.isAvailable ? "Already sent can’t be called back: Anthropic doesn’t train on Ultra AI requests and deletes them within 30 days, or keeps one flagged for breaking its usage policy up to 2 years. Cue’s server keeps only counts, under a random ID." : nil,
             actionTitle: "Delete my Cue data", actionIdentifier: "privacy.confirmDelete"
         ) {
             eraser.eraseEverything()
