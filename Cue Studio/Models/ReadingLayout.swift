@@ -8,24 +8,25 @@ import CoreGraphics
 /// Where the Selfie reading line and text window sit. They are two layers with their own state —
 /// the line stays put and the text scrolls past it; the window only follows the line — tied by
 /// one layout rule: the line sits about a quarter of the way down the window, so the next
-/// sentences show below it.
+/// sentences show below it. Where Cue places them (the creator hasn't moved the line), the line sits just under the lens and the window
+/// starts right under the top bar's buttons, with the front camera or the rear one (owner, 11/11/2026).
 nonisolated struct ReadingLayout: Equatable, Sendable {
     /// Recommended distance from the front camera to the line: just under the lens, so the eyes
-    /// stay close to the viewer.
+    /// stay close to the viewer. The rear camera reads at the same place, so the window stays under the top bar.
     static let recommendedFrontOffset: CGFloat = 118
-    /// With a rear camera there is no lens to read under; the line sits 36% down the frame.
-    static let rearFrameFraction: CGFloat = 0.36
     /// The line sits this far down the window, as a fraction of its height…
     static let leadFraction: CGFloat = 0.25
+    /// Where Cue places the line, the window starts under the top bar and the line sits at most this far down it.
+    static let recommendedLeadLimit: CGFloat = 0.5
     /// …but never closer to the window's top than this.
     static let minimumLead: CGFloat = 18
     /// Room kept under a line dragged low, for the next sentences.
     static let minimumBelow: CGFloat = 88
-    /// Space between the top bar and the window.
+    /// Space between the top bar's buttons and the window.
     static let topBarGap: CGFloat = 8
     /// One tap on ↑ or ↓ in Display.
     static let nudge: CGFloat = 8
-    /// While a take records the box shrinks: 10 pt in on each side and 16% shorter.
+    /// While a take records the box shrinks: 10 pt in on each side and 16% shorter, from the bottom (its top and the line stay put).
     static let recordingInset: CGFloat = 10
     static let recordingHeightFactor: CGFloat = 0.84
     /// Room between the text window and a card above the toolbar (`SelfieScreenMetrics.cardTop`).
@@ -42,8 +43,6 @@ nonisolated struct ReadingLayout: Equatable, Sendable {
 
     init(
         metrics: SelfieScreenMetrics,
-        isFrontCamera: Bool,
-        frameRect: CGRect,
         lineOffset: Double?,
         windowHeight: Double,
         readingWidth: Double,
@@ -51,7 +50,7 @@ nonisolated struct ReadingLayout: Equatable, Sendable {
     ) {
         lensY = metrics.lensY
         screenWidth = metrics.screen.width
-        let topLimit = Self.clamp(metrics.topBarBottom + Self.topBarGap, to: 0...max(0, metrics.screen.height))
+        let topLimit = Self.clamp(metrics.topControlsBottom + Self.topBarGap, to: 0...max(0, metrics.screen.height))
         let bottomLimit = max(topLimit, min(metrics.toolbarTop, metrics.cardTop ?? metrics.toolbarTop, metrics.screen.height))
         let availableHeight = bottomLimit - topLimit
         // Short layouts keep the window visible instead of inventing space below the screen.
@@ -59,18 +58,18 @@ nonisolated struct ReadingLayout: Equatable, Sendable {
         let minimumBelow = min(Self.minimumBelow, availableHeight - minimumLead)
         lineRange = (topLimit + minimumLead)...(bottomLimit - minimumBelow)
 
-        let recommended = isFrontCamera
-            ? metrics.lensY + Self.recommendedFrontOffset
-            : frameRect.minY + frameRect.height * Self.rearFrameFraction
         isRecommended = lineOffset == nil
-        let requestedLine = lineOffset.map { metrics.lensY + CGFloat($0) } ?? recommended
+        let requestedLine = lineOffset.map { metrics.lensY + CGFloat($0) } ?? metrics.lensY + Self.recommendedFrontOffset
         lineY = Self.clamp(requestedLine.rounded(), to: lineRange)
 
-        // Recording puts the focus on the words: the box is a little narrower and 16% shorter (v29 · 5.2).
-        let chosenHeight = CGFloat(Self.clamp(windowHeight, to: PrompterSettings.textWindowHeightRange))
-        let height = min(availableHeight, isRecording ? (chosenHeight * Self.recordingHeightFactor).rounded() : chosenHeight)
-        let lead = max(minimumLead, min(height * Self.leadFraction, lineY - topLimit))
+        let chosenHeight = min(availableHeight, CGFloat(Self.clamp(windowHeight, to: PrompterSettings.textWindowHeightRange)))
+        // Where Cue places the line, the window hugs the top bar (the line may sit deeper than a quarter, up to half); a line the creator
+        // moved keeps a quarter of the window above it, and the window follows it.
+        let leadLimit = chosenHeight * (isRecommended ? Self.recommendedLeadLimit : Self.leadFraction)
+        let lead = max(minimumLead, min(leadLimit, lineY - topLimit))
         let top = lineY - lead
+        // Recording puts the focus on the words: the box is a little narrower and 16% shorter (v29 · 5.2), from the bottom.
+        let height = isRecording ? (chosenHeight * Self.recordingHeightFactor).rounded() : chosenHeight
         let widthFraction = Self.clamp(readingWidth, to: PrompterSettings.readingWidthRange)
         let width = max(0, (metrics.screen.width * widthFraction).rounded() - (isRecording ? Self.recordingInset * 2 : 0))
         windowRect = CGRect(

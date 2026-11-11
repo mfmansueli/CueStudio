@@ -39,20 +39,23 @@ final class RecorderFramingUITests: XCTestCase {
             let texts = app.staticTexts.allElementsBoundByIndex.map(\.label).filter { $0.contains("Fill") || $0.contains("Grid") || $0.contains("Frame") }
             XCTFail("No Fill the screen switch in the camera settings. Switches: \(switches). Texts: \(texts). Sheets: \(app.sheets.count)")
         }
-        // Short drags until the row clears the sheet's header (Camera | Recording · Done) and the bottom edge: a long swipe leaves it under the header.
+        // Drags just long enough for the row to clear the sheet's header (Camera | Recording · Done) and the bottom edge: a long swipe leaves it
+        // under the header, and on a short sheet a long pull past the list's top drags the sheet itself away.
         let headerBottom = app.buttons["Done"].firstMatch.frame.maxY + 12
+        let bottomEdge = app.frame.maxY - 80
         for _ in 0..<10 {
             let frame = toggle.frame
             let drag: CGFloat
             if frame.minY < headerBottom {
-                drag = 120
-            } else if frame.maxY > app.frame.maxY - 80 {
-                drag = -120
+                drag = min(120, headerBottom - frame.minY + 24)
+            } else if frame.maxY > bottomEdge {
+                drag = -min(120, frame.maxY - bottomEdge + 24)
             } else {
                 break
             }
+            // Slow and held at the end: the list stops where the finger does, with no fling to overshoot the row.
             let start = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.8))
-            start.press(forDuration: 0.05, thenDragTo: start.withOffset(CGVector(dx: 0, dy: drag)))
+            start.press(forDuration: 0.1, thenDragTo: start.withOffset(CGVector(dx: 0, dy: drag)), withVelocity: .slow, thenHoldForDuration: 0.3)
         }
         return toggle
     }

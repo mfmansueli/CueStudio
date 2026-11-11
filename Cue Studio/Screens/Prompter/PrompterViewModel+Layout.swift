@@ -26,8 +26,6 @@ extension PrompterViewModel {
         let prompter = session.prompter
         return ReadingLayout(
             metrics: screenMetrics,
-            isFrontCamera: session.camera.lens.isFront,
-            frameRect: frameGeometry.frameRect,
             lineOffset: prompter.readingLineOffset,
             windowHeight: prompter.textWindowHeight,
             readingWidth: prompter.readingWidth,

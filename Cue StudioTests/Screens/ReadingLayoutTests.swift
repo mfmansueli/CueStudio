@@ -21,16 +21,21 @@ struct ReadingLayoutTests {
     /// iPhone 16 Pro Max.
     private let proMax = SelfieScreenMetrics(screen: CGSize(width: 440, height: 956), topInset: 62, topBarBottom: 106, toolbarTop: 710)
 
+    /// iPhone 15 Pro as measured: the bar (59 to 113) is taller than its buttons, whose glass ends at 81 + 22 = 103.
+    private let measuredBar = SelfieScreenMetrics(
+        screen: CGSize(width: 393, height: 852), topInset: 59, topBarBottom: 113, topBarCenter: 81, toolbarTop: 640
+    )
+
     private func layout(
         _ metrics: SelfieScreenMetrics? = nil,
-        front: Bool = true,
         offset: Double? = nil,
         height: Double = 250,
-        width: Double = 0.6
+        width: Double = 0.6,
+        recording: Bool = false
     ) -> ReadingLayout {
-        let metrics = metrics ?? iPhone17
-        let frame = FrameGeometry(sensorRect: FrameGeometry.sensorRect(in: metrics.screen), aspect: .portrait, resolution: .hd1080).frameRect
-        return ReadingLayout(metrics: metrics, isFrontCamera: front, frameRect: frame, lineOffset: offset, windowHeight: height, readingWidth: width)
+        ReadingLayout(
+            metrics: metrics ?? iPhone17, lineOffset: offset, windowHeight: height, readingWidth: width, isRecording: recording
+        )
     }
 
     /// The recommendation card over the toolbar before the take: on an iPhone SE the text window ends above it instead of under it, and
@@ -57,9 +62,39 @@ struct ReadingLayoutTests {
         #expect(layout.isRecommended)
     }
 
-    @Test func rearCameraLineSits36PercentDownTheFrame() {
-        let frame = FrameGeometry(sensorRect: FrameGeometry.sensorRect(in: iPhone17.screen), aspect: .portrait, resolution: .hd1080).frameRect
-        #expect(layout(front: false).lineY == (frame.minY + frame.height * 0.36).rounded())
+    /// Owner, 11/11/2026: the window sits right under the top bar's buttons with either camera, every window height, before and while
+    /// recording, on every iPhone, while Cue places the line (the layout no longer asks which camera is on).
+    @Test func cuesPlaceHugsTheTopBarsButtonsAtEveryHeight() {
+        for metrics in [iPhone17, iPhoneSE, proMax, measuredBar] {
+            for height in [160.0, 200, 250, 300, 380] {
+                for recording in [false, true] {
+                    let result = layout(metrics, height: height, recording: recording)
+                    #expect(result.windowRect.minY == metrics.topControlsBottom + ReadingLayout.topBarGap, "\(metrics.screen) \(height) \(recording)")
+                    #expect(result.lineY == min(result.lineRange.upperBound, max(result.lineRange.lowerBound, (metrics.lensY + 118).rounded())))
+                    #expect(result.windowRect.contains(CGPoint(x: result.windowRect.midX, y: result.lineY)))
+                }
+            }
+        }
+    }
+
+    /// The bar is taller than its buttons: the window starts 8 pt under the buttons' glass, not under the bar.
+    @Test func theWindowStartsUnderTheButtonsNotUnderTheBar() {
+        #expect(measuredBar.topControlsBottom == 103)
+        #expect(layout(measuredBar).windowRect.minY == 111)
+        var unmeasured = measuredBar
+        unmeasured.topBarCenter = nil
+        #expect(layout(unmeasured).windowRect.minY == 121, "until the buttons are measured, under the bar")
+    }
+
+    /// Recording shortens the window from the bottom: its top and the line stay where the creator was reading.
+    @Test func recordingKeepsTheWindowsTopAndLine() {
+        for offset in [Double?.none, 200, 320] {
+            let idle = layout(offset: offset, height: 300)
+            let recording = layout(offset: offset, height: 300, recording: true)
+            #expect(recording.windowRect.minY == idle.windowRect.minY)
+            #expect(recording.lineY == idle.lineY)
+            #expect(recording.windowRect.height == (300 * ReadingLayout.recordingHeightFactor).rounded())
+        }
     }
 
     @Test func aMovedLineKeepsItsDistanceFromTheLensOnEveryIPhone() {
@@ -137,17 +172,15 @@ struct ReadingLayoutTests {
         let shortLayout = SelfieScreenMetrics(
             screen: CGSize(width: 667, height: 375), topInset: 20, topBarBottom: 64, toolbarTop: 130
         )
-        for metrics in [iPhone17, iPhoneSE, proMax, portraitPad, landscapePad, shortLayout] {
-            for front in [true, false] {
-                for offset in [Double?.none, -200, 320, 2000] {
-                    let result = layout(metrics, front: front, offset: offset, height: 380, width: 0.93)
-                    #expect(result.windowRect.minX >= 0)
-                    #expect(result.windowRect.maxX <= metrics.screen.width)
-                    #expect(result.windowRect.minY >= metrics.topBarBottom)
-                    #expect(result.windowRect.maxY <= min(metrics.toolbarTop, metrics.screen.height))
-                    #expect(result.lineY >= result.windowRect.minY)
-                    #expect(result.lineY <= result.windowRect.maxY)
-                }
+        for metrics in [iPhone17, iPhoneSE, proMax, measuredBar, portraitPad, landscapePad, shortLayout] {
+            for offset in [Double?.none, -200, 320, 2000] {
+                let result = layout(metrics, offset: offset, height: 380, width: 0.93)
+                #expect(result.windowRect.minX >= 0)
+                #expect(result.windowRect.maxX <= metrics.screen.width)
+                #expect(result.windowRect.minY >= metrics.topControlsBottom)
+                #expect(result.windowRect.maxY <= min(metrics.toolbarTop, metrics.screen.height))
+                #expect(result.lineY >= result.windowRect.minY)
+                #expect(result.lineY <= result.windowRect.maxY)
             }
         }
     }

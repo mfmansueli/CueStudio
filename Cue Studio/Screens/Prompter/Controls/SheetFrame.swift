@@ -66,7 +66,7 @@ struct SheetFrame<Content: View, Drag: Gesture>: View, Animatable {
         }
         .frame(height: handleHeight + shown, alignment: .top)
         .clipShape(shape)
-        .background(.ultraThinMaterial, in: shape)
-        .glassNight(in: shape, density: .solid)
+        // Liquid Glass with a light touch of the night glass: the scene bends at the edges and shows through, and the glass draws its own edge.
+        .glassEffect(.regular.tint(Palette.glassBase.opacity(0.15)), in: shape)
     }
 }

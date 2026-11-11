@@ -61,6 +61,8 @@ struct StudioModeView: View {
                     .accessibilityHidden(viewModel.countdown != nil)
                     .animation(.easeOut(duration: 0.2), value: viewModel.countdown == nil)
             }
+            // The panel ends as low as Scripts' tab bar, inside the Home Indicator's strip; the text gets the room it leaves.
+            .floatingBottomBarPlacement()
             if let countdown = viewModel.countdown {
                 CountdownOverlay(value: countdown, onCancel: { viewModel.cancelCountdown() })
                 .transition(.opacity)
