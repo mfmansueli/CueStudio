@@ -22,7 +22,8 @@ struct ScriptPageHeader: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            TextField("Untitled", text: $title, axis: .vertical)
+            // "Untitled" in ink2, as every placeholder in Cue: the system's own grey read 2.4:1 on the page (11/11/2026).
+            TextField("Untitled", text: $title, prompt: Text("Untitled").foregroundStyle(Palette.ink2), axis: .vertical)
                 .cueFont(27, weight: .bold)
                 .foregroundStyle(Palette.ink)
                 .tint(Palette.accText)

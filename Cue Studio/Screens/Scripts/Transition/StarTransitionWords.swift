@@ -6,15 +6,17 @@
 import SwiftUI
 
 /// The words under the star while the AI writes (09 §8; the owner's refinement, 03/11/2026), in two groups. What is written: who writes
-/// it, in small spaced capitals ("✦ ULTRA AI", "IN YOUR VOICE"), and the idea, the largest words on the screen, whole up to three lines
-/// (two on a short screen), smaller before it is cut. How far it is: the phrase, which arrives word by word out of the AI's light and leaves
-/// upward, blurring; under it the number, which counts through every value up to where the writing is and brightens with each quarter's tick
-/// (Ultra AI's with each step, which it says: "STEP 2 OF 3").
+/// it, in small spaced capitals ("✦ ULTRA AI", "IN YOUR VOICE", or "APPLE INTELLIGENCE" when the script isn't in the creator's voice), and
+/// the idea, the largest words on the screen, whole up to three lines (two on a short screen), smaller before it is cut. How far it is:
+/// the phrase, which arrives word by word out of the AI's light and leaves upward, blurring; under it the number, which counts through
+/// every value up to where the writing is and brightens with each quarter's tick (Ultra AI's with each step, which it says: "STEP 2 OF 3").
 ///
 /// The idea's words ran into the star as it left the dock; they come back here one by one, after the cover, plainly (they are the
 /// creator's, so without the AI's glow). Reduce Motion: the words are simply there, and the number changes in place.
 struct StarTransitionWords: View {
     let isUltra: Bool
+    /// The script is written in the creator's voice; otherwise the eyebrow names Apple Intelligence (as the page's pill says "Drafting…").
+    var inYourVoice = true
     let idea: String
     let ideaLines: Int
     let phrase: String
@@ -51,14 +53,14 @@ struct StarTransitionWords: View {
     private var eyebrow: some View {
         HStack(spacing: 5) {
             if isUltra { Image(systemName: "sparkle") }
-            Text(isUltra ? "ULTRA AI" : "in your voice")
+            Text(isUltra ? "ULTRA AI" : inYourVoice ? "in your voice" : "Apple Intelligence")
                 .textCase(.uppercase)
         }
         .monoFont(size: 11.5, weight: .semibold)
         .tracking(1.4)
         .foregroundStyle(Palette.Scripts.transitionPhrase)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text(isUltra ? "Drafting with Ultra AI" : "Drafting in your voice"))
+        .accessibilityLabel(Text(isUltra ? "Drafting with Ultra AI" : inYourVoice ? "Drafting in your voice" : "Drafting…"))
         .accessibilityAddTraits(.isHeader)
     }
 

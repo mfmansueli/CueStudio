@@ -210,7 +210,7 @@ final class ScriptStarter {
         // The star holds the app still as it was at the tap (`IdeaTransitionService.showsBackdrop`), so the page opens under it at once,
         // without a push to watch (nor its frames to pay for), and Apple Intelligence starts writing into it right away.
         transition.begin(
-            from: origin ?? .zero, idea: text, platformName: request.platform.label, engine: request.engine,
+            from: origin ?? .zero, idea: text, platformName: request.platform.label, engine: request.engine, inYourVoice: request.voice != nil,
             abort: { [weak self] in
                 self?.abort(scriptID, keeping: kept) { [weak self] in
                     // The same idea (the field's own when it came from the dock: it is still there), the same choices, a new star.
