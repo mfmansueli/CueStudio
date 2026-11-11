@@ -51,6 +51,34 @@ struct ArrivingWordsTests {
         #expect(ImageRenderer(content: ArrivingText.marked(words).frame(width: 120)).uiImage != nil)
     }
 
+    /// A written script is handed to the page 4 words every 55 ms, far faster than a word every 0.17 s: the words still arrive in the order
+    /// they are written (11/11/2026: the end of a line arrived before its start), each within half a second of being handed over.
+    @Test func wordsHandedOverQuicklyArriveInOrder() {
+        let clock = ArrivalClock()
+        var handed: [Double] = []
+        var slots: [Double] = []
+        for step in 0..<25 {
+            let now = 100 + 0.055 * Double(step)
+            slots = clock.arrivals(for: 4 * (step + 1), now: now)
+            handed += Array(repeating: now, count: 4)
+        }
+        #expect(slots.count == 100)
+        #expect(zip(slots, slots.dropFirst()).allSatisfy { $0 <= $1 })
+        #expect(zip(slots, handed).allSatisfy { slot, given in slot >= given && slot < given + ArrivalClock.maxLead })
+    }
+
+    /// Words that come slower than they arrive keep the 0.17 s between them; a word after a pause arrives at once; fewer words (Stop) let go
+    /// of the slots of the ones taken away.
+    @Test func wordsHandedOverSlowlyKeepTheirStagger() {
+        let clock = ArrivalClock()
+        #expect(clock.arrivals(for: 1, now: 10) == [10])
+        #expect(clock.arrivals(for: 2, now: 11) == [10, 11])
+        let batch = clock.arrivals(for: 5, now: 20)
+        #expect(batch[2] == 20)
+        #expect(zip(batch[2...], batch[3...]).allSatisfy { abs($1 - $0 - ArrivingText.stagger) < 0.01 })
+        #expect(clock.arrivals(for: 3, now: 21) == Array(batch.prefix(3)))
+    }
+
     /// A script drawn a line at a time keeps one clock: the words of a line take the slots after the line above, and the caret is on the
     /// line whose words are arriving (the first line until anything starts, the last for good).
     @Test func linesShareOneClockAndPassTheCaretDown() {

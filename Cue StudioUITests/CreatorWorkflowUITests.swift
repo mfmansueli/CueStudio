@@ -175,16 +175,14 @@ final class CreatorWorkflowUITests: XCTestCase {
         XCTAssertTrue(flow.waits(for: cut, "Cut from video"))
         XCTAssertTrue(cut.label.contains("2 words"), cut.label)
 
-        flow.step("Cut from video")
+        flow.step("Cut from video, then Undo in its toast")
         flow.tap(cut, "Cut from video")
         XCTAssertTrue(flow.toastSays("2 words cut"), "No toast after cutting \(words)")
-        // The toast's Undo stays 4 s: found at once, before the slower checks.
-        let undo = flow.toastUndo
         XCTAssertNotEqual(EditorApp.length(app), fullLength, "Cutting \(words) didn't shorten the video")
-
-        flow.step("Undo in the toast")
-        XCTAssertNotNil(undo, "The toast's Undo can't be touched with Edit by text open")
-        if let undo { flow.tap(undo, "Undo in the toast") }
+        // The toast stays 4 s and is drawn once, by the editor (a second one fails the tap): its Undo, over Edit by text, is touched
+        // right after, since on a busy Mac each look at the screen takes up to a second (11/11/2026: looking for it among the toast's
+        // copies, then waiting for it to be hittable, outlasted the toast).
+        flow.tapNow(app.buttons["toast.action"])
         XCTAssertEqual(EditorApp.length(app), fullLength, "Undo didn't bring back \(words)")
         XCTAssertFalse(first.label.hasSuffix(", cut"), "The word stays crossed out after Undo")
         flow.report()
@@ -261,7 +259,7 @@ final class CreatorWorkflowUITests: XCTestCase {
     // MARK: - 4. Quick style
 
     /// A template, another, both undone; then a clip's look copied and pasted on every clip.
-    func testQuickStyleTemplatesUndoThenCopyAndPasteALook() throws {
+    func testQuickStyleTemplatesUndoThenCopyAndPasteALook() {
         let app = EditorApp.open(demo: true)
         let flow = CreatorWorkflow("quick-style", app: app)
 
@@ -305,24 +303,20 @@ final class CreatorWorkflowUITests: XCTestCase {
         flow.tool("copyLook")
         XCTAssertTrue(flow.toastSays("Look copied"), "No toast after Copy look")
 
-        flow.step("Paste look › Every clip")
+        flow.step("Paste look › Every clip, then Change on its toast to correct the paste")
         flow.tool("pasteLook")
         let everyClip = app.buttons["edit.pasteLook.all"]
         XCTAssertTrue(flow.waits(for: everyClip, "Paste look"), "Paste look didn't ask where")
         flow.tap(everyClip, "Every clip")
         XCTAssertTrue(flow.toastSays("Look pasted on every clip"), "No toast after pasting on every clip")
-
-        flow.step("Change, on the toast, opens the sheet again to correct the paste")
-        // The toast is drawn by more than one host (the editor's and the app's under it): the one that can be touched.
-        XCTAssertTrue(app.buttons["toast.secondaryAction"].firstMatch.exists(within: 2), "The paste's toast has no Change")
-        XCTAssertTrue(app.buttons["toast.action"].firstMatch.exists, "The paste's toast has no Undo")
-        let change = try XCTUnwrap(
-            app.buttons.matching(identifier: "toast.secondaryAction").allElementsBoundByIndex.first { $0.isHittable }, "No Change to touch"
-        )
-        flow.tap(change, "Change")
+        // The toast stays 4 s and is drawn once, by the editor (the hosts under its cover leave it to it; a second one fails the
+        // tap): Change is touched at once, since on a busy Mac each look at the screen takes up to a second (11/11/2026: three
+        // looks for the hidden copies outlasted the toast).
+        flow.tapNow(app.buttons["toast.secondaryAction"])
         XCTAssertTrue(flow.waits(for: everyClip, "Paste look"), "Change didn't open Paste look")
         flow.tap(everyClip, "Every clip")
         XCTAssertTrue(flow.toastSays("Look pasted on every clip"), "No toast after correcting the paste")
+        XCTAssertTrue(app.buttons["toast.action"].exists, "The paste's toast has no Undo")
         XCTAssertTrue(everyClip.isGone(within: 5))
         flow.backToMainTools()
         flow.report()

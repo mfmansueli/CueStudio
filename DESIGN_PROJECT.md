@@ -178,7 +178,8 @@ com o app vivo atrás eram até 7, 92 ms) e a estrela anda a ~55–60 quadros po
 87 fps com 3–4 engasgos curtos (60 ms somados), ainda a melhorar. As animações do SwiftUI ficam perto de 60 Hz mesmo com a tela de 120 Hz
 (`CADisableMinimumFrameDurationOnPhone` não mudou a medida e não está ligado).
 
-**As palavras sob a estrela**, em dois grupos. O que se escreve: quem escreve, em maiúsculas mono pequenas e espaçadas ("IN YOUR VOICE", ou
+**As palavras sob a estrela**, em dois grupos. O que se escreve: quem escreve, em maiúsculas mono pequenas e espaçadas ("IN YOUR VOICE" só quando o
+roteiro sai na voz do criador, com My Cue Voice ligado e um formato que a usa; sem ela, como num pedido de desculpas, "APPLE INTELLIGENCE"; ou
 "✦ ULTRA AI"), e a ideia entre aspas, as maiores palavras da tela (20 pt semibold `ink`), inteira até 3 linhas (2 numa tela baixa) e um pouco menor
 antes de cortar; ela volta palavra por palavra depois da capa, sem o brilho da IA (são do criador). Até onde foi: a frase (15,5 pt itálico, 7 frases a
 cada 1,6 s), que chega palavra por palavra saindo da luz da IA (`WordsFromLight`; a primeira espera 0,3 s as primeiras palavras da ideia) e sai
@@ -590,8 +591,11 @@ como 3.5 não se cortam, japonês e chinês se cortam no 。). Cada parágrafo c
 para o brilho e o desfoque, o efeito sumia no meio e o editor aparecia com o texto inteiro no fim.
 
 Enquanto o roteiro é escrito, `ArrivingText` substitui o editor: cada palavra entra de blur 7 pt e 5 pt abaixo em 0,3 s, com brilho violeta (`Palette.Page.arrivalGlow`
-a 95%, some em 0,8 s), a cada 0,17 s (mais rápido quando chegam muitas, nunca > ~1 s atrás do modelo); cursor violeta de 2 pt pisca depois da última.
-Pílula **"✦ Drafting in your voice"** (`ScriptWritingPill`, 34 pt): brilho de borda 2,4 s e brilho branco a cada 1,6 s, **só enquanto a página espera a
+a 95%, some em 0,8 s), **na ordem em que foram escritas** (`ArrivalClock`): cada uma até 0,17 s depois da anterior (mais perto quando chegam
+muitas), nunca mais de 0,5 s depois de o modelo entregá-la, e perto desse limite uma palavra anda só metade do que falta, então o texto desce a
+página em ordem (até 11/11/2026 o fim de uma linha podia chegar antes do começo); cursor violeta de 2 pt pisca depois da última.
+Pílula **"✦ Drafting in your voice"** (`ScriptWritingPill`, 34 pt; **"Drafting…"** quando o roteiro não sai na voz do criador, a mesma
+regra da estrela): brilho de borda 2,4 s e brilho branco a cada 1,6 s, **só enquanto a página espera a
 primeira palavra** (sem a estrela por cima, com a porcentagem); quando as palavras chegam, ela sai (elas são o progresso). **Enquanto as palavras chegam,
 o pé da página fica vazio** (dono, 05/11/2026: nem pílula sobre o texto, nem a barra cortando a tela, nem Record apagado): o texto corre até a borda, e
 **Record** sobe (esmaece e desliza 0,5 s) só quando as palavras terminaram de chegar e de assentar no editor (a passagem de 0,7 s), junto com as dicas da
@@ -1301,6 +1305,8 @@ sentir livre para escrever como quiser). **Sem dicas embaixo do texto** (gancho 
   como 2:28 e "CUT 58S"); vale também para o "Start recording" e a melhor tomada, e só o tempo dentro do gravador (Studio) segue a velocidade escolhida.
 - **Tab bar:** a página a esconde do jeito do sistema (`toolbarVisibility(.hidden, for: .tabBar)` na página; a da lista fica na raiz da pilha, não na
   pilha toda), então ela sai e volta junto com a animação de entrar e sair, sem o dock e a barra pularem (no voltar e no Cancel da estrela).
+- **Título:** campo de 27 pt bold (`ScriptPageHeader`); vazio, diz "Untitled" em `ink2`, como todo placeholder do Cue (o cinza do sistema ficava em
+  2,4:1 sobre a página).
 - **Título na barra:** rolando além do título, a barra mostra o título pequeno com "WORDS · ~TEMPO" embaixo (como Notas e Mail).
 - **Foco ao digitar:** com o teclado no texto, faixa, duração, voz, aviso de fatos e ferramentas ficam a 30% (continuam funcionando); voltam ao fechar.
 - **Digitar flui como no Notas, qualquer que seja o tamanho do roteiro** (dono, 03/11/2026: num roteiro longo da IA a digitação travava, num curto
@@ -4165,7 +4171,10 @@ A metade reativa da revisão de comunicação (`reports/comunicacao-revisao-2026
   Save não tem toast: o botão diz "Saved to Photos" ou "Video and cover saved", e a contagem grátis fica no medidor (a capa que não salvou tem o seu,
   com Try again, §9).
 - **Hosts de toast nas folhas grandes** (`toastHost(inSheet: true)`): Import a script, Brand brief, Edit profile, Share my universe, as capas da celebração
-  e o fluxo de envio; Add media já tinha o do editor.
+  e o fluxo de envio; Add media já tinha o do editor. **O toast fica com o host da frente** (`ToastService.frontHosts`): enquanto uma dessas folhas
+  ou o editor (`EditorToastHost`, na capa dele e nas folhas por cima, como Add media, que desenham o seu sobre o do editor) está aberto, os hosts do app
+  (o da raiz e o do gravador) deixam o toast para ele, em vez de desenhá-lo de novo fora de vista por baixo; com o editor aberto, um toast sem tempo
+  próprio fica os 2 s do editor.
 - **Editor, menos toasts**: o que a prévia já mostra não tem toast, só o anúncio do VoiceOver (`EditorSession.announce`), e o Undo fica na barra do player:
   "Captions format: …", "… on this text", "Places swapped", "Line split", "Line break added", "Joined with next line", "Mask removed", "Mask reset", "Look pasted".
   Ficam os toasts de consequências que não se veem ("… on every text", "Look pasted on every clip", "Replaced · its Blur area and its voice's captions went with
@@ -4177,7 +4186,7 @@ A metade reativa da revisão de comunicação (`reports/comunicacao-revisao-2026
   TikTok 1:00+, YouTube 8:00+" e "Script lengths aim at TikTok’s length goal for earning"; "Within the target length · 1:00 to 1:30", "Within TikTok’s target
   length", "9:16 · 0:52 · TARGET LENGTH", "Already within the target length · …" (nunca "Fits"); o medidor da voz diz "Profile 85% filled" de 85 a 99% e "Profile
   complete" só em 100% (nunca "Sounds like you"); a espera da Ultra AI diz "Reviewing the draft" no passo do meio (nunca "Checking the facts": é o modelo relendo,
-  sem busca); o tracking de Blur area para com **Stop** ("Keeps what was tracked").
+  sem busca) e "Polishing in your voice" no último só quando o roteiro sai na voz do criador (senão, "Polishing the draft"); o tracking de Blur area para com **Stop** ("Keeps what was tracked").
 - **Checked** (decisão 9): o botão do lembrete de fatos diz "I checked" (VoiceOver: "I reviewed the claims") e grava a revisão daquela versão com a data
   (`FactReview`: um resumo do texto, a versão, a data); o toast é "Claims reviewed for this version". Uma reescrita da IA que muda as palavras traz o lembrete
   de volta, e o Undo para as palavras revisadas o tira. Esconder não é revisar: só o botão grava.

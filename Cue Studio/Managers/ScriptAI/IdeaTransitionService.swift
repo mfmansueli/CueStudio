@@ -75,6 +75,8 @@ final class IdeaTransitionService {
     private(set) var platformName = ""
     /// Who is writing: the star says "Drafting with Ultra" for Ultra AI (Claude, through Cue's server), never Apple Intelligence's words.
     private(set) var engine: ScriptEngine = .apple
+    /// The script is written in the creator's voice (My Cue Voice on, and a format that takes it): only then does the star say "in your voice".
+    private(set) var inYourVoice = true
     /// Whether the exit is because of an error (the toast says so) and not a Cancel.
     private(set) var leftBecauseOfError = false
     /// Why the last star left on an error, for its abort to say (`fail(saying:canRetry:)`).
@@ -126,8 +128,8 @@ final class IdeaTransitionService {
 
     /// The arrow was tapped: the star rises. `abort` removes the script that was opened for it (Cancel or an error).
     func begin(
-        from origin: CGPoint, idea: String, platformName: String, engine: ScriptEngine = .apple, abort: @escaping () -> Void,
-        arrive: @escaping () -> Void
+        from origin: CGPoint, idea: String, platformName: String, engine: ScriptEngine = .apple, inYourVoice: Bool = true,
+        abort: @escaping () -> Void, arrive: @escaping () -> Void
     ) {
         timer?.cancel()
         run += 1
@@ -135,6 +137,7 @@ final class IdeaTransitionService {
         self.idea = idea
         self.platformName = platformName
         self.engine = engine
+        self.inYourVoice = inYourVoice
         leftBecauseOfError = false
         failure = nil
         progress = nil

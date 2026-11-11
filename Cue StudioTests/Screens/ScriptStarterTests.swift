@@ -19,6 +19,7 @@ struct ScriptStarterTests {
         let transition: IdeaTransitionService
         let writer: FakeScriptWriter
         let toast: ToastService
+        let profile: CreatorProfileService
         let defaults: TestDefaults
     }
 
@@ -31,14 +32,15 @@ struct ScriptStarterTests {
         transition.speed = 0.01
         let writer = FakeScriptWriter()
         let toast = ToastService()
+        let profile = CreatorProfileService(defaults: defaults.defaults)
         let starter = ScriptStarter(
-            library: library, profile: CreatorProfileService(defaults: defaults.defaults),
+            library: library, profile: profile,
             languages: languages ?? TestData.languages(defaults: defaults.defaults), presentation: presentation, ideaDraft: ideaDraft,
             transition: transition, writer: writer, toast: toast
         )
         return Scenario(
             starter: starter, library: library, presentation: presentation, ideaDraft: ideaDraft, transition: transition,
-            writer: writer, toast: toast, defaults: defaults
+            writer: writer, toast: toast, profile: profile, defaults: defaults
         )
     }
 
@@ -94,6 +96,31 @@ struct ScriptStarterTests {
         // No script is created, the page goes, and the idea is still in the field.
         #expect(scenario.library.scripts.isEmpty && scenario.presentation.scriptsPath.isEmpty)
         #expect(scenario.ideaDraft.text == "Carnival in Salvador")
+    }
+
+    /// The star says "in your voice" only for a script written in it: My Cue Voice set up and on, and a format that takes it (an apology
+    /// doesn't). Otherwise it names Apple Intelligence, as the page's pill says "Drafting…" (11/11/2026: the star said "in your voice" anyway).
+    @Test func theStarSaysInYourVoiceOnlyForAScriptWrittenInIt() {
+        let noVoice = makeScenario()
+        defer { noVoice.defaults.tearDown() }
+        noVoice.ideaDraft.text = "Carnival in Salvador"
+        noVoice.starter.write()
+        #expect(noVoice.transition.isActive && !noVoice.transition.inYourVoice)
+
+        let voice = makeScenario()
+        defer { voice.defaults.tearDown() }
+        voice.profile.saveVoiceSetup(niches: [.tech], vocabulary: .simple, sounds: [.casual])
+        voice.ideaDraft.text = "Carnival in Salvador"
+        voice.starter.write()
+        #expect(voice.transition.isActive && voice.transition.inYourVoice)
+
+        let apology = makeScenario()
+        defer { apology.defaults.tearDown() }
+        apology.profile.saveVoiceSetup(niches: [.tech], vocabulary: .simple, sounds: [.casual])
+        apology.ideaDraft.text = "Last week's video"
+        apology.ideaDraft.format = .apology
+        apology.starter.write()
+        #expect(apology.transition.isActive && !apology.transition.inYourVoice)
     }
 
     @Test func whenTheScriptIsReadyItStaysInTheLibrary() async {

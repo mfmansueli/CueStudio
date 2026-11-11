@@ -400,7 +400,7 @@ struct ScriptPageView: View {
             if viewModel.page.isWriting, viewModel.page.revealed?.isEmpty ?? true {
                 // Only before the words: once they arrive, they are the progress.
                 ScriptWritingPill(
-                    inMyVoice: viewModel.profile.writesInMyVoice, engine: viewModel.pendingRequest?.engine ?? .apple, progress: viewModel.page.progress
+                    inMyVoice: viewModel.pendingRequest?.voice != nil, engine: viewModel.pendingRequest?.engine ?? .apple, progress: viewModel.page.progress
                 )
                     .padding(.bottom, 12)
                     .transition(.opacity.combined(with: .scale(scale: 0.96)))

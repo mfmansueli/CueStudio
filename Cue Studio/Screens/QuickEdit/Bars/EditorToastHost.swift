@@ -8,7 +8,8 @@ import SwiftUI
 /// The editor's toasts: the app's toast (`ToastView`, with its kind's icon) at the top of the preview, for 2 s. They confirm an
 /// action or say why one can't happen ("Move the playhead inside the clip"); a tap lets one go early. One with an action
 /// ("8 lines deleted" · Undo) shows its button at the end of the pill and stays 4 s (`ToastService`); a pasted look's has Change before
-/// its Undo.
+/// its Undo. While the editor is up, the app's hosts under its cover (the root's, the recorder's) leave the toast to it
+/// (`ToastService.frontHosts`) instead of drawing it again out of sight; a sheet over the editor (Add media, a brand kit) draws its own.
 struct EditorToastHost: ViewModifier {
     @Environment(ToastService.self) private var toast
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -34,8 +35,8 @@ struct EditorToastHost: ViewModifier {
                 }
             }
             .animation(reduceMotion ? .easeOut(duration: 0.15) : .easeOut(duration: 0.2), value: toast.message)
-            .onAppear { toast.defaultDuration = .seconds(2) }
-            .onDisappear { toast.defaultDuration = .seconds(2.4) }
+            .onAppear { toast.frontHostAppeared(editor: true) }
+            .onDisappear { toast.frontHostDisappeared(editor: true) }
     }
 
     /// A button of the toast: what it does, then the toast goes, unless the button put up a toast of its own.

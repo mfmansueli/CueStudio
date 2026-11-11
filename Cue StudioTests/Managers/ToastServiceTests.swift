@@ -14,7 +14,7 @@ import Testing
 struct ToastServiceTests {
     @Test func aToastWithAButtonStaysFourSecondsUnlessToldOtherwise() {
         let toast = ToastService()
-        toast.defaultDuration = .seconds(2)
+        toast.frontHostAppeared(editor: true)
         #expect(toast.duration(for: nil, hasAction: false) == .seconds(2))
         #expect(toast.duration(for: nil, hasAction: true) == .seconds(4))
         #expect(toast.duration(for: .seconds(1), hasAction: true) == .seconds(1))
@@ -103,11 +103,31 @@ struct ToastServiceTests {
     /// A sheet that shows the toast itself takes it from the root while it is up, and never counts below none.
     @Test func aSheetWithItsOwnHostTakesTheToastWhileItIsUp() {
         let toast = ToastService()
-        toast.sheetHostAppeared()
-        #expect(toast.sheetHosts == 1)
-        toast.sheetHostDisappeared()
-        toast.sheetHostDisappeared()
-        #expect(toast.sheetHosts == 0)
+        toast.frontHostAppeared()
+        #expect(toast.frontHosts == 1)
+        // A sheet is not the editor: a toast keeps the app's 2.4 s over it.
+        #expect(toast.defaultDuration == .seconds(2.4))
+        toast.frontHostDisappeared()
+        toast.frontHostDisappeared()
+        #expect(toast.frontHosts == 0)
+    }
+
+    /// The editor takes the toast from the root's and the recorder's hosts under its cover, so it is drawn once (it was drawn three
+    /// times, two out of sight), and its 2 s last until its last host goes: closing Add media over the editor put the app's 2.4 s back.
+    @Test func theEditorTakesTheToastAndKeepsItsTwoSecondsUntilItsLastHostGoes() {
+        let toast = ToastService()
+        #expect(toast.defaultDuration == .seconds(2.4))
+        toast.frontHostAppeared(editor: true)
+        toast.frontHostAppeared(editor: true)
+        #expect(toast.frontHosts == 2 && toast.editorHosts == 2)
+        // Add media closes, the editor stays.
+        toast.frontHostDisappeared(editor: true)
+        #expect(toast.frontHosts == 1 && toast.defaultDuration == .seconds(2))
+        // The editor closes.
+        toast.frontHostDisappeared(editor: true)
+        #expect(toast.frontHosts == 0 && toast.defaultDuration == .seconds(2.4))
+        toast.frontHostDisappeared(editor: true)
+        #expect(toast.editorHosts == 0)
     }
 
     /// A working toast ends only with its own result: another operation's toast comes in its own pill, without the success tap's place.

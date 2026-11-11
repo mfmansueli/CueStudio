@@ -212,9 +212,9 @@ struct StarTransitionOverlay: View {
 
     private func textBlock(size: CGSize, centre: CGPoint, reach: CGFloat) -> some View {
         let words = StarTransitionWords(
-            isUltra: isUltra, idea: transition.idea, ideaLines: size.height < Self.shortScreen ? 2 : 3, phrase: Self.shown(currentPhrase),
-            phraseShown: phraseShown, phraseWaits: phraseTurns == 0, arrival: wordsArrival, meter: transition.progress, step: shownPass,
-            steps: transition.progress?.pass?.count ?? UltraFlow.standard.calls, pulse: tickPulse
+            isUltra: isUltra, inYourVoice: transition.inYourVoice, idea: transition.idea, ideaLines: size.height < Self.shortScreen ? 2 : 3,
+            phrase: Self.shown(currentPhrase), phraseShown: phraseShown, phraseWaits: phraseTurns == 0, arrival: wordsArrival,
+            meter: transition.progress, step: shownPass, steps: transition.progress?.pass?.count ?? UltraFlow.standard.calls, pulse: tickPulse
         )
         .padding(.horizontal, 24)
         .frame(width: size.width)
@@ -240,17 +240,19 @@ struct StarTransitionOverlay: View {
     }
 
     /// What Ultra AI is doing in pass `index` of `count`: the draft, its review (three passes only: one pass of the model over its claims, with
-    /// no search, so never "checking the facts"; decision 8), the polish in the creator's voice.
-    private static func passPhrase(_ index: Int, of count: Int) -> String {
+    /// no search, so never "checking the facts"; decision 8), the polish, in the creator's voice only when the script is written in it.
+    private static func passPhrase(_ index: Int, of count: Int, inYourVoice: Bool) -> String {
         if index == 0 { return String(localized: "Writing the draft") }
         if index < count - 1 { return String(localized: "Reviewing the draft") }
-        return String(localized: "Polishing in your voice")
+        return inYourVoice ? String(localized: "Polishing in your voice") : String(localized: "Polishing the draft")
     }
 
     private var currentPhrase: String {
         if finishShown { return IdeaTransitionService.finishPhrase }
         if isTakingLong { return IdeaTransitionService.longWaitPhrase }
-        if isUltra { return Self.passPhrase(shownPass, of: transition.progress?.pass?.count ?? UltraFlow.standard.calls) }
+        if isUltra {
+            return Self.passPhrase(shownPass, of: transition.progress?.pass?.count ?? UltraFlow.standard.calls, inYourVoice: transition.inYourVoice)
+        }
         guard !phrases.isEmpty else { return "" }
         return phrases[phraseIndex % phrases.count]
     }
@@ -584,7 +586,9 @@ struct StarTransitionOverlay: View {
     private func wait() {
         // VoiceOver hears what is happening, then each phrase (polite), and starts on Cancel.
         AccessibilityNotification.Announcement(
-            transition.engine == .ultra ? String(localized: "Drafting with Ultra AI") : String(localized: "Drafting in your voice")
+            transition.engine == .ultra
+                ? String(localized: "Drafting with Ultra AI")
+                : transition.inYourVoice ? String(localized: "Drafting in your voice") : String(localized: "Drafting…")
         ).post()
         cancelHasFocus = true
         wordsArrival += 1
